@@ -21,6 +21,10 @@ dependencies {
     testImplementation testFixtures(project(":domain"))
 }
 
+test {
+    enabled = false
+}
+
 testing {
     suites {
         integrationTest(JvmTestSuite) {
