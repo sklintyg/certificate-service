@@ -1,5 +1,3 @@
-apply plugin: "java-test-fixtures"
-
 dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-annotations'
     implementation 'com.fasterxml.jackson.core:jackson-databind'
@@ -13,9 +11,4 @@ dependencies {
 
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
     testRuntimeOnly 'org.slf4j:slf4j-simple'
-}
-
-tasks.named('test') {
-    useJUnitPlatform {
-    }
 }

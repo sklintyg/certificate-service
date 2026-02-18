@@ -12,7 +12,3 @@ dependencies {
     testImplementation "org.springframework:spring-test"
     testImplementation testFixtures(project(":domain"))
 }
-
-test {
-    useJUnitPlatform()
-}

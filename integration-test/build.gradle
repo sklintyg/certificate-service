@@ -1,5 +1,3 @@
-apply plugin: "java-test-fixtures"
-
 dependencies {
     implementation project(':domain')
     implementation project(':app')
@@ -13,10 +11,10 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.boot:spring-boot-starter-web'
     testImplementation 'org.springframework.boot:spring-boot-test'
-    testImplementation "org.testcontainers:mysql:${testContainersMysqlVersion}"
-    testImplementation "org.testcontainers:activemq:${testContainersActivemqVersion}"
+    testImplementation "org.testcontainers:mysql"
+    testImplementation "org.testcontainers:activemq"
     testImplementation 'org.testcontainers:mockserver'
-    testImplementation "org.mock-server:mockserver-client-java:${mockServerClientVersion}"
+    testImplementation "org.mock-server:mockserver-client-java"
     testImplementation 'org.springframework.boot:spring-boot-starter-activemq'
     testImplementation 'org.awaitility:awaitility'
     testImplementation testFixtures(project(":app"))
@@ -26,7 +24,6 @@ dependencies {
 testing {
     suites {
         integrationTest(JvmTestSuite) {
-            testType = TestSuiteType.INTEGRATION_TEST
             description = 'Runs integration tests.'
             group = 'verification'
 

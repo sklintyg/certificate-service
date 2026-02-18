@@ -4,9 +4,9 @@ plugins {
 
 dependencies {
     implementation project(':domain')
-    implementation "jakarta.xml.ws:jakarta.xml.ws-api:${jakartaWsVersion}"
-    implementation "com.helger.schematron:ph-schematron-xslt:${schematronVersion}"
-    implementation "org.apache.cxf:cxf-core:${cxfVersion}"
+    implementation "jakarta.xml.ws:jakarta.xml.ws-api"
+    implementation "com.helger.schematron:ph-schematron-xslt"
+    implementation "org.apache.cxf:cxf-core"
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
     runtimeOnly "org.glassfish.jaxb:jaxb-runtime"
@@ -15,9 +15,11 @@ dependencies {
     compileOnly "org.slf4j:slf4j-api"
     annotationProcessor "org.projectlombok:lombok"
 
-    wsdl2java "jakarta.xml.ws:jakarta.xml.ws-api:${jakartaWsVersion}"
-    wsdl2java "org.jvnet.jaxb2_commons:jaxb2-namespace-prefix:${jaxb2NamespacePrefixVersion}"
+    wsdl2java platform("se.inera.intyg.bom:platform:${intygBomVersion}")
+    wsdl2java "jakarta.xml.ws:jakarta.xml.ws-api"
+    wsdl2java "org.jvnet.jaxb2_commons:jaxb2-namespace-prefix"
 
+    testImplementation "jakarta.xml.ws:jakarta.xml.ws-api"
     testImplementation "org.junit.jupiter:junit-jupiter"
     testImplementation "org.junit.jupiter:junit-jupiter-params"
     testImplementation "org.mockito:mockito-junit-jupiter"
@@ -27,14 +29,10 @@ dependencies {
     testImplementation project(':app')
 }
 
-tasks.named('test') {
-    useJUnitPlatform()
-}
-
 wsdl2java {
     wsdlDir = file("src/main/resources/schemas")
-    cxfVersion = project.getProperties().get("cxfVersion")
-    cxfPluginVersion = project.getProperties().get("cxfPluginVersion")
+    cxfVersion = project.getProperties().get("wsdlCxfVersion")
+    cxfPluginVersion = project.getProperties().get("wsdlCxfPluginVersion")
     includeJava8XmlDependencies = false
 
     def certificateVersion = "4.0"

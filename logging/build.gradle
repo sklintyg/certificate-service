@@ -4,14 +4,10 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
 
     implementation "ch.qos.logback:logback-classic"
-    implementation "com.google.guava:guava:${guavaVersion}"
+    implementation "com.google.guava:guava"
     implementation "jakarta.servlet:jakarta.servlet-api"
     implementation "org.aspectj:aspectjweaver"
     implementation "org.springframework:spring-webmvc"
 
     testImplementation "org.springframework.boot:spring-boot-starter-test"
-}
-
-tasks.named('test') {
-    useJUnitPlatform()
 }
