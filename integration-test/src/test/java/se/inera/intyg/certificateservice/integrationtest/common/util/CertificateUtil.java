@@ -290,7 +290,7 @@ public class CertificateUtil {
   }
 
   public static CertificateDTO certificate(ResponseEntity<SignCertificateResponse> response) {
-    if (response.getBody() == null || response.getBody() == null) {
+    if (response.getBody() == null || response.getBody().getCertificate() == null) {
       return null;
     }
     return response.getBody().getCertificate();
@@ -298,7 +298,7 @@ public class CertificateUtil {
 
   public static CertificateRecipientDTO getRecipient(
       ResponseEntity<SendCertificateResponse> response) {
-    if (response.getBody() == null || response.getBody() == null) {
+    if (response.getBody() == null || response.getBody().getCertificate() == null) {
       return CertificateRecipientDTO.builder().build();
     }
     return response.getBody().getCertificate().getMetadata().getRecipient();
