@@ -42,6 +42,11 @@ subprojects {
         }
     }
 
+    compileJava {
+        options.encoding = "UTF-8"
+        options.compilerArgs.add("-parameters")
+    }
+
     dependencies {
         implementation platform("se.inera.intyg.bom:platform:${intygBomVersion}")
         annotationProcessor platform("se.inera.intyg.bom:platform:${intygBomVersion}")
