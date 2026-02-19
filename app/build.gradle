@@ -38,11 +38,6 @@ dependencies {
     testFixturesImplementation testFixtures(project(":domain"))
 }
 
-tasks.named('test') {
-    useJUnitPlatform {
-    }
-}
-
 bootRun {
     systemProperty("application.dir", "${rootProject.projectDir}/devops/dev")
     systemProperty("spring.profiles.active", "testability,dev")
