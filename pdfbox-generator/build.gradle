@@ -15,7 +15,3 @@ dependencies {
     testImplementation testFixtures(project(':app'))
     testRuntimeOnly "org.slf4j:slf4j-simple"
 }
-
-test {
-    useJUnitPlatform()
-}
