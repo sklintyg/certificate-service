@@ -4,7 +4,6 @@ dependencies {
     implementation project(':domain')
     implementation project(':logging')
 
-    compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
     testImplementation "com.squareup.okhttp3:okhttp"
@@ -16,8 +15,4 @@ dependencies {
     testImplementation testFixtures(project(":domain"))
     testImplementation testFixtures(project(':app'))
     testRuntimeOnly "org.slf4j:slf4j-simple"
-}
-
-test {
-    useJUnitPlatform()
 }

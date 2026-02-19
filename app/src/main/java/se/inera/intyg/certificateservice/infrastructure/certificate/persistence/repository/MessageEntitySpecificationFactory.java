@@ -1,6 +1,6 @@
 package se.inera.intyg.certificateservice.infrastructure.certificate.persistence.repository;
 
-import static org.springframework.data.jpa.domain.Specification.where;
+import static org.springframework.data.jpa.domain.Specification.unrestricted;
 import static se.inera.intyg.certificateservice.infrastructure.certificate.persistence.repository.MessageEntitySpecification.equalsAuthor;
 import static se.inera.intyg.certificateservice.infrastructure.certificate.persistence.repository.MessageEntitySpecification.equalsForwarded;
 import static se.inera.intyg.certificateservice.infrastructure.certificate.persistence.repository.MessageEntitySpecification.sentEqualsAndGreaterThan;
@@ -18,7 +18,7 @@ import se.inera.intyg.certificateservice.infrastructure.certificate.persistence.
 public class MessageEntitySpecificationFactory {
 
   public Specification<MessageEntity> create(MessagesRequest request) {
-    Specification<MessageEntity> specification = where(null);
+    Specification<MessageEntity> specification = unrestricted();
     if (request.sentDateFrom() != null) {
       specification = specification.and(
           sentEqualsAndGreaterThan(request.sentDateFrom())

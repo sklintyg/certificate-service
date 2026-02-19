@@ -1,6 +1,6 @@
 package se.inera.intyg.certificateservice.infrastructure.certificate.persistence.repository;
 
-import static org.springframework.data.jpa.domain.Specification.where;
+import static org.springframework.data.jpa.domain.Specification.unrestricted;
 import static se.inera.intyg.certificateservice.infrastructure.certificate.persistence.repository.CertificateEntitySpecification.createdEqualsAndGreaterThan;
 import static se.inera.intyg.certificateservice.infrastructure.certificate.persistence.repository.CertificateEntitySpecification.createdEqualsAndLesserThan;
 import static se.inera.intyg.certificateservice.infrastructure.certificate.persistence.repository.CertificateEntitySpecification.modifiedEqualsAndGreaterThan;
@@ -24,7 +24,7 @@ import se.inera.intyg.certificateservice.infrastructure.certificate.persistence.
 public class CertificateEntitySpecificationFactory {
 
   public Specification<CertificateEntity> create(CertificatesRequest certificatesRequest) {
-    Specification<CertificateEntity> specification = where(null);
+    Specification<CertificateEntity> specification = unrestricted();
     if (certificatesRequest.modifiedFrom() != null) {
       specification = specification.and(
           modifiedEqualsAndGreaterThan(certificatesRequest.modifiedFrom())
