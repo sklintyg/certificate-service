@@ -89,12 +89,6 @@ subprojects {
             }))
         }
     }
-
-    sonar {
-        properties {
-            property "sonar.exclusions", "**/testability/**,**/integrationtest/**"
-        }
-    }
 }
 
 reporting {
@@ -113,5 +107,6 @@ sonar {
     properties {
         property "sonar.projectKey", "intyg-certificate-service"
         property "sonar.projectName", "intyg-certificate-service"
+        property "sonar.exclusions", "**/testability/**,**/integrationtest/**"
     }
 }
