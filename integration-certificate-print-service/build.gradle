@@ -4,7 +4,6 @@ dependencies {
     implementation project(':domain')
     implementation project(':logging')
 
-    compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
     testImplementation "com.squareup.okhttp3:okhttp"
