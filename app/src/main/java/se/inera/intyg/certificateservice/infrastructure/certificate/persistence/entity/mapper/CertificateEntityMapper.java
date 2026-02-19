@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -143,18 +144,28 @@ public class CertificateEntityMapper {
         certificateModel(certificate.certificateModel())
     );
 
-    final var certificateDataEntity = certificateDataEntityMapper.toEntity(
-        certificate.elementData()
-    );
-    certificateDataEntity.setKey(certificateEntity.getKey());
-    certificateDataEntity.setCertificate(certificateEntity);
-    certificateEntity.setData(certificateDataEntity);
+    if (certificateEntity.getData() != null) {
+      final var existingDataEntity = certificateEntity.getData();
+      final var newCertificateDataEntity = certificateDataEntityMapper.toEntity(
+          certificate.elementData()
+      );
+      existingDataEntity.setData(newCertificateDataEntity.getData());
+    } else {
+      final var certificateDataEntity = certificateDataEntityMapper.toEntity(
+          certificate.elementData()
+      );
+      certificateDataEntity.setCertificate(certificateEntity);
+      certificateEntity.setData(certificateDataEntity);
+    }
 
     if (certificate.xml() != null) {
-      final var certificateXmlEntity = new CertificateXmlEntity(certificate.xml().xml());
-      certificateXmlEntity.setKey(certificateEntity.getKey());
-      certificateXmlEntity.setCertificate(certificateEntity);
-      certificateEntity.setXml(certificateXmlEntity);
+      Optional.ofNullable(certificateEntity.getXml())
+          .ifPresentOrElse(xml -> xml.setData(certificate.xml().xml()),
+              () -> {
+                final var certificateXmlEntity = new CertificateXmlEntity(certificate.xml().xml());
+                certificateXmlEntity.setCertificate(certificateEntity);
+                certificateEntity.setXml(certificateXmlEntity);
+              });
     }
 
     if (certificate.sent() != null) {
@@ -184,13 +195,15 @@ public class CertificateEntityMapper {
     }
 
     if (certificate.externalReference() != null) {
-      certificateEntity.setExternalReference(
-          ExternalReferenceEntity.builder()
-              .key(certificateEntity.getKey())
-              .certificate(certificateEntity)
-              .reference(certificate.externalReference().value())
-              .build()
-      );
+      Optional.ofNullable(certificateEntity.getExternalReference())
+          .ifPresentOrElse(ref -> ref.setReference(certificate.externalReference().value()),
+              () -> certificateEntity.setExternalReference(
+                  ExternalReferenceEntity.builder()
+                      .certificate(certificateEntity)
+                      .reference(certificate.externalReference().value())
+                      .build()
+              )
+          );
     }
 
     if (certificate.forwarded() != null) {

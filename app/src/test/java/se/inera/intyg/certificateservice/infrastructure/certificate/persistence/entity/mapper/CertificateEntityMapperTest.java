@@ -127,7 +127,7 @@ class CertificateEntityMapperTest {
       doReturn(Optional.of(CERTIFICATE_ENTITY))
           .when(certificateEntityRepository)
           .findByCertificateId(FK7210_CERTIFICATE.id().id());
-      doReturn(CertificateDataEntity.builder().build())
+      doReturn(CertificateDataEntity.builder().data(new byte[5]).build())
           .when(certificateDataEntityMapper).toEntity(any());
     }
 
