@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.testability.certificate.testcertificate;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.elements.ElementUnitContactInformation.issuingUnitContactInfo;
@@ -38,6 +56,7 @@ import se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.
 public class CertificateModelFactoryTestCertificate implements CertificateModelFactory {
 
   private final CertificateActionFactory certificateActionFactory;
+
   @Value("${certificate.model.testcertificate.v1_0.active.from:4000-01-01T00:00:00}")
   private LocalDateTime activeFrom;
 
@@ -47,11 +66,13 @@ public class CertificateModelFactoryTestCertificate implements CertificateModelF
   private static final String CERTIFICATE_MODEL_ID = "CS";
   private static final String VERSION = "1.0";
   private static final String NAME = "Komponenter som stöds av Certificate Service";
-  private static final String DESCRIPTION = """
+  private static final String DESCRIPTION =
+      """
       Intyg för att demonstrera vilka komponenter som stöds av Certificate Service
       """;
 
-  private static final String DETAILED_DESCRIPTION = """
+  private static final String DETAILED_DESCRIPTION =
+      """
       <ul>
         <li>CHECKBOX_DATE_RANGE_LIST</li>
         <li>CHECKBOX_MULTIPLE_CODE</li>
@@ -71,22 +92,17 @@ public class CertificateModelFactoryTestCertificate implements CertificateModelF
       </ul>
       """;
 
-  public static final CertificateModelId TEST_CERTIFICATE_V1 = CertificateModelId.builder()
-      .type(new CertificateType(CERTIFICATE_MODEL_ID))
-      .version(new CertificateVersion(VERSION))
-      .build();
+  public static final CertificateModelId TEST_CERTIFICATE_V1 =
+      CertificateModelId.builder()
+          .type(new CertificateType(CERTIFICATE_MODEL_ID))
+          .version(new CertificateVersion(VERSION))
+          .build();
 
   @Override
   public CertificateModel create() {
     return CertificateModel.builder()
         .id(TEST_CERTIFICATE_V1)
-        .type(
-            new Code(
-                "testCertificate",
-                "test",
-                NAME
-            )
-        )
+        .type(new Code("testCertificate", "test", NAME))
         .typeName(new CertificateTypeName(CERTIFICATE_MODEL_ID))
         .name(NAME)
         .description(DESCRIPTION)
@@ -95,27 +111,26 @@ public class CertificateModelFactoryTestCertificate implements CertificateModelF
         .availableForCitizen(false)
         .certificateActionSpecifications(TestCertificateCertificateActionSpecification.create())
         .messageActionSpecifications(Collections.emptyList())
-        .elementSpecifications(List.of(
-            categoryTestQuestions(
-                "KAT_1",
-                "Följande komponenter finns i Certificate Service",
-                questionCheckboxDateRangeList()
-            ),
-            categoryTestQuestions("KAT_2", "", questionCheckboxMultipleCodeColumns()),
-            categoryTestQuestions("KAT_3", "", questionCheckboxMultipleDate()),
-            categoryTestQuestions("KAT_4", "", questionDate()),
-            categoryTestQuestions("KAT_5", "", questionDateRange()),
-            categoryTestQuestions("KAT_6", "", questionDiagnosis()),
-            categoryTestQuestions("KAT_7", "", questionDropdown()),
-            categoryTestQuestions("KAT_8", "", questionMedicalInvestigationList()),
-            categoryTestQuestions("KAT_9", "", questionMessage()),
-            categoryTestQuestions("KAT_10", "", questionRadioBoolean()),
-            categoryTestQuestions("KAT_11", "", questionRadioMultipleCode()),
-            categoryTestQuestions("KAT_12", "", questionTextArea()),
-            categoryTestQuestions("KAT_13", "", questionTextField()),
-            categoryTestQuestions("KAT_14", "", questionVisualAcuities()),
-            issuingUnitContactInfo()
-        ))
+        .elementSpecifications(
+            List.of(
+                categoryTestQuestions(
+                    "KAT_1",
+                    "Följande komponenter finns i Certificate Service",
+                    questionCheckboxDateRangeList()),
+                categoryTestQuestions("KAT_2", "", questionCheckboxMultipleCodeColumns()),
+                categoryTestQuestions("KAT_3", "", questionCheckboxMultipleDate()),
+                categoryTestQuestions("KAT_4", "", questionDate()),
+                categoryTestQuestions("KAT_5", "", questionDateRange()),
+                categoryTestQuestions("KAT_6", "", questionDiagnosis()),
+                categoryTestQuestions("KAT_7", "", questionDropdown()),
+                categoryTestQuestions("KAT_8", "", questionMedicalInvestigationList()),
+                categoryTestQuestions("KAT_9", "", questionMessage()),
+                categoryTestQuestions("KAT_10", "", questionRadioBoolean()),
+                categoryTestQuestions("KAT_11", "", questionRadioMultipleCode()),
+                categoryTestQuestions("KAT_12", "", questionTextArea()),
+                categoryTestQuestions("KAT_13", "", questionTextField()),
+                categoryTestQuestions("KAT_14", "", questionVisualAcuities()),
+                issuingUnitContactInfo()))
         .recipient(CertificateRecipientFactory.transp(fakeLogicalAddress))
         .certificateActionFactory(certificateActionFactory)
         .build();

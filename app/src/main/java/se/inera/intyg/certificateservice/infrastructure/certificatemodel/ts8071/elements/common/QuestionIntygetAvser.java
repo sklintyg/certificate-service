@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.common;
 
 import java.util.List;
@@ -24,15 +42,15 @@ public class QuestionIntygetAvser {
   }
 
   public static ElementSpecification questionIntygetAvser() {
-    final var checkboxes = List.of(
-        CodeFactory.elementConfigurationCode(CodeSystemKvIntygetGallerFor.GR_II),
-        CodeFactory.elementConfigurationCode(CodeSystemKvIntygetGallerFor.GR_II_III),
-        CodeFactory.elementConfigurationCode(CodeSystemKvIntygetGallerFor.FORLANG_GR_II),
-        CodeFactory.elementConfigurationCode(CodeSystemKvIntygetGallerFor.FORLANG_GR_II_III),
-        CodeFactory.elementConfigurationCode(CodeSystemKvIntygetGallerFor.UTLANDSKT),
-        CodeFactory.elementConfigurationCode(CodeSystemKvIntygetGallerFor.TAXI),
-        CodeFactory.elementConfigurationCode(CodeSystemKvIntygetGallerFor.ANNAT)
-    );
+    final var checkboxes =
+        List.of(
+            CodeFactory.elementConfigurationCode(CodeSystemKvIntygetGallerFor.GR_II),
+            CodeFactory.elementConfigurationCode(CodeSystemKvIntygetGallerFor.GR_II_III),
+            CodeFactory.elementConfigurationCode(CodeSystemKvIntygetGallerFor.FORLANG_GR_II),
+            CodeFactory.elementConfigurationCode(CodeSystemKvIntygetGallerFor.FORLANG_GR_II_III),
+            CodeFactory.elementConfigurationCode(CodeSystemKvIntygetGallerFor.UTLANDSKT),
+            CodeFactory.elementConfigurationCode(CodeSystemKvIntygetGallerFor.TAXI),
+            CodeFactory.elementConfigurationCode(CodeSystemKvIntygetGallerFor.ANNAT));
 
     return ElementSpecification.builder()
         .id(QUESTION_INTYGET_AVSER_ID)
@@ -48,10 +66,8 @@ public class QuestionIntygetAvser {
                         .includedForStatuses(List.of(Status.DRAFT))
                         .content(
                             "Välj \"ansökan om taxiförarlegitimation\" endast om personen saknar taxiförarlegitimation och ansöker om en sådan i samband med detta intyg.")
-                        .build()
-                )
-                .build()
-        )
+                        .build())
+                .build())
         .rules(
             List.of(
                 CertificateElementRuleFactory.mandatoryOrExist(
@@ -63,9 +79,7 @@ public class QuestionIntygetAvser {
                         new FieldId(CodeSystemKvIntygetGallerFor.FORLANG_GR_II_III.code()),
                         new FieldId(CodeSystemKvIntygetGallerFor.UTLANDSKT.code()),
                         new FieldId(CodeSystemKvIntygetGallerFor.TAXI.code()),
-                        new FieldId(CodeSystemKvIntygetGallerFor.ANNAT.code())
-                    )
-                ),
+                        new FieldId(CodeSystemKvIntygetGallerFor.ANNAT.code()))),
                 CertificateElementRuleFactory.disableSubElements(
                     QUESTION_INTYGET_AVSER_ID,
                     List.of(new FieldId(CodeSystemKvIntygetGallerFor.GR_II.code())),
@@ -74,9 +88,7 @@ public class QuestionIntygetAvser {
                         new FieldId(CodeSystemKvIntygetGallerFor.FORLANG_GR_II.code()),
                         new FieldId(CodeSystemKvIntygetGallerFor.FORLANG_GR_II_III.code()),
                         new FieldId(CodeSystemKvIntygetGallerFor.UTLANDSKT.code()),
-                        new FieldId(CodeSystemKvIntygetGallerFor.ANNAT.code())
-                    )
-                ),
+                        new FieldId(CodeSystemKvIntygetGallerFor.ANNAT.code()))),
                 CertificateElementRuleFactory.disableSubElements(
                     QUESTION_INTYGET_AVSER_ID,
                     List.of(new FieldId(CodeSystemKvIntygetGallerFor.GR_II_III.code())),
@@ -85,9 +97,7 @@ public class QuestionIntygetAvser {
                         new FieldId(CodeSystemKvIntygetGallerFor.FORLANG_GR_II.code()),
                         new FieldId(CodeSystemKvIntygetGallerFor.FORLANG_GR_II_III.code()),
                         new FieldId(CodeSystemKvIntygetGallerFor.UTLANDSKT.code()),
-                        new FieldId(CodeSystemKvIntygetGallerFor.ANNAT.code())
-                    )
-                ),
+                        new FieldId(CodeSystemKvIntygetGallerFor.ANNAT.code()))),
                 CertificateElementRuleFactory.disableSubElements(
                     QUESTION_INTYGET_AVSER_ID,
                     List.of(new FieldId(CodeSystemKvIntygetGallerFor.FORLANG_GR_II.code())),
@@ -96,9 +106,7 @@ public class QuestionIntygetAvser {
                         new FieldId(CodeSystemKvIntygetGallerFor.GR_II_III.code()),
                         new FieldId(CodeSystemKvIntygetGallerFor.FORLANG_GR_II_III.code()),
                         new FieldId(CodeSystemKvIntygetGallerFor.UTLANDSKT.code()),
-                        new FieldId(CodeSystemKvIntygetGallerFor.ANNAT.code())
-                    )
-                ),
+                        new FieldId(CodeSystemKvIntygetGallerFor.ANNAT.code()))),
                 CertificateElementRuleFactory.disableSubElements(
                     QUESTION_INTYGET_AVSER_ID,
                     List.of(new FieldId(CodeSystemKvIntygetGallerFor.FORLANG_GR_II_III.code())),
@@ -107,9 +115,7 @@ public class QuestionIntygetAvser {
                         new FieldId(CodeSystemKvIntygetGallerFor.GR_II_III.code()),
                         new FieldId(CodeSystemKvIntygetGallerFor.FORLANG_GR_II.code()),
                         new FieldId(CodeSystemKvIntygetGallerFor.UTLANDSKT.code()),
-                        new FieldId(CodeSystemKvIntygetGallerFor.ANNAT.code())
-                    )
-                ),
+                        new FieldId(CodeSystemKvIntygetGallerFor.ANNAT.code()))),
                 CertificateElementRuleFactory.disableSubElements(
                     QUESTION_INTYGET_AVSER_ID,
                     List.of(new FieldId(CodeSystemKvIntygetGallerFor.UTLANDSKT.code())),
@@ -118,9 +124,7 @@ public class QuestionIntygetAvser {
                         new FieldId(CodeSystemKvIntygetGallerFor.GR_II_III.code()),
                         new FieldId(CodeSystemKvIntygetGallerFor.FORLANG_GR_II.code()),
                         new FieldId(CodeSystemKvIntygetGallerFor.FORLANG_GR_II_III.code()),
-                        new FieldId(CodeSystemKvIntygetGallerFor.ANNAT.code())
-                    )
-                ),
+                        new FieldId(CodeSystemKvIntygetGallerFor.ANNAT.code()))),
                 CertificateElementRuleFactory.disableSubElements(
                     QUESTION_INTYGET_AVSER_ID,
                     List.of(new FieldId(CodeSystemKvIntygetGallerFor.ANNAT.code())),
@@ -129,18 +133,8 @@ public class QuestionIntygetAvser {
                         new FieldId(CodeSystemKvIntygetGallerFor.GR_II_III.code()),
                         new FieldId(CodeSystemKvIntygetGallerFor.FORLANG_GR_II.code()),
                         new FieldId(CodeSystemKvIntygetGallerFor.FORLANG_GR_II_III.code()),
-                        new FieldId(CodeSystemKvIntygetGallerFor.UTLANDSKT.code())
-                    )
-                )
-            )
-        )
-        .validations(
-            List.of(
-                ElementValidationCodeList.builder()
-                    .mandatory(true)
-                    .build()
-            )
-        )
+                        new FieldId(CodeSystemKvIntygetGallerFor.UTLANDSKT.code())))))
+        .validations(List.of(ElementValidationCodeList.builder().mandatory(true).build()))
         .build();
   }
 }

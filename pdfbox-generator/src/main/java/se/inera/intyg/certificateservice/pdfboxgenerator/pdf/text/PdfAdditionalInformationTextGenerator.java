@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.pdfboxgenerator.pdf.text;
 
 import static se.inera.intyg.certificateservice.pdfboxgenerator.pdf.PdfConstants.DIGITALLY_SIGNED_TEXT;
@@ -27,8 +45,7 @@ public class PdfAdditionalInformationTextGenerator {
         Matrix.getTranslateInstance(40, 685),
         22,
         mcid,
-        false
-    );
+        false);
   }
 
   public void addSentVisibilityText(PDDocument document, int mcid) throws IOException {
@@ -38,40 +55,41 @@ public class PdfAdditionalInformationTextGenerator {
         Matrix.getTranslateInstance(40, 665),
         16,
         mcid,
-        true
-    );
+        true);
   }
 
-  public void addMarginAdditionalInfoText(PDDocument document, String id,
-      String additionalInfoText, int mcid, int pageIndex) throws IOException {
+  public void addMarginAdditionalInfoText(
+      PDDocument document, String id, String additionalInfoText, int mcid, int pageIndex)
+      throws IOException {
     pdfTextGenerator.addMarginText(
-        document,
-        "Intygsid: %s. %s".formatted(id, additionalInfoText),
-        mcid,
-        pageIndex
-    );
+        document, "Intygsid: %s. %s".formatted(id, additionalInfoText), mcid, pageIndex);
   }
 
   public void addDraftWatermark(PDDocument document, int mcid) throws IOException {
     pdfTextGenerator.addWatermark(document, WATERMARK_DRAFT, mcid);
   }
 
-  public void addDigitalSignatureText(PDDocument pdDocument, Float xPosition, Float yPosition,
-      int mcid, int signatureIndex, int pageIndex)
+  public void addDigitalSignatureText(
+      PDDocument pdDocument,
+      Float xPosition,
+      Float yPosition,
+      int mcid,
+      int signatureIndex,
+      int pageIndex)
       throws IOException {
     pdfTextGenerator.addDigitalSignatureText(
-        pdDocument,
-        DIGITALLY_SIGNED_TEXT,
-        xPosition,
-        yPosition,
-        mcid,
-        signatureIndex,
-        pageIndex
-    );
+        pdDocument, DIGITALLY_SIGNED_TEXT, xPosition, yPosition, mcid, signatureIndex, pageIndex);
   }
 
-  public void addPatientId(PDDocument document, int pageIndex, float xPosition, float yPosition,
-      String patientId, float fontSize, int mcid) throws IOException {
+  public void addPatientId(
+      PDDocument document,
+      int pageIndex,
+      float xPosition,
+      float yPosition,
+      String patientId,
+      float fontSize,
+      int mcid)
+      throws IOException {
     pdfTextGenerator.addText(
         document,
         patientId,
@@ -81,8 +99,7 @@ public class PdfAdditionalInformationTextGenerator {
         mcid,
         PdfAccessibilityUtil.getDivInQuestionSection(document, 1, pageIndex),
         pageIndex,
-        patientId
-    );
+        patientId);
   }
 
   public void setPageNumber(PDDocument document, int pageIndex, int nbrOfPages, int mcid)
@@ -106,17 +123,20 @@ public class PdfAdditionalInformationTextGenerator {
         PdfAccessibilityUtil.getDivInQuestionSection(document, 0, pageIndex),
         pageIndex,
         "Sida %d av %d".formatted(pageIndex + 1, nbrOfPages),
-        true
-    );
+        true);
   }
 
-
-  public void addOverFlowPageText(PDDocument document, int pageIndex,
+  public void addOverFlowPageText(
+      PDDocument document,
+      int pageIndex,
       List<String> lines,
-      float xPosition, float yPosition, float fontSize, PDFont font, int mcid)
+      float xPosition,
+      float yPosition,
+      float fontSize,
+      PDFont font,
+      int mcid)
       throws IOException {
-    pdfTextGenerator.addTextLines(document, lines, (int) fontSize, font, xPosition, yPosition, mcid,
-        pageIndex);
-
+    pdfTextGenerator.addTextLines(
+        document, lines, (int) fontSize, font, xPosition, yPosition, mcid, pageIndex);
   }
 }

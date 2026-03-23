@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.pdfboxgenerator.pdf.text;
 
 import static se.inera.intyg.certificateservice.pdfboxgenerator.pdf.PdfConstants.TEXT_FIELD_LINE_HEIGHT;
@@ -20,21 +38,21 @@ import se.inera.intyg.certificateservice.pdfboxgenerator.pdf.PdfField;
 @Slf4j
 public class TextUtil {
 
-  private static final Map<String, String> PROBLEM_CHARACTERS_MAPPING = Map.of(
-      "\u2010", "-", // hyphen
-      "\u2011", "-", // non-breaking hyphen
-      "\u2012", "-", // figure dash
-      "\u2013", "-", // en dash
-      "\u2014", "-", // em dash
-      "\u2015", "-",  // horizontal bar
-      "\u2212", "-",  // minus
-      "\u2192", "->",  // right arrow
-      "\u2190", "<-",   // left arrow
-      "\u2194", "<->"   // left right arrow
-  );
+  private static final Map<String, String> PROBLEM_CHARACTERS_MAPPING =
+      Map.of(
+          "\u2010", "-", // hyphen
+          "\u2011", "-", // non-breaking hyphen
+          "\u2012", "-", // figure dash
+          "\u2013", "-", // en dash
+          "\u2014", "-", // em dash
+          "\u2015", "-", // horizontal bar
+          "\u2212", "-", // minus
+          "\u2192", "->", // right arrow
+          "\u2190", "<-", // left arrow
+          "\u2194", "<->" // left right arrow
+          );
 
-  public float calculateTextHeight(String text, float fontSize, PDFont font,
-      float width) {
+  public float calculateTextHeight(String text, float fontSize, PDFont font, float width) {
 
     String[] lines = text.split("\n");
     int totalLines = 0;
@@ -46,7 +64,6 @@ public class TextUtil {
     float lineHeight = fontSize * TEXT_FIELD_LINE_HEIGHT;
     return totalLines * lineHeight;
   }
-
 
   public List<String> wrapLine(String line, float width, float fontSize, PDFont font) {
     List<String> wrappedLines = new ArrayList<>();
@@ -80,8 +97,8 @@ public class TextUtil {
         }
 
         wrappedLines.add(substring);
-        sanitizedLine = sanitizedLine.substring(lastSpaceIndex == -1 ? spaceIndex : lastSpaceIndex)
-            .trim();
+        sanitizedLine =
+            sanitizedLine.substring(lastSpaceIndex == -1 ? spaceIndex : lastSpaceIndex).trim();
         lastSpaceIndex = -1; // Reset to process the next part
       } else if (spaceIndex == sanitizedLine.length()) {
         // If we've reached the end of the line, add the last portion and break
@@ -109,18 +126,19 @@ public class TextUtil {
       return "";
     }
 
-    final var sanitizedText = text.replaceAll(
-            "[\\t\\r\\v\\x00-\\x08\\x0B-\\x0C\\x0E-\\x1F\\x7F]+", " ")
-        .trim();
+    final var sanitizedText =
+        text.replaceAll("[\\t\\r\\v\\x00-\\x08\\x0B-\\x0C\\x0E-\\x1F\\x7F]+", " ").trim();
 
     return normalizePrintableCharacters(sanitizedText, font);
   }
 
   public static String normalizePrintableCharacters(String sanitizedText, PDFont font) {
-    final var normalizedChars = PROBLEM_CHARACTERS_MAPPING.entrySet().stream()
-        .reduce(sanitizedText,
-            (result, entry) -> result.replace(entry.getKey(), entry.getValue()),
-            (s1, s2) -> s2);
+    final var normalizedChars =
+        PROBLEM_CHARACTERS_MAPPING.entrySet().stream()
+            .reduce(
+                sanitizedText,
+                (result, entry) -> result.replace(entry.getKey(), entry.getValue()),
+                (s1, s2) -> s2);
 
     return filterUnsupportedFontCharacters(font, normalizedChars);
   }
@@ -146,62 +164,72 @@ public class TextUtil {
       return s;
     } catch (IOException | IllegalArgumentException e) {
       log.warn(
-          "Character '%s' with unicode 'U+%s' cannot be encoded in font '%s', replacing with space.".formatted(
-              s, Integer.toHexString(cp).toUpperCase(),
-              font.getName())
-      );
+          "Character '%s' with unicode 'U+%s' cannot be encoded in font '%s', replacing with space."
+              .formatted(s, Integer.toHexString(cp).toUpperCase(), font.getName()));
       return " ";
     }
   }
 
-  public Optional<OverFlowLineSplit> getOverflowingLines(List<PdfField> currentFields,
+  public Optional<OverFlowLineSplit> getOverflowingLines(
+      List<PdfField> currentFields,
       PdfField newTextField,
-      PDRectangle rectangle, float fontSize, PDFont font) {
-    final var currentText = currentFields.stream()
-        .map(PdfField::getValue)
-        .collect(Collectors.joining("\n"));
-    var currentTextHeight = calculateTextHeight(currentText + (currentText.isEmpty() ? "" : "\n"),
-        fontSize,
-        font, rectangle.getWidth());
+      PDRectangle rectangle,
+      float fontSize,
+      PDFont font) {
+    final var currentText =
+        currentFields.stream().map(PdfField::getValue).collect(Collectors.joining("\n"));
+    var currentTextHeight =
+        calculateTextHeight(
+            currentText + (currentText.isEmpty() ? "" : "\n"),
+            fontSize,
+            font,
+            rectangle.getWidth());
 
     String[] lines = newTextField.getValue().split("\n");
     var wrappedLines = new ArrayList<String>();
     float lineHeight = fontSize * TEXT_FIELD_LINE_HEIGHT;
 
-    var availableLineSpaces = (int) Math.max(Math.floor(
-        (rectangle.getHeight() - Y_MARGIN_APPENDIX_PAGE - currentTextHeight) / lineHeight), 0);
+    var availableLineSpaces =
+        (int)
+            Math.max(
+                Math.floor(
+                    (rectangle.getHeight() - Y_MARGIN_APPENDIX_PAGE - currentTextHeight)
+                        / lineHeight),
+                0);
 
-    final var avaiableLinesEmptyPage = (int) Math.max(Math.floor(
-        (rectangle.getHeight() - Y_MARGIN_APPENDIX_PAGE) / lineHeight), 0);
+    final var avaiableLinesEmptyPage =
+        (int)
+            Math.max(Math.floor((rectangle.getHeight() - Y_MARGIN_APPENDIX_PAGE) / lineHeight), 0);
 
     if (avaiableLinesEmptyPage <= 0) {
       throw new IllegalStateException(
-          "Not enough space to add any text to the page. Available lines on empty page: %s".formatted(
-              avaiableLinesEmptyPage));
+          "Not enough space to add any text to the page. Available lines on empty page: %s"
+              .formatted(avaiableLinesEmptyPage));
     }
     for (String line : lines) {
       wrappedLines.addAll(wrapLine(line, rectangle.getWidth(), fontSize, font));
     }
 
     if (wrappedLines.size() > availableLineSpaces) {
-      var overFlowInfo = new OverFlowLineSplit(
-          String.join("\n", wrappedLines.subList(0, availableLineSpaces)),
-          getOverflowPages(availableLineSpaces, wrappedLines, avaiableLinesEmptyPage));
+      var overFlowInfo =
+          new OverFlowLineSplit(
+              String.join("\n", wrappedLines.subList(0, availableLineSpaces)),
+              getOverflowPages(availableLineSpaces, wrappedLines, avaiableLinesEmptyPage));
       return Optional.of(overFlowInfo);
     } else {
       return Optional.empty();
     }
   }
 
-  private List<String> getOverflowPages(int availableLineSpaces,
-      List<String> wrappedLines, int avaiableLinesEmptyPage) {
-    return IntStream
-        .iterate(availableLineSpaces, i -> i < wrappedLines.size(),
-            i -> i + avaiableLinesEmptyPage)
-        .mapToObj(start -> {
-          final var end = Math.min(start + avaiableLinesEmptyPage, wrappedLines.size());
-          return String.join("\n", wrappedLines.subList(start, end)) + "\n";
-        })
+  private List<String> getOverflowPages(
+      int availableLineSpaces, List<String> wrappedLines, int avaiableLinesEmptyPage) {
+    return IntStream.iterate(
+            availableLineSpaces, i -> i < wrappedLines.size(), i -> i + avaiableLinesEmptyPage)
+        .mapToObj(
+            start -> {
+              final var end = Math.min(start + avaiableLinesEmptyPage, wrappedLines.size());
+              return String.join("\n", wrappedLines.subList(start, end)) + "\n";
+            })
         .toList();
   }
 }

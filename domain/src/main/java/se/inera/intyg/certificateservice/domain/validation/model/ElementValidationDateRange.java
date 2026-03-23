@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.validation.model;
 
 import java.util.Collections;
@@ -24,8 +42,8 @@ public class ElementValidationDateRange implements ElementValidation {
   boolean mandatory;
 
   @Override
-  public List<ValidationError> validate(ElementData data,
-      Optional<ElementId> categoryId, List<ElementData> dataList) {
+  public List<ValidationError> validate(
+      ElementData data, Optional<ElementId> categoryId, List<ElementData> dataList) {
     if (data == null) {
       throw new IllegalArgumentException("Element data is null");
     }
@@ -44,20 +62,18 @@ public class ElementValidationDateRange implements ElementValidation {
               .fieldId(dateRange.id())
               .categoryId(categoryId.orElse(null))
               .message(ErrorMessageFactory.missingDateRange())
-              .build()
-      );
+              .build());
     }
 
     return Collections.emptyList();
   }
 
   private boolean isDateRangeEmpty(ElementValueDateRange dateRange) {
-    return dateRange == null
-        || (dateRange.toDate() == null && dateRange.fromDate() == null);
+    return dateRange == null || (dateRange.toDate() == null && dateRange.fromDate() == null);
   }
 
-  private List<ValidationError> getDateRangeValidationErrors(ElementData data,
-      Optional<ElementId> categoryId, ElementValueDateRange dateRange) {
+  private List<ValidationError> getDateRangeValidationErrors(
+      ElementData data, Optional<ElementId> categoryId, ElementValueDateRange dateRange) {
     if (dateRange == null) {
       return Collections.emptyList();
     }
@@ -68,26 +84,28 @@ public class ElementValidationDateRange implements ElementValidation {
     return incompleteErrors.isEmpty() ? toBeforeFromErrors : incompleteErrors;
   }
 
-  private List<ValidationError> getToBeforeFromDateRangeErrors(ElementData data,
-      Optional<ElementId> categoryId,
-      ElementValueDateRange dateRange) {
-    return isToBeforeFrom(dateRange) ?
-        List.of(errorMessage(
-                data, getFieldId(dateRange.id(), RANGE_SUFFIX), categoryId,
-                ErrorMessageFactory.endDateAfterStartDate()
-            )
-        ) : Collections.emptyList();
+  private List<ValidationError> getToBeforeFromDateRangeErrors(
+      ElementData data, Optional<ElementId> categoryId, ElementValueDateRange dateRange) {
+    return isToBeforeFrom(dateRange)
+        ? List.of(
+            errorMessage(
+                data,
+                getFieldId(dateRange.id(), RANGE_SUFFIX),
+                categoryId,
+                ErrorMessageFactory.endDateAfterStartDate()))
+        : Collections.emptyList();
   }
 
-  private List<ValidationError> getIncompleteDateRangeErrors(ElementData data,
-      Optional<ElementId> categoryId, ElementValueDateRange dateRange) {
-    return !isDateRangeEmpty(dateRange) && !isDateRangeComplete(dateRange) ?
-        List.of(
+  private List<ValidationError> getIncompleteDateRangeErrors(
+      ElementData data, Optional<ElementId> categoryId, ElementValueDateRange dateRange) {
+    return !isDateRangeEmpty(dateRange) && !isDateRangeComplete(dateRange)
+        ? List.of(
             errorMessage(
-                data, getFieldIdOfIncompleteDateRange(dateRange), categoryId,
-                ErrorMessageFactory.missingDate()
-            )
-        ) : Collections.emptyList();
+                data,
+                getFieldIdOfIncompleteDateRange(dateRange),
+                categoryId,
+                ErrorMessageFactory.missingDate()))
+        : Collections.emptyList();
   }
 
   private ElementValueDateRange getValue(ElementValue value) {
@@ -100,13 +118,11 @@ public class ElementValidationDateRange implements ElementValidation {
     }
 
     throw new IllegalArgumentException(
-        "Element data value %s is of wrong type".formatted(value.getClass())
-    );
+        "Element data value %s is of wrong type".formatted(value.getClass()));
   }
 
   private boolean isDateRangeComplete(ElementValueDateRange value) {
-    return value.fromDate() != null
-        && value.toDate() != null;
+    return value.fromDate() != null && value.toDate() != null;
   }
 
   private boolean isToBeforeFrom(ElementValueDateRange value) {
@@ -126,15 +142,13 @@ public class ElementValidationDateRange implements ElementValidation {
     return new FieldId(id.value() + suffix);
   }
 
-  private static ValidationError errorMessage(ElementData data,
-      FieldId fieldId,
-      Optional<ElementId> categoryId, ErrorMessage message) {
-    return
-        ValidationError.builder()
-            .elementId(data.id())
-            .fieldId(fieldId)
-            .categoryId(categoryId.orElse(null))
-            .message(message)
-            .build();
+  private static ValidationError errorMessage(
+      ElementData data, FieldId fieldId, Optional<ElementId> categoryId, ErrorMessage message) {
+    return ValidationError.builder()
+        .elementId(data.id())
+        .fieldId(fieldId)
+        .categoryId(categoryId.orElse(null))
+        .message(message)
+        .build();
   }
 }

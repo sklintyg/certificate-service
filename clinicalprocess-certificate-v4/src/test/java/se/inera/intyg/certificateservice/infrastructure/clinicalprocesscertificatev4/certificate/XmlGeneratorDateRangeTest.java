@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.certificate;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -26,22 +44,23 @@ class XmlGeneratorDateRangeTest {
   private static final LocalDate FROM = LocalDate.now().minusDays(1);
   private static final LocalDate TO = LocalDate.now();
 
-  @InjectMocks
-  private XmlGeneratorDateRange xmlGenerator;
+  @InjectMocks private XmlGeneratorDateRange xmlGenerator;
 
   private ElementData data;
   private ElementSpecification elementSpecification;
 
   @BeforeEach
   void setup() {
-    data = ElementData.builder()
-        .id(new ElementId(QUESTION_ID))
-        .value(ElementValueDateRange.builder()
-            .id(new FieldId("ID"))
-            .fromDate(FROM)
-            .toDate(TO)
-            .build())
-        .build();
+    data =
+        ElementData.builder()
+            .id(new ElementId(QUESTION_ID))
+            .value(
+                ElementValueDateRange.builder()
+                    .id(new FieldId("ID"))
+                    .fromDate(FROM)
+                    .toDate(TO)
+                    .build())
+            .build();
 
     elementSpecification = ElementSpecification.builder().build();
   }
@@ -52,9 +71,7 @@ class XmlGeneratorDateRangeTest {
 
     final var first = response.getFirst();
     assertAll(
-        () -> assertEquals(1, response.size()),
-        () -> assertEquals(QUESTION_ID, first.getId())
-    );
+        () -> assertEquals(1, response.size()), () -> assertEquals(QUESTION_ID, first.getId()));
   }
 
   @Test
@@ -67,16 +84,16 @@ class XmlGeneratorDateRangeTest {
 
     assertAll(
         () -> assertEquals(FROM, toLocalDate(dateRange.getStart())),
-        () -> assertEquals(TO, toLocalDate(dateRange.getEnd()))
-    );
+        () -> assertEquals(TO, toLocalDate(dateRange.getEnd())));
   }
 
   @Test
   void shouldMapEmptyIfNoValue() {
-    final var data = ElementData.builder()
-        .id(new ElementId(QUESTION_ID))
-        .value(ElementValueDateRange.builder().build())
-        .build();
+    final var data =
+        ElementData.builder()
+            .id(new ElementId(QUESTION_ID))
+            .value(ElementValueDateRange.builder().build())
+            .build();
 
     final var response = xmlGenerator.generate(data, elementSpecification);
 
@@ -85,10 +102,7 @@ class XmlGeneratorDateRangeTest {
 
   @Test
   void shouldMapEmptyIfValueIsNotDateRange() {
-    final var data = ElementData.builder()
-        .id(new ElementId(QUESTION_ID))
-        .value(null)
-        .build();
+    final var data = ElementData.builder().id(new ElementId(QUESTION_ID)).value(null).build();
 
     final var response = xmlGenerator.generate(data, elementSpecification);
 
@@ -96,9 +110,6 @@ class XmlGeneratorDateRangeTest {
   }
 
   private static LocalDate toLocalDate(XMLGregorianCalendar xmlFormat) {
-    return LocalDate.of(
-        xmlFormat.getYear(),
-        xmlFormat.getMonth(),
-        xmlFormat.getDay());
+    return LocalDate.of(xmlFormat.getYear(), xmlFormat.getMonth(), xmlFormat.getDay());
   }
 }

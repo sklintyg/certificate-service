@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.pdfboxgenerator.pdf.value;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,7 +43,8 @@ class PdfDateListValueGeneratorTest {
   private static final String CHECKBOX_VALUE = "1";
   private static final LocalDate DATE_VALUE = LocalDate.now();
 
-  private static final PdfDateListValueGenerator pdfDateListValueGenerator = new PdfDateListValueGenerator();
+  private static final PdfDateListValueGenerator pdfDateListValueGenerator =
+      new PdfDateListValueGenerator();
 
   @Test
   void shouldReturnType() {
@@ -34,44 +53,30 @@ class PdfDateListValueGeneratorTest {
 
   @Test
   void shouldSetValueIfElementDataWithDateListValue() {
-    final var expected = List.of(
-        PdfField.builder()
-            .id(CHECKBOX_FIELD_ID)
-            .value(CHECKBOX_VALUE)
-            .build(),
-        PdfField.builder()
-            .id(DATE_FIELD_ID)
-            .value(DATE_VALUE.toString())
-            .build()
-    );
+    final var expected =
+        List.of(
+            PdfField.builder().id(CHECKBOX_FIELD_ID).value(CHECKBOX_VALUE).build(),
+            PdfField.builder().id(DATE_FIELD_ID).value(DATE_VALUE.toString()).build());
 
-    final var elementSpecification = ElementSpecification.builder()
-        .pdfConfiguration(
-            PdfConfigurationDateList.builder()
-                .dateCheckboxes(
-                    Map.of(
-                        FIELD_ID,
-                        PdfConfigurationDateCheckbox.builder()
-                            .checkboxFieldId(new PdfFieldId(CHECKBOX_FIELD_ID))
-                            .dateFieldId(new PdfFieldId(DATE_FIELD_ID))
-                            .build()
-                    )
-                )
-                .build()
-        )
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .pdfConfiguration(
+                PdfConfigurationDateList.builder()
+                    .dateCheckboxes(
+                        Map.of(
+                            FIELD_ID,
+                            PdfConfigurationDateCheckbox.builder()
+                                .checkboxFieldId(new PdfFieldId(CHECKBOX_FIELD_ID))
+                                .dateFieldId(new PdfFieldId(DATE_FIELD_ID))
+                                .build()))
+                    .build())
+            .build();
 
-    final var elementValue = ElementValueDateList.builder()
-        .dateList(
-            List.of(
-                ElementValueDate.builder()
-                    .dateId(FIELD_ID)
-                    .date(DATE_VALUE)
-                    .build()
-            )
-        )
-        .dateListId(FIELD_ID)
-        .build();
+    final var elementValue =
+        ElementValueDateList.builder()
+            .dateList(List.of(ElementValueDate.builder().dateId(FIELD_ID).date(DATE_VALUE).build()))
+            .dateListId(FIELD_ID)
+            .build();
 
     final var result = pdfDateListValueGenerator.generate(elementSpecification, elementValue);
 
@@ -80,32 +85,25 @@ class PdfDateListValueGeneratorTest {
 
   @Test
   void shouldReturnEmptyListIfNoDateIsProvided() {
-    final var elementSpecification = ElementSpecification.builder()
-        .pdfConfiguration(
-            PdfConfigurationDateList.builder()
-                .dateCheckboxes(
-                    Map.of(
-                        FIELD_ID,
-                        PdfConfigurationDateCheckbox.builder()
-                            .checkboxFieldId(new PdfFieldId(CHECKBOX_FIELD_ID))
-                            .dateFieldId(new PdfFieldId(DATE_FIELD_ID))
-                            .build()
-                    )
-                )
-                .build()
-        )
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .pdfConfiguration(
+                PdfConfigurationDateList.builder()
+                    .dateCheckboxes(
+                        Map.of(
+                            FIELD_ID,
+                            PdfConfigurationDateCheckbox.builder()
+                                .checkboxFieldId(new PdfFieldId(CHECKBOX_FIELD_ID))
+                                .dateFieldId(new PdfFieldId(DATE_FIELD_ID))
+                                .build()))
+                    .build())
+            .build();
 
-    final var elementValue = ElementValueDateList.builder()
-        .dateList(
-            List.of(
-                ElementValueDate.builder()
-                    .dateId(FIELD_ID)
-                    .build()
-            )
-        )
-        .dateListId(FIELD_ID)
-        .build();
+    final var elementValue =
+        ElementValueDateList.builder()
+            .dateList(List.of(ElementValueDate.builder().dateId(FIELD_ID).build()))
+            .dateListId(FIELD_ID)
+            .build();
 
     final var result = pdfDateListValueGenerator.generate(elementSpecification, elementValue);
 
@@ -114,36 +112,33 @@ class PdfDateListValueGeneratorTest {
 
   @Test
   void shouldThrowExceptionIfDateIdIsMissingFromPdfConfiguration() {
-    final var elementSpecification = ElementSpecification.builder()
-        .pdfConfiguration(
-            PdfConfigurationDateList.builder()
-                .dateCheckboxes(
-                    Map.of(
-                        FIELD_ID,
-                        PdfConfigurationDateCheckbox.builder()
-                            .checkboxFieldId(new PdfFieldId(CHECKBOX_FIELD_ID))
-                            .dateFieldId(new PdfFieldId(DATE_FIELD_ID))
-                            .build()
-                    )
-                )
-                .build()
-        )
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .pdfConfiguration(
+                PdfConfigurationDateList.builder()
+                    .dateCheckboxes(
+                        Map.of(
+                            FIELD_ID,
+                            PdfConfigurationDateCheckbox.builder()
+                                .checkboxFieldId(new PdfFieldId(CHECKBOX_FIELD_ID))
+                                .dateFieldId(new PdfFieldId(DATE_FIELD_ID))
+                                .build()))
+                    .build())
+            .build();
 
-    final var elementValue = ElementValueDateList.builder()
-        .dateList(
-            List.of(
-                ElementValueDate.builder()
-                    .dateId(new FieldId("Missing dateId"))
-                    .date(DATE_VALUE)
-                    .build()
-            )
-        )
-        .dateListId(FIELD_ID)
-        .build();
+    final var elementValue =
+        ElementValueDateList.builder()
+            .dateList(
+                List.of(
+                    ElementValueDate.builder()
+                        .dateId(new FieldId("Missing dateId"))
+                        .date(DATE_VALUE)
+                        .build()))
+            .dateListId(FIELD_ID)
+            .build();
 
-    assertThrows(IllegalArgumentException.class,
-        () -> pdfDateListValueGenerator.generate(elementSpecification, elementValue)
-    );
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> pdfDateListValueGenerator.generate(elementSpecification, elementValue));
   }
 }

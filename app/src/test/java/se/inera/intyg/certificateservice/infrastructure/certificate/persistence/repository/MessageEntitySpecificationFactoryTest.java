@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificate.persistence.repository;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -29,33 +47,25 @@ class MessageEntitySpecificationFactoryTest {
 
   @Test
   void shallIncludePatientId() {
-    final var request = MessagesRequest.builder()
-        .personId(ATHENA_REACT_ANDERSSON.id())
-        .build();
-    try (
-        MockedStatic<PatientEntitySpecification> specification = mockStatic(
-            PatientEntitySpecification.class)
-    ) {
-      specification.when(
-              () -> PatientEntitySpecification.equalsPatientForMessage(request.personId()))
+    final var request = MessagesRequest.builder().personId(ATHENA_REACT_ANDERSSON.id()).build();
+    try (MockedStatic<PatientEntitySpecification> specification =
+        mockStatic(PatientEntitySpecification.class)) {
+      specification
+          .when(() -> PatientEntitySpecification.equalsPatientForMessage(request.personId()))
           .thenReturn(mock(Specification.class));
 
       assertNotNull(specificationFactory.create(request));
 
       specification.verify(
-          () -> PatientEntitySpecification.equalsPatientForMessage(request.personId())
-      );
+          () -> PatientEntitySpecification.equalsPatientForMessage(request.personId()));
     }
   }
 
   @Test
   void shallNotIncludePatientId() {
-    final var messagesRequest = MessagesRequest.builder()
-        .build();
-    try (
-        MockedStatic<PatientEntitySpecification> specification = mockStatic(
-            PatientEntitySpecification.class)
-    ) {
+    final var messagesRequest = MessagesRequest.builder().build();
+    try (MockedStatic<PatientEntitySpecification> specification =
+        mockStatic(PatientEntitySpecification.class)) {
       assertNotNull(specificationFactory.create(messagesRequest));
 
       specification.verifyNoInteractions();
@@ -64,33 +74,28 @@ class MessageEntitySpecificationFactoryTest {
 
   @Test
   void shallIncludeIssuedUnitIds() {
-    final var messagesRequest = MessagesRequest.builder()
-        .issuedOnUnitIds(List.of(ALFA_ALLERGIMOTTAGNINGEN.hsaId()))
-        .build();
-    try (
-        MockedStatic<UnitEntitySpecification> specification = mockStatic(
-            UnitEntitySpecification.class)
-    ) {
-      specification.when(
-              () -> UnitEntitySpecification.inIssuedOnUnitIds(messagesRequest.issuedOnUnitIds()))
+    final var messagesRequest =
+        MessagesRequest.builder()
+            .issuedOnUnitIds(List.of(ALFA_ALLERGIMOTTAGNINGEN.hsaId()))
+            .build();
+    try (MockedStatic<UnitEntitySpecification> specification =
+        mockStatic(UnitEntitySpecification.class)) {
+      specification
+          .when(() -> UnitEntitySpecification.inIssuedOnUnitIds(messagesRequest.issuedOnUnitIds()))
           .thenReturn(mock(Specification.class));
 
       assertNotNull(specificationFactory.create(messagesRequest));
 
       specification.verify(
-          () -> UnitEntitySpecification.inIssuedOnUnitIds(messagesRequest.issuedOnUnitIds())
-      );
+          () -> UnitEntitySpecification.inIssuedOnUnitIds(messagesRequest.issuedOnUnitIds()));
     }
   }
 
   @Test
   void shallNotIncludeIssuedUnitId() {
-    final var messagesRequest = MessagesRequest.builder()
-        .build();
-    try (
-        MockedStatic<UnitEntitySpecification> specification = mockStatic(
-            UnitEntitySpecification.class)
-    ) {
+    final var messagesRequest = MessagesRequest.builder().build();
+    try (MockedStatic<UnitEntitySpecification> specification =
+        mockStatic(UnitEntitySpecification.class)) {
       assertNotNull(specificationFactory.create(messagesRequest));
 
       specification.verifyNoInteractions();
@@ -99,35 +104,31 @@ class MessageEntitySpecificationFactoryTest {
 
   @Test
   void shallIncludeIssuedByStaffId() {
-    final var messagesRequest = MessagesRequest.builder()
-        .issuedByStaffId(AJLA_DOKTOR.hsaId())
-        .build();
-    try (
-        MockedStatic<StaffEntitySpecification> specification = mockStatic(
-            StaffEntitySpecification.class)
-    ) {
-      specification.when(
-              () -> StaffEntitySpecification.equalsIssuedByStaffForMessage(
-                  messagesRequest.issuedByStaffId()))
+    final var messagesRequest =
+        MessagesRequest.builder().issuedByStaffId(AJLA_DOKTOR.hsaId()).build();
+    try (MockedStatic<StaffEntitySpecification> specification =
+        mockStatic(StaffEntitySpecification.class)) {
+      specification
+          .when(
+              () ->
+                  StaffEntitySpecification.equalsIssuedByStaffForMessage(
+                      messagesRequest.issuedByStaffId()))
           .thenReturn(mock(Specification.class));
 
       assertNotNull(specificationFactory.create(messagesRequest));
 
       specification.verify(
-          () -> StaffEntitySpecification.equalsIssuedByStaffForMessage(
-              messagesRequest.issuedByStaffId())
-      );
+          () ->
+              StaffEntitySpecification.equalsIssuedByStaffForMessage(
+                  messagesRequest.issuedByStaffId()));
     }
   }
 
   @Test
   void shallNotIncludeIssuedByStaffId() {
-    final var messagesRequest = MessagesRequest.builder()
-        .build();
-    try (
-        MockedStatic<StaffEntitySpecification> specification = mockStatic(
-            StaffEntitySpecification.class)
-    ) {
+    final var messagesRequest = MessagesRequest.builder().build();
+    try (MockedStatic<StaffEntitySpecification> specification =
+        mockStatic(StaffEntitySpecification.class)) {
       assertNotNull(specificationFactory.create(messagesRequest));
 
       specification.verifyNoInteractions();
@@ -136,36 +137,30 @@ class MessageEntitySpecificationFactoryTest {
 
   @Test
   void shallIncludeModifiedFrom() {
-    final var messagesRequest = MessagesRequest.builder()
-        .sentDateFrom(LocalDateTime.now(ZoneId.systemDefault()))
-        .build();
-    try (
-        MockedStatic<MessageEntitySpecification> specification = mockStatic(
-            MessageEntitySpecification.class)
-    ) {
-      specification.when(
-              () -> MessageEntitySpecification.sentEqualsAndGreaterThan(
-                  messagesRequest.sentDateFrom())
-          )
+    final var messagesRequest =
+        MessagesRequest.builder().sentDateFrom(LocalDateTime.now(ZoneId.systemDefault())).build();
+    try (MockedStatic<MessageEntitySpecification> specification =
+        mockStatic(MessageEntitySpecification.class)) {
+      specification
+          .when(
+              () ->
+                  MessageEntitySpecification.sentEqualsAndGreaterThan(
+                      messagesRequest.sentDateFrom()))
           .thenReturn(mock(Specification.class));
 
       assertNotNull(specificationFactory.create(messagesRequest));
 
       specification.verify(
-          () -> MessageEntitySpecification.sentEqualsAndGreaterThan(
-              messagesRequest.sentDateFrom())
-      );
+          () ->
+              MessageEntitySpecification.sentEqualsAndGreaterThan(messagesRequest.sentDateFrom()));
     }
   }
 
   @Test
   void shallNotIncludeModifiedFrom() {
-    final var messagesRequest = MessagesRequest.builder()
-        .build();
-    try (
-        MockedStatic<MessageEntitySpecification> specification = mockStatic(
-            MessageEntitySpecification.class)
-    ) {
+    final var messagesRequest = MessagesRequest.builder().build();
+    try (MockedStatic<MessageEntitySpecification> specification =
+        mockStatic(MessageEntitySpecification.class)) {
       assertNotNull(specificationFactory.create(messagesRequest));
 
       specification.verifyNoInteractions();
@@ -174,36 +169,28 @@ class MessageEntitySpecificationFactoryTest {
 
   @Test
   void shallIncludeModifiedTo() {
-    final var messagesRequest = MessagesRequest.builder()
-        .sentDateTo(LocalDateTime.now(ZoneId.systemDefault()))
-        .build();
-    try (
-        MockedStatic<MessageEntitySpecification> specification = mockStatic(
-            MessageEntitySpecification.class)
-    ) {
-      specification.when(
-              () -> MessageEntitySpecification.sentEqualsAndLesserThan(
-                  messagesRequest.sentDateTo())
-          )
+    final var messagesRequest =
+        MessagesRequest.builder().sentDateTo(LocalDateTime.now(ZoneId.systemDefault())).build();
+    try (MockedStatic<MessageEntitySpecification> specification =
+        mockStatic(MessageEntitySpecification.class)) {
+      specification
+          .when(
+              () ->
+                  MessageEntitySpecification.sentEqualsAndLesserThan(messagesRequest.sentDateTo()))
           .thenReturn(mock(Specification.class));
 
       assertNotNull(specificationFactory.create(messagesRequest));
 
       specification.verify(
-          () -> MessageEntitySpecification.sentEqualsAndLesserThan(
-              messagesRequest.sentDateTo())
-      );
+          () -> MessageEntitySpecification.sentEqualsAndLesserThan(messagesRequest.sentDateTo()));
     }
   }
 
   @Test
   void shallNotIncludeModifiedTo() {
-    final var messagesRequest = MessagesRequest.builder()
-        .build();
-    try (
-        MockedStatic<MessageEntitySpecification> specification = mockStatic(
-            MessageEntitySpecification.class)
-    ) {
+    final var messagesRequest = MessagesRequest.builder().build();
+    try (MockedStatic<MessageEntitySpecification> specification =
+        mockStatic(MessageEntitySpecification.class)) {
       assertNotNull(specificationFactory.create(messagesRequest));
 
       specification.verifyNoInteractions();
@@ -212,33 +199,25 @@ class MessageEntitySpecificationFactoryTest {
 
   @Test
   void shallIncludeForwarded() {
-    final var messagesRequest = MessagesRequest.builder()
-        .forwarded(new Forwarded(true))
-        .build();
-    try (
-        MockedStatic<MessageEntitySpecification> specification = mockStatic(
-            MessageEntitySpecification.class)
-    ) {
-      specification.when(
-              () -> MessageEntitySpecification.equalsForwarded(messagesRequest.forwarded()))
+    final var messagesRequest = MessagesRequest.builder().forwarded(new Forwarded(true)).build();
+    try (MockedStatic<MessageEntitySpecification> specification =
+        mockStatic(MessageEntitySpecification.class)) {
+      specification
+          .when(() -> MessageEntitySpecification.equalsForwarded(messagesRequest.forwarded()))
           .thenReturn(mock(Specification.class));
 
       assertNotNull(specificationFactory.create(messagesRequest));
 
       specification.verify(
-          () -> MessageEntitySpecification.equalsForwarded(messagesRequest.forwarded())
-      );
+          () -> MessageEntitySpecification.equalsForwarded(messagesRequest.forwarded()));
     }
   }
 
   @Test
   void shallNotIncludeForwardedIfNull() {
-    final var messagesRequest = MessagesRequest.builder()
-        .build();
-    try (
-        MockedStatic<MessageEntitySpecification> specification = mockStatic(
-            MessageEntitySpecification.class)
-    ) {
+    final var messagesRequest = MessagesRequest.builder().build();
+    try (MockedStatic<MessageEntitySpecification> specification =
+        mockStatic(MessageEntitySpecification.class)) {
       assertNotNull(specificationFactory.create(messagesRequest));
       specification.verifyNoInteractions();
     }
@@ -246,33 +225,24 @@ class MessageEntitySpecificationFactoryTest {
 
   @Test
   void shallIncludeAuthor() {
-    final var messagesRequest = MessagesRequest.builder()
-        .author(new Author("WC"))
-        .build();
-    try (
-        MockedStatic<MessageEntitySpecification> specification = mockStatic(
-            MessageEntitySpecification.class)
-    ) {
-      specification.when(
-              () -> MessageEntitySpecification.equalsAuthor(messagesRequest.author()))
+    final var messagesRequest = MessagesRequest.builder().author(new Author("WC")).build();
+    try (MockedStatic<MessageEntitySpecification> specification =
+        mockStatic(MessageEntitySpecification.class)) {
+      specification
+          .when(() -> MessageEntitySpecification.equalsAuthor(messagesRequest.author()))
           .thenReturn(mock(Specification.class));
 
       assertNotNull(specificationFactory.create(messagesRequest));
 
-      specification.verify(
-          () -> MessageEntitySpecification.equalsAuthor(messagesRequest.author())
-      );
+      specification.verify(() -> MessageEntitySpecification.equalsAuthor(messagesRequest.author()));
     }
   }
 
   @Test
   void shallNotIncludeAuthorIfNull() {
-    final var messagesRequest = MessagesRequest.builder()
-        .build();
-    try (
-        MockedStatic<MessageEntitySpecification> specification = mockStatic(
-            MessageEntitySpecification.class)
-    ) {
+    final var messagesRequest = MessagesRequest.builder().build();
+    try (MockedStatic<MessageEntitySpecification> specification =
+        mockStatic(MessageEntitySpecification.class)) {
       assertNotNull(specificationFactory.create(messagesRequest));
       specification.verifyNoInteractions();
     }

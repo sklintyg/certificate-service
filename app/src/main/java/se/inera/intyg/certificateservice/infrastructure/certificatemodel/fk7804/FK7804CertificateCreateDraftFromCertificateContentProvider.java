@@ -1,14 +1,34 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7804;
 
 import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.CertificateActionContentProvider;
 
-public class FK7804CertificateCreateDraftFromCertificateContentProvider implements
-    CertificateActionContentProvider {
+public class FK7804CertificateCreateDraftFromCertificateContentProvider
+    implements CertificateActionContentProvider {
 
   private static final String NAME = "Skapa AG7804";
-  private static final String DESCRIPTION = "Skapar ett intyg till arbetsgivaren utifrån Försäkringskassans intyg.";
-  private static final String BODY = """
+  private static final String DESCRIPTION =
+      "Skapar ett intyg till arbetsgivaren utifrån Försäkringskassans intyg.";
+  private static final String BODY =
+      """
       <div><div class="ic-alert ic-alert--status ic-alert--info">
       <i class="ic-alert__icon ic-info-icon"></i>
       Kom ihåg att stämma av med patienten om hen vill att du skickar Läkarintyget för sjukpenning till Försäkringskassan. Gör detta i så fall först.</div>

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.pdfboxgenerator.pdf.factory;
 
 import java.io.IOException;
@@ -19,10 +37,12 @@ public class CertificatePdfContextFactory {
 
   private final TextFieldAppearanceFactory textFieldAppearanceFactory;
 
-  public CertificatePdfContext create(Certificate certificate, PdfGeneratorOptions options,
+  public CertificatePdfContext create(
+      Certificate certificate,
+      PdfGeneratorOptions options,
       TemplatePdfSpecification templatePdfSpecification) {
-    final var template = getTemplatePath(certificate, options.citizenFormat(),
-        templatePdfSpecification);
+    final var template =
+        getTemplatePath(certificate, options.citizenFormat(), templatePdfSpecification);
 
     try (final var in = getClass().getClassLoader().getResourceAsStream(template)) {
       if (in == null) {
@@ -39,17 +59,18 @@ public class CertificatePdfContextFactory {
           .additionalInfoText(options.additionalInfoText())
           .mcid(new AtomicInteger(templatePdfSpecification.pdfMcid().value()))
           .fieldSanitizer(new PdfFieldSanitizer())
-          .fontResolver(new PdfFontResolver(
-              document.getDocumentCatalog().getAcroForm(),
-              textFieldAppearanceFactory))
+          .fontResolver(
+              new PdfFontResolver(
+                  document.getDocumentCatalog().getAcroForm(), textFieldAppearanceFactory))
           .build();
     } catch (IOException e) {
       throw new IllegalStateException("Could not load pdf template from path: " + template, e);
     }
   }
 
-
-  private String getTemplatePath(Certificate certificate, boolean isCitizenFormat,
+  private String getTemplatePath(
+      Certificate certificate,
+      boolean isCitizenFormat,
       TemplatePdfSpecification templatePdfSpecification) {
     return includeAddress(certificate, isCitizenFormat)
         ? templatePdfSpecification.pdfTemplatePath()
@@ -63,5 +84,4 @@ public class CertificatePdfContextFactory {
 
     return certificate.sent() == null || certificate.sent().sentAt() == null;
   }
-
 }

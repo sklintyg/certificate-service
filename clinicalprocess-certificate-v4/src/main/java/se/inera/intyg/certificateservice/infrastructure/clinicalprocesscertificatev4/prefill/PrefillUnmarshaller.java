@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.prefill;
 
 import jakarta.xml.bind.JAXBContext;
@@ -15,20 +33,19 @@ import se.riv.clinicalprocess.healthcond.certificate.v33.Forifyllnad;
 @Slf4j
 public final class PrefillUnmarshaller {
 
-  private PrefillUnmarshaller() {
-  }
+  private PrefillUnmarshaller() {}
 
   public static <T> Optional<T> unmarshalType(List<Object> content, Class<T> clazz) {
-    final var contentObj = content.stream()
-        .filter(obj -> obj instanceof org.w3c.dom.Element)
-        .map(obj -> (org.w3c.dom.Element) obj)
-        .findFirst();
+    final var contentObj =
+        content.stream()
+            .filter(obj -> obj instanceof org.w3c.dom.Element)
+            .map(obj -> (org.w3c.dom.Element) obj)
+            .findFirst();
 
     if (contentObj.isPresent()) {
       try {
         final var context = JAXBContext.newInstance(clazz);
-        final var jaxbElement = context.createUnmarshaller()
-            .unmarshal(contentObj.get(), clazz);
+        final var jaxbElement = context.createUnmarshaller().unmarshal(contentObj.get(), clazz);
         return Optional.of(jaxbElement.getValue());
       } catch (Exception e) {
         throw new IllegalStateException("Failed to unmarshal " + clazz.getSimpleName(), e);
@@ -65,5 +82,4 @@ public final class PrefillUnmarshaller {
   public static LocalDate toLocalDate(XMLGregorianCalendar xmlGregorianCalendar) {
     return xmlGregorianCalendar.toGregorianCalendar().toZonedDateTime().toLocalDate();
   }
-
 }

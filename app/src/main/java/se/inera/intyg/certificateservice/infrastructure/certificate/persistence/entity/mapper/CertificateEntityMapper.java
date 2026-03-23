@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificate.persistence.entity.mapper;
 
 import java.time.LocalDateTime;
@@ -65,12 +83,14 @@ public class CertificateEntityMapper {
   private final MessageEntityMapper messageEntityMapper;
   private final PlaceholderCertificateEntityMapper placeholderCertificateEntityMapper;
 
-  public Certificate toDomain(CertificateEntity certificateEntity,
-      CertificateRepository certificateRepository) {
+  public Certificate toDomain(
+      CertificateEntity certificateEntity, CertificateRepository certificateRepository) {
     return toDomain(certificateEntity, true, certificateRepository);
   }
 
-  private Certificate toDomain(CertificateEntity certificateEntity, boolean includeRelations,
+  private Certificate toDomain(
+      CertificateEntity certificateEntity,
+      boolean includeRelations,
       CertificateRepository certificateRepository) {
     if (certificateEntity.isPlaceHolder()) {
       return placeholderCertificateEntityMapper.toDomain(certificateEntity);
@@ -80,87 +100,69 @@ public class CertificateEntityMapper {
         certificateEntity,
         certificateModelRepository.getById(
             CertificateModelId.builder()
-                .type(
-                    new CertificateType(certificateEntity.getCertificateModel().getType())
-                )
+                .type(new CertificateType(certificateEntity.getCertificateModel().getType()))
                 .version(
-                    new CertificateVersion(
-                        certificateEntity.getCertificateModel().getVersion()
-                    )
-                )
-                .build()
-        ),
+                    new CertificateVersion(certificateEntity.getCertificateModel().getVersion()))
+                .build()),
         includeRelations,
-        certificateRepository
-    );
+        certificateRepository);
   }
 
   public CertificateEntity toEntity(Certificate certificate) {
-    final var certificateEntity = certificateEntityRepository.findByCertificateId(
-            certificate.id().id())
-        .map(result -> {
-              result.setRevision(certificate.revision().value());
-              result.setModified(LocalDateTime.now());
-              result.setSigned(certificate.signed());
-              result.setLocked(certificate.locked());
-              return result;
-            }
-        )
-        .orElse(toCertificateEntity(certificate));
+    final var certificateEntity =
+        certificateEntityRepository
+            .findByCertificateId(certificate.id().id())
+            .map(
+                result -> {
+                  result.setRevision(certificate.revision().value());
+                  result.setModified(LocalDateTime.now());
+                  result.setSigned(certificate.signed());
+                  result.setLocked(certificate.locked());
+                  return result;
+                })
+            .orElse(toCertificateEntity(certificate));
 
     final var certificateStatus = CertificateStatus.valueOf(certificate.status().name());
     certificateEntity.setStatus(
         CertificateStatusEntity.builder()
             .key(certificateStatus.getKey())
             .status(certificateStatus.name())
-            .build()
-    );
+            .build());
 
     final var staffMap = staffRepository.staffs(certificate);
 
     final var certificateMetaData = certificate.certificateMetaData();
 
-    certificateEntity.setPatient(
-        patientRepository.patient(certificateMetaData.patient())
-    );
+    certificateEntity.setPatient(patientRepository.patient(certificateMetaData.patient()));
     certificateEntity.setCareProvider(
-        unitRepository.careProvider(certificateMetaData.careProvider())
-    );
-    certificateEntity.setCareUnit(
-        unitRepository.careUnit(certificateMetaData.careUnit())
-    );
+        unitRepository.careProvider(certificateMetaData.careProvider()));
+    certificateEntity.setCareUnit(unitRepository.careUnit(certificateMetaData.careUnit()));
     certificateEntity.setIssuedOnUnit(
-        unitRepository.issuingUnit(certificateMetaData.issuingUnit())
-    );
-    certificateEntity.setIssuedBy(
-        staffMap.get(certificateMetaData.issuer().hsaId())
-    );
+        unitRepository.issuingUnit(certificateMetaData.issuingUnit()));
+    certificateEntity.setIssuedBy(staffMap.get(certificateMetaData.issuer().hsaId()));
 
     if (certificateEntity.getCreatedBy() == null) {
       certificateEntity.setCreatedBy(certificateEntity.getIssuedBy());
     }
 
-    certificateEntity.setCertificateModel(
-        certificateModel(certificate.certificateModel())
-    );
+    certificateEntity.setCertificateModel(certificateModel(certificate.certificateModel()));
 
     if (certificateEntity.getData() != null) {
       final var existingDataEntity = certificateEntity.getData();
-      final var newCertificateDataEntity = certificateDataEntityMapper.toEntity(
-          certificate.elementData()
-      );
+      final var newCertificateDataEntity =
+          certificateDataEntityMapper.toEntity(certificate.elementData());
       existingDataEntity.setData(newCertificateDataEntity.getData());
     } else {
-      final var certificateDataEntity = certificateDataEntityMapper.toEntity(
-          certificate.elementData()
-      );
+      final var certificateDataEntity =
+          certificateDataEntityMapper.toEntity(certificate.elementData());
       certificateDataEntity.setCertificate(certificateEntity);
       certificateEntity.setData(certificateDataEntity);
     }
 
     if (certificate.xml() != null) {
       Optional.ofNullable(certificateEntity.getXml())
-          .ifPresentOrElse(xml -> xml.setData(certificate.xml().xml()),
+          .ifPresentOrElse(
+              xml -> xml.setData(certificate.xml().xml()),
               () -> {
                 final var certificateXmlEntity = new CertificateXmlEntity(certificate.xml().xml());
                 certificateXmlEntity.setCertificate(certificateEntity);
@@ -172,22 +174,16 @@ public class CertificateEntityMapper {
       certificateEntity.setSentBy(
           certificate.sent().sentBy() != null
               ? staffMap.get(certificate.sent().sentBy().hsaId())
-              : null
-      );
+              : null);
 
-      certificateEntity.setSent(
-          certificate.sent().sentAt()
-      );
+      certificateEntity.setSent(certificate.sent().sentAt());
     }
 
     if (certificate.readyForSign() != null) {
       certificateEntity.setReadyForSignBy(
-          staffMap.get(certificate.readyForSign().readyForSignBy().hsaId())
-      );
+          staffMap.get(certificate.readyForSign().readyForSignBy().hsaId()));
 
-      certificateEntity.setReadyForSign(
-          certificate.readyForSign().readyForSignAt()
-      );
+      certificateEntity.setReadyForSign(certificate.readyForSign().readyForSignAt());
     }
 
     if (certificate.revoked() != null) {
@@ -196,14 +192,14 @@ public class CertificateEntityMapper {
 
     if (certificate.externalReference() != null) {
       Optional.ofNullable(certificateEntity.getExternalReference())
-          .ifPresentOrElse(ref -> ref.setReference(certificate.externalReference().value()),
-              () -> certificateEntity.setExternalReference(
-                  ExternalReferenceEntity.builder()
-                      .certificate(certificateEntity)
-                      .reference(certificate.externalReference().value())
-                      .build()
-              )
-          );
+          .ifPresentOrElse(
+              ref -> ref.setReference(certificate.externalReference().value()),
+              () ->
+                  certificateEntity.setExternalReference(
+                      ExternalReferenceEntity.builder()
+                          .certificate(certificateEntity)
+                          .reference(certificate.externalReference().value())
+                          .build()));
     }
 
     if (certificate.forwarded() != null) {
@@ -215,40 +211,30 @@ public class CertificateEntityMapper {
     return certificateEntity;
   }
 
-  private static void handleRevoked(Certificate certificate, CertificateEntity certificateEntity,
+  private static void handleRevoked(
+      Certificate certificate,
+      CertificateEntity certificateEntity,
       Map<HsaId, StaffEntity> staffMap) {
-    final var reason = RevokedReason.valueOf(
-        certificate.revoked().revokedInformation().reason()
-    );
+    final var reason = RevokedReason.valueOf(certificate.revoked().revokedInformation().reason());
 
     certificateEntity.setRevokedReason(
-        RevokedReasonEntity.builder()
-            .key(reason.getKey())
-            .reason(reason.name())
-            .build()
-    );
+        RevokedReasonEntity.builder().key(reason.getKey()).reason(reason.name()).build());
 
-    certificateEntity.setRevokedMessage(
-        certificate.revoked().revokedInformation().message()
-    );
+    certificateEntity.setRevokedMessage(certificate.revoked().revokedInformation().message());
 
-    certificateEntity.setRevokedBy(
-        staffMap.get(certificate.revoked().revokedBy().hsaId())
-    );
+    certificateEntity.setRevokedBy(staffMap.get(certificate.revoked().revokedBy().hsaId()));
 
-    certificateEntity.setRevoked(
-        certificate.revoked().revokedAt()
-    );
+    certificateEntity.setRevoked(certificate.revoked().revokedAt());
   }
 
   private CertificateModelEntity certificateModel(CertificateModel certificateModel) {
-    return certificateModelEntityRepository.findByTypeAndVersion(
-            certificateModel.id().type().type(),
-            certificateModel.id().version().version()
-        )
-        .orElseGet(() -> certificateModelEntityRepository.save(
-            CertificateModelEntityMapper.toEntity(certificateModel)
-        ));
+    return certificateModelEntityRepository
+        .findByTypeAndVersion(
+            certificateModel.id().type().type(), certificateModel.id().version().version())
+        .orElseGet(
+            () ->
+                certificateModelEntityRepository.save(
+                    CertificateModelEntityMapper.toEntity(certificateModel)));
   }
 
   private CertificateEntity toCertificateEntity(Certificate certificate) {
@@ -262,19 +248,24 @@ public class CertificateEntityMapper {
         .build();
   }
 
-  public Certificate toDomain(CertificateEntity certificateEntity, CertificateModel model,
+  public Certificate toDomain(
+      CertificateEntity certificateEntity,
+      CertificateModel model,
       CertificateRepository certificateRepository) {
     return toDomain(certificateEntity, model, true, certificateRepository);
   }
 
-  private MedicalCertificate toDomain(CertificateEntity certificateEntity, CertificateModel model,
-      boolean includeRelations, CertificateRepository certificateRepository) {
+  private MedicalCertificate toDomain(
+      CertificateEntity certificateEntity,
+      CertificateModel model,
+      boolean includeRelations,
+      CertificateRepository certificateRepository) {
     final var relations = getRelations(certificateEntity, includeRelations);
-    final var messages = messageEntityRepository.findMessageEntitiesByCertificate(certificateEntity)
-        .stream()
-        .filter(removeRemindersAndAnswers())
-        .map(messageEntityMapper::toDomain)
-        .toList();
+    final var messages =
+        messageEntityRepository.findMessageEntitiesByCertificate(certificateEntity).stream()
+            .filter(removeRemindersAndAnswers())
+            .map(messageEntityMapper::toDomain)
+            .toList();
 
     return MedicalCertificate.builder()
         .certificateRepository(certificateRepository)
@@ -289,95 +280,85 @@ public class CertificateEntityMapper {
         .certificateMetaData(
             CertificateMetaData.builder()
                 .careProvider(
-                    UnitEntityMapper.toCareProviderDomain(certificateEntity.getCareProvider())
-                )
-                .careUnit(
-                    UnitEntityMapper.toCareUnitDomain(certificateEntity.getCareUnit())
-                )
+                    UnitEntityMapper.toCareProviderDomain(certificateEntity.getCareProvider()))
+                .careUnit(UnitEntityMapper.toCareUnitDomain(certificateEntity.getCareUnit()))
                 .issuingUnit(
-                    UnitEntityMapper.toIssuingUnitDomain(certificateEntity.getIssuedOnUnit())
-                )
-                .issuer(
-                    StaffEntityMapper.toDomain(certificateEntity.getIssuedBy())
-                )
-                .patient(
-                    PatientEntityMapper.toDomain(certificateEntity.getPatient())
-                )
+                    UnitEntityMapper.toIssuingUnitDomain(certificateEntity.getIssuedOnUnit()))
+                .issuer(StaffEntityMapper.toDomain(certificateEntity.getIssuedBy()))
+                .patient(PatientEntityMapper.toDomain(certificateEntity.getPatient()))
                 .creator(StaffEntityMapper.toDomain(certificateEntity.getCreatedBy()))
-                .build()
-        )
-        .elementData(
-            certificateDataEntityMapper.toDomain(certificateEntity.getData())
-        )
+                .build())
+        .elementData(certificateDataEntityMapper.toDomain(certificateEntity.getData()))
         .xml(
             certificateEntity.getXml() != null
                 ? new Xml(certificateEntity.getXml().getData())
-                : null
-        )
+                : null)
         .sent(
             certificateEntity.getSent() != null
                 ? Sent.builder()
-                .sentBy(getSentBy(certificateEntity))
-                .sentAt(certificateEntity.getSent())
-                .recipient(model.recipient())
-                .build() : null
-        )
+                    .sentBy(getSentBy(certificateEntity))
+                    .sentAt(certificateEntity.getSent())
+                    .recipient(model.recipient())
+                    .build()
+                : null)
         .revoked(
             certificateEntity.getRevoked() != null
                 ? Revoked.builder()
-                .revokedBy(StaffEntityMapper.toDomain(certificateEntity.getRevokedBy()))
-                .revokedAt(certificateEntity.getRevoked())
-                .revokedInformation(
-                    new RevokedInformation(certificateEntity.getRevokedReason().getReason(),
-                        certificateEntity.getRevokedMessage())
-                )
-                .build() : null
-        )
+                    .revokedBy(StaffEntityMapper.toDomain(certificateEntity.getRevokedBy()))
+                    .revokedAt(certificateEntity.getRevoked())
+                    .revokedInformation(
+                        new RevokedInformation(
+                            certificateEntity.getRevokedReason().getReason(),
+                            certificateEntity.getRevokedMessage()))
+                    .build()
+                : null)
         .readyForSign(
             certificateEntity.getReadyForSign() != null
                 ? ReadyForSign.builder()
-                .readyForSignBy(StaffEntityMapper.toDomain(certificateEntity.getReadyForSignBy()))
-                .readyForSignAt(certificateEntity.getReadyForSign())
-                .build() : null
-        )
+                    .readyForSignBy(
+                        StaffEntityMapper.toDomain(certificateEntity.getReadyForSignBy()))
+                    .readyForSignAt(certificateEntity.getReadyForSign())
+                    .build()
+                : null)
         .externalReference(
             certificateEntity.getExternalReference() != null
                 ? new ExternalReference(certificateEntity.getExternalReference().getReference())
-                : null
-        )
+                : null)
         .parent(
             relations.stream()
-                .filter(entity -> entity.getChildCertificate().getCertificateId()
-                    .equals(certificateEntity.getCertificateId())
-                )
+                .filter(
+                    entity ->
+                        entity
+                            .getChildCertificate()
+                            .getCertificateId()
+                            .equals(certificateEntity.getCertificateId()))
                 .findFirst()
-                .map(relation ->
-                    RelationEntityMapper.parentToDomain(
-                        relation,
-                        toDomain(relation.getParentCertificate(), false, certificateRepository)
-                    )
-                )
-                .orElse(null)
-        )
+                .map(
+                    relation ->
+                        RelationEntityMapper.parentToDomain(
+                            relation,
+                            toDomain(
+                                relation.getParentCertificate(), false, certificateRepository)))
+                .orElse(null))
         .children(
             relations.stream()
-                .filter(entity -> entity.getParentCertificate().getCertificateId()
-                    .equals(certificateEntity.getCertificateId())
-                )
-                .map(relation ->
-                    RelationEntityMapper.childToDomain(
-                        relation,
-                        toDomain(relation.getChildCertificate(), false, certificateRepository)
-                    )
-                )
-                .toList()
-        )
+                .filter(
+                    entity ->
+                        entity
+                            .getParentCertificate()
+                            .getCertificateId()
+                            .equals(certificateEntity.getCertificateId()))
+                .map(
+                    relation ->
+                        RelationEntityMapper.childToDomain(
+                            relation,
+                            toDomain(relation.getChildCertificate(), false, certificateRepository)))
+                .toList())
         .messages(messages)
         .forwarded(
             certificateEntity.getForwarded() != null
                 ? new Forwarded(certificateEntity.getForwarded())
-                : null
-        )
+                : null)
         .build();
   }
 
@@ -388,17 +369,16 @@ public class CertificateEntityMapper {
   }
 
   private static Predicate<MessageEntity> removeRemindersAndAnswers() {
-    return messageEntity -> !messageEntity.getMessageType().getType()
-        .equals(MessageTypeEnum.REMINDER.name())
-        && !messageEntity.getMessageType().getType().equals(MessageTypeEnum.ANSWER.name());
+    return messageEntity ->
+        !messageEntity.getMessageType().getType().equals(MessageTypeEnum.REMINDER.name())
+            && !messageEntity.getMessageType().getType().equals(MessageTypeEnum.ANSWER.name());
   }
 
-  private List<CertificateRelationEntity> getRelations(CertificateEntity certificateEntity,
-      boolean includeRelations) {
+  private List<CertificateRelationEntity> getRelations(
+      CertificateEntity certificateEntity, boolean includeRelations) {
     if (includeRelations) {
       return certificateRelationRepository.relations(certificateEntity);
     }
     return Collections.emptyList();
   }
-
 }

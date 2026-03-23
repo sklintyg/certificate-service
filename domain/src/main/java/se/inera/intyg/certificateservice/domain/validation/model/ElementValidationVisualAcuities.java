@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.validation.model;
 
 import java.util.ArrayList;
@@ -28,8 +46,8 @@ public class ElementValidationVisualAcuities implements ElementValidation {
   Double minAllowedSightOtherEye;
 
   @Override
-  public List<ValidationError> validate(ElementData data,
-      Optional<ElementId> categoryId, List<ElementData> dataList) {
+  public List<ValidationError> validate(
+      ElementData data, Optional<ElementId> categoryId, List<ElementData> dataList) {
     if (data == null) {
       throw new IllegalArgumentException("Element data is null");
     }
@@ -64,9 +82,7 @@ public class ElementValidationVisualAcuities implements ElementValidation {
               visualAcuities.rightEye().withCorrection().id(),
               data,
               categoryId,
-              ErrorMessageFactory.missingAnswer().value()
-          )
-      );
+              ErrorMessageFactory.missingAnswer().value()));
     }
 
     if (missingValue(visualAcuities.leftEye().withCorrection())) {
@@ -75,9 +91,7 @@ public class ElementValidationVisualAcuities implements ElementValidation {
               visualAcuities.leftEye().withCorrection().id(),
               data,
               categoryId,
-              ErrorMessageFactory.missingAnswer().value()
-          )
-      );
+              ErrorMessageFactory.missingAnswer().value()));
     }
 
     if (missingValue(visualAcuities.binocular().withCorrection())) {
@@ -86,9 +100,7 @@ public class ElementValidationVisualAcuities implements ElementValidation {
               visualAcuities.binocular().withCorrection().id(),
               data,
               categoryId,
-              ErrorMessageFactory.missingAnswer().value()
-          )
-      );
+              ErrorMessageFactory.missingAnswer().value()));
     }
 
     return validationErrors;
@@ -133,9 +145,7 @@ public class ElementValidationVisualAcuities implements ElementValidation {
               visualAcuities.rightEye().withCorrection().id(),
               data,
               categoryId,
-              ErrorMessageFactory.visualAcuityOutsideInterval(min, max).value()
-          )
-      );
+              ErrorMessageFactory.visualAcuityOutsideInterval(min, max).value()));
     }
 
     if (outsideOfAllowedInterval(visualAcuities.rightEye().withoutCorrection())) {
@@ -144,9 +154,7 @@ public class ElementValidationVisualAcuities implements ElementValidation {
               visualAcuities.rightEye().withoutCorrection().id(),
               data,
               categoryId,
-              ErrorMessageFactory.visualAcuityOutsideInterval(min, max).value()
-          )
-      );
+              ErrorMessageFactory.visualAcuityOutsideInterval(min, max).value()));
     }
 
     if (outsideOfAllowedInterval(visualAcuities.leftEye().withCorrection())) {
@@ -155,9 +163,7 @@ public class ElementValidationVisualAcuities implements ElementValidation {
               visualAcuities.leftEye().withCorrection().id(),
               data,
               categoryId,
-              ErrorMessageFactory.visualAcuityOutsideInterval(min, max).value()
-          )
-      );
+              ErrorMessageFactory.visualAcuityOutsideInterval(min, max).value()));
     }
 
     if (outsideOfAllowedInterval(visualAcuities.leftEye().withoutCorrection())) {
@@ -166,9 +172,7 @@ public class ElementValidationVisualAcuities implements ElementValidation {
               visualAcuities.leftEye().withoutCorrection().id(),
               data,
               categoryId,
-              ErrorMessageFactory.visualAcuityOutsideInterval(min, max).value()
-          )
-      );
+              ErrorMessageFactory.visualAcuityOutsideInterval(min, max).value()));
     }
 
     if (outsideOfAllowedInterval(visualAcuities.binocular().withCorrection())) {
@@ -177,9 +181,7 @@ public class ElementValidationVisualAcuities implements ElementValidation {
               visualAcuities.binocular().withCorrection().id(),
               data,
               categoryId,
-              ErrorMessageFactory.visualAcuityOutsideInterval(min, max).value()
-          )
-      );
+              ErrorMessageFactory.visualAcuityOutsideInterval(min, max).value()));
     }
 
     if (outsideOfAllowedInterval(visualAcuities.binocular().withoutCorrection())) {
@@ -188,17 +190,16 @@ public class ElementValidationVisualAcuities implements ElementValidation {
               visualAcuities.binocular().withoutCorrection().id(),
               data,
               categoryId,
-              ErrorMessageFactory.visualAcuityOutsideInterval(min, max).value()
-          )
-      );
+              ErrorMessageFactory.visualAcuityOutsideInterval(min, max).value()));
     }
 
     return validationErrors;
   }
 
   private boolean outsideOfAllowedInterval(Correction correction) {
-    return correction != null && correction.value() != null && (correction.value() < min
-        || correction.value() > max);
+    return correction != null
+        && correction.value() != null
+        && (correction.value() < min || correction.value() > max);
   }
 
   private Collection<ValidationError> validateMissingValue(
@@ -210,9 +211,7 @@ public class ElementValidationVisualAcuities implements ElementValidation {
               visualAcuities.rightEye().withoutCorrection().id(),
               data,
               categoryId,
-              ErrorMessageFactory.missingAnswer().value()
-          )
-      );
+              ErrorMessageFactory.missingAnswer().value()));
     }
 
     if (visualAcuities.leftEye().withoutCorrection().value() == null) {
@@ -221,9 +220,7 @@ public class ElementValidationVisualAcuities implements ElementValidation {
               visualAcuities.leftEye().withoutCorrection().id(),
               data,
               categoryId,
-              ErrorMessageFactory.missingAnswer().value()
-          )
-      );
+              ErrorMessageFactory.missingAnswer().value()));
     }
 
     if (visualAcuities.binocular().withoutCorrection().value() == null) {
@@ -232,17 +229,14 @@ public class ElementValidationVisualAcuities implements ElementValidation {
               visualAcuities.binocular().withoutCorrection().id(),
               data,
               categoryId,
-              ErrorMessageFactory.missingAnswer().value()
-          )
-      );
+              ErrorMessageFactory.missingAnswer().value()));
     }
 
     return validationErrors;
   }
 
   private static ValidationError buildValidationError(
-      FieldId fieldId,
-      ElementData data, Optional<ElementId> categoryId, String errorMessage) {
+      FieldId fieldId, ElementData data, Optional<ElementId> categoryId, String errorMessage) {
     return ValidationError.builder()
         .elementId(data.id())
         .fieldId(fieldId)
@@ -261,9 +255,6 @@ public class ElementValidationVisualAcuities implements ElementValidation {
     }
 
     throw new IllegalArgumentException(
-        "Element data value %s is of wrong type".formatted(value.getClass())
-    );
-
+        "Element data value %s is of wrong type".formatted(value.getClass()));
   }
-
 }

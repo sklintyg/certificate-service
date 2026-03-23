@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.message.service;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -31,34 +49,25 @@ import se.inera.intyg.certificateservice.domain.message.service.ReceiveReminderM
 @ExtendWith(MockitoExtension.class)
 class IncomingMessageServiceTest {
 
-  @Mock
-  private ReceiveQuestionMessageDomainService receiveQuestionMessageDomainService;
-  @Mock
-  private ReceiveAnswerMessageDomainService receiveAnswerMessageDomainService;
-  @Mock
-  private ReceiveReminderMessageDomainService receiveReminderMessageDomainService;
-  @Mock
-  private IncomingMessageValidator incomingMessageValidator;
+  @Mock private ReceiveQuestionMessageDomainService receiveQuestionMessageDomainService;
+  @Mock private ReceiveAnswerMessageDomainService receiveAnswerMessageDomainService;
+  @Mock private ReceiveReminderMessageDomainService receiveReminderMessageDomainService;
+  @Mock private IncomingMessageValidator incomingMessageValidator;
 
-  @Mock
-  private MessageConverter messageConverter;
+  @Mock private MessageConverter messageConverter;
 
-  @Mock
-  private ReceiveComplementMessageDomainService receiveComplementMessageDomainService;
+  @Mock private ReceiveComplementMessageDomainService receiveComplementMessageDomainService;
 
-  @InjectMocks
-  private IncomingMessageService incomingMessageService;
+  @InjectMocks private IncomingMessageService incomingMessageService;
 
   @Test
   void shallThrowExceptionIfRequestIsNotValid() {
     final var invalidMessage = IncomingMessageRequest.builder().build();
 
-    doThrow(new IllegalArgumentException()).when(incomingMessageValidator)
-        .validate(invalidMessage);
+    doThrow(new IllegalArgumentException()).when(incomingMessageValidator).validate(invalidMessage);
 
-    assertThrows(IllegalArgumentException.class,
-        () -> incomingMessageService.receive(invalidMessage)
-    );
+    assertThrows(
+        IllegalArgumentException.class, () -> incomingMessageService.receive(invalidMessage));
   }
 
   @Test
@@ -70,24 +79,21 @@ class IncomingMessageServiceTest {
 
   @Test
   void shallReceiveReminderMessages() {
-    doReturn(REMINDER).when(messageConverter)
-        .convertReminder(INCOMING_REMINDER_MESSAGE);
+    doReturn(REMINDER).when(messageConverter).convertReminder(INCOMING_REMINDER_MESSAGE);
     incomingMessageService.receive(INCOMING_REMINDER_MESSAGE);
     verify(receiveReminderMessageDomainService).receive(new MessageId(MESSAGE_ID), REMINDER);
   }
 
   @Test
   void shallReceiveAnswerMessages() {
-    doReturn(ANSWER).when(messageConverter)
-        .convertAnswer(INCOMING_ANSWER_MESSAGE);
+    doReturn(ANSWER).when(messageConverter).convertAnswer(INCOMING_ANSWER_MESSAGE);
     incomingMessageService.receive(INCOMING_ANSWER_MESSAGE);
     verify(receiveAnswerMessageDomainService).receive(new MessageId(MESSAGE_ID), ANSWER);
   }
 
   @Test
   void shallReceiveQuestionMessages() {
-    doReturn(CONTACT_MESSAGE).when(messageConverter)
-        .convert(INCOMING_QUESTION_MESSAGE);
+    doReturn(CONTACT_MESSAGE).when(messageConverter).convert(INCOMING_QUESTION_MESSAGE);
     incomingMessageService.receive(INCOMING_QUESTION_MESSAGE);
     verify(receiveQuestionMessageDomainService).receive(CONTACT_MESSAGE);
   }

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.validation.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,8 +47,8 @@ class ElementValidationDiagnosisTest {
   private static final String MANDATORY_FIELD = "mandatoryField";
   private static final FieldId MANDATORY_FIELD_ID = new FieldId(MANDATORY_FIELD);
   private static final String CATEGORY_ID = "categoryId";
-  private static final Optional<ElementId> CATEGORY_ELEMENT_ID = Optional.of(
-      new ElementId(CATEGORY_ID));
+  private static final Optional<ElementId> CATEGORY_ELEMENT_ID =
+      Optional.of(new ElementId(CATEGORY_ID));
   private static final ElementId ELEMENT_ID = new ElementId("elementId");
   private static final FieldId DIAGNOS_ONE = new FieldId("diagnos1");
   private static final String CODE = "code";
@@ -39,17 +57,17 @@ class ElementValidationDiagnosisTest {
   private static final FieldId DIAGNOS_FOUR = new FieldId("diagnos4");
   private static final FieldId DIAGNOS_FIVE = new FieldId("diagnos5");
   private static final String DESCRIPTION = "description";
-  @Mock
-  DiagnosisCodeRepository diagnosisCodeRepository;
+  @Mock DiagnosisCodeRepository diagnosisCodeRepository;
   ElementValidationDiagnosis elementValidationDiagnosis;
-
 
   @Test
   void shallThrowIfElementDataIsNull() {
     elementValidationDiagnosis = ElementValidationDiagnosis.builder().build();
-    assertThrows(IllegalArgumentException.class,
-        () -> elementValidationDiagnosis.validate(null, CATEGORY_ELEMENT_ID,
-            Collections.emptyList()));
+    assertThrows(
+        IllegalArgumentException.class,
+        () ->
+            elementValidationDiagnosis.validate(
+                null, CATEGORY_ELEMENT_ID, Collections.emptyList()));
   }
 
   @Nested
@@ -57,85 +75,80 @@ class ElementValidationDiagnosisTest {
 
     @BeforeEach
     void setUp() {
-      elementValidationDiagnosis = ElementValidationDiagnosis.builder()
-          .mandatoryField(MANDATORY_FIELD_ID)
-          .build();
+      elementValidationDiagnosis =
+          ElementValidationDiagnosis.builder().mandatoryField(MANDATORY_FIELD_ID).build();
     }
 
     @Test
     void shallGiveValidationErrorIfNoDiagnoses() {
-      final var expectedValidationError = ValidationError.builder()
-          .elementId(ELEMENT_ID)
-          .fieldId(MANDATORY_FIELD_ID)
-          .categoryId(CATEGORY_ELEMENT_ID.orElseThrow())
-          .message(new ErrorMessage("Ange minst en diagnos."))
-          .build();
+      final var expectedValidationError =
+          ValidationError.builder()
+              .elementId(ELEMENT_ID)
+              .fieldId(MANDATORY_FIELD_ID)
+              .categoryId(CATEGORY_ELEMENT_ID.orElseThrow())
+              .message(new ErrorMessage("Ange minst en diagnos."))
+              .build();
 
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(
-              ElementValueDiagnosisList.builder()
-                  .build()
-          )
-          .build();
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(ElementValueDiagnosisList.builder().build())
+              .build();
 
-      final var validationErrors = elementValidationDiagnosis.validate(elementData,
-          CATEGORY_ELEMENT_ID, Collections.emptyList());
+      final var validationErrors =
+          elementValidationDiagnosis.validate(
+              elementData, CATEGORY_ELEMENT_ID, Collections.emptyList());
 
       assertEquals(expectedValidationError, validationErrors.get(0));
     }
 
     @Test
     void shallGiveValidationErrorIfDiagnosesAddedButMissingMandatoryFieldDiagnosis() {
-      final var expectedValidationError = ValidationError.builder()
-          .elementId(ELEMENT_ID)
-          .fieldId(MANDATORY_FIELD_ID)
-          .categoryId(CATEGORY_ELEMENT_ID.orElseThrow())
-          .message(new ErrorMessage("Ange diagnos på översta raden först."))
-          .build();
+      final var expectedValidationError =
+          ValidationError.builder()
+              .elementId(ELEMENT_ID)
+              .fieldId(MANDATORY_FIELD_ID)
+              .categoryId(CATEGORY_ELEMENT_ID.orElseThrow())
+              .message(new ErrorMessage("Ange diagnos på översta raden först."))
+              .build();
 
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(
-              ElementValueDiagnosisList.builder()
-                  .diagnoses(
-                      List.of(
-                          ElementValueDiagnosis.builder()
-                              .id(DIAGNOS_ONE)
-                              .code(CODE)
-                              .build()
-                      )
-                  )
-                  .build()
-          )
-          .build();
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueDiagnosisList.builder()
+                      .diagnoses(
+                          List.of(
+                              ElementValueDiagnosis.builder().id(DIAGNOS_ONE).code(CODE).build()))
+                      .build())
+              .build();
 
-      final var validationErrors = elementValidationDiagnosis.validate(elementData,
-          CATEGORY_ELEMENT_ID, Collections.emptyList());
+      final var validationErrors =
+          elementValidationDiagnosis.validate(
+              elementData, CATEGORY_ELEMENT_ID, Collections.emptyList());
 
       assertEquals(expectedValidationError, validationErrors.get(0));
     }
 
     @Test
     void shallNotGiveValidationErrorIfMandatoryFieldHasValue() {
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(
-              ElementValueDiagnosisList.builder()
-                  .diagnoses(
-                      List.of(
-                          ElementValueDiagnosis.builder()
-                              .id(new FieldId(MANDATORY_FIELD))
-                              .code(CODE)
-                              .build()
-                      )
-                  )
-                  .build()
-          )
-          .build();
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueDiagnosisList.builder()
+                      .diagnoses(
+                          List.of(
+                              ElementValueDiagnosis.builder()
+                                  .id(new FieldId(MANDATORY_FIELD))
+                                  .code(CODE)
+                                  .build()))
+                      .build())
+              .build();
 
-      final var validationErrors = elementValidationDiagnosis.validate(elementData,
-          CATEGORY_ELEMENT_ID, Collections.emptyList());
+      final var validationErrors =
+          elementValidationDiagnosis.validate(
+              elementData, CATEGORY_ELEMENT_ID, Collections.emptyList());
       assertEquals(Collections.emptyList(), validationErrors);
     }
   }
@@ -145,45 +158,39 @@ class ElementValidationDiagnosisTest {
 
     @BeforeEach
     void setUp() {
-      elementValidationDiagnosis = ElementValidationDiagnosis.builder()
-          .build();
+      elementValidationDiagnosis = ElementValidationDiagnosis.builder().build();
     }
 
     @Test
     void shallNotGiveValidationErrorIfNoDiagnoses() {
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(
-              ElementValueDiagnosisList.builder()
-                  .build()
-          )
-          .build();
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(ElementValueDiagnosisList.builder().build())
+              .build();
 
-      final var validationErrors = elementValidationDiagnosis.validate(elementData,
-          CATEGORY_ELEMENT_ID, Collections.emptyList());
+      final var validationErrors =
+          elementValidationDiagnosis.validate(
+              elementData, CATEGORY_ELEMENT_ID, Collections.emptyList());
       assertEquals(Collections.emptyList(), validationErrors);
     }
 
     @Test
     void shallNotGiveValidationErrorIfDiagnosesArePresent() {
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(
-              ElementValueDiagnosisList.builder()
-                  .diagnoses(
-                      List.of(
-                          ElementValueDiagnosis.builder()
-                              .id(DIAGNOS_ONE)
-                              .code(CODE)
-                              .build()
-                      )
-                  )
-                  .build()
-          )
-          .build();
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueDiagnosisList.builder()
+                      .diagnoses(
+                          List.of(
+                              ElementValueDiagnosis.builder().id(DIAGNOS_ONE).code(CODE).build()))
+                      .build())
+              .build();
 
-      final var validationErrors = elementValidationDiagnosis.validate(elementData,
-          CATEGORY_ELEMENT_ID, Collections.emptyList());
+      final var validationErrors =
+          elementValidationDiagnosis.validate(
+              elementData, CATEGORY_ELEMENT_ID, Collections.emptyList());
       assertEquals(Collections.emptyList(), validationErrors);
     }
   }
@@ -193,212 +200,206 @@ class ElementValidationDiagnosisTest {
 
     @BeforeEach
     void setUp() {
-      elementValidationDiagnosis = ElementValidationDiagnosis.builder()
-          .order(List.of(DIAGNOS_ONE, DIAGNOS_TWO, DIAGNOS_THREE, DIAGNOS_FOUR, DIAGNOS_FIVE))
-          .build();
+      elementValidationDiagnosis =
+          ElementValidationDiagnosis.builder()
+              .order(List.of(DIAGNOS_ONE, DIAGNOS_TWO, DIAGNOS_THREE, DIAGNOS_FOUR, DIAGNOS_FIVE))
+              .build();
     }
 
     @Test
     void shallGiveMultipleValidationOrderIfOrderIsNotFollowed() {
-      final var expectedValidationError = List.of(
-          ValidationError.builder()
-              .elementId(ELEMENT_ID)
-              .fieldId(DIAGNOS_FOUR)
-              .categoryId(CATEGORY_ELEMENT_ID.orElseThrow())
-              .message(new ErrorMessage("Ange diagnoskod."))
-              .build(),
-          ValidationError.builder()
-              .elementId(ELEMENT_ID)
-              .fieldId(new FieldId(DIAGNOS_FOUR.value()))
-              .categoryId(CATEGORY_ELEMENT_ID.orElseThrow())
-              .message(new ErrorMessage("Ange diagnosbeskrivning."))
-              .build(),
-          ValidationError.builder()
-              .elementId(ELEMENT_ID)
-              .fieldId(DIAGNOS_TWO)
-              .categoryId(CATEGORY_ELEMENT_ID.orElseThrow())
-              .message(new ErrorMessage("Ange diagnoskod."))
-              .build(),
-          ValidationError.builder()
-              .elementId(ELEMENT_ID)
-              .fieldId(new FieldId(DIAGNOS_TWO.value()))
-              .categoryId(CATEGORY_ELEMENT_ID.orElseThrow())
-              .message(new ErrorMessage("Ange diagnosbeskrivning."))
-              .build()
-      );
+      final var expectedValidationError =
+          List.of(
+              ValidationError.builder()
+                  .elementId(ELEMENT_ID)
+                  .fieldId(DIAGNOS_FOUR)
+                  .categoryId(CATEGORY_ELEMENT_ID.orElseThrow())
+                  .message(new ErrorMessage("Ange diagnoskod."))
+                  .build(),
+              ValidationError.builder()
+                  .elementId(ELEMENT_ID)
+                  .fieldId(new FieldId(DIAGNOS_FOUR.value()))
+                  .categoryId(CATEGORY_ELEMENT_ID.orElseThrow())
+                  .message(new ErrorMessage("Ange diagnosbeskrivning."))
+                  .build(),
+              ValidationError.builder()
+                  .elementId(ELEMENT_ID)
+                  .fieldId(DIAGNOS_TWO)
+                  .categoryId(CATEGORY_ELEMENT_ID.orElseThrow())
+                  .message(new ErrorMessage("Ange diagnoskod."))
+                  .build(),
+              ValidationError.builder()
+                  .elementId(ELEMENT_ID)
+                  .fieldId(new FieldId(DIAGNOS_TWO.value()))
+                  .categoryId(CATEGORY_ELEMENT_ID.orElseThrow())
+                  .message(new ErrorMessage("Ange diagnosbeskrivning."))
+                  .build());
 
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(
-              ElementValueDiagnosisList.builder()
-                  .diagnoses(
-                      List.of(
-                          ElementValueDiagnosis.builder()
-                              .id(DIAGNOS_ONE)
-                              .code(CODE)
-                              .description(DESCRIPTION)
-                              .build(),
-                          ElementValueDiagnosis.builder()
-                              .id(DIAGNOS_THREE)
-                              .code(CODE)
-                              .description(DESCRIPTION)
-                              .build(),
-                          ElementValueDiagnosis.builder()
-                              .id(DIAGNOS_FIVE)
-                              .code(CODE)
-                              .description(DESCRIPTION)
-                              .build()
-                      )
-                  )
-                  .build()
-          )
-          .build();
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueDiagnosisList.builder()
+                      .diagnoses(
+                          List.of(
+                              ElementValueDiagnosis.builder()
+                                  .id(DIAGNOS_ONE)
+                                  .code(CODE)
+                                  .description(DESCRIPTION)
+                                  .build(),
+                              ElementValueDiagnosis.builder()
+                                  .id(DIAGNOS_THREE)
+                                  .code(CODE)
+                                  .description(DESCRIPTION)
+                                  .build(),
+                              ElementValueDiagnosis.builder()
+                                  .id(DIAGNOS_FIVE)
+                                  .code(CODE)
+                                  .description(DESCRIPTION)
+                                  .build()))
+                      .build())
+              .build();
 
-      final var validationErrors = elementValidationDiagnosis.validate(elementData,
-          CATEGORY_ELEMENT_ID, Collections.emptyList());
+      final var validationErrors =
+          elementValidationDiagnosis.validate(
+              elementData, CATEGORY_ELEMENT_ID, Collections.emptyList());
       assertEquals(expectedValidationError, validationErrors);
     }
 
     @Test
     void shallGiveValidationOrderIfOrderIsNotFollowed() {
-      final var expectedValidationError = List.of(
-          ValidationError.builder()
-              .elementId(ELEMENT_ID)
-              .fieldId(DIAGNOS_TWO)
-              .categoryId(CATEGORY_ELEMENT_ID.orElseThrow())
-              .message(new ErrorMessage("Ange diagnoskod."))
-              .build(),
-          ValidationError.builder()
-              .elementId(ELEMENT_ID)
-              .fieldId(new FieldId(DIAGNOS_TWO.value()))
-              .categoryId(CATEGORY_ELEMENT_ID.orElseThrow())
-              .message(new ErrorMessage("Ange diagnosbeskrivning."))
-              .build()
-      );
+      final var expectedValidationError =
+          List.of(
+              ValidationError.builder()
+                  .elementId(ELEMENT_ID)
+                  .fieldId(DIAGNOS_TWO)
+                  .categoryId(CATEGORY_ELEMENT_ID.orElseThrow())
+                  .message(new ErrorMessage("Ange diagnoskod."))
+                  .build(),
+              ValidationError.builder()
+                  .elementId(ELEMENT_ID)
+                  .fieldId(new FieldId(DIAGNOS_TWO.value()))
+                  .categoryId(CATEGORY_ELEMENT_ID.orElseThrow())
+                  .message(new ErrorMessage("Ange diagnosbeskrivning."))
+                  .build());
 
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(
-              ElementValueDiagnosisList.builder()
-                  .diagnoses(
-                      List.of(
-                          ElementValueDiagnosis.builder()
-                              .id(DIAGNOS_ONE)
-                              .code(CODE)
-                              .description(DESCRIPTION)
-                              .build(),
-                          ElementValueDiagnosis.builder()
-                              .id(DIAGNOS_THREE)
-                              .code(CODE)
-                              .description(DESCRIPTION)
-                              .build(),
-                          ElementValueDiagnosis.builder()
-                              .id(DIAGNOS_FOUR)
-                              .code(CODE)
-                              .description(DESCRIPTION)
-                              .build()
-                      )
-                  )
-                  .build()
-          )
-          .build();
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueDiagnosisList.builder()
+                      .diagnoses(
+                          List.of(
+                              ElementValueDiagnosis.builder()
+                                  .id(DIAGNOS_ONE)
+                                  .code(CODE)
+                                  .description(DESCRIPTION)
+                                  .build(),
+                              ElementValueDiagnosis.builder()
+                                  .id(DIAGNOS_THREE)
+                                  .code(CODE)
+                                  .description(DESCRIPTION)
+                                  .build(),
+                              ElementValueDiagnosis.builder()
+                                  .id(DIAGNOS_FOUR)
+                                  .code(CODE)
+                                  .description(DESCRIPTION)
+                                  .build()))
+                      .build())
+              .build();
 
-      final var validationErrors = elementValidationDiagnosis.validate(elementData,
-          CATEGORY_ELEMENT_ID, Collections.emptyList());
+      final var validationErrors =
+          elementValidationDiagnosis.validate(
+              elementData, CATEGORY_ELEMENT_ID, Collections.emptyList());
       assertEquals(expectedValidationError, validationErrors);
     }
 
     @Test
     void shallGiveValidationOrderIfOrderIsNotFollowedAndDiagnosisCodeIsNull() {
-      final var expectedValidationError = List.of(
-          ValidationError.builder()
-              .elementId(ELEMENT_ID)
-              .fieldId(DIAGNOS_TWO)
-              .categoryId(CATEGORY_ELEMENT_ID.orElseThrow())
-              .message(new ErrorMessage("Ange diagnoskod."))
-              .build()
-      );
+      final var expectedValidationError =
+          List.of(
+              ValidationError.builder()
+                  .elementId(ELEMENT_ID)
+                  .fieldId(DIAGNOS_TWO)
+                  .categoryId(CATEGORY_ELEMENT_ID.orElseThrow())
+                  .message(new ErrorMessage("Ange diagnoskod."))
+                  .build());
 
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(
-              ElementValueDiagnosisList.builder()
-                  .diagnoses(
-                      List.of(
-                          ElementValueDiagnosis.builder()
-                              .id(DIAGNOS_ONE)
-                              .code(CODE)
-                              .description(DESCRIPTION)
-                              .build(),
-                          ElementValueDiagnosis.builder()
-                              .id(DIAGNOS_TWO)
-                              .description(DESCRIPTION)
-                              .build(),
-                          ElementValueDiagnosis.builder()
-                              .id(DIAGNOS_THREE)
-                              .code(CODE)
-                              .description(DESCRIPTION)
-                              .build(),
-                          ElementValueDiagnosis.builder()
-                              .id(DIAGNOS_FOUR)
-                              .code(CODE)
-                              .description(DESCRIPTION)
-                              .build()
-                      )
-                  )
-                  .build()
-          )
-          .build();
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueDiagnosisList.builder()
+                      .diagnoses(
+                          List.of(
+                              ElementValueDiagnosis.builder()
+                                  .id(DIAGNOS_ONE)
+                                  .code(CODE)
+                                  .description(DESCRIPTION)
+                                  .build(),
+                              ElementValueDiagnosis.builder()
+                                  .id(DIAGNOS_TWO)
+                                  .description(DESCRIPTION)
+                                  .build(),
+                              ElementValueDiagnosis.builder()
+                                  .id(DIAGNOS_THREE)
+                                  .code(CODE)
+                                  .description(DESCRIPTION)
+                                  .build(),
+                              ElementValueDiagnosis.builder()
+                                  .id(DIAGNOS_FOUR)
+                                  .code(CODE)
+                                  .description(DESCRIPTION)
+                                  .build()))
+                      .build())
+              .build();
 
-      final var validationErrors = elementValidationDiagnosis.validate(elementData,
-          CATEGORY_ELEMENT_ID, Collections.emptyList());
+      final var validationErrors =
+          elementValidationDiagnosis.validate(
+              elementData, CATEGORY_ELEMENT_ID, Collections.emptyList());
       assertEquals(expectedValidationError, validationErrors);
     }
 
     @Test
     void shallGiveValidationOrderIfOrderIsNotFollowedAndDiagnosisDescriptionIsNull() {
-      final var expectedValidationError = List.of(
-          ValidationError.builder()
-              .elementId(ELEMENT_ID)
-              .fieldId(DIAGNOS_TWO)
-              .categoryId(CATEGORY_ELEMENT_ID.orElseThrow())
-              .message(new ErrorMessage("Ange diagnosbeskrivning."))
-              .build()
-      );
+      final var expectedValidationError =
+          List.of(
+              ValidationError.builder()
+                  .elementId(ELEMENT_ID)
+                  .fieldId(DIAGNOS_TWO)
+                  .categoryId(CATEGORY_ELEMENT_ID.orElseThrow())
+                  .message(new ErrorMessage("Ange diagnosbeskrivning."))
+                  .build());
 
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(
-              ElementValueDiagnosisList.builder()
-                  .diagnoses(
-                      List.of(
-                          ElementValueDiagnosis.builder()
-                              .id(DIAGNOS_ONE)
-                              .code(CODE)
-                              .description(DESCRIPTION)
-                              .build(),
-                          ElementValueDiagnosis.builder()
-                              .id(DIAGNOS_TWO)
-                              .code(CODE)
-                              .build(),
-                          ElementValueDiagnosis.builder()
-                              .id(DIAGNOS_THREE)
-                              .code(CODE)
-                              .description(DESCRIPTION)
-                              .build(),
-                          ElementValueDiagnosis.builder()
-                              .id(DIAGNOS_FOUR)
-                              .code(CODE)
-                              .description(DESCRIPTION)
-                              .build()
-                      )
-                  )
-                  .build()
-          )
-          .build();
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueDiagnosisList.builder()
+                      .diagnoses(
+                          List.of(
+                              ElementValueDiagnosis.builder()
+                                  .id(DIAGNOS_ONE)
+                                  .code(CODE)
+                                  .description(DESCRIPTION)
+                                  .build(),
+                              ElementValueDiagnosis.builder().id(DIAGNOS_TWO).code(CODE).build(),
+                              ElementValueDiagnosis.builder()
+                                  .id(DIAGNOS_THREE)
+                                  .code(CODE)
+                                  .description(DESCRIPTION)
+                                  .build(),
+                              ElementValueDiagnosis.builder()
+                                  .id(DIAGNOS_FOUR)
+                                  .code(CODE)
+                                  .description(DESCRIPTION)
+                                  .build()))
+                      .build())
+              .build();
 
-      final var validationErrors = elementValidationDiagnosis.validate(elementData,
-          CATEGORY_ELEMENT_ID, Collections.emptyList());
+      final var validationErrors =
+          elementValidationDiagnosis.validate(
+              elementData, CATEGORY_ELEMENT_ID, Collections.emptyList());
       assertEquals(expectedValidationError, validationErrors);
     }
   }
@@ -408,66 +409,48 @@ class ElementValidationDiagnosisTest {
 
     @BeforeEach
     void setUp() {
-      elementValidationDiagnosis = ElementValidationDiagnosis.builder()
-          .build();
+      elementValidationDiagnosis = ElementValidationDiagnosis.builder().build();
     }
 
     @Test
     void shallNotGiveMultipleValidationOrderIfOrderIsNotFollowed() {
 
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(
-              ElementValueDiagnosisList.builder()
-                  .diagnoses(
-                      List.of(
-                          ElementValueDiagnosis.builder()
-                              .id(DIAGNOS_ONE)
-                              .code(CODE)
-                              .build(),
-                          ElementValueDiagnosis.builder()
-                              .id(DIAGNOS_FOUR)
-                              .code(CODE)
-                              .build()
-                      )
-                  )
-                  .build()
-          )
-          .build();
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueDiagnosisList.builder()
+                      .diagnoses(
+                          List.of(
+                              ElementValueDiagnosis.builder().id(DIAGNOS_ONE).code(CODE).build(),
+                              ElementValueDiagnosis.builder().id(DIAGNOS_FOUR).code(CODE).build()))
+                      .build())
+              .build();
 
-      final var validationErrors = elementValidationDiagnosis.validate(elementData,
-          CATEGORY_ELEMENT_ID, Collections.emptyList());
+      final var validationErrors =
+          elementValidationDiagnosis.validate(
+              elementData, CATEGORY_ELEMENT_ID, Collections.emptyList());
       assertEquals(Collections.emptyList(), validationErrors);
     }
 
     @Test
     void shallNotGiveValidationOrderIfOrderIsNotFollowed() {
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(
-              ElementValueDiagnosisList.builder()
-                  .diagnoses(
-                      List.of(
-                          ElementValueDiagnosis.builder()
-                              .id(DIAGNOS_ONE)
-                              .code(CODE)
-                              .build(),
-                          ElementValueDiagnosis.builder()
-                              .id(DIAGNOS_THREE)
-                              .code(CODE)
-                              .build(),
-                          ElementValueDiagnosis.builder()
-                              .id(DIAGNOS_FOUR)
-                              .code(CODE)
-                              .build()
-                      )
-                  )
-                  .build()
-          )
-          .build();
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueDiagnosisList.builder()
+                      .diagnoses(
+                          List.of(
+                              ElementValueDiagnosis.builder().id(DIAGNOS_ONE).code(CODE).build(),
+                              ElementValueDiagnosis.builder().id(DIAGNOS_THREE).code(CODE).build(),
+                              ElementValueDiagnosis.builder().id(DIAGNOS_FOUR).code(CODE).build()))
+                      .build())
+              .build();
 
-      final var validationErrors = elementValidationDiagnosis.validate(elementData,
-          CATEGORY_ELEMENT_ID, Collections.emptyList());
+      final var validationErrors =
+          elementValidationDiagnosis.validate(
+              elementData, CATEGORY_ELEMENT_ID, Collections.emptyList());
       assertEquals(Collections.emptyList(), validationErrors);
     }
   }
@@ -477,68 +460,62 @@ class ElementValidationDiagnosisTest {
 
     @BeforeEach
     void setUp() {
-      elementValidationDiagnosis = ElementValidationDiagnosis.builder()
-          .diagnosisCodeRepository(diagnosisCodeRepository)
-          .build();
+      elementValidationDiagnosis =
+          ElementValidationDiagnosis.builder()
+              .diagnosisCodeRepository(diagnosisCodeRepository)
+              .build();
     }
 
     @Test
     void shallGiveValidationErrorIfCodeNotValid() {
-      final var expectedValidationError = List.of(
-          ValidationError.builder()
-              .elementId(ELEMENT_ID)
-              .fieldId(DIAGNOS_ONE)
-              .categoryId(CATEGORY_ELEMENT_ID.orElseThrow())
-              .message(new ErrorMessage("Diagnoskod är ej giltig."))
-              .build()
-      );
+      final var expectedValidationError =
+          List.of(
+              ValidationError.builder()
+                  .elementId(ELEMENT_ID)
+                  .fieldId(DIAGNOS_ONE)
+                  .categoryId(CATEGORY_ELEMENT_ID.orElseThrow())
+                  .message(new ErrorMessage("Diagnoskod är ej giltig."))
+                  .build());
 
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(
-              ElementValueDiagnosisList.builder()
-                  .diagnoses(
-                      List.of(
-                          ElementValueDiagnosis.builder()
-                              .id(DIAGNOS_ONE)
-                              .code(CODE)
-                              .build()
-                      )
-                  )
-                  .build()
-          )
-          .build();
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueDiagnosisList.builder()
+                      .diagnoses(
+                          List.of(
+                              ElementValueDiagnosis.builder().id(DIAGNOS_ONE).code(CODE).build()))
+                      .build())
+              .build();
 
       doReturn(Optional.empty()).when(diagnosisCodeRepository).findByCode(new DiagnosisCode(CODE));
-      final var validationErrors = elementValidationDiagnosis.validate(elementData,
-          CATEGORY_ELEMENT_ID, Collections.emptyList());
+      final var validationErrors =
+          elementValidationDiagnosis.validate(
+              elementData, CATEGORY_ELEMENT_ID, Collections.emptyList());
       assertEquals(expectedValidationError, validationErrors);
     }
 
     @Test
     void shallNotGiveValidationErrorIfCodeIsValid() {
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(
-              ElementValueDiagnosisList.builder()
-                  .diagnoses(
-                      List.of(
-                          ElementValueDiagnosis.builder()
-                              .id(DIAGNOS_ONE)
-                              .code(CODE)
-                              .build()
-                      )
-                  )
-                  .build()
-          )
-          .build();
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueDiagnosisList.builder()
+                      .diagnoses(
+                          List.of(
+                              ElementValueDiagnosis.builder().id(DIAGNOS_ONE).code(CODE).build()))
+                      .build())
+              .build();
 
       final var diagnosis = Diagnosis.builder().build();
-      doReturn(Optional.of(diagnosis)).when(diagnosisCodeRepository)
+      doReturn(Optional.of(diagnosis))
+          .when(diagnosisCodeRepository)
           .findByCode(new DiagnosisCode(CODE));
 
-      final var validationErrors = elementValidationDiagnosis.validate(elementData,
-          CATEGORY_ELEMENT_ID, Collections.emptyList());
+      final var validationErrors =
+          elementValidationDiagnosis.validate(
+              elementData, CATEGORY_ELEMENT_ID, Collections.emptyList());
       assertTrue(validationErrors.isEmpty());
     }
   }

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -37,75 +55,66 @@ class DeleteCertificateServiceTest {
 
   private static final String CERTIFICATE_ID = "certificateId";
   private static final long VERSION = 0L;
-  @Mock
-  private DeleteCertificateRequestValidator deleteCertificateRequestValidator;
-  @Mock
-  private ActionEvaluationFactory actionEvaluationFactory;
-  @Mock
-  private DeleteCertificateDomainService deleteCertificateDomainService;
-  @Mock
-  private CertificateConverter certificateConverter;
-  @Mock
-  private ResourceLinkConverter resourceLinkConverter;
-  @InjectMocks
-  private DeleteCertificateService deleteCertificateService;
+  @Mock private DeleteCertificateRequestValidator deleteCertificateRequestValidator;
+  @Mock private ActionEvaluationFactory actionEvaluationFactory;
+  @Mock private DeleteCertificateDomainService deleteCertificateDomainService;
+  @Mock private CertificateConverter certificateConverter;
+  @Mock private ResourceLinkConverter resourceLinkConverter;
+  @InjectMocks private DeleteCertificateService deleteCertificateService;
 
-  private static final DeleteCertificateRequest DELETE_CERTIFICATE_REQUEST = DeleteCertificateRequest.builder()
-      .user(AJLA_DOCTOR_DTO)
-      .careProvider(ALFA_REGIONEN_DTO)
-      .careUnit(ALFA_MEDICINCENTRUM_DTO)
-      .unit(ALFA_ALLERGIMOTTAGNINGEN_DTO)
-      .build();
+  private static final DeleteCertificateRequest DELETE_CERTIFICATE_REQUEST =
+      DeleteCertificateRequest.builder()
+          .user(AJLA_DOCTOR_DTO)
+          .careProvider(ALFA_REGIONEN_DTO)
+          .careUnit(ALFA_MEDICINCENTRUM_DTO)
+          .unit(ALFA_ALLERGIMOTTAGNINGEN_DTO)
+          .build();
 
   @Test
   void shallThrowIfRequestIsInvalid() {
     final var request = DeleteCertificateRequest.builder().build();
 
-    doThrow(IllegalArgumentException.class).when(deleteCertificateRequestValidator)
+    doThrow(IllegalArgumentException.class)
+        .when(deleteCertificateRequestValidator)
         .validate(request, CERTIFICATE_ID, VERSION);
 
-    assertThrows(IllegalArgumentException.class,
-        () -> deleteCertificateService.delete(request, CERTIFICATE_ID, VERSION)
-    );
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> deleteCertificateService.delete(request, CERTIFICATE_ID, VERSION));
   }
 
   @Test
   void shallReturnDeleteCertificatResponse() {
     final var resourceLinkDTO = ResourceLinkDTO.builder().build();
-    final var certificateDTO = CertificateDTO.builder()
-        .links(List.of(resourceLinkDTO))
-        .build();
-    final var expectedResponse = DeleteCertificateResponse.builder()
-        .certificate(
-            certificateDTO
-        )
-        .build();
+    final var certificateDTO = CertificateDTO.builder().links(List.of(resourceLinkDTO)).build();
+    final var expectedResponse =
+        DeleteCertificateResponse.builder().certificate(certificateDTO).build();
     final var actionEvaluation = ActionEvaluation.builder().build();
-    doReturn(actionEvaluation).when(actionEvaluationFactory).create(
-        DELETE_CERTIFICATE_REQUEST.getUser(),
-        DELETE_CERTIFICATE_REQUEST.getUnit(),
-        DELETE_CERTIFICATE_REQUEST.getCareUnit(),
-        DELETE_CERTIFICATE_REQUEST.getCareProvider()
-    );
+    doReturn(actionEvaluation)
+        .when(actionEvaluationFactory)
+        .create(
+            DELETE_CERTIFICATE_REQUEST.getUser(),
+            DELETE_CERTIFICATE_REQUEST.getUnit(),
+            DELETE_CERTIFICATE_REQUEST.getCareUnit(),
+            DELETE_CERTIFICATE_REQUEST.getCareProvider());
 
     final var certificate = mock(MedicalCertificate.class);
-    doReturn(certificate).when(deleteCertificateDomainService).delete(
-        new CertificateId(CERTIFICATE_ID),
-        new Revision(VERSION),
-        actionEvaluation
-    );
+    doReturn(certificate)
+        .when(deleteCertificateDomainService)
+        .delete(new CertificateId(CERTIFICATE_ID), new Revision(VERSION), actionEvaluation);
 
     final var certificateAction = mock(CertificateAction.class);
     final List<CertificateAction> certificateActions = List.of(certificateAction);
     doReturn(certificateActions).when(certificate).actionsInclude(Optional.of(actionEvaluation));
-    doReturn(resourceLinkDTO).when(resourceLinkConverter).convert(certificateAction,
-        Optional.of(certificate), actionEvaluation);
-    doReturn(certificateDTO).when(certificateConverter)
+    doReturn(resourceLinkDTO)
+        .when(resourceLinkConverter)
+        .convert(certificateAction, Optional.of(certificate), actionEvaluation);
+    doReturn(certificateDTO)
+        .when(certificateConverter)
         .convert(certificate, List.of(resourceLinkDTO), actionEvaluation);
 
-    final var actualResult = deleteCertificateService.delete(
-        DELETE_CERTIFICATE_REQUEST, CERTIFICATE_ID, VERSION
-    );
+    final var actualResult =
+        deleteCertificateService.delete(DELETE_CERTIFICATE_REQUEST, CERTIFICATE_ID, VERSION);
 
     assertEquals(expectedResponse, actualResult);
   }

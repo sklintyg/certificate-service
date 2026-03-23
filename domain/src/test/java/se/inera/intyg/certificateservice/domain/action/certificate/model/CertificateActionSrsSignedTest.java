@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.action.certificate.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -24,7 +42,6 @@ import se.inera.intyg.certificateservice.domain.certificatemodel.model.Certifica
 @ExtendWith(MockitoExtension.class)
 class CertificateActionSrsSignedTest {
 
-
   private CertificateActionSrsSigned certificateActionSrsSigned;
 
   private static final CertificateActionSpecification CERTIFICATE_ACTION_SPECIFICATION =
@@ -34,79 +51,74 @@ class CertificateActionSrsSignedTest {
   private MedicalCertificate.MedicalCertificateBuilder certificateBuilder;
   private ActionEvaluationBuilder actionEvaluationBuilder;
 
-  @InjectMocks
-  CertificateActionFactory certificateActionFactory;
+  @InjectMocks CertificateActionFactory certificateActionFactory;
 
   @BeforeEach
   void setUp() {
-    certificateActionSrsSigned = (CertificateActionSrsSigned) certificateActionFactory.create(
-        CERTIFICATE_ACTION_SPECIFICATION
-    );
+    certificateActionSrsSigned =
+        (CertificateActionSrsSigned)
+            certificateActionFactory.create(CERTIFICATE_ACTION_SPECIFICATION);
 
-    actionEvaluationBuilder = ActionEvaluation.builder()
-        .user(AJLA_DOKTOR)
-        .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
-        .patient(ATHENA_REACT_ANDERSSON)
-        .careProvider(ALFA_REGIONEN)
-        .careUnit(ALFA_MEDICINCENTRUM);
+    actionEvaluationBuilder =
+        ActionEvaluation.builder()
+            .user(AJLA_DOKTOR)
+            .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
+            .patient(ATHENA_REACT_ANDERSSON)
+            .careProvider(ALFA_REGIONEN)
+            .careUnit(ALFA_MEDICINCENTRUM);
 
-    certificateBuilder = MedicalCertificate.builder()
-        .status(Status.SIGNED);
+    certificateBuilder = MedicalCertificate.builder().status(Status.SIGNED);
   }
 
   @Test
   void shallReturnName() {
-    assertEquals("Risk och råd",
-        certificateActionSrsSigned.getName(Optional.empty()));
+    assertEquals("Risk och råd", certificateActionSrsSigned.getName(Optional.empty()));
   }
 
   @Test
   void shallReturnType() {
-    assertEquals(CertificateActionType.SRS_SIGNED,
-        certificateActionSrsSigned.getType());
+    assertEquals(CertificateActionType.SRS_SIGNED, certificateActionSrsSigned.getType());
   }
 
   @Test
   void shallReturnDescription() {
-    assertEquals(
-        "Risk och råd",
-        certificateActionSrsSigned.getDescription(Optional.empty()));
+    assertEquals("Risk och råd", certificateActionSrsSigned.getDescription(Optional.empty()));
   }
 
   @Test
   void shallReturnReasonNotAllowed() {
-    assertEquals("För att genomföra den begärda åtgärden behöver intygets status vara [SIGNED]",
-        certificateActionSrsSigned.reasonNotAllowed(
+    assertEquals(
+        "För att genomföra den begärda åtgärden behöver intygets status vara [SIGNED]",
+        certificateActionSrsSigned
+            .reasonNotAllowed(
                 Optional.of(certificateBuilder.status(Status.DRAFT).build()),
-                Optional.of(actionEvaluationBuilder.build())
-            )
+                Optional.of(actionEvaluationBuilder.build()))
             .getFirst());
   }
 
   @Test
   void shallReturnTrueIfUserHasSrsActivatedAndCertificateIsDraft() {
-    final var result = certificateActionSrsSigned.evaluate(
-        Optional.of(certificateBuilder.build()),
-        Optional.of(actionEvaluationBuilder.build())
-    );
+    final var result =
+        certificateActionSrsSigned.evaluate(
+            Optional.of(certificateBuilder.build()), Optional.of(actionEvaluationBuilder.build()));
     assertTrue(result);
   }
 
   @Test
   void shallReturnFalseIfUserHasSrsActivatedButCertificateIsNotSigned() {
-    final var result = certificateActionSrsSigned.evaluate(
-        Optional.of(certificateBuilder.status(Status.DRAFT).build()),
-        Optional.of(actionEvaluationBuilder.build())
-    );
+    final var result =
+        certificateActionSrsSigned.evaluate(
+            Optional.of(certificateBuilder.status(Status.DRAFT).build()),
+            Optional.of(actionEvaluationBuilder.build()));
     assertFalse(result);
   }
 
   @Test
   void shallReturnFalseIfUserDoesNotHaveSrsActivatedTrue() {
-    final var result = certificateActionSrsSigned.evaluate(
-        Optional.of(certificateBuilder.build()),
-        Optional.of(actionEvaluationBuilder.user(ALF_DOKTOR).build())
-    );
+    final var result =
+        certificateActionSrsSigned.evaluate(
+            Optional.of(certificateBuilder.build()),
+            Optional.of(actionEvaluationBuilder.user(ALF_DOKTOR).build()));
     assertFalse(result);
   }
 }

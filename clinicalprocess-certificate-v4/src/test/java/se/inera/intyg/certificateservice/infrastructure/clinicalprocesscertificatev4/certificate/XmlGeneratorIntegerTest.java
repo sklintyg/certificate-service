@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.certificate;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -25,18 +43,19 @@ class XmlGeneratorIntegerTest {
   private static final Integer VALUE = 42;
   private final ElementSpecification ELEMENT_SPECIFICATION = ElementSpecification.builder().build();
 
-  @InjectMocks
-  private XmlGeneratorInteger xmlGeneratorInteger;
+  @InjectMocks private XmlGeneratorInteger xmlGeneratorInteger;
 
   @Test
   void shouldMapInteger() {
-    final var data = ElementData.builder()
-        .id(new ElementId(QUESTION_ID))
-        .value(ElementValueInteger.builder()
-            .value(VALUE)
-            .integerId(new FieldId(ANSWER_ID))
-            .build())
-        .build();
+    final var data =
+        ElementData.builder()
+            .id(new ElementId(QUESTION_ID))
+            .value(
+                ElementValueInteger.builder()
+                    .value(VALUE)
+                    .integerId(new FieldId(ANSWER_ID))
+                    .build())
+            .build();
     final var expectedData = new Svar();
     final var subAnswer = new Delsvar();
     subAnswer.getContent().add(String.valueOf(VALUE));
@@ -48,22 +67,23 @@ class XmlGeneratorIntegerTest {
 
     assertAll(
         () -> assertEquals(expectedData.getId(), response.getFirst().getId()),
-        () -> assertEquals(expectedData.getDelsvar().getFirst().getId(),
-            response.getFirst().getDelsvar().getFirst().getId()),
-        () -> assertEquals(expectedData.getDelsvar().getFirst().getContent().getFirst(),
-            response.getFirst().getDelsvar().getFirst().getContent().getFirst())
-    );
+        () ->
+            assertEquals(
+                expectedData.getDelsvar().getFirst().getId(),
+                response.getFirst().getDelsvar().getFirst().getId()),
+        () ->
+            assertEquals(
+                expectedData.getDelsvar().getFirst().getContent().getFirst(),
+                response.getFirst().getDelsvar().getFirst().getContent().getFirst()));
   }
 
   @Test
   void shouldMapEmptyIfNullValue() {
-    final var data = ElementData.builder()
-        .value(ElementValueInteger.builder()
-            .integerId(new FieldId(ANSWER_ID))
-            .build()
-        )
-        .id(new ElementId(QUESTION_ID))
-        .build();
+    final var data =
+        ElementData.builder()
+            .value(ElementValueInteger.builder().integerId(new FieldId(ANSWER_ID)).build())
+            .id(new ElementId(QUESTION_ID))
+            .build();
 
     final var response = xmlGeneratorInteger.generate(data, ELEMENT_SPECIFICATION);
 
@@ -72,18 +92,18 @@ class XmlGeneratorIntegerTest {
 
   @Test
   void shouldMapEmptyIfValueIsNotInteger() {
-    final var data = ElementData.builder()
-        .value(ElementValueText.builder()
-            .text("not an integer")
-            .textId(new FieldId(ANSWER_ID))
-            .build()
-        )
-        .id(new ElementId(QUESTION_ID))
-        .build();
+    final var data =
+        ElementData.builder()
+            .value(
+                ElementValueText.builder()
+                    .text("not an integer")
+                    .textId(new FieldId(ANSWER_ID))
+                    .build())
+            .id(new ElementId(QUESTION_ID))
+            .build();
 
     final var response = xmlGeneratorInteger.generate(data, ELEMENT_SPECIFICATION);
 
     assertTrue(response.isEmpty());
   }
 }
-

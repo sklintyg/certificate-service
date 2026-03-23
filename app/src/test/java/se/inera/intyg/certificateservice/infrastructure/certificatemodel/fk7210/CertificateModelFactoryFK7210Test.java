@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7210;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -36,8 +54,7 @@ import se.inera.intyg.certificateservice.domain.common.model.RecipientId;
 @ExtendWith(MockitoExtension.class)
 class CertificateModelFactoryFK7210Test {
 
-  @Mock
-  private CertificateActionFactory certificateActionFactory;
+  @Mock private CertificateActionFactory certificateActionFactory;
   private static final String FK_7210 = "fk7210";
   private static final String VERSION = "1.0";
   private CertificateModelFactoryFK7210 certificateModelFactoryFK7210;
@@ -48,8 +65,8 @@ class CertificateModelFactoryFK7210Test {
   void setUp() {
     certificateModelFactoryFK7210 = new CertificateModelFactoryFK7210(certificateActionFactory);
 
-    ReflectionTestUtils.setField(certificateModelFactoryFK7210, "fkLogicalAddress",
-        LOGICAL_ADDRESS);
+    ReflectionTestUtils.setField(
+        certificateModelFactoryFK7210, "fkLogicalAddress", LOGICAL_ADDRESS);
   }
 
   @Test
@@ -100,8 +117,7 @@ class CertificateModelFactoryFK7210Test {
   @Test
   void shallIncludeActiveFrom() {
     final var expectedActiveFrom = LocalDateTime.now(ZoneId.systemDefault());
-    ReflectionTestUtils.setField(certificateModelFactoryFK7210, "activeFrom",
-        expectedActiveFrom);
+    ReflectionTestUtils.setField(certificateModelFactoryFK7210, "activeFrom", expectedActiveFrom);
 
     final var certificateModel = certificateModelFactoryFK7210.create();
 
@@ -117,11 +133,8 @@ class CertificateModelFactoryFK7210Test {
 
   @Test
   void shallIncludeRecipient() {
-    final var expectedRecipient = new Recipient(
-        new RecipientId("FKASSA"),
-        "Försäkringskassan",
-        LOGICAL_ADDRESS
-    );
+    final var expectedRecipient =
+        new Recipient(new RecipientId("FKASSA"), "Försäkringskassan", LOGICAL_ADDRESS);
 
     final var certificateModel = certificateModelFactoryFK7210.create();
 
@@ -139,22 +152,19 @@ class CertificateModelFactoryFK7210Test {
   void shallIncludeCertificateSummaryProvider() {
     final var certificateModel = certificateModelFactoryFK7210.create();
 
-    assertEquals(FK7210CertificateSummaryProvider.class,
-        certificateModel.summaryProvider().getClass());
+    assertEquals(
+        FK7210CertificateSummaryProvider.class, certificateModel.summaryProvider().getClass());
   }
 
   @Test
   void shallIncludeCertificateText() {
-    final var expectedText = CertificateText.builder()
-        .text(PREAMBLE_TEXT)
-        .type(CertificateTextType.PREAMBLE_TEXT)
-        .links(List.of(CertificateLink.builder()
-            .url(URL_FK)
-            .id(LINK_FK_ID)
-            .name(FK_NAME)
-            .build()
-        ))
-        .build();
+    final var expectedText =
+        CertificateText.builder()
+            .text(PREAMBLE_TEXT)
+            .type(CertificateTextType.PREAMBLE_TEXT)
+            .links(
+                List.of(CertificateLink.builder().url(URL_FK).id(LINK_FK_ID).name(FK_NAME).build()))
+            .build();
 
     final var certificateModel = certificateModelFactoryFK7210.create();
 
@@ -167,8 +177,7 @@ class CertificateModelFactoryFK7210Test {
 
     assertAll(
         () -> assertNotNull(certificateModel.certificateActionSpecifications()),
-        () -> assertFalse(certificateModel.certificateActionSpecifications().isEmpty())
-    );
+        () -> assertFalse(certificateModel.certificateActionSpecifications().isEmpty()));
   }
 
   @Test
@@ -185,20 +194,20 @@ class CertificateModelFactoryFK7210Test {
     void shallIncludeCategoryBeraknatFodelsedatum() {
       final var certificateModel = certificateModelFactoryFK7210.create();
 
-      assertTrue(certificateModel.elementSpecificationExists(new ElementId("KAT_1")),
+      assertTrue(
+          certificateModel.elementSpecificationExists(new ElementId("KAT_1")),
           "Expected elementId: '%s' to exists in elementSpecifications '%s'"
-              .formatted(new ElementId("KAT_1"), certificateModel.elementSpecifications())
-      );
+              .formatted(new ElementId("KAT_1"), certificateModel.elementSpecifications()));
     }
 
     @Test
     void shallIncludeQuestionBeraknatFodelsedatum() {
       final var certificateModel = certificateModelFactoryFK7210.create();
 
-      assertTrue(certificateModel.elementSpecificationExists(new ElementId("54")),
+      assertTrue(
+          certificateModel.elementSpecificationExists(new ElementId("54")),
           "Expected elementId: '%s' to exists in elementSpecifications '%s'"
-              .formatted(new ElementId("54"), certificateModel.elementSpecifications())
-      );
+              .formatted(new ElementId("54"), certificateModel.elementSpecifications()));
     }
 
     @Test
@@ -208,9 +217,9 @@ class CertificateModelFactoryFK7210Test {
       assertTrue(
           certificateModel.elementSpecificationExists(new ElementId("UNIT_CONTACT_INFORMATION")),
           "Expected elementId: '%s' to exists in elementSpecifications '%s'"
-              .formatted(new ElementId("UNIT_CONTACT_INFORMATION"),
-                  certificateModel.elementSpecifications())
-      );
+              .formatted(
+                  new ElementId("UNIT_CONTACT_INFORMATION"),
+                  certificateModel.elementSpecifications()));
     }
   }
 

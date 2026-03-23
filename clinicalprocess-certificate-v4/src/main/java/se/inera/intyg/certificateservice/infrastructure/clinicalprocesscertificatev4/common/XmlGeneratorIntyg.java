@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.common;
 
 import jakarta.xml.bind.JAXBContext;
@@ -25,32 +43,20 @@ public class XmlGeneratorIntyg {
     throw new IllegalStateException("Utility class");
   }
 
-  private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(
-      "yyyy-MM-dd'T'HH:mm:ss");
+  private static final DateTimeFormatter DATE_TIME_FORMATTER =
+      DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
   private static final String KV_RELATION_CODE_SYSTEM = "c2362fcd-eda0-4f9a-bd13-b3bbaf7f2146";
   private static final String EMPTY = "";
 
-  public static Intyg intyg(Certificate certificate, Signature signature,
-      XmlGeneratorValue xmlGeneratorValue) {
+  public static Intyg intyg(
+      Certificate certificate, Signature signature, XmlGeneratorValue xmlGeneratorValue) {
     final var intyg = new Intyg();
-    intyg.setIntygsId(
-        intygsId(certificate)
-    );
-    intyg.setVersion(
-        version(certificate)
-    );
-    intyg.setTyp(
-        typAvIntyg(certificate)
-    );
-    intyg.setPatient(
-        patient(certificate)
-    );
-    intyg.setSkapadAv(
-        XmlGeneratorHosPersonal.hosPersonal(certificate)
-    );
-    intyg.getSvar().addAll(
-        xmlGeneratorValue.generate(certificate)
-    );
+    intyg.setIntygsId(intygsId(certificate));
+    intyg.setVersion(version(certificate));
+    intyg.setTyp(typAvIntyg(certificate));
+    intyg.setPatient(patient(certificate));
+    intyg.setSkapadAv(XmlGeneratorHosPersonal.hosPersonal(certificate));
+    intyg.getSvar().addAll(xmlGeneratorValue.generate(certificate));
 
     relation(intyg, certificate.parent());
 
@@ -129,9 +135,7 @@ public class XmlGeneratorIntyg {
 
     try {
       return DatatypeFactory.newInstance()
-          .newXMLGregorianCalendar(
-              DATE_TIME_FORMATTER.format(certificate.signed())
-          );
+          .newXMLGregorianCalendar(DATE_TIME_FORMATTER.format(certificate.signed()));
     } catch (Exception ex) {
       throw new IllegalStateException("Could not convert signed", ex);
     }

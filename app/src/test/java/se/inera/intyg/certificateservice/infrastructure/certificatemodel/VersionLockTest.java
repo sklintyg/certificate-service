@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -27,34 +45,37 @@ import se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.
 /**
  * Version lock tests to ensure that older certificate versions remain unchanged when new versions
  * are released.
- * <p>
- * This test class uses snapshot testing to verify that the structure and content of certificate
+ *
+ * <p>This test class uses snapshot testing to verify that the structure and content of certificate
  * models remain exactly as they were when the version was released. When a new major version is
  * created (e.g., TS8071 V2), this test ensures that V1 cannot be accidentally modified.
- * <p>
- * <b>How it works:</b>
+ *
+ * <p><b>How it works:</b>
+ *
  * <ul>
- *   <li>Each certificate version is serialized to JSON and compared against a stored snapshot</li>
- *   <li>If the snapshot doesn't exist, the test will fail and prompt you to create it</li>
- *   <li>If the model has changed, the test will show the differences and fail</li>
- *   <li>Snapshots are stored in src/test/resources/certificate-model-snapshots/</li>
+ *   <li>Each certificate version is serialized to JSON and compared against a stored snapshot
+ *   <li>If the snapshot doesn't exist, the test will fail and prompt you to create it
+ *   <li>If the model has changed, the test will show the differences and fail
+ *   <li>Snapshots are stored in src/test/resources/certificate-model-snapshots/
  * </ul>
- * <p>
- * <b>Adding a new version lock:</b>
+ *
+ * <p><b>Adding a new version lock:</b>
+ *
  * <ol>
- *   <li>Inject the CertificateModelFactory for the version you want to lock</li>
- *   <li>Add an entry to the {@code lockedVersions()} method with the factory and snapshot filename</li>
- *   <li>Run the test - it will generate a snapshot in src/test/resources/certificate-model-snapshots/</li>
- *   <li>Review the generated JSON file to ensure it looks correct</li>
- *   <li>Run the test again - it should now pass</li>
+ *   <li>Inject the CertificateModelFactory for the version you want to lock
+ *   <li>Add an entry to the {@code lockedVersions()} method with the factory and snapshot filename
+ *   <li>Run the test - it will generate a snapshot in
+ *       src/test/resources/certificate-model-snapshots/
+ *   <li>Review the generated JSON file to ensure it looks correct
+ *   <li>Run the test again - it should now pass
  * </ol>
+ *
  * <p>
  */
 @ExtendWith(MockitoExtension.class)
 class VersionLockTest {
-  
-  @Mock
-  private static CertificateActionFactory certificateActionFactory;
+
+  @Mock private static CertificateActionFactory certificateActionFactory;
 
   @Mock
   private static CertificateActionConfigurationRepository certificateActionConfigurationRepository;
@@ -63,31 +84,34 @@ class VersionLockTest {
   private static final CertificateModelFactoryTS8071 ts8071FactoryV1;
 
   static {
-    ts8071FactoryV1 = new CertificateModelFactoryTS8071(
-        certificateActionFactory, certificateActionConfigurationRepository
-    );
-    ReflectionTestUtils.setField(ts8071FactoryV1, "activeFrom",
-        LocalDateTime.of(2024, 12, 1, 0, 0, 0));
+    ts8071FactoryV1 =
+        new CertificateModelFactoryTS8071(
+            certificateActionFactory, certificateActionConfigurationRepository);
+    ReflectionTestUtils.setField(
+        ts8071FactoryV1, "activeFrom", LocalDateTime.of(2024, 12, 1, 0, 0, 0));
   }
 
   @BeforeEach
   void setUp() {
-    objectMapper = new ObjectMapper()
-        .enable(SerializationFeature.INDENT_OUTPUT)
-        .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
-        .setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY)
-        .findAndRegisterModules();
+    objectMapper =
+        new ObjectMapper()
+            .enable(SerializationFeature.INDENT_OUTPUT)
+            .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+            .setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY)
+            .findAndRegisterModules();
   }
 
   /**
    * Asserts that a certificate model matches its stored snapshot.
    *
    * <p>This method:
+   *
    * <ol>
-   *   <li>Serializes the certificate model to JSON</li>
-   *   <li>Compares it with the stored snapshot file</li>
-   *   <li>If no snapshot exists, generates one in src/test/resources/certificate-model-snapshots/ and fails</li>
-   *   <li>If snapshot exists but differs, shows the difference and fails</li>
+   *   <li>Serializes the certificate model to JSON
+   *   <li>Compares it with the stored snapshot file
+   *   <li>If no snapshot exists, generates one in src/test/resources/certificate-model-snapshots/
+   *       and fails
+   *   <li>If snapshot exists but differs, shows the difference and fails
    * </ol>
    *
    * @param certificateModel The certificate model to verify
@@ -98,15 +122,12 @@ class VersionLockTest {
   void certificateVersionShouldRemainUnchanged(
       CertificateModel certificateModel,
       String snapshotFileName,
-      @SuppressWarnings("unused") String displayName
-  ) {
+      @SuppressWarnings("unused") String displayName) {
     assertVersionLocked(certificateModel, snapshotFileName);
   }
 
   private static Stream<Arguments> lockedVersions() {
-    return Stream.of(
-        Arguments.of(ts8071FactoryV1.create(), "ts8071-v1.0.json", "TS8071 V1")
-    );
+    return Stream.of(Arguments.of(ts8071FactoryV1.create(), "ts8071-v1.0.json", "TS8071 V1"));
   }
 
   private void assertVersionLocked(CertificateModel certificateModel, String snapshotFileName) {
@@ -116,18 +137,20 @@ class VersionLockTest {
 
       if (!Files.exists(snapshotPath)) {
         SnapshotTestUtil.generateSnapshot(actualJson, snapshotFileName);
-        fail(String.format(
-            "Snapshot file did not exist and has been created at: %s%n"
-                + "Review the generated snapshot file to ensure it looks correct.%n"
-                + "Then run the test again to verify the snapshot.",
-            snapshotPath
-        ));
+        fail(
+            String.format(
+                "Snapshot file did not exist and has been created at: %s%n"
+                    + "Review the generated snapshot file to ensure it looks correct.%n"
+                    + "Then run the test again to verify the snapshot.",
+                snapshotPath));
       }
 
       final var expectedJson = Files.readString(snapshotPath);
       final var differences = findDifferences(expectedJson, actualJson);
 
-      assertEquals(objectMapper.readTree(expectedJson), objectMapper.readTree(actualJson),
+      assertEquals(
+          objectMapper.readTree(expectedJson),
+          objectMapper.readTree(actualJson),
           String.format(
               "Certificate model %s has changed. This version should be locked.%n"
                   + "%n"
@@ -137,10 +160,7 @@ class VersionLockTest {
                   + "1. Review the differences carefully%n"
                   + "2. Update the snapshot file at: %s%n"
                   + "3. Document the reason for the change in your commit message",
-              certificateModel.id(),
-              differences,
-              snapshotPath
-          ));
+              certificateModel.id(), differences, snapshotPath));
 
     } catch (IOException e) {
       fail("Failed to process snapshot: " + e.getMessage(), e);

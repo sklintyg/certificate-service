@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.message.model;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -31,8 +49,7 @@ import se.inera.intyg.certificateservice.domain.staff.model.Staff;
 class MessageTest {
 
   private static final Content CONTENT = new Content("content");
-  @Mock
-  private Certificate certificate;
+  @Mock private Certificate certificate;
   private static final ActionEvaluation ACTION_EVALUATION = ActionEvaluation.builder().build();
 
   @Nested
@@ -47,7 +64,8 @@ class MessageTest {
       final var certificateModel = mock(CertificateModel.class);
       final var certificateAction = mock(CertificateAction.class);
       final var messageAction = mock(MessageAction.class);
-      doReturn(List.of(certificateAction)).when(certificate)
+      doReturn(List.of(certificateAction))
+          .when(certificate)
           .actionsInclude(Optional.of(ACTION_EVALUATION));
       doReturn(certificateModel).when(certificate).certificateModel();
       doReturn(List.of(messageAction)).when(certificateModel).messageActions();
@@ -68,10 +86,12 @@ class MessageTest {
       final var certificateAction = mock(CertificateAction.class);
       final var messageActionValid = mock(MessageAction.class);
       final var messageActionFalse = mock(MessageAction.class);
-      doReturn(List.of(certificateAction)).when(certificate)
+      doReturn(List.of(certificateAction))
+          .when(certificate)
           .actionsInclude(Optional.of(ACTION_EVALUATION));
       doReturn(certificateModel).when(certificate).certificateModel();
-      doReturn(List.of(messageActionValid, messageActionFalse)).when(certificateModel)
+      doReturn(List.of(messageActionValid, messageActionFalse))
+          .when(certificateModel)
           .messageActions();
       doReturn(true).when(messageActionValid).evaluate(List.of(certificateAction), message);
       doReturn(false).when(messageActionFalse).evaluate(List.of(certificateAction), message);
@@ -99,15 +119,12 @@ class MessageTest {
       unhandledMessage.handle();
       assertAll(
           () -> assertNotNull(unhandledMessage.modified()),
-          () -> assertNotEquals(modifiedBefore, unhandledMessage.modified())
-      );
+          () -> assertNotEquals(modifiedBefore, unhandledMessage.modified()));
     }
 
     @Test
     void shallNotUpdateModifiedIfAlreadyHandled() {
-      final var unhandledMessage = complementMessageBuilder()
-          .status(MessageStatus.HANDLED)
-          .build();
+      final var unhandledMessage = complementMessageBuilder().status(MessageStatus.HANDLED).build();
 
       final var modifiedBefore = unhandledMessage.modified();
       unhandledMessage.handle();
@@ -120,8 +137,7 @@ class MessageTest {
 
     @Test
     void shallUpdateAnswer() {
-      final var answer = Answer.builder()
-          .build();
+      final var answer = Answer.builder().build();
       final var message = Message.builder().build();
 
       message.answer(answer);
@@ -142,45 +158,53 @@ class MessageTest {
 
     @Test
     void shallIncludeType() {
-      assertEquals(MessageType.CONTACT,
+      assertEquals(
+          MessageType.CONTACT,
           Message.create(MessageType.CONTACT, CONTENT, CERTIFICATE_ID, AJLA_DOKTOR).type());
     }
 
     @Test
     void shallIncludeContent() {
-      assertEquals(CONTENT,
+      assertEquals(
+          CONTENT,
           Message.create(MessageType.CONTACT, CONTENT, CERTIFICATE_ID, AJLA_DOKTOR).content());
     }
 
     @Test
     void shallIncludeStatus() {
-      assertEquals(MessageStatus.DRAFT,
+      assertEquals(
+          MessageStatus.DRAFT,
           Message.create(MessageType.CONTACT, CONTENT, CERTIFICATE_ID, AJLA_DOKTOR).status());
     }
 
     @Test
     void shallIncludeAuthor() {
-      assertEquals(AJLA_DOKTOR.name().fullName(),
-          Message.create(MessageType.CONTACT, CONTENT, CERTIFICATE_ID, AJLA_DOKTOR).author()
+      assertEquals(
+          AJLA_DOKTOR.name().fullName(),
+          Message.create(MessageType.CONTACT, CONTENT, CERTIFICATE_ID, AJLA_DOKTOR)
+              .author()
               .author());
     }
 
     @Test
     void shallIncludeAuthoredStaff() {
-      assertEquals(AJLA_DOKTOR,
+      assertEquals(
+          AJLA_DOKTOR,
           Message.create(MessageType.CONTACT, CONTENT, CERTIFICATE_ID, AJLA_DOKTOR)
               .authoredStaff());
     }
 
     @Test
     void shallIncludeForwarded() {
-      assertEquals(new Forwarded(false),
+      assertEquals(
+          new Forwarded(false),
           Message.create(MessageType.CONTACT, CONTENT, CERTIFICATE_ID, AJLA_DOKTOR).forwarded());
     }
 
     @Test
     void shallIncludeCertificateId() {
-      assertEquals(CERTIFICATE_ID,
+      assertEquals(
+          CERTIFICATE_ID,
           Message.create(MessageType.CONTACT, CONTENT, CERTIFICATE_ID, AJLA_DOKTOR)
               .certificateId());
     }
@@ -258,18 +282,14 @@ class MessageTest {
 
     @Test
     void shallThrowIfMessageIsNotStatusDraft() {
-      final var message = Message.builder()
-          .status(MessageStatus.SENT)
-          .build();
+      final var message = Message.builder().status(MessageStatus.SENT).build();
 
       assertThrows(IllegalStateException.class, message::delete);
     }
 
     @Test
     void shallUpdateStatusToDeletedDraftIfDraft() {
-      final var message = Message.builder()
-          .status(MessageStatus.DRAFT)
-          .build();
+      final var message = Message.builder().status(MessageStatus.DRAFT).build();
 
       message.delete();
 
@@ -293,9 +313,7 @@ class MessageTest {
       @Test
       void shallIncludeSubject() {
         final var expectedSubject = new Subject("expectedSubject");
-        final var message = Message.builder()
-            .subject(expectedSubject)
-            .build();
+        final var message = Message.builder().subject(expectedSubject).build();
         message.saveAnswer(AJLA_DOKTOR, CONTENT);
         assertEquals(expectedSubject, message.answer().subject());
       }
@@ -303,9 +321,7 @@ class MessageTest {
       @Test
       void shallIncludeContent() {
         final var expectedContent = new Content("expectedContent");
-        final var message = Message.builder()
-            .content(expectedContent)
-            .build();
+        final var message = Message.builder().content(expectedContent).build();
         message.saveAnswer(AJLA_DOKTOR, expectedContent);
         assertEquals(expectedContent, message.answer().content());
       }
@@ -330,7 +346,6 @@ class MessageTest {
         message.saveAnswer(AJLA_DOKTOR, CONTENT);
         assertEquals(AJLA_DOKTOR, message.answer().authoredStaff());
       }
-
     }
 
     @Nested
@@ -338,27 +353,21 @@ class MessageTest {
 
       @Test
       void shallUpdateContent() {
-        final var message = Message.builder()
-            .answer(Answer.builder().build())
-            .build();
+        final var message = Message.builder().answer(Answer.builder().build()).build();
         message.saveAnswer(AJLA_DOKTOR, CONTENT);
         assertEquals(CONTENT, message.answer().content());
       }
 
       @Test
       void shallUpdateAuthoredStaff() {
-        final var message = Message.builder()
-            .answer(Answer.builder().build())
-            .build();
+        final var message = Message.builder().answer(Answer.builder().build()).build();
         message.saveAnswer(AJLA_DOKTOR, CONTENT);
         assertEquals(AJLA_DOKTOR, message.answer().authoredStaff());
       }
 
       @Test
       void shallUpdateAuthor() {
-        final var message = Message.builder()
-            .answer(Answer.builder().build())
-            .build();
+        final var message = Message.builder().answer(Answer.builder().build()).build();
         message.saveAnswer(AJLA_DOKTOR, CONTENT);
         assertEquals(AJLA_DOKTOR.name().fullName(), message.answer().author().author());
       }
@@ -376,26 +385,18 @@ class MessageTest {
 
     @Test
     void shallThrowIfAnswerStatusIsNotDraft() {
-      final var answer = Answer.builder()
-          .status(MessageStatus.SENT)
-          .build();
+      final var answer = Answer.builder().status(MessageStatus.SENT).build();
 
-      final var message = Message.builder()
-          .answer(answer)
-          .build();
+      final var message = Message.builder().answer(answer).build();
 
       assertThrows(IllegalStateException.class, message::deleteAnswer);
     }
 
     @Test
     void shallUpdateStatusToDeletedDraftOnAnswer() {
-      final var answer = Answer.builder()
-          .status(MessageStatus.DRAFT)
-          .build();
+      final var answer = Answer.builder().status(MessageStatus.DRAFT).build();
 
-      final var message = Message.builder()
-          .answer(answer)
-          .build();
+      final var message = Message.builder().answer(answer).build();
 
       message.deleteAnswer();
 
@@ -408,21 +409,15 @@ class MessageTest {
 
     @Test
     void shallThrowIfIncorrectType() {
-      final var message = Message.builder()
-          .type(MessageType.REMINDER)
-          .build();
+      final var message = Message.builder().type(MessageType.REMINDER).build();
 
       assertThrows(IllegalStateException.class, () -> message.sendAnswer(AJLA_DOKTOR, CONTENT));
     }
 
     @Test
     void shallUpdateStatus() {
-      final var answer = Answer.builder()
-          .build();
-      final var message = Message.builder()
-          .type(MessageType.CONTACT)
-          .answer(answer)
-          .build();
+      final var answer = Answer.builder().build();
+      final var message = Message.builder().type(MessageType.CONTACT).answer(answer).build();
 
       message.sendAnswer(AJLA_DOKTOR, CONTENT);
       assertEquals(MessageStatus.HANDLED, message.answer().status());
@@ -430,12 +425,8 @@ class MessageTest {
 
     @Test
     void shallUpdateContent() {
-      final var answer = Answer.builder()
-          .build();
-      final var message = Message.builder()
-          .type(MessageType.CONTACT)
-          .answer(answer)
-          .build();
+      final var answer = Answer.builder().build();
+      final var message = Message.builder().type(MessageType.CONTACT).answer(answer).build();
 
       message.sendAnswer(AJLA_DOKTOR, CONTENT);
       assertEquals(CONTENT, message.answer().content());
@@ -443,12 +434,8 @@ class MessageTest {
 
     @Test
     void shallUpdateAuthoredStaff() {
-      final var answer = Answer.builder()
-          .build();
-      final var message = Message.builder()
-          .type(MessageType.CONTACT)
-          .answer(answer)
-          .build();
+      final var answer = Answer.builder().build();
+      final var message = Message.builder().type(MessageType.CONTACT).answer(answer).build();
 
       message.sendAnswer(AJLA_DOKTOR, CONTENT);
       assertEquals(AJLA_DOKTOR, message.answer().authoredStaff());
@@ -456,12 +443,8 @@ class MessageTest {
 
     @Test
     void shallUpdateSent() {
-      final var answer = Answer.builder()
-          .build();
-      final var message = Message.builder()
-          .type(MessageType.CONTACT)
-          .answer(answer)
-          .build();
+      final var answer = Answer.builder().build();
+      final var message = Message.builder().type(MessageType.CONTACT).answer(answer).build();
 
       message.sendAnswer(AJLA_DOKTOR, CONTENT);
       assertNotNull(message.answer().sent());
@@ -469,12 +452,8 @@ class MessageTest {
 
     @Test
     void shallSetMessageAsHandled() {
-      final var answer = Answer.builder()
-          .build();
-      final var message = Message.builder()
-          .type(MessageType.CONTACT)
-          .answer(answer)
-          .build();
+      final var answer = Answer.builder().build();
+      final var message = Message.builder().type(MessageType.CONTACT).answer(answer).build();
 
       message.sendAnswer(AJLA_DOKTOR, CONTENT);
       assertEquals(MessageStatus.HANDLED, message.status());
@@ -487,9 +466,7 @@ class MessageTest {
     @Test
     void shallReturnTrueIfStatusMatch() {
       final var messageTypes = List.of(MessageType.COMPLEMENT);
-      final var message = Message.builder()
-          .type(MessageType.COMPLEMENT)
-          .build();
+      final var message = Message.builder().type(MessageType.COMPLEMENT).build();
 
       assertTrue(message.type(messageTypes));
     }
@@ -497,31 +474,24 @@ class MessageTest {
     @Test
     void shallReturnFalseIfStatusDontMatch() {
       final var messageTypes = List.of(MessageType.REMINDER);
-      final var message = Message.builder()
-          .type(MessageType.COMPLEMENT)
-          .build();
+      final var message = Message.builder().type(MessageType.COMPLEMENT).build();
 
       assertFalse(message.type(messageTypes));
     }
   }
-
 
   @Nested
   class SentTests {
 
     @Test
     void shallReturnTrueIfStatusIsSent() {
-      final var message = Message.builder()
-          .status(MessageStatus.SENT)
-          .build();
+      final var message = Message.builder().status(MessageStatus.SENT).build();
       assertTrue(message.isSent());
     }
 
     @Test
     void shallReturnFalseIfStatusIsNotSent() {
-      final var message = Message.builder()
-          .status(MessageStatus.DRAFT)
-          .build();
+      final var message = Message.builder().status(MessageStatus.DRAFT).build();
       assertFalse(message.isSent());
     }
   }
@@ -531,10 +501,8 @@ class MessageTest {
 
     @Test
     void shallSetForwardedTrueIfSent() {
-      final var message = Message.builder()
-          .forwarded(new Forwarded(false))
-          .status(MessageStatus.SENT)
-          .build();
+      final var message =
+          Message.builder().forwarded(new Forwarded(false)).status(MessageStatus.SENT).build();
 
       message.forward();
 
@@ -543,10 +511,8 @@ class MessageTest {
 
     @Test
     void shallNotSetForwardedTrueIfNotSent() {
-      final var message = Message.builder()
-          .forwarded(new Forwarded(false))
-          .status(MessageStatus.DRAFT)
-          .build();
+      final var message =
+          Message.builder().forwarded(new Forwarded(false)).status(MessageStatus.DRAFT).build();
 
       message.forward();
 
@@ -559,19 +525,14 @@ class MessageTest {
 
     @Test
     void shallReturnTrueIfMessageHasAnswer() {
-      final var messageWithAnswer = Message.builder()
-          .answer(
-              Answer.builder().build()
-          )
-          .build();
+      final var messageWithAnswer = Message.builder().answer(Answer.builder().build()).build();
 
       assertTrue(messageWithAnswer.hasAnswer());
     }
 
     @Test
     void shallReturnFalseIfMessageDontHaveAnswer() {
-      final var messageWithAnswer = Message.builder()
-          .build();
+      final var messageWithAnswer = Message.builder().build();
 
       assertFalse(messageWithAnswer.hasAnswer());
     }
@@ -582,19 +543,15 @@ class MessageTest {
 
     @Test
     void shallReturnTrueIfMessageHasAuthoredStaff() {
-      final var messageWithAnswer = Message.builder()
-          .authoredStaff(
-              Staff.builder().build()
-          )
-          .build();
+      final var messageWithAnswer =
+          Message.builder().authoredStaff(Staff.builder().build()).build();
 
       assertTrue(messageWithAnswer.hasAuthoredStaff());
     }
 
     @Test
     void shallReturnFalseIfMessageDontHaveAuthoredStaff() {
-      final var messageWithAnswer = Message.builder()
-          .build();
+      final var messageWithAnswer = Message.builder().build();
 
       assertFalse(messageWithAnswer.hasAuthoredStaff());
     }

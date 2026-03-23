@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.QuestionPatientensBehandlingOchVardsituation.AKUT_LIVSHOTANDE_FIELD_ID;
@@ -17,14 +35,15 @@ import se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.
 
 public class QuestionUppskattaHurLangeTillstandetKommerVaraLivshotande {
 
-  public static final ElementId QUESTION_UPSKATTA_HUR_LANGE_TILLSTANDET_KOMMER_VARA_LIVSHOTANDE_ID = new ElementId(
-      "52.5");
-  public static final FieldId QUESTION_UPSKATTA_HUR_LANGE_TILLSTANDET_KOMMER_VARA_LIVSHOTANDE_FIELD_ID = new FieldId(
-      "52.5");
-  private static final PdfFieldId PDF_ESTIMATE_YES_FIELD_ID = new PdfFieldId(
-      "form1[0].#subform[1].ksr_Ja[0]");
-  private static final PdfFieldId PDF_ESTIMATE_NO_FIELD_ID = new PdfFieldId(
-      "form1[0].#subform[1].ksr_Nej[0]");
+  public static final ElementId QUESTION_UPSKATTA_HUR_LANGE_TILLSTANDET_KOMMER_VARA_LIVSHOTANDE_ID =
+      new ElementId("52.5");
+  public static final FieldId
+      QUESTION_UPSKATTA_HUR_LANGE_TILLSTANDET_KOMMER_VARA_LIVSHOTANDE_FIELD_ID =
+          new FieldId("52.5");
+  private static final PdfFieldId PDF_ESTIMATE_YES_FIELD_ID =
+      new PdfFieldId("form1[0].#subform[1].ksr_Ja[0]");
+  private static final PdfFieldId PDF_ESTIMATE_NO_FIELD_ID =
+      new PdfFieldId("form1[0].#subform[1].ksr_Nej[0]");
 
   private QuestionUppskattaHurLangeTillstandetKommerVaraLivshotande() {
     throw new IllegalStateException("Utility class");
@@ -39,43 +58,30 @@ public class QuestionUppskattaHurLangeTillstandetKommerVaraLivshotande {
                 .name("Kan du uppskatta hur länge tillståndet kommer vara livshotande?")
                 .selectedText("Ja")
                 .unselectedText("Nej")
-                .build()
-        )
+                .build())
         .rules(
             List.of(
                 CertificateElementRuleFactory.mandatoryExist(
                     QUESTION_UPSKATTA_HUR_LANGE_TILLSTANDET_KOMMER_VARA_LIVSHOTANDE_ID,
-                    QUESTION_UPSKATTA_HUR_LANGE_TILLSTANDET_KOMMER_VARA_LIVSHOTANDE_FIELD_ID
-                ),
+                    QUESTION_UPSKATTA_HUR_LANGE_TILLSTANDET_KOMMER_VARA_LIVSHOTANDE_FIELD_ID),
                 CertificateElementRuleFactory.show(
                     QUESTION_PATIENTENS_BEHANDLING_OCH_VARDSITUATION_ID,
-                    AKUT_LIVSHOTANDE_FIELD_ID
-                )
-            )
-        )
-        .validations(
-            List.of(
-                ElementValidationBoolean.builder()
-                    .mandatory(true)
-                    .build()
-            )
-        )
+                    AKUT_LIVSHOTANDE_FIELD_ID)))
+        .validations(List.of(ElementValidationBoolean.builder().mandatory(true).build()))
         .shouldValidate(
-            elementData -> elementData.stream()
-                .filter(
-                    data -> data.id().equals(QUESTION_PATIENTENS_BEHANDLING_OCH_VARDSITUATION_ID))
-                .map(element -> (ElementValueCode) element.value())
-                .anyMatch(value -> value.codeId().equals(AKUT_LIVSHOTANDE_FIELD_ID))
-        )
-        .mapping(
-            new ElementMapping(QUESTION_PATIENTENS_BEHANDLING_OCH_VARDSITUATION_ID, null)
-        )
+            elementData ->
+                elementData.stream()
+                    .filter(
+                        data ->
+                            data.id().equals(QUESTION_PATIENTENS_BEHANDLING_OCH_VARDSITUATION_ID))
+                    .map(element -> (ElementValueCode) element.value())
+                    .anyMatch(value -> value.codeId().equals(AKUT_LIVSHOTANDE_FIELD_ID)))
+        .mapping(new ElementMapping(QUESTION_PATIENTENS_BEHANDLING_OCH_VARDSITUATION_ID, null))
         .pdfConfiguration(
             PdfConfigurationBoolean.builder()
                 .checkboxTrue(PDF_ESTIMATE_YES_FIELD_ID)
                 .checkboxFalse(PDF_ESTIMATE_NO_FIELD_ID)
-                .build()
-        )
+                .build())
         .build();
   }
 }

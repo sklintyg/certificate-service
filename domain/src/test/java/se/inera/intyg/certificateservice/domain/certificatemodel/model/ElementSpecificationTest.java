@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.certificatemodel.model;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -44,21 +62,21 @@ class ElementSpecificationTest {
     void shallReturnTrueIfElementExitsOnRootLevel() {
       assertTrue(
           DATE_ELEMENT_SPECIFICATION.exists(new ElementId(DATE_ELEMENT_ID)),
-          "Expected to find '%s' among specifications '%s'".formatted(DATE_ELEMENT_ID,
-              DATE_ELEMENT_SPECIFICATION)
-      );
+          "Expected to find '%s' among specifications '%s'"
+              .formatted(DATE_ELEMENT_ID, DATE_ELEMENT_SPECIFICATION));
     }
 
     @Test
     void shallReturnTrueIfElementExitsOnNextLevel() {
-      final var element = dateElementSpecificationBuilder()
-          .id(new ElementId("ANOTHER_ELEMENT_ID"))
-          .children(List.of(DATE_ELEMENT_SPECIFICATION))
-          .build();
+      final var element =
+          dateElementSpecificationBuilder()
+              .id(new ElementId("ANOTHER_ELEMENT_ID"))
+              .children(List.of(DATE_ELEMENT_SPECIFICATION))
+              .build();
 
-      assertTrue(element.exists(new ElementId(DATE_ELEMENT_ID)),
-          "Expected to find '%s' among specifications '%s'".formatted(DATE_ELEMENT_ID, element)
-      );
+      assertTrue(
+          element.exists(new ElementId(DATE_ELEMENT_ID)),
+          "Expected to find '%s' among specifications '%s'".formatted(DATE_ELEMENT_ID, element));
     }
   }
 
@@ -67,52 +85,43 @@ class ElementSpecificationTest {
 
     @Test
     void shallReturnElementIfElementExitsOnRootLevel() {
-      assertEquals(DATE_ELEMENT_SPECIFICATION,
-          DATE_ELEMENT_SPECIFICATION.elementSpecification(DATE_ELEMENT_SPECIFICATION.id())
-      );
+      assertEquals(
+          DATE_ELEMENT_SPECIFICATION,
+          DATE_ELEMENT_SPECIFICATION.elementSpecification(DATE_ELEMENT_SPECIFICATION.id()));
     }
 
     @Test
     void shallReturnElementIfElementExitsOnNextLevel() {
-      final var element = dateElementSpecificationBuilder()
-          .id(new ElementId("ANOTHER_ELEMENT_ID"))
-          .children(List.of(DATE_ELEMENT_SPECIFICATION))
-          .build();
+      final var element =
+          dateElementSpecificationBuilder()
+              .id(new ElementId("ANOTHER_ELEMENT_ID"))
+              .children(List.of(DATE_ELEMENT_SPECIFICATION))
+              .build();
 
-      assertEquals(DATE_ELEMENT_SPECIFICATION,
-          element.elementSpecification(DATE_ELEMENT_SPECIFICATION.id())
-      );
+      assertEquals(
+          DATE_ELEMENT_SPECIFICATION,
+          element.elementSpecification(DATE_ELEMENT_SPECIFICATION.id()));
     }
 
     @Test
     void shallThrowExceptionIfElementDoesntExists() {
-      final var element = dateElementSpecificationBuilder()
-          .id(new ElementId("ANOTHER_ELEMENT_ID"))
-          .build();
+      final var element =
+          dateElementSpecificationBuilder().id(new ElementId("ANOTHER_ELEMENT_ID")).build();
 
       final var elementId = DATE_ELEMENT_SPECIFICATION.id();
-      assertThrows(IllegalArgumentException.class,
-          () -> element.elementSpecification(elementId)
-      );
+      assertThrows(IllegalArgumentException.class, () -> element.elementSpecification(elementId));
     }
 
     @Test
     void shallThrowExceptionIfElementDoesntExistsOnNextLevel() {
-      final var element = dateElementSpecificationBuilder()
-          .id(ANOTHER_ELEMENT_ID)
-          .children(
-              List.of(
-                  dateElementSpecificationBuilder()
-                      .id(ANOTHER_ELEMENT_ID)
-                      .build()
-              )
-          )
-          .build();
+      final var element =
+          dateElementSpecificationBuilder()
+              .id(ANOTHER_ELEMENT_ID)
+              .children(List.of(dateElementSpecificationBuilder().id(ANOTHER_ELEMENT_ID).build()))
+              .build();
 
       final var elementId = DATE_ELEMENT_SPECIFICATION.id();
-      assertThrows(IllegalArgumentException.class,
-          () -> element.elementSpecification(elementId)
-      );
+      assertThrows(IllegalArgumentException.class, () -> element.elementSpecification(elementId));
     }
   }
 
@@ -129,15 +138,15 @@ class ElementSpecificationTest {
       final var expectedResult = Collections.emptyList();
       final var validation = mock(ElementValidation.class);
 
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(mock(ElementValue.class))
-          .build();
+      final var elementData =
+          ElementData.builder().id(ELEMENT_ID).value(mock(ElementValue.class)).build();
 
-      final var element = dateElementSpecificationBuilder()
-          .shouldValidate(elementDataList -> elementDataList.stream()
-              .noneMatch(data -> data.id().equals(ELEMENT_ID))
-          ).build();
+      final var element =
+          dateElementSpecificationBuilder()
+              .shouldValidate(
+                  elementDataList ->
+                      elementDataList.stream().noneMatch(data -> data.id().equals(ELEMENT_ID)))
+              .build();
 
       final var actualResult = element.validate(List.of(elementData), Optional.empty());
       verifyNoInteractions(validation);
@@ -148,18 +157,15 @@ class ElementSpecificationTest {
     void shallReturnEmptyIfValid() {
       final var expectedResult = Collections.emptyList();
       final var validation = mock(ElementValidation.class);
-      final var element = dateElementSpecificationBuilder()
-          .id(ELEMENT_ID)
-          .validations(List.of(validation))
-          .build();
+      final var element =
+          dateElementSpecificationBuilder().id(ELEMENT_ID).validations(List.of(validation)).build();
 
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(mock(ElementValue.class))
-          .build();
+      final var elementData =
+          ElementData.builder().id(ELEMENT_ID).value(mock(ElementValue.class)).build();
 
-      doReturn(expectedResult).when(validation).validate(elementData, Optional.empty(),
-          Collections.emptyList());
+      doReturn(expectedResult)
+          .when(validation)
+          .validate(elementData, Optional.empty(), Collections.emptyList());
 
       final var actualResult = element.validate(List.of(elementData), Optional.empty());
       assertEquals(expectedResult, actualResult);
@@ -169,18 +175,15 @@ class ElementSpecificationTest {
     void shallReturnValidationErrorIfInvalid() {
       final var expectedResult = List.of(ValidationError.builder().build());
       final var validation = mock(ElementValidation.class);
-      final var element = dateElementSpecificationBuilder()
-          .id(ELEMENT_ID)
-          .validations(List.of(validation))
-          .build();
+      final var element =
+          dateElementSpecificationBuilder().id(ELEMENT_ID).validations(List.of(validation)).build();
 
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(mock(ElementValue.class))
-          .build();
+      final var elementData =
+          ElementData.builder().id(ELEMENT_ID).value(mock(ElementValue.class)).build();
 
-      doReturn(expectedResult).when(validation).validate(elementData, Optional.empty(),
-          List.of(elementData));
+      doReturn(expectedResult)
+          .when(validation)
+          .validate(elementData, Optional.empty(), List.of(elementData));
 
       final var actualResult = element.validate(List.of(elementData), Optional.empty());
       assertEquals(expectedResult, actualResult);
@@ -188,33 +191,32 @@ class ElementSpecificationTest {
 
     @Test
     void shallReturnMergedValidationErrorIfMultipleValidationIsInvalid() {
-      final var expectedResult = List.of(
-          ValidationError.builder().fieldId(FIELD_ID_ONE).build(),
-          ValidationError.builder().fieldId(FIELD_ID_TWO).build()
-      );
+      final var expectedResult =
+          List.of(
+              ValidationError.builder().fieldId(FIELD_ID_ONE).build(),
+              ValidationError.builder().fieldId(FIELD_ID_TWO).build());
       final var validationOne = mock(ElementValidation.class);
       final var validationTwo = mock(ElementValidation.class);
-      final var element = dateElementSpecificationBuilder()
-          .id(ELEMENT_ID)
-          .validations(
-              List.of(validationOne, validationTwo)
-          )
-          .build();
+      final var element =
+          dateElementSpecificationBuilder()
+              .id(ELEMENT_ID)
+              .validations(List.of(validationOne, validationTwo))
+              .build();
 
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(mock(ElementValue.class))
-          .build();
+      final var elementData =
+          ElementData.builder().id(ELEMENT_ID).value(mock(ElementValue.class)).build();
 
-      final var validationErrorsOne = List.of(
-          ValidationError.builder().fieldId(FIELD_ID_ONE).build());
-      final var validationErrorsTwo = List.of(
-          ValidationError.builder().fieldId(FIELD_ID_TWO).build());
+      final var validationErrorsOne =
+          List.of(ValidationError.builder().fieldId(FIELD_ID_ONE).build());
+      final var validationErrorsTwo =
+          List.of(ValidationError.builder().fieldId(FIELD_ID_TWO).build());
 
-      doReturn(validationErrorsOne).when(validationOne).validate(elementData, Optional.empty(),
-          List.of(elementData));
-      doReturn(validationErrorsTwo).when(validationTwo).validate(elementData, Optional.empty(),
-          List.of(elementData));
+      doReturn(validationErrorsOne)
+          .when(validationOne)
+          .validate(elementData, Optional.empty(), List.of(elementData));
+      doReturn(validationErrorsTwo)
+          .when(validationTwo)
+          .validate(elementData, Optional.empty(), List.of(elementData));
 
       final var actualResult = element.validate(List.of(elementData), Optional.empty());
       assertEquals(expectedResult, actualResult);
@@ -222,112 +224,100 @@ class ElementSpecificationTest {
 
     @Test
     void shallReturnMergedValidationErrorIfChildIsAlsoInvalid() {
-      final var expectedResult = List.of(
-          ValidationError.builder().fieldId(FIELD_ID_ONE).build(),
-          ValidationError.builder().fieldId(FIELD_ID_TWO).build()
-      );
+      final var expectedResult =
+          List.of(
+              ValidationError.builder().fieldId(FIELD_ID_ONE).build(),
+              ValidationError.builder().fieldId(FIELD_ID_TWO).build());
       final var validationOne = mock(ElementValidation.class);
       final var validationTwo = mock(ElementValidation.class);
 
-      final var childElement = dateElementSpecificationBuilder()
-          .id(ANOTHER_ELEMENT_ID)
-          .validations(
-              List.of(validationTwo)
-          )
-          .build();
+      final var childElement =
+          dateElementSpecificationBuilder()
+              .id(ANOTHER_ELEMENT_ID)
+              .validations(List.of(validationTwo))
+              .build();
 
-      final var elementDataTwo = ElementData.builder()
-          .id(ANOTHER_ELEMENT_ID)
-          .value(mock(ElementValue.class))
-          .build();
+      final var elementDataTwo =
+          ElementData.builder().id(ANOTHER_ELEMENT_ID).value(mock(ElementValue.class)).build();
 
-      final var element = dateElementSpecificationBuilder()
-          .id(ELEMENT_ID)
-          .validations(
-              List.of(validationOne)
-          )
-          .children(List.of(childElement))
-          .build();
+      final var element =
+          dateElementSpecificationBuilder()
+              .id(ELEMENT_ID)
+              .validations(List.of(validationOne))
+              .children(List.of(childElement))
+              .build();
 
-      final var elementDataOne = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(mock(ElementValue.class))
-          .build();
+      final var elementDataOne =
+          ElementData.builder().id(ELEMENT_ID).value(mock(ElementValue.class)).build();
 
       final var elementData = List.of(elementDataOne, elementDataTwo);
 
-      final var validationErrorsOne = List.of(
-          ValidationError.builder().fieldId(FIELD_ID_ONE).build());
-      final var validationErrorsTwo = List.of(
-          ValidationError.builder().fieldId(FIELD_ID_TWO).build());
+      final var validationErrorsOne =
+          List.of(ValidationError.builder().fieldId(FIELD_ID_ONE).build());
+      final var validationErrorsTwo =
+          List.of(ValidationError.builder().fieldId(FIELD_ID_TWO).build());
 
-      doReturn(validationErrorsOne).when(validationOne).validate(elementDataOne, Optional.empty(),
-          elementData);
-      doReturn(validationErrorsTwo).when(validationTwo).validate(elementDataTwo, Optional.empty(),
-          elementData);
+      doReturn(validationErrorsOne)
+          .when(validationOne)
+          .validate(elementDataOne, Optional.empty(), elementData);
+      doReturn(validationErrorsTwo)
+          .when(validationTwo)
+          .validate(elementDataTwo, Optional.empty(), elementData);
 
-      final var actualResult = element.validate(
-          elementData,
-          Optional.empty()
-      );
+      final var actualResult = element.validate(elementData, Optional.empty());
       assertEquals(expectedResult, actualResult);
     }
 
     @Test
     void shallCreateEmptyValueIfMissingInData() {
-      final var expectedValue = ElementValueDate.builder()
-          .dateId(FIELD_ID_ONE)
-          .build();
+      final var expectedValue = ElementValueDate.builder().dateId(FIELD_ID_ONE).build();
 
       final var validation = mock(ElementValidation.class);
-      final var element = dateElementSpecificationBuilder()
-          .id(ELEMENT_ID)
-          .validations(List.of(validation))
-          .build();
+      final var element =
+          dateElementSpecificationBuilder().id(ELEMENT_ID).validations(List.of(validation)).build();
 
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .build();
+      final var elementData = ElementData.builder().id(ELEMENT_ID).build();
 
-      doReturn(Collections.emptyList()).when(validation)
+      doReturn(Collections.emptyList())
+          .when(validation)
           .validate(any(ElementData.class), eq(Optional.empty()), eq(List.of(elementData)));
 
       element.validate(List.of(elementData), Optional.empty());
 
       final var elementDataArgumentCaptor = ArgumentCaptor.forClass(ElementData.class);
 
-      verify(validation).validate(elementDataArgumentCaptor.capture(), eq(Optional.empty()),
-          eq(List.of(elementData)));
+      verify(validation)
+          .validate(
+              elementDataArgumentCaptor.capture(), eq(Optional.empty()), eq(List.of(elementData)));
 
       assertEquals(expectedValue, elementDataArgumentCaptor.getValue().value());
     }
 
     @Test
     void shallCreateEmptyDataIfMissingInData() {
-      final var expectedValue = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(
-              ElementValueDate.builder()
-                  .dateId(FIELD_ID_ONE)
-                  .build()
-          )
-          .build();
+      final var expectedValue =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(ElementValueDate.builder().dateId(FIELD_ID_ONE).build())
+              .build();
 
       final var validation = mock(ElementValidation.class);
-      final var element = dateElementSpecificationBuilder()
-          .id(ELEMENT_ID)
-          .validations(List.of(validation))
-          .build();
+      final var element =
+          dateElementSpecificationBuilder().id(ELEMENT_ID).validations(List.of(validation)).build();
 
-      doReturn(Collections.emptyList()).when(validation)
+      doReturn(Collections.emptyList())
+          .when(validation)
           .validate(any(ElementData.class), eq(Optional.empty()), eq(Collections.emptyList()));
 
       element.validate(Collections.emptyList(), Optional.empty());
 
       final var elementDataArgumentCaptor = ArgumentCaptor.forClass(ElementData.class);
 
-      verify(validation).validate(elementDataArgumentCaptor.capture(), eq(Optional.empty()),
-          eq(Collections.emptyList()));
+      verify(validation)
+          .validate(
+              elementDataArgumentCaptor.capture(),
+              eq(Optional.empty()),
+              eq(Collections.emptyList()));
 
       assertEquals(expectedValue, elementDataArgumentCaptor.getValue());
     }
@@ -336,31 +326,29 @@ class ElementSpecificationTest {
     void shallUseCategoryIdForChildren() {
       final var expectedCategory = new ElementId(CATEGORY_ELEMENT_ID);
       final var validation = mock(ElementValidation.class);
-      final var element = categoryElementSpecificationBuilder()
-          .children(
-              List.of(
-                  dateElementSpecificationBuilder()
-                      .id(ELEMENT_ID)
-                      .validations(List.of(validation))
-                      .build()
-              )
-          )
-          .build();
+      final var element =
+          categoryElementSpecificationBuilder()
+              .children(
+                  List.of(
+                      dateElementSpecificationBuilder()
+                          .id(ELEMENT_ID)
+                          .validations(List.of(validation))
+                          .build()))
+              .build();
 
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(mock(ElementValue.class))
-          .build();
+      final var elementData =
+          ElementData.builder().id(ELEMENT_ID).value(mock(ElementValue.class)).build();
 
-      doReturn(Collections.emptyList()).when(validation)
+      doReturn(Collections.emptyList())
+          .when(validation)
           .validate(eq(elementData), any(Optional.class), eq(List.of(elementData)));
 
       element.validate(List.of(elementData), Optional.empty());
 
-      final ArgumentCaptor<Optional<ElementId>> elementDataArgumentCaptor = ArgumentCaptor.forClass(
-          Optional.class);
-      verify(validation).validate(eq(elementData), elementDataArgumentCaptor.capture(),
-          eq(List.of(elementData)));
+      final ArgumentCaptor<Optional<ElementId>> elementDataArgumentCaptor =
+          ArgumentCaptor.forClass(Optional.class);
+      verify(validation)
+          .validate(eq(elementData), elementDataArgumentCaptor.capture(), eq(List.of(elementData)));
 
       assertEquals(expectedCategory, elementDataArgumentCaptor.getValue().orElseThrow());
     }
@@ -368,17 +356,17 @@ class ElementSpecificationTest {
 
   @Test
   void shallReturnStreamOfElementSpecificationIncludingChildrenIfFlatten() {
-    final var element = dateElementSpecificationBuilder()
-        .id(new ElementId("ANOTHER_ELEMENT_ID"))
-        .children(List.of(DATE_ELEMENT_SPECIFICATION))
-        .build();
+    final var element =
+        dateElementSpecificationBuilder()
+            .id(new ElementId("ANOTHER_ELEMENT_ID"))
+            .children(List.of(DATE_ELEMENT_SPECIFICATION))
+            .build();
 
     final var response = element.flatten().toList();
     assertAll(
         () -> assertEquals(2, response.size()),
         () -> assertEquals(element, response.getFirst()),
-        () -> assertEquals(DATE_ELEMENT_SPECIFICATION, response.getLast())
-    );
+        () -> assertEquals(DATE_ELEMENT_SPECIFICATION, response.getLast()));
   }
 
   @Nested
@@ -403,113 +391,96 @@ class ElementSpecificationTest {
       replacementValue = mock(ElementSimplifiedValue.class);
       configuration = mock(ElementConfiguration.class);
 
-      elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(elementValue)
-          .build();
+      elementData = ElementData.builder().id(ELEMENT_ID).value(elementValue).build();
 
-      citizenPdfConfiguration = CitizenPdfConfiguration.builder()
-          .hiddenBy(HIDDEN_BY_ELEMENT_ID)
-          .replacementValue(replacementValue)
-          .build();
+      citizenPdfConfiguration =
+          CitizenPdfConfiguration.builder()
+              .hiddenBy(HIDDEN_BY_ELEMENT_ID)
+              .replacementValue(replacementValue)
+              .build();
     }
 
     @Test
     void shouldReturnEmptyValueWhenElementDataIsEmpty() {
-      final var expected = Optional.of(ElementSimplifiedValueText.builder()
-          .text("Ej angivet")
-          .build());
+      final var expected =
+          Optional.of(ElementSimplifiedValueText.builder().text("Ej angivet").build());
 
-      final var elementSpecification = dateElementSpecificationBuilder()
-          .id(ELEMENT_ID)
-          .build();
+      final var elementSpecification = dateElementSpecificationBuilder().id(ELEMENT_ID).build();
 
-      final var options = PdfGeneratorOptions.builder()
-          .citizenFormat(false)
-          .hiddenElements(HIDDEN_ELEMENTS)
-          .build();
+      final var options =
+          PdfGeneratorOptions.builder()
+              .citizenFormat(false)
+              .hiddenElements(HIDDEN_ELEMENTS)
+              .build();
 
-      final var result = elementSpecification.simplifiedValue(
-          Optional.empty(),
-          ALL_ELEMENT_DATA,
-          options
-      );
+      final var result =
+          elementSpecification.simplifiedValue(Optional.empty(), ALL_ELEMENT_DATA, options);
       assertEquals(expected, result);
     }
 
     @Test
     void shouldReturnSimplifiedValueFromConfigurationIfNotCitizenFormat() {
-      doReturn(Optional.of(expectedSimplifiedValue))
-          .when(configuration).simplified(elementValue);
+      doReturn(Optional.of(expectedSimplifiedValue)).when(configuration).simplified(elementValue);
 
-      final var elementSpecification = ElementSpecification.builder()
-          .id(ELEMENT_ID)
-          .configuration(configuration)
-          .pdfConfiguration(citizenPdfConfiguration)
-          .build();
+      final var elementSpecification =
+          ElementSpecification.builder()
+              .id(ELEMENT_ID)
+              .configuration(configuration)
+              .pdfConfiguration(citizenPdfConfiguration)
+              .build();
 
-      final var options = PdfGeneratorOptions.builder()
-          .citizenFormat(false)
-          .hiddenElements(HIDDEN_ELEMENTS)
-          .build();
+      final var options =
+          PdfGeneratorOptions.builder()
+              .citizenFormat(false)
+              .hiddenElements(HIDDEN_ELEMENTS)
+              .build();
 
-      final var result = elementSpecification.simplifiedValue(
-          Optional.of(elementData),
-          ALL_ELEMENT_DATA,
-          options
-      );
+      final var result =
+          elementSpecification.simplifiedValue(Optional.of(elementData), ALL_ELEMENT_DATA, options);
 
       assertEquals(Optional.of(expectedSimplifiedValue), result);
     }
 
     @Test
     void shouldReturnSimplifiedValueFromConfigurationIfNoCitizenPdfConfig() {
-      doReturn(Optional.of(expectedSimplifiedValue))
-          .when(configuration).simplified(elementValue);
+      doReturn(Optional.of(expectedSimplifiedValue)).when(configuration).simplified(elementValue);
 
-      final var elementSpecification = ElementSpecification.builder()
-          .id(ELEMENT_ID)
-          .configuration(configuration)
-          .pdfConfiguration(null)
-          .build();
+      final var elementSpecification =
+          ElementSpecification.builder()
+              .id(ELEMENT_ID)
+              .configuration(configuration)
+              .pdfConfiguration(null)
+              .build();
 
-      final var options = PdfGeneratorOptions.builder()
-          .citizenFormat(true)
-          .hiddenElements(HIDDEN_ELEMENTS)
-          .build();
+      final var options =
+          PdfGeneratorOptions.builder().citizenFormat(true).hiddenElements(HIDDEN_ELEMENTS).build();
 
-      final var result = elementSpecification.simplifiedValue(
-          Optional.of(elementData),
-          ALL_ELEMENT_DATA,
-          options
-      );
+      final var result =
+          elementSpecification.simplifiedValue(Optional.of(elementData), ALL_ELEMENT_DATA, options);
 
       assertEquals(Optional.of(expectedSimplifiedValue), result);
     }
 
     @Test
     void shouldReturnReplacementValueWhenHiddenByCitizenChoice() {
-      final var citizenPdfConfiguration = CitizenPdfConfiguration.builder()
-          .hiddenBy(HIDDEN_BY_ELEMENT_ID)
-          .replacementValue(replacementValue)
-          .build();
+      final var citizenPdfConfiguration =
+          CitizenPdfConfiguration.builder()
+              .hiddenBy(HIDDEN_BY_ELEMENT_ID)
+              .replacementValue(replacementValue)
+              .build();
 
-      final var elementSpecification = ElementSpecification.builder()
-          .id(ELEMENT_ID)
-          .configuration(configuration)
-          .pdfConfiguration(citizenPdfConfiguration)
-          .build();
+      final var elementSpecification =
+          ElementSpecification.builder()
+              .id(ELEMENT_ID)
+              .configuration(configuration)
+              .pdfConfiguration(citizenPdfConfiguration)
+              .build();
 
-      final var options = PdfGeneratorOptions.builder()
-          .citizenFormat(true)
-          .hiddenElements(HIDDEN_ELEMENTS)
-          .build();
+      final var options =
+          PdfGeneratorOptions.builder().citizenFormat(true).hiddenElements(HIDDEN_ELEMENTS).build();
 
-      final var result = elementSpecification.simplifiedValue(
-          Optional.of(elementData),
-          ALL_ELEMENT_DATA,
-          options
-      );
+      final var result =
+          elementSpecification.simplifiedValue(Optional.of(elementData), ALL_ELEMENT_DATA, options);
 
       assertEquals(Optional.of(replacementValue), result);
     }
@@ -519,27 +490,27 @@ class ElementSpecificationTest {
       final var shouldHidePredicate = mock(Predicate.class);
       doReturn(true).when(shouldHidePredicate).test(ALL_ELEMENT_DATA);
 
-      final var citizenPdfConfiguration = CitizenPdfConfiguration.builder()
-          .shouldHide(shouldHidePredicate)
-          .replacementValue(replacementValue)
-          .build();
+      final var citizenPdfConfiguration =
+          CitizenPdfConfiguration.builder()
+              .shouldHide(shouldHidePredicate)
+              .replacementValue(replacementValue)
+              .build();
 
-      final var elementSpecification = ElementSpecification.builder()
-          .id(ELEMENT_ID)
-          .configuration(configuration)
-          .pdfConfiguration(citizenPdfConfiguration)
-          .build();
+      final var elementSpecification =
+          ElementSpecification.builder()
+              .id(ELEMENT_ID)
+              .configuration(configuration)
+              .pdfConfiguration(citizenPdfConfiguration)
+              .build();
 
-      final var options = PdfGeneratorOptions.builder()
-          .citizenFormat(true)
-          .hiddenElements(Collections.emptyList())
-          .build();
+      final var options =
+          PdfGeneratorOptions.builder()
+              .citizenFormat(true)
+              .hiddenElements(Collections.emptyList())
+              .build();
 
-      final var result = elementSpecification.simplifiedValue(
-          Optional.of(elementData),
-          ALL_ELEMENT_DATA,
-          options
-      );
+      final var result =
+          elementSpecification.simplifiedValue(Optional.of(elementData), ALL_ELEMENT_DATA, options);
 
       assertEquals(Optional.of(replacementValue), result);
       verify(shouldHidePredicate).test(ALL_ELEMENT_DATA);
@@ -549,31 +520,27 @@ class ElementSpecificationTest {
     void shouldNotHideWhenHiddenByIsNullAndShouldHideIsFalse() {
       final var shouldHidePredicate = mock(Predicate.class);
       doReturn(false).when(shouldHidePredicate).test(ALL_ELEMENT_DATA);
-      doReturn(Optional.of(expectedSimplifiedValue))
-          .when(configuration).simplified(elementValue);
+      doReturn(Optional.of(expectedSimplifiedValue)).when(configuration).simplified(elementValue);
 
-      final var citizenPdfConfiguration = CitizenPdfConfiguration.builder()
-          .hiddenBy(null)
-          .shouldHide(shouldHidePredicate)
-          .replacementValue(replacementValue)
-          .build();
+      final var citizenPdfConfiguration =
+          CitizenPdfConfiguration.builder()
+              .hiddenBy(null)
+              .shouldHide(shouldHidePredicate)
+              .replacementValue(replacementValue)
+              .build();
 
-      final var elementSpecification = ElementSpecification.builder()
-          .id(ELEMENT_ID)
-          .configuration(configuration)
-          .pdfConfiguration(citizenPdfConfiguration)
-          .build();
+      final var elementSpecification =
+          ElementSpecification.builder()
+              .id(ELEMENT_ID)
+              .configuration(configuration)
+              .pdfConfiguration(citizenPdfConfiguration)
+              .build();
 
-      final var options = PdfGeneratorOptions.builder()
-          .citizenFormat(true)
-          .hiddenElements(HIDDEN_ELEMENTS)
-          .build();
+      final var options =
+          PdfGeneratorOptions.builder().citizenFormat(true).hiddenElements(HIDDEN_ELEMENTS).build();
 
-      final var result = elementSpecification.simplifiedValue(
-          Optional.of(elementData),
-          ALL_ELEMENT_DATA,
-          options
-      );
+      final var result =
+          elementSpecification.simplifiedValue(Optional.of(elementData), ALL_ELEMENT_DATA, options);
 
       assertEquals(Optional.of(expectedSimplifiedValue), result);
       verify(shouldHidePredicate).test(ALL_ELEMENT_DATA);
@@ -583,30 +550,26 @@ class ElementSpecificationTest {
     @Test
     void shouldNotHideWhenElementNotInHiddenElementsList() {
       final var otherElementId = new ElementId("otherElementId");
-      doReturn(Optional.of(expectedSimplifiedValue))
-          .when(configuration).simplified(elementValue);
+      doReturn(Optional.of(expectedSimplifiedValue)).when(configuration).simplified(elementValue);
 
-      final var citizenPdfConfiguration = CitizenPdfConfiguration.builder()
-          .hiddenBy(otherElementId)
-          .replacementValue(replacementValue)
-          .build();
+      final var citizenPdfConfiguration =
+          CitizenPdfConfiguration.builder()
+              .hiddenBy(otherElementId)
+              .replacementValue(replacementValue)
+              .build();
 
-      final var elementSpecification = ElementSpecification.builder()
-          .id(ELEMENT_ID)
-          .configuration(configuration)
-          .pdfConfiguration(citizenPdfConfiguration)
-          .build();
+      final var elementSpecification =
+          ElementSpecification.builder()
+              .id(ELEMENT_ID)
+              .configuration(configuration)
+              .pdfConfiguration(citizenPdfConfiguration)
+              .build();
 
-      final var options = PdfGeneratorOptions.builder()
-          .citizenFormat(true)
-          .hiddenElements(HIDDEN_ELEMENTS)
-          .build();
+      final var options =
+          PdfGeneratorOptions.builder().citizenFormat(true).hiddenElements(HIDDEN_ELEMENTS).build();
 
-      final var result = elementSpecification.simplifiedValue(
-          Optional.of(elementData),
-          ALL_ELEMENT_DATA,
-          options
-      );
+      final var result =
+          elementSpecification.simplifiedValue(Optional.of(elementData), ALL_ELEMENT_DATA, options);
 
       assertEquals(Optional.of(expectedSimplifiedValue), result);
       verify(configuration).simplified(elementValue);
@@ -615,29 +578,23 @@ class ElementSpecificationTest {
     @Test
     void shouldIgnoreHiddenLogicWhenPdfConfigurationIsNotCitizenPdfConfiguration() {
       final var nonCitizenPdfConfiguration = mock(PdfConfiguration.class);
-      doReturn(Optional.of(expectedSimplifiedValue))
-          .when(configuration).simplified(elementValue);
+      doReturn(Optional.of(expectedSimplifiedValue)).when(configuration).simplified(elementValue);
 
-      final var elementSpecification = ElementSpecification.builder()
-          .id(ELEMENT_ID)
-          .configuration(configuration)
-          .pdfConfiguration(nonCitizenPdfConfiguration)
-          .build();
+      final var elementSpecification =
+          ElementSpecification.builder()
+              .id(ELEMENT_ID)
+              .configuration(configuration)
+              .pdfConfiguration(nonCitizenPdfConfiguration)
+              .build();
 
-      final var options = PdfGeneratorOptions.builder()
-          .citizenFormat(true)
-          .hiddenElements(HIDDEN_ELEMENTS)
-          .build();
+      final var options =
+          PdfGeneratorOptions.builder().citizenFormat(true).hiddenElements(HIDDEN_ELEMENTS).build();
 
-      final var result = elementSpecification.simplifiedValue(
-          Optional.of(elementData),
-          ALL_ELEMENT_DATA,
-          options
-      );
+      final var result =
+          elementSpecification.simplifiedValue(Optional.of(elementData), ALL_ELEMENT_DATA, options);
 
       assertEquals(Optional.of(expectedSimplifiedValue), result);
       verify(configuration).simplified(elementValue);
     }
   }
 }
-

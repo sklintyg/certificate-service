@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificatetypeinfo.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,77 +57,71 @@ class CertificateTypeInfoConverterTest {
       CertificateActionSpecification.builder().build();
   private static final CertificateAction CERTIFICATE_ACTION = mock(CertificateAction.class);
   private static final List<CertificateAction> CERTIFICATE_ACTIONS = List.of(CERTIFICATE_ACTION);
-  private static final CertificateConfirmationModal MODAL = CertificateConfirmationModal.builder()
-      .build();
-  private static final CertificateConfirmationModalDTO CONVERTED_MODAL = CertificateConfirmationModalDTO.builder()
-      .build();
+  private static final CertificateConfirmationModal MODAL =
+      CertificateConfirmationModal.builder().build();
+  private static final CertificateConfirmationModalDTO CONVERTED_MODAL =
+      CertificateConfirmationModalDTO.builder().build();
 
-  @Mock
-  private ResourceLinkConverter resourceLinkConverter;
-  @Mock
-  CertificateConfirmationModalConverter confirmationModalConverter;
-  @Mock
-  CertificateConfirmationModalProvider modalProvider;
-  @InjectMocks
-  private CertificateTypeInfoConverter certificateTypeInfoConverter;
+  @Mock private ResourceLinkConverter resourceLinkConverter;
+  @Mock CertificateConfirmationModalConverter confirmationModalConverter;
+  @Mock CertificateConfirmationModalProvider modalProvider;
+  @InjectMocks private CertificateTypeInfoConverter certificateTypeInfoConverter;
 
   private CertificateModel certificateModel;
 
   @BeforeEach
   void setUp() {
-    certificateModel = CertificateModel.builder()
-        .id(
-            CertificateModelId.builder()
-                .type(new CertificateType(TYPE))
-                .build()
-        )
-        .typeName(new CertificateTypeName(TYPE_NAME))
-        .name(NAME)
-        .description(DESCRIPTION)
-        .certificateActionSpecifications(
-            List.of(CERTIFICATE_ACTION_SPECIFICATION)
-        )
-        .confirmationModalProvider(modalProvider)
-        .build();
+    certificateModel =
+        CertificateModel.builder()
+            .id(CertificateModelId.builder().type(new CertificateType(TYPE)).build())
+            .typeName(new CertificateTypeName(TYPE_NAME))
+            .name(NAME)
+            .description(DESCRIPTION)
+            .certificateActionSpecifications(List.of(CERTIFICATE_ACTION_SPECIFICATION))
+            .confirmationModalProvider(modalProvider)
+            .build();
 
-    when(modalProvider.of(null, ACTION_EVALUATION))
-        .thenReturn(MODAL);
-    when(confirmationModalConverter.convert(MODAL))
-        .thenReturn(CONVERTED_MODAL);
+    when(modalProvider.of(null, ACTION_EVALUATION)).thenReturn(MODAL);
+    when(confirmationModalConverter.convert(MODAL)).thenReturn(CONVERTED_MODAL);
   }
 
   @Test
   void shallIncludeModal() {
-    final var result = certificateTypeInfoConverter.convert(certificateModel, CERTIFICATE_ACTIONS,
-        ACTION_EVALUATION);
+    final var result =
+        certificateTypeInfoConverter.convert(
+            certificateModel, CERTIFICATE_ACTIONS, ACTION_EVALUATION);
     assertEquals(CONVERTED_MODAL, result.getConfirmationModal());
   }
 
   @Test
   void shallIncludeType() {
-    final var result = certificateTypeInfoConverter.convert(certificateModel, CERTIFICATE_ACTIONS,
-        ACTION_EVALUATION);
+    final var result =
+        certificateTypeInfoConverter.convert(
+            certificateModel, CERTIFICATE_ACTIONS, ACTION_EVALUATION);
     assertEquals(TYPE, result.getType());
   }
 
   @Test
   void shallIncludeTypeName() {
-    final var result = certificateTypeInfoConverter.convert(certificateModel, CERTIFICATE_ACTIONS,
-        ACTION_EVALUATION);
+    final var result =
+        certificateTypeInfoConverter.convert(
+            certificateModel, CERTIFICATE_ACTIONS, ACTION_EVALUATION);
     assertEquals(TYPE_NAME, result.getTypeName());
   }
 
   @Test
   void shallIncludeName() {
-    final var result = certificateTypeInfoConverter.convert(certificateModel, CERTIFICATE_ACTIONS,
-        ACTION_EVALUATION);
+    final var result =
+        certificateTypeInfoConverter.convert(
+            certificateModel, CERTIFICATE_ACTIONS, ACTION_EVALUATION);
     assertEquals(NAME, result.getName());
   }
 
   @Test
   void shallIncludeDescription() {
-    final var result = certificateTypeInfoConverter.convert(certificateModel, CERTIFICATE_ACTIONS,
-        ACTION_EVALUATION);
+    final var result =
+        certificateTypeInfoConverter.convert(
+            certificateModel, CERTIFICATE_ACTIONS, ACTION_EVALUATION);
     assertEquals(DESCRIPTION, result.getDescription());
   }
 
@@ -117,10 +129,12 @@ class CertificateTypeInfoConverterTest {
   void shallIncludeLinks() {
     final var link = ResourceLinkDTO.builder().build();
     final var expectedLinks = List.of(link);
-    doReturn(link).when(resourceLinkConverter).convert(CERTIFICATE_ACTION, Optional.empty(),
-        ACTION_EVALUATION);
-    final var result = certificateTypeInfoConverter.convert(certificateModel, CERTIFICATE_ACTIONS,
-        ACTION_EVALUATION);
+    doReturn(link)
+        .when(resourceLinkConverter)
+        .convert(CERTIFICATE_ACTION, Optional.empty(), ACTION_EVALUATION);
+    final var result =
+        certificateTypeInfoConverter.convert(
+            certificateModel, CERTIFICATE_ACTIONS, ACTION_EVALUATION);
     assertEquals(expectedLinks, result.getLinks());
   }
 }

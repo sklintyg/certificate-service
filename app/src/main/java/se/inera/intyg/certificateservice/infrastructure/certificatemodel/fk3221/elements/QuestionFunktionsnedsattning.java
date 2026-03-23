@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3221.elements;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.codesystems.CodeSystemFunktionsnedsattning.ANNAN_KROPPSILIG_FUNKTION;
@@ -25,30 +43,32 @@ public class QuestionFunktionsnedsattning {
   public static final ElementId FUNKTIONSNEDSATTNING_ID = new ElementId("funktionsnedsattning");
   public static final FieldId FUNKTIONSNEDSATNING_FIELD_ID = new FieldId("funktionsnedsattning");
   public static final FieldId FUNKTIONSNEDSATTNING_INTELLEKTUELL_FUNKTION_ID = new FieldId("8.2");
-  public static final FieldId FUNKTIONSNEDSATTNING_KOMMUNIKATION_SOCIAL_INTERAKTION_ID = new FieldId(
-      "9.2");
+  public static final FieldId FUNKTIONSNEDSATTNING_KOMMUNIKATION_SOCIAL_INTERAKTION_ID =
+      new FieldId("9.2");
   public static final FieldId FUNKTIONSNEDSATTNING_UPPMAKRMSAHET_ID = new FieldId("10.2");
   public static final FieldId FUNKTIONSNEDSATTNING_PSYKISK_FUNKTION_ID = new FieldId("11.2");
   public static final FieldId FUNKTIONSNEDSATTNING_SINNESFUNKTION_ID = new FieldId("12.2");
   public static final FieldId FUNKTIONSNEDSATTNING_KOORDINATION_ID = new FieldId("13.2");
-  public static final FieldId FUNKTIONSNEDSATTNING_ANNAN_KROPPSILIG_FUNKTION_ID = new FieldId(
-      "14.2");
+  public static final FieldId FUNKTIONSNEDSATTNING_ANNAN_KROPPSILIG_FUNKTION_ID =
+      new FieldId("14.2");
 
   private QuestionFunktionsnedsattning() {
     throw new IllegalStateException("Utility class");
   }
 
   public static ElementSpecification questionFunktionsnedsattning() {
-    final var checkboxes = List.of(
-        getCodeConfig(FUNKTIONSNEDSATTNING_INTELLEKTUELL_FUNKTION_ID, INTELLEKTUELL_FUNKTION),
-        getCodeConfig(FUNKTIONSNEDSATTNING_KOMMUNIKATION_SOCIAL_INTERAKTION_ID,
-            KOMMUNIKATION_SOCIAL_INTERAKTION),
-        getCodeConfig(FUNKTIONSNEDSATTNING_UPPMAKRMSAHET_ID, UPPMARKSAMHET),
-        getCodeConfig(FUNKTIONSNEDSATTNING_PSYKISK_FUNKTION_ID, PSYKISK_FUNKTION),
-        getCodeConfig(FUNKTIONSNEDSATTNING_SINNESFUNKTION_ID, SINNESFUNKTION_V2),
-        getCodeConfig(FUNKTIONSNEDSATTNING_KOORDINATION_ID, KOORDINATION),
-        getCodeConfig(FUNKTIONSNEDSATTNING_ANNAN_KROPPSILIG_FUNKTION_ID, ANNAN_KROPPSILIG_FUNKTION)
-    );
+    final var checkboxes =
+        List.of(
+            getCodeConfig(FUNKTIONSNEDSATTNING_INTELLEKTUELL_FUNKTION_ID, INTELLEKTUELL_FUNKTION),
+            getCodeConfig(
+                FUNKTIONSNEDSATTNING_KOMMUNIKATION_SOCIAL_INTERAKTION_ID,
+                KOMMUNIKATION_SOCIAL_INTERAKTION),
+            getCodeConfig(FUNKTIONSNEDSATTNING_UPPMAKRMSAHET_ID, UPPMARKSAMHET),
+            getCodeConfig(FUNKTIONSNEDSATTNING_PSYKISK_FUNKTION_ID, PSYKISK_FUNKTION),
+            getCodeConfig(FUNKTIONSNEDSATTNING_SINNESFUNKTION_ID, SINNESFUNKTION_V2),
+            getCodeConfig(FUNKTIONSNEDSATTNING_KOORDINATION_ID, KOORDINATION),
+            getCodeConfig(
+                FUNKTIONSNEDSATTNING_ANNAN_KROPPSILIG_FUNKTION_ID, ANNAN_KROPPSILIG_FUNKTION));
 
     return ElementSpecification.builder()
         .id(FUNKTIONSNEDSATTNING_ID)
@@ -60,8 +80,7 @@ public class QuestionFunktionsnedsattning {
                 .name("Välj alternativ att fylla i för att visa fritextfält. Välj minst ett:")
                 .elementLayout(ElementLayout.COLUMNS)
                 .list(checkboxes)
-                .build()
-        )
+                .build())
         .rules(
             List.of(
                 CertificateElementRuleFactory.mandatory(
@@ -73,29 +92,13 @@ public class QuestionFunktionsnedsattning {
                         FUNKTIONSNEDSATTNING_PSYKISK_FUNKTION_ID,
                         FUNKTIONSNEDSATTNING_SINNESFUNKTION_ID,
                         FUNKTIONSNEDSATTNING_KOORDINATION_ID,
-                        FUNKTIONSNEDSATTNING_ANNAN_KROPPSILIG_FUNKTION_ID
-                    )
-                )
-            )
-        )
-        .validations(
-            List.of(
-                ElementValidationCodeList.builder()
-                    .mandatory(true)
-                    .build()
-            )
-        )
-        .pdfConfiguration(
-            PdfConfigurationHidden.builder().build()
-        )
+                        FUNKTIONSNEDSATTNING_ANNAN_KROPPSILIG_FUNKTION_ID))))
+        .validations(List.of(ElementValidationCodeList.builder().mandatory(true).build()))
+        .pdfConfiguration(PdfConfigurationHidden.builder().build())
         .build();
   }
 
   private static ElementConfigurationCode getCodeConfig(FieldId fieldId, Code code) {
-    return new ElementConfigurationCode(
-        fieldId,
-        code.displayName(),
-        code
-    );
+    return new ElementConfigurationCode(fieldId, code.displayName(), code);
   }
 }

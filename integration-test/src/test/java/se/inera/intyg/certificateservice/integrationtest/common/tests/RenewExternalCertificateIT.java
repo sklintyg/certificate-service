@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.integrationtest.common.tests;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -27,103 +45,97 @@ public abstract class RenewExternalCertificateIT extends BaseIntegrationIT {
   @DisplayName("Skall skapa ett förnyat intyg med en relation till det tidigare intyget")
   void shallSuccessfullyRenewCertificateAndAddParentRelation() {
     final var certificateId = UUID.randomUUID().toString();
-    final var response = api().renewExternalCertificate(
-        customRenewExternalCertificateRequest()
-            .certificateModelId(
-                CertificateModelIdDTO.builder()
-                    .type(type())
-                    .version(typeVersion())
-                    .build()
-            )
-            .build(),
-        certificateId
-    );
+    final var response =
+        api()
+            .renewExternalCertificate(
+                customRenewExternalCertificateRequest()
+                    .certificateModelId(
+                        CertificateModelIdDTO.builder().type(type()).version(typeVersion()).build())
+                    .build(),
+                certificateId);
 
     assertAll(
-        () -> assertEquals(CertificateRelationTypeDTO.EXTENDED,
-            relation(renewCertificateResponse(response)).getParent().getType()),
-        () -> assertEquals(certificateId,
-            relation(renewCertificateResponse(response)).getParent().getCertificateId())
-    );
+        () ->
+            assertEquals(
+                CertificateRelationTypeDTO.EXTENDED,
+                relation(renewCertificateResponse(response)).getParent().getType()),
+        () ->
+            assertEquals(
+                certificateId,
+                relation(renewCertificateResponse(response)).getParent().getCertificateId()));
   }
 
   @Test
-  @DisplayName("Placeholder intyg skall inte vara tillgängliga vid efterfrågandet om ett särskilt intyg")
+  @DisplayName(
+      "Placeholder intyg skall inte vara tillgängliga vid efterfrågandet om ett särskilt intyg")
   void shallNotBeAbleToRetrievePlaceholderCertificateFromExternalApi() {
     final var certificateId = UUID.randomUUID().toString();
-    api().renewExternalCertificate(
-        customRenewExternalCertificateRequest()
-            .certificateModelId(
-                CertificateModelIdDTO.builder()
-                    .type(type())
-                    .version(typeVersion())
-                    .build()
-            )
-            .build(),
-        certificateId
-    );
+    api()
+        .renewExternalCertificate(
+            customRenewExternalCertificateRequest()
+                .certificateModelId(
+                    CertificateModelIdDTO.builder().type(type()).version(typeVersion()).build())
+                .build(),
+            certificateId);
 
-    final var certificate = api().getCertificate(
-        defaultGetCertificateRequest(),
-        certificateId
-    );
+    final var certificate = api().getCertificate(defaultGetCertificateRequest(), certificateId);
 
     assertNull(certificate(certificate.getBody()));
   }
 
   @Test
-  @DisplayName("Placeholder intyg skall inte vara tillgängliga under patientvyn där tidigare intyg presenteras")
+  @DisplayName(
+      "Placeholder intyg skall inte vara tillgängliga under patientvyn där tidigare intyg presenteras")
   void shallNotBeAbleToRetrievePlaceholderCertificateFromPatientController() {
     final var certificateId = UUID.randomUUID().toString();
-    final var renewExternalCertificate = api().renewExternalCertificate(
-        customRenewExternalCertificateRequest()
-            .certificateModelId(
-                CertificateModelIdDTO.builder()
-                    .type(type())
-                    .version(typeVersion())
-                    .build()
-            )
-            .build(),
-        certificateId
-    );
+    final var renewExternalCertificate =
+        api()
+            .renewExternalCertificate(
+                customRenewExternalCertificateRequest()
+                    .certificateModelId(
+                        CertificateModelIdDTO.builder().type(type()).version(typeVersion()).build())
+                    .build(),
+                certificateId);
 
-    final var certificate = api().getPatientCertificates(
-        defaultGetPatientCertificateRequest()
-    );
+    final var certificate = api().getPatientCertificates(defaultGetPatientCertificateRequest());
 
     final var certificates = certificates(certificate.getBody());
     assertAll(
-        () -> assertTrue(
-            certificates.stream().noneMatch(
-                certificateDTO -> certificateDTO.getMetadata().getId().equals(certificateId))
-        ),
-        () -> assertTrue(
-            certificates.stream().anyMatch(certificateDTO -> certificateDTO.getMetadata().getId()
-                .equals(renewCertificateResponse(renewExternalCertificate).getCertificate()
-                    .getMetadata().getId()))
-        )
-    );
+        () ->
+            assertTrue(
+                certificates.stream()
+                    .noneMatch(
+                        certificateDTO ->
+                            certificateDTO.getMetadata().getId().equals(certificateId))),
+        () ->
+            assertTrue(
+                certificates.stream()
+                    .anyMatch(
+                        certificateDTO ->
+                            certificateDTO
+                                .getMetadata()
+                                .getId()
+                                .equals(
+                                    renewCertificateResponse(renewExternalCertificate)
+                                        .getCertificate()
+                                        .getMetadata()
+                                        .getId()))));
   }
 
   @Test
-  @DisplayName("Skall returnera false vid efterfrågan om intyget finns i tjänsten om intyget är ett placeholder intyg")
+  @DisplayName(
+      "Skall returnera false vid efterfrågan om intyget finns i tjänsten om intyget är ett placeholder intyg")
   void shallNotBeAbleToRetrievePlaceholderCertificateFromExistRequest() {
     final var certificateId = UUID.randomUUID().toString();
-    api().renewExternalCertificate(
-        customRenewExternalCertificateRequest()
-            .certificateModelId(
-                CertificateModelIdDTO.builder()
-                    .type(type())
-                    .version(typeVersion())
-                    .build()
-            )
-            .build(),
-        certificateId
-    );
+    api()
+        .renewExternalCertificate(
+            customRenewExternalCertificateRequest()
+                .certificateModelId(
+                    CertificateModelIdDTO.builder().type(type()).version(typeVersion()).build())
+                .build(),
+            certificateId);
 
-    final var certificate = api().certificateExists(
-        certificateId
-    );
+    final var certificate = api().certificateExists(certificateId);
 
     assertNotNull(certificate.getBody());
     assertFalse(certificate.getBody().isExists());

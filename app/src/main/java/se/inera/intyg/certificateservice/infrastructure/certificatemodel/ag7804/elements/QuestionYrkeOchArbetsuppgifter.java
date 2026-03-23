@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ag7804.elements;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.ag7804.elements.QuestionSysselsattning.QUESTION_SYSSELSATTNING_ID;
@@ -29,37 +47,20 @@ public class QuestionYrkeOchArbetsuppgifter {
             ElementConfigurationTextArea.builder()
                 .id(QUESTION_YRKE_ARBETSUPPGIFTER_FIELD_ID)
                 .name("Ange yrke och arbetsuppgifter")
-                .build()
-        )
+                .build())
         .rules(
             List.of(
                 CertificateElementRuleFactory.show(
                     QUESTION_SYSSELSATTNING_ID,
-                    new RuleExpression(String.format("$%s", NUVARANDE_ARBETE.code()))
-                ),
+                    new RuleExpression(String.format("$%s", NUVARANDE_ARBETE.code()))),
                 CertificateElementRuleFactory.mandatory(
-                    QUESTION_YRKE_ARBETSUPPGIFTER_ID,
-                    QUESTION_YRKE_ARBETSUPPGIFTER_FIELD_ID
-                ),
+                    QUESTION_YRKE_ARBETSUPPGIFTER_ID, QUESTION_YRKE_ARBETSUPPGIFTER_FIELD_ID),
                 CertificateElementRuleFactory.limit(
-                    QUESTION_YRKE_ARBETSUPPGIFTER_ID,
-                    (short) 4000
-                ))
-        )
-        .validations(
-            List.of(
-                ElementValidationText.builder()
-                    .mandatory(true)
-                    .limit(4000)
-                    .build()
-            )
-        )
+                    QUESTION_YRKE_ARBETSUPPGIFTER_ID, (short) 4000)))
+        .validations(List.of(ElementValidationText.builder().mandatory(true).limit(4000).build()))
         .shouldValidate(
             ElementDataPredicateFactory.codeList(
-                QUESTION_SYSSELSATTNING_ID,
-                List.of(new FieldId(NUVARANDE_ARBETE.code()))
-            )
-        )
+                QUESTION_SYSSELSATTNING_ID, List.of(new FieldId(NUVARANDE_ARBETE.code()))))
         .build();
   }
 }

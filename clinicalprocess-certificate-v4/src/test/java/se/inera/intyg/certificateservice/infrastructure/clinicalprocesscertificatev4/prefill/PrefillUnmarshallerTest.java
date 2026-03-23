@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.prefill;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -26,15 +44,13 @@ class PrefillUnmarshallerTest {
 
   @Test
   void shouldReturnEmptyOptionalWhenUnmarshalDatePeriodTypeWithNoElement() {
-    final var result = PrefillUnmarshaller.datePeriodType(
-        List.of("not-an-element"));
+    final var result = PrefillUnmarshaller.datePeriodType(List.of("not-an-element"));
     assertTrue(result.isEmpty());
   }
 
   @Test
   void shouldConvertXMLGregorianCalendarToLocalDate() throws Exception {
-    final var xmlCal = DatatypeFactory.newInstance()
-        .newXMLGregorianCalendar("2024-06-01");
+    final var xmlCal = DatatypeFactory.newInstance().newXMLGregorianCalendar("2024-06-01");
     final var localDate = PrefillUnmarshaller.toLocalDate(xmlCal);
     assertEquals(LocalDate.of(2024, 6, 1), localDate);
   }
@@ -52,8 +68,7 @@ class PrefillUnmarshallerTest {
     assertAll(
         () -> assertTrue(result.isPresent()),
         () -> assertEquals("CODE123", result.get().getCode()),
-        () -> assertEquals("Display Name", result.get().getDisplayName())
-    );
+        () -> assertEquals("Display Name", result.get().getDisplayName()));
   }
 
   @Test
@@ -67,14 +82,15 @@ class PrefillUnmarshallerTest {
     svar.getDelsvar().add(delsvar);
     forifyllnad.getSvar().add(svar);
 
-    final var jaxbContext = jakarta.xml.bind.JAXBContext.newInstance(Forifyllnad.class, Svar.class,
-        Delsvar.class);
+    final var jaxbContext =
+        jakarta.xml.bind.JAXBContext.newInstance(Forifyllnad.class, Svar.class, Delsvar.class);
     final var marshaller = jaxbContext.createMarshaller();
     final var writer = new StringWriter();
-    final var qName = new javax.xml.namespace.QName(
-        "urn:riv:clinicalprocess:healthcond:certificate:3.3", "forifyllnad");
-    final var jaxbElement = new jakarta.xml.bind.JAXBElement<>(qName, Forifyllnad.class,
-        forifyllnad);
+    final var qName =
+        new javax.xml.namespace.QName(
+            "urn:riv:clinicalprocess:healthcond:certificate:3.3", "forifyllnad");
+    final var jaxbElement =
+        new jakarta.xml.bind.JAXBElement<>(qName, Forifyllnad.class, forifyllnad);
     marshaller.marshal(jaxbElement, writer);
     final var xml = writer.toString();
 
@@ -87,9 +103,6 @@ class PrefillUnmarshallerTest {
         () -> assertEquals("1", answers.getFirst().getId()),
         () -> assertEquals(2, answers.getFirst().getInstans()),
         () -> assertEquals(1, subAnswers.size()),
-        () -> assertEquals("1.1", subAnswers.getFirst().getId())
-    );
+        () -> assertEquals("1.1", subAnswers.getFirst().getId()));
   }
-
-
 }

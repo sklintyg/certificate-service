@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3221.elements;
 
 import static java.util.Map.entry;
@@ -49,64 +67,70 @@ class QuestionUtredningEllerUnderlagTest {
 
   @Test
   void shallIncludeConfiguration() {
-    final var codes = List.of(
-        NEUROPSYKIATRISKT,
-        HABILITERING,
-        ARBETSTERAPEUT,
-        FYSIOTERAPEUT,
-        LOGOPED,
-        PSYKOLOG,
-        VARDCENTRAL,
-        SPECIALISTKLINIK,
-        SKOLHALSOVARD,
-        VARD_UTOMLANDS,
-        HORSELHABILITERING,
-        SYNHABILITERINGEN,
-        DIETIST,
-        OVRIGT
-    );
-    final var expectedConfiguration = ElementConfigurationMedicalInvestigationList.builder()
-        .name(
-            "Ange utredning eller underlag")
-        .id(new FieldId("4.1"))
-        .informationSourceDescription(
-            "Skriv exempelvis Neuropsykiatriska kliniken på X-stads sjukhus.")
-        .informationSourceText("Från vilken vårdgivare")
-        .dateText("Datum")
-        .typeText("Utredning eller underlag")
-        .list(List.of(
-            MedicalInvestigationConfig.builder()
-                .id(new FieldId("medicalInvestigation1"))
-                .dateId(new FieldId("medicalInvestigation1_DATE"))
-                .investigationTypeId(new FieldId("medicalInvestigation1_INVESTIGATION_TYPE"))
-                .informationSourceId(new FieldId("medicalInvestigation1_INFORMATION_SOURCE"))
-                .typeOptions(codes)
-                .min(null)
-                .max(Period.ofDays(0))
-                .legacyMapping(Map.of("SYNHABILITERING", SYNHABILITERINGEN))
-                .build(),
-            MedicalInvestigationConfig.builder()
-                .id(new FieldId("medicalInvestigation2"))
-                .dateId(new FieldId("medicalInvestigation2_DATE"))
-                .investigationTypeId(new FieldId("medicalInvestigation2_INVESTIGATION_TYPE"))
-                .informationSourceId(new FieldId("medicalInvestigation2_INFORMATION_SOURCE"))
-                .typeOptions(codes)
-                .min(null)
-                .max(Period.ofDays(0))
-                .legacyMapping(Map.of("SYNHABILITERING", SYNHABILITERINGEN))
-                .build(),
-            MedicalInvestigationConfig.builder()
-                .id(new FieldId("medicalInvestigation3"))
-                .dateId(new FieldId("medicalInvestigation3_DATE"))
-                .investigationTypeId(new FieldId("medicalInvestigation3_INVESTIGATION_TYPE"))
-                .informationSourceId(new FieldId("medicalInvestigation3_INFORMATION_SOURCE"))
-                .typeOptions(codes)
-                .min(null)
-                .max(Period.ofDays(0))
-                .legacyMapping(Map.of("SYNHABILITERING", SYNHABILITERINGEN))
-                .build()
-        ))
-        .build();
+    final var codes =
+        List.of(
+            NEUROPSYKIATRISKT,
+            HABILITERING,
+            ARBETSTERAPEUT,
+            FYSIOTERAPEUT,
+            LOGOPED,
+            PSYKOLOG,
+            VARDCENTRAL,
+            SPECIALISTKLINIK,
+            SKOLHALSOVARD,
+            VARD_UTOMLANDS,
+            HORSELHABILITERING,
+            SYNHABILITERINGEN,
+            DIETIST,
+            OVRIGT);
+    final var expectedConfiguration =
+        ElementConfigurationMedicalInvestigationList.builder()
+            .name("Ange utredning eller underlag")
+            .id(new FieldId("4.1"))
+            .informationSourceDescription(
+                "Skriv exempelvis Neuropsykiatriska kliniken på X-stads sjukhus.")
+            .informationSourceText("Från vilken vårdgivare")
+            .dateText("Datum")
+            .typeText("Utredning eller underlag")
+            .list(
+                List.of(
+                    MedicalInvestigationConfig.builder()
+                        .id(new FieldId("medicalInvestigation1"))
+                        .dateId(new FieldId("medicalInvestigation1_DATE"))
+                        .investigationTypeId(
+                            new FieldId("medicalInvestigation1_INVESTIGATION_TYPE"))
+                        .informationSourceId(
+                            new FieldId("medicalInvestigation1_INFORMATION_SOURCE"))
+                        .typeOptions(codes)
+                        .min(null)
+                        .max(Period.ofDays(0))
+                        .legacyMapping(Map.of("SYNHABILITERING", SYNHABILITERINGEN))
+                        .build(),
+                    MedicalInvestigationConfig.builder()
+                        .id(new FieldId("medicalInvestigation2"))
+                        .dateId(new FieldId("medicalInvestigation2_DATE"))
+                        .investigationTypeId(
+                            new FieldId("medicalInvestigation2_INVESTIGATION_TYPE"))
+                        .informationSourceId(
+                            new FieldId("medicalInvestigation2_INFORMATION_SOURCE"))
+                        .typeOptions(codes)
+                        .min(null)
+                        .max(Period.ofDays(0))
+                        .legacyMapping(Map.of("SYNHABILITERING", SYNHABILITERINGEN))
+                        .build(),
+                    MedicalInvestigationConfig.builder()
+                        .id(new FieldId("medicalInvestigation3"))
+                        .dateId(new FieldId("medicalInvestigation3_DATE"))
+                        .investigationTypeId(
+                            new FieldId("medicalInvestigation3_INVESTIGATION_TYPE"))
+                        .informationSourceId(
+                            new FieldId("medicalInvestigation3_INFORMATION_SOURCE"))
+                        .typeOptions(codes)
+                        .min(null)
+                        .max(Period.ofDays(0))
+                        .legacyMapping(Map.of("SYNHABILITERING", SYNHABILITERINGEN))
+                        .build()))
+            .build();
 
     final var element = questionUtredningEllerUnderlag();
 
@@ -115,33 +139,27 @@ class QuestionUtredningEllerUnderlagTest {
 
   @Test
   void shallIncludeRules() {
-    final var expectedRule = List.of(
-        ElementRuleExpression.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.MANDATORY)
-            .expression(
-                new RuleExpression(
-                    "!empty($medicalInvestigation1_DATE) "
-                        + "|| !empty($medicalInvestigation1_INVESTIGATION_TYPE) "
-                        + "|| !empty($medicalInvestigation1_INFORMATION_SOURCE)"
-                )
-            )
-            .build(),
-        ElementRuleExpression.builder()
-            .id(new ElementId("3"))
-            .type(ElementRuleType.SHOW)
-            .expression(
-                new RuleExpression(
-                    "$3.1"
-                )
-            )
-            .build(),
-        ElementRuleLimit.builder()
-            .id(new ElementId("4"))
-            .type(ElementRuleType.TEXT_LIMIT)
-            .limit(new RuleLimit((short) 53))
-            .build()
-    );
+    final var expectedRule =
+        List.of(
+            ElementRuleExpression.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.MANDATORY)
+                .expression(
+                    new RuleExpression(
+                        "!empty($medicalInvestigation1_DATE) "
+                            + "|| !empty($medicalInvestigation1_INVESTIGATION_TYPE) "
+                            + "|| !empty($medicalInvestigation1_INFORMATION_SOURCE)"))
+                .build(),
+            ElementRuleExpression.builder()
+                .id(new ElementId("3"))
+                .type(ElementRuleType.SHOW)
+                .expression(new RuleExpression("$3.1"))
+                .build(),
+            ElementRuleLimit.builder()
+                .id(new ElementId("4"))
+                .type(ElementRuleType.TEXT_LIMIT)
+                .limit(new RuleLimit((short) 53))
+                .build());
 
     final var element = questionUtredningEllerUnderlag();
 
@@ -150,14 +168,14 @@ class QuestionUtredningEllerUnderlagTest {
 
   @Test
   void shallIncludeValidation() {
-    final var expectedValidations = List.of(
-        ElementValidationMedicalInvestigationList.builder()
-            .mandatory(true)
-            .max(Period.ofDays(0))
-            .min(null)
-            .limit(53)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(
+            ElementValidationMedicalInvestigationList.builder()
+                .mandatory(true)
+                .max(Period.ofDays(0))
+                .min(null)
+                .limit(53)
+                .build());
 
     final var element = questionUtredningEllerUnderlag();
 
@@ -166,36 +184,22 @@ class QuestionUtredningEllerUnderlagTest {
 
   @Test
   void shallIncludePdfConfiguration() {
-    final var expectedOptions = Map.ofEntries(
-        entry(NEUROPSYKIATRISKT.code(),
-            "Neuropsykiatriskt utlåtande"),
-        entry(HABILITERING.code(),
-            "Underlag från habiliteringen"),
-        entry(ARBETSTERAPEUT.code(),
-            "Underlag från arbetsterapeut"),
-        entry(FYSIOTERAPEUT.code(),
-            "Underlag från fysioterapeut"),
-        entry(LOGOPED.code(),
-            "Underlag från logoped"),
-        entry(PSYKOLOG.code(),
-            "Underlag från psykolog"),
-        entry(VARDCENTRAL.code(),
-            "Underlag från vårdcentral"),
-        entry(SPECIALISTKLINIK.code(),
-            "Utredning av annan specialistklinik"),
-        entry(SKOLHALSOVARD.code(),
-            "Underlag från skolhälsovården"),
-        entry(VARD_UTOMLANDS.code(),
-            "Utredning från vårdinrättning utomlands"),
-        entry(HORSELHABILITERING.code(),
-            "Underlag från hörselhabiliteringen"),
-        entry(SYNHABILITERINGEN.code(),
-            "Underlag från synhabiliteringen"),
-        entry(DIETIST.code(),
-            "Underlag från dietist"),
-        entry(OVRIGT.code(),
-            "Övrigt")
-    );
+    final var expectedOptions =
+        Map.ofEntries(
+            entry(NEUROPSYKIATRISKT.code(), "Neuropsykiatriskt utlåtande"),
+            entry(HABILITERING.code(), "Underlag från habiliteringen"),
+            entry(ARBETSTERAPEUT.code(), "Underlag från arbetsterapeut"),
+            entry(FYSIOTERAPEUT.code(), "Underlag från fysioterapeut"),
+            entry(LOGOPED.code(), "Underlag från logoped"),
+            entry(PSYKOLOG.code(), "Underlag från psykolog"),
+            entry(VARDCENTRAL.code(), "Underlag från vårdcentral"),
+            entry(SPECIALISTKLINIK.code(), "Utredning av annan specialistklinik"),
+            entry(SKOLHALSOVARD.code(), "Underlag från skolhälsovården"),
+            entry(VARD_UTOMLANDS.code(), "Utredning från vårdinrättning utomlands"),
+            entry(HORSELHABILITERING.code(), "Underlag från hörselhabiliteringen"),
+            entry(SYNHABILITERINGEN.code(), "Underlag från synhabiliteringen"),
+            entry(DIETIST.code(), "Underlag från dietist"),
+            entry(OVRIGT.code(), "Övrigt"));
 
     final var element = questionUtredningEllerUnderlag();
 
@@ -203,54 +207,83 @@ class QuestionUtredningEllerUnderlagTest {
 
     assertAll(
         () -> assertEquals(3, configuration.list().size()),
-        () -> assertEquals(
-            new PdfFieldId("form1[0].#subform[0].flt_datumUnderlagUtredning[0]"),
-            configuration.list().get(new FieldId("medicalInvestigation1")).datePdfFieldId()
-        ),
-        () -> assertEquals(
-            new PdfFieldId("form1[0].#subform[0].lbx_listVardeUtredningUnderlag[0]"),
-            configuration.list().get(new FieldId("medicalInvestigation1")).investigationPdfFieldId()
-        ),
-        () -> assertEquals(
-            new PdfFieldId("form1[0].#subform[0].flt_txtVilkenVardgivare[0]"),
-            configuration.list().get(new FieldId("medicalInvestigation1")).sourceTypePdfFieldId()
-        ),
-        () -> assertEquals(
-            new PdfFieldId("form1[0].#subform[0].flt_datumUnderlagUtredning2[0]"),
-            configuration.list().get(new FieldId("medicalInvestigation2")).datePdfFieldId()
-        ),
-        () -> assertEquals(
-            new PdfFieldId("form1[0].#subform[0].lbx_listVardeUnderlagUtredning2[0]"),
-            configuration.list().get(new FieldId("medicalInvestigation2")).investigationPdfFieldId()
-        ),
-        () -> assertEquals(
-            new PdfFieldId("form1[0].#subform[0].flt_txtVilkenVardgivare2[0]"),
-            configuration.list().get(new FieldId("medicalInvestigation2")).sourceTypePdfFieldId()
-        ),
-        () -> assertEquals(
-            new PdfFieldId("form1[0].#subform[0].flt_datumUnderlagUtredning3[0]"),
-            configuration.list().get(new FieldId("medicalInvestigation3")).datePdfFieldId()
-        ),
-        () -> assertEquals(
-            new PdfFieldId("form1[0].#subform[0].lbx_listVardeUnderlagUtredning3[0]"),
-            configuration.list().get(new FieldId("medicalInvestigation3")).investigationPdfFieldId()
-        ),
-        () -> assertEquals(
-            new PdfFieldId("form1[0].#subform[0].flt_txtVilkenVardgivare3[0]"),
-            configuration.list().get(new FieldId("medicalInvestigation3")).sourceTypePdfFieldId()
-        ),
-        () -> assertEquals(
-            configuration.list().get(new FieldId("medicalInvestigation1")).investigationPdfOptions()
-                .size(), expectedOptions.size()
-        ),
-        () -> assertEquals(
-            configuration.list().get(new FieldId("medicalInvestigation2")).investigationPdfOptions()
-                .size(), expectedOptions.size()
-        ),
-        () -> assertEquals(
-            configuration.list().get(new FieldId("medicalInvestigation3")).investigationPdfOptions()
-                .size(), expectedOptions.size()
-        )
-    );
+        () ->
+            assertEquals(
+                new PdfFieldId("form1[0].#subform[0].flt_datumUnderlagUtredning[0]"),
+                configuration.list().get(new FieldId("medicalInvestigation1")).datePdfFieldId()),
+        () ->
+            assertEquals(
+                new PdfFieldId("form1[0].#subform[0].lbx_listVardeUtredningUnderlag[0]"),
+                configuration
+                    .list()
+                    .get(new FieldId("medicalInvestigation1"))
+                    .investigationPdfFieldId()),
+        () ->
+            assertEquals(
+                new PdfFieldId("form1[0].#subform[0].flt_txtVilkenVardgivare[0]"),
+                configuration
+                    .list()
+                    .get(new FieldId("medicalInvestigation1"))
+                    .sourceTypePdfFieldId()),
+        () ->
+            assertEquals(
+                new PdfFieldId("form1[0].#subform[0].flt_datumUnderlagUtredning2[0]"),
+                configuration.list().get(new FieldId("medicalInvestigation2")).datePdfFieldId()),
+        () ->
+            assertEquals(
+                new PdfFieldId("form1[0].#subform[0].lbx_listVardeUnderlagUtredning2[0]"),
+                configuration
+                    .list()
+                    .get(new FieldId("medicalInvestigation2"))
+                    .investigationPdfFieldId()),
+        () ->
+            assertEquals(
+                new PdfFieldId("form1[0].#subform[0].flt_txtVilkenVardgivare2[0]"),
+                configuration
+                    .list()
+                    .get(new FieldId("medicalInvestigation2"))
+                    .sourceTypePdfFieldId()),
+        () ->
+            assertEquals(
+                new PdfFieldId("form1[0].#subform[0].flt_datumUnderlagUtredning3[0]"),
+                configuration.list().get(new FieldId("medicalInvestigation3")).datePdfFieldId()),
+        () ->
+            assertEquals(
+                new PdfFieldId("form1[0].#subform[0].lbx_listVardeUnderlagUtredning3[0]"),
+                configuration
+                    .list()
+                    .get(new FieldId("medicalInvestigation3"))
+                    .investigationPdfFieldId()),
+        () ->
+            assertEquals(
+                new PdfFieldId("form1[0].#subform[0].flt_txtVilkenVardgivare3[0]"),
+                configuration
+                    .list()
+                    .get(new FieldId("medicalInvestigation3"))
+                    .sourceTypePdfFieldId()),
+        () ->
+            assertEquals(
+                configuration
+                    .list()
+                    .get(new FieldId("medicalInvestigation1"))
+                    .investigationPdfOptions()
+                    .size(),
+                expectedOptions.size()),
+        () ->
+            assertEquals(
+                configuration
+                    .list()
+                    .get(new FieldId("medicalInvestigation2"))
+                    .investigationPdfOptions()
+                    .size(),
+                expectedOptions.size()),
+        () ->
+            assertEquals(
+                configuration
+                    .list()
+                    .get(new FieldId("medicalInvestigation3"))
+                    .investigationPdfOptions()
+                    .size(),
+                expectedOptions.size()));
   }
 }

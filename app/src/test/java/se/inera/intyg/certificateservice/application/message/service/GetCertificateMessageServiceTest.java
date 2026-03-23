@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.message.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,54 +51,45 @@ import se.inera.intyg.certificateservice.domain.message.model.MessageActionLink;
 @ExtendWith(MockitoExtension.class)
 class GetCertificateMessageServiceTest {
 
-
   private static final String CERTIFICATE_ID = "certificateId";
-  @Mock
-  private ActionEvaluationFactory actionEvaluationFactory;
-  @Mock
-  private GetCertificateMessageRequestValidator messageRequestValidator;
-  @Mock
-  private GetCertificateDomainService getCertificateDomainService;
-  @Mock
-  private QuestionConverter questionConverter;
-  @InjectMocks
-  private GetCertificateMessageService getCertificateService;
+  @Mock private ActionEvaluationFactory actionEvaluationFactory;
+  @Mock private GetCertificateMessageRequestValidator messageRequestValidator;
+  @Mock private GetCertificateDomainService getCertificateDomainService;
+  @Mock private QuestionConverter questionConverter;
+  @InjectMocks private GetCertificateMessageService getCertificateService;
 
   @Test
   void shallThrowIfRequestIsInvalid() {
     final var request = GetCertificateMessageRequest.builder().build();
-    doThrow(IllegalArgumentException.class).when(messageRequestValidator)
+    doThrow(IllegalArgumentException.class)
+        .when(messageRequestValidator)
         .validate(request, CERTIFICATE_ID);
-    assertThrows(IllegalArgumentException.class,
-        () -> getCertificateService.get(request, CERTIFICATE_ID)
-    );
+    assertThrows(
+        IllegalArgumentException.class, () -> getCertificateService.get(request, CERTIFICATE_ID));
   }
 
   @Test
   void shallReturnResponseWithCertificate() {
     final var questionDTO = QuestionDTO.builder().build();
-    final var expectedResponse = GetCertificateMessageResponse.builder()
-        .questions(
-            List.of(questionDTO)
-        )
-        .build();
+    final var expectedResponse =
+        GetCertificateMessageResponse.builder().questions(List.of(questionDTO)).build();
 
     final var actionEvaluation = ActionEvaluation.builder().build();
 
-    doReturn(actionEvaluation).when(actionEvaluationFactory).create(
-        ATHENA_REACT_ANDERSSON_DTO,
-        AJLA_DOCTOR_DTO,
-        ALFA_ALLERGIMOTTAGNINGEN_DTO,
-        ALFA_MEDICINCENTRUM_DTO,
-        ALFA_REGIONEN_DTO
-    );
+    doReturn(actionEvaluation)
+        .when(actionEvaluationFactory)
+        .create(
+            ATHENA_REACT_ANDERSSON_DTO,
+            AJLA_DOCTOR_DTO,
+            ALFA_ALLERGIMOTTAGNINGEN_DTO,
+            ALFA_MEDICINCENTRUM_DTO,
+            ALFA_REGIONEN_DTO);
 
     final var message = mock(Message.class);
     final var certificate = mock(MedicalCertificate.class);
-    doReturn(certificate).when(getCertificateDomainService).get(
-        new CertificateId(CERTIFICATE_ID),
-        actionEvaluation
-    );
+    doReturn(certificate)
+        .when(getCertificateDomainService)
+        .get(new CertificateId(CERTIFICATE_ID), actionEvaluation);
 
     final var messageActions = List.of(MessageActionLink.builder().build());
     final var messages = List.of(message);
@@ -89,16 +98,16 @@ class GetCertificateMessageServiceTest {
     doReturn(messageActions).when(message).actions(actionEvaluation, certificate);
     doReturn(questionDTO).when(questionConverter).convert(message, messageActions);
 
-    final var actualResult = getCertificateService.get(
-        GetCertificateMessageRequest.builder()
-            .user(AJLA_DOCTOR_DTO)
-            .unit(ALFA_ALLERGIMOTTAGNINGEN_DTO)
-            .careUnit(ALFA_MEDICINCENTRUM_DTO)
-            .careProvider(ALFA_REGIONEN_DTO)
-            .patient(ATHENA_REACT_ANDERSSON_DTO)
-            .build(),
-        CERTIFICATE_ID
-    );
+    final var actualResult =
+        getCertificateService.get(
+            GetCertificateMessageRequest.builder()
+                .user(AJLA_DOCTOR_DTO)
+                .unit(ALFA_ALLERGIMOTTAGNINGEN_DTO)
+                .careUnit(ALFA_MEDICINCENTRUM_DTO)
+                .careProvider(ALFA_REGIONEN_DTO)
+                .patient(ATHENA_REACT_ANDERSSON_DTO)
+                .build(),
+            CERTIFICATE_ID);
 
     assertEquals(expectedResponse, actualResult);
   }

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7810.elements;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7810.FK7810PdfSpecification.OVERFLOW_SHEET_FIELD_ID;
@@ -18,23 +36,28 @@ import se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.
 
 public abstract class AbstractAktivitetsbegransningMotivering {
 
-  protected static final String GENERAL_LABEL_AKTIVITETSBEGRANSNING = "Beskriv aktivitetsbegränsningen. Ange grad om det är möjligt och hur aktivitetsbegränsningen kan korrigeras med hjälpmedel.";
+  protected static final String GENERAL_LABEL_AKTIVITETSBEGRANSNING =
+      "Beskriv aktivitetsbegränsningen. Ange grad om det är möjligt och hur aktivitetsbegränsningen kan korrigeras med hjälpmedel.";
 
   AbstractAktivitetsbegransningMotivering() {
     throw new IllegalStateException("Utility class");
   }
 
-  protected static ElementSpecification getFunktionsnedsattningMotivering(ElementId questionId,
-      FieldId questionFieldId, FieldId parentFieldId, String name,
-      String label, String description, PdfFieldId pdfFieldId) {
+  protected static ElementSpecification getFunktionsnedsattningMotivering(
+      ElementId questionId,
+      FieldId questionFieldId,
+      FieldId parentFieldId,
+      String name,
+      String label,
+      String description,
+      PdfFieldId pdfFieldId) {
     return ElementSpecification.builder()
         .id(questionId)
         .visibilityConfiguration(
             ElementVisibilityConfigurationsCheckboxMultipleCode.builder()
                 .elementId(AKTIVITETSBAGRENSNINGAR_ID)
                 .fieldId(parentFieldId)
-                .build()
-        )
+                .build())
         .configuration(
             ElementConfigurationTextArea.builder()
                 .id(questionFieldId)
@@ -44,43 +67,25 @@ public abstract class AbstractAktivitetsbegransningMotivering {
                 .build())
         .rules(
             List.of(
-                CertificateElementRuleFactory.limit(
-                    questionId,
-                    (short) 4000),
-                CertificateElementRuleFactory.mandatory(
-                    questionId,
-                    questionFieldId
-                ),
-                CertificateElementRuleFactory.show(
-                    AKTIVITETSBAGRENSNINGAR_ID,
-                    parentFieldId
-                )
-            )
-        )
-        .validations(
-            List.of(
-                ElementValidationText.builder()
-                    .mandatory(true)
-                    .limit(4000)
-                    .build()
-            )
-        )
+                CertificateElementRuleFactory.limit(questionId, (short) 4000),
+                CertificateElementRuleFactory.mandatory(questionId, questionFieldId),
+                CertificateElementRuleFactory.show(AKTIVITETSBAGRENSNINGAR_ID, parentFieldId)))
+        .validations(List.of(ElementValidationText.builder().mandatory(true).limit(4000).build()))
         .shouldValidate(
-            elementData -> elementData.stream()
-                .filter(data -> data.id().equals(AKTIVITETSBAGRENSNINGAR_ID))
-                .map(element -> (ElementValueCodeList) element.value())
-                .anyMatch(value -> value.list()
-                    .stream()
-                    .anyMatch(codeValue -> codeValue.codeId().equals(parentFieldId))
-                )
-        )
+            elementData ->
+                elementData.stream()
+                    .filter(data -> data.id().equals(AKTIVITETSBAGRENSNINGAR_ID))
+                    .map(element -> (ElementValueCodeList) element.value())
+                    .anyMatch(
+                        value ->
+                            value.list().stream()
+                                .anyMatch(codeValue -> codeValue.codeId().equals(parentFieldId))))
         .pdfConfiguration(
             PdfConfigurationText.builder()
                 .pdfFieldId(pdfFieldId)
                 .maxLength(PDF_TEXT_FIELD_LENGTH * 4)
                 .overflowSheetFieldId(OVERFLOW_SHEET_FIELD_ID)
-                .build()
-        )
+                .build())
         .build();
   }
 }

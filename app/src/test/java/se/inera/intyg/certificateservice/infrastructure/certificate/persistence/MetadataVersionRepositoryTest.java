@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificate.persistence;
 
 import static org.mockito.ArgumentMatchers.argThat;
@@ -27,25 +45,16 @@ import se.inera.intyg.certificateservice.infrastructure.certificate.persistence.
 @ExtendWith(MockitoExtension.class)
 class MetadataVersionRepositoryTest {
 
-  @Mock
-  StaffEntityRepository staffEntityRepository;
-  @Mock
-  UnitEntityRepository unitEntityRepository;
-  @Mock
-  PatientEntityRepository patientEntityRepository;
-  @Mock
-  StaffVersionEntityRepository staffVersionEntityRepository;
-  @Mock
-  PatientVersionEntityRepository patientVersionEntityRepository;
-  @Mock
-  UnitVersionEntityRepository unitVersionEntityRepository;
-  @InjectMocks
-  private MetadataVersionRepository metadataVersionRepository;
+  @Mock StaffEntityRepository staffEntityRepository;
+  @Mock UnitEntityRepository unitEntityRepository;
+  @Mock PatientEntityRepository patientEntityRepository;
+  @Mock StaffVersionEntityRepository staffVersionEntityRepository;
+  @Mock PatientVersionEntityRepository patientVersionEntityRepository;
+  @Mock UnitVersionEntityRepository unitVersionEntityRepository;
+  @InjectMocks private MetadataVersionRepository metadataVersionRepository;
 
-
-  private static final LocalDateTime TIMESTAMP = LocalDateTime.now()
-      .truncatedTo(ChronoUnit.SECONDS);
-
+  private static final LocalDateTime TIMESTAMP =
+      LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 
   @Nested
   class SaveVersions {
@@ -53,9 +62,7 @@ class MetadataVersionRepositoryTest {
     @Test
     void shouldSaveUpdatedStaff() {
       final var ajlaEntity = ajlaDoctorEntityBuilder().build();
-      final var ajlaUpdatedEntity = ajlaDoctorEntityBuilder()
-          .firstName("Maria")
-          .build();
+      final var ajlaUpdatedEntity = ajlaDoctorEntityBuilder().firstName("Maria").build();
 
       metadataVersionRepository.saveStaffVersion(ajlaEntity, ajlaUpdatedEntity);
 
@@ -65,9 +72,7 @@ class MetadataVersionRepositoryTest {
     @Test
     void shouldSaveUpdatedUnit() {
       final var unitEntity = alfaMedicinCentrumEntityBuilder().build();
-      final var unitUpdatedEntity = alfaMedicinCentrumEntityBuilder()
-          .name("Updated Name")
-          .build();
+      final var unitUpdatedEntity = alfaMedicinCentrumEntityBuilder().name("Updated Name").build();
 
       metadataVersionRepository.saveUnitVersion(unitEntity, unitUpdatedEntity);
 
@@ -77,9 +82,8 @@ class MetadataVersionRepositoryTest {
     @Test
     void shouldSaveUpdatedPatient() {
       final var patientEntity = athenaReactAnderssonEntityBuilder().build();
-      final var patientUpdatedEntity = athenaReactAnderssonEntityBuilder()
-          .firstName("Updated Name")
-          .build();
+      final var patientUpdatedEntity =
+          athenaReactAnderssonEntityBuilder().firstName("Updated Name").build();
 
       metadataVersionRepository.savePatientVersion(patientEntity, patientUpdatedEntity);
 
@@ -89,60 +93,79 @@ class MetadataVersionRepositoryTest {
     @Test
     void shouldSaveUpdatedStaffVersion() {
       final var ajlaEntity = ajlaDoctorEntityBuilder().build();
-      final var ajlaUpdatedEntity = ajlaDoctorEntityBuilder()
-          .firstName("Maria")
-          .build();
+      final var ajlaUpdatedEntity = ajlaDoctorEntityBuilder().firstName("Maria").build();
 
       metadataVersionRepository.saveStaffVersion(ajlaEntity, ajlaUpdatedEntity);
 
-      verify(staffVersionEntityRepository).save(argThat(saved ->
-          saved.getHsaId().equals(AJLA_DOKTOR_VERSION_ENTITY.getHsaId()) &&
-              saved.getFirstName().equals(AJLA_DOKTOR_VERSION_ENTITY.getFirstName()) &&
-              saved.getLastName().equals(AJLA_DOKTOR_VERSION_ENTITY.getLastName()) &&
-              saved.getMiddleName().equals(AJLA_DOKTOR_VERSION_ENTITY.getMiddleName())
-      ));
+      verify(staffVersionEntityRepository)
+          .save(
+              argThat(
+                  saved ->
+                      saved.getHsaId().equals(AJLA_DOKTOR_VERSION_ENTITY.getHsaId())
+                          && saved.getFirstName().equals(AJLA_DOKTOR_VERSION_ENTITY.getFirstName())
+                          && saved.getLastName().equals(AJLA_DOKTOR_VERSION_ENTITY.getLastName())
+                          && saved
+                              .getMiddleName()
+                              .equals(AJLA_DOKTOR_VERSION_ENTITY.getMiddleName())));
     }
 
     @Test
     void shouldSaveUpdatedUnitVersion() {
       final var unitEntity = alfaMedicinCentrumEntityBuilder().build();
-      final var unitUpdatedEntity = alfaMedicinCentrumEntityBuilder()
-          .name("Updated Name")
-          .build();
+      final var unitUpdatedEntity = alfaMedicinCentrumEntityBuilder().name("Updated Name").build();
 
       metadataVersionRepository.saveUnitVersion(unitEntity, unitUpdatedEntity);
 
-      verify(unitVersionEntityRepository).save(argThat(saved ->
-          saved.getHsaId().equals(ALFA_MEDICINCENTRUM_VERSION_ENTITY.getHsaId()) &&
-              saved.getName().equals(ALFA_MEDICINCENTRUM_VERSION_ENTITY.getName()) &&
-              saved.getAddress().equals(ALFA_MEDICINCENTRUM_VERSION_ENTITY.getAddress()) &&
-              saved.getZipCode().equals(ALFA_MEDICINCENTRUM_VERSION_ENTITY.getZipCode()) &&
-              saved.getCity().equals(ALFA_MEDICINCENTRUM_VERSION_ENTITY.getCity()) &&
-              saved.getPhoneNumber().equals(ALFA_MEDICINCENTRUM_VERSION_ENTITY.getPhoneNumber()) &&
-              saved.getEmail().equals(ALFA_MEDICINCENTRUM_VERSION_ENTITY.getEmail()) &&
-              saved.getWorkplaceCode().equals(ALFA_MEDICINCENTRUM_VERSION_ENTITY.getWorkplaceCode())
-      ));
+      verify(unitVersionEntityRepository)
+          .save(
+              argThat(
+                  saved ->
+                      saved.getHsaId().equals(ALFA_MEDICINCENTRUM_VERSION_ENTITY.getHsaId())
+                          && saved.getName().equals(ALFA_MEDICINCENTRUM_VERSION_ENTITY.getName())
+                          && saved
+                              .getAddress()
+                              .equals(ALFA_MEDICINCENTRUM_VERSION_ENTITY.getAddress())
+                          && saved
+                              .getZipCode()
+                              .equals(ALFA_MEDICINCENTRUM_VERSION_ENTITY.getZipCode())
+                          && saved.getCity().equals(ALFA_MEDICINCENTRUM_VERSION_ENTITY.getCity())
+                          && saved
+                              .getPhoneNumber()
+                              .equals(ALFA_MEDICINCENTRUM_VERSION_ENTITY.getPhoneNumber())
+                          && saved.getEmail().equals(ALFA_MEDICINCENTRUM_VERSION_ENTITY.getEmail())
+                          && saved
+                              .getWorkplaceCode()
+                              .equals(ALFA_MEDICINCENTRUM_VERSION_ENTITY.getWorkplaceCode())));
     }
 
     @Test
     void shouldSaveUpdatedPatientVersion() {
       final var patientEntity = athenaReactAnderssonEntityBuilder().build();
-      final var patientUpdatedEntity = athenaReactAnderssonEntityBuilder()
-          .firstName("Updated Name")
-          .build();
+      final var patientUpdatedEntity =
+          athenaReactAnderssonEntityBuilder().firstName("Updated Name").build();
 
       metadataVersionRepository.savePatientVersion(patientEntity, patientUpdatedEntity);
 
-      verify(patientVersionEntityRepository).save(argThat(saved ->
-          saved.getId().equals(ATHENA_REACT_ANDERSSON_VERSION_ENTITY.getId()) &&
-              saved.getFirstName().equals(ATHENA_REACT_ANDERSSON_VERSION_ENTITY.getFirstName()) &&
-              saved.getLastName().equals(ATHENA_REACT_ANDERSSON_VERSION_ENTITY.getLastName()) &&
-              saved.getMiddleName().equals(ATHENA_REACT_ANDERSSON_VERSION_ENTITY.getMiddleName()) &&
-              saved.isProtectedPerson() == ATHENA_REACT_ANDERSSON_VERSION_ENTITY.isProtectedPerson()
-              &&
-              saved.isTestIndicated() == ATHENA_REACT_ANDERSSON_VERSION_ENTITY.isTestIndicated() &&
-              saved.isDeceased() == ATHENA_REACT_ANDERSSON_VERSION_ENTITY.isDeceased()
-      ));
+      verify(patientVersionEntityRepository)
+          .save(
+              argThat(
+                  saved ->
+                      saved.getId().equals(ATHENA_REACT_ANDERSSON_VERSION_ENTITY.getId())
+                          && saved
+                              .getFirstName()
+                              .equals(ATHENA_REACT_ANDERSSON_VERSION_ENTITY.getFirstName())
+                          && saved
+                              .getLastName()
+                              .equals(ATHENA_REACT_ANDERSSON_VERSION_ENTITY.getLastName())
+                          && saved
+                              .getMiddleName()
+                              .equals(ATHENA_REACT_ANDERSSON_VERSION_ENTITY.getMiddleName())
+                          && saved.isProtectedPerson()
+                              == ATHENA_REACT_ANDERSSON_VERSION_ENTITY.isProtectedPerson()
+                          && saved.isTestIndicated()
+                              == ATHENA_REACT_ANDERSSON_VERSION_ENTITY.isTestIndicated()
+                          && saved.isDeceased()
+                              == ATHENA_REACT_ANDERSSON_VERSION_ENTITY.isDeceased()));
     }
   }
 }

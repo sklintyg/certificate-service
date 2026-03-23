@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ag114.elements;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.ag114.elements.QuestionDiagnos.QUESTION_DIAGNOS_ID;
@@ -34,37 +52,23 @@ public class QuestionFormedlaDiagnos {
                     "Information om diagnos kan vara viktig för patientens arbetsgivare. Det kan underlätta anpassning av patientens arbetssituation. Det kan också göra att patienten snabbare kommer tillbaka till arbetet.")
                 .selectedText("Ja")
                 .unselectedText("Nej")
-                .build()
-        )
+                .build())
         .rules(
             List.of(
                 CertificateElementRuleFactory.mandatoryExist(
-                    QUESTION_FORMEDLA_DIAGNOS_ID,
-                    QUESTION_FORMEDLA_DIAGNOS_FIELD_ID
-                )
-            )
-        )
-        .validations(
-            List.of(
-                ElementValidationBoolean.builder()
-                    .mandatory(true)
-                    .build()
-            )
-        )
+                    QUESTION_FORMEDLA_DIAGNOS_ID, QUESTION_FORMEDLA_DIAGNOS_FIELD_ID)))
+        .validations(List.of(ElementValidationBoolean.builder().mandatory(true).build()))
         .pdfConfiguration(
             CitizenPdfConfiguration.builder()
                 .hiddenBy(QUESTION_DIAGNOS_ID)
                 .shouldHide(
-                    ElementDataPredicateFactory.radioBooleans(List.of(QUESTION_FORMEDLA_DIAGNOS_ID),
-                        false)
-                )
+                    ElementDataPredicateFactory.radioBooleans(
+                        List.of(QUESTION_FORMEDLA_DIAGNOS_ID), false))
                 .replacementValue(
                     ElementSimplifiedValueText.builder()
                         .text("På patientens begäran uppges inte diagnos")
-                        .build()
-                )
-                .build()
-        )
+                        .build())
+                .build())
         .build();
   }
 }

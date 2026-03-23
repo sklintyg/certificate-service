@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.integrationtest.common.util;
 
 import static se.inera.intyg.certificateservice.application.testdata.TestDataCertificateModelIdDTO.FK7804_CERTIFICATE_MODEL_ID_DTO;
@@ -26,20 +44,18 @@ public class RenewExternalCertificateRequestBuilder {
   private CertificateModelIdDTO certificateModelId = FK7804_CERTIFICATE_MODEL_ID_DTO;
   private CertificateStatusTypeDTO status = CertificateStatusTypeDTO.SIGNED;
   private UnitDTO issuingUnit = ALFA_MEDICINCENTRUM_DTO;
-  private PrefillXmlDTO prefillXml = new PrefillXmlDTO(
-      new Xml(
-          """
-              <ns3:forifyllnad xmlns:ns3="urn:riv:clinicalprocess:healthcond:certificate:3.3"></ns3:forifyllnad>"""
-      ).base64()
-  );
+  private PrefillXmlDTO prefillXml =
+      new PrefillXmlDTO(
+          new Xml(
+                  """
+              <ns3:forifyllnad xmlns:ns3="urn:riv:clinicalprocess:healthcond:certificate:3.3"></ns3:forifyllnad>""")
+              .base64());
 
   public static RenewExternalCertificateRequestBuilder create() {
     return new RenewExternalCertificateRequestBuilder();
   }
 
-  private RenewExternalCertificateRequestBuilder() {
-
-  }
+  private RenewExternalCertificateRequestBuilder() {}
 
   public RenewExternalCertificateRequestBuilder unit(UnitDTO unit) {
     this.unit = unit;

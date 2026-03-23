@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.certificate.service;
 
 import java.time.LocalDateTime;
@@ -30,8 +48,10 @@ public class CreateCertificateDomainService {
   private final CertificateActionConfigurationRepository certificateActionConfigurationRepository;
   private final PrefillProcessor prefillProcessor;
 
-  public Certificate create(CertificateModelId certificateModelId,
-      ActionEvaluation actionEvaluation, ExternalReference externalReference,
+  public Certificate create(
+      CertificateModelId certificateModelId,
+      ActionEvaluation actionEvaluation,
+      ExternalReference externalReference,
       Xml prefillXml) {
 
     final var start = LocalDateTime.now(ZoneId.systemDefault());
@@ -40,19 +60,16 @@ public class CreateCertificateDomainService {
     if (!certificateModel.allowTo(CertificateActionType.CREATE, Optional.of(actionEvaluation))) {
       throw new CertificateActionForbidden(
           "Not allowed to create certificate for %s".formatted(certificateModelId),
-          certificateModel.reasonNotAllowed(CertificateActionType.CREATE,
-              Optional.of(actionEvaluation))
-      );
+          certificateModel.reasonNotAllowed(
+              CertificateActionType.CREATE, Optional.of(actionEvaluation)));
     }
 
     if (unitDontHaveAccess(certificateModel.id().type(), actionEvaluation)) {
       throw new CertificateActionForbidden(
-          "Not allowed to create certificate for %s since feature is not active for certificate type %s".formatted(
-              certificateModelId, certificateModel.id().type()),
+          "Not allowed to create certificate for %s since feature is not active for certificate type %s"
+              .formatted(certificateModelId, certificateModel.id().type()),
           List.of(
-              "Åtgärden kan inte genomföras eftersom den inte är tillgänglig för vårdgivare/vårdenhet eller mottagningen"
-          )
-      );
+              "Åtgärden kan inte genomföras eftersom den inte är tillgänglig för vårdgivare/vårdenhet eller mottagningen"));
     }
 
     final var certificate = certificateRepository.create(certificateModel);
@@ -69,17 +86,15 @@ public class CreateCertificateDomainService {
             .end(LocalDateTime.now(ZoneId.systemDefault()))
             .certificate(savedCertificate)
             .actionEvaluation(actionEvaluation)
-            .build()
-    );
+            .build());
 
     return savedCertificate;
   }
 
-  private boolean unitDontHaveAccess(CertificateType certificateType,
-      ActionEvaluation actionEvaluation) {
-    final var actionRuleUnitAccess = new ActionRuleCertificateTypeActiveForUnit(
-        certificateActionConfigurationRepository
-    );
+  private boolean unitDontHaveAccess(
+      CertificateType certificateType, ActionEvaluation actionEvaluation) {
+    final var actionRuleUnitAccess =
+        new ActionRuleCertificateTypeActiveForUnit(certificateActionConfigurationRepository);
 
     return !actionRuleUnitAccess.evaluate(certificateType, actionEvaluation);
   }

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.validation.model;
 
 import java.util.ArrayList;
@@ -29,8 +47,8 @@ public class ElementValidationDiagnosis implements ElementValidation {
   DiagnosisCodeRepository diagnosisCodeRepository;
 
   @Override
-  public List<ValidationError> validate(ElementData data,
-      Optional<ElementId> categoryId, List<ElementData> dataList) {
+  public List<ValidationError> validate(
+      ElementData data, Optional<ElementId> categoryId, List<ElementData> dataList) {
     if (data == null) {
       throw new IllegalArgumentException("Element data is null");
     }
@@ -38,37 +56,26 @@ public class ElementValidationDiagnosis implements ElementValidation {
     final var elementValueDiagnosisList = getValue(data.value());
 
     if (mandatoryField != null && elementValueDiagnosisList.diagnoses().isEmpty()) {
-      return List.of(
-          errorMessage(data, mandatoryField, categoryId, "Ange minst en diagnos.")
-      );
+      return List.of(errorMessage(data, mandatoryField, categoryId, "Ange minst en diagnos."));
     }
 
     if (mandatoryField != null && missingMandatoryField(elementValueDiagnosisList)) {
-      //TODO: Look into how we can make this error message more dynamic depending on which field is mandatory
+      // TODO: Look into how we can make this error message more dynamic depending on which field is
+      // mandatory
       return List.of(
-          errorMessage(data, mandatoryField, categoryId, "Ange diagnos på översta raden först.")
-      );
+          errorMessage(data, mandatoryField, categoryId, "Ange diagnos på översta raden först."));
     }
 
     final var validationErrors = new ArrayList<ValidationError>();
     if (order != null) {
       final var elementDiagnosesMap = getElementDiagnosesMap(elementValueDiagnosisList);
       validationErrors.addAll(
-          incorrectOrderValidationErrors(
-              data, categoryId,
-              elementDiagnosesMap
-          )
-      );
+          incorrectOrderValidationErrors(data, categoryId, elementDiagnosesMap));
     }
 
     if (diagnosisCodeRepository != null) {
       validationErrors.addAll(
-          invalidDiagnosisCodeValidationErrors(
-              data,
-              categoryId,
-              elementValueDiagnosisList
-          )
-      );
+          invalidDiagnosisCodeValidationErrors(data, categoryId, elementValueDiagnosisList));
     }
 
     return validationErrors;
@@ -80,23 +87,29 @@ public class ElementValidationDiagnosis implements ElementValidation {
         .collect(Collectors.toMap(ElementValueDiagnosis::id, diagnosis -> diagnosis));
   }
 
-  private List<ValidationError> invalidDiagnosisCodeValidationErrors(ElementData data,
-      Optional<ElementId> categoryId, ElementValueDiagnosisList elementValueDiagnosisList) {
+  private List<ValidationError> invalidDiagnosisCodeValidationErrors(
+      ElementData data,
+      Optional<ElementId> categoryId,
+      ElementValueDiagnosisList elementValueDiagnosisList) {
     final var validationErrors = new ArrayList<ValidationError>();
-    elementValueDiagnosisList.diagnoses().forEach(elementValueDiagnosis -> {
-      final var code = elementValueDiagnosis.code();
-      if (codeIsInvalid(new DiagnosisCode(code))) {
-        validationErrors.add(
-            errorMessage(data, elementValueDiagnosis.id(), categoryId,
-                "Diagnoskod är ej giltig.")
-        );
-      }
-    });
+    elementValueDiagnosisList
+        .diagnoses()
+        .forEach(
+            elementValueDiagnosis -> {
+              final var code = elementValueDiagnosis.code();
+              if (codeIsInvalid(new DiagnosisCode(code))) {
+                validationErrors.add(
+                    errorMessage(
+                        data, elementValueDiagnosis.id(), categoryId, "Diagnoskod är ej giltig."));
+              }
+            });
     return validationErrors;
   }
 
-  private List<ValidationError> incorrectOrderValidationErrors(ElementData data,
-      Optional<ElementId> categoryId, Map<FieldId, ElementValueDiagnosis> elementDiagnosesMap) {
+  private List<ValidationError> incorrectOrderValidationErrors(
+      ElementData data,
+      Optional<ElementId> categoryId,
+      Map<FieldId, ElementValueDiagnosis> elementDiagnosesMap) {
     final var validationErrors = new ArrayList<ValidationError>();
     for (int index = order.size() - 1; index > 0; index--) {
       if (!elementDiagnosesMap.containsKey(order.get(index))) {
@@ -107,16 +120,13 @@ public class ElementValidationDiagnosis implements ElementValidation {
         index--;
         final var orderId = order.get(index);
         if (missingField(elementDiagnosesMap.get(orderId), ElementValueDiagnosis::code)) {
-          validationErrors.add(
-              errorMessage(data, orderId, categoryId, "Ange diagnoskod.")
-          );
+          validationErrors.add(errorMessage(data, orderId, categoryId, "Ange diagnoskod."));
         }
 
         if (missingField(elementDiagnosesMap.get(orderId), ElementValueDiagnosis::description)) {
           validationErrors.add(
-              errorMessage(data, new FieldId(orderId.value()), categoryId,
-                  "Ange diagnosbeskrivning.")
-          );
+              errorMessage(
+                  data, new FieldId(orderId.value()), categoryId, "Ange diagnosbeskrivning."));
         }
       }
     }
@@ -131,8 +141,8 @@ public class ElementValidationDiagnosis implements ElementValidation {
         || function.apply(elementValueDiagnosis).isBlank();
   }
 
-  private boolean missingDiagnosisValue(Map<FieldId, ElementValueDiagnosis> elementDiagnosesMap,
-      int index) {
+  private boolean missingDiagnosisValue(
+      Map<FieldId, ElementValueDiagnosis> elementDiagnosesMap, int index) {
     final var fieldId = order.get(index - 1);
     return !elementDiagnosesMap.containsKey(fieldId)
         || missingField(elementDiagnosesMap.get(fieldId), ElementValueDiagnosis::code)
@@ -158,15 +168,11 @@ public class ElementValidationDiagnosis implements ElementValidation {
     }
 
     throw new IllegalArgumentException(
-        "Element data value %s is of wrong type".formatted(value.getClass())
-    );
+        "Element data value %s is of wrong type".formatted(value.getClass()));
   }
 
   private static ValidationError errorMessage(
-      ElementData data,
-      FieldId fieldId,
-      Optional<ElementId> categoryId,
-      String message) {
+      ElementData data, FieldId fieldId, Optional<ElementId> categoryId, String message) {
     return ValidationError.builder()
         .elementId(data.id())
         .fieldId(fieldId)

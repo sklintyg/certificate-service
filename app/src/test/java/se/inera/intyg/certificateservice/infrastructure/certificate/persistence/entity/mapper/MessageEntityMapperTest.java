@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificate.persistence.entity.mapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -66,75 +84,58 @@ import se.inera.intyg.certificateservice.infrastructure.certificate.persistence.
 @ExtendWith(MockitoExtension.class)
 class MessageEntityMapperTest {
 
-  @Mock
-  StaffRepository staffRepository;
-  @Mock
-  private MessageRelationEntityRepository messageRelationEntityRepository;
-  @Mock
-  private CertificateEntityRepository certificateEntityRepository;
+  @Mock StaffRepository staffRepository;
+  @Mock private MessageRelationEntityRepository messageRelationEntityRepository;
+  @Mock private CertificateEntityRepository certificateEntityRepository;
 
-  @InjectMocks
-  private MessageEntityMapper mapper;
+  @InjectMocks private MessageEntityMapper mapper;
 
   @Nested
   class ComplementMessageToEntity {
 
     @BeforeEach
     void setUp() {
-      doReturn(Optional.of(CERTIFICATE_ENTITY)).when(certificateEntityRepository)
+      doReturn(Optional.of(CERTIFICATE_ENTITY))
+          .when(certificateEntityRepository)
           .findByCertificateId(CERTIFICATE_ID);
     }
 
     @Test
     void shallIncludeKey() {
-      assertEquals(MESSAGE_KEY,
-          mapper.toEntity(COMPLEMENT_MESSAGE, MESSAGE_KEY).getKey()
-      );
+      assertEquals(MESSAGE_KEY, mapper.toEntity(COMPLEMENT_MESSAGE, MESSAGE_KEY).getKey());
     }
 
     @Test
     void shallIncludeId() {
-      assertEquals(MESSAGE_ID,
-          mapper.toEntity(COMPLEMENT_MESSAGE, MESSAGE_KEY).getId()
-      );
+      assertEquals(MESSAGE_ID, mapper.toEntity(COMPLEMENT_MESSAGE, MESSAGE_KEY).getId());
     }
 
     @Test
     void shallIncludeReference() {
-      assertEquals(REFERENCE_ID,
-          mapper.toEntity(COMPLEMENT_MESSAGE, MESSAGE_KEY).getReference()
-      );
+      assertEquals(REFERENCE_ID, mapper.toEntity(COMPLEMENT_MESSAGE, MESSAGE_KEY).getReference());
     }
 
     @Test
     void shallExcludeReference() {
-      final var message = complementMessageBuilder()
-          .reference(null)
-          .build();
+      final var message = complementMessageBuilder().reference(null).build();
 
       assertNull(mapper.toEntity(message, MESSAGE_KEY).getReference());
     }
 
     @Test
     void shallIncludeSubject() {
-      assertEquals(SUBJECT,
-          mapper.toEntity(COMPLEMENT_MESSAGE, MESSAGE_KEY).getSubject()
-      );
+      assertEquals(SUBJECT, mapper.toEntity(COMPLEMENT_MESSAGE, MESSAGE_KEY).getSubject());
     }
 
     @Test
     void shallExcludeSubject() {
-      final var message = complementMessageBuilder()
-          .subject(null)
-          .build();
+      final var message = complementMessageBuilder().subject(null).build();
       assertNull(mapper.toEntity(message, MESSAGE_KEY).getSubject());
     }
 
     @Test
     void shallIncludeContent() {
-      assertEquals(CONTENT,
-          mapper.toEntity(COMPLEMENT_MESSAGE, MESSAGE_KEY).getContent()
-      );
+      assertEquals(CONTENT, mapper.toEntity(COMPLEMENT_MESSAGE, MESSAGE_KEY).getContent());
     }
 
     @Test
@@ -144,58 +145,48 @@ class MessageEntityMapperTest {
 
     @Test
     void shallExcludeContactInfo() {
-      final var message = complementMessageBuilder()
-          .contactInfo(null)
-          .build();
+      final var message = complementMessageBuilder().contactInfo(null).build();
       assertNull(mapper.toEntity(message, MESSAGE_KEY).getContactInfo());
     }
 
     @Test
     void shallIncludeAuthor() {
-      assertEquals(AUTHOR_INCOMING_MESSAGE,
-          mapper.toEntity(COMPLEMENT_MESSAGE, MESSAGE_KEY).getAuthor()
-      );
+      assertEquals(
+          AUTHOR_INCOMING_MESSAGE, mapper.toEntity(COMPLEMENT_MESSAGE, MESSAGE_KEY).getAuthor());
     }
 
     @Test
     void shallIncludeCreated() {
-      assertEquals(CREATED_AFTER_SENT,
-          mapper.toEntity(COMPLEMENT_MESSAGE, MESSAGE_KEY).getCreated()
-      );
+      assertEquals(
+          CREATED_AFTER_SENT, mapper.toEntity(COMPLEMENT_MESSAGE, MESSAGE_KEY).getCreated());
     }
 
     @Test
     void shallIncludeCreatedWhenMissing() {
-      final Message complementMessageWithoutCreated = complementMessageBuilder()
-          .created(null)
-          .build();
+      final Message complementMessageWithoutCreated =
+          complementMessageBuilder().created(null).build();
 
       assertNotNull(mapper.toEntity(complementMessageWithoutCreated, 0).getCreated());
     }
 
     @Test
     void shallIncludeModified() {
-      assertEquals(CREATED_AFTER_SENT,
-          mapper.toEntity(COMPLEMENT_MESSAGE, MESSAGE_KEY).getModified()
-      );
+      assertEquals(
+          CREATED_AFTER_SENT, mapper.toEntity(COMPLEMENT_MESSAGE, MESSAGE_KEY).getModified());
     }
 
     @Test
     void shallIncludeModifiedWhenMissing() {
-      final Message complementMessageWithoutModified = complementMessageBuilder()
-          .modified(null)
-          .build();
+      final Message complementMessageWithoutModified =
+          complementMessageBuilder().modified(null).build();
 
       assertNotNull(mapper.toEntity(complementMessageWithoutModified, 0).getModified());
     }
 
     @Test
     void shallIncludeSent() {
-      assertEquals(SENT,
-          mapper.toEntity(COMPLEMENT_MESSAGE, MESSAGE_KEY).getSent()
-      );
+      assertEquals(SENT, mapper.toEntity(COMPLEMENT_MESSAGE, MESSAGE_KEY).getSent());
     }
-
 
     @Test
     void shallIncludeForwarded() {
@@ -204,56 +195,51 @@ class MessageEntityMapperTest {
 
     @Test
     void shallIncludeLastDateToReply() {
-      assertEquals(LAST_DATE_TO_REPLY,
-          mapper.toEntity(COMPLEMENT_MESSAGE, MESSAGE_KEY).getLastDateToReply()
-      );
+      assertEquals(
+          LAST_DATE_TO_REPLY,
+          mapper.toEntity(COMPLEMENT_MESSAGE, MESSAGE_KEY).getLastDateToReply());
     }
 
     @Test
     void shallIncludeStatusSENT() {
-      final var expectedStatus = MessageStatusEntity.builder()
-          .key(MessageStatusEnum.SENT.getKey())
-          .status(MessageStatusEnum.SENT.name())
-          .build();
+      final var expectedStatus =
+          MessageStatusEntity.builder()
+              .key(MessageStatusEnum.SENT.getKey())
+              .status(MessageStatusEnum.SENT.name())
+              .build();
 
-      assertEquals(expectedStatus,
-          mapper.toEntity(COMPLEMENT_MESSAGE, MESSAGE_KEY).getStatus()
-      );
+      assertEquals(expectedStatus, mapper.toEntity(COMPLEMENT_MESSAGE, MESSAGE_KEY).getStatus());
     }
 
     @Test
     void shallIncludeStatusHANDLED() {
-      final var expectedStatus = MessageStatusEntity.builder()
-          .key(MessageStatusEnum.HANDLED.getKey())
-          .status(MessageStatusEnum.HANDLED.name())
-          .build();
+      final var expectedStatus =
+          MessageStatusEntity.builder()
+              .key(MessageStatusEnum.HANDLED.getKey())
+              .status(MessageStatusEnum.HANDLED.name())
+              .build();
 
-      final Message complementMessageHandled = complementMessageBuilder()
-          .status(MessageStatus.HANDLED)
-          .build();
+      final Message complementMessageHandled =
+          complementMessageBuilder().status(MessageStatus.HANDLED).build();
 
-      assertEquals(expectedStatus,
-          mapper.toEntity(complementMessageHandled, 0).getStatus()
-      );
+      assertEquals(expectedStatus, mapper.toEntity(complementMessageHandled, 0).getStatus());
     }
 
     @Test
     void shallIncludeType() {
-      final var expectedType = MessageTypeEntity.builder()
-          .key(MessageTypeEnum.COMPLEMENT.getKey())
-          .type(MessageTypeEnum.COMPLEMENT.name())
-          .build();
+      final var expectedType =
+          MessageTypeEntity.builder()
+              .key(MessageTypeEnum.COMPLEMENT.getKey())
+              .type(MessageTypeEnum.COMPLEMENT.name())
+              .build();
 
-      assertEquals(expectedType,
-          mapper.toEntity(COMPLEMENT_MESSAGE, MESSAGE_KEY).getMessageType()
-      );
+      assertEquals(expectedType, mapper.toEntity(COMPLEMENT_MESSAGE, MESSAGE_KEY).getMessageType());
     }
 
     @Test
     void shallIncludeCertificate() {
-      assertEquals(CERTIFICATE_ENTITY,
-          mapper.toEntity(COMPLEMENT_MESSAGE, MESSAGE_KEY).getCertificate()
-      );
+      assertEquals(
+          CERTIFICATE_ENTITY, mapper.toEntity(COMPLEMENT_MESSAGE, MESSAGE_KEY).getCertificate());
     }
   }
 
@@ -262,60 +248,47 @@ class MessageEntityMapperTest {
 
     @BeforeEach
     void setUp() {
-      doReturn(Optional.of(CERTIFICATE_ENTITY)).when(certificateEntityRepository)
+      doReturn(Optional.of(CERTIFICATE_ENTITY))
+          .when(certificateEntityRepository)
           .findByCertificateId(CERTIFICATE_ID);
     }
 
     @Test
     void shallIncludeKey() {
-      assertEquals(MESSAGE_KEY,
-          mapper.toEntity(CONTACT_MESSAGE, MESSAGE_KEY).getKey()
-      );
+      assertEquals(MESSAGE_KEY, mapper.toEntity(CONTACT_MESSAGE, MESSAGE_KEY).getKey());
     }
 
     @Test
     void shallIncludeId() {
-      assertEquals(MESSAGE_ID,
-          mapper.toEntity(CONTACT_MESSAGE, MESSAGE_KEY).getId()
-      );
+      assertEquals(MESSAGE_ID, mapper.toEntity(CONTACT_MESSAGE, MESSAGE_KEY).getId());
     }
 
     @Test
     void shallIncludeReference() {
-      assertEquals(REFERENCE_ID,
-          mapper.toEntity(CONTACT_MESSAGE, MESSAGE_KEY).getReference()
-      );
+      assertEquals(REFERENCE_ID, mapper.toEntity(CONTACT_MESSAGE, MESSAGE_KEY).getReference());
     }
 
     @Test
     void shallExcludeReference() {
-      final var message = complementMessageBuilder()
-          .reference(null)
-          .build();
+      final var message = complementMessageBuilder().reference(null).build();
 
       assertNull(mapper.toEntity(message, MESSAGE_KEY).getReference());
     }
 
     @Test
     void shallIncludeSubject() {
-      assertEquals(SUBJECT,
-          mapper.toEntity(CONTACT_MESSAGE, MESSAGE_KEY).getSubject()
-      );
+      assertEquals(SUBJECT, mapper.toEntity(CONTACT_MESSAGE, MESSAGE_KEY).getSubject());
     }
 
     @Test
     void shallExcludeSubject() {
-      final var message = complementMessageBuilder()
-          .subject(null)
-          .build();
+      final var message = complementMessageBuilder().subject(null).build();
       assertNull(mapper.toEntity(message, MESSAGE_KEY).getSubject());
     }
 
     @Test
     void shallIncludeContent() {
-      assertEquals(CONTENT,
-          mapper.toEntity(CONTACT_MESSAGE, MESSAGE_KEY).getContent()
-      );
+      assertEquals(CONTENT, mapper.toEntity(CONTACT_MESSAGE, MESSAGE_KEY).getContent());
     }
 
     @Test
@@ -325,58 +298,46 @@ class MessageEntityMapperTest {
 
     @Test
     void shallExcludeContactInfo() {
-      final var message = complementMessageBuilder()
-          .contactInfo(null)
-          .build();
+      final var message = complementMessageBuilder().contactInfo(null).build();
       assertNull(mapper.toEntity(message, MESSAGE_KEY).getContactInfo());
     }
 
     @Test
     void shallIncludeAuthor() {
-      assertEquals(AUTHOR_INCOMING_MESSAGE,
-          mapper.toEntity(CONTACT_MESSAGE, MESSAGE_KEY).getAuthor()
-      );
+      assertEquals(
+          AUTHOR_INCOMING_MESSAGE, mapper.toEntity(CONTACT_MESSAGE, MESSAGE_KEY).getAuthor());
     }
 
     @Test
     void shallIncludeCreated() {
-      assertEquals(CREATED_AFTER_SENT,
-          mapper.toEntity(CONTACT_MESSAGE, MESSAGE_KEY).getCreated()
-      );
+      assertEquals(CREATED_AFTER_SENT, mapper.toEntity(CONTACT_MESSAGE, MESSAGE_KEY).getCreated());
     }
 
     @Test
     void shallIncludeCreatedWhenMissing() {
-      final Message complementMessageWithoutCreated = complementMessageBuilder()
-          .created(null)
-          .build();
+      final Message complementMessageWithoutCreated =
+          complementMessageBuilder().created(null).build();
 
       assertNotNull(mapper.toEntity(complementMessageWithoutCreated, 0).getCreated());
     }
 
     @Test
     void shallIncludeModified() {
-      assertEquals(CREATED_AFTER_SENT,
-          mapper.toEntity(CONTACT_MESSAGE, MESSAGE_KEY).getModified()
-      );
+      assertEquals(CREATED_AFTER_SENT, mapper.toEntity(CONTACT_MESSAGE, MESSAGE_KEY).getModified());
     }
 
     @Test
     void shallIncludeModifiedWhenMissing() {
-      final Message complementMessageWithoutModified = complementMessageBuilder()
-          .modified(null)
-          .build();
+      final Message complementMessageWithoutModified =
+          complementMessageBuilder().modified(null).build();
 
       assertNotNull(mapper.toEntity(complementMessageWithoutModified, 0).getModified());
     }
 
     @Test
     void shallIncludeSent() {
-      assertEquals(SENT,
-          mapper.toEntity(CONTACT_MESSAGE, MESSAGE_KEY).getSent()
-      );
+      assertEquals(SENT, mapper.toEntity(CONTACT_MESSAGE, MESSAGE_KEY).getSent());
     }
-
 
     @Test
     void shallIncludeForwarded() {
@@ -385,63 +346,57 @@ class MessageEntityMapperTest {
 
     @Test
     void shallIncludeLastDateToReply() {
-      assertEquals(LAST_DATE_TO_REPLY,
-          mapper.toEntity(CONTACT_MESSAGE, MESSAGE_KEY).getLastDateToReply()
-      );
+      assertEquals(
+          LAST_DATE_TO_REPLY, mapper.toEntity(CONTACT_MESSAGE, MESSAGE_KEY).getLastDateToReply());
     }
 
     @Test
     void shallIncludeStatusSENT() {
-      final var expectedStatus = MessageStatusEntity.builder()
-          .key(MessageStatusEnum.SENT.getKey())
-          .status(MessageStatusEnum.SENT.name())
-          .build();
+      final var expectedStatus =
+          MessageStatusEntity.builder()
+              .key(MessageStatusEnum.SENT.getKey())
+              .status(MessageStatusEnum.SENT.name())
+              .build();
 
-      assertEquals(expectedStatus,
-          mapper.toEntity(CONTACT_MESSAGE, MESSAGE_KEY).getStatus()
-      );
+      assertEquals(expectedStatus, mapper.toEntity(CONTACT_MESSAGE, MESSAGE_KEY).getStatus());
     }
 
     @Test
     void shallIncludeStatusHANDLED() {
-      final var expectedStatus = MessageStatusEntity.builder()
-          .key(MessageStatusEnum.HANDLED.getKey())
-          .status(MessageStatusEnum.HANDLED.name())
-          .build();
+      final var expectedStatus =
+          MessageStatusEntity.builder()
+              .key(MessageStatusEnum.HANDLED.getKey())
+              .status(MessageStatusEnum.HANDLED.name())
+              .build();
 
-      final Message complementMessageHandled = complementMessageBuilder()
-          .status(MessageStatus.HANDLED)
-          .build();
+      final Message complementMessageHandled =
+          complementMessageBuilder().status(MessageStatus.HANDLED).build();
 
-      assertEquals(expectedStatus,
-          mapper.toEntity(complementMessageHandled, 0).getStatus()
-      );
+      assertEquals(expectedStatus, mapper.toEntity(complementMessageHandled, 0).getStatus());
     }
 
     @Test
     void shallIncludeType() {
-      final var expectedType = MessageTypeEntity.builder()
-          .key(MessageTypeEnum.CONTACT.getKey())
-          .type(MessageTypeEnum.CONTACT.name())
-          .build();
+      final var expectedType =
+          MessageTypeEntity.builder()
+              .key(MessageTypeEnum.CONTACT.getKey())
+              .type(MessageTypeEnum.CONTACT.name())
+              .build();
 
-      assertEquals(expectedType,
-          mapper.toEntity(CONTACT_MESSAGE, MESSAGE_KEY).getMessageType()
-      );
+      assertEquals(expectedType, mapper.toEntity(CONTACT_MESSAGE, MESSAGE_KEY).getMessageType());
     }
 
     @Test
     void shallIncludeCertificate() {
-      assertEquals(CERTIFICATE_ENTITY,
-          mapper.toEntity(CONTACT_MESSAGE, MESSAGE_KEY).getCertificate()
-      );
+      assertEquals(
+          CERTIFICATE_ENTITY, mapper.toEntity(CONTACT_MESSAGE, MESSAGE_KEY).getCertificate());
     }
 
     @Test
     void shallIncludeAuthoredByStaff() {
       doReturn(AJLA_DOKTOR_ENTITY).when(staffRepository).staff(AJLA_DOKTOR);
-      assertEquals(AJLA_DOKTOR_ENTITY,
-          mapper.toEntity(CONTACT_MESSAGE, MESSAGE_KEY).getAuthoredByStaff());
+      assertEquals(
+          AJLA_DOKTOR_ENTITY, mapper.toEntity(CONTACT_MESSAGE, MESSAGE_KEY).getAuthoredByStaff());
     }
   }
 
@@ -450,100 +405,79 @@ class MessageEntityMapperTest {
 
     @Test
     void shallIncludeId() {
-      assertEquals(new MessageId(MESSAGE_ID),
-          mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).id()
-      );
+      assertEquals(new MessageId(MESSAGE_ID), mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).id());
     }
 
     @Test
     void shallIncludeReference() {
-      assertEquals(new SenderReference(REFERENCE_ID),
-          mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).reference()
-      );
+      assertEquals(
+          new SenderReference(REFERENCE_ID),
+          mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).reference());
     }
 
     @Test
     void shallIncludeSubject() {
-      assertEquals(new Subject(SUBJECT),
-          mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).subject()
-      );
+      assertEquals(new Subject(SUBJECT), mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).subject());
     }
 
     @Test
     void shallIncludeContent() {
-      assertEquals(new Content(CONTENT),
-          mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).content()
-      );
+      assertEquals(new Content(CONTENT), mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).content());
     }
 
     @Test
     void shallIncludeAuthor() {
-      assertEquals(new Author(AUTHOR_INCOMING_MESSAGE),
-          mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).author()
-      );
+      assertEquals(
+          new Author(AUTHOR_INCOMING_MESSAGE), mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).author());
     }
 
     @Test
     void shallIncludeCreated() {
-      assertEquals(CREATED_AFTER_SENT,
-          mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).created()
-      );
+      assertEquals(CREATED_AFTER_SENT, mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).created());
     }
 
     @Test
     void shallIncludeModified() {
-      assertEquals(CREATED_AFTER_SENT,
-          mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).modified()
-      );
+      assertEquals(CREATED_AFTER_SENT, mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).modified());
     }
 
     @Test
     void shallIncludeSent() {
-      assertEquals(SENT,
-          mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).sent()
-      );
+      assertEquals(SENT, mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).sent());
     }
 
     @Test
     void shallIncludeForwarded() {
-      assertEquals(new Forwarded(false),
-          mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).forwarded()
-      );
+      assertEquals(new Forwarded(false), mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).forwarded());
     }
 
     @Test
     void shallIncludeLastDateToReply() {
-      assertEquals(LAST_DATE_TO_REPLY,
-          mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).lastDateToReply()
-      );
+      assertEquals(
+          LAST_DATE_TO_REPLY, mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).lastDateToReply());
     }
 
     @Test
     void shallIncludeStatus() {
-      assertEquals(MessageStatus.SENT,
-          mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).status()
-      );
+      assertEquals(MessageStatus.SENT, mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).status());
     }
 
     @Test
     void shallIncludeType() {
-      assertEquals(COMPLEMENT,
-          mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).type()
-      );
+      assertEquals(COMPLEMENT, mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).type());
     }
 
     @Test
     void shallIncludeCertificateId() {
-      assertEquals(new CertificateId(CERTIFICATE_ID),
-          mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).certificateId()
-      );
+      assertEquals(
+          new CertificateId(CERTIFICATE_ID),
+          mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).certificateId());
     }
 
     @Test
     void shallIncludePersonId() {
-      assertEquals(ATHENA_REACT_ANDERSSON.id(),
-          mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).personId()
-      );
+      assertEquals(
+          ATHENA_REACT_ANDERSSON.id(), mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).personId());
     }
   }
 
@@ -552,100 +486,76 @@ class MessageEntityMapperTest {
 
     @Test
     void shallIncludeId() {
-      assertEquals(new MessageId(MESSAGE_ID),
-          mapper.toDomain(CONTACT_MESSAGE_ENTITY).id()
-      );
+      assertEquals(new MessageId(MESSAGE_ID), mapper.toDomain(CONTACT_MESSAGE_ENTITY).id());
     }
 
     @Test
     void shallIncludeReference() {
-      assertEquals(new SenderReference(REFERENCE_ID),
-          mapper.toDomain(CONTACT_MESSAGE_ENTITY).reference()
-      );
+      assertEquals(
+          new SenderReference(REFERENCE_ID), mapper.toDomain(CONTACT_MESSAGE_ENTITY).reference());
     }
 
     @Test
     void shallIncludeSubject() {
-      assertEquals(new Subject(SUBJECT),
-          mapper.toDomain(CONTACT_MESSAGE_ENTITY).subject()
-      );
+      assertEquals(new Subject(SUBJECT), mapper.toDomain(CONTACT_MESSAGE_ENTITY).subject());
     }
 
     @Test
     void shallIncludeContent() {
-      assertEquals(new Content(CONTENT),
-          mapper.toDomain(CONTACT_MESSAGE_ENTITY).content()
-      );
+      assertEquals(new Content(CONTENT), mapper.toDomain(CONTACT_MESSAGE_ENTITY).content());
     }
 
     @Test
     void shallIncludeAuthor() {
-      assertEquals(new Author(AUTHOR_INCOMING_MESSAGE),
-          mapper.toDomain(CONTACT_MESSAGE_ENTITY).author()
-      );
+      assertEquals(
+          new Author(AUTHOR_INCOMING_MESSAGE), mapper.toDomain(CONTACT_MESSAGE_ENTITY).author());
     }
 
     @Test
     void shallIncludeCreated() {
-      assertEquals(CREATED_AFTER_SENT,
-          mapper.toDomain(CONTACT_MESSAGE_ENTITY).created()
-      );
+      assertEquals(CREATED_AFTER_SENT, mapper.toDomain(CONTACT_MESSAGE_ENTITY).created());
     }
 
     @Test
     void shallIncludeModified() {
-      assertEquals(CREATED_AFTER_SENT,
-          mapper.toDomain(CONTACT_MESSAGE_ENTITY).modified()
-      );
+      assertEquals(CREATED_AFTER_SENT, mapper.toDomain(CONTACT_MESSAGE_ENTITY).modified());
     }
 
     @Test
     void shallIncludeSent() {
-      assertEquals(SENT,
-          mapper.toDomain(CONTACT_MESSAGE_ENTITY).sent()
-      );
+      assertEquals(SENT, mapper.toDomain(CONTACT_MESSAGE_ENTITY).sent());
     }
 
     @Test
     void shallIncludeForwarded() {
-      assertEquals(new Forwarded(false),
-          mapper.toDomain(CONTACT_MESSAGE_ENTITY).forwarded()
-      );
+      assertEquals(new Forwarded(false), mapper.toDomain(CONTACT_MESSAGE_ENTITY).forwarded());
     }
 
     @Test
     void shallIncludeLastDateToReply() {
-      assertEquals(LAST_DATE_TO_REPLY,
-          mapper.toDomain(CONTACT_MESSAGE_ENTITY).lastDateToReply()
-      );
+      assertEquals(LAST_DATE_TO_REPLY, mapper.toDomain(CONTACT_MESSAGE_ENTITY).lastDateToReply());
     }
 
     @Test
     void shallIncludeStatus() {
-      assertEquals(MessageStatus.SENT,
-          mapper.toDomain(CONTACT_MESSAGE_ENTITY).status()
-      );
+      assertEquals(MessageStatus.SENT, mapper.toDomain(CONTACT_MESSAGE_ENTITY).status());
     }
 
     @Test
     void shallIncludeType() {
-      assertEquals(CONTACT,
-          mapper.toDomain(CONTACT_MESSAGE_ENTITY).type()
-      );
+      assertEquals(CONTACT, mapper.toDomain(CONTACT_MESSAGE_ENTITY).type());
     }
 
     @Test
     void shallIncludeCertificateId() {
-      assertEquals(new CertificateId(CERTIFICATE_ID),
-          mapper.toDomain(CONTACT_MESSAGE_ENTITY).certificateId()
-      );
+      assertEquals(
+          new CertificateId(CERTIFICATE_ID),
+          mapper.toDomain(CONTACT_MESSAGE_ENTITY).certificateId());
     }
 
     @Test
     void shallIncludePersonId() {
-      assertEquals(ATHENA_REACT_ANDERSSON.id(),
-          mapper.toDomain(CONTACT_MESSAGE_ENTITY).personId()
-      );
+      assertEquals(ATHENA_REACT_ANDERSSON.id(), mapper.toDomain(CONTACT_MESSAGE_ENTITY).personId());
     }
 
     @Test
@@ -660,94 +570,81 @@ class MessageEntityMapperTest {
     @BeforeEach
     void setUp() {
       doReturn(
-          List.of(
-              MessageRelationEntity.builder()
-                  .messageRelationType(
-                      MessageRelationTypeEntity.builder()
-                          .type(MessageRelationType.ANSWER.name())
-                          .build()
-                  )
-                  .childMessage(ANSWER_MESSAGE_ENTITY)
-                  .build()
-          )
-      ).when(messageRelationEntityRepository).findByParentMessage(COMPLEMENT_MESSAGE_ENTITY);
+              List.of(
+                  MessageRelationEntity.builder()
+                      .messageRelationType(
+                          MessageRelationTypeEntity.builder()
+                              .type(MessageRelationType.ANSWER.name())
+                              .build())
+                      .childMessage(ANSWER_MESSAGE_ENTITY)
+                      .build()))
+          .when(messageRelationEntityRepository)
+          .findByParentMessage(COMPLEMENT_MESSAGE_ENTITY);
     }
 
     @Test
     void shallIncludeId() {
-      assertEquals(new MessageId(ANSWER_ID),
-          mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).answer().id()
-      );
+      assertEquals(
+          new MessageId(ANSWER_ID), mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).answer().id());
     }
 
     @Test
     void shallIncludeReference() {
-      assertEquals(new SenderReference(REFERENCE_ID),
-          mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).answer().reference()
-      );
+      assertEquals(
+          new SenderReference(REFERENCE_ID),
+          mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).answer().reference());
     }
 
     @Test
     void shallIncludeSubject() {
-      assertEquals(new Subject(SUBJECT),
-          mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).answer().subject()
-      );
+      assertEquals(
+          new Subject(SUBJECT), mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).answer().subject());
     }
 
     @Test
     void shallIncludeContent() {
-      assertEquals(new Content(CONTENT),
-          mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).answer().content()
-      );
+      assertEquals(
+          new Content(CONTENT), mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).answer().content());
     }
 
     @Test
     void shallIncludeAuthor() {
-      assertEquals(new Author(AUTHOR_INCOMING_MESSAGE),
-          mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).answer().author()
-      );
+      assertEquals(
+          new Author(AUTHOR_INCOMING_MESSAGE),
+          mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).answer().author());
     }
 
     @Test
     void shallIncludeCreated() {
-      assertEquals(CREATED_AFTER_SENT,
-          mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).answer().created()
-      );
+      assertEquals(
+          CREATED_AFTER_SENT, mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).answer().created());
     }
 
     @Test
     void shallIncludeModified() {
-      assertEquals(CREATED_AFTER_SENT,
-          mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).answer().modified()
-      );
+      assertEquals(
+          CREATED_AFTER_SENT, mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).answer().modified());
     }
 
     @Test
     void shallIncludeSent() {
-      assertEquals(SENT,
-          mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).answer().sent()
-      );
+      assertEquals(SENT, mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).answer().sent());
     }
 
     @Test
     void shallIncludeStatus() {
-      assertEquals(MessageStatus.SENT,
-          mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).answer().status()
-      );
+      assertEquals(
+          MessageStatus.SENT, mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).answer().status());
     }
 
     @Test
     void shallIncludeContactInfo() {
-      assertNotNull(
-          mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).answer().contactInfo()
-      );
+      assertNotNull(mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).answer().contactInfo());
     }
 
     @Test
     void shallIncludeType() {
-      assertEquals(ANSWER,
-          mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).answer().type()
-      );
+      assertEquals(ANSWER, mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).answer().type());
     }
   }
 
@@ -757,77 +654,70 @@ class MessageEntityMapperTest {
     @BeforeEach
     void setUp() {
       doReturn(
-          List.of(
-              MessageRelationEntity.builder()
-                  .messageRelationType(
-                      MessageRelationTypeEntity.builder()
-                          .type(MessageRelationType.REMINDER.name())
-                          .build()
-                  )
-                  .childMessage(REMINDER_MESSAGE_ENTITY)
-                  .build()
-          )
-      ).when(messageRelationEntityRepository).findByParentMessage(COMPLEMENT_MESSAGE_ENTITY);
+              List.of(
+                  MessageRelationEntity.builder()
+                      .messageRelationType(
+                          MessageRelationTypeEntity.builder()
+                              .type(MessageRelationType.REMINDER.name())
+                              .build())
+                      .childMessage(REMINDER_MESSAGE_ENTITY)
+                      .build()))
+          .when(messageRelationEntityRepository)
+          .findByParentMessage(COMPLEMENT_MESSAGE_ENTITY);
     }
 
     @Test
     void shallIncludeId() {
-      assertEquals(new MessageId(REMINDER_MESSAGE_ID),
-          mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).reminders().getFirst().id()
-      );
+      assertEquals(
+          new MessageId(REMINDER_MESSAGE_ID),
+          mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).reminders().getFirst().id());
     }
 
     @Test
     void shallIncludeReference() {
-      assertEquals(new SenderReference(REFERENCE_ID),
-          mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).reminders().getFirst().reference()
-      );
+      assertEquals(
+          new SenderReference(REFERENCE_ID),
+          mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).reminders().getFirst().reference());
     }
 
     @Test
     void shallIncludeSubject() {
-      assertEquals(new Subject(SUBJECT),
-          mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).reminders().getFirst().subject()
-      );
+      assertEquals(
+          new Subject(SUBJECT),
+          mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).reminders().getFirst().subject());
     }
 
     @Test
     void shallIncludeContent() {
-      assertEquals(new Content(CONTENT),
-          mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).reminders().getFirst().content()
-      );
+      assertEquals(
+          new Content(CONTENT),
+          mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).reminders().getFirst().content());
     }
 
     @Test
     void shallIncludeAuthor() {
-      assertEquals(new Author(AUTHOR_INCOMING_MESSAGE),
-          mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).reminders().getFirst().author()
-      );
+      assertEquals(
+          new Author(AUTHOR_INCOMING_MESSAGE),
+          mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).reminders().getFirst().author());
     }
 
     @Test
     void shallIncludeCreated() {
-      assertEquals(CREATED_AFTER_SENT,
-          mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).reminders().getFirst().created()
-      );
+      assertEquals(
+          CREATED_AFTER_SENT,
+          mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).reminders().getFirst().created());
     }
 
     @Test
     void shallIncludeSent() {
-      assertEquals(SENT,
-          mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).reminders().getFirst().sent()
-      );
+      assertEquals(SENT, mapper.toDomain(COMPLEMENT_MESSAGE_ENTITY).reminders().getFirst().sent());
     }
   }
 
   @Test
   void shallSetContactInfoToEmptyListIfMissing() {
-    final var messageEntity = complementMessageEntityBuilder()
-        .contactInfo(null)
-        .build();
+    final var messageEntity = complementMessageEntityBuilder().contactInfo(null).build();
 
-    assertEquals(Collections.emptyList(),
-        mapper.toDomain(messageEntity).contactInfo().lines()
-    );
+    assertEquals(Collections.emptyList(), mapper.toDomain(messageEntity).contactInfo().lines());
   }
 }

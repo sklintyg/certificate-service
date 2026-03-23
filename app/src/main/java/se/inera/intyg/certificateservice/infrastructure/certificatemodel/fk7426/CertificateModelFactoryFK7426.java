@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7426;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.elements.ElementUnitContactInformation.issuingUnitContactInfo;
@@ -49,6 +67,7 @@ import se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.
 public class CertificateModelFactoryFK7426 implements CertificateModelFactory {
 
   private final CertificateActionFactory certificateActionFactory;
+
   @Value("${certificate.model.fk7426.v1_0.active.from}")
   private LocalDateTime activeFrom;
 
@@ -60,11 +79,14 @@ public class CertificateModelFactoryFK7426 implements CertificateModelFactory {
   private static final String FK_7426 = "fk7426";
   private static final String VERSION = "1.0";
   private static final CertificateTypeName FK7426_TYPE_NAME = new CertificateTypeName("FK7426");
-  private static final String NAME = "Läkarutlåtande tillfällig föräldrapenning för ett allvarligt sjukt barn som inte har fyllt 18 år";
-  private static final String DESCRIPTION = """
+  private static final String NAME =
+      "Läkarutlåtande tillfällig föräldrapenning för ett allvarligt sjukt barn som inte har fyllt 18 år";
+  private static final String DESCRIPTION =
+      """
           När ett barn är allvarligt sjukt kan föräldrar som behöver avstå från sitt arbete få tillfällig föräldrapenning under ett obegränsat antal dagar. Läkarutlåtandet behövs från den första dagen som barnet bedöms vara allvarligt sjukt.
       """;
-  private static final String DETAILED_DESCRIPTION = """
+  private static final String DETAILED_DESCRIPTION =
+      """
       <b className="iu-fw-heading">Vad är Läkarutlåtande tillfällig föräldrapenning för ett allvarligt sjukt barn som inte har fyllt 18 år?</b><br>
       <p>Läkarutlåtandet används när ett barn är allvarligt sjukt. För att barnet ska bedömas vara allvarligt sjukt måste någon av följande punkter vara uppfyllda:</p>
       <ul><li>Barnet misstänks lida av en sjukdom som är förenad med ett påtagligt hot mot barnets liv.</li><li>Barnet har diagnosticerats med en sjukdom som är förenad med ett påtagligt hot mot barnets liv.</li><li>Barnet har lidit av en sådan sjukdom som är förenad med ett påtagligt hot mot barnets liv och barnets hälsotillstånd under eftervårdsfasen är allvarligt påverkat.</li></ul>
@@ -74,13 +96,14 @@ public class CertificateModelFactoryFK7426 implements CertificateModelFactory {
       <p>Läkarutlåtande behövs från den första dagen som en förälder vill ansöka om tillfällig föräldrapenning för ett barn som bedöms allvarligt sjukt.</p>
       """;
 
-  public static final CertificateModelId FK7426_V1_0 = CertificateModelId.builder()
-      .type(new CertificateType(FK_7426))
-      .version(new CertificateVersion(VERSION))
-      .build();
+  public static final CertificateModelId FK7426_V1_0 =
+      CertificateModelId.builder()
+          .type(new CertificateType(FK_7426))
+          .version(new CertificateVersion(VERSION))
+          .build();
 
-  public static final SchematronPath SCHEMATRON_PATH = new SchematronPath(
-      "fk7426/schematron/lu_tfp_asb_18.v1.sch");
+  public static final SchematronPath SCHEMATRON_PATH =
+      new SchematronPath("fk7426/schematron/lu_tfp_asb_18.v1.sch");
 
   public static final short TEXT_FIELD_LIMIT = 4000;
 
@@ -112,51 +135,26 @@ public class CertificateModelFactoryFK7426 implements CertificateModelFactory {
                 CertificateMessageType.builder()
                     .type(MessageType.OTHER)
                     .subject(new Subject(MessageType.OTHER.displayName()))
-                    .build()
-            )
-        )
+                    .build()))
         .elementSpecifications(
             List.of(
                 categoryGrundForMedicinsktUnderlag(
-                    questionGrundForMedicinsktUnderlag(
-                        questionAnnanGrundForMedicinsktUnderlag()
-                    )
-                ),
-                categoryDiagnos(
-                    questionDiagnos(diagnosisCodeRepository),
-                    questionSymtom()
-                ),
+                    questionGrundForMedicinsktUnderlag(questionAnnanGrundForMedicinsktUnderlag())),
+                categoryDiagnos(questionDiagnos(diagnosisCodeRepository), questionSymtom()),
                 categoryHalsotillstand(
-                    questionHalsotillstandSomatiska(),
-                    questionHalsotillstandPsykiska()
-                ),
-                categoryGrundForBedomning(
-                    questionGrundForBedomning()
-                ),
-                categoryBehandling(
-                    questionPagaendeBehandlingar(),
-                    questionPlaneradeBehandlingar()
-                ),
-                categoryPeriodSjukdom(
-                    questionPeriodSjukdom(),
-                    questionPeriodSjukdomMotivering()
-                ),
+                    questionHalsotillstandSomatiska(), questionHalsotillstandPsykiska()),
+                categoryGrundForBedomning(questionGrundForBedomning()),
+                categoryBehandling(questionPagaendeBehandlingar(), questionPlaneradeBehandlingar()),
+                categoryPeriodSjukdom(questionPeriodSjukdom(), questionPeriodSjukdomMotivering()),
                 categoryVard(
                     questionVardasBarnetInneliggandePaSjukhus(
-                        questionPeriodVardasBarnInneliggandePaSjukhus()
-                    ),
+                        questionPeriodVardasBarnInneliggandePaSjukhus()),
                     questionVardasBarnetInskrivetMedHemsjukvard(
-                        questionPeriodVardasBarnetInskrivetMedHemsjukvard()
-                    )
-                ),
-                issuingUnitContactInfo()
-            )
-        )
+                        questionPeriodVardasBarnetInskrivetMedHemsjukvard())),
+                issuingUnitContactInfo()))
         .certificateActionFactory(certificateActionFactory)
         .confirmationModalProvider(new FK7426CertificateConfirmationModalProvider())
-        .pdfSpecification(
-            FK7426PdfSpecification.create()
-        )
+        .pdfSpecification(FK7426PdfSpecification.create())
         .build();
   }
 }

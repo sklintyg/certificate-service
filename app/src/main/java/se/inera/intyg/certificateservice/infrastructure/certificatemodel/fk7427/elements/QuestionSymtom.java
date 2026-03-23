@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7427.elements;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7427.CertificateModelFactoryFK7427.TEXT_FIELD_LIMIT;
@@ -17,8 +35,8 @@ public class QuestionSymtom {
 
   public static final ElementId QUESTION_SYMTOM_ID = new ElementId("55");
   public static final FieldId QUESTION_SYMTOM_FIELD_ID = new FieldId("55.1");
-  private static final PdfFieldId PDF_FIELD_ID = new PdfFieldId(
-      "form1[0].#subform[0].flt_txtFlerradig[0]");
+  private static final PdfFieldId PDF_FIELD_ID =
+      new PdfFieldId("form1[0].#subform[0].flt_txtFlerradig[0]");
 
   private QuestionSymtom() {
     throw new IllegalStateException("Utility class");
@@ -31,28 +49,16 @@ public class QuestionSymtom {
             ElementConfigurationTextArea.builder()
                 .name("Fyll i vilka symtom barnet har om diagnos inte är fastställd")
                 .id(QUESTION_SYMTOM_FIELD_ID)
-                .build()
-        )
-        .rules(
-            List.of(
-                CertificateElementRuleFactory.limit(QUESTION_SYMTOM_ID, TEXT_FIELD_LIMIT)
-            )
-        )
-        .validations(
-            List.of(
-                ElementValidationText.builder()
-                    .limit((int) TEXT_FIELD_LIMIT)
-                    .build()
-            )
-        )
+                .build())
+        .rules(List.of(CertificateElementRuleFactory.limit(QUESTION_SYMTOM_ID, TEXT_FIELD_LIMIT)))
+        .validations(List.of(ElementValidationText.builder().limit((int) TEXT_FIELD_LIMIT).build()))
         .pdfConfiguration(
             PdfConfigurationText.builder()
                 .pdfFieldId(PDF_FIELD_ID)
                 .maxLength(ROW_MAX_LENGTH * 6)
                 .overflowSheetFieldId(
                     new PdfFieldId("form1[0].#subform[3].flt_txtFortsattningsblad[0]"))
-                .build()
-        )
+                .build())
         .build();
   }
 }

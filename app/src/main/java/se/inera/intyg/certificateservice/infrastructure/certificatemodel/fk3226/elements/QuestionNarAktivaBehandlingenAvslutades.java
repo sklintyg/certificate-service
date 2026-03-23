@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.QuestionPatientensBehandlingOchVardsituation.ENDAST_PALLIATIV_FIELD_ID;
@@ -18,12 +36,12 @@ import se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.
 
 public class QuestionNarAktivaBehandlingenAvslutades {
 
-  public static final ElementId QUESTION_NAR_AKTIVA_BEHANDLINGEN_AVSLUTADES_ID = new ElementId(
-      "52.2");
-  private static final FieldId QUESTION_NAR_AKTIVA_BEHANDLINGEN_AVSLUTADES_FIELD_ID = new FieldId(
-      "52.2");
-  private static final PdfFieldId PDF_WHEN_ACTIVE_TREATMENT_WAS_STOPPED_FIELD_ID = new PdfFieldId(
-      "form1[0].#subform[1].flt_datumBehandlingenAvslutad[0]");
+  public static final ElementId QUESTION_NAR_AKTIVA_BEHANDLINGEN_AVSLUTADES_ID =
+      new ElementId("52.2");
+  private static final FieldId QUESTION_NAR_AKTIVA_BEHANDLINGEN_AVSLUTADES_FIELD_ID =
+      new FieldId("52.2");
+  private static final PdfFieldId PDF_WHEN_ACTIVE_TREATMENT_WAS_STOPPED_FIELD_ID =
+      new PdfFieldId("form1[0].#subform[1].flt_datumBehandlingenAvslutad[0]");
 
   private QuestionNarAktivaBehandlingenAvslutades() {
     throw new IllegalStateException("Utility class");
@@ -37,43 +55,30 @@ public class QuestionNarAktivaBehandlingenAvslutades {
                 .id(QUESTION_NAR_AKTIVA_BEHANDLINGEN_AVSLUTADES_FIELD_ID)
                 .name("Ange när den aktiva behandlingen avslutades")
                 .max(Period.ofDays(0))
-                .build()
-        )
+                .build())
         .rules(
             List.of(
                 CertificateElementRuleFactory.mandatory(
                     QUESTION_NAR_AKTIVA_BEHANDLINGEN_AVSLUTADES_ID,
-                    QUESTION_NAR_AKTIVA_BEHANDLINGEN_AVSLUTADES_FIELD_ID
-                ),
+                    QUESTION_NAR_AKTIVA_BEHANDLINGEN_AVSLUTADES_FIELD_ID),
                 CertificateElementRuleFactory.show(
                     QUESTION_PATIENTENS_BEHANDLING_OCH_VARDSITUATION_ID,
-                    ENDAST_PALLIATIV_FIELD_ID
-                )
-            )
-        )
+                    ENDAST_PALLIATIV_FIELD_ID)))
         .validations(
-            List.of(
-                ElementValidationDate.builder()
-                    .mandatory(true)
-                    .max(Period.ofDays(0))
-                    .build()
-            )
-        )
+            List.of(ElementValidationDate.builder().mandatory(true).max(Period.ofDays(0)).build()))
         .shouldValidate(
-            elementData -> elementData.stream()
-                .filter(
-                    data -> data.id().equals(QUESTION_PATIENTENS_BEHANDLING_OCH_VARDSITUATION_ID))
-                .map(element -> (ElementValueCode) element.value())
-                .anyMatch(value -> value.codeId().equals(ENDAST_PALLIATIV_FIELD_ID))
-        )
-        .mapping(
-            new ElementMapping(QUESTION_PATIENTENS_BEHANDLING_OCH_VARDSITUATION_ID, null)
-        )
+            elementData ->
+                elementData.stream()
+                    .filter(
+                        data ->
+                            data.id().equals(QUESTION_PATIENTENS_BEHANDLING_OCH_VARDSITUATION_ID))
+                    .map(element -> (ElementValueCode) element.value())
+                    .anyMatch(value -> value.codeId().equals(ENDAST_PALLIATIV_FIELD_ID)))
+        .mapping(new ElementMapping(QUESTION_PATIENTENS_BEHANDLING_OCH_VARDSITUATION_ID, null))
         .pdfConfiguration(
             PdfConfigurationDate.builder()
                 .pdfFieldId(PDF_WHEN_ACTIVE_TREATMENT_WAS_STOPPED_FIELD_ID)
-                .build()
-        )
+                .build())
         .build();
   }
 }

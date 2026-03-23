@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.v1;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -27,58 +45,56 @@ class QuestionSjukdomshistorikBeskrivningV1Test {
 
   @Test
   void shallIncludeId() {
-    final var element = QuestionSjukdomshistorikBeskrivningV1.questionSjukdomshistorikBeskrivningV1();
+    final var element =
+        QuestionSjukdomshistorikBeskrivningV1.questionSjukdomshistorikBeskrivningV1();
 
     assertEquals(ELEMENT_ID, element.id());
   }
 
   @Test
   void shallIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationTextField.builder()
-        .name("Ange vad")
-        .id(new FieldId("7.4"))
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationTextField.builder().name("Ange vad").id(new FieldId("7.4")).build();
 
-    final var element = QuestionSjukdomshistorikBeskrivningV1.questionSjukdomshistorikBeskrivningV1();
+    final var element =
+        QuestionSjukdomshistorikBeskrivningV1.questionSjukdomshistorikBeskrivningV1();
 
     assertEquals(expectedConfiguration, element.configuration());
   }
 
   @Test
   void shallIncludeRules() {
-    final var expectedRules = List.of(
-        ElementRuleExpression.builder()
-            .id(new ElementId("7.3"))
-            .type(ElementRuleType.SHOW)
-            .expression(new RuleExpression("$7.3"))
-            .build(),
-        ElementRuleExpression.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.MANDATORY)
-            .expression(new RuleExpression("$7.4"))
-            .build(),
-        ElementRuleLimit.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.TEXT_LIMIT)
-            .limit(new RuleLimit((short) 50))
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleExpression.builder()
+                .id(new ElementId("7.3"))
+                .type(ElementRuleType.SHOW)
+                .expression(new RuleExpression("$7.3"))
+                .build(),
+            ElementRuleExpression.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.MANDATORY)
+                .expression(new RuleExpression("$7.4"))
+                .build(),
+            ElementRuleLimit.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.TEXT_LIMIT)
+                .limit(new RuleLimit((short) 50))
+                .build());
 
-    final var element = QuestionSjukdomshistorikBeskrivningV1.questionSjukdomshistorikBeskrivningV1();
+    final var element =
+        QuestionSjukdomshistorikBeskrivningV1.questionSjukdomshistorikBeskrivningV1();
 
     assertEquals(expectedRules, element.rules());
   }
 
   @Test
   void shallIncludeValidations() {
-    final var expectedValidations = List.of(
-        ElementValidationText.builder()
-            .mandatory(true)
-            .limit(50)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationText.builder().mandatory(true).limit(50).build());
 
-    final var element = QuestionSjukdomshistorikBeskrivningV1.questionSjukdomshistorikBeskrivningV1();
+    final var element =
+        QuestionSjukdomshistorikBeskrivningV1.questionSjukdomshistorikBeskrivningV1();
 
     assertEquals(expectedValidations, element.validations());
   }
@@ -88,18 +104,15 @@ class QuestionSjukdomshistorikBeskrivningV1Test {
 
     @Test
     void shallReturnTrueIfBooleanIsTrue() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("7.3"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(true)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("7.3"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
 
-      final var element = QuestionSjukdomshistorikBeskrivningV1.questionSjukdomshistorikBeskrivningV1();
+      final var element =
+          QuestionSjukdomshistorikBeskrivningV1.questionSjukdomshistorikBeskrivningV1();
 
       final var shouldValidate = element.elementSpecification(ELEMENT_ID).shouldValidate();
 
@@ -108,18 +121,15 @@ class QuestionSjukdomshistorikBeskrivningV1Test {
 
     @Test
     void shallReturnFalseIfElementMissing() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("8.1"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(true)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("8.1"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
 
-      final var element = QuestionSjukdomshistorikBeskrivningV1.questionSjukdomshistorikBeskrivningV1();
+      final var element =
+          QuestionSjukdomshistorikBeskrivningV1.questionSjukdomshistorikBeskrivningV1();
 
       final var shouldValidate = element.elementSpecification(ELEMENT_ID).shouldValidate();
 
@@ -128,18 +138,15 @@ class QuestionSjukdomshistorikBeskrivningV1Test {
 
     @Test
     void shallReturnFalseIfElementFalse() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("7.3"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(false)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("7.3"))
+                  .value(ElementValueBoolean.builder().value(false).build())
+                  .build());
 
-      final var element = QuestionSjukdomshistorikBeskrivningV1.questionSjukdomshistorikBeskrivningV1();
+      final var element =
+          QuestionSjukdomshistorikBeskrivningV1.questionSjukdomshistorikBeskrivningV1();
 
       final var shouldValidate = element.elementSpecification(ELEMENT_ID).shouldValidate();
 

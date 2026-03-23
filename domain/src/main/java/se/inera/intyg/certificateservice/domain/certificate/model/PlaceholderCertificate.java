@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.certificate.model;
 
 import java.time.LocalDateTime;
@@ -46,14 +64,16 @@ public class PlaceholderCertificate implements Certificate {
   }
 
   @Override
-  public boolean allowTo(final CertificateActionType certificateActionType,
+  public boolean allowTo(
+      final CertificateActionType certificateActionType,
       final Optional<ActionEvaluation> actionEvaluation) {
     throw new IllegalStateException(
         "Cannot check if action is allowed for a placeholder certificate");
   }
 
   @Override
-  public List<String> reasonNotAllowed(final CertificateActionType certificateActionType,
+  public List<String> reasonNotAllowed(
+      final CertificateActionType certificateActionType,
       final Optional<ActionEvaluation> actionEvaluation) {
     throw new IllegalStateException("Cannot get reason not allowed for a placeholder certificate");
   }
@@ -64,7 +84,9 @@ public class PlaceholderCertificate implements Certificate {
   }
 
   @Override
-  public void updateData(final List<ElementData> newData, final Revision revision,
+  public void updateData(
+      final List<ElementData> newData,
+      final Revision revision,
       final ActionEvaluation actionEvaluation) {
     throw new IllegalStateException("Cannot update data for a placeholder certificate");
   }
@@ -90,13 +112,17 @@ public class PlaceholderCertificate implements Certificate {
   }
 
   @Override
-  public void sign(final XmlGenerator xmlGenerator, final Revision revision,
+  public void sign(
+      final XmlGenerator xmlGenerator,
+      final Revision revision,
       final ActionEvaluation actionEvaluation) {
     throw new IllegalStateException("Cannot sign a placeholder certificate");
   }
 
   @Override
-  public void sign(final XmlGenerator xmlGenerator, final Signature signature,
+  public void sign(
+      final XmlGenerator xmlGenerator,
+      final Signature signature,
       final Revision revision,
       final ActionEvaluation actionEvaluation) {
     throw new IllegalStateException("Cannot sign a placeholder certificate");
@@ -113,13 +139,12 @@ public class PlaceholderCertificate implements Certificate {
   }
 
   @Override
-  public void revoke(final ActionEvaluation actionEvaluation,
-      final RevokedInformation revokedInformation) {
+  public void revoke(
+      final ActionEvaluation actionEvaluation, final RevokedInformation revokedInformation) {
     if (this.status != Status.SIGNED) {
       throw new IllegalStateException(
-          "Incorrect status '%s' - required status is '%s' or '%s' to revoke".formatted(this.status,
-              Status.SIGNED, Status.LOCKED_DRAFT)
-      );
+          "Incorrect status '%s' - required status is '%s' or '%s' to revoke"
+              .formatted(this.status, Status.SIGNED, Status.LOCKED_DRAFT));
     }
 
     this.status = Status.REVOKED;
@@ -313,14 +338,12 @@ public class PlaceholderCertificate implements Certificate {
   @Override
   public Optional<Certificate> candidateForUpdate() {
     throw new IllegalStateException(
-        "Cannot get candidate for update for a placeholder certificate"
-    );
+        "Cannot get candidate for update for a placeholder certificate");
   }
 
   @Override
   public CertificateMetaData getMetadataForPrint() {
-    throw new IllegalStateException(
-        "Cannot get metadata for print for a placeholder certificate");
+    throw new IllegalStateException("Cannot get metadata for print for a placeholder certificate");
   }
 
   @Override

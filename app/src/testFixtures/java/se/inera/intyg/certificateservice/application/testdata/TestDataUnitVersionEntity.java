@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.testdata;
 
 import static se.inera.intyg.certificateservice.application.testdata.TestDataUnitEntity.ALFA_ALLERGIMOTTAGNINGEN_ENTITY;
@@ -41,30 +59,27 @@ public class TestDataUnitVersionEntity {
   public static final UnitVersionEntity ALFA_ALLERGIMOTTAGNINGEN_VERSION_ENTITY =
       alfaAllergimottagningenVersionEntityBuilder().build();
 
-
   public static UnitVersionEntity.UnitVersionEntityBuilder alfaRegionenVersionEntityBuilder() {
     return UnitVersionEntity.builder()
         .type(
             UnitTypeEntity.builder()
                 .type(UnitType.CARE_PROVIDER.name())
                 .key(UnitType.CARE_PROVIDER.getKey())
-                .build()
-        )
+                .build())
         .validTo(VALID_TO)
         .hsaId(ALFA_REGIONEN_ID)
         .name(ALFA_REGIONEN_NAME)
         .unit(ALFA_REGIONEN_ENTITY);
   }
 
-
-  public static UnitVersionEntity.UnitVersionEntityBuilder alfaMedicinCentrumVersionEntityBuilder() {
+  public static UnitVersionEntity.UnitVersionEntityBuilder
+      alfaMedicinCentrumVersionEntityBuilder() {
     return UnitVersionEntity.builder()
         .type(
             UnitTypeEntity.builder()
                 .type(UnitType.CARE_UNIT.name())
                 .key(UnitType.CARE_UNIT.getKey())
-                .build()
-        )
+                .build())
         .validTo(VALID_TO)
         .hsaId(ALFA_MEDICINCENTRUM_ID)
         .name(ALFA_MEDICINCENTRUM_NAME)
@@ -77,14 +92,14 @@ public class TestDataUnitVersionEntity {
         .unit(ALFA_MEDICINCENTRUM_ENTITY);
   }
 
-  public static UnitVersionEntity.UnitVersionEntityBuilder alfaAllergimottagningenVersionEntityBuilder() {
+  public static UnitVersionEntity.UnitVersionEntityBuilder
+      alfaAllergimottagningenVersionEntityBuilder() {
     return UnitVersionEntity.builder()
         .type(
             UnitTypeEntity.builder()
                 .type(UnitType.SUB_UNIT.name())
                 .key(UnitType.SUB_UNIT.getKey())
-                .build()
-        )
+                .build())
         .validTo(VALID_TO)
         .hsaId(ALFA_ALLERGIMOTTAGNINGEN_ID)
         .name(ALFA_ALLERGIMOTTAGNINGEN_NAME)
@@ -96,5 +111,4 @@ public class TestDataUnitVersionEntity {
         .workplaceCode(ALFA_ALLERGIMOTTAGNINGEN_WORKPLACE_CODE)
         .unit(ALFA_ALLERGIMOTTAGNINGEN_ENTITY);
   }
-
 }

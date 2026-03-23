@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.common;
 
 import static se.inera.intyg.certificateservice.domain.common.model.AccessScope.WITHIN_CARE_UNIT;
@@ -36,135 +54,116 @@ import se.inera.intyg.certificateservice.domain.user.model.User;
 @Component
 public class ActionEvaluationFactory {
 
-  public ActionEvaluation create(UserDTO user, UnitDTO unit, UnitDTO careUnit,
-      UnitDTO careProvider) {
+  public ActionEvaluation create(
+      UserDTO user, UnitDTO unit, UnitDTO careUnit, UnitDTO careProvider) {
     return create(null, user, unit, careUnit, careProvider);
   }
 
-  public ActionEvaluation create(PatientDTO patient, UserDTO user, UnitDTO unit, UnitDTO careUnit,
-      UnitDTO careProvider) {
-    final var actionEvaluation = ActionEvaluation.builder()
-        .user(
-            User.builder()
-                .hsaId(
-                    new HsaId(user.getId())
-                )
-                .name(
-                    Name.builder()
-                        .firstName(user.getFirstName())
-                        .middleName(user.getMiddleName())
-                        .lastName(user.getLastName())
-                        .build()
-                )
-                .blocked(new Blocked(user.getBlocked()))
-                .agreement(new Agreement(user.getAgreement()))
-                .allowCopy(new AllowCopy(user.getAllowCopy()))
-                .role(user.getRole().toRole())
-                .paTitles(
-                    user.getPaTitles().stream()
-                        .map(paTitleDTO ->
-                            new PaTitle(paTitleDTO.getCode(), paTitleDTO.getDescription())
-                        )
-                        .toList()
-                )
-                .specialities(
-                    user.getSpecialities().stream()
-                        .map(Speciality::new)
-                        .toList()
-                )
-                .accessScope(user.getAccessScope() == null ? WITHIN_CARE_UNIT
-                    : user.getAccessScope().toDomain()
-                )
-                .healthCareProfessionalLicence(
-                    user.getHealthCareProfessionalLicence().stream()
-                        .map(HealthCareProfessionalLicence::new)
-                        .toList()
-                )
-                .responsibleIssuer(new ResponsibleIssuer(user.getResponsibleHospName()))
-                .srsActive(new SrsActive(user.getSrsActive()))
-                .build()
-        )
-        .subUnit(
-            SubUnit.builder()
-                .hsaId(new HsaId(unit.getId()))
-                .name(new UnitName(unit.getName()))
-                .address(
-                    UnitAddress.builder()
-                        .address(unit.getAddress())
-                        .zipCode(unit.getZipCode())
-                        .city(unit.getCity())
-                        .build()
-                )
-                .contactInfo(
-                    UnitContactInfo.builder()
-                        .phoneNumber(unit.getPhoneNumber())
-                        .email(unit.getEmail())
-                        .build()
-                )
-                .workplaceCode(new WorkplaceCode(unit.getWorkplaceCode()))
-                .inactive(new Inactive(unit.getInactive()))
-                .build()
-        )
-        .careUnit(
-            CareUnit.builder()
-                .hsaId(new HsaId(careUnit.getId()))
-                .name(new UnitName(careUnit.getName()))
-                .address(
-                    UnitAddress.builder()
-                        .address(careUnit.getAddress())
-                        .zipCode(careUnit.getZipCode())
-                        .city(careUnit.getCity())
-                        .build()
-                )
-                .contactInfo(
-                    UnitContactInfo.builder()
-                        .phoneNumber(careUnit.getPhoneNumber())
-                        .email(careUnit.getEmail())
-                        .build()
-                )
-                .workplaceCode(new WorkplaceCode(unit.getWorkplaceCode()))
-                .build()
-        )
-        .careProvider(
-            CareProvider.builder()
-                .hsaId(new HsaId(careProvider.getId()))
-                .name(new UnitName(careProvider.getName()))
-                .build()
-        );
+  public ActionEvaluation create(
+      PatientDTO patient, UserDTO user, UnitDTO unit, UnitDTO careUnit, UnitDTO careProvider) {
+    final var actionEvaluation =
+        ActionEvaluation.builder()
+            .user(
+                User.builder()
+                    .hsaId(new HsaId(user.getId()))
+                    .name(
+                        Name.builder()
+                            .firstName(user.getFirstName())
+                            .middleName(user.getMiddleName())
+                            .lastName(user.getLastName())
+                            .build())
+                    .blocked(new Blocked(user.getBlocked()))
+                    .agreement(new Agreement(user.getAgreement()))
+                    .allowCopy(new AllowCopy(user.getAllowCopy()))
+                    .role(user.getRole().toRole())
+                    .paTitles(
+                        user.getPaTitles().stream()
+                            .map(
+                                paTitleDTO ->
+                                    new PaTitle(paTitleDTO.getCode(), paTitleDTO.getDescription()))
+                            .toList())
+                    .specialities(user.getSpecialities().stream().map(Speciality::new).toList())
+                    .accessScope(
+                        user.getAccessScope() == null
+                            ? WITHIN_CARE_UNIT
+                            : user.getAccessScope().toDomain())
+                    .healthCareProfessionalLicence(
+                        user.getHealthCareProfessionalLicence().stream()
+                            .map(HealthCareProfessionalLicence::new)
+                            .toList())
+                    .responsibleIssuer(new ResponsibleIssuer(user.getResponsibleHospName()))
+                    .srsActive(new SrsActive(user.getSrsActive()))
+                    .build())
+            .subUnit(
+                SubUnit.builder()
+                    .hsaId(new HsaId(unit.getId()))
+                    .name(new UnitName(unit.getName()))
+                    .address(
+                        UnitAddress.builder()
+                            .address(unit.getAddress())
+                            .zipCode(unit.getZipCode())
+                            .city(unit.getCity())
+                            .build())
+                    .contactInfo(
+                        UnitContactInfo.builder()
+                            .phoneNumber(unit.getPhoneNumber())
+                            .email(unit.getEmail())
+                            .build())
+                    .workplaceCode(new WorkplaceCode(unit.getWorkplaceCode()))
+                    .inactive(new Inactive(unit.getInactive()))
+                    .build())
+            .careUnit(
+                CareUnit.builder()
+                    .hsaId(new HsaId(careUnit.getId()))
+                    .name(new UnitName(careUnit.getName()))
+                    .address(
+                        UnitAddress.builder()
+                            .address(careUnit.getAddress())
+                            .zipCode(careUnit.getZipCode())
+                            .city(careUnit.getCity())
+                            .build())
+                    .contactInfo(
+                        UnitContactInfo.builder()
+                            .phoneNumber(careUnit.getPhoneNumber())
+                            .email(careUnit.getEmail())
+                            .build())
+                    .workplaceCode(new WorkplaceCode(unit.getWorkplaceCode()))
+                    .build())
+            .careProvider(
+                CareProvider.builder()
+                    .hsaId(new HsaId(careProvider.getId()))
+                    .name(new UnitName(careProvider.getName()))
+                    .build());
     if (patient != null) {
       patient(actionEvaluation, patient);
     }
     return actionEvaluation.build();
   }
 
-  private void patient(ActionEvaluation.ActionEvaluationBuilder actionEvaluationBuilder,
-      PatientDTO patient) {
+  private void patient(
+      ActionEvaluation.ActionEvaluationBuilder actionEvaluationBuilder, PatientDTO patient) {
     actionEvaluationBuilder.patient(
         Patient.builder()
             .id(
                 PersonId.builder()
                     .type(patient.getId().getType().toPersonIdType())
                     .id(patient.getId().getId())
-                    .build()
-            )
+                    .build())
             .name(
                 Name.builder()
                     .firstName(patient.getFirstName())
                     .middleName(patient.getMiddleName())
                     .lastName(patient.getLastName())
-                    .build()
-            )
+                    .build())
             .deceased(new Deceased(patient.getDeceased()))
             .address(
                 PersonAddress.builder()
                     .city(patient.getCity())
                     .street(patient.getStreet())
                     .zipCode(patient.getZipCode())
-                    .build()
-            )
+                    .build())
             .protectedPerson(new ProtectedPerson(patient.getProtectedPerson()))
             .testIndicated(new TestIndicated(patient.getTestIndicated()))
-            .build()
-    );
+            .build());
   }
 }

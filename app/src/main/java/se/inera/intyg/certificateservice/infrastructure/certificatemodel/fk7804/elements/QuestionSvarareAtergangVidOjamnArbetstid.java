@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7804.elements;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7804.elements.QuestionNedsattningArbetsformaga.QUESTION_NEDSATTNING_ARBETSFORMAGA_ID;
@@ -17,10 +35,10 @@ import se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.
 
 public class QuestionSvarareAtergangVidOjamnArbetstid {
 
-  public static final ElementId QUESTION_SVARARE_ATERGANG_VID_OJAMN_ARBETSTID_ID = new ElementId(
-      "33");
-  public static final FieldId QUESTION_SVARARE_ATERGANG_VID_OJAMN_ARBETSTID_FIELD_ID = new FieldId(
-      "33.1");
+  public static final ElementId QUESTION_SVARARE_ATERGANG_VID_OJAMN_ARBETSTID_ID =
+      new ElementId("33");
+  public static final FieldId QUESTION_SVARARE_ATERGANG_VID_OJAMN_ARBETSTID_FIELD_ID =
+      new FieldId("33.1");
 
   private QuestionSvarareAtergangVidOjamnArbetstid() {
     throw new IllegalStateException("Utility class");
@@ -38,54 +56,38 @@ public class QuestionSvarareAtergangVidOjamnArbetstid {
                 .description(
                     """
                         När du besvarar frågan ska du utgå från de uppgifter som du har om arbetstidens förläggning vid sjukskrivningstillfället, det vill säga den arbetstidsförläggning som du diskuterat med patienten.
-                        
+
                         Att förläggningen försämrar patientens möjligheter till återgång i arbete kan exempelvis vara att hälsotillståndet påverkas negativt eller att sjukdomen innebär att en annan förläggning av arbetstiden än jämn minskning varje dag skulle motverka rehabiliteringen.
-                        """
-                )
+                        """)
                 .selectedText("Ja")
                 .unselectedText("Nej")
-                .build()
-        )
+                .build())
         .rules(
             List.of(
                 CertificateElementRuleFactory.mandatoryExist(
                     QUESTION_SVARARE_ATERGANG_VID_OJAMN_ARBETSTID_ID,
-                    QUESTION_SVARARE_ATERGANG_VID_OJAMN_ARBETSTID_FIELD_ID
-                ),
+                    QUESTION_SVARARE_ATERGANG_VID_OJAMN_ARBETSTID_FIELD_ID),
                 CertificateElementRuleFactory.showOrExist(
                     QUESTION_NEDSATTNING_ARBETSFORMAGA_ID,
                     List.of(
                         new FieldId(CodeSystemKvFkmu0003.HALFTEN.code()),
                         new FieldId(CodeSystemKvFkmu0003.TRE_FJARDEDEL.code()),
-                        new FieldId(CodeSystemKvFkmu0003.EN_FJARDEDEL.code()
-                        )
-                    )
-                )
-            )
-        )
-        .validations(
-            List.of(
-                ElementValidationBoolean.builder()
-                    .mandatory(true)
-                    .build()
-            )
-        )
+                        new FieldId(CodeSystemKvFkmu0003.EN_FJARDEDEL.code())))))
+        .validations(List.of(ElementValidationBoolean.builder().mandatory(true).build()))
         .shouldValidate(
-            ElementDataPredicateFactory.dateRangeList(QUESTION_NEDSATTNING_ARBETSFORMAGA_ID,
+            ElementDataPredicateFactory.dateRangeList(
+                QUESTION_NEDSATTNING_ARBETSFORMAGA_ID,
                 List.of(
                     new FieldId(CodeSystemKvFkmu0003.HALFTEN.code()),
                     new FieldId(CodeSystemKvFkmu0003.TRE_FJARDEDEL.code()),
-                    new FieldId(CodeSystemKvFkmu0003.EN_FJARDEDEL.code())
-                )))
+                    new FieldId(CodeSystemKvFkmu0003.EN_FJARDEDEL.code()))))
         .pdfConfiguration(
             PdfConfigurationRadioBoolean.builder()
                 .pdfFieldId(new PdfFieldId("form1[0].Sida3[0].RadioButtonList2[0]"))
                 .optionFalse(new PdfRadioOption("1"))
                 .optionTrue(new PdfRadioOption("2"))
-                .build()
-        )
+                .build())
         .children(List.of(children))
         .build();
   }
 }
-

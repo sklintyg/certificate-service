@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificate.persistence;
 
 import jakarta.transaction.Transactional;
@@ -41,8 +59,9 @@ public class MetadataVersionRepository {
   }
 
   private void updateStaffVersionHistory(StaffVersionEntity staffVersionEntity) {
-    final var latestVersion = staffVersionEntityRepository.findFirstByHsaIdOrderByValidFromDesc(
-        staffVersionEntity.getHsaId());
+    final var latestVersion =
+        staffVersionEntityRepository.findFirstByHsaIdOrderByValidFromDesc(
+            staffVersionEntity.getHsaId());
     latestVersion.ifPresent(
         versionEntity -> staffVersionEntity.setValidFrom(versionEntity.getValidTo()));
     staffVersionEntityRepository.save(staffVersionEntity);
@@ -57,27 +76,27 @@ public class MetadataVersionRepository {
   }
 
   private void updateUnitVersionHistory(UnitVersionEntity unitVersionEntity) {
-    final var latestVersion = unitVersionEntityRepository
-        .findFirstByHsaIdOrderByValidFromDesc(unitVersionEntity.getHsaId());
+    final var latestVersion =
+        unitVersionEntityRepository.findFirstByHsaIdOrderByValidFromDesc(
+            unitVersionEntity.getHsaId());
     latestVersion.ifPresent(
         versionEntity -> unitVersionEntity.setValidFrom(versionEntity.getValidTo()));
     unitVersionEntityRepository.save(unitVersionEntity);
   }
 
-
   @Transactional
-  public PatientEntity savePatientVersion(PatientEntity patientEntity,
-      PatientEntity newPatientEntity) {
+  public PatientEntity savePatientVersion(
+      PatientEntity patientEntity, PatientEntity newPatientEntity) {
     final var patientVersionEntity = PatientVersionEntityMapper.toPatientVersion(patientEntity);
     patientEntity.updateWith(newPatientEntity);
     updatePatientVersionHistory(patientVersionEntity);
     return patientEntityRepository.save(patientEntity);
   }
 
-
   private void updatePatientVersionHistory(PatientVersionEntity patientVersionEntity) {
-    final var latestVersion = patientVersionEntityRepository
-        .findFirstByIdOrderByValidFromDesc(patientVersionEntity.getId());
+    final var latestVersion =
+        patientVersionEntityRepository.findFirstByIdOrderByValidFromDesc(
+            patientVersionEntity.getId());
     latestVersion.ifPresent(
         versionEntity -> patientVersionEntity.setValidFrom(versionEntity.getValidTo()));
     patientVersionEntityRepository.save(patientVersionEntity);

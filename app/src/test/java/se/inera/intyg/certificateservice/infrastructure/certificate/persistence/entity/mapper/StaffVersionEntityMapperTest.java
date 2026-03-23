@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificate.persistence.entity.mapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,30 +44,29 @@ import se.inera.intyg.certificateservice.infrastructure.certificate.persistence.
 
 class StaffVersionEntityMapperTest {
 
-  private static final StaffRoleEntity STAFF_ROLE_DOCTOR = StaffRoleEntity.builder()
-      .role(StaffRole.DOCTOR.name())
-      .key(StaffRole.DOCTOR.getKey())
-      .build();
+  private static final StaffRoleEntity STAFF_ROLE_DOCTOR =
+      StaffRoleEntity.builder()
+          .role(StaffRole.DOCTOR.name())
+          .key(StaffRole.DOCTOR.getKey())
+          .build();
 
-  private static final List<PaTitleEmbeddable> PA_TITLES = List.of(
-      new PaTitleEmbeddable("203090", "Läkare legitimerad, annan"),
-      new PaTitleEmbeddable("601010", "Kock")
-  );
+  private static final List<PaTitleEmbeddable> PA_TITLES =
+      List.of(
+          new PaTitleEmbeddable("203090", "Läkare legitimerad, annan"),
+          new PaTitleEmbeddable("601010", "Kock"));
 
-  private static final List<SpecialityEmbeddable> SPECIALITIES = List.of(
-      new SpecialityEmbeddable("Allmänmedicin"),
-      new SpecialityEmbeddable("Psykiatri")
-  );
+  private static final List<SpecialityEmbeddable> SPECIALITIES =
+      List.of(new SpecialityEmbeddable("Allmänmedicin"), new SpecialityEmbeddable("Psykiatri"));
 
-  private static final List<HealthcareProfessionalLicenceEmbeddable> LICENCES = List.of(
-      new HealthcareProfessionalLicenceEmbeddable("Läkare")
-  );
+  private static final List<HealthcareProfessionalLicenceEmbeddable> LICENCES =
+      List.of(new HealthcareProfessionalLicenceEmbeddable("Läkare"));
 
   private static final StaffEntity STAFF_ENTITY = getStaffEntity();
   private static final StaffEntity STAFF_ENTITY_WITH_NULL_LISTS = getStaffEntityWithNullLists();
 
   private static final StaffVersionEntity STAFF_VERSION_ENTITY = getStaffVersionEntity();
-  private static final StaffVersionEntity STAFF_VERSION_ENTITY_WITH_NULL_LISTS = getStaffVersionEntityWithNullLists();
+  private static final StaffVersionEntity STAFF_VERSION_ENTITY_WITH_NULL_LISTS =
+      getStaffVersionEntityWithNullLists();
 
   @Nested
   class ToStaffVersion {
@@ -89,9 +106,10 @@ class StaffVersionEntityMapperTest {
       final var response = StaffVersionEntityMapper.toStaffVersion(STAFF_ENTITY);
       assertEquals(STAFF_ENTITY.getPaTitles().size(), response.getPaTitles().size());
       for (int i = 0; i < STAFF_ENTITY.getPaTitles().size(); i++) {
-        assertEquals(STAFF_ENTITY.getPaTitles().get(i).getCode(),
-            response.getPaTitles().get(i).getCode());
-        assertEquals(STAFF_ENTITY.getPaTitles().get(i).getDescription(),
+        assertEquals(
+            STAFF_ENTITY.getPaTitles().get(i).getCode(), response.getPaTitles().get(i).getCode());
+        assertEquals(
+            STAFF_ENTITY.getPaTitles().get(i).getDescription(),
             response.getPaTitles().get(i).getDescription());
       }
     }
@@ -101,7 +119,8 @@ class StaffVersionEntityMapperTest {
       final var response = StaffVersionEntityMapper.toStaffVersion(STAFF_ENTITY);
       assertEquals(STAFF_ENTITY.getSpecialities().size(), response.getSpecialities().size());
       for (int i = 0; i < STAFF_ENTITY.getSpecialities().size(); i++) {
-        assertEquals(STAFF_ENTITY.getSpecialities().get(i).getSpeciality(),
+        assertEquals(
+            STAFF_ENTITY.getSpecialities().get(i).getSpeciality(),
             response.getSpecialities().get(i).getSpeciality());
       }
     }
@@ -109,11 +128,14 @@ class StaffVersionEntityMapperTest {
     @Test
     void shouldMapHealthcareProfessionalLicences() {
       final var response = StaffVersionEntityMapper.toStaffVersion(STAFF_ENTITY);
-      assertEquals(STAFF_ENTITY.getHealthcareProfessionalLicences().size(),
+      assertEquals(
+          STAFF_ENTITY.getHealthcareProfessionalLicences().size(),
           response.getHealthcareProfessionalLicences().size());
       for (int i = 0; i < STAFF_ENTITY.getHealthcareProfessionalLicences().size(); i++) {
         assertEquals(
-            STAFF_ENTITY.getHealthcareProfessionalLicences().get(i)
+            STAFF_ENTITY
+                .getHealthcareProfessionalLicences()
+                .get(i)
                 .getHealthcareProfessionalLicence(),
             response.getHealthcareProfessionalLicences().get(i).getHealthcareProfessionalLicence());
       }
@@ -202,9 +224,11 @@ class StaffVersionEntityMapperTest {
       final var response = StaffVersionEntityMapper.toStaff(STAFF_VERSION_ENTITY);
       assertEquals(STAFF_VERSION_ENTITY.getPaTitles().size(), response.getPaTitles().size());
       for (int i = 0; i < STAFF_VERSION_ENTITY.getPaTitles().size(); i++) {
-        assertEquals(STAFF_VERSION_ENTITY.getPaTitles().get(i).getCode(),
+        assertEquals(
+            STAFF_VERSION_ENTITY.getPaTitles().get(i).getCode(),
             response.getPaTitles().get(i).getCode());
-        assertEquals(STAFF_VERSION_ENTITY.getPaTitles().get(i).getDescription(),
+        assertEquals(
+            STAFF_VERSION_ENTITY.getPaTitles().get(i).getDescription(),
             response.getPaTitles().get(i).getDescription());
       }
     }
@@ -212,10 +236,11 @@ class StaffVersionEntityMapperTest {
     @Test
     void shouldMapSpecialities() {
       final var response = StaffVersionEntityMapper.toStaff(STAFF_VERSION_ENTITY);
-      assertEquals(STAFF_VERSION_ENTITY.getSpecialities().size(),
-          response.getSpecialities().size());
+      assertEquals(
+          STAFF_VERSION_ENTITY.getSpecialities().size(), response.getSpecialities().size());
       for (int i = 0; i < STAFF_VERSION_ENTITY.getSpecialities().size(); i++) {
-        assertEquals(STAFF_VERSION_ENTITY.getSpecialities().get(i).getSpeciality(),
+        assertEquals(
+            STAFF_VERSION_ENTITY.getSpecialities().get(i).getSpeciality(),
             response.getSpecialities().get(i).getSpeciality());
       }
     }
@@ -223,14 +248,16 @@ class StaffVersionEntityMapperTest {
     @Test
     void shouldMapHealthcareProfessionalLicences() {
       final var response = StaffVersionEntityMapper.toStaff(STAFF_VERSION_ENTITY);
-      assertEquals(STAFF_VERSION_ENTITY.getHealthcareProfessionalLicences().size(),
+      assertEquals(
+          STAFF_VERSION_ENTITY.getHealthcareProfessionalLicences().size(),
           response.getHealthcareProfessionalLicences().size());
       for (int i = 0; i < STAFF_VERSION_ENTITY.getHealthcareProfessionalLicences().size(); i++) {
         assertEquals(
-            STAFF_VERSION_ENTITY.getHealthcareProfessionalLicences().get(i)
+            STAFF_VERSION_ENTITY
+                .getHealthcareProfessionalLicences()
+                .get(i)
                 .getHealthcareProfessionalLicence(),
-            response.getHealthcareProfessionalLicences().get(i)
-                .getHealthcareProfessionalLicence());
+            response.getHealthcareProfessionalLicences().get(i).getHealthcareProfessionalLicence());
       }
     }
 
@@ -292,17 +319,16 @@ class StaffVersionEntityMapperTest {
         .middleName(AJLA_DOCTOR_MIDDLE_NAME)
         .lastName(AJLA_DOCTOR_LAST_NAME)
         .role(STAFF_ROLE_DOCTOR)
-        .paTitles(List.of(
-            new PaTitleVersionEmbeddable("203090", "Läkare legitimerad, annan"),
-            new PaTitleVersionEmbeddable("601010", "Kock")
-        ))
-        .specialities(List.of(
-            new SpecialityVersionEmbeddable("Allmänmedicin"),
-            new SpecialityVersionEmbeddable("Psykiatri")
-        ))
-        .healthcareProfessionalLicences(List.of(
-            new HealthcareProfessionalLicenceVersionEmbeddable("Läkare")
-        ))
+        .paTitles(
+            List.of(
+                new PaTitleVersionEmbeddable("203090", "Läkare legitimerad, annan"),
+                new PaTitleVersionEmbeddable("601010", "Kock")))
+        .specialities(
+            List.of(
+                new SpecialityVersionEmbeddable("Allmänmedicin"),
+                new SpecialityVersionEmbeddable("Psykiatri")))
+        .healthcareProfessionalLicences(
+            List.of(new HealthcareProfessionalLicenceVersionEmbeddable("Läkare")))
         .validFrom(LocalDateTime.of(2024, 1, 1, 0, 0))
         .validTo(LocalDateTime.of(2024, 12, 31, 23, 59))
         .staff(getStaffEntity())
@@ -326,4 +352,3 @@ class StaffVersionEntityMapperTest {
         .build();
   }
 }
-

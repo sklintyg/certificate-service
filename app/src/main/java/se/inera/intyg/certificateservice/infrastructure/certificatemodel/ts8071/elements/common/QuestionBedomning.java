@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.common;
 
 import java.util.List;
@@ -14,22 +32,19 @@ import se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.
 
 public class QuestionBedomning {
 
-  public static final ElementId QUESTION_BEDOMNING_ID = new ElementId(
-      "23");
-  public static final FieldId QUESTION_BEDOMNING_FIELD_ID = new FieldId(
-      "23.1");
+  public static final ElementId QUESTION_BEDOMNING_ID = new ElementId("23");
+  public static final FieldId QUESTION_BEDOMNING_FIELD_ID = new FieldId("23.1");
 
   private QuestionBedomning() {
     throw new IllegalStateException("Utility class");
   }
 
-  public static ElementSpecification questionBedomning(
-      ElementSpecification... children) {
-    final var radioMultipleCodes = List.of(
-        CodeFactory.elementConfigurationCode(CodeSystemKvTs002.YES),
-        CodeFactory.elementConfigurationCode(CodeSystemKvTs002.NO),
-        CodeFactory.elementConfigurationCode(CodeSystemKvTs002.NO_DECISION)
-    );
+  public static ElementSpecification questionBedomning(ElementSpecification... children) {
+    final var radioMultipleCodes =
+        List.of(
+            CodeFactory.elementConfigurationCode(CodeSystemKvTs002.YES),
+            CodeFactory.elementConfigurationCode(CodeSystemKvTs002.NO),
+            CodeFactory.elementConfigurationCode(CodeSystemKvTs002.NO_DECISION));
 
     return ElementSpecification.builder()
         .id(QUESTION_BEDOMNING_ID)
@@ -40,23 +55,13 @@ public class QuestionBedomning {
                     "Bedöms personen utifrån Transportstyrelsens föreskrifter och allmänna råd (TSFS 2010:125) om medicinska krav för innehav av körkort m.m. ha en sjukdom eller medicinskt tillstånd som innebär en trafiksäkerhetsrisk?")
                 .elementLayout(ElementLayout.ROWS)
                 .list(radioMultipleCodes)
-                .build()
-        )
+                .build())
         .rules(
             List.of(
                 CertificateElementRuleFactory.mandatoryOrExist(
                     QUESTION_BEDOMNING_ID,
-                    radioMultipleCodes.stream().map(ElementConfigurationCode::id).toList()
-                )
-            )
-        )
-        .validations(
-            List.of(
-                ElementValidationCode.builder()
-                    .mandatory(true)
-                    .build()
-            )
-        )
+                    radioMultipleCodes.stream().map(ElementConfigurationCode::id).toList())))
+        .validations(List.of(ElementValidationCode.builder().mandatory(true).build()))
         .children(List.of(children))
         .build();
   }

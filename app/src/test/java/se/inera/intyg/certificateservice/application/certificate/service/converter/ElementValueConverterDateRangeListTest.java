@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service.converter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -16,18 +34,17 @@ import se.inera.intyg.certificateservice.domain.certificate.model.ElementValueDa
 
 class ElementValueConverterDateRangeListTest {
 
-  private static final CertificateDataValueDateRangeList CERTIFICATE_DATA_VALUE = CertificateDataValueDateRangeList.builder()
-      .id("ID")
-      .list(
-          List.of(
-              CertificateDataValueDateRange.builder()
-                  .id("RANGE_ID")
-                  .to(LocalDate.now())
-                  .from(LocalDate.now().minusDays(1))
-                  .build()
-          )
-      )
-      .build();
+  private static final CertificateDataValueDateRangeList CERTIFICATE_DATA_VALUE =
+      CertificateDataValueDateRangeList.builder()
+          .id("ID")
+          .list(
+              List.of(
+                  CertificateDataValueDateRange.builder()
+                      .id("RANGE_ID")
+                      .to(LocalDate.now())
+                      .from(LocalDate.now().minusDays(1))
+                      .build()))
+          .build();
 
   private ElementValueConverterDateRangeList converter;
 
@@ -39,9 +56,9 @@ class ElementValueConverterDateRangeListTest {
   @Test
   void shallThrowIfTypeIsNotCertificateDataValueDateRangeList() {
     final var certificateDataTextValue = CertificateDataValueText.builder().build();
-    final var illegalStateException = assertThrows(IllegalStateException.class,
-        () -> converter.convert(certificateDataTextValue)
-    );
+    final var illegalStateException =
+        assertThrows(
+            IllegalStateException.class, () -> converter.convert(certificateDataTextValue));
     assertTrue(illegalStateException.getMessage().contains("Invalid value type"));
   }
 
@@ -54,10 +71,7 @@ class ElementValueConverterDateRangeListTest {
   void shallConvertId() {
     final var result = converter.convert(CERTIFICATE_DATA_VALUE);
     final var actualResult = (ElementValueDateRangeList) result;
-    assertEquals(
-        CERTIFICATE_DATA_VALUE.getId(),
-        actualResult.dateRangeListId().value()
-    );
+    assertEquals(CERTIFICATE_DATA_VALUE.getId(), actualResult.dateRangeListId().value());
   }
 
   @Test
@@ -66,8 +80,7 @@ class ElementValueConverterDateRangeListTest {
     final var actualResult = (ElementValueDateRangeList) result;
     assertEquals(
         CERTIFICATE_DATA_VALUE.getList().get(0).getId(),
-        actualResult.dateRangeList().get(0).dateRangeId().value()
-    );
+        actualResult.dateRangeList().get(0).dateRangeId().value());
   }
 
   @Test
@@ -75,9 +88,7 @@ class ElementValueConverterDateRangeListTest {
     final var result = converter.convert(CERTIFICATE_DATA_VALUE);
     final var actualResult = (ElementValueDateRangeList) result;
     assertEquals(
-        CERTIFICATE_DATA_VALUE.getList().get(0).getTo(),
-        actualResult.dateRangeList().get(0).to()
-    );
+        CERTIFICATE_DATA_VALUE.getList().get(0).getTo(), actualResult.dateRangeList().get(0).to());
   }
 
   @Test
@@ -86,8 +97,6 @@ class ElementValueConverterDateRangeListTest {
     final var actualResult = (ElementValueDateRangeList) result;
     assertEquals(
         CERTIFICATE_DATA_VALUE.getList().get(0).getFrom(),
-        actualResult.dateRangeList().get(0).from()
-    );
+        actualResult.dateRangeList().get(0).from());
   }
-
 }

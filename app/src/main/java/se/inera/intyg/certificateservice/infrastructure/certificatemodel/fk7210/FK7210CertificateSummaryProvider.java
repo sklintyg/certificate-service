@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7210;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7210.elements.QuestionBeraknatFodelsedatum.QUESTION_BERAKNAT_FODELSEDATUM_ID;
@@ -23,12 +41,10 @@ public class FK7210CertificateSummaryProvider implements CertificateSummaryProvi
       return "";
     }
 
-    final var elementDataDate = certificate.elementData()
-        .stream()
-        .filter(
-            elementData -> QUESTION_BERAKNAT_FODELSEDATUM_ID.equals(elementData.id())
-        )
-        .findFirst();
+    final var elementDataDate =
+        certificate.elementData().stream()
+            .filter(elementData -> QUESTION_BERAKNAT_FODELSEDATUM_ID.equals(elementData.id()))
+            .findFirst();
 
     if (elementDataDate.isEmpty()) {
       return "";
@@ -36,11 +52,11 @@ public class FK7210CertificateSummaryProvider implements CertificateSummaryProvi
 
     if (!(elementDataDate.get().value() instanceof ElementValueDate elementValueDate)) {
       throw new IllegalStateException(
-          "Invalid value type. Type was '%s'".formatted(elementDataDate.get().value())
-      );
+          "Invalid value type. Type was '%s'".formatted(elementDataDate.get().value()));
     }
 
-    return certificate.signed().format(DateTimeFormatter.ISO_DATE) + " - "
+    return certificate.signed().format(DateTimeFormatter.ISO_DATE)
+        + " - "
         + elementValueDate.date().format(DateTimeFormatter.ISO_DATE);
   }
 }

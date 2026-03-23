@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.message.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,17 +47,13 @@ import se.inera.intyg.certificateservice.domain.message.repository.MessageReposi
 @ExtendWith(MockitoExtension.class)
 class ReceiveQuestionMessageDomainServiceTest {
 
-  @Mock
-  private Certificate certificate;
+  @Mock private Certificate certificate;
 
-  @Mock
-  private CertificateRepository certificateRepository;
+  @Mock private CertificateRepository certificateRepository;
 
-  @Mock
-  private MessageRepository messageRepository;
+  @Mock private MessageRepository messageRepository;
 
-  @InjectMocks
-  private ReceiveQuestionMessageDomainService receiveQuestionMessageDomainService;
+  @InjectMocks private ReceiveQuestionMessageDomainService receiveQuestionMessageDomainService;
 
   @BeforeEach
   void setUp() {
@@ -48,44 +62,43 @@ class ReceiveQuestionMessageDomainServiceTest {
 
   @Test
   void shallThrowExceptionIfNotAllowedOnCertificate() {
-    doReturn(false).when(certificate)
+    doReturn(false)
+        .when(certificate)
         .allowTo(CertificateActionType.RECEIVE_QUESTION, Optional.empty());
     doReturn(CERTIFICATE_ID).when(certificate).id();
 
-    assertThrows(CertificateActionForbidden.class,
-        () -> receiveQuestionMessageDomainService.receive(CONTACT_MESSAGE)
-    );
+    assertThrows(
+        CertificateActionForbidden.class,
+        () -> receiveQuestionMessageDomainService.receive(CONTACT_MESSAGE));
   }
 
   @Test
   void shallThrowExceptionIfNotSamePatientAsCertificate() {
-    doReturn(true).when(certificate)
+    doReturn(true)
+        .when(certificate)
         .allowTo(CertificateActionType.RECEIVE_QUESTION, Optional.empty());
     doReturn(CERTIFICATE_ID).when(certificate).id();
     doReturn(false).when(certificate).isCertificateIssuedOnPatient(ATHENA_REACT_ANDERSSON.id());
 
-    assertThrows(CertificateActionForbidden.class,
-        () -> receiveQuestionMessageDomainService.receive(CONTACT_MESSAGE)
-    );
+    assertThrows(
+        CertificateActionForbidden.class,
+        () -> receiveQuestionMessageDomainService.receive(CONTACT_MESSAGE));
   }
 
   @Test
   void shallThrowExceptionIfMessageTypeNotAllowed() {
-    doReturn(true).when(certificate)
+    doReturn(true)
+        .when(certificate)
         .allowTo(CertificateActionType.RECEIVE_QUESTION, Optional.empty());
     doReturn(true).when(certificate).isCertificateIssuedOnPatient(ATHENA_REACT_ANDERSSON.id());
-    doReturn(
-        fk7810certificateModelBuilder()
-            .messageTypes(List.of())
-            .build())
+    doReturn(fk7810certificateModelBuilder().messageTypes(List.of()).build())
         .when(certificate)
         .certificateModel();
     doReturn(CERTIFICATE_ID).when(certificate).id();
 
-    assertThrows(CertificateActionForbidden.class,
-        () -> receiveQuestionMessageDomainService.receive(CONTACT_MESSAGE)
-    );
-
+    assertThrows(
+        CertificateActionForbidden.class,
+        () -> receiveQuestionMessageDomainService.receive(CONTACT_MESSAGE));
   }
 
   @Nested
@@ -93,12 +106,11 @@ class ReceiveQuestionMessageDomainServiceTest {
 
     @BeforeEach
     void setUp() {
-      doReturn(true).when(certificate)
+      doReturn(true)
+          .when(certificate)
           .allowTo(CertificateActionType.RECEIVE_QUESTION, Optional.empty());
       doReturn(true).when(certificate).isCertificateIssuedOnPatient(ATHENA_REACT_ANDERSSON.id());
-      doReturn(FK7810_CERTIFICATE_MODEL)
-          .when(certificate)
-          .certificateModel();
+      doReturn(FK7810_CERTIFICATE_MODEL).when(certificate).certificateModel();
     }
 
     @Test

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ag7804.elements;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,37 +44,30 @@ class QuestionNedsattningArbetsformagaTest {
 
   @Test
   void shallIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationCheckboxDateRangeList.builder()
-        .name("Min bedömning av patientens nedsättning av arbetsförmågan")
-        .id(new FieldId("32.1"))
-        .hideWorkingHours(false)
-        .dateRanges(
-            List.of(
-                new ElementConfigurationCode(
-                    new FieldId("EN_FJARDEDEL"),
-                    "25 procent",
-                    CodeSystemKvFkmu0003.EN_FJARDEDEL
-                ),
-                new ElementConfigurationCode(
-                    new FieldId("HALFTEN"),
-                    "50 procent",
-                    CodeSystemKvFkmu0003.HALFTEN
-                ),
-                new ElementConfigurationCode(
-                    new FieldId("TRE_FJARDEDEL"),
-                    "75 procent",
-                    CodeSystemKvFkmu0003.TRE_FJARDEDEL
-                ),
-                new ElementConfigurationCode(
-                    new FieldId("HELT_NEDSATT"),
-                    "100 procent",
-                    CodeSystemKvFkmu0003.HELT_NEDSATT
-                )
-            )
-        )
-        .description(
-            "Utgångspunkten är att patientens arbetsförmåga ska bedömas i förhållande till patientens normala arbetstid.")
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationCheckboxDateRangeList.builder()
+            .name("Min bedömning av patientens nedsättning av arbetsförmågan")
+            .id(new FieldId("32.1"))
+            .hideWorkingHours(false)
+            .dateRanges(
+                List.of(
+                    new ElementConfigurationCode(
+                        new FieldId("EN_FJARDEDEL"),
+                        "25 procent",
+                        CodeSystemKvFkmu0003.EN_FJARDEDEL),
+                    new ElementConfigurationCode(
+                        new FieldId("HALFTEN"), "50 procent", CodeSystemKvFkmu0003.HALFTEN),
+                    new ElementConfigurationCode(
+                        new FieldId("TRE_FJARDEDEL"),
+                        "75 procent",
+                        CodeSystemKvFkmu0003.TRE_FJARDEDEL),
+                    new ElementConfigurationCode(
+                        new FieldId("HELT_NEDSATT"),
+                        "100 procent",
+                        CodeSystemKvFkmu0003.HELT_NEDSATT)))
+            .description(
+                "Utgångspunkten är att patientens arbetsförmåga ska bedömas i förhållande till patientens normala arbetstid.")
+            .build();
 
     final var element = QuestionNedsattningArbetsformaga.questionNedsattningArbetsformaga();
 
@@ -65,17 +76,16 @@ class QuestionNedsattningArbetsformagaTest {
 
   @Test
   void shallIncludeRules() {
-    final var expectedRules = List.of(
-        ElementRuleExpression.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.MANDATORY)
-            .expression(
-                new se.inera.intyg.certificateservice.domain.certificatemodel.model.RuleExpression(
-                    "$EN_FJARDEDEL || $HALFTEN || $TRE_FJARDEDEL || $HELT_NEDSATT"
-                )
-            )
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleExpression.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.MANDATORY)
+                .expression(
+                    new se.inera.intyg.certificateservice.domain.certificatemodel.model
+                        .RuleExpression(
+                        "$EN_FJARDEDEL || $HALFTEN || $TRE_FJARDEDEL || $HELT_NEDSATT"))
+                .build());
 
     final var element = QuestionNedsattningArbetsformaga.questionNedsattningArbetsformaga();
 
@@ -84,11 +94,8 @@ class QuestionNedsattningArbetsformagaTest {
 
   @Test
   void shallIncludeValidations() {
-    final var expectedValidations = List.of(
-        ElementValidationDateRangeList.builder()
-            .mandatory(true)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationDateRangeList.builder().mandatory(true).build());
 
     final var element = QuestionNedsattningArbetsformaga.questionNedsattningArbetsformaga();
 
@@ -100,5 +107,4 @@ class QuestionNedsattningArbetsformagaTest {
     final var element = QuestionNedsattningArbetsformaga.questionNedsattningArbetsformaga();
     assertFalse(element.includeWhenRenewing());
   }
-
 }

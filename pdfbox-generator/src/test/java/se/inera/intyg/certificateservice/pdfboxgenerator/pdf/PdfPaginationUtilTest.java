@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.pdfboxgenerator.pdf;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -35,14 +53,10 @@ import se.inera.intyg.certificateservice.pdfboxgenerator.pdf.text.TextUtil;
 @ExtendWith(MockitoExtension.class)
 class PdfPaginationUtilTest {
 
-  @Mock
-  private TextUtil textUtil;
-  @Mock
-  private TextFieldAppearanceFactory textFieldAppearanceFactory;
-  @Mock
-  private CertificatePdfContext context;
-  @Mock
-  private PDVariableText overflowField;
+  @Mock private TextUtil textUtil;
+  @Mock private TextFieldAppearanceFactory textFieldAppearanceFactory;
+  @Mock private CertificatePdfContext context;
+  @Mock private PDVariableText overflowField;
 
   private PdfPaginationUtil pdfPaginationUtil;
   private PDFont font;
@@ -53,8 +67,8 @@ class PdfPaginationUtilTest {
   void setUp() {
     pdfPaginationUtil = new PdfPaginationUtil(textUtil, textFieldAppearanceFactory);
     font = new PDType1Font(FontName.HELVETICA);
-    when(textFieldAppearanceFactory.create(any())).thenReturn(
-        Optional.of(new TextFieldAppearance(overflowField)));
+    when(textFieldAppearanceFactory.create(any()))
+        .thenReturn(Optional.of(new TextFieldAppearance(overflowField)));
   }
 
   @Test
@@ -69,21 +83,15 @@ class PdfPaginationUtilTest {
     setupOverflowField(new PDRectangle(100, 100));
     setupContext();
 
-    final var field1 = PdfField.builder()
-        .id("field1")
-        .value("Short text")
-        .build();
-    final var field2 = PdfField.builder()
-        .id("field2")
-        .value("Another short text")
-        .build();
+    final var field1 = PdfField.builder().id("field1").value("Short text").build();
+    final var field2 = PdfField.builder().id("field2").value("Another short text").build();
     final var fields = List.of(field1, field2);
 
-    when(textUtil.getOverflowingLines(anyList(), eq(field1), any(PDRectangle.class), anyFloat(),
-        any(PDFont.class)))
+    when(textUtil.getOverflowingLines(
+            anyList(), eq(field1), any(PDRectangle.class), anyFloat(), any(PDFont.class)))
         .thenReturn(Optional.empty());
-    when(textUtil.getOverflowingLines(anyList(), eq(field2), any(PDRectangle.class), anyFloat(),
-        any(PDFont.class)))
+    when(textUtil.getOverflowingLines(
+            anyList(), eq(field2), any(PDRectangle.class), anyFloat(), any(PDFont.class)))
         .thenReturn(Optional.empty());
 
     final var result = pdfPaginationUtil.paginateFields(context, fields, overflowField);
@@ -92,8 +100,7 @@ class PdfPaginationUtilTest {
         () -> assertEquals(1, result.size(), "Should be a single page"),
         () -> assertEquals(2, result.getFirst().size(), "Page should contain both fields"),
         () -> assertEquals(field1, result.getFirst().getFirst(), "First field should match"),
-        () -> assertEquals(field2, result.getFirst().get(1), "Second field should match")
-    );
+        () -> assertEquals(field2, result.getFirst().get(1), "Second field should match"));
   }
 
   @Test
@@ -101,25 +108,21 @@ class PdfPaginationUtilTest {
     setupOverflowField(new PDRectangle(100, 100));
     setupContext();
 
-    final var field1 = PdfField.builder()
-        .id("field1")
-        .value("Short text")
-        .build();
-    final var field2 = PdfField.builder()
-        .id("field2")
-        .value("Very long text that needs to be split")
-        .build();
+    final var field1 = PdfField.builder().id("field1").value("Short text").build();
+    final var field2 =
+        PdfField.builder().id("field2").value("Very long text that needs to be split").build();
 
     final var fields = List.of(field1, field2);
 
-    final var overflow = new OverFlowLineSplit("Very long text that",
-        Collections.singletonList("needs to be split"));
+    final var overflow =
+        new OverFlowLineSplit(
+            "Very long text that", Collections.singletonList("needs to be split"));
 
-    when(textUtil.getOverflowingLines(anyList(), eq(field1), any(PDRectangle.class), anyFloat(),
-        any(PDFont.class)))
+    when(textUtil.getOverflowingLines(
+            anyList(), eq(field1), any(PDRectangle.class), anyFloat(), any(PDFont.class)))
         .thenReturn(Optional.empty());
-    when(textUtil.getOverflowingLines(anyList(), eq(field2), any(PDRectangle.class), anyFloat(),
-        any(PDFont.class)))
+    when(textUtil.getOverflowingLines(
+            anyList(), eq(field2), any(PDRectangle.class), anyFloat(), any(PDFont.class)))
         .thenReturn(Optional.of(overflow));
 
     final var result = pdfPaginationUtil.paginateFields(context, fields, overflowField);
@@ -128,11 +131,16 @@ class PdfPaginationUtilTest {
         () -> assertEquals(2, result.size(), "Should create 2 pages"),
         () -> assertEquals(2, result.getFirst().size(), "First page should have 2 fields"),
         () -> assertEquals(1, result.get(1).size(), "Second page should have 1 field"),
-        () -> assertEquals("Very long text that", result.getFirst().get(1).getValue(),
-            "Field on page 1 should be part one of split"),
-        () -> assertEquals("needs to be split", result.get(1).getFirst().getValue(),
-            "Field on page 2 should be part two of split")
-    );
+        () ->
+            assertEquals(
+                "Very long text that",
+                result.getFirst().get(1).getValue(),
+                "Field on page 1 should be part one of split"),
+        () ->
+            assertEquals(
+                "needs to be split",
+                result.get(1).getFirst().getValue(),
+                "Field on page 2 should be part two of split"));
   }
 
   @Test
@@ -140,32 +148,38 @@ class PdfPaginationUtilTest {
     setupOverflowField(new PDRectangle(100, 100));
     setupContext();
 
-    final var field = PdfField.builder()
-        .id("field1")
-        .value("Very long text that needs to be split into multiple parts")
-        .appearance(DEFAULT_APPEARANCE)
-        .build();
+    final var field =
+        PdfField.builder()
+            .id("field1")
+            .value("Very long text that needs to be split into multiple parts")
+            .appearance(DEFAULT_APPEARANCE)
+            .build();
 
     final var fields = List.of(field);
 
-    final var overflow = new OverFlowLineSplit("Very long text that",
-        Collections.singletonList("needs to be split into multiple parts"));
+    final var overflow =
+        new OverFlowLineSplit(
+            "Very long text that",
+            Collections.singletonList("needs to be split into multiple parts"));
 
-    when(textUtil.getOverflowingLines(anyList(), any(PdfField.class), any(PDRectangle.class),
-        anyFloat(), any(PDFont.class)))
+    when(textUtil.getOverflowingLines(
+            anyList(), any(PdfField.class), any(PDRectangle.class), anyFloat(), any(PDFont.class)))
         .thenReturn(Optional.of(overflow));
 
     final var result = pdfPaginationUtil.paginateFields(context, fields, overflowField);
 
     assertAll(
         () -> assertEquals(2, result.size(), "Should create 2 pages"),
-        () -> assertEquals(overflow.partOne(), result.getFirst().getFirst().getValue(),
-            "First page should have part one"),
-        () -> assertEquals(
-            overflow.overflowPages().getFirst(),
-            result.get(1).getFirst().getValue(),
-            "Second page should have 1 field")
-    );
+        () ->
+            assertEquals(
+                overflow.partOne(),
+                result.getFirst().getFirst().getValue(),
+                "First page should have part one"),
+        () ->
+            assertEquals(
+                overflow.overflowPages().getFirst(),
+                result.get(1).getFirst().getValue(),
+                "Second page should have 1 field"));
   }
 
   @Test
@@ -173,28 +187,30 @@ class PdfPaginationUtilTest {
     setupOverflowField(new PDRectangle(100, 100));
     setupContext();
 
-    final var field = PdfField.builder()
-        .id("field1")
-        .value("Text to split")
-        .appearance(DEFAULT_APPEARANCE)
-        .build();
+    final var field =
+        PdfField.builder()
+            .id("field1")
+            .value("Text to split")
+            .appearance(DEFAULT_APPEARANCE)
+            .build();
 
     final var fields = List.of(field);
 
     final var overflow = new OverFlowLineSplit("Text", Collections.singletonList("to split"));
 
-    when(textUtil.getOverflowingLines(anyList(), any(PdfField.class), any(PDRectangle.class),
-        anyFloat(), any(PDFont.class)))
+    when(textUtil.getOverflowingLines(
+            anyList(), any(PdfField.class), any(PDRectangle.class), anyFloat(), any(PDFont.class)))
         .thenReturn(Optional.of(overflow));
 
     final var result = pdfPaginationUtil.paginateFields(context, fields, overflowField);
 
     assertAll(
-        () -> assertFalse(result.getFirst().getFirst().getAppend(),
-            "First part should not have append flag"),
-        () -> assertTrue(result.get(1).getFirst().getAppend(),
-            "Second part should have append flag")
-    );
+        () ->
+            assertFalse(
+                result.getFirst().getFirst().getAppend(), "First part should not have append flag"),
+        () ->
+            assertTrue(
+                result.get(1).getFirst().getAppend(), "Second part should have append flag"));
   }
 
   @Test
@@ -202,28 +218,34 @@ class PdfPaginationUtilTest {
     setupOverflowField(new PDRectangle(100, 100));
     setupContext();
 
-    final var field = PdfField.builder()
-        .id("originalFieldId")
-        .value("Text to split")
-        .appearance(DEFAULT_APPEARANCE)
-        .build();
+    final var field =
+        PdfField.builder()
+            .id("originalFieldId")
+            .value("Text to split")
+            .appearance(DEFAULT_APPEARANCE)
+            .build();
 
     final var fields = List.of(field);
 
     final var overflow = new OverFlowLineSplit("Text", Collections.singletonList("to split"));
 
-    when(textUtil.getOverflowingLines(anyList(), any(PdfField.class), any(PDRectangle.class),
-        anyFloat(), any(PDFont.class)))
+    when(textUtil.getOverflowingLines(
+            anyList(), any(PdfField.class), any(PDRectangle.class), anyFloat(), any(PDFont.class)))
         .thenReturn(Optional.of(overflow));
 
     final var result = pdfPaginationUtil.paginateFields(context, fields, overflowField);
 
     assertAll(
-        () -> assertEquals("originalFieldId", result.getFirst().getFirst().getId(),
-            "First part should have original ID"),
-        () -> assertEquals("originalFieldId", result.get(1).getFirst().getId(),
-            "Second part should have original ID")
-    );
+        () ->
+            assertEquals(
+                "originalFieldId",
+                result.getFirst().getFirst().getId(),
+                "First part should have original ID"),
+        () ->
+            assertEquals(
+                "originalFieldId",
+                result.get(1).getFirst().getId(),
+                "Second part should have original ID"));
   }
 
   @Test
@@ -232,23 +254,22 @@ class PdfPaginationUtilTest {
     setupContext();
 
     final var customAppearance = "/Helvetica 12 Tf";
-    final var field = PdfField.builder()
-        .id("field1")
-        .value("Text to split")
-        .appearance(customAppearance)
-        .build();
+    final var field =
+        PdfField.builder().id("field1").value("Text to split").appearance(customAppearance).build();
 
     final var fields = List.of(field);
 
     final var overflow = new OverFlowLineSplit("Text", Collections.singletonList("to split"));
 
-    when(textUtil.getOverflowingLines(anyList(), any(PdfField.class), any(PDRectangle.class),
-        anyFloat(), any(PDFont.class)))
+    when(textUtil.getOverflowingLines(
+            anyList(), any(PdfField.class), any(PDRectangle.class), anyFloat(), any(PDFont.class)))
         .thenReturn(Optional.of(overflow));
 
     final var result = pdfPaginationUtil.paginateFields(context, fields, overflowField);
 
-    assertEquals(customAppearance, result.get(1).getFirst().getAppearance(),
+    assertEquals(
+        customAppearance,
+        result.get(1).getFirst().getAppearance(),
         "Appearance should be preserved on split field");
   }
 
@@ -257,46 +278,46 @@ class PdfPaginationUtilTest {
     setupOverflowField(new PDRectangle(100, 100));
     setupContext();
 
-    final var field1 = PdfField.builder()
-        .id("field1")
-        .value("First field")
-        .appearance(DEFAULT_APPEARANCE)
-        .build();
-    final var field2 = PdfField.builder()
-        .id("field2")
-        .value("Second field with overflow")
-        .appearance(DEFAULT_APPEARANCE)
-        .build();
-    final var field3 = PdfField.builder()
-        .id("field3")
-        .value("Third field")
-        .appearance(DEFAULT_APPEARANCE)
-        .build();
+    final var field1 =
+        PdfField.builder().id("field1").value("First field").appearance(DEFAULT_APPEARANCE).build();
+    final var field2 =
+        PdfField.builder()
+            .id("field2")
+            .value("Second field with overflow")
+            .appearance(DEFAULT_APPEARANCE)
+            .build();
+    final var field3 =
+        PdfField.builder().id("field3").value("Third field").appearance(DEFAULT_APPEARANCE).build();
 
     final var fields = List.of(field1, field2, field3);
 
-    final var overflow = new OverFlowLineSplit("Second field",
-        Collections.singletonList("with overflow"));
+    final var overflow =
+        new OverFlowLineSplit("Second field", Collections.singletonList("with overflow"));
 
-    when(textUtil.getOverflowingLines(anyList(), eq(field1), any(PDRectangle.class), anyFloat(),
-        any(PDFont.class)))
+    when(textUtil.getOverflowingLines(
+            anyList(), eq(field1), any(PDRectangle.class), anyFloat(), any(PDFont.class)))
         .thenReturn(Optional.empty());
-    when(textUtil.getOverflowingLines(anyList(), eq(field2), any(PDRectangle.class), anyFloat(),
-        any(PDFont.class)))
+    when(textUtil.getOverflowingLines(
+            anyList(), eq(field2), any(PDRectangle.class), anyFloat(), any(PDFont.class)))
         .thenReturn(Optional.of(overflow));
-    when(textUtil.getOverflowingLines(anyList(), eq(field3), any(PDRectangle.class), anyFloat(),
-        any(PDFont.class)))
+    when(textUtil.getOverflowingLines(
+            anyList(), eq(field3), any(PDRectangle.class), anyFloat(), any(PDFont.class)))
         .thenReturn(Optional.empty());
 
     final var result = pdfPaginationUtil.paginateFields(context, fields, overflowField);
 
     assertAll(
         () -> assertEquals(2, result.size(), "Should create 2 pages"),
-        () -> assertEquals(2, result.getFirst().size(),
-            "First page should have 2 fields (field1 and part one of field2)"),
-        () -> assertEquals(2, result.get(1).size(),
-            "Second page should have 2 fields (part two of field2 and field3 on next page)")
-    );
+        () ->
+            assertEquals(
+                2,
+                result.getFirst().size(),
+                "First page should have 2 fields (field1 and part one of field2)"),
+        () ->
+            assertEquals(
+                2,
+                result.get(1).size(),
+                "Second page should have 2 fields (part two of field2 and field3 on next page)"));
   }
 
   @Test
@@ -304,18 +325,19 @@ class PdfPaginationUtilTest {
     setupOverflowField(new PDRectangle(100, 100));
     setupContext();
 
-    final var field = PdfField.builder()
-        .id("field1")
-        .value("Text with only part one")
-        .appearance(DEFAULT_APPEARANCE)
-        .build();
+    final var field =
+        PdfField.builder()
+            .id("field1")
+            .value("Text with only part one")
+            .appearance(DEFAULT_APPEARANCE)
+            .build();
 
     final var fields = List.of(field);
 
     final var overflow = new OverFlowLineSplit("Text with only part one", List.of());
 
-    when(textUtil.getOverflowingLines(anyList(), any(PdfField.class), any(PDRectangle.class),
-        anyFloat(), any(PDFont.class)))
+    when(textUtil.getOverflowingLines(
+            anyList(), any(PdfField.class), any(PDRectangle.class), anyFloat(), any(PDFont.class)))
         .thenReturn(Optional.of(overflow));
 
     final var result = pdfPaginationUtil.paginateFields(context, fields, overflowField);
@@ -323,8 +345,7 @@ class PdfPaginationUtilTest {
     assertAll(
         () -> assertEquals(1, result.size()),
         () -> assertEquals(1, result.getFirst().size()),
-        () -> assertEquals("Text with only part one", result.getFirst().getFirst().getValue())
-    );
+        () -> assertEquals("Text with only part one", result.getFirst().getFirst().getValue()));
   }
 
   @Test
@@ -333,21 +354,18 @@ class PdfPaginationUtilTest {
     setupOverflowField(rectangle);
     setupContext();
 
-    final var field = PdfField.builder()
-        .id("field1")
-        .value("Test text")
-        .build();
+    final var field = PdfField.builder().id("field1").value("Test text").build();
 
     final var fields = List.of(field);
 
-    when(textUtil.getOverflowingLines(anyList(), any(PdfField.class), any(PDRectangle.class),
-        anyFloat(), any(PDFont.class)))
+    when(textUtil.getOverflowingLines(
+            anyList(), any(PdfField.class), any(PDRectangle.class), anyFloat(), any(PDFont.class)))
         .thenReturn(Optional.empty());
 
     pdfPaginationUtil.paginateFields(context, fields, overflowField);
 
-    verify(textUtil).getOverflowingLines(anyList(), eq(field), eq(rectangle), eq(FONT_SIZE),
-        eq(font));
+    verify(textUtil)
+        .getOverflowingLines(anyList(), eq(field), eq(rectangle), eq(FONT_SIZE), eq(font));
   }
 
   @Test
@@ -355,18 +373,15 @@ class PdfPaginationUtilTest {
     setupOverflowField(new PDRectangle(100, 100));
     setupContext();
 
-    final var field = PdfField.builder()
-        .id("field1")
-        .value("Text")
-        .appearance(DEFAULT_APPEARANCE)
-        .build();
+    final var field =
+        PdfField.builder().id("field1").value("Text").appearance(DEFAULT_APPEARANCE).build();
 
     final var fields = List.of(field);
 
     final var overflow = new OverFlowLineSplit(null, Collections.singletonList("overflow part"));
 
-    when(textUtil.getOverflowingLines(anyList(), any(PdfField.class), any(PDRectangle.class),
-        anyFloat(), any(PDFont.class)))
+    when(textUtil.getOverflowingLines(
+            anyList(), any(PdfField.class), any(PDRectangle.class), anyFloat(), any(PDFont.class)))
         .thenReturn(Optional.of(overflow));
 
     final var result = pdfPaginationUtil.paginateFields(context, fields, overflowField);
@@ -374,14 +389,20 @@ class PdfPaginationUtilTest {
     assertAll(
         () -> assertEquals(2, result.size(), "Should create 2 pages"),
         () -> assertEquals(1, result.getFirst().size(), "First page should have 1 field"),
-        () -> assertNull(result.getFirst().getFirst(),
-            "First field should be null when partOne is null"),
+        () ->
+            assertNull(
+                result.getFirst().getFirst(), "First field should be null when partOne is null"),
         () -> assertEquals(1, result.get(1).size(), "Second page should have 1 field"),
-        () -> assertEquals("field1", result.get(1).getFirst().getId(),
-            "Second page field should have original ID"),
-        () -> assertEquals("overflow part", result.get(1).getFirst().getValue(),
-            "Second page should have partTwo value")
-    );
+        () ->
+            assertEquals(
+                "field1",
+                result.get(1).getFirst().getId(),
+                "Second page field should have original ID"),
+        () ->
+            assertEquals(
+                "overflow part",
+                result.get(1).getFirst().getValue(),
+                "Second page should have partTwo value"));
   }
 
   @Test
@@ -389,29 +410,40 @@ class PdfPaginationUtilTest {
     setupOverflowField(new PDRectangle(100, 100));
     setupContext();
 
-    final var field = PdfField.builder()
-        .id("field1")
-        .value("Text that overflows multiple times and needs to be split into several pages")
-        .appearance(DEFAULT_APPEARANCE)
-        .build();
+    final var field =
+        PdfField.builder()
+            .id("field1")
+            .value("Text that overflows multiple times and needs to be split into several pages")
+            .appearance(DEFAULT_APPEARANCE)
+            .build();
 
-    when(textUtil.getOverflowingLines(anyList(), any(PdfField.class), any(PDRectangle.class),
-        anyFloat(), any(PDFont.class)))
-        .thenReturn(Optional.of(new OverFlowLineSplit("Text that overflows multiple times",
-            List.of("and needs to be split", "into several pages"))));
+    when(textUtil.getOverflowingLines(
+            anyList(), any(PdfField.class), any(PDRectangle.class), anyFloat(), any(PDFont.class)))
+        .thenReturn(
+            Optional.of(
+                new OverFlowLineSplit(
+                    "Text that overflows multiple times",
+                    List.of("and needs to be split", "into several pages"))));
 
     final var result = pdfPaginationUtil.paginateFields(context, List.of(field), overflowField);
 
     assertAll(
         () -> assertEquals(3, result.size(), "Should create 3 pages"),
-        () -> assertEquals("Text that overflows multiple times",
-            result.getFirst().getFirst().getValue(),
-            "First page should have part one"),
-        () -> assertEquals("and needs to be split", result.get(1).getFirst().getValue(),
-            "Second page should have part two"),
-        () -> assertEquals("into several pages", result.get(2).getFirst().getValue(),
-            "Third page should have part three")
-    );
+        () ->
+            assertEquals(
+                "Text that overflows multiple times",
+                result.getFirst().getFirst().getValue(),
+                "First page should have part one"),
+        () ->
+            assertEquals(
+                "and needs to be split",
+                result.get(1).getFirst().getValue(),
+                "Second page should have part two"),
+        () ->
+            assertEquals(
+                "into several pages",
+                result.get(2).getFirst().getValue(),
+                "Third page should have part three"));
   }
 
   @Test
@@ -421,7 +453,8 @@ class PdfPaginationUtilTest {
 
     final List<PdfField> emptyList = List.of();
 
-    assertThrows(IllegalStateException.class,
+    assertThrows(
+        IllegalStateException.class,
         () -> pdfPaginationUtil.paginateFields(context, emptyList, overflowField));
   }
 

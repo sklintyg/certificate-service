@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.certificate;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -50,8 +68,7 @@ class XmlGeneratorUnifiedDiagnosisListTest {
   private static ElementData data;
 
   private XmlGeneratorUnifiedDiagnosisList xmlGenerator;
-  @Mock
-  private DiagnosisCodeRepository diagnosisCodeRepository;
+  @Mock private DiagnosisCodeRepository diagnosisCodeRepository;
 
   @BeforeEach
   void setUp() {
@@ -70,48 +87,46 @@ class XmlGeneratorUnifiedDiagnosisListTest {
 
     @BeforeEach
     void setup() {
-      data = ElementData.builder()
-          .id(new ElementId(QUESTION_ID))
-          .value(
-              ElementValueDiagnosisList.builder()
-                  .diagnoses(
-                      List.of(
-                          ElementValueDiagnosis.builder()
-                              .code(CODE_ONE)
-                              .id(new FieldId("CODE_ID"))
-                              .description(DESCRIPTION_ONE)
-                              .terminology(ICD_10_SE)
-                              .build()
-                      )
-                  )
-                  .build()
-          )
-          .build();
-      elementSpecification = ElementSpecification.builder()
-          .configuration(
-              ElementConfigurationDiagnosis.builder()
-                  .id(new FieldId(FIELD_ID))
-                  .terminology(
-                      List.of(
-                          new ElementDiagnosisTerminology(ICD_10_SE, "label", CODE_SYSTEM,
-                              List.of())
-                      )
-                  )
-                  .build()
-          )
-          .build();
+      data =
+          ElementData.builder()
+              .id(new ElementId(QUESTION_ID))
+              .value(
+                  ElementValueDiagnosisList.builder()
+                      .diagnoses(
+                          List.of(
+                              ElementValueDiagnosis.builder()
+                                  .code(CODE_ONE)
+                                  .id(new FieldId("CODE_ID"))
+                                  .description(DESCRIPTION_ONE)
+                                  .terminology(ICD_10_SE)
+                                  .build()))
+                      .build())
+              .build();
+      elementSpecification =
+          ElementSpecification.builder()
+              .configuration(
+                  ElementConfigurationDiagnosis.builder()
+                      .id(new FieldId(FIELD_ID))
+                      .terminology(
+                          List.of(
+                              new ElementDiagnosisTerminology(
+                                  ICD_10_SE, "label", CODE_SYSTEM, List.of())))
+                      .build())
+              .build();
 
       when(diagnosisCodeRepository.findByCode(any(DiagnosisCode.class)))
-          .thenAnswer(invocation -> {
-            DiagnosisCode code = invocation.getArgument(0, DiagnosisCode.class);
-            if (CODE_ONE.equals(code.value())) {
-              return Optional.of(Diagnosis.builder()
-                  .code(new DiagnosisCode(CODE_ONE))
-                  .description(new DiagnosisDescription(DESCRIPTION_ONE))
-                  .build());
-            }
-            return Optional.empty();
-          });
+          .thenAnswer(
+              invocation -> {
+                DiagnosisCode code = invocation.getArgument(0, DiagnosisCode.class);
+                if (CODE_ONE.equals(code.value())) {
+                  return Optional.of(
+                      Diagnosis.builder()
+                          .code(new DiagnosisCode(CODE_ONE))
+                          .description(new DiagnosisDescription(DESCRIPTION_ONE))
+                          .build());
+                }
+                return Optional.empty();
+              });
     }
 
     @Test
@@ -120,9 +135,7 @@ class XmlGeneratorUnifiedDiagnosisListTest {
 
       final var first = response.getFirst();
       assertAll(
-          () -> assertEquals(1, response.size()),
-          () -> assertEquals(QUESTION_ID, first.getId())
-      );
+          () -> assertEquals(1, response.size()), () -> assertEquals(QUESTION_ID, first.getId()));
     }
 
     @Test
@@ -139,8 +152,7 @@ class XmlGeneratorUnifiedDiagnosisListTest {
           () -> assertEquals(QUESTION_ID + ".2", delsvarCode.getId()),
           () -> assertEquals(CODE_ONE, cvType.getCode()),
           () -> assertEquals(CODE_SYSTEM, cvType.getCodeSystem()),
-          () -> assertEquals(DESCRIPTION_ONE, cvType.getDisplayName())
-      );
+          () -> assertEquals(DESCRIPTION_ONE, cvType.getDisplayName()));
     }
 
     @Test
@@ -154,29 +166,26 @@ class XmlGeneratorUnifiedDiagnosisListTest {
       assertAll(
           () -> assertEquals(2, delsvar.size()),
           () -> assertEquals(QUESTION_ID + ".1", delsvarDescription.getId()),
-          () -> assertEquals(DESCRIPTION_ONE, delsvarDescriptionAsStr)
-      );
+          () -> assertEquals(DESCRIPTION_ONE, delsvarDescriptionAsStr));
     }
 
     @Test
     void shallExcludeDescriptionIfMissingDiagnosisCodeInRepository() {
-      final var elementData = ElementData.builder()
-          .id(new ElementId(QUESTION_ID))
-          .value(
-              ElementValueDiagnosisList.builder()
-                  .diagnoses(
-                      List.of(
-                          ElementValueDiagnosis.builder()
-                              .code(CODE_TWO)
-                              .id(new FieldId(CODE_SYSTEM))
-                              .description(DESCRIPTION_ONE)
-                              .terminology(ICD_10_SE)
-                              .build()
-                      )
-                  )
-                  .build()
-          )
-          .build();
+      final var elementData =
+          ElementData.builder()
+              .id(new ElementId(QUESTION_ID))
+              .value(
+                  ElementValueDiagnosisList.builder()
+                      .diagnoses(
+                          List.of(
+                              ElementValueDiagnosis.builder()
+                                  .code(CODE_TWO)
+                                  .id(new FieldId(CODE_SYSTEM))
+                                  .description(DESCRIPTION_ONE)
+                                  .terminology(ICD_10_SE)
+                                  .build()))
+                      .build())
+              .build();
 
       final var response = xmlGenerator.generate(elementData, elementSpecification);
 
@@ -190,8 +199,7 @@ class XmlGeneratorUnifiedDiagnosisListTest {
           () -> assertEquals(QUESTION_ID + ".2", delsvarCode.getId()),
           () -> assertEquals(CODE_TWO, cvType.getCode()),
           () -> assertEquals(CODE_SYSTEM, cvType.getCodeSystem()),
-          () -> assertNull(cvType.getDisplayName())
-      );
+          () -> assertNull(cvType.getDisplayName()));
     }
   }
 
@@ -202,57 +210,56 @@ class XmlGeneratorUnifiedDiagnosisListTest {
 
     @BeforeEach
     void setup() {
-      data = ElementData.builder()
-          .id(new ElementId(QUESTION_ID))
-          .value(
-              ElementValueDiagnosisList.builder()
-                  .diagnoses(
-                      List.of(
-                          ElementValueDiagnosis.builder()
-                              .code(CODE_ONE)
-                              .id(new FieldId("CODE_ID"))
-                              .description(DESCRIPTION_ONE)
-                              .terminology(ICD_10_SE)
-                              .build(),
-                          ElementValueDiagnosis.builder()
-                              .code(CODE_TWO)
-                              .id(new FieldId("CODE_ID"))
-                              .description(DESCRIPTION_TWO)
-                              .terminology(ICD_10_SE)
-                              .build()
-                      )
-                  )
-                  .build()
-          )
-          .build();
-      elementSpecification = ElementSpecification.builder()
-          .configuration(
-              ElementConfigurationDiagnosis.builder()
-                  .id(new FieldId(FIELD_ID))
-                  .terminology(
-                      List.of(
-                          new ElementDiagnosisTerminology(ICD_10_SE, "label", CODE_SYSTEM,
-                              List.of())
-                      )
-                  )
-                  .build()
-          )
-          .build();
+      data =
+          ElementData.builder()
+              .id(new ElementId(QUESTION_ID))
+              .value(
+                  ElementValueDiagnosisList.builder()
+                      .diagnoses(
+                          List.of(
+                              ElementValueDiagnosis.builder()
+                                  .code(CODE_ONE)
+                                  .id(new FieldId("CODE_ID"))
+                                  .description(DESCRIPTION_ONE)
+                                  .terminology(ICD_10_SE)
+                                  .build(),
+                              ElementValueDiagnosis.builder()
+                                  .code(CODE_TWO)
+                                  .id(new FieldId("CODE_ID"))
+                                  .description(DESCRIPTION_TWO)
+                                  .terminology(ICD_10_SE)
+                                  .build()))
+                      .build())
+              .build();
+      elementSpecification =
+          ElementSpecification.builder()
+              .configuration(
+                  ElementConfigurationDiagnosis.builder()
+                      .id(new FieldId(FIELD_ID))
+                      .terminology(
+                          List.of(
+                              new ElementDiagnosisTerminology(
+                                  ICD_10_SE, "label", CODE_SYSTEM, List.of())))
+                      .build())
+              .build();
 
       when(diagnosisCodeRepository.findByCode(any(DiagnosisCode.class)))
-          .thenAnswer(invocation -> {
-            DiagnosisCode code = invocation.getArgument(0, DiagnosisCode.class);
-            if (CODE_ONE.equals(code.value())) {
-              return Optional.of(Diagnosis.builder()
-                  .code(new DiagnosisCode(CODE_ONE))
-                  .description(new DiagnosisDescription(DESCRIPTION_ONE))
-                  .build());
-            }
-            return Optional.of(Diagnosis.builder()
-                .code(new DiagnosisCode(CODE_TWO))
-                .description(new DiagnosisDescription(DESCRIPTION_TWO))
-                .build());
-          });
+          .thenAnswer(
+              invocation -> {
+                DiagnosisCode code = invocation.getArgument(0, DiagnosisCode.class);
+                if (CODE_ONE.equals(code.value())) {
+                  return Optional.of(
+                      Diagnosis.builder()
+                          .code(new DiagnosisCode(CODE_ONE))
+                          .description(new DiagnosisDescription(DESCRIPTION_ONE))
+                          .build());
+                }
+                return Optional.of(
+                    Diagnosis.builder()
+                        .code(new DiagnosisCode(CODE_TWO))
+                        .description(new DiagnosisDescription(DESCRIPTION_TWO))
+                        .build());
+              });
     }
 
     @Test
@@ -261,8 +268,7 @@ class XmlGeneratorUnifiedDiagnosisListTest {
 
       assertAll(
           () -> assertEquals(1, response.size()),
-          () -> assertEquals(QUESTION_ID, response.getFirst().getId())
-      );
+          () -> assertEquals(QUESTION_ID, response.getFirst().getId()));
     }
 
     @Test
@@ -287,8 +293,7 @@ class XmlGeneratorUnifiedDiagnosisListTest {
           () -> assertEquals(DESCRIPTION_ONE, cvType1.getDisplayName()),
           () -> assertEquals(CODE_TWO, cvType2.getCode()),
           () -> assertEquals(CODE_SYSTEM, cvType2.getCodeSystem()),
-          () -> assertEquals(DESCRIPTION_TWO, cvType2.getDisplayName())
-      );
+          () -> assertEquals(DESCRIPTION_TWO, cvType2.getDisplayName()));
     }
 
     @Test
@@ -304,8 +309,7 @@ class XmlGeneratorUnifiedDiagnosisListTest {
           () -> assertEquals(QUESTION_ID + ".1", delsvarFirstDescription.getId()),
           () -> assertEquals(DESCRIPTION_ONE, delsvarFirstDescription.getContent().getFirst()),
           () -> assertEquals(QUESTION_ID + ".3", delsvarSecondDescription.getId()),
-          () -> assertEquals(DESCRIPTION_TWO, delsvarSecondDescription.getContent().getFirst())
-      );
+          () -> assertEquals(DESCRIPTION_TWO, delsvarSecondDescription.getContent().getFirst()));
     }
   }
 
@@ -317,14 +321,11 @@ class XmlGeneratorUnifiedDiagnosisListTest {
     @Test
     void shallMapEmptyIfNoValue() {
 
-      final var elementData = ElementData.builder()
-          .id(new ElementId(QUESTION_ID))
-          .value(
-              ElementValueDiagnosis.builder()
-                  .id(new FieldId(FIELD_ID))
-                  .build()
-          )
-          .build();
+      final var elementData =
+          ElementData.builder()
+              .id(new ElementId(QUESTION_ID))
+              .value(ElementValueDiagnosis.builder().id(new FieldId(FIELD_ID)).build())
+              .build();
 
       final var response = xmlGenerator.generate(elementData, elementSpecification);
 
@@ -333,43 +334,38 @@ class XmlGeneratorUnifiedDiagnosisListTest {
 
     @Test
     void shallThrowIfIncorrectConfiguration() {
-      final var elementData = ElementData.builder()
-          .id(new ElementId(QUESTION_ID))
-          .value(
-              ElementValueDiagnosisList.builder()
-                  .diagnoses(
-                      List.of(
-                          ElementValueDiagnosis.builder()
-                              .code(CODE_ONE)
-                              .id(new FieldId("CODE_ID"))
-                              .description(DESCRIPTION_ONE)
-                              .build()
-                      )
-                  )
-                  .build()
-          )
-          .build();
+      final var elementData =
+          ElementData.builder()
+              .id(new ElementId(QUESTION_ID))
+              .value(
+                  ElementValueDiagnosisList.builder()
+                      .diagnoses(
+                          List.of(
+                              ElementValueDiagnosis.builder()
+                                  .code(CODE_ONE)
+                                  .id(new FieldId("CODE_ID"))
+                                  .description(DESCRIPTION_ONE)
+                                  .build()))
+                      .build())
+              .build();
 
-      elementSpecification = ElementSpecification.builder()
-          .configuration(
-              ElementConfigurationDate.builder().build()
-          )
-          .build();
+      elementSpecification =
+          ElementSpecification.builder()
+              .configuration(ElementConfigurationDate.builder().build())
+              .build();
 
-      assertThrows(IllegalArgumentException.class,
-          () -> xmlGenerator.generate(elementData, elementSpecification)
-      );
+      assertThrows(
+          IllegalArgumentException.class,
+          () -> xmlGenerator.generate(elementData, elementSpecification));
     }
 
     @Test
     void shallMapEmptyIfValueIsNotDiagnosis() {
-      final var elementData = ElementData.builder()
-          .id(new ElementId(QUESTION_ID))
-          .value(
-              ElementValueUnitContactInformation.builder()
-                  .build()
-          )
-          .build();
+      final var elementData =
+          ElementData.builder()
+              .id(new ElementId(QUESTION_ID))
+              .value(ElementValueUnitContactInformation.builder().build())
+              .build();
 
       final var response = xmlGenerator.generate(elementData, elementSpecification);
 
@@ -378,19 +374,15 @@ class XmlGeneratorUnifiedDiagnosisListTest {
 
     @Test
     void shallReturnEmptyIfDiagnosesIsNull() {
-      elementSpecification = ElementSpecification.builder()
-          .configuration(
-              ElementConfigurationDiagnosis.builder().build()
-          )
-          .build();
-      final var elementData = ElementData.builder()
-          .id(new ElementId(QUESTION_ID))
-          .value(
-              ElementValueDiagnosisList.builder()
-                  .diagnoses(null)
-                  .build()
-          )
-          .build();
+      elementSpecification =
+          ElementSpecification.builder()
+              .configuration(ElementConfigurationDiagnosis.builder().build())
+              .build();
+      final var elementData =
+          ElementData.builder()
+              .id(new ElementId(QUESTION_ID))
+              .value(ElementValueDiagnosisList.builder().diagnoses(null).build())
+              .build();
 
       final var response = xmlGenerator.generate(elementData, elementSpecification);
 
@@ -399,19 +391,15 @@ class XmlGeneratorUnifiedDiagnosisListTest {
 
     @Test
     void shallReturnEmptyIfDiagnosesIsEmpty() {
-      elementSpecification = ElementSpecification.builder()
-          .configuration(
-              ElementConfigurationDiagnosis.builder().build()
-          )
-          .build();
-      final var elementData = ElementData.builder()
-          .id(new ElementId(QUESTION_ID))
-          .value(
-              ElementValueDiagnosisList.builder()
-                  .diagnoses(Collections.emptyList())
-                  .build()
-          )
-          .build();
+      elementSpecification =
+          ElementSpecification.builder()
+              .configuration(ElementConfigurationDiagnosis.builder().build())
+              .build();
+      final var elementData =
+          ElementData.builder()
+              .id(new ElementId(QUESTION_ID))
+              .value(ElementValueDiagnosisList.builder().diagnoses(Collections.emptyList()).build())
+              .build();
 
       final var response = xmlGenerator.generate(elementData, elementSpecification);
 

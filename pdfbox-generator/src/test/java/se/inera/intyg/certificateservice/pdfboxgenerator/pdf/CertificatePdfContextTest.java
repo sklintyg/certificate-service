@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.pdfboxgenerator.pdf;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -17,29 +35,22 @@ class CertificatePdfContextTest {
 
   @Test
   void shouldIncrementMcidCorrectly() {
-    final var context = CertificatePdfContext.builder()
-        .mcid(new AtomicInteger(0))
-        .document(new PDDocument())
-        .additionalInfoText("")
-        .citizenFormat(false)
-        .build();
+    final var context =
+        CertificatePdfContext.builder()
+            .mcid(new AtomicInteger(0))
+            .document(new PDDocument())
+            .additionalInfoText("")
+            .citizenFormat(false)
+            .build();
 
-    assertAll(
-        () -> assertEquals(1, context.nextMcid()),
-        () -> assertEquals(2, context.nextMcid())
-    );
+    assertAll(() -> assertEquals(1, context.nextMcid()), () -> assertEquals(2, context.nextMcid()));
   }
 
   @Test
   void shouldReturnPdfFieldsThatMatchPredicate() {
-    final var expectedField = PdfField.builder()
-        .id("field1")
-        .patientField(true)
-        .build();
+    final var expectedField = PdfField.builder().id("field1").patientField(true).build();
 
-    final var context = CertificatePdfContext.builder()
-        .pdfFields(List.of(expectedField))
-        .build();
+    final var context = CertificatePdfContext.builder().pdfFields(List.of(expectedField)).build();
 
     final var matchingFields = context.getPdfFields(PdfField::isPatientField);
 
@@ -48,9 +59,7 @@ class CertificatePdfContextTest {
 
   @Test
   void shouldReturnEmptyWhenNoPdfFieldsMatchPredicate() {
-    final var context = CertificatePdfContext.builder()
-        .pdfFields(List.of())
-        .build();
+    final var context = CertificatePdfContext.builder().pdfFields(List.of()).build();
 
     final var matchingFields = context.getPdfFields(PdfField::isPatientField);
 
@@ -59,31 +68,27 @@ class CertificatePdfContextTest {
 
   @Test
   void shouldSanatizePdfFields() {
-    final var fieldWithProblemChars = PdfField.builder()
-        .id("field1")
-        .value("testing\u2013with\u2014problem\u2212characters")
-        .build();
-
-    final var fieldWithValue = PdfField.builder()
-        .id("field2")
-        .value("Some Value")
-        .build();
-
-    final var originalFields = List.of(fieldWithProblemChars, fieldWithValue);
-    final var expectedFields = List.of(
+    final var fieldWithProblemChars =
         PdfField.builder()
             .id("field1")
-            .value("testing-with-problem-characters")
-            .build(),
-        fieldWithValue
-    );
+            .value("testing\u2013with\u2014problem\u2212characters")
+            .build();
+
+    final var fieldWithValue = PdfField.builder().id("field2").value("Some Value").build();
+
+    final var originalFields = List.of(fieldWithProblemChars, fieldWithValue);
+    final var expectedFields =
+        List.of(
+            PdfField.builder().id("field1").value("testing-with-problem-characters").build(),
+            fieldWithValue);
 
     final var fontResolverMock = mock(PdfFontResolver.class);
 
-    final var context = CertificatePdfContext.builder()
-        .fontResolver(fontResolverMock)
-        .fieldSanitizer(new PdfFieldSanitizer())
-        .build();
+    final var context =
+        CertificatePdfContext.builder()
+            .fontResolver(fontResolverMock)
+            .fieldSanitizer(new PdfFieldSanitizer())
+            .build();
 
     when(fontResolverMock.resolveFont(any())).thenReturn(new PDType1Font(FontName.HELVETICA));
 

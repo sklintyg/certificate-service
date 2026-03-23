@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7804.elements;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,70 +44,74 @@ class QuestionMedicinskaSkalForSvarareAtergangTest {
 
   @Test
   void shouldIncludeId() {
-    final var element = QuestionMedicinskaSkalForSvarareAtergang.questionMedicinskaSkalForSvarareAtergang();
+    final var element =
+        QuestionMedicinskaSkalForSvarareAtergang.questionMedicinskaSkalForSvarareAtergang();
     assertEquals(ELEMENT_ID, element.id());
   }
 
   @Test
   void shouldIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationTextArea.builder()
-        .name(
-            "Beskriv de medicinska skälen till att möjligheterna till återgång i arbete försämras")
-        .id(new FieldId("33.2"))
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationTextArea.builder()
+            .name(
+                "Beskriv de medicinska skälen till att möjligheterna till återgång i arbete försämras")
+            .id(new FieldId("33.2"))
+            .build();
 
-    final var element = QuestionMedicinskaSkalForSvarareAtergang.questionMedicinskaSkalForSvarareAtergang();
+    final var element =
+        QuestionMedicinskaSkalForSvarareAtergang.questionMedicinskaSkalForSvarareAtergang();
 
     assertEquals(expectedConfiguration, element.configuration());
   }
 
   @Test
   void shouldIncludeRules() {
-    final var expectedRules = List.of(
-        ElementRuleExpression.builder()
-            .type(ElementRuleType.MANDATORY)
-            .id(ELEMENT_ID)
-            .expression(new RuleExpression("$33.2"))
-            .build(),
-        ElementRuleLimit.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.TEXT_LIMIT)
-            .limit(new RuleLimit((short) 4000))
-            .build(),
-        ElementRuleExpression.builder()
-            .id(new ElementId("33"))
-            .type(ElementRuleType.SHOW)
-            .expression(new RuleExpression("$33.1"))
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleExpression.builder()
+                .type(ElementRuleType.MANDATORY)
+                .id(ELEMENT_ID)
+                .expression(new RuleExpression("$33.2"))
+                .build(),
+            ElementRuleLimit.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.TEXT_LIMIT)
+                .limit(new RuleLimit((short) 4000))
+                .build(),
+            ElementRuleExpression.builder()
+                .id(new ElementId("33"))
+                .type(ElementRuleType.SHOW)
+                .expression(new RuleExpression("$33.1"))
+                .build());
 
-    final var element = QuestionMedicinskaSkalForSvarareAtergang.questionMedicinskaSkalForSvarareAtergang();
+    final var element =
+        QuestionMedicinskaSkalForSvarareAtergang.questionMedicinskaSkalForSvarareAtergang();
 
     assertEquals(expectedRules, element.rules());
   }
 
   @Test
   void shouldIncludeValidations() {
-    final var expectedValidations = List.of(
-        ElementValidationText.builder()
-            .mandatory(true)
-            .limit(4000)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationText.builder().mandatory(true).limit(4000).build());
 
-    final var element = QuestionMedicinskaSkalForSvarareAtergang.questionMedicinskaSkalForSvarareAtergang();
+    final var element =
+        QuestionMedicinskaSkalForSvarareAtergang.questionMedicinskaSkalForSvarareAtergang();
 
     assertEquals(expectedValidations, element.validations());
   }
 
   @Test
   void shouldHaveCorrectPdfConfiguration() {
-    final var element = QuestionMedicinskaSkalForSvarareAtergang.questionMedicinskaSkalForSvarareAtergang();
-    final var expected = PdfConfigurationText.builder()
-        .pdfFieldId(new PdfFieldId("form1[0].Sida3[0].flt_txtBeskrivMedicinskaSkal[0]"))
-        .overflowSheetFieldId(new PdfFieldId("form1[0].#subform[4].flt_txtFortsattningsblad[0]"))
-        .maxLength(3 * PDF_TEXT_FIELD_ROW_LENGTH)
-        .build();
+    final var element =
+        QuestionMedicinskaSkalForSvarareAtergang.questionMedicinskaSkalForSvarareAtergang();
+    final var expected =
+        PdfConfigurationText.builder()
+            .pdfFieldId(new PdfFieldId("form1[0].Sida3[0].flt_txtBeskrivMedicinskaSkal[0]"))
+            .overflowSheetFieldId(
+                new PdfFieldId("form1[0].#subform[4].flt_txtFortsattningsblad[0]"))
+            .maxLength(3 * PDF_TEXT_FIELD_ROW_LENGTH)
+            .build();
     assertEquals(expected, element.pdfConfiguration());
   }
 
@@ -98,43 +120,46 @@ class QuestionMedicinskaSkalForSvarareAtergangTest {
 
     @Test
     void shouldReturnTrueIfBooleanIsTrue() {
-      final var element = QuestionMedicinskaSkalForSvarareAtergang.questionMedicinskaSkalForSvarareAtergang();
-      final var shouldValidate = element.elementSpecification(new ElementId("33.2"))
-          .shouldValidate();
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("33"))
-              .value(ElementValueBoolean.builder().value(true).build())
-              .build()
-      );
+      final var element =
+          QuestionMedicinskaSkalForSvarareAtergang.questionMedicinskaSkalForSvarareAtergang();
+      final var shouldValidate =
+          element.elementSpecification(new ElementId("33.2")).shouldValidate();
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("33"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
       org.junit.jupiter.api.Assertions.assertTrue(shouldValidate.test(elementData));
     }
 
     @Test
     void shouldReturnFalseIfBooleanIsFalse() {
-      final var element = QuestionMedicinskaSkalForSvarareAtergang.questionMedicinskaSkalForSvarareAtergang();
-      final var shouldValidate = element.elementSpecification(new ElementId("33.2"))
-          .shouldValidate();
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("33"))
-              .value(ElementValueBoolean.builder().value(false).build())
-              .build()
-      );
+      final var element =
+          QuestionMedicinskaSkalForSvarareAtergang.questionMedicinskaSkalForSvarareAtergang();
+      final var shouldValidate =
+          element.elementSpecification(new ElementId("33.2")).shouldValidate();
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("33"))
+                  .value(ElementValueBoolean.builder().value(false).build())
+                  .build());
       org.junit.jupiter.api.Assertions.assertFalse(shouldValidate.test(elementData));
     }
 
     @Test
     void shouldReturnFalseIfElementMissing() {
-      final var element = QuestionMedicinskaSkalForSvarareAtergang.questionMedicinskaSkalForSvarareAtergang();
-      final var shouldValidate = element.elementSpecification(new ElementId("33.2"))
-          .shouldValidate();
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("not33"))
-              .value(ElementValueBoolean.builder().value(true).build())
-              .build()
-      );
+      final var element =
+          QuestionMedicinskaSkalForSvarareAtergang.questionMedicinskaSkalForSvarareAtergang();
+      final var shouldValidate =
+          element.elementSpecification(new ElementId("33.2")).shouldValidate();
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("not33"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
       org.junit.jupiter.api.Assertions.assertFalse(shouldValidate.test(elementData));
     }
   }

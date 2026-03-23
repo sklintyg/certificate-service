@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.prefill;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -52,109 +70,99 @@ class PrefillMedicalInvestigationListConverterTest {
   private static final String TEXT = "text1";
   private static final String TEXT_2 = "text2";
 
-  private static final List<Code> TYPE_OPTIONS = List.of(
-      new Code(CODE, "S1", "Type 1"),
-      new Code(CODE_2, "S1", "Type 2")
-  );
+  private static final List<Code> TYPE_OPTIONS =
+      List.of(new Code(CODE, "S1", "Type 1"), new Code(CODE_2, "S1", "Type 2"));
 
-  private static final ElementSpecification SPECIFICATION = ElementSpecification.builder()
-      .id(ELEMENT_ID)
-      .configuration(
-          ElementConfigurationMedicalInvestigationList.builder()
-              .id(FIELD_ID)
-              .list(
-                  List.of(
-                      MedicalInvestigationConfig.builder()
-                          .id(FIELD_ID)
-                          .dateId(DATE_FIELD_ID)
-                          .investigationTypeId(CODE_FIELD_ID)
-                          .informationSourceId(TEXT_FIELD_ID)
-                          .typeOptions(TYPE_OPTIONS)
-                          .build(),
-                      MedicalInvestigationConfig.builder()
-                          .id(FIELD_2_ID)
-                          .dateId(DATE_2_FIELD_ID)
-                          .investigationTypeId(CODE_2_FIELD_ID)
-                          .informationSourceId(TEXT_2_FIELD_ID)
-                          .typeOptions(TYPE_OPTIONS)
-                          .build()
-                  )
-              )
-              .build()
-      )
-      .build();
-  private static final ElementData EXPECTED_ELEMENT_DATA = ElementData.builder()
-      .id(ELEMENT_ID)
-      .value(
-          ElementValueMedicalInvestigationList.builder()
-              .id(FIELD_ID)
-              .list(
-                  List.of(
-                      MedicalInvestigation.builder()
-                          .id(FIELD_ID)
-                          .date(
-                              ElementValueDate.builder()
-                                  .dateId(DATE_FIELD_ID)
-                                  .date(DATE)
-                                  .build()
-                          )
-                          .investigationType(
-                              ElementValueCode.builder()
-                                  .codeId(CODE_FIELD_ID)
-                                  .code(CODE)
-                                  .build()
-                          )
-                          .informationSource(
-                              ElementValueText.builder()
-                                  .textId(TEXT_FIELD_ID)
-                                  .text(TEXT)
-                                  .build()
-                          )
-                          .build(),
-                      MedicalInvestigation.builder()
-                          .id(FIELD_2_ID)
-                          .date(
-                              ElementValueDate.builder()
-                                  .dateId(DATE_2_FIELD_ID)
-                                  .date(DATE_2)
-                                  .build()
-                          )
-                          .investigationType(
-                              ElementValueCode.builder()
-                                  .codeId(CODE_2_FIELD_ID)
-                                  .code(CODE_2)
-                                  .build()
-                          )
-                          .informationSource(
-                              ElementValueText.builder()
-                                  .textId(TEXT_2_FIELD_ID)
-                                  .text(TEXT_2)
-                                  .build()
-                          )
-                          .build()
-                  )
-              )
-              .build()
-      ).build();
+  private static final ElementSpecification SPECIFICATION =
+      ElementSpecification.builder()
+          .id(ELEMENT_ID)
+          .configuration(
+              ElementConfigurationMedicalInvestigationList.builder()
+                  .id(FIELD_ID)
+                  .list(
+                      List.of(
+                          MedicalInvestigationConfig.builder()
+                              .id(FIELD_ID)
+                              .dateId(DATE_FIELD_ID)
+                              .investigationTypeId(CODE_FIELD_ID)
+                              .informationSourceId(TEXT_FIELD_ID)
+                              .typeOptions(TYPE_OPTIONS)
+                              .build(),
+                          MedicalInvestigationConfig.builder()
+                              .id(FIELD_2_ID)
+                              .dateId(DATE_2_FIELD_ID)
+                              .investigationTypeId(CODE_2_FIELD_ID)
+                              .informationSourceId(TEXT_2_FIELD_ID)
+                              .typeOptions(TYPE_OPTIONS)
+                              .build()))
+                  .build())
+          .build();
+  private static final ElementData EXPECTED_ELEMENT_DATA =
+      ElementData.builder()
+          .id(ELEMENT_ID)
+          .value(
+              ElementValueMedicalInvestigationList.builder()
+                  .id(FIELD_ID)
+                  .list(
+                      List.of(
+                          MedicalInvestigation.builder()
+                              .id(FIELD_ID)
+                              .date(
+                                  ElementValueDate.builder()
+                                      .dateId(DATE_FIELD_ID)
+                                      .date(DATE)
+                                      .build())
+                              .investigationType(
+                                  ElementValueCode.builder()
+                                      .codeId(CODE_FIELD_ID)
+                                      .code(CODE)
+                                      .build())
+                              .informationSource(
+                                  ElementValueText.builder()
+                                      .textId(TEXT_FIELD_ID)
+                                      .text(TEXT)
+                                      .build())
+                              .build(),
+                          MedicalInvestigation.builder()
+                              .id(FIELD_2_ID)
+                              .date(
+                                  ElementValueDate.builder()
+                                      .dateId(DATE_2_FIELD_ID)
+                                      .date(DATE_2)
+                                      .build())
+                              .investigationType(
+                                  ElementValueCode.builder()
+                                      .codeId(CODE_2_FIELD_ID)
+                                      .code(CODE_2)
+                                      .build())
+                              .informationSource(
+                                  ElementValueText.builder()
+                                      .textId(TEXT_2_FIELD_ID)
+                                      .text(TEXT_2)
+                                      .build())
+                              .build()))
+                  .build())
+          .build();
 
-  private final PrefillMedicalInvestigationListConverter prefillMedicalInvestigationListConverter = new PrefillMedicalInvestigationListConverter();
+  private final PrefillMedicalInvestigationListConverter prefillMedicalInvestigationListConverter =
+      new PrefillMedicalInvestigationListConverter();
 
   @Test
   void shouldReturnSupportsMedicalInvestigationList() {
-    assertEquals(ElementConfigurationMedicalInvestigationList.class,
+    assertEquals(
+        ElementConfigurationMedicalInvestigationList.class,
         prefillMedicalInvestigationListConverter.supports());
   }
 
   @Nested
   class PrefillAnswerWithForifyllnad {
 
-
     @Test
     void shouldReturnNullIfNoAnswersOrSubAnswers() {
       final var prefill = new Forifyllnad();
 
-      PrefillAnswer result = prefillMedicalInvestigationListConverter.prefillAnswer(SPECIFICATION,
-          prefill);
+      PrefillAnswer result =
+          prefillMedicalInvestigationListConverter.prefillAnswer(SPECIFICATION, prefill);
 
       assertNull(result);
     }
@@ -183,13 +191,10 @@ class PrefillMedicalInvestigationListConverterTest {
 
       prefill.getSvar().add(svar);
 
-      final var result = prefillMedicalInvestigationListConverter.prefillAnswer(SPECIFICATION,
-          prefill);
+      final var result =
+          prefillMedicalInvestigationListConverter.prefillAnswer(SPECIFICATION, prefill);
 
-      assertEquals(
-          PrefillErrorType.INVALID_FORMAT,
-          result.getErrors().getFirst().type()
-      );
+      assertEquals(PrefillErrorType.INVALID_FORMAT, result.getErrors().getFirst().type());
     }
 
     @Test
@@ -199,53 +204,44 @@ class PrefillMedicalInvestigationListConverterTest {
       prefill.getSvar().add(getMedicalInvestigationAnswer(CODE, TEXT, DATE, 1));
       prefill.getSvar().add(getMedicalInvestigationAnswer(CODE_2, TEXT_2, DATE_2, 2));
 
-      final var result = prefillMedicalInvestigationListConverter.prefillAnswer(
-          SPECIFICATION,
-          prefill
-      );
+      final var result =
+          prefillMedicalInvestigationListConverter.prefillAnswer(SPECIFICATION, prefill);
 
-      final var expected = PrefillAnswer.builder()
-          .elementData(EXPECTED_ELEMENT_DATA)
-          .build();
+      final var expected = PrefillAnswer.builder().elementData(EXPECTED_ELEMENT_DATA).build();
 
       assertEquals(expected, result);
     }
 
     @Test
     void shouldReturnPrefillAnswerWithPartialElementDataAndErrors() {
-      final var expectedElementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(
-              ElementValueMedicalInvestigationList.builder()
-                  .id(FIELD_ID)
-                  .list(
-                      List.of(
-                          MedicalInvestigation.builder()
-                              .id(FIELD_2_ID)
-                              .date(
-                                  ElementValueDate.builder()
-                                      .dateId(DATE_2_FIELD_ID)
-                                      .date(DATE)
-                                      .build()
-                              )
-                              .investigationType(
-                                  ElementValueCode.builder()
-                                      .codeId(CODE_2_FIELD_ID)
-                                      .code(CODE)
-                                      .build()
-                              )
-                              .informationSource(
-                                  ElementValueText.builder()
-                                      .textId(TEXT_2_FIELD_ID)
-                                      .text(TEXT)
-                                      .build()
-                              )
-                              .build()
-                      )
-                  )
-                  .build()
-          )
-          .build();
+      final var expectedElementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueMedicalInvestigationList.builder()
+                      .id(FIELD_ID)
+                      .list(
+                          List.of(
+                              MedicalInvestigation.builder()
+                                  .id(FIELD_2_ID)
+                                  .date(
+                                      ElementValueDate.builder()
+                                          .dateId(DATE_2_FIELD_ID)
+                                          .date(DATE)
+                                          .build())
+                                  .investigationType(
+                                      ElementValueCode.builder()
+                                          .codeId(CODE_2_FIELD_ID)
+                                          .code(CODE)
+                                          .build())
+                                  .informationSource(
+                                      ElementValueText.builder()
+                                          .textId(TEXT_2_FIELD_ID)
+                                          .text(TEXT)
+                                          .build())
+                                  .build()))
+                      .build())
+              .build();
       final var prefill = new Forifyllnad();
       final var svar1 = new Svar();
       svar1.setId(SPECIFICATION.id().id());
@@ -271,33 +267,26 @@ class PrefillMedicalInvestigationListConverterTest {
       prefill.getSvar().add(svar1);
       prefill.getSvar().add(svar2);
 
-      final var result = prefillMedicalInvestigationListConverter.prefillAnswer(
-          SPECIFICATION,
-          prefill);
+      final var result =
+          prefillMedicalInvestigationListConverter.prefillAnswer(SPECIFICATION, prefill);
 
       assertAll(
-          () -> assertEquals(
-              PrefillErrorType.INVALID_FORMAT,
-              result.getErrors().getFirst().type()
-          ),
-          () -> assertEquals(expectedElementData, result.getElementData())
-      );
+          () -> assertEquals(PrefillErrorType.INVALID_FORMAT, result.getErrors().getFirst().type()),
+          () -> assertEquals(expectedElementData, result.getElementData()));
     }
 
     @Test
     void shouldReturnErrorIfWrongConfigurationType() {
       final var prefill = new Forifyllnad();
-      final var wrongSpec = ElementSpecification.builder()
-          .id(ELEMENT_ID)
-          .configuration(ElementConfigurationCategory.builder().build())
-          .build();
+      final var wrongSpec =
+          ElementSpecification.builder()
+              .id(ELEMENT_ID)
+              .configuration(ElementConfigurationCategory.builder().build())
+              .build();
 
       final var result = prefillMedicalInvestigationListConverter.prefillAnswer(wrongSpec, prefill);
 
-      assertEquals(
-          PrefillErrorType.TECHNICAL_ERROR,
-          result.getErrors().getFirst().type()
-      );
+      assertEquals(PrefillErrorType.TECHNICAL_ERROR, result.getErrors().getFirst().type());
     }
 
     @Test
@@ -315,17 +304,14 @@ class PrefillMedicalInvestigationListConverterTest {
 
       prefill.getSvar().add(svar1);
 
-      final var result = prefillMedicalInvestigationListConverter.prefillAnswer(SPECIFICATION,
-          prefill);
+      final var result =
+          prefillMedicalInvestigationListConverter.prefillAnswer(SPECIFICATION, prefill);
 
-      assertEquals(
-          PrefillErrorType.WRONG_NUMBER_OF_ANSWERS,
-          result.getErrors().getFirst().type()
-      );
+      assertEquals(PrefillErrorType.WRONG_NUMBER_OF_ANSWERS, result.getErrors().getFirst().type());
     }
 
-    private static Svar getMedicalInvestigationAnswer(String code, String text, LocalDate date,
-        int instance) {
+    private static Svar getMedicalInvestigationAnswer(
+        String code, String text, LocalDate date, int instance) {
       final var answer = new Svar();
       answer.setId(ELEMENT_ID.id());
       answer.setInstans(instance);
@@ -366,8 +352,10 @@ class PrefillMedicalInvestigationListConverterTest {
 
         final var docFactory = DocumentBuilderFactory.newInstance();
         docFactory.setNamespaceAware(true);
-        final var doc = docFactory.newDocumentBuilder()
-            .parse(new org.xml.sax.InputSource(new StringReader(writer.toString())));
+        final var doc =
+            docFactory
+                .newDocumentBuilder()
+                .parse(new org.xml.sax.InputSource(new StringReader(writer.toString())));
         return doc.getDocumentElement();
       } catch (Exception e) {
         throw new IllegalStateException("Failed to create CVType", e);

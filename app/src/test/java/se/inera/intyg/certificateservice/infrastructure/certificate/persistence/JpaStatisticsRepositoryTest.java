@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificate.persistence;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -28,40 +46,38 @@ import se.inera.intyg.certificateservice.infrastructure.certificate.persistence.
 @ExtendWith(MockitoExtension.class)
 class JpaStatisticsRepositoryTest {
 
-  private static final String CERTIFICATE_JPQL = "SELECT u.hsaId, COUNT(c.id) "
-      + "FROM CertificateEntity c "
-      + "INNER JOIN UnitEntity u ON c.issuedOnUnit.key = u.key "
-      + "INNER JOIN c.patient p "
-      + "WHERE u.hsaId IN :hsaIds "
-      + "AND c.status.status IN :certificateStatusesForDrafts "
-      + "AND (p.protectedPerson = false "
-      + "OR (p.protectedPerson = true AND c.certificateModel.type IN (:certificateModelTypes))) "
-      + "GROUP BY u.hsaId";
+  private static final String CERTIFICATE_JPQL =
+      "SELECT u.hsaId, COUNT(c.id) "
+          + "FROM CertificateEntity c "
+          + "INNER JOIN UnitEntity u ON c.issuedOnUnit.key = u.key "
+          + "INNER JOIN c.patient p "
+          + "WHERE u.hsaId IN :hsaIds "
+          + "AND c.status.status IN :certificateStatusesForDrafts "
+          + "AND (p.protectedPerson = false "
+          + "OR (p.protectedPerson = true AND c.certificateModel.type IN (:certificateModelTypes))) "
+          + "GROUP BY u.hsaId";
 
-  private static final String MESSAGE_JPQL = "SELECT u.hsaId, COUNT(m.id) "
-      + "FROM MessageEntity m "
-      + "INNER JOIN m.certificate c "
-      + "INNER JOIN c.issuedOnUnit u "
-      + "INNER JOIN c.patient p "
-      + "LEFT JOIN MessageRelationEntity mr on m.key = mr.childMessage.key "
-      + "WHERE u.hsaId IN :hsaIds "
-      + "AND m.status.status NOT IN :messageStatusHandledOrDraft "
-      + "AND (p.protectedPerson = false "
-      + "OR (p.protectedPerson = true AND c.certificateModel.type IN (:certificateModelTypes)))"
-      + "AND mr.parentMessage IS NULL "
-      + "GROUP BY u.hsaId";
+  private static final String MESSAGE_JPQL =
+      "SELECT u.hsaId, COUNT(m.id) "
+          + "FROM MessageEntity m "
+          + "INNER JOIN m.certificate c "
+          + "INNER JOIN c.issuedOnUnit u "
+          + "INNER JOIN c.patient p "
+          + "LEFT JOIN MessageRelationEntity mr on m.key = mr.childMessage.key "
+          + "WHERE u.hsaId IN :hsaIds "
+          + "AND m.status.status NOT IN :messageStatusHandledOrDraft "
+          + "AND (p.protectedPerson = false "
+          + "OR (p.protectedPerson = true AND c.certificateModel.type IN (:certificateModelTypes)))"
+          + "AND mr.parentMessage IS NULL "
+          + "GROUP BY u.hsaId";
 
   private static final String UNIT_1 = "unit1";
   private static final String UNIT_2 = "unit2";
-  @Mock
-  private EntityManager entityManager;
-  @Mock
-  private TypedQuery<Object[]> certificateQuery;
-  @Mock
-  private TypedQuery<Object[]> query;
+  @Mock private EntityManager entityManager;
+  @Mock private TypedQuery<Object[]> certificateQuery;
+  @Mock private TypedQuery<Object[]> query;
 
-  @InjectMocks
-  private JpaStatisticsRepository jpaStatisticsRepository;
+  @InjectMocks private JpaStatisticsRepository jpaStatisticsRepository;
 
   @Test
   void shallHandleEmptyResultsCorrectly() {
@@ -69,22 +85,18 @@ class JpaStatisticsRepositoryTest {
     doReturn(query).when(query).setParameter(any(String.class), any());
     doReturn(List.of()).when(query).getResultList();
 
-    final var actualStatistics = jpaStatisticsRepository.getStatisticsForUnits(
-        List.of(new HsaId(UNIT_1)), List.of(FK7210_ID));
+    final var actualStatistics =
+        jpaStatisticsRepository.getStatisticsForUnits(
+            List.of(new HsaId(UNIT_1)), List.of(FK7210_ID));
 
     assertTrue(actualStatistics.isEmpty());
   }
 
   @Test
   void shallMergeStatisticsCorrectlyForMultipleUnits() {
-    final var draftCertificatesResult = List.of(
-        new Object[]{UNIT_1, 3L},
-        new Object[]{UNIT_2, 3L}
-    );
-    final var messagesResult = List.of(
-        new Object[]{UNIT_1, 3L},
-        new Object[]{UNIT_2, 3L}
-    );
+    final var draftCertificatesResult =
+        List.of(new Object[] {UNIT_1, 3L}, new Object[] {UNIT_2, 3L});
+    final var messagesResult = List.of(new Object[] {UNIT_1, 3L}, new Object[] {UNIT_2, 3L});
 
     doReturn(certificateQuery).when(entityManager).createQuery(eq(CERTIFICATE_JPQL), any());
     doReturn(certificateQuery).when(certificateQuery).setParameter(any(String.class), any());
@@ -94,22 +106,21 @@ class JpaStatisticsRepositoryTest {
     doReturn(query).when(query).setParameter(any(String.class), any());
     doReturn(messagesResult).when(query).getResultList();
 
-    final var expectedStatistics = Map.of(
-        new HsaId(UNIT_2), new UnitStatistics(3, 3),
-        new HsaId(UNIT_1), new UnitStatistics(3, 3)
-    );
-    final var actualStatistics = jpaStatisticsRepository.getStatisticsForUnits(
-        List.of(new HsaId(UNIT_1), new HsaId(UNIT_2)), List.of(FK7210_ID));
+    final var expectedStatistics =
+        Map.of(
+            new HsaId(UNIT_2), new UnitStatistics(3, 3),
+            new HsaId(UNIT_1), new UnitStatistics(3, 3));
+    final var actualStatistics =
+        jpaStatisticsRepository.getStatisticsForUnits(
+            List.of(new HsaId(UNIT_1), new HsaId(UNIT_2)), List.of(FK7210_ID));
 
     assertEquals(expectedStatistics, actualStatistics);
   }
 
   @Test
   void shallSetCorrectParametersForCertificateQuery() {
-    final var draftCertificatesResult = List.of(
-        new Object[]{UNIT_1, 3L},
-        new Object[]{UNIT_2, 3L}
-    );
+    final var draftCertificatesResult =
+        List.of(new Object[] {UNIT_1, 3L}, new Object[] {UNIT_2, 3L});
 
     doReturn(query).when(entityManager).createQuery(eq(MESSAGE_JPQL), any());
     doReturn(query).when(query).setParameter(any(String.class), any());
@@ -125,23 +136,20 @@ class JpaStatisticsRepositoryTest {
     final var statusCaptor = ArgumentCaptor.forClass(List.class);
 
     verify(certificateQuery).setParameter(eq("hsaIds"), hsaIdsCaptor.capture());
-    verify(certificateQuery).setParameter(eq("certificateStatusesForDrafts"),
-        statusCaptor.capture());
+    verify(certificateQuery)
+        .setParameter(eq("certificateStatusesForDrafts"), statusCaptor.capture());
 
     assertAll(
         () -> assertEquals(List.of(UNIT_1), hsaIdsCaptor.getValue()),
-        () -> assertEquals(
-            List.of(CertificateStatus.DRAFT.name(), CertificateStatus.LOCKED_DRAFT.name()),
-            statusCaptor.getValue())
-    );
+        () ->
+            assertEquals(
+                List.of(CertificateStatus.DRAFT.name(), CertificateStatus.LOCKED_DRAFT.name()),
+                statusCaptor.getValue()));
   }
 
   @Test
   void shallSetCorrectParametersForMessageQuery() {
-    final var messagesResult = List.of(
-        new Object[]{UNIT_1, 3L},
-        new Object[]{UNIT_2, 3L}
-    );
+    final var messagesResult = List.of(new Object[] {UNIT_1, 3L}, new Object[] {UNIT_2, 3L});
 
     doReturn(certificateQuery).when(entityManager).createQuery(eq(CERTIFICATE_JPQL), any());
     doReturn(certificateQuery).when(certificateQuery).setParameter(any(String.class), any());
@@ -157,13 +165,14 @@ class JpaStatisticsRepositoryTest {
     final var statusCaptorHandledOrDraft = ArgumentCaptor.forClass(List.class);
 
     verify(query).setParameter(eq("hsaIds"), hsaIdsCaptor.capture());
-    verify(query).setParameter(eq("messageStatusHandledOrDraft"),
-        statusCaptorHandledOrDraft.capture());
+    verify(query)
+        .setParameter(eq("messageStatusHandledOrDraft"), statusCaptorHandledOrDraft.capture());
 
     assertAll(
         () -> assertEquals(List.of(UNIT_1), hsaIdsCaptor.getValue()),
-        () -> assertEquals(List.of(MessageStatus.HANDLED.name(), MessageStatus.DRAFT.name()),
-            statusCaptorHandledOrDraft.getValue())
-    );
+        () ->
+            assertEquals(
+                List.of(MessageStatus.HANDLED.name(), MessageStatus.DRAFT.name()),
+                statusCaptorHandledOrDraft.getValue()));
   }
 }

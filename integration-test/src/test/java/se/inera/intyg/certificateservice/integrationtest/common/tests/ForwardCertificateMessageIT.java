@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.integrationtest.common.tests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,117 +48,109 @@ public abstract class ForwardCertificateMessageIT extends BaseIntegrationIT {
   @Test
   @DisplayName("Om intyget är signerat och skickat skall ärendekommunikation gå att vidarebefordra")
   void shallUpdateCertificateWithForwardedTrueIfStatusOnCertificateIsSignedAndSent() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(),
-            CertificateStatusTypeDTO.SIGNED)
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(
+                defaultTestablilityCertificateRequest(
+                    type(), typeVersion(), CertificateStatusTypeDTO.SIGNED));
 
-    api().sendCertificate(
-        defaultSendCertificateRequest(),
-        certificateId(testCertificates)
-    );
+    api().sendCertificate(defaultSendCertificateRequest(), certificateId(testCertificates));
 
-    api().receiveMessage(
-        incomingComplementMessageBuilder()
-            .certificateId(certificateId(testCertificates))
-            .complements(List.of(incomingComplementDTOBuilder()
-                .questionId(questionId())
-                .build()))
-            .build()
-    );
+    api()
+        .receiveMessage(
+            incomingComplementMessageBuilder()
+                .certificateId(certificateId(testCertificates))
+                .complements(
+                    List.of(incomingComplementDTOBuilder().questionId(questionId()).build()))
+                .build());
 
-    api().forwardCertificate(
-        certificateId(testCertificates),
-        defaultForwardCertificateMessageRequest()
-    );
+    api()
+        .forwardCertificate(
+            certificateId(testCertificates), defaultForwardCertificateMessageRequest());
 
-    final var messagesForCertificate = api().getMessagesForCertificate(
-        defaultGetCertificateMessageRequest(),
-        certificateId(testCertificates)
-    );
+    final var messagesForCertificate =
+        api()
+            .getMessagesForCertificate(
+                defaultGetCertificateMessageRequest(), certificateId(testCertificates));
 
     assertTrue(
         questions(messagesForCertificate.getBody()).get(0).isForwarded(),
-        "Should return true after message is forwarded!"
-    );
+        "Should return true after message is forwarded!");
   }
 
   @Test
   @DisplayName("Om intyget är signerat men inte skickat skall felkod 403 (FORBIDDEN) returneras")
   void shallReturnForbiddenIfCertificateIsSignedButNotSent() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(),
-            CertificateStatusTypeDTO.SIGNED)
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(
+                defaultTestablilityCertificateRequest(
+                    type(), typeVersion(), CertificateStatusTypeDTO.SIGNED));
 
-    final var response = api().forwardCertificate(
-        certificateId(testCertificates),
-        defaultForwardCertificateMessageRequest()
-    );
+    final var response =
+        api()
+            .forwardCertificate(
+                certificateId(testCertificates), defaultForwardCertificateMessageRequest());
 
     assertEquals(403, response.getStatusCode().value());
   }
 
   @Test
-  @DisplayName("Läkare - Om intyget är utfärdat på en patient som har skyddade personuppgifter skall ärendekommunikation gå att vidarebefordra")
+  @DisplayName(
+      "Läkare - Om intyget är utfärdat på en patient som har skyddade personuppgifter skall ärendekommunikation gå att vidarebefordra")
   void shallUpdateCertificateMessagesIfUserIsDoctorAndPatientIsProtectedPerson() {
-    final var testCertificates = testabilityApi().addCertificates(
-        customTestabilityCertificateRequest(type(), typeVersion(), CertificateStatusTypeDTO.SIGNED)
-            .patient(ANONYMA_REACT_ATTILA_DTO)
-            .build()
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(
+                customTestabilityCertificateRequest(
+                        type(), typeVersion(), CertificateStatusTypeDTO.SIGNED)
+                    .patient(ANONYMA_REACT_ATTILA_DTO)
+                    .build());
 
-    api().sendCertificate(
-        defaultSendCertificateRequest(),
-        certificateId(testCertificates)
-    );
+    api().sendCertificate(defaultSendCertificateRequest(), certificateId(testCertificates));
 
-    api().receiveMessage(
-        incomingComplementMessageBuilder()
-            .personId(ANONYMA_REACT_ATTILA_DTO.getId())
-            .certificateId(certificateId(testCertificates))
-            .complements(List.of(incomingComplementDTOBuilder()
-                .questionId(questionId())
-                .build()))
-            .build()
-    );
+    api()
+        .receiveMessage(
+            incomingComplementMessageBuilder()
+                .personId(ANONYMA_REACT_ATTILA_DTO.getId())
+                .certificateId(certificateId(testCertificates))
+                .complements(
+                    List.of(incomingComplementDTOBuilder().questionId(questionId()).build()))
+                .build());
 
-    api().forwardCertificate(
-        certificateId(testCertificates),
-        defaultForwardCertificateMessageRequest()
-    );
+    api()
+        .forwardCertificate(
+            certificateId(testCertificates), defaultForwardCertificateMessageRequest());
 
-    final var messagesForCertificate = api().getMessagesForCertificate(
-        defaultGetCertificateMessageRequest(),
-        certificateId(testCertificates)
-    );
+    final var messagesForCertificate =
+        api()
+            .getMessagesForCertificate(
+                defaultGetCertificateMessageRequest(), certificateId(testCertificates));
 
     assertTrue(
         questions(messagesForCertificate.getBody()).get(0).isForwarded(),
-        "Should return true after message is forwarded!"
-    );
+        "Should return true after message is forwarded!");
   }
 
   @Test
-  @DisplayName("Vårdadmin - Om intyget är utfärdat på en patient som har skyddade personuppgifter skall felkod 403 (FORBIDDEN) returneras")
+  @DisplayName(
+      "Vårdadmin - Om intyget är utfärdat på en patient som har skyddade personuppgifter skall felkod 403 (FORBIDDEN) returneras")
   void shallReturnForbiddenIfPatientIsProtectedPersonAndUserCareAdmin() {
-    final var testCertificates = testabilityApi().addCertificates(
-        customTestabilityCertificateRequest(type(), typeVersion(), CertificateStatusTypeDTO.SIGNED)
-            .patient(ANONYMA_REACT_ATTILA_DTO)
-            .build()
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(
+                customTestabilityCertificateRequest(
+                        type(), typeVersion(), CertificateStatusTypeDTO.SIGNED)
+                    .patient(ANONYMA_REACT_ATTILA_DTO)
+                    .build());
 
-    api().sendCertificate(
-        defaultSendCertificateRequest(),
-        certificateId(testCertificates)
-    );
+    api().sendCertificate(defaultSendCertificateRequest(), certificateId(testCertificates));
 
-    final var response = api().forwardCertificate(
-        certificateId(testCertificates),
-        customForwardCertificateMessageRequest()
-            .user(ALVA_VARDADMINISTRATOR_DTO)
-            .build()
-    );
+    final var response =
+        api()
+            .forwardCertificate(
+                certificateId(testCertificates),
+                customForwardCertificateMessageRequest().user(ALVA_VARDADMINISTRATOR_DTO).build());
 
     assertEquals(403, response.getStatusCode().value());
   }
@@ -148,31 +158,29 @@ public abstract class ForwardCertificateMessageIT extends BaseIntegrationIT {
   @Test
   @DisplayName("Om patienten är avliden skall meddelandet vidarebefordras")
   void shallReturnForbiddenIfPatientIsDeceased() {
-    final var testCertificates = testabilityApi().addCertificates(
-        customTestabilityCertificateRequest(type(), typeVersion(), CertificateStatusTypeDTO.SIGNED)
-            .patient(ATLAS_REACT_ABRAHAMSSON_DTO)
-            .build()
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(
+                customTestabilityCertificateRequest(
+                        type(), typeVersion(), CertificateStatusTypeDTO.SIGNED)
+                    .patient(ATLAS_REACT_ABRAHAMSSON_DTO)
+                    .build());
 
-    api().sendCertificate(
-        defaultSendCertificateRequest(),
-        certificateId(testCertificates)
-    );
+    api().sendCertificate(defaultSendCertificateRequest(), certificateId(testCertificates));
 
-    api().receiveMessage(
-        incomingComplementMessageBuilder()
-            .personId(ATLAS_REACT_ABRAHAMSSON_DTO.getId())
-            .certificateId(certificateId(testCertificates))
-            .complements(List.of(incomingComplementDTOBuilder()
-                .questionId(questionId())
-                .build()))
-            .build()
-    );
+    api()
+        .receiveMessage(
+            incomingComplementMessageBuilder()
+                .personId(ATLAS_REACT_ABRAHAMSSON_DTO.getId())
+                .certificateId(certificateId(testCertificates))
+                .complements(
+                    List.of(incomingComplementDTOBuilder().questionId(questionId()).build()))
+                .build());
 
-    final var response = api().forwardCertificate(
-        certificateId(testCertificates),
-        defaultForwardCertificateMessageRequest()
-    );
+    final var response =
+        api()
+            .forwardCertificate(
+                certificateId(testCertificates), defaultForwardCertificateMessageRequest());
 
     assertEquals(200, response.getStatusCode().value());
   }
@@ -180,167 +188,146 @@ public abstract class ForwardCertificateMessageIT extends BaseIntegrationIT {
   @Test
   @DisplayName("Om användaren är blockerad skall felkod 403 (FORBIDDEN) returneras")
   void shallReturnForbiddenIfUserIsBlocked() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(),
-            CertificateStatusTypeDTO.SIGNED)
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(
+                defaultTestablilityCertificateRequest(
+                    type(), typeVersion(), CertificateStatusTypeDTO.SIGNED));
 
-    api().sendCertificate(
-        defaultSendCertificateRequest(),
-        certificateId(testCertificates)
-    );
+    api().sendCertificate(defaultSendCertificateRequest(), certificateId(testCertificates));
 
-    final var response = api().forwardCertificate(
-        certificateId(testCertificates),
-        customForwardCertificateMessageRequest()
-            .user(
-                ajlaDoktorDtoBuilder()
-                    .blocked(Boolean.TRUE)
-                    .build()
-            )
-            .build()
-    );
+    final var response =
+        api()
+            .forwardCertificate(
+                certificateId(testCertificates),
+                customForwardCertificateMessageRequest()
+                    .user(ajlaDoktorDtoBuilder().blocked(Boolean.TRUE).build())
+                    .build());
 
     assertEquals(403, response.getStatusCode().value());
   }
 
   @Test
-  @DisplayName("Om intyget är utfärdat på samma mottagning skall ärendekommunikation gå att vidarebefordra")
+  @DisplayName(
+      "Om intyget är utfärdat på samma mottagning skall ärendekommunikation gå att vidarebefordra")
   void shallUpdateCertificateToForwardedIfCertificateOnSameUnit() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(),
-            CertificateStatusTypeDTO.SIGNED)
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(
+                defaultTestablilityCertificateRequest(
+                    type(), typeVersion(), CertificateStatusTypeDTO.SIGNED));
 
-    api().sendCertificate(
-        defaultSendCertificateRequest(),
-        certificateId(testCertificates)
-    );
+    api().sendCertificate(defaultSendCertificateRequest(), certificateId(testCertificates));
 
-    api().receiveMessage(
-        incomingComplementMessageBuilder()
-            .certificateId(certificateId(testCertificates))
-            .complements(List.of(incomingComplementDTOBuilder()
-                .questionId(questionId())
-                .build()))
-            .build()
-    );
+    api()
+        .receiveMessage(
+            incomingComplementMessageBuilder()
+                .certificateId(certificateId(testCertificates))
+                .complements(
+                    List.of(incomingComplementDTOBuilder().questionId(questionId()).build()))
+                .build());
 
-    api().forwardCertificate(
-        certificateId(testCertificates),
-        defaultForwardCertificateMessageRequest()
-    );
+    api()
+        .forwardCertificate(
+            certificateId(testCertificates), defaultForwardCertificateMessageRequest());
 
-    final var messagesForCertificate = api().getMessagesForCertificate(
-        defaultGetCertificateMessageRequest(),
-        certificateId(testCertificates)
-    );
+    final var messagesForCertificate =
+        api()
+            .getMessagesForCertificate(
+                defaultGetCertificateMessageRequest(), certificateId(testCertificates));
 
     assertTrue(
         questions(messagesForCertificate.getBody()).get(0).isForwarded(),
-        "Should return true after message is forwarded!"
-    );
+        "Should return true after message is forwarded!");
   }
 
   @Test
-  @DisplayName("Om intyget är utfärdat på mottagning men på samma vårdenhet skall ärendekommunikation gå att vidarebefordra")
+  @DisplayName(
+      "Om intyget är utfärdat på mottagning men på samma vårdenhet skall ärendekommunikation gå att vidarebefordra")
   void shallUpdateCertificateToForwardedIfIssuedOnSameCareUnitDifferentSubUnit() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(),
-            CertificateStatusTypeDTO.SIGNED)
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(
+                defaultTestablilityCertificateRequest(
+                    type(), typeVersion(), CertificateStatusTypeDTO.SIGNED));
 
-    api().sendCertificate(
-        defaultSendCertificateRequest(),
-        certificateId(testCertificates)
-    );
+    api().sendCertificate(defaultSendCertificateRequest(), certificateId(testCertificates));
 
-    api().receiveMessage(
-        incomingComplementMessageBuilder()
-            .certificateId(certificateId(testCertificates))
-            .complements(List.of(incomingComplementDTOBuilder()
-                .questionId(questionId())
-                .build()))
-            .build()
-    );
+    api()
+        .receiveMessage(
+            incomingComplementMessageBuilder()
+                .certificateId(certificateId(testCertificates))
+                .complements(
+                    List.of(incomingComplementDTOBuilder().questionId(questionId()).build()))
+                .build());
 
-    api().forwardCertificate(
-        certificateId(testCertificates),
-        customForwardCertificateMessageRequest()
-            .unit(ALFA_MEDICINCENTRUM_DTO)
-            .build()
-    );
+    api()
+        .forwardCertificate(
+            certificateId(testCertificates),
+            customForwardCertificateMessageRequest().unit(ALFA_MEDICINCENTRUM_DTO).build());
 
-    final var messagesForCertificate = api().getMessagesForCertificate(
-        defaultGetCertificateMessageRequest(),
-        certificateId(testCertificates)
-    );
+    final var messagesForCertificate =
+        api()
+            .getMessagesForCertificate(
+                defaultGetCertificateMessageRequest(), certificateId(testCertificates));
 
     assertTrue(
         questions(messagesForCertificate.getBody()).get(0).isForwarded(),
-        "Should return true after message is forwarded!"
-    );
+        "Should return true after message is forwarded!");
   }
 
   @Test
-  @DisplayName("Om intyget är utfärdat på samma vårdenhet skall ärendekommunikation gå att vidarebefordra")
+  @DisplayName(
+      "Om intyget är utfärdat på samma vårdenhet skall ärendekommunikation gå att vidarebefordra")
   void shallUpdateCertificateToForwardedIfIssuedOnSameCareUnit() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(),
-            CertificateStatusTypeDTO.SIGNED)
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(
+                defaultTestablilityCertificateRequest(
+                    type(), typeVersion(), CertificateStatusTypeDTO.SIGNED));
 
-    api().sendCertificate(
-        defaultSendCertificateRequest(),
-        certificateId(testCertificates)
-    );
+    api().sendCertificate(defaultSendCertificateRequest(), certificateId(testCertificates));
 
-    api().receiveMessage(
-        incomingComplementMessageBuilder()
-            .certificateId(certificateId(testCertificates))
-            .complements(List.of(incomingComplementDTOBuilder()
-                .questionId(questionId())
-                .build()))
-            .build()
-    );
+    api()
+        .receiveMessage(
+            incomingComplementMessageBuilder()
+                .certificateId(certificateId(testCertificates))
+                .complements(
+                    List.of(incomingComplementDTOBuilder().questionId(questionId()).build()))
+                .build());
 
-    api().forwardCertificate(
-        certificateId(testCertificates),
-        customForwardCertificateMessageRequest()
-            .unit(ALFA_MEDICINCENTRUM_DTO)
-            .build()
-    );
+    api()
+        .forwardCertificate(
+            certificateId(testCertificates),
+            customForwardCertificateMessageRequest().unit(ALFA_MEDICINCENTRUM_DTO).build());
 
-    final var messagesForCertificate = api().getMessagesForCertificate(
-        defaultGetCertificateMessageRequest(),
-        certificateId(testCertificates)
-    );
+    final var messagesForCertificate =
+        api()
+            .getMessagesForCertificate(
+                defaultGetCertificateMessageRequest(), certificateId(testCertificates));
 
     assertTrue(
         questions(messagesForCertificate.getBody()).get(0).isForwarded(),
-        "Should return true after message is forwarded!"
-    );
+        "Should return true after message is forwarded!");
   }
 
   @Test
-  @DisplayName("Om intyget är utfärdat på en annan mottagning skall felkod 403 (FORBIDDEN) returneras")
+  @DisplayName(
+      "Om intyget är utfärdat på en annan mottagning skall felkod 403 (FORBIDDEN) returneras")
   void shallReturn403IfUnitIsSubUnitAndNotOnSameUnit() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(),
-            CertificateStatusTypeDTO.SIGNED)
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(
+                defaultTestablilityCertificateRequest(
+                    type(), typeVersion(), CertificateStatusTypeDTO.SIGNED));
 
-    api().sendCertificate(
-        defaultSendCertificateRequest(),
-        certificateId(testCertificates)
-    );
+    api().sendCertificate(defaultSendCertificateRequest(), certificateId(testCertificates));
 
-    final var response = api().forwardCertificate(
-        certificateId(testCertificates),
-        customForwardCertificateMessageRequest()
-            .unit(ALFA_HUDMOTTAGNINGEN_DTO)
-            .build()
-    );
+    final var response =
+        api()
+            .forwardCertificate(
+                certificateId(testCertificates),
+                customForwardCertificateMessageRequest().unit(ALFA_HUDMOTTAGNINGEN_DTO).build());
 
     assertEquals(403, response.getStatusCode().value());
   }

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificate.persistence.elementdata;
 
 import org.springframework.stereotype.Component;
@@ -25,65 +43,58 @@ public class ElementValueMapperVisualAcuities implements ElementValueMapper {
               VisualAcuity.builder()
                   .withCorrection(
                       Correction.builder()
-                          .id(new FieldId(
-                              valueVisualAcuities.getRightEye().getWithCorrection().getId()))
+                          .id(
+                              new FieldId(
+                                  valueVisualAcuities.getRightEye().getWithCorrection().getId()))
                           .value(valueVisualAcuities.getRightEye().getWithCorrection().getValue())
-                          .build()
-                  )
+                          .build())
                   .withoutCorrection(
                       Correction.builder()
-                          .id(new FieldId(
-                              valueVisualAcuities.getRightEye().getWithoutCorrection().getId())
-                          )
+                          .id(
+                              new FieldId(
+                                  valueVisualAcuities.getRightEye().getWithoutCorrection().getId()))
                           .value(
-                              valueVisualAcuities.getRightEye().getWithoutCorrection().getValue()
-                          )
-                          .build()
-                  )
-                  .build()
-          )
+                              valueVisualAcuities.getRightEye().getWithoutCorrection().getValue())
+                          .build())
+                  .build())
           .leftEye(
               VisualAcuity.builder()
                   .withCorrection(
                       Correction.builder()
-                          .id(new FieldId(
-                              valueVisualAcuities.getLeftEye().getWithCorrection().getId()))
+                          .id(
+                              new FieldId(
+                                  valueVisualAcuities.getLeftEye().getWithCorrection().getId()))
                           .value(valueVisualAcuities.getLeftEye().getWithCorrection().getValue())
-                          .build()
-                  )
+                          .build())
                   .withoutCorrection(
                       Correction.builder()
-                          .id(new FieldId(
-                              valueVisualAcuities.getLeftEye().getWithoutCorrection().getId())
-                          )
-                          .value(
-                              valueVisualAcuities.getLeftEye().getWithoutCorrection().getValue()
-                          )
-                          .build()
-                  )
-                  .build()
-          )
+                          .id(
+                              new FieldId(
+                                  valueVisualAcuities.getLeftEye().getWithoutCorrection().getId()))
+                          .value(valueVisualAcuities.getLeftEye().getWithoutCorrection().getValue())
+                          .build())
+                  .build())
           .binocular(
               VisualAcuity.builder()
                   .withCorrection(
                       Correction.builder()
-                          .id(new FieldId(
-                              valueVisualAcuities.getBinocular().getWithCorrection().getId()))
+                          .id(
+                              new FieldId(
+                                  valueVisualAcuities.getBinocular().getWithCorrection().getId()))
                           .value(valueVisualAcuities.getBinocular().getWithCorrection().getValue())
-                          .build()
-                  )
+                          .build())
                   .withoutCorrection(
                       Correction.builder()
-                          .id(new FieldId(
-                              valueVisualAcuities.getBinocular().getWithoutCorrection().getId())
-                          )
+                          .id(
+                              new FieldId(
+                                  valueVisualAcuities
+                                      .getBinocular()
+                                      .getWithoutCorrection()
+                                      .getId()))
                           .value(
-                              valueVisualAcuities.getBinocular().getWithoutCorrection().getValue()
-                          )
-                          .build()
-                  )
-                  .build()
-          )
+                              valueVisualAcuities.getBinocular().getWithoutCorrection().getValue())
+                          .build())
+                  .build())
           .build();
     }
     throw new IllegalStateException("MappedElementValue not supported '%s'".formatted(mappedValue));
@@ -100,51 +111,49 @@ public class ElementValueMapperVisualAcuities implements ElementValueMapper {
                       MappedElementValueDouble.builder()
                           .id(elementValueVisualAcuities.rightEye().withCorrection().id().value())
                           .value(elementValueVisualAcuities.rightEye().withCorrection().value())
-                          .build()
-                  )
+                          .build())
                   .withoutCorrection(
                       MappedElementValueDouble.builder()
-                          .id(elementValueVisualAcuities.rightEye().withoutCorrection().id()
-                              .value())
+                          .id(
+                              elementValueVisualAcuities
+                                  .rightEye()
+                                  .withoutCorrection()
+                                  .id()
+                                  .value())
                           .value(elementValueVisualAcuities.rightEye().withoutCorrection().value())
-                          .build()
-                  )
-                  .build()
-          )
+                          .build())
+                  .build())
           .leftEye(
               MappedElementValueVisualAcuity.builder()
                   .withCorrection(
                       MappedElementValueDouble.builder()
                           .id(elementValueVisualAcuities.leftEye().withCorrection().id().value())
                           .value(elementValueVisualAcuities.leftEye().withCorrection().value())
-                          .build()
-                  )
+                          .build())
                   .withoutCorrection(
                       MappedElementValueDouble.builder()
-                          .id(elementValueVisualAcuities.leftEye().withoutCorrection().id()
-                              .value())
+                          .id(elementValueVisualAcuities.leftEye().withoutCorrection().id().value())
                           .value(elementValueVisualAcuities.leftEye().withoutCorrection().value())
-                          .build()
-                  )
-                  .build()
-          )
+                          .build())
+                  .build())
           .binocular(
               MappedElementValueVisualAcuity.builder()
                   .withCorrection(
                       MappedElementValueDouble.builder()
                           .id(elementValueVisualAcuities.binocular().withCorrection().id().value())
                           .value(elementValueVisualAcuities.binocular().withCorrection().value())
-                          .build()
-                  )
+                          .build())
                   .withoutCorrection(
                       MappedElementValueDouble.builder()
-                          .id(elementValueVisualAcuities.binocular().withoutCorrection().id()
-                              .value())
+                          .id(
+                              elementValueVisualAcuities
+                                  .binocular()
+                                  .withoutCorrection()
+                                  .id()
+                                  .value())
                           .value(elementValueVisualAcuities.binocular().withoutCorrection().value())
-                          .build()
-                  )
-                  .build()
-          )
+                          .build())
+                  .build())
           .build();
     }
     throw new IllegalStateException("ElementValue not supported '%s'".formatted(value));

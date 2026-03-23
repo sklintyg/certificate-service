@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificate.persistence.entity.mapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -36,44 +54,31 @@ import se.inera.intyg.certificateservice.infrastructure.certificate.persistence.
 @ExtendWith(MockitoExtension.class)
 class PlaceholderCertificateEntityMapperTest {
 
-
   private static final String PLACEHOLDER = "PLACEHOLDER";
   private static final PatientEntity PATIENT_ENTITY = PatientEntity.builder().build();
   private static final UnitEntity UNIT_ENTITY = UnitEntity.builder().build();
   private static final StaffEntity STAFF_ENTITY = StaffEntity.builder().build();
-  private static final CertificateModelEntity CERTIFICATE_MODEL_ENTITY = CertificateModelEntity.builder()
-      .build();
-  private static final CertificateStatusEntity SIGNED = CertificateStatusEntity.builder()
-      .key(2)
-      .status("SIGNED")
-      .build();
+  private static final CertificateModelEntity CERTIFICATE_MODEL_ENTITY =
+      CertificateModelEntity.builder().build();
+  private static final CertificateStatusEntity SIGNED =
+      CertificateStatusEntity.builder().key(2).status("SIGNED").build();
 
-  @Mock
-  UnitRepository unitRepository;
-  @Mock
-  CertificateEntityRepository certificateEntityRepository;
-  @Mock
-  CertificateModelEntityRepository certificateModelEntityRepository;
-  @Mock
-  PatientEntityRepository patientEntityRepository;
-  @Mock
-  StaffEntityRepository staffEntityRepository;
-  @Mock
-  UnitEntityRepository unitEntityRepository;
-  @InjectMocks
-  PlaceholderCertificateEntityMapper certificateEntityMapper;
+  @Mock UnitRepository unitRepository;
+  @Mock CertificateEntityRepository certificateEntityRepository;
+  @Mock CertificateModelEntityRepository certificateModelEntityRepository;
+  @Mock PatientEntityRepository patientEntityRepository;
+  @Mock StaffEntityRepository staffEntityRepository;
+  @Mock UnitEntityRepository unitEntityRepository;
+  @InjectMocks PlaceholderCertificateEntityMapper certificateEntityMapper;
 
   private static final CertificateId CERTIFICATE_ID = new CertificateId("certificateId");
   private static final SubUnit ISSUING_UNIT = SubUnit.builder().build();
-  private static final PlaceholderCertificate PLACEHOLDER_CERTIFICATE = PlaceholderCertificate.builder()
-      .id(CERTIFICATE_ID)
-      .status(Status.SIGNED)
-      .certificateMetaData(
-          CertificateMetaData.builder()
-              .issuingUnit(ISSUING_UNIT)
-              .build()
-      )
-      .build();
+  private static final PlaceholderCertificate PLACEHOLDER_CERTIFICATE =
+      PlaceholderCertificate.builder()
+          .id(CERTIFICATE_ID)
+          .status(Status.SIGNED)
+          .certificateMetaData(CertificateMetaData.builder().issuingUnit(ISSUING_UNIT).build())
+          .build();
 
   @Nested
   class ToEntityTests {
@@ -85,11 +90,8 @@ class PlaceholderCertificateEntityMapperTest {
       when(patientEntityRepository.findById(PLACEHOLDER)).thenReturn(Optional.of(PATIENT_ENTITY));
       when(unitEntityRepository.findByHsaId(PLACEHOLDER)).thenReturn(Optional.of(UNIT_ENTITY));
       when(staffEntityRepository.findByHsaId(PLACEHOLDER)).thenReturn(Optional.of(STAFF_ENTITY));
-      when(
-          certificateModelEntityRepository.findByTypeAndVersion(PLACEHOLDER,
-              PLACEHOLDER)).thenReturn(
-          Optional.of(CERTIFICATE_MODEL_ENTITY)
-      );
+      when(certificateModelEntityRepository.findByTypeAndVersion(PLACEHOLDER, PLACEHOLDER))
+          .thenReturn(Optional.of(CERTIFICATE_MODEL_ENTITY));
       when(unitRepository.issuingUnit(ISSUING_UNIT)).thenReturn(UNIT_ENTITY);
     }
 
@@ -117,13 +119,11 @@ class PlaceholderCertificateEntityMapperTest {
       assertEquals(UNIT_ENTITY, entity.getCareProvider());
     }
 
-
     @Test
     void shouldSetCareUnit() {
       final var entity = certificateEntityMapper.toEntity(PLACEHOLDER_CERTIFICATE);
       assertEquals(UNIT_ENTITY, entity.getCareUnit());
     }
-
 
     @Test
     void shouldSetIssuedOnUnit() {
@@ -160,12 +160,13 @@ class PlaceholderCertificateEntityMapperTest {
   class ToDomainTests {
 
     private static final LocalDateTime CREATED = LocalDateTime.now();
-    private static final CertificateEntity CERTIFICATE_ENTITY = CertificateEntity.builder()
-        .certificateId(PLACEHOLDER)
-        .status(SIGNED)
-        .created(CREATED)
-        .issuedOnUnit(ALFA_ALLERGIMOTTAGNINGEN_ENTITY)
-        .build();
+    private static final CertificateEntity CERTIFICATE_ENTITY =
+        CertificateEntity.builder()
+            .certificateId(PLACEHOLDER)
+            .status(SIGNED)
+            .created(CREATED)
+            .issuedOnUnit(ALFA_ALLERGIMOTTAGNINGEN_ENTITY)
+            .build();
 
     @Test
     void shouldSetCertificateId() {

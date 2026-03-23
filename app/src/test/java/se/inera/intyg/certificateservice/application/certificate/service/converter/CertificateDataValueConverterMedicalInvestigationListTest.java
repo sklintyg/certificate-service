@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service.converter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,108 +51,105 @@ class CertificateDataValueConverterMedicalInvestigationListTest {
 
   private CertificateDataValueConverterMedicalInvestigationList converter;
 
-  private static final ElementSpecification ELEMENT_SPECIFICATION = ElementSpecification.builder()
-      .configuration(ElementConfigurationMedicalInvestigationList.builder()
-          .id(new FieldId("ID"))
-          .name("NAME")
-          .description("DESCRIPTION")
-          .typeText("TYPE_TEXT")
-          .dateText("DATE_TEXT")
-          .header("HEADER")
-          .label("LABEL")
-          .informationSourceDescription("INFORMATION_SOURCE_DESCRIPTION")
-          .informationSourceText("INFORMATION_SOURCE_TEXT")
-          .list(List.of(
-              MedicalInvestigationConfig.builder()
-                  .id(new FieldId("ID_1"))
-                  .investigationTypeId(new FieldId("TYPE_ID_1"))
-                  .informationSourceId(new FieldId("SOURCE_ID_1"))
-                  .dateId(new FieldId("DATE_ID_1"))
-                  .typeOptions(List.of(
-                      new Code("CODE_1", "CODE_SYSTEM_1", "DISPLAY_NAME_1")
-                  ))
-                  .max(Period.ofDays(1))
-                  .min(Period.ofDays(1))
-                  .build(),
-              MedicalInvestigationConfig.builder()
-                  .id(new FieldId("ID_2"))
-                  .investigationTypeId(new FieldId("TYPE_ID_2"))
-                  .informationSourceId(new FieldId("SOURCE_ID_2"))
-                  .dateId(new FieldId("DATE_ID_2"))
-                  .typeOptions(List.of(
-                      new Code("CODE_2", "CODE_SYSTEM_2", "DISPLAY_NAME_2")
-                  ))
-                  .max(Period.ofDays(2))
-                  .min(Period.ofDays(2))
-                  .build()
-          ))
-          .build())
-      .build();
-  private static final ElementConfigurationMedicalInvestigationList CONFIGURATION = (ElementConfigurationMedicalInvestigationList) ELEMENT_SPECIFICATION.configuration();
-  private static final CertificateDataValueMedicalInvestigationList EXPECTED_EMPTY_VALUE = CertificateDataValueMedicalInvestigationList.builder()
-      .id("ID")
-      .list(
-          List.of(
-              CertificateDataValueMedicalInvestigation.builder()
-                  .id(CONFIGURATION.list().getFirst().id().value())
-                  .date(
-                      CertificateDataValueDate.builder()
-                          .id(CONFIGURATION.list().getFirst().dateId().value())
-                          .build()
-                  )
-                  .investigationType(
-                      CertificateDataValueCode.builder()
-                          .id(CONFIGURATION.list().getFirst().investigationTypeId().value())
-                          .build()
-                  )
-                  .informationSource(
-                      CertificateDataValueText.builder()
-                          .id(CONFIGURATION.list().getFirst().informationSourceId().value())
-                          .build()
-                  )
-                  .build(),
-              CertificateDataValueMedicalInvestigation.builder()
-                  .id(CONFIGURATION.list().get(1).id().value())
-                  .date(
-                      CertificateDataValueDate.builder()
-                          .id(CONFIGURATION.list().get(1).dateId().value())
-                          .build()
-                  )
-                  .investigationType(
-                      CertificateDataValueCode.builder()
-                          .id(CONFIGURATION.list().get(1).investigationTypeId().value())
-                          .build()
-                  )
-                  .informationSource(
-                      CertificateDataValueText.builder()
-                          .id(CONFIGURATION.list().get(1).informationSourceId().value())
-                          .build()
-                  )
-                  .build()
-          )
-      )
-      .build();
+  private static final ElementSpecification ELEMENT_SPECIFICATION =
+      ElementSpecification.builder()
+          .configuration(
+              ElementConfigurationMedicalInvestigationList.builder()
+                  .id(new FieldId("ID"))
+                  .name("NAME")
+                  .description("DESCRIPTION")
+                  .typeText("TYPE_TEXT")
+                  .dateText("DATE_TEXT")
+                  .header("HEADER")
+                  .label("LABEL")
+                  .informationSourceDescription("INFORMATION_SOURCE_DESCRIPTION")
+                  .informationSourceText("INFORMATION_SOURCE_TEXT")
+                  .list(
+                      List.of(
+                          MedicalInvestigationConfig.builder()
+                              .id(new FieldId("ID_1"))
+                              .investigationTypeId(new FieldId("TYPE_ID_1"))
+                              .informationSourceId(new FieldId("SOURCE_ID_1"))
+                              .dateId(new FieldId("DATE_ID_1"))
+                              .typeOptions(
+                                  List.of(new Code("CODE_1", "CODE_SYSTEM_1", "DISPLAY_NAME_1")))
+                              .max(Period.ofDays(1))
+                              .min(Period.ofDays(1))
+                              .build(),
+                          MedicalInvestigationConfig.builder()
+                              .id(new FieldId("ID_2"))
+                              .investigationTypeId(new FieldId("TYPE_ID_2"))
+                              .informationSourceId(new FieldId("SOURCE_ID_2"))
+                              .dateId(new FieldId("DATE_ID_2"))
+                              .typeOptions(
+                                  List.of(new Code("CODE_2", "CODE_SYSTEM_2", "DISPLAY_NAME_2")))
+                              .max(Period.ofDays(2))
+                              .min(Period.ofDays(2))
+                              .build()))
+                  .build())
+          .build();
+  private static final ElementConfigurationMedicalInvestigationList CONFIGURATION =
+      (ElementConfigurationMedicalInvestigationList) ELEMENT_SPECIFICATION.configuration();
+  private static final CertificateDataValueMedicalInvestigationList EXPECTED_EMPTY_VALUE =
+      CertificateDataValueMedicalInvestigationList.builder()
+          .id("ID")
+          .list(
+              List.of(
+                  CertificateDataValueMedicalInvestigation.builder()
+                      .id(CONFIGURATION.list().getFirst().id().value())
+                      .date(
+                          CertificateDataValueDate.builder()
+                              .id(CONFIGURATION.list().getFirst().dateId().value())
+                              .build())
+                      .investigationType(
+                          CertificateDataValueCode.builder()
+                              .id(CONFIGURATION.list().getFirst().investigationTypeId().value())
+                              .build())
+                      .informationSource(
+                          CertificateDataValueText.builder()
+                              .id(CONFIGURATION.list().getFirst().informationSourceId().value())
+                              .build())
+                      .build(),
+                  CertificateDataValueMedicalInvestigation.builder()
+                      .id(CONFIGURATION.list().get(1).id().value())
+                      .date(
+                          CertificateDataValueDate.builder()
+                              .id(CONFIGURATION.list().get(1).dateId().value())
+                              .build())
+                      .investigationType(
+                          CertificateDataValueCode.builder()
+                              .id(CONFIGURATION.list().get(1).investigationTypeId().value())
+                              .build())
+                      .informationSource(
+                          CertificateDataValueText.builder()
+                              .id(CONFIGURATION.list().get(1).informationSourceId().value())
+                              .build())
+                      .build()))
+          .build();
 
   private static final ElementValueMedicalInvestigationList ELEMENT_VALUE =
       ElementValueMedicalInvestigationList.builder()
           .id(new FieldId("LIST_ID"))
-          .list(List.of(
-              MedicalInvestigation.builder()
-                  .id(new FieldId("MEDICAL_INVESTIGATION_ID"))
-                  .informationSource(ElementValueText.builder()
-                      .textId(new FieldId("TEXT_ID"))
-                      .text("TEXT")
-                      .build())
-                  .date(ElementValueDate.builder()
-                      .dateId(new FieldId("DATE_ID"))
-                      .date(LocalDate.now())
-                      .build())
-                  .investigationType(ElementValueCode.builder()
-                      .codeId(new FieldId("CODE_ID"))
-                      .code("CODE")
-                      .build())
-                  .build()
-          ))
+          .list(
+              List.of(
+                  MedicalInvestigation.builder()
+                      .id(new FieldId("MEDICAL_INVESTIGATION_ID"))
+                      .informationSource(
+                          ElementValueText.builder()
+                              .textId(new FieldId("TEXT_ID"))
+                              .text("TEXT")
+                              .build())
+                      .date(
+                          ElementValueDate.builder()
+                              .dateId(new FieldId("DATE_ID"))
+                              .date(LocalDate.now())
+                              .build())
+                      .investigationType(
+                          ElementValueCode.builder()
+                              .codeId(new FieldId("CODE_ID"))
+                              .code("CODE")
+                              .build())
+                      .build()))
           .build();
 
   @BeforeEach
@@ -151,20 +166,19 @@ class CertificateDataValueConverterMedicalInvestigationListTest {
   void shouldThrowExceptionIfInvalidValueType() {
     final var invalidType = ElementValueDate.builder().build();
 
-    assertThrows(IllegalStateException.class,
-        () -> converter.convert(ELEMENT_SPECIFICATION, invalidType)
-    );
+    assertThrows(
+        IllegalStateException.class, () -> converter.convert(ELEMENT_SPECIFICATION, invalidType));
   }
 
   @Test
   void shouldThrowExceptionIfInvalidConfigurationType() {
-    final var invalidConfig = ElementSpecification.builder()
-        .configuration(ElementConfigurationDate.builder().build())
-        .build();
+    final var invalidConfig =
+        ElementSpecification.builder()
+            .configuration(ElementConfigurationDate.builder().build())
+            .build();
 
-    assertThrows(IllegalStateException.class,
-        () -> converter.convert(invalidConfig, ELEMENT_VALUE)
-    );
+    assertThrows(
+        IllegalStateException.class, () -> converter.convert(invalidConfig, ELEMENT_VALUE));
   }
 
   @Test
@@ -176,9 +190,8 @@ class CertificateDataValueConverterMedicalInvestigationListTest {
 
   @Test
   void shouldReturnEmptyListIfValueListIsNull() {
-    final var elementValue = ElementValueMedicalInvestigationList.builder()
-        .id(new FieldId("LIST_ID"))
-        .build();
+    final var elementValue =
+        ElementValueMedicalInvestigationList.builder().id(new FieldId("LIST_ID")).build();
 
     final var result = converter.convert(ELEMENT_SPECIFICATION, elementValue);
 
@@ -187,10 +200,11 @@ class CertificateDataValueConverterMedicalInvestigationListTest {
 
   @Test
   void shouldReturnEmptyListIfValueListIsEmpty() {
-    final var elementValue = ElementValueMedicalInvestigationList.builder()
-        .id(new FieldId("LIST_ID"))
-        .list(Collections.emptyList())
-        .build();
+    final var elementValue =
+        ElementValueMedicalInvestigationList.builder()
+            .id(new FieldId("LIST_ID"))
+            .list(Collections.emptyList())
+            .build();
 
     final var result = converter.convert(ELEMENT_SPECIFICATION, elementValue);
 
@@ -226,8 +240,8 @@ class CertificateDataValueConverterMedicalInvestigationListTest {
     final var result = converter.convert(ELEMENT_SPECIFICATION, ELEMENT_VALUE);
     final var medicalInvestigationResult = (CertificateDataValueMedicalInvestigationList) result;
 
-    assertEquals(LocalDate.now(),
-        medicalInvestigationResult.getList().getFirst().getDate().getDate());
+    assertEquals(
+        LocalDate.now(), medicalInvestigationResult.getList().getFirst().getDate().getDate());
   }
 
   @Test
@@ -235,7 +249,8 @@ class CertificateDataValueConverterMedicalInvestigationListTest {
     final var result = converter.convert(ELEMENT_SPECIFICATION, ELEMENT_VALUE);
     final var medicalInvestigationResult = (CertificateDataValueMedicalInvestigationList) result;
 
-    assertEquals("SOURCE_ID_1",
+    assertEquals(
+        "SOURCE_ID_1",
         medicalInvestigationResult.getList().getFirst().getInformationSource().getId());
   }
 
@@ -244,8 +259,8 @@ class CertificateDataValueConverterMedicalInvestigationListTest {
     final var result = converter.convert(ELEMENT_SPECIFICATION, ELEMENT_VALUE);
     final var medicalInvestigationResult = (CertificateDataValueMedicalInvestigationList) result;
 
-    assertEquals("TEXT",
-        medicalInvestigationResult.getList().getFirst().getInformationSource().getText());
+    assertEquals(
+        "TEXT", medicalInvestigationResult.getList().getFirst().getInformationSource().getText());
   }
 
   @Test
@@ -253,7 +268,8 @@ class CertificateDataValueConverterMedicalInvestigationListTest {
     final var result = converter.convert(ELEMENT_SPECIFICATION, ELEMENT_VALUE);
     final var medicalInvestigationResult = (CertificateDataValueMedicalInvestigationList) result;
 
-    assertEquals("TYPE_ID_1",
+    assertEquals(
+        "TYPE_ID_1",
         medicalInvestigationResult.getList().getFirst().getInvestigationType().getId());
   }
 
@@ -262,8 +278,8 @@ class CertificateDataValueConverterMedicalInvestigationListTest {
     final var result = converter.convert(ELEMENT_SPECIFICATION, ELEMENT_VALUE);
     final var medicalInvestigationResult = (CertificateDataValueMedicalInvestigationList) result;
 
-    assertEquals("CODE",
-        medicalInvestigationResult.getList().getFirst().getInvestigationType().getCode());
+    assertEquals(
+        "CODE", medicalInvestigationResult.getList().getFirst().getInvestigationType().getCode());
   }
 
   @Test
@@ -271,49 +287,55 @@ class CertificateDataValueConverterMedicalInvestigationListTest {
     final var legacyCode = "SYNHABILITERING";
     final var currentCode = "SYNHABILITERINGEN";
 
-    final var elementSpecification = ElementSpecification.builder()
-        .configuration(ElementConfigurationMedicalInvestigationList.builder()
-            .id(new FieldId("ID"))
-            .list(List.of(
-                MedicalInvestigationConfig.builder()
-                    .id(new FieldId("ID_1"))
-                    .investigationTypeId(new FieldId("TYPE_ID_1"))
-                    .informationSourceId(new FieldId("SOURCE_ID_1"))
-                    .dateId(new FieldId("DATE_ID_1"))
-                    .typeOptions(List.of(
-                        new Code(currentCode, "CODE_SYSTEM", "Display Name")
-                    ))
-                    .legacyMapping(Map.of(legacyCode, SYNHABILITERINGEN))
-                    .build()
-            ))
-            .build())
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .configuration(
+                ElementConfigurationMedicalInvestigationList.builder()
+                    .id(new FieldId("ID"))
+                    .list(
+                        List.of(
+                            MedicalInvestigationConfig.builder()
+                                .id(new FieldId("ID_1"))
+                                .investigationTypeId(new FieldId("TYPE_ID_1"))
+                                .informationSourceId(new FieldId("SOURCE_ID_1"))
+                                .dateId(new FieldId("DATE_ID_1"))
+                                .typeOptions(
+                                    List.of(new Code(currentCode, "CODE_SYSTEM", "Display Name")))
+                                .legacyMapping(Map.of(legacyCode, SYNHABILITERINGEN))
+                                .build()))
+                    .build())
+            .build();
 
-    final var elementValue = ElementValueMedicalInvestigationList.builder()
-        .id(new FieldId("ID"))
-        .list(List.of(
-            MedicalInvestigation.builder()
-                .id(new FieldId("ID_1"))
-                .investigationType(ElementValueCode.builder()
-                    .codeId(new FieldId("TYPE_ID_1"))
-                    .code(legacyCode)
-                    .build())
-                .date(ElementValueDate.builder()
-                    .dateId(new FieldId("DATE_ID_1"))
-                    .date(LocalDate.now())
-                    .build())
-                .informationSource(ElementValueText.builder()
-                    .textId(new FieldId("SOURCE_ID_1"))
-                    .text("Source")
-                    .build())
-                .build()
-        ))
-        .build();
+    final var elementValue =
+        ElementValueMedicalInvestigationList.builder()
+            .id(new FieldId("ID"))
+            .list(
+                List.of(
+                    MedicalInvestigation.builder()
+                        .id(new FieldId("ID_1"))
+                        .investigationType(
+                            ElementValueCode.builder()
+                                .codeId(new FieldId("TYPE_ID_1"))
+                                .code(legacyCode)
+                                .build())
+                        .date(
+                            ElementValueDate.builder()
+                                .dateId(new FieldId("DATE_ID_1"))
+                                .date(LocalDate.now())
+                                .build())
+                        .informationSource(
+                            ElementValueText.builder()
+                                .textId(new FieldId("SOURCE_ID_1"))
+                                .text("Source")
+                                .build())
+                        .build()))
+            .build();
 
     final var result = converter.convert(elementSpecification, elementValue);
     final var medicalInvestigationResult = (CertificateDataValueMedicalInvestigationList) result;
 
-    assertEquals(currentCode,
+    assertEquals(
+        currentCode,
         medicalInvestigationResult.getList().getFirst().getInvestigationType().getCode());
   }
 }

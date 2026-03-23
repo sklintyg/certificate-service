@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.integrationtest.common.tests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -45,12 +63,16 @@ public abstract class CreateCertificateIT extends BaseIntegrationIT {
       final var isoFormatter = DateTimeFormatter.ISO_LOCAL_DATE;
 
       final var todayWithOffsetPattern = Pattern.compile("today([+-]\\d+)");
-      var updatedXml = todayWithOffsetPattern.matcher(xmlContent).replaceAll(matchResult -> {
-        final var offsetString = matchResult.group(1);
-        final var offset = Integer.parseInt(offsetString);
-        final var adjustedDate = today.plusDays(offset);
-        return adjustedDate.format(isoFormatter);
-      });
+      var updatedXml =
+          todayWithOffsetPattern
+              .matcher(xmlContent)
+              .replaceAll(
+                  matchResult -> {
+                    final var offsetString = matchResult.group(1);
+                    final var offset = Integer.parseInt(offsetString);
+                    final var adjustedDate = today.plusDays(offset);
+                    return adjustedDate.format(isoFormatter);
+                  });
 
       final var todayPattern = Pattern.compile("\\btoday\\b");
       updatedXml = todayPattern.matcher(updatedXml).replaceAll(today.format(isoFormatter));
@@ -62,18 +84,15 @@ public abstract class CreateCertificateIT extends BaseIntegrationIT {
   @Test
   @DisplayName("Om utkastet framgångsrikt skapats skall utkastet returneras")
   void shallReturnCertificateWhenActive() {
-    final var response = api().createCertificate(
-        defaultCreateCertificateRequest(type(), typeVersion())
-    );
+    final var response =
+        api().createCertificate(defaultCreateCertificateRequest(type(), typeVersion()));
 
-    assertNotNull(
-        certificate(response.getBody()),
-        "Should return certificate as it is active!"
-    );
+    assertNotNull(certificate(response.getBody()), "Should return certificate as it is active!");
   }
 
   @Test
-  @DisplayName("Om ett utkast förifylls med komplett intygsinformation ska inga valideringsfel visas")
+  @DisplayName(
+      "Om ett utkast förifylls med komplett intygsinformation ska inga valideringsfel visas")
   void shallReturnCertificateWithPrefilledAnswers() throws IOException {
     final var xml = new Xml(loadResourceAsString());
     final var createCertificateRequest =
@@ -81,30 +100,33 @@ public abstract class CreateCertificateIT extends BaseIntegrationIT {
             .prefillXml(new PrefillXmlDTO(xml.base64()))
             .build();
 
-    final var response = api().createCertificate(
-        createCertificateRequest
-    );
+    final var response = api().createCertificate(createCertificateRequest);
 
-    final var validateCertificate = api().validateCertificate(
-        customValidateCertificateRequest()
-            .certificate(certificate(response.getBody()))
-            .build(),
-        certificateId(response.getBody())
-    );
+    final var validateCertificate =
+        api()
+            .validateCertificate(
+                customValidateCertificateRequest()
+                    .certificate(certificate(response.getBody()))
+                    .build(),
+                certificateId(response.getBody()));
 
-    assertEquals(0, validationErrors(validateCertificate).size(),
-        () -> "Should not return validation errors, got '%s' errors".formatted(
-            validationErrors(validateCertificate)));
+    assertEquals(
+        0,
+        validationErrors(validateCertificate).size(),
+        () ->
+            "Should not return validation errors, got '%s' errors"
+                .formatted(validationErrors(validateCertificate)));
   }
 
   @Test
   @DisplayName("Om patienten är avliden skall felkod 403 (FORBIDDEN) returneras")
   void shallReturn403PatientIsDeceased() {
-    final var response = api().createCertificate(
-        customCreateCertificateRequest(type(), typeVersion())
-            .patient(ATLAS_REACT_ABRAHAMSSON_DTO)
-            .build()
-    );
+    final var response =
+        api()
+            .createCertificate(
+                customCreateCertificateRequest(type(), typeVersion())
+                    .patient(ATLAS_REACT_ABRAHAMSSON_DTO)
+                    .build());
 
     assertEquals(403, response.getStatusCode().value());
   }
@@ -112,15 +134,12 @@ public abstract class CreateCertificateIT extends BaseIntegrationIT {
   @Test
   @DisplayName("Om användaren är blockerad skall felkod 403 (FORBIDDEN) returneras")
   void shallReturn403UserIsBlocked() {
-    final var response = api().createCertificate(
-        customCreateCertificateRequest(type(), typeVersion())
-            .user(
-                ajlaDoktorDtoBuilder()
-                    .blocked(Boolean.TRUE)
-                    .build()
-            )
-            .build()
-    );
+    final var response =
+        api()
+            .createCertificate(
+                customCreateCertificateRequest(type(), typeVersion())
+                    .user(ajlaDoktorDtoBuilder().blocked(Boolean.TRUE).build())
+                    .build());
 
     assertEquals(403, response.getStatusCode().value());
   }
@@ -128,62 +147,59 @@ public abstract class CreateCertificateIT extends BaseIntegrationIT {
   @Test
   @DisplayName("Om användaren saknar avtal skall felkod 403 (FORBIDDEN) returneras")
   void shallReturn403UserMissingAgreement() {
-    final var response = api().createCertificate(
-        customCreateCertificateRequest(type(), typeVersion())
-            .user(
-                ajlaDoktorDtoBuilder()
-                    .agreement(Boolean.FALSE)
-                    .build()
-            )
-            .build()
-    );
+    final var response =
+        api()
+            .createCertificate(
+                customCreateCertificateRequest(type(), typeVersion())
+                    .user(ajlaDoktorDtoBuilder().agreement(Boolean.FALSE).build())
+                    .build());
 
     assertEquals(403, response.getStatusCode().value());
   }
 
   @Test
-  @DisplayName("Om patient är avliden och användaren är blockerad skall felkod 403 (FORBIDDEN) returneras")
+  @DisplayName(
+      "Om patient är avliden och användaren är blockerad skall felkod 403 (FORBIDDEN) returneras")
   void shallReturn403PatientIsDeceasedAndUserIsBlocked() {
-    final var response = api().createCertificate(
-        customCreateCertificateRequest(type(), typeVersion())
-            .patient(ATLAS_REACT_ABRAHAMSSON_DTO)
-            .user(
-                ajlaDoktorDtoBuilder()
-                    .blocked(Boolean.TRUE)
-                    .build()
-            )
-            .build()
-    );
+    final var response =
+        api()
+            .createCertificate(
+                customCreateCertificateRequest(type(), typeVersion())
+                    .patient(ATLAS_REACT_ABRAHAMSSON_DTO)
+                    .user(ajlaDoktorDtoBuilder().blocked(Boolean.TRUE).build())
+                    .build());
 
     assertEquals(403, response.getStatusCode().value());
   }
 
   @ParameterizedTest
-  @DisplayName("Om utkastet är utfärdat på en patient som har skyddade personuppgifter skall det returneras")
+  @DisplayName(
+      "Om utkastet är utfärdat på en patient som har skyddade personuppgifter skall det returneras")
   @MethodSource("rolesAccessToProtectedPerson")
   void shallReturnCertificateIfPatientIsProtectedPerson(UserDTO userDTO) {
-    final var response = api().createCertificate(
-        customCreateCertificateRequest(type(), typeVersion())
-            .patient(ANONYMA_REACT_ATTILA_DTO)
-            .user(userDTO)
-            .build()
-    );
+    final var response =
+        api()
+            .createCertificate(
+                customCreateCertificateRequest(type(), typeVersion())
+                    .patient(ANONYMA_REACT_ATTILA_DTO)
+                    .user(userDTO)
+                    .build());
 
     assertNotNull(
-        certificate(response.getBody()),
-        "Should return certificate because the user is a doctor!"
-    );
+        certificate(response.getBody()), "Should return certificate because the user is a doctor!");
   }
 
   @Test
-  @DisplayName("Vårdadministratör - Om patienten har skyddade personuppgifter skall felkod 403 (FORBIDDEN) returneras")
+  @DisplayName(
+      "Vårdadministratör - Om patienten har skyddade personuppgifter skall felkod 403 (FORBIDDEN) returneras")
   void shallReturn403PatientIsProtectedPersonAndUserDoctor() {
-    final var response = api().createCertificate(
-        customCreateCertificateRequest(type(), typeVersion())
-            .patient(ANONYMA_REACT_ATTILA_DTO)
-            .user(ALVA_VARDADMINISTRATOR_DTO)
-            .build()
-    );
+    final var response =
+        api()
+            .createCertificate(
+                customCreateCertificateRequest(type(), typeVersion())
+                    .patient(ANONYMA_REACT_ATTILA_DTO)
+                    .user(ALVA_VARDADMINISTRATOR_DTO)
+                    .build());
 
     assertEquals(403, response.getStatusCode().value());
   }
@@ -191,11 +207,9 @@ public abstract class CreateCertificateIT extends BaseIntegrationIT {
   @Test
   @DisplayName("Om den efterfrågade versionen inte stöds skall felkod 400 (BAD_REQUEST) returneras")
   void shallReturn400IfVersionNotSupported() {
-    final var response = api().createCertificate(
-        defaultCreateCertificateRequest(type(), wrongVersion())
-    );
+    final var response =
+        api().createCertificate(defaultCreateCertificateRequest(type(), wrongVersion()));
 
     assertEquals(400, response.getStatusCode().value());
   }
-
 }

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.validation.model;
 
 import java.time.temporal.TemporalAmount;
@@ -23,8 +41,8 @@ public class ElementValidationDateList implements ElementValidation {
   TemporalAmount max;
 
   @Override
-  public List<ValidationError> validate(ElementData data, Optional<ElementId> categoryId,
-      List<ElementData> dataList) {
+  public List<ValidationError> validate(
+      ElementData data, Optional<ElementId> categoryId, List<ElementData> dataList) {
     validateElementData(data);
     final var dateList = getValue(data.value());
     final var dateAfterMaxErrors = getDateAfterMaxErrors(data, categoryId, dateList);
@@ -38,9 +56,7 @@ public class ElementValidationDateList implements ElementValidation {
               data,
               dateList.dateListId(),
               categoryId,
-              ErrorMessageFactory.missingMultipleOption()
-          )
-      );
+              ErrorMessageFactory.missingMultipleOption()));
     }
 
     return Collections.emptyList();
@@ -55,18 +71,14 @@ public class ElementValidationDateList implements ElementValidation {
     }
   }
 
-
-  private List<ValidationError> getDateAfterMaxErrors(ElementData data,
-      Optional<ElementId> categoryId, ElementValueDateList dateList) {
+  private List<ValidationError> getDateAfterMaxErrors(
+      ElementData data, Optional<ElementId> categoryId, ElementValueDateList dateList) {
     return dateList.dateList().stream()
         .filter(valueDate -> ElementValidator.isDateAfterMax(valueDate.date(), max))
-        .map(dateRange -> errorMessage(
-                data,
-                dateRange.dateId(),
-                categoryId,
-                ErrorMessageFactory.maxDate(max)
-            )
-        )
+        .map(
+            dateRange ->
+                errorMessage(
+                    data, dateRange.dateId(), categoryId, ErrorMessageFactory.maxDate(max)))
         .toList();
   }
 
@@ -76,20 +88,16 @@ public class ElementValidationDateList implements ElementValidation {
     }
 
     throw new IllegalArgumentException(
-        "Element data value %s is of wrong type".formatted(value.getClass())
-    );
-
+        "Element data value %s is of wrong type".formatted(value.getClass()));
   }
 
-  private static ValidationError errorMessage(ElementData data,
-      FieldId fieldId,
-      Optional<ElementId> categoryId, ErrorMessage message) {
-    return
-        ValidationError.builder()
-            .elementId(data.id())
-            .fieldId(fieldId)
-            .categoryId(categoryId.orElse(null))
-            .message(message)
-            .build();
+  private static ValidationError errorMessage(
+      ElementData data, FieldId fieldId, Optional<ElementId> categoryId, ErrorMessage message) {
+    return ValidationError.builder()
+        .elementId(data.id())
+        .fieldId(fieldId)
+        .categoryId(categoryId.orElse(null))
+        .message(message)
+        .build();
   }
 }

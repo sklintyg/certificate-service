@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7427;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,16 +47,14 @@ class FK7427CertificateConfirmationModalProviderTest {
   private static Certificate certificate;
   private static ActionEvaluation actionEvaluation;
   private static AccessScope accessScope;
-  private static final FK7427CertificateConfirmationModalProvider provider = new FK7427CertificateConfirmationModalProvider();
+  private static final FK7427CertificateConfirmationModalProvider provider =
+      new FK7427CertificateConfirmationModalProvider();
 
   private static final String PATIENT_NAME = "First";
   private static final String PATIENT_MIDDLE_NAME = "Middle";
   private static final String PATIENT_LAST_NAME = "Last";
-  private static final String PATIENT_FULL_NAME = "%s %s %s".formatted(
-      PATIENT_NAME,
-      PATIENT_MIDDLE_NAME,
-      PATIENT_LAST_NAME
-  );
+  private static final String PATIENT_FULL_NAME =
+      "%s %s %s".formatted(PATIENT_NAME, PATIENT_MIDDLE_NAME, PATIENT_LAST_NAME);
   private static final String PATIENT_ID = "191212121212";
   private static final String PATIENT_ID_WITH_DASH = "19121212-1212";
 
@@ -60,38 +76,29 @@ class FK7427CertificateConfirmationModalProviderTest {
 
       @BeforeEach
       void setup() {
-        certificate = fk7427CertificateBuilder()
-            .certificateMetaData(
-                CertificateMetaData.builder()
-                    .patient(
-                        Patient.builder()
-                            .name(
-                                Name.builder()
-                                    .firstName(PATIENT_NAME)
-                                    .middleName(PATIENT_MIDDLE_NAME)
-                                    .lastName(PATIENT_LAST_NAME)
-                                    .build()
-                            )
-                            .id(
-                                PersonId.builder()
-                                    .id(PATIENT_ID)
-                                    .build()
-                            )
-                            .build()
-                    )
-                    .issuingUnit(ALFA_MEDICINCENTRUM)
-                    .build()
-            )
-            .build();
+        certificate =
+            fk7427CertificateBuilder()
+                .certificateMetaData(
+                    CertificateMetaData.builder()
+                        .patient(
+                            Patient.builder()
+                                .name(
+                                    Name.builder()
+                                        .firstName(PATIENT_NAME)
+                                        .middleName(PATIENT_MIDDLE_NAME)
+                                        .lastName(PATIENT_LAST_NAME)
+                                        .build())
+                                .id(PersonId.builder().id(PATIENT_ID).build())
+                                .build())
+                        .issuingUnit(ALFA_MEDICINCENTRUM)
+                        .build())
+                .build();
 
-        actionEvaluation = ActionEvaluation.builder()
-            .user(
-                ajlaDoctorBuilder()
-                    .accessScope(accessScope)
-                    .build()
-            )
-            .careUnit(ALFA_MEDICINCENTRUM)
-            .build();
+        actionEvaluation =
+            ActionEvaluation.builder()
+                .user(ajlaDoctorBuilder().accessScope(accessScope).build())
+                .careUnit(ALFA_MEDICINCENTRUM)
+                .build();
       }
 
       @Test
@@ -105,59 +112,51 @@ class FK7427CertificateConfirmationModalProviderTest {
 
       @BeforeEach
       void setup() {
-        actionEvaluation = ActionEvaluation.builder()
-            .user(
-                ajlaDoctorBuilder()
-                    .accessScope(accessScope)
-                    .build()
-            )
-            .patient(
-                Patient.builder()
-                    .name(
-                        Name.builder()
-                            .firstName(PATIENT_NAME)
-                            .middleName(PATIENT_MIDDLE_NAME)
-                            .lastName(PATIENT_LAST_NAME)
-                            .build()
-                    )
-                    .id(
-                        PersonId.builder()
-                            .id(PATIENT_ID)
-                            .build()
-                    )
-                    .build()
-            )
-            .careUnit(ALFA_MEDICINCENTRUM)
-            .build();
+        actionEvaluation =
+            ActionEvaluation.builder()
+                .user(ajlaDoctorBuilder().accessScope(accessScope).build())
+                .patient(
+                    Patient.builder()
+                        .name(
+                            Name.builder()
+                                .firstName(PATIENT_NAME)
+                                .middleName(PATIENT_MIDDLE_NAME)
+                                .lastName(PATIENT_LAST_NAME)
+                                .build())
+                        .id(PersonId.builder().id(PATIENT_ID).build())
+                        .build())
+                .careUnit(ALFA_MEDICINCENTRUM)
+                .build();
       }
 
       @Test
       void shallContainTitle() {
         final var certificateConfirmationModal = provider.of(null, actionEvaluation);
-        assertEquals("Kontrollera att du använder dig av rätt läkarutlåtande",
+        assertEquals(
+            "Kontrollera att du använder dig av rätt läkarutlåtande",
             certificateConfirmationModal.title());
       }
 
       @Test
       void shallContainAlert() {
-        final var expectedAlert = Alert.builder()
-            .type(MessageLevel.INFO)
-            .text(
-                """
+        final var expectedAlert =
+            Alert.builder()
+                .type(MessageLevel.INFO)
+                .text(
+                    """
                     <p>Du är på väg att utfärda Läkarutlåtande tillfällig föräldrapenning Barn 12-16 år för</p>
                     <b>%s - %s</b>
-                    """.formatted(
-                    PATIENT_FULL_NAME,
-                    PATIENT_ID_WITH_DASH
-                )
-            ).build();
+                    """
+                        .formatted(PATIENT_FULL_NAME, PATIENT_ID_WITH_DASH))
+                .build();
         final var certificateConfirmationModal = provider.of(null, actionEvaluation);
         assertEquals(expectedAlert, certificateConfirmationModal.alert());
       }
 
       @Test
       void shallContainText() {
-        final var expectedText = """
+        final var expectedText =
+            """
             <p>Läkarutlåtande tillfällig föräldrapenning barn 12-16 år ska endast användas när ett barn på grund av sjukdom behöver vård eller tillsyn av en förälder.</p><br>
             <p>Om barnet är allvarligt sjukt används istället Läkarutlåtande tillfällig föräldrapenning för ett allvarligt sjukt barn som inte har fyllt 18 år (FK7426).</p>
             """;
@@ -167,7 +166,8 @@ class FK7427CertificateConfirmationModalProviderTest {
 
       @Test
       void shallContainCheckboxText() {
-        final var expectedCheckboxText = "Jag är säker på att jag vill utfärda Läkarutlåtande tillfällig föräldrapenning barn 12-16 år";
+        final var expectedCheckboxText =
+            "Jag är säker på att jag vill utfärda Läkarutlåtande tillfällig föräldrapenning barn 12-16 år";
         final var certificateConfirmationModal = provider.of(null, actionEvaluation);
         assertEquals(expectedCheckboxText, certificateConfirmationModal.checkboxText());
       }
@@ -181,8 +181,8 @@ class FK7427CertificateConfirmationModalProviderTest {
       @Test
       void shallContainSecondaryAction() {
         final var certificateConfirmationModal = provider.of(null, actionEvaluation);
-        assertEquals(CertificateModalActionType.CANCEL,
-            certificateConfirmationModal.secondaryAction());
+        assertEquals(
+            CertificateModalActionType.CANCEL, certificateConfirmationModal.secondaryAction());
       }
     }
   }
@@ -200,39 +200,30 @@ class FK7427CertificateConfirmationModalProviderTest {
 
       @BeforeEach
       void setup() {
-        certificate = fk7427CertificateBuilder()
-            .certificateMetaData(
-                CertificateMetaData.builder()
-                    .patient(
-                        Patient.builder()
-                            .name(
-                                Name.builder()
-                                    .firstName(PATIENT_NAME)
-                                    .middleName(PATIENT_MIDDLE_NAME)
-                                    .lastName(PATIENT_LAST_NAME)
-                                    .build()
-                            )
-                            .id(
-                                PersonId.builder()
-                                    .id(PATIENT_ID)
-                                    .build()
-                            )
-                            .build()
-                    )
-                    .issuingUnit(ALFA_MEDICINCENTRUM)
-                    .build()
-            )
-            .revision(new Revision(1L))
-            .build();
+        certificate =
+            fk7427CertificateBuilder()
+                .certificateMetaData(
+                    CertificateMetaData.builder()
+                        .patient(
+                            Patient.builder()
+                                .name(
+                                    Name.builder()
+                                        .firstName(PATIENT_NAME)
+                                        .middleName(PATIENT_MIDDLE_NAME)
+                                        .lastName(PATIENT_LAST_NAME)
+                                        .build())
+                                .id(PersonId.builder().id(PATIENT_ID).build())
+                                .build())
+                        .issuingUnit(ALFA_MEDICINCENTRUM)
+                        .build())
+                .revision(new Revision(1L))
+                .build();
 
-        actionEvaluation = ActionEvaluation.builder()
-            .user(
-                ajlaDoctorBuilder()
-                    .accessScope(accessScope)
-                    .build()
-            )
-            .careUnit(ALFA_MEDICINCENTRUM)
-            .build();
+        actionEvaluation =
+            ActionEvaluation.builder()
+                .user(ajlaDoctorBuilder().accessScope(accessScope).build())
+                .careUnit(ALFA_MEDICINCENTRUM)
+                .build();
       }
 
       @Test
@@ -246,45 +237,32 @@ class FK7427CertificateConfirmationModalProviderTest {
 
       @BeforeEach
       void setup() {
-        certificate = fk7427CertificateBuilder()
-            .certificateMetaData(
-                CertificateMetaData.builder()
-                    .patient(
-                        Patient.builder()
-                            .name(
-                                Name.builder()
-                                    .firstName(PATIENT_NAME)
-                                    .middleName(PATIENT_MIDDLE_NAME)
-                                    .lastName(PATIENT_LAST_NAME)
-                                    .build()
-                            )
-                            .id(
-                                PersonId.builder()
-                                    .id(PATIENT_ID)
-                                    .build()
-                            )
-                            .build()
-                    )
-                    .careUnit(ALFA_MEDICINCENTRUM)
-                    .issuingUnit(ALFA_MEDICINCENTRUM)
-                    .build()
-            )
-            .revision(new Revision(0L))
-            .build();
+        certificate =
+            fk7427CertificateBuilder()
+                .certificateMetaData(
+                    CertificateMetaData.builder()
+                        .patient(
+                            Patient.builder()
+                                .name(
+                                    Name.builder()
+                                        .firstName(PATIENT_NAME)
+                                        .middleName(PATIENT_MIDDLE_NAME)
+                                        .lastName(PATIENT_LAST_NAME)
+                                        .build())
+                                .id(PersonId.builder().id(PATIENT_ID).build())
+                                .build())
+                        .careUnit(ALFA_MEDICINCENTRUM)
+                        .issuingUnit(ALFA_MEDICINCENTRUM)
+                        .build())
+                .revision(new Revision(0L))
+                .build();
 
-        actionEvaluation = ActionEvaluation.builder()
-            .user(
-                ajlaDoctorBuilder()
-                    .accessScope(accessScope)
-                    .build()
-            )
-            .careUnit(ALFA_MEDICINCENTRUM)
-            .subUnit(
-                SubUnit.builder()
-                    .hsaId(ALFA_MEDICINCENTRUM.hsaId())
-                    .build()
-            )
-            .build();
+        actionEvaluation =
+            ActionEvaluation.builder()
+                .user(ajlaDoctorBuilder().accessScope(accessScope).build())
+                .careUnit(ALFA_MEDICINCENTRUM)
+                .subUnit(SubUnit.builder().hsaId(ALFA_MEDICINCENTRUM.hsaId()).build())
+                .build();
       }
 
       @Test
@@ -298,45 +276,32 @@ class FK7427CertificateConfirmationModalProviderTest {
 
       @BeforeEach
       void setup() {
-        certificate = fk7427CertificateBuilder()
-            .certificateMetaData(
-                CertificateMetaData.builder()
-                    .patient(
-                        Patient.builder()
-                            .name(
-                                Name.builder()
-                                    .firstName(PATIENT_NAME)
-                                    .middleName(PATIENT_MIDDLE_NAME)
-                                    .lastName(PATIENT_LAST_NAME)
-                                    .build()
-                            )
-                            .id(
-                                PersonId.builder()
-                                    .id(PATIENT_ID)
-                                    .build()
-                            )
-                            .build()
-                    )
-                    .careUnit(ALFA_MEDICINCENTRUM)
-                    .issuingUnit(ALFA_MEDICINCENTRUM)
-                    .build()
-            )
-            .revision(new Revision(0L))
-            .build();
+        certificate =
+            fk7427CertificateBuilder()
+                .certificateMetaData(
+                    CertificateMetaData.builder()
+                        .patient(
+                            Patient.builder()
+                                .name(
+                                    Name.builder()
+                                        .firstName(PATIENT_NAME)
+                                        .middleName(PATIENT_MIDDLE_NAME)
+                                        .lastName(PATIENT_LAST_NAME)
+                                        .build())
+                                .id(PersonId.builder().id(PATIENT_ID).build())
+                                .build())
+                        .careUnit(ALFA_MEDICINCENTRUM)
+                        .issuingUnit(ALFA_MEDICINCENTRUM)
+                        .build())
+                .revision(new Revision(0L))
+                .build();
 
-        actionEvaluation = ActionEvaluation.builder()
-            .user(
-                ajlaDoctorBuilder()
-                    .accessScope(accessScope)
-                    .build()
-            )
-            .careUnit(BETA_VARDCENTRAL)
-            .subUnit(
-                SubUnit.builder()
-                    .hsaId(BETA_VARDCENTRAL.hsaId())
-                    .build()
-            )
-            .build();
+        actionEvaluation =
+            ActionEvaluation.builder()
+                .user(ajlaDoctorBuilder().accessScope(accessScope).build())
+                .careUnit(BETA_VARDCENTRAL)
+                .subUnit(SubUnit.builder().hsaId(BETA_VARDCENTRAL.hsaId()).build())
+                .build();
       }
 
       @Test
@@ -350,59 +315,51 @@ class FK7427CertificateConfirmationModalProviderTest {
 
       @BeforeEach
       void setup() {
-        actionEvaluation = ActionEvaluation.builder()
-            .user(
-                ajlaDoctorBuilder()
-                    .accessScope(accessScope)
-                    .build()
-            )
-            .patient(
-                Patient.builder()
-                    .name(
-                        Name.builder()
-                            .firstName(PATIENT_NAME)
-                            .middleName(PATIENT_MIDDLE_NAME)
-                            .lastName(PATIENT_LAST_NAME)
-                            .build()
-                    )
-                    .id(
-                        PersonId.builder()
-                            .id(PATIENT_ID)
-                            .build()
-                    )
-                    .build()
-            )
-            .careUnit(ALFA_MEDICINCENTRUM)
-            .build();
+        actionEvaluation =
+            ActionEvaluation.builder()
+                .user(ajlaDoctorBuilder().accessScope(accessScope).build())
+                .patient(
+                    Patient.builder()
+                        .name(
+                            Name.builder()
+                                .firstName(PATIENT_NAME)
+                                .middleName(PATIENT_MIDDLE_NAME)
+                                .lastName(PATIENT_LAST_NAME)
+                                .build())
+                        .id(PersonId.builder().id(PATIENT_ID).build())
+                        .build())
+                .careUnit(ALFA_MEDICINCENTRUM)
+                .build();
       }
 
       @Test
       void shallContainTitle() {
         final var certificateConfirmationModal = provider.of(certificate, actionEvaluation);
-        assertEquals("Kontrollera att du använder dig av rätt läkarutlåtande",
+        assertEquals(
+            "Kontrollera att du använder dig av rätt läkarutlåtande",
             certificateConfirmationModal.title());
       }
 
       @Test
       void shallContainAlert() {
-        final var expectedAlert = Alert.builder()
-            .type(MessageLevel.INFO)
-            .text(
-                """
+        final var expectedAlert =
+            Alert.builder()
+                .type(MessageLevel.INFO)
+                .text(
+                    """
                     <p>Du är på väg att utfärda Läkarutlåtande tillfällig föräldrapenning Barn 12-16 år för</p>
                     <b>%s - %s</b>
-                    """.formatted(
-                    PATIENT_FULL_NAME,
-                    PATIENT_ID_WITH_DASH
-                )
-            ).build();
+                    """
+                        .formatted(PATIENT_FULL_NAME, PATIENT_ID_WITH_DASH))
+                .build();
         final var certificateConfirmationModal = provider.of(certificate, actionEvaluation);
         assertEquals(expectedAlert, certificateConfirmationModal.alert());
       }
 
       @Test
       void shallContainText() {
-        final var expectedText = """
+        final var expectedText =
+            """
             <p>Läkarutlåtande tillfällig föräldrapenning barn 12-16 år ska endast användas när ett barn på grund av sjukdom behöver vård eller tillsyn av en förälder.</p><br>
             <p>Om barnet är allvarligt sjukt används istället Läkarutlåtande tillfällig föräldrapenning för ett allvarligt sjukt barn som inte har fyllt 18 år (FK7426).</p>
             """;
@@ -412,7 +369,8 @@ class FK7427CertificateConfirmationModalProviderTest {
 
       @Test
       void shallContainCheckboxText() {
-        final var expectedCheckboxText = "Jag är säker på att jag vill utfärda Läkarutlåtande tillfällig föräldrapenning barn 12-16 år";
+        final var expectedCheckboxText =
+            "Jag är säker på att jag vill utfärda Läkarutlåtande tillfällig föräldrapenning barn 12-16 år";
         final var certificateConfirmationModal = provider.of(certificate, actionEvaluation);
         assertEquals(expectedCheckboxText, certificateConfirmationModal.checkboxText());
       }
@@ -426,8 +384,8 @@ class FK7427CertificateConfirmationModalProviderTest {
       @Test
       void shallContainSecondaryAction() {
         final var certificateConfirmationModal = provider.of(certificate, actionEvaluation);
-        assertEquals(CertificateModalActionType.DELETE,
-            certificateConfirmationModal.secondaryAction());
+        assertEquals(
+            CertificateModalActionType.DELETE, certificateConfirmationModal.secondaryAction());
       }
     }
   }

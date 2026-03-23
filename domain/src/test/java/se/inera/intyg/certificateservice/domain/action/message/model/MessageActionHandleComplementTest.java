@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.action.message.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,14 +43,15 @@ import se.inera.intyg.certificateservice.domain.message.model.MessageType;
 class MessageActionHandleComplementTest {
 
   private MessageActionHandleComplement messageAction;
-  private final MessageActionSpecification actionSpecification = MessageActionSpecification.builder()
-      .messageActionType(MessageActionType.HANDLE_COMPLEMENT)
-      .build();
+  private final MessageActionSpecification actionSpecification =
+      MessageActionSpecification.builder()
+          .messageActionType(MessageActionType.HANDLE_COMPLEMENT)
+          .build();
 
   @BeforeEach
   void setUp() {
-    messageAction = (MessageActionHandleComplement) MessageActionFactory.create(
-        actionSpecification);
+    messageAction =
+        (MessageActionHandleComplement) MessageActionFactory.create(actionSpecification);
   }
 
   @Nested
@@ -57,10 +76,8 @@ class MessageActionHandleComplementTest {
 
     @Test
     void shallReturnFalseIfTypeIsNotComplement() {
-      final var message = Message.builder()
-          .type(MessageType.CONTACT)
-          .status(MessageStatus.DRAFT)
-          .build();
+      final var message =
+          Message.builder().type(MessageType.CONTACT).status(MessageStatus.DRAFT).build();
       final var certificateActions = mock(CertificateAction.class);
       doReturn(CertificateActionType.HANDLE_COMPLEMENT).when(certificateActions).getType();
       assertFalse(messageAction.evaluate(List.of(certificateActions), message));
@@ -68,10 +85,8 @@ class MessageActionHandleComplementTest {
 
     @Test
     void shallReturnFalseIfStatusIsHandled() {
-      final var message = Message.builder()
-          .type(MessageType.COMPLEMENT)
-          .status(MessageStatus.HANDLED)
-          .build();
+      final var message =
+          Message.builder().type(MessageType.COMPLEMENT).status(MessageStatus.HANDLED).build();
       final var certificateActions = mock(CertificateAction.class);
       doReturn(CertificateActionType.HANDLE_COMPLEMENT).when(certificateActions).getType();
       assertFalse(messageAction.evaluate(List.of(certificateActions), message));
@@ -79,10 +94,8 @@ class MessageActionHandleComplementTest {
 
     @Test
     void shallReturnTrueIfEvaluationPassed() {
-      final var message = Message.builder()
-          .type(MessageType.COMPLEMENT)
-          .status(MessageStatus.DRAFT)
-          .build();
+      final var message =
+          Message.builder().type(MessageType.COMPLEMENT).status(MessageStatus.DRAFT).build();
       final var certificateActions = mock(CertificateAction.class);
       doReturn(CertificateActionType.HANDLE_COMPLEMENT).when(certificateActions).getType();
       assertTrue(messageAction.evaluate(List.of(certificateActions), message));
@@ -94,12 +107,13 @@ class MessageActionHandleComplementTest {
 
     @Test
     void shallReturnMessageActionLink() {
-      final var expectedLink = MessageActionLink.builder()
-          .type(MessageActionType.HANDLE_COMPLEMENT)
-          .name("Hantera")
-          .description("Hantera kompletteringsbegäran.")
-          .enabled(true)
-          .build();
+      final var expectedLink =
+          MessageActionLink.builder()
+              .type(MessageActionType.HANDLE_COMPLEMENT)
+              .name("Hantera")
+              .description("Hantera kompletteringsbegäran.")
+              .enabled(true)
+              .build();
 
       assertEquals(expectedLink, messageAction.actionLink());
     }

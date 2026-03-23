@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.v1;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -36,31 +54,21 @@ class QuestionHorselhjalpmedelPositionV1Test {
 
   @Test
   void shallIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationRadioMultipleCode.builder()
-        .id(new FieldId("9.3"))
-        .name(
-            "Om personen behöver använda hörapparat, ange på vilket öra eller om hörapparat används på båda öronen")
-        .elementLayout(ElementLayout.ROWS)
-        .list(
-            List.of(
-                new ElementConfigurationCode(
-                    new FieldId(VANSTER.code()),
-                    VANSTER.displayName(),
-                    VANSTER
-                ),
-                new ElementConfigurationCode(
-                    new FieldId(HOGER.code()),
-                    HOGER.displayName(),
-                    HOGER
-                ),
-                new ElementConfigurationCode(
-                    new FieldId(BADA_ORONEN.code()),
-                    BADA_ORONEN.displayName(),
-                    BADA_ORONEN
-                )
-            )
-        )
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationRadioMultipleCode.builder()
+            .id(new FieldId("9.3"))
+            .name(
+                "Om personen behöver använda hörapparat, ange på vilket öra eller om hörapparat används på båda öronen")
+            .elementLayout(ElementLayout.ROWS)
+            .list(
+                List.of(
+                    new ElementConfigurationCode(
+                        new FieldId(VANSTER.code()), VANSTER.displayName(), VANSTER),
+                    new ElementConfigurationCode(
+                        new FieldId(HOGER.code()), HOGER.displayName(), HOGER),
+                    new ElementConfigurationCode(
+                        new FieldId(BADA_ORONEN.code()), BADA_ORONEN.displayName(), BADA_ORONEN)))
+            .build();
 
     final var element = QuestionHorselhjalpmedelPositionV1.questionHorselhjalpmedelPositionV1();
 
@@ -69,22 +77,20 @@ class QuestionHorselhjalpmedelPositionV1Test {
 
   @Test
   void shallIncludeRules() {
-    final var expectedRules = List.of(
-        ElementRuleExpression.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.MANDATORY)
-            .expression(
-                new RuleExpression(
-                    "exists($89644007) || exists($25577004) || exists($34338003)"
-                )
-            )
-            .build(),
-        ElementRuleExpression.builder()
-            .id(new ElementId("9.2"))
-            .type(ElementRuleType.SHOW)
-            .expression(new RuleExpression("$9.2"))
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleExpression.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.MANDATORY)
+                .expression(
+                    new RuleExpression(
+                        "exists($89644007) || exists($25577004) || exists($34338003)"))
+                .build(),
+            ElementRuleExpression.builder()
+                .id(new ElementId("9.2"))
+                .type(ElementRuleType.SHOW)
+                .expression(new RuleExpression("$9.2"))
+                .build());
 
     final var element = QuestionHorselhjalpmedelPositionV1.questionHorselhjalpmedelPositionV1();
 
@@ -93,11 +99,8 @@ class QuestionHorselhjalpmedelPositionV1Test {
 
   @Test
   void shallIncludeValidations() {
-    final var expectedValidations = List.of(
-        ElementValidationCode.builder()
-            .mandatory(true)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationCode.builder().mandatory(true).build());
 
     final var element = QuestionHorselhjalpmedelPositionV1.questionHorselhjalpmedelPositionV1();
 
@@ -116,16 +119,12 @@ class QuestionHorselhjalpmedelPositionV1Test {
 
     @Test
     void shallReturnTrueIfBooleanIsTrue() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("9.2"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(true)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("9.2"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
 
       final var element = QuestionHorselhjalpmedelPositionV1.questionHorselhjalpmedelPositionV1();
 
@@ -136,16 +135,12 @@ class QuestionHorselhjalpmedelPositionV1Test {
 
     @Test
     void shallReturnFalseIfElementMissing() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("7.1"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(true)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("7.1"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
 
       final var element = QuestionHorselhjalpmedelPositionV1.questionHorselhjalpmedelPositionV1();
 
@@ -156,16 +151,12 @@ class QuestionHorselhjalpmedelPositionV1Test {
 
     @Test
     void shallReturnFalseIfElementFalse() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("9.2"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(false)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("9.2"))
+                  .value(ElementValueBoolean.builder().value(false).build())
+                  .build());
 
       final var element = QuestionHorselhjalpmedelPositionV1.questionHorselhjalpmedelPositionV1();
 

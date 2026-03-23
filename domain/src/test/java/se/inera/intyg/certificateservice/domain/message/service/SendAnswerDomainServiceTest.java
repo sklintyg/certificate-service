@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.message.service;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -34,19 +52,14 @@ import se.inera.intyg.certificateservice.domain.staff.model.Staff;
 @ExtendWith(MockitoExtension.class)
 class SendAnswerDomainServiceTest {
 
-
   private static final MessageId MESSAGE_ID = new MessageId("MESSAGE_ID");
   private static final String TEXT = "content";
   private static final Content CONTENT = new Content(TEXT);
   private static final Answer ANSWER = Answer.builder().id(new MessageId("answerId")).build();
-  @Mock
-  MessageRepository messageRepository;
-  @Mock
-  CertificateRepository certificateRepository;
-  @Mock
-  MessageEventDomainService messageEventDomainService;
-  @InjectMocks
-  SendAnswerDomainService sendAnswerDomainService;
+  @Mock MessageRepository messageRepository;
+  @Mock CertificateRepository certificateRepository;
+  @Mock MessageEventDomainService messageEventDomainService;
+  @InjectMocks SendAnswerDomainService sendAnswerDomainService;
 
   @Test
   void shallThrowIfNotAllowedToSendAnswer() {
@@ -54,12 +67,13 @@ class SendAnswerDomainServiceTest {
     final var message = mock(Message.class);
 
     doReturn(CERTIFICATE_ID).when(certificate).id();
-    doReturn(false).when(certificate)
+    doReturn(false)
+        .when(certificate)
         .allowTo(CertificateActionType.SEND_ANSWER, Optional.of(ACTION_EVALUATION));
 
-    assertThrows(CertificateActionForbidden.class, () -> sendAnswerDomainService.send(
-        message, certificate, ACTION_EVALUATION, CONTENT
-    ));
+    assertThrows(
+        CertificateActionForbidden.class,
+        () -> sendAnswerDomainService.send(message, certificate, ACTION_EVALUATION, CONTENT));
   }
 
   @Test
@@ -68,13 +82,14 @@ class SendAnswerDomainServiceTest {
     final var message = mock(Message.class);
     final var expectedMessage = mock(Message.class);
 
-    doReturn(true).when(certificate)
+    doReturn(true)
+        .when(certificate)
         .allowTo(CertificateActionType.SEND_ANSWER, Optional.of(ACTION_EVALUATION));
     doReturn(expectedMessage).when(messageRepository).save(message);
     doReturn(ANSWER).when(expectedMessage).answer();
 
-    final var actualMessage = sendAnswerDomainService.send(message, certificate,
-        ACTION_EVALUATION, CONTENT);
+    final var actualMessage =
+        sendAnswerDomainService.send(message, certificate, ACTION_EVALUATION, CONTENT);
     assertEquals(expectedMessage, actualMessage);
   }
 
@@ -84,7 +99,8 @@ class SendAnswerDomainServiceTest {
     final var message = mock(Message.class);
 
     doReturn(CERTIFICATE_ID).when(certificate).id();
-    doReturn(true).when(certificate)
+    doReturn(true)
+        .when(certificate)
         .allowTo(CertificateActionType.SEND_ANSWER, Optional.of(ACTION_EVALUATION));
     doReturn(message).when(messageRepository).save(message);
     doReturn(ANSWER).when(message).answer();
@@ -100,7 +116,8 @@ class SendAnswerDomainServiceTest {
     final var certificateEventCaptor = ArgumentCaptor.forClass(MessageEvent.class);
 
     doReturn(CERTIFICATE_ID).when(certificate).id();
-    doReturn(true).when(certificate)
+    doReturn(true)
+        .when(certificate)
         .allowTo(CertificateActionType.SEND_ANSWER, Optional.of(ACTION_EVALUATION));
     doReturn(message).when(messageRepository).save(message);
     doReturn(ANSWER).when(message).answer();
@@ -109,12 +126,10 @@ class SendAnswerDomainServiceTest {
     verify(messageEventDomainService).publish(certificateEventCaptor.capture());
 
     assertAll(
-        () -> assertEquals(MessageEventType.SEND_ANSWER,
-            certificateEventCaptor.getValue().type()),
+        () -> assertEquals(MessageEventType.SEND_ANSWER, certificateEventCaptor.getValue().type()),
         () -> assertEquals(ANSWER.id(), certificateEventCaptor.getValue().messageId()),
         () -> assertEquals(CERTIFICATE_ID, certificateEventCaptor.getValue().certificateId()),
         () -> assertEquals(ACTION_EVALUATION, certificateEventCaptor.getValue().actionEvaluation()),
-        () -> assertTrue(certificateEventCaptor.getValue().duration() >= 0)
-    );
+        () -> assertTrue(certificateEventCaptor.getValue().duration() >= 0));
   }
 }

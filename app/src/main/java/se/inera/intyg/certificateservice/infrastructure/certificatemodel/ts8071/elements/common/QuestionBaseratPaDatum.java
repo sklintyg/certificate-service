@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.common;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.codesystems.CodeSystemKvInformationskallaForIntyg.DISTANSKONTAKT;
@@ -18,10 +36,8 @@ import se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.
 
 public class QuestionBaseratPaDatum {
 
-  public static final ElementId QUESTION_BASERAT_PA_DATUM_ID = new ElementId(
-      "2.2");
-  private static final FieldId QUESTION_BASERAT_PA_DATUM_FIELD_ID = new FieldId(
-      "2.2");
+  public static final ElementId QUESTION_BASERAT_PA_DATUM_ID = new ElementId("2.2");
+  private static final FieldId QUESTION_BASERAT_PA_DATUM_FIELD_ID = new FieldId("2.2");
 
   private QuestionBaseratPaDatum() {
     throw new IllegalStateException("Utility class");
@@ -35,36 +51,23 @@ public class QuestionBaseratPaDatum {
                 .id(QUESTION_BASERAT_PA_DATUM_FIELD_ID)
                 .name("Datum för undersökning/kontakt")
                 .max(Period.ofDays(0))
-                .build()
-        )
+                .build())
         .rules(
             List.of(
                 CertificateElementRuleFactory.mandatory(
-                    QUESTION_BASERAT_PA_DATUM_ID,
-                    QUESTION_BASERAT_PA_DATUM_FIELD_ID
-                ),
+                    QUESTION_BASERAT_PA_DATUM_ID, QUESTION_BASERAT_PA_DATUM_FIELD_ID),
                 CertificateElementRuleFactory.show(
                     QUESTION_BASERAT_PA_ID,
                     new RuleExpression(
-                        String.format("exists(%s) || exists(%s)",
-                            DISTANSKONTAKT.code(), UNDERSOKNING.code())
-                    )
-                )
-            )
-        )
+                        String.format(
+                            "exists(%s) || exists(%s)",
+                            DISTANSKONTAKT.code(), UNDERSOKNING.code())))))
         .validations(
-            List.of(
-                ElementValidationDate.builder()
-                    .mandatory(true)
-                    .max(Period.ofDays(0))
-                    .build()
-            )
-        )
+            List.of(ElementValidationDate.builder().mandatory(true).max(Period.ofDays(0)).build()))
         .shouldValidate(
             ElementDataPredicateFactory.codes(
                 QUESTION_BASERAT_PA_ID,
-                List.of(new FieldId(DISTANSKONTAKT.code()), new FieldId(UNDERSOKNING.code())))
-        )
+                List.of(new FieldId(DISTANSKONTAKT.code()), new FieldId(UNDERSOKNING.code()))))
         .mapping(new ElementMapping(QUESTION_BASERAT_PA_ID, null))
         .build();
   }

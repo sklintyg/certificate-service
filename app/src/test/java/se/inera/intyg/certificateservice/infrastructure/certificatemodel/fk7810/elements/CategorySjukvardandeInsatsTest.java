@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7810.elements;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -20,15 +38,17 @@ class CategorySjukvardandeInsatsTest {
 
   @Test
   void shallIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationCategory.builder()
-        .name("Sjukvårdande insatser inom personlig assistans")
-        .description("""
+    final var expectedConfiguration =
+        ElementConfigurationCategory.builder()
+            .name("Sjukvårdande insatser inom personlig assistans")
+            .description(
+                """
             Assistansersättning kan inte lämnas för sjukvårdande insatser enligt hälso- och sjukvårdslagen, HSL (51 kap. 5 § socialförsäkringsbalken). Om en hälso- och sjukvårdsåtgärd bedöms utföras som egenvård kan assistansersättning i vissa fall beviljas för detta hjälpbehov.
-            
+
             Bestämmelserna om hälso- och sjukvårdsåtgärder som utförs i form av egenvård finns i lag (2022:1250) om egenvård. Med egenvård avses en hälso- och sjukvårdsåtgärd som behandlande hälso- och sjukvårdspersonal har bedömt att en patient kan utföra själv eller med hjälp av någon annan.
-            
+
             En hälso- och sjukvårdsåtgärd är en åtgärd för att medicinskt förebygga, utreda eller behandla sjukdomar eller skador. Med hälso- och sjukvårdspersonal avses den som har legitimation för ett yrke inom hälso- och sjukvården eller som enligt särskilt förordnande har fått motsvarande behörighet. (2 – 4 §§ lag (2022:1250) om egenvård).""")
-        .build();
+            .build();
 
     final var element = categorySjukvardandeInsats();
 

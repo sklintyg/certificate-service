@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service.converter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,39 +43,29 @@ class CertificateDataValueConverterTextAreaTest {
   private final CertificateDataValueConverterTextArea converter =
       new CertificateDataValueConverterTextArea();
   private final ElementConfigurationTextArea elementConfigurationTextArea =
-      ElementConfigurationTextArea.builder()
-          .id(FIELD_ID)
-          .name(NAME)
-          .build();
+      ElementConfigurationTextArea.builder().id(FIELD_ID).name(NAME).build();
 
   @Test
   void shouldThrowExceptionIfWrongClassOfValueIfElementValueNotNull() {
-    final var configuration = ElementSpecification.builder()
-        .id(new ElementId(ELEMENT_ID))
-        .configuration(
-            ElementConfigurationTextArea.builder()
-                .id(FIELD_ID)
-                .build()
-        )
-        .build();
+    final var configuration =
+        ElementSpecification.builder()
+            .id(new ElementId(ELEMENT_ID))
+            .configuration(ElementConfigurationTextArea.builder().id(FIELD_ID).build())
+            .build();
 
     final var elementValueDate = ElementValueDate.builder().build();
 
-    assertThrows(IllegalStateException.class,
-        () -> converter.convert(configuration, elementValueDate)
-    );
+    assertThrows(
+        IllegalStateException.class, () -> converter.convert(configuration, elementValueDate));
   }
 
   @Test
   void shouldNotThrowExceptionIfWrongClassOfValueIfElementValueIsNull() {
-    final var configuration = ElementSpecification.builder()
-        .id(new ElementId(ELEMENT_ID))
-        .configuration(
-            ElementConfigurationTextArea.builder()
-                .id(FIELD_ID)
-                .build()
-        )
-        .build();
+    final var configuration =
+        ElementSpecification.builder()
+            .id(new ElementId(ELEMENT_ID))
+            .configuration(ElementConfigurationTextArea.builder().id(FIELD_ID).build())
+            .build();
 
     final var result = converter.convert(configuration, null);
     assertNull(((CertificateDataValueText) result).getText());
@@ -65,20 +73,16 @@ class CertificateDataValueConverterTextAreaTest {
 
   @Test
   void shouldThrowExceptionIfWrongClassOfConfig() {
-    final var configuration = ElementSpecification.builder()
-        .id(new ElementId(ELEMENT_ID))
-        .configuration(
-            ElementConfigurationDate.builder()
-                .id(FIELD_ID)
-                .build()
-        )
-        .build();
+    final var configuration =
+        ElementSpecification.builder()
+            .id(new ElementId(ELEMENT_ID))
+            .configuration(ElementConfigurationDate.builder().id(FIELD_ID).build())
+            .build();
 
     final var elementValueDate = ElementValueText.builder().build();
 
-    assertThrows(IllegalStateException.class,
-        () -> converter.convert(configuration, elementValueDate)
-    );
+    assertThrows(
+        IllegalStateException.class, () -> converter.convert(configuration, elementValueDate));
   }
 
   @Test
@@ -88,10 +92,11 @@ class CertificateDataValueConverterTextAreaTest {
 
   @Test
   void shallCreateCertificateDataTextValue() {
-    final var configuration = ElementSpecification.builder()
-        .id(new ElementId(ELEMENT_ID))
-        .configuration(elementConfigurationTextArea)
-        .build();
+    final var configuration =
+        ElementSpecification.builder()
+            .id(new ElementId(ELEMENT_ID))
+            .configuration(elementConfigurationTextArea)
+            .build();
 
     final var elementValueText = ElementValueText.builder().build();
 
@@ -102,11 +107,8 @@ class CertificateDataValueConverterTextAreaTest {
 
   @Test
   void shallSetIdFromConfigurationTextValue() {
-    final var configuration = ElementSpecification.builder()
-        .configuration(
-            elementConfigurationTextArea
-        )
-        .build();
+    final var configuration =
+        ElementSpecification.builder().configuration(elementConfigurationTextArea).build();
 
     final var elementValueText = ElementValueText.builder().build();
 
@@ -117,16 +119,13 @@ class CertificateDataValueConverterTextAreaTest {
 
   @Test
   void shallSetCorrectTextForTextValue() {
-    final var configuration = ElementSpecification.builder()
-        .id(new ElementId(ELEMENT_ID))
-        .configuration(
-            elementConfigurationTextArea
-        )
-        .build();
+    final var configuration =
+        ElementSpecification.builder()
+            .id(new ElementId(ELEMENT_ID))
+            .configuration(elementConfigurationTextArea)
+            .build();
 
-    final var elementValueText = ElementValueText.builder()
-        .text(TEST_TEXT)
-        .build();
+    final var elementValueText = ElementValueText.builder().text(TEST_TEXT).build();
 
     final var result = converter.convert(configuration, elementValueText);
 
@@ -135,18 +134,18 @@ class CertificateDataValueConverterTextAreaTest {
 
   @Test
   void shallSetValueToNull() {
-    final var configuration = ElementSpecification.builder()
-        .id(new ElementId(ELEMENT_ID))
-        .configuration(
-            elementConfigurationTextArea
-        )
-        .build();
+    final var configuration =
+        ElementSpecification.builder()
+            .id(new ElementId(ELEMENT_ID))
+            .configuration(elementConfigurationTextArea)
+            .build();
 
     final var elementValueText = ElementValueText.builder().build();
 
     final var result = converter.convert(configuration, elementValueText);
 
-    assertNull(((CertificateDataValueText) result).getText(),
+    assertNull(
+        ((CertificateDataValueText) result).getText(),
         "If no value is provided value should be null");
   }
 }

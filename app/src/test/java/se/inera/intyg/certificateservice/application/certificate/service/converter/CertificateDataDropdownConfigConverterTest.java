@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service.converter;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -21,30 +39,27 @@ class CertificateDataDropdownConfigConverterTest {
 
   private CertificateDataDropdownConfigConverter converter;
 
-  private static final ElementSpecification ELEMENT_SPECIFICATION = ElementSpecification.builder()
-      .configuration(
-          ElementConfigurationDropdownCode.builder()
-              .name("NAME")
-              .list(List.of(
-                  new ElementConfigurationCode(
-                      new FieldId("ID_1"),
-                      "Display Name 1",
-                      new Code("CODE", "CODE_SYSTEM", "DISPLAY_NAME")
-                  ),
-                  new ElementConfigurationCode(
-                      new FieldId("ID_2"),
-                      "Display Name 2",
-                      new Code("CODE", "CODE_SYSTEM", "DISPLAY_NAME")
-
-                  ),
-                  new ElementConfigurationCode(
-                      new FieldId("ID_3"),
-                      "Display Name 3",
-                      new Code("CODE", "CODE_SYSTEM", "DISPLAY_NAME")
-                  )
-              ))
-              .build()
-      ).build();
+  private static final ElementSpecification ELEMENT_SPECIFICATION =
+      ElementSpecification.builder()
+          .configuration(
+              ElementConfigurationDropdownCode.builder()
+                  .name("NAME")
+                  .list(
+                      List.of(
+                          new ElementConfigurationCode(
+                              new FieldId("ID_1"),
+                              "Display Name 1",
+                              new Code("CODE", "CODE_SYSTEM", "DISPLAY_NAME")),
+                          new ElementConfigurationCode(
+                              new FieldId("ID_2"),
+                              "Display Name 2",
+                              new Code("CODE", "CODE_SYSTEM", "DISPLAY_NAME")),
+                          new ElementConfigurationCode(
+                              new FieldId("ID_3"),
+                              "Display Name 3",
+                              new Code("CODE", "CODE_SYSTEM", "DISPLAY_NAME"))))
+                  .build())
+          .build();
 
   @BeforeEach
   void setUp() {
@@ -53,16 +68,14 @@ class CertificateDataDropdownConfigConverterTest {
 
   @Test
   void shouldThrowExceptionIfWrongClass() {
-    final var elementSpecification = ElementSpecification.builder()
-        .configuration(
-            ElementConfigurationDate.builder().build()
-        )
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .configuration(ElementConfigurationDate.builder().build())
+            .build();
 
-    assertThrows(IllegalStateException.class,
-        () -> converter.convert(elementSpecification,
-            FK7810_CERTIFICATE)
-    );
+    assertThrows(
+        IllegalStateException.class,
+        () -> converter.convert(elementSpecification, FK7810_CERTIFICATE));
   }
 
   @Test
@@ -70,11 +83,11 @@ class CertificateDataDropdownConfigConverterTest {
     assertEquals(ElementType.DROPDOWN, converter.getType());
   }
 
-
   @Test
   void shouldSetCorrectValuesForList() {
-    final CertificateDataConfigDropdown result = (CertificateDataConfigDropdown)
-        converter.convert(ELEMENT_SPECIFICATION, FK7810_CERTIFICATE);
+    final CertificateDataConfigDropdown result =
+        (CertificateDataConfigDropdown)
+            converter.convert(ELEMENT_SPECIFICATION, FK7810_CERTIFICATE);
 
     final var listItem1 = result.getList().get(0);
     final var listItem2 = result.getList().get(1);
@@ -86,7 +99,6 @@ class CertificateDataDropdownConfigConverterTest {
         () -> assertEquals("ID_2", listItem2.getId()),
         () -> assertEquals("Display Name 2", listItem2.getLabel()),
         () -> assertEquals("ID_3", listItem3.getId()),
-        () -> assertEquals("Display Name 3", listItem3.getLabel())
-    );
+        () -> assertEquals("Display Name 3", listItem3.getLabel()));
   }
 }

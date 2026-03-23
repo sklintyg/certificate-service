@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -21,23 +39,21 @@ import se.inera.intyg.certificateservice.domain.certificate.service.GetSickLeave
 class GetSickLeaveCertificateInternalServiceTest {
 
   private static final String CERTIFICATE_ID = "certificateId";
-  @Mock
-  GetSickLeaveCertificateDomainService getSickLeaveCertificateDomainService;
-  @Mock
-  SickLeaveConverter sickLeaveConverter;
-  @InjectMocks
-  GetSickLeaveCertificateInternalService getSickLeaveCertificateInternalService;
+  @Mock GetSickLeaveCertificateDomainService getSickLeaveCertificateDomainService;
+  @Mock SickLeaveConverter sickLeaveConverter;
+  @InjectMocks GetSickLeaveCertificateInternalService getSickLeaveCertificateInternalService;
 
   @Test
   void shallThrowIfCertificateIdIsNull() {
-    assertThrows(IllegalArgumentException.class,
+    assertThrows(
+        IllegalArgumentException.class,
         () -> getSickLeaveCertificateInternalService.get(null, false));
   }
 
-
   @Test
   void shallThrowIfCertificateIdIsBlank() {
-    assertThrows(IllegalArgumentException.class,
+    assertThrows(
+        IllegalArgumentException.class,
         () -> getSickLeaveCertificateInternalService.get("", false));
   }
 
@@ -46,10 +62,7 @@ class GetSickLeaveCertificateInternalServiceTest {
     when(getSickLeaveCertificateDomainService.get(new CertificateId(CERTIFICATE_ID), false))
         .thenReturn(Optional.of(SickLeaveCertificate.builder().build()));
 
-    final var response = getSickLeaveCertificateInternalService.get(
-        CERTIFICATE_ID,
-        false
-    );
+    final var response = getSickLeaveCertificateInternalService.get(CERTIFICATE_ID, false);
 
     assertTrue(response.isAvailable());
   }
@@ -64,10 +77,7 @@ class GetSickLeaveCertificateInternalServiceTest {
     when(sickLeaveConverter.toSickLeaveCertificate(sickLeaveCertificate))
         .thenReturn(expectedSickLeaveDTO);
 
-    final var response = getSickLeaveCertificateInternalService.get(
-        CERTIFICATE_ID,
-        false
-    );
+    final var response = getSickLeaveCertificateInternalService.get(CERTIFICATE_ID, false);
 
     assertEquals(expectedSickLeaveDTO, response.getSickLeaveCertificate());
   }
@@ -82,10 +92,7 @@ class GetSickLeaveCertificateInternalServiceTest {
     when(sickLeaveConverter.toSickLeaveCertificate(sickLeaveCertificate))
         .thenReturn(expectedSickLeaveDTO);
 
-    final var response = getSickLeaveCertificateInternalService.get(
-        CERTIFICATE_ID,
-        true
-    );
+    final var response = getSickLeaveCertificateInternalService.get(CERTIFICATE_ID, true);
 
     assertEquals(expectedSickLeaveDTO, response.getSickLeaveCertificate());
   }

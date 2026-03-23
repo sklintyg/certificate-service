@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.certificatemodel.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -15,38 +33,26 @@ import se.inera.intyg.certificateservice.domain.certificate.model.ElementValueTe
 
 class ElementConfigurationTextAreaTest {
 
-  private final static String EMPTY_TEXT = "Ej angivet";
+  private static final String EMPTY_TEXT = "Ej angivet";
 
   @Test
   void shouldReturnSimplifiedValue() {
     final var text = "Test text for this test";
-    final var value = ElementValueText.builder()
-        .text(text)
-        .build();
+    final var value = ElementValueText.builder().text(text).build();
 
-    final var config = ElementConfigurationTextArea.builder()
-        .build();
+    final var config = ElementConfigurationTextArea.builder().build();
 
-    assertEquals(
-        text,
-        ((ElementSimplifiedValueText) config.simplified(value).get()).text()
-    );
+    assertEquals(text, ((ElementSimplifiedValueText) config.simplified(value).get()).text());
   }
 
   @Test
   void shouldReturnEmptyOptionalForNull() {
     final var text = "";
-    final var value = ElementValueText.builder()
-        .text(text)
-        .build();
+    final var value = ElementValueText.builder().text(text).build();
 
-    final var config = ElementConfigurationTextArea.builder()
-        .build();
+    final var config = ElementConfigurationTextArea.builder().build();
 
-    assertEquals(
-        EMPTY_TEXT,
-        ((ElementSimplifiedValueText) config.simplified(value).get()).text()
-    );
+    assertEquals(EMPTY_TEXT, ((ElementSimplifiedValueText) config.simplified(value).get()).text());
   }
 
   @Nested
@@ -54,15 +60,18 @@ class ElementConfigurationTextAreaTest {
 
     @Test
     void shouldReturnSameElementDataIfValueAlreadyText() {
-      final var original = ElementData.builder()
-          .id(new ElementId("E1"))
-          .value(ElementValueText.builder().textId(new FieldId("F1")).text("Already text").build())
-          .build();
+      final var original =
+          ElementData.builder()
+              .id(new ElementId("E1"))
+              .value(
+                  ElementValueText.builder().textId(new FieldId("F1")).text("Already text").build())
+              .build();
 
-      final var spec = ElementSpecification.builder()
-          .id(new ElementId("E1"))
-          .configuration(ElementConfigurationTextArea.builder().id(new FieldId("F1")).build())
-          .build();
+      final var spec =
+          ElementSpecification.builder()
+              .id(new ElementId("E1"))
+              .configuration(ElementConfigurationTextArea.builder().id(new FieldId("F1")).build())
+              .build();
 
       final var config = ElementConfigurationTextArea.builder().id(new FieldId("F1")).build();
 
@@ -74,22 +83,12 @@ class ElementConfigurationTextAreaTest {
     @Test
     void shouldConvertFromIcfWithoutCodesSetTextId() {
       final var fieldId = new FieldId("F2");
-      final var icfConfig = ElementConfigurationIcf.builder()
-          .id(fieldId)
-          .collectionsLabel("Collections")
-          .build();
-      final var spec = ElementSpecification.builder()
-          .id(new ElementId("E2"))
-          .configuration(icfConfig)
-          .build();
-      final var icfValue = ElementValueIcf.builder()
-          .id(fieldId)
-          .text("Plain text")
-          .build();
-      final var elementData = ElementData.builder()
-          .id(new ElementId("E2"))
-          .value(icfValue)
-          .build();
+      final var icfConfig =
+          ElementConfigurationIcf.builder().id(fieldId).collectionsLabel("Collections").build();
+      final var spec =
+          ElementSpecification.builder().id(new ElementId("E2")).configuration(icfConfig).build();
+      final var icfValue = ElementValueIcf.builder().id(fieldId).text("Plain text").build();
+      final var elementData = ElementData.builder().id(new ElementId("E2")).value(icfValue).build();
 
       final var textAreaConfig = ElementConfigurationTextArea.builder().id(fieldId).build();
 
@@ -101,23 +100,14 @@ class ElementConfigurationTextAreaTest {
     @Test
     void shouldConvertFromIcfWithoutCodesSetText() {
       final var fieldId = new FieldId("F2b");
-      final var icfConfig = ElementConfigurationIcf.builder()
-          .id(fieldId)
-          .collectionsLabel("Collections")
-          .build();
-      final var spec = ElementSpecification.builder()
-          .id(new ElementId("E2b"))
-          .configuration(icfConfig)
-          .build();
+      final var icfConfig =
+          ElementConfigurationIcf.builder().id(fieldId).collectionsLabel("Collections").build();
+      final var spec =
+          ElementSpecification.builder().id(new ElementId("E2b")).configuration(icfConfig).build();
       final var textContent = "Plain text";
-      final var icfValue = ElementValueIcf.builder()
-          .id(fieldId)
-          .text(textContent)
-          .build();
-      final var elementData = ElementData.builder()
-          .id(new ElementId("E2b"))
-          .value(icfValue)
-          .build();
+      final var icfValue = ElementValueIcf.builder().id(fieldId).text(textContent).build();
+      final var elementData =
+          ElementData.builder().id(new ElementId("E2b")).value(icfValue).build();
 
       final var textAreaConfig = ElementConfigurationTextArea.builder().id(fieldId).build();
 
@@ -129,52 +119,42 @@ class ElementConfigurationTextAreaTest {
     @Test
     void shouldConvertFromIcfWithCodesSetFormattedText() {
       final var fieldId = new FieldId("F3");
-      final var icfConfig = ElementConfigurationIcf.builder()
-          .id(fieldId)
-          .collectionsLabel("Samlingar")
-          .build();
-      final var spec = ElementSpecification.builder()
-          .id(new ElementId("E3"))
-          .configuration(icfConfig)
-          .build();
-      final var icfValue = ElementValueIcf.builder()
-          .id(fieldId)
-          .text("Description")
-          .icfCodes(List.of("A1", "B2"))
-          .build();
-      final var elementData = ElementData.builder()
-          .id(new ElementId("E3"))
-          .value(icfValue)
-          .build();
+      final var icfConfig =
+          ElementConfigurationIcf.builder().id(fieldId).collectionsLabel("Samlingar").build();
+      final var spec =
+          ElementSpecification.builder().id(new ElementId("E3")).configuration(icfConfig).build();
+      final var icfValue =
+          ElementValueIcf.builder()
+              .id(fieldId)
+              .text("Description")
+              .icfCodes(List.of("A1", "B2"))
+              .build();
+      final var elementData = ElementData.builder().id(new ElementId("E3")).value(icfValue).build();
 
       final var textAreaConfig = ElementConfigurationTextArea.builder().id(fieldId).build();
 
       final var converted = textAreaConfig.convert(elementData, spec).get();
 
-      final var expected = "Samlingar A1 - B2\n\nDescription\n"; // format ends with newline due to text block
+      final var expected =
+          "Samlingar A1 - B2\n\nDescription\n"; // format ends with newline due to text block
       assertEquals(expected, ((ElementValueText) converted.value()).text());
     }
 
     @Test
     void shouldConvertFromIcfWithCodesSetTextId() {
       final var fieldId = new FieldId("F3b");
-      final var icfConfig = ElementConfigurationIcf.builder()
-          .id(fieldId)
-          .collectionsLabel("Samlingar")
-          .build();
-      final var spec = ElementSpecification.builder()
-          .id(new ElementId("E3b"))
-          .configuration(icfConfig)
-          .build();
-      final var icfValue = ElementValueIcf.builder()
-          .id(fieldId)
-          .text("Description")
-          .icfCodes(List.of("A1", "B2"))
-          .build();
-      final var elementData = ElementData.builder()
-          .id(new ElementId("E3b"))
-          .value(icfValue)
-          .build();
+      final var icfConfig =
+          ElementConfigurationIcf.builder().id(fieldId).collectionsLabel("Samlingar").build();
+      final var spec =
+          ElementSpecification.builder().id(new ElementId("E3b")).configuration(icfConfig).build();
+      final var icfValue =
+          ElementValueIcf.builder()
+              .id(fieldId)
+              .text("Description")
+              .icfCodes(List.of("A1", "B2"))
+              .build();
+      final var elementData =
+          ElementData.builder().id(new ElementId("E3b")).value(icfValue).build();
 
       final var textAreaConfig = ElementConfigurationTextArea.builder().id(fieldId).build();
 
@@ -186,20 +166,15 @@ class ElementConfigurationTextAreaTest {
     @Test
     void shouldReturnEmptyIfIcfButSpecificationNotIcfConfiguration() {
       final var fieldId = new FieldId("F4");
-      final var icfValue = ElementValueIcf.builder()
-          .id(fieldId)
-          .text("Some text")
-          .build();
-      final var elementData = ElementData.builder()
-          .id(new ElementId("E4"))
-          .value(icfValue)
-          .build();
+      final var icfValue = ElementValueIcf.builder().id(fieldId).text("Some text").build();
+      final var elementData = ElementData.builder().id(new ElementId("E4")).value(icfValue).build();
 
-      final var wrongSpec = ElementSpecification.builder()
-          .id(new ElementId("E4"))
-          .configuration(ElementConfigurationTextArea.builder().id(new FieldId("OTHER"))
-              .build())
-          .build();
+      final var wrongSpec =
+          ElementSpecification.builder()
+              .id(new ElementId("E4"))
+              .configuration(
+                  ElementConfigurationTextArea.builder().id(new FieldId("OTHER")).build())
+              .build();
 
       final var textAreaConfig = ElementConfigurationTextArea.builder().id(fieldId).build();
 
@@ -210,19 +185,20 @@ class ElementConfigurationTextAreaTest {
 
     @Test
     void shouldReturnEmptyIfUnsupportedValueType() {
-      final var elementData = ElementData.builder()
-          .id(new ElementId("E5"))
-          .value(ElementValueCode.builder().code("CODE").codeId(new FieldId("CID"))
-              .build())
-          .build();
+      final var elementData =
+          ElementData.builder()
+              .id(new ElementId("E5"))
+              .value(ElementValueCode.builder().code("CODE").codeId(new FieldId("CID")).build())
+              .build();
 
-      final var icfSpec = ElementSpecification.builder()
-          .id(new ElementId("E5"))
-          .configuration(ElementConfigurationIcf.builder().id(new FieldId("FICF")).build())
-          .build();
+      final var icfSpec =
+          ElementSpecification.builder()
+              .id(new ElementId("E5"))
+              .configuration(ElementConfigurationIcf.builder().id(new FieldId("FICF")).build())
+              .build();
 
-      final var textAreaConfig = ElementConfigurationTextArea.builder().id(new FieldId("FICF"))
-          .build();
+      final var textAreaConfig =
+          ElementConfigurationTextArea.builder().id(new FieldId("FICF")).build();
 
       final var result = textAreaConfig.convert(elementData, icfSpec);
 

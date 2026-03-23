@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.schematron;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -42,35 +60,28 @@ import se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertifica
 @ExtendWith(MockitoExtension.class)
 class SchematronValidationFK3226Test {
 
-  @Mock
-  private CertificateActionFactory certificateActionFactory;
-  @Mock
-  private DiagnosisCodeRepository diagnosisCodeRepository;
+  @Mock private CertificateActionFactory certificateActionFactory;
+  @Mock private DiagnosisCodeRepository diagnosisCodeRepository;
   private SchematronValidator schematronValidator;
-  private final XmlGeneratorCertificateV4 generator = new XmlGeneratorCertificateV4(
-      new XmlGeneratorValue(
-          List.of(
-              new XmlGeneratorDate(),
-              new XmlGeneratorText(),
-              new XmlGeneratorDateList(),
-              new XmlGeneratorBoolean(),
-              new XmlGeneratorCode(),
-              new XmlGeneratorDiagnosisList()
-          ),
-          Collections.emptyList()
-      ),
-      new XmlValidationService(
-          new SchematronValidator(),
-          new SchemaValidatorV4()
-      )
-  );
+  private final XmlGeneratorCertificateV4 generator =
+      new XmlGeneratorCertificateV4(
+          new XmlGeneratorValue(
+              List.of(
+                  new XmlGeneratorDate(),
+                  new XmlGeneratorText(),
+                  new XmlGeneratorDateList(),
+                  new XmlGeneratorBoolean(),
+                  new XmlGeneratorCode(),
+                  new XmlGeneratorDiagnosisList()),
+              Collections.emptyList()),
+          new XmlValidationService(new SchematronValidator(), new SchemaValidatorV4()));
   private CertificateModelFactoryFK3226 certificateModelFactoryFK3226;
 
   @BeforeEach
   void setUp() {
     schematronValidator = new SchematronValidator();
-    certificateModelFactoryFK3226 = new CertificateModelFactoryFK3226(diagnosisCodeRepository,
-        certificateActionFactory);
+    certificateModelFactoryFK3226 =
+        new CertificateModelFactoryFK3226(diagnosisCodeRepository, certificateActionFactory);
   }
 
   @Nested
@@ -78,29 +89,31 @@ class SchematronValidationFK3226Test {
 
     @Test
     void shallReturnTrueForValidCertificate() {
-      final var certificate = TestDataCertificate.fk3226CertificateBuilder()
-          .certificateModel(certificateModelFactoryFK3226.create())
-          .build();
+      final var certificate =
+          TestDataCertificate.fk3226CertificateBuilder()
+              .certificateModel(certificateModelFactoryFK3226.create())
+              .build();
 
       final var xml = generator.generate(certificate, true);
 
-      assertTrue(schematronValidator.validate(certificate.id(), xml,
-          CertificateModelFactoryFK3226.SCHEMATRON_PATH));
+      assertTrue(
+          schematronValidator.validate(
+              certificate.id(), xml, CertificateModelFactoryFK3226.SCHEMATRON_PATH));
     }
 
     @Test
     void shallReturnFalseForInvalidCertificate() {
-      final var certificate = TestDataCertificate.fk3226CertificateBuilder()
-          .certificateModel(certificateModelFactoryFK3226.create())
-          .elementData(
-              Collections.emptyList()
-          )
-          .build();
+      final var certificate =
+          TestDataCertificate.fk3226CertificateBuilder()
+              .certificateModel(certificateModelFactoryFK3226.create())
+              .elementData(Collections.emptyList())
+              .build();
 
       final var xml = generator.generate(certificate, false);
 
-      assertFalse(schematronValidator.validate(certificate.id(), xml,
-          CertificateModelFactoryFK3226.SCHEMATRON_PATH));
+      assertFalse(
+          schematronValidator.validate(
+              certificate.id(), xml, CertificateModelFactoryFK3226.SCHEMATRON_PATH));
     }
   }
 
@@ -109,161 +122,142 @@ class SchematronValidationFK3226Test {
 
     @Test
     void shallReturnTrueIfQuestionUtlatandeBaseratPaAnnatIsPresent() {
-      final var certificate = TestDataCertificate.fk3226CertificateBuilder()
-          .certificateModel(certificateModelFactoryFK3226.create())
-          .elementData(
-              List.of(
-                  ElementData.builder()
-                      .id(new ElementId("1"))
-                      .value(
-                          ElementValueDateList.builder()
-                              .dateListId(new FieldId("1.1"))
-                              .dateList(
-                                  List.of(
-                                      ElementValueDate.builder()
-                                          .dateId(new FieldId("annat"))
-                                          .date(LocalDate.now())
-                                          .build()
-                                  )
-                              )
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("1.3"))
-                      .value(
-                          ElementValueText.builder()
-                              .textId(new FieldId("1.3"))
-                              .text("Text")
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("52"))
-                      .value(
-                          ElementValueCode.builder()
-                              .codeId(new FieldId("ENDAST_PALLIATIV"))
-                              .code("ENDAST_PALLIATIV")
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("52.2"))
-                      .value(
-                          ElementValueDate.builder()
-                              .dateId(new FieldId("52.2"))
-                              .date(LocalDate.now())
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("53"))
-                      .value(
-                          ElementValueBoolean.builder()
-                              .booleanId(new FieldId("53.1"))
-                              .value(true)
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("58"))
-                      .value(
-                          ElementValueDiagnosisList.builder()
-                              .diagnoses(
-                                  List.of(
-                                      ElementValueDiagnosis.builder()
-                                          .code("A013")
-                                          .description("Paratyfoidfeber C")
-                                          .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
-                                          .build()
-                                  )
-                              )
-                              .build()
-                      )
-                      .build()
-              )
-          )
-          .build();
+      final var certificate =
+          TestDataCertificate.fk3226CertificateBuilder()
+              .certificateModel(certificateModelFactoryFK3226.create())
+              .elementData(
+                  List.of(
+                      ElementData.builder()
+                          .id(new ElementId("1"))
+                          .value(
+                              ElementValueDateList.builder()
+                                  .dateListId(new FieldId("1.1"))
+                                  .dateList(
+                                      List.of(
+                                          ElementValueDate.builder()
+                                              .dateId(new FieldId("annat"))
+                                              .date(LocalDate.now())
+                                              .build()))
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("1.3"))
+                          .value(
+                              ElementValueText.builder()
+                                  .textId(new FieldId("1.3"))
+                                  .text("Text")
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("52"))
+                          .value(
+                              ElementValueCode.builder()
+                                  .codeId(new FieldId("ENDAST_PALLIATIV"))
+                                  .code("ENDAST_PALLIATIV")
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("52.2"))
+                          .value(
+                              ElementValueDate.builder()
+                                  .dateId(new FieldId("52.2"))
+                                  .date(LocalDate.now())
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("53"))
+                          .value(
+                              ElementValueBoolean.builder()
+                                  .booleanId(new FieldId("53.1"))
+                                  .value(true)
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("58"))
+                          .value(
+                              ElementValueDiagnosisList.builder()
+                                  .diagnoses(
+                                      List.of(
+                                          ElementValueDiagnosis.builder()
+                                              .code("A013")
+                                              .description("Paratyfoidfeber C")
+                                              .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
+                                              .build()))
+                                  .build())
+                          .build()))
+              .build();
 
       final var xml = generator.generate(certificate, true);
 
-      assertTrue(schematronValidator.validate(certificate.id(), xml,
-          CertificateModelFactoryFK3226.SCHEMATRON_PATH));
+      assertTrue(
+          schematronValidator.validate(
+              certificate.id(), xml, CertificateModelFactoryFK3226.SCHEMATRON_PATH));
     }
 
     @Test
     void shallReturnFalseIfQuestionUtlatandeBaseratPaAnnatIsMissing() {
-      final var certificate = TestDataCertificate.fk3226CertificateBuilder()
-          .certificateModel(certificateModelFactoryFK3226.create())
-          .elementData(
-              List.of(
-                  ElementData.builder()
-                      .id(new ElementId("1"))
-                      .value(
-                          ElementValueDateList.builder()
-                              .dateListId(new FieldId("1.1"))
-                              .dateList(
-                                  List.of(
-                                      ElementValueDate.builder()
-                                          .dateId(new FieldId("annat"))
-                                          .date(LocalDate.now())
-                                          .build()
-                                  )
-                              )
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("52"))
-                      .value(
-                          ElementValueCode.builder()
-                              .codeId(new FieldId("ENDAST_PALLIATIV"))
-                              .code("ENDAST_PALLIATIV")
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("52.2"))
-                      .value(
-                          ElementValueDate.builder()
-                              .dateId(new FieldId("52.2"))
-                              .date(LocalDate.now())
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("53"))
-                      .value(
-                          ElementValueBoolean.builder()
-                              .booleanId(new FieldId("53.1"))
-                              .value(true)
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("58"))
-                      .value(
-                          ElementValueDiagnosisList.builder()
-                              .diagnoses(
-                                  List.of(
-                                      ElementValueDiagnosis.builder()
-                                          .code("A013")
-                                          .description("Paratyfoidfeber C")
-                                          .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
-                                          .build()
-                                  )
-                              )
-                              .build()
-                      )
-                      .build()
-              )
-          )
-          .build();
+      final var certificate =
+          TestDataCertificate.fk3226CertificateBuilder()
+              .certificateModel(certificateModelFactoryFK3226.create())
+              .elementData(
+                  List.of(
+                      ElementData.builder()
+                          .id(new ElementId("1"))
+                          .value(
+                              ElementValueDateList.builder()
+                                  .dateListId(new FieldId("1.1"))
+                                  .dateList(
+                                      List.of(
+                                          ElementValueDate.builder()
+                                              .dateId(new FieldId("annat"))
+                                              .date(LocalDate.now())
+                                              .build()))
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("52"))
+                          .value(
+                              ElementValueCode.builder()
+                                  .codeId(new FieldId("ENDAST_PALLIATIV"))
+                                  .code("ENDAST_PALLIATIV")
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("52.2"))
+                          .value(
+                              ElementValueDate.builder()
+                                  .dateId(new FieldId("52.2"))
+                                  .date(LocalDate.now())
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("53"))
+                          .value(
+                              ElementValueBoolean.builder()
+                                  .booleanId(new FieldId("53.1"))
+                                  .value(true)
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("58"))
+                          .value(
+                              ElementValueDiagnosisList.builder()
+                                  .diagnoses(
+                                      List.of(
+                                          ElementValueDiagnosis.builder()
+                                              .code("A013")
+                                              .description("Paratyfoidfeber C")
+                                              .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
+                                              .build()))
+                                  .build())
+                          .build()))
+              .build();
 
       final var xml = generator.generate(certificate, false);
 
-      assertFalse(schematronValidator.validate(certificate.id(), xml,
-          CertificateModelFactoryFK3226.SCHEMATRON_PATH));
+      assertFalse(
+          schematronValidator.validate(
+              certificate.id(), xml, CertificateModelFactoryFK3226.SCHEMATRON_PATH));
     }
   }
 
@@ -272,161 +266,142 @@ class SchematronValidationFK3226Test {
 
     @Test
     void shallReturnTrueIfQuestionNarAktivaBehandlingenAvslutadesIsPresent() {
-      final var certificate = TestDataCertificate.fk3226CertificateBuilder()
-          .certificateModel(certificateModelFactoryFK3226.create())
-          .elementData(
-              List.of(
-                  ElementData.builder()
-                      .id(new ElementId("1"))
-                      .value(
-                          ElementValueDateList.builder()
-                              .dateListId(new FieldId("1.1"))
-                              .dateList(
-                                  List.of(
-                                      ElementValueDate.builder()
-                                          .dateId(new FieldId("annat"))
-                                          .date(LocalDate.now())
-                                          .build()
-                                  )
-                              )
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("1.3"))
-                      .value(
-                          ElementValueText.builder()
-                              .textId(new FieldId("1.3"))
-                              .text("Text")
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("52"))
-                      .value(
-                          ElementValueCode.builder()
-                              .codeId(new FieldId("ENDAST_PALLIATIV"))
-                              .code("ENDAST_PALLIATIV")
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("52.2"))
-                      .value(
-                          ElementValueDate.builder()
-                              .dateId(new FieldId("52.2"))
-                              .date(LocalDate.now())
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("53"))
-                      .value(
-                          ElementValueBoolean.builder()
-                              .booleanId(new FieldId("53.1"))
-                              .value(true)
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("58"))
-                      .value(
-                          ElementValueDiagnosisList.builder()
-                              .diagnoses(
-                                  List.of(
-                                      ElementValueDiagnosis.builder()
-                                          .code("A013")
-                                          .description("Paratyfoidfeber C")
-                                          .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
-                                          .build()
-                                  )
-                              )
-                              .build()
-                      )
-                      .build()
-              )
-          )
-          .build();
+      final var certificate =
+          TestDataCertificate.fk3226CertificateBuilder()
+              .certificateModel(certificateModelFactoryFK3226.create())
+              .elementData(
+                  List.of(
+                      ElementData.builder()
+                          .id(new ElementId("1"))
+                          .value(
+                              ElementValueDateList.builder()
+                                  .dateListId(new FieldId("1.1"))
+                                  .dateList(
+                                      List.of(
+                                          ElementValueDate.builder()
+                                              .dateId(new FieldId("annat"))
+                                              .date(LocalDate.now())
+                                              .build()))
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("1.3"))
+                          .value(
+                              ElementValueText.builder()
+                                  .textId(new FieldId("1.3"))
+                                  .text("Text")
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("52"))
+                          .value(
+                              ElementValueCode.builder()
+                                  .codeId(new FieldId("ENDAST_PALLIATIV"))
+                                  .code("ENDAST_PALLIATIV")
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("52.2"))
+                          .value(
+                              ElementValueDate.builder()
+                                  .dateId(new FieldId("52.2"))
+                                  .date(LocalDate.now())
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("53"))
+                          .value(
+                              ElementValueBoolean.builder()
+                                  .booleanId(new FieldId("53.1"))
+                                  .value(true)
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("58"))
+                          .value(
+                              ElementValueDiagnosisList.builder()
+                                  .diagnoses(
+                                      List.of(
+                                          ElementValueDiagnosis.builder()
+                                              .code("A013")
+                                              .description("Paratyfoidfeber C")
+                                              .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
+                                              .build()))
+                                  .build())
+                          .build()))
+              .build();
 
       final var xml = generator.generate(certificate, true);
 
-      assertTrue(schematronValidator.validate(certificate.id(), xml,
-          CertificateModelFactoryFK3226.SCHEMATRON_PATH));
+      assertTrue(
+          schematronValidator.validate(
+              certificate.id(), xml, CertificateModelFactoryFK3226.SCHEMATRON_PATH));
     }
 
     @Test
     void shallReturnFalseIfQuestionNarAktivaBehandlingenAvslutadesIsMissing() {
-      final var certificate = TestDataCertificate.fk3226CertificateBuilder()
-          .certificateModel(certificateModelFactoryFK3226.create())
-          .elementData(
-              List.of(
-                  ElementData.builder()
-                      .id(new ElementId("1"))
-                      .value(
-                          ElementValueDateList.builder()
-                              .dateListId(new FieldId("1.1"))
-                              .dateList(
-                                  List.of(
-                                      ElementValueDate.builder()
-                                          .dateId(new FieldId("annat"))
-                                          .date(LocalDate.now())
-                                          .build()
-                                  )
-                              )
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("1.3"))
-                      .value(
-                          ElementValueText.builder()
-                              .textId(new FieldId("1.3"))
-                              .text("Text")
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("52"))
-                      .value(
-                          ElementValueCode.builder()
-                              .codeId(new FieldId("ENDAST_PALLIATIV"))
-                              .code("ENDAST_PALLIATIV")
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("53"))
-                      .value(
-                          ElementValueBoolean.builder()
-                              .booleanId(new FieldId("53.1"))
-                              .value(true)
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("58"))
-                      .value(
-                          ElementValueDiagnosisList.builder()
-                              .diagnoses(
-                                  List.of(
-                                      ElementValueDiagnosis.builder()
-                                          .code("A013")
-                                          .description("Paratyfoidfeber C")
-                                          .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
-                                          .build()
-                                  )
-                              )
-                              .build()
-                      )
-                      .build()
-              )
-          )
-          .build();
+      final var certificate =
+          TestDataCertificate.fk3226CertificateBuilder()
+              .certificateModel(certificateModelFactoryFK3226.create())
+              .elementData(
+                  List.of(
+                      ElementData.builder()
+                          .id(new ElementId("1"))
+                          .value(
+                              ElementValueDateList.builder()
+                                  .dateListId(new FieldId("1.1"))
+                                  .dateList(
+                                      List.of(
+                                          ElementValueDate.builder()
+                                              .dateId(new FieldId("annat"))
+                                              .date(LocalDate.now())
+                                              .build()))
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("1.3"))
+                          .value(
+                              ElementValueText.builder()
+                                  .textId(new FieldId("1.3"))
+                                  .text("Text")
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("52"))
+                          .value(
+                              ElementValueCode.builder()
+                                  .codeId(new FieldId("ENDAST_PALLIATIV"))
+                                  .code("ENDAST_PALLIATIV")
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("53"))
+                          .value(
+                              ElementValueBoolean.builder()
+                                  .booleanId(new FieldId("53.1"))
+                                  .value(true)
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("58"))
+                          .value(
+                              ElementValueDiagnosisList.builder()
+                                  .diagnoses(
+                                      List.of(
+                                          ElementValueDiagnosis.builder()
+                                              .code("A013")
+                                              .description("Paratyfoidfeber C")
+                                              .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
+                                              .build()))
+                                  .build())
+                          .build()))
+              .build();
 
       final var xml = generator.generate(certificate, false);
 
-      assertFalse(schematronValidator.validate(certificate.id(), xml,
-          CertificateModelFactoryFK3226.SCHEMATRON_PATH));
+      assertFalse(
+          schematronValidator.validate(
+              certificate.id(), xml, CertificateModelFactoryFK3226.SCHEMATRON_PATH));
     }
   }
 
@@ -435,383 +410,338 @@ class SchematronValidationFK3226Test {
 
     @Test
     void shallReturnTrueIfRelatedSubQuestionsIsPresent() {
-      final var certificate = TestDataCertificate.fk3226CertificateBuilder()
-          .certificateModel(certificateModelFactoryFK3226.create())
-          .elementData(
-              List.of(
-                  ElementData.builder()
-                      .id(new ElementId("1"))
-                      .value(
-                          ElementValueDateList.builder()
-                              .dateListId(new FieldId("1.1"))
-                              .dateList(
-                                  List.of(
-                                      ElementValueDate.builder()
-                                          .dateId(new FieldId("annat"))
-                                          .date(LocalDate.now())
-                                          .build()
-                                  )
-                              )
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("1.3"))
-                      .value(
-                          ElementValueText.builder()
-                              .textId(new FieldId("1.3"))
-                              .text("Text")
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("52"))
-                      .value(
-                          ElementValueCode.builder()
-                              .codeId(new FieldId("AKUT_LIVSHOTANDE"))
-                              .code("AKUT_LIVSHOTANDE")
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("52.3"))
-                      .value(
-                          ElementValueDate.builder()
-                              .dateId(new FieldId("52.3"))
-                              .date(LocalDate.now())
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("52.4"))
-                      .value(
-                          ElementValueText.builder()
-                              .textId(new FieldId("52.4"))
-                              .text("text")
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("52.5"))
-                      .value(
-                          ElementValueBoolean.builder()
-                              .booleanId(new FieldId("52.5"))
-                              .value(false)
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("53"))
-                      .value(
-                          ElementValueBoolean.builder()
-                              .booleanId(new FieldId("53.1"))
-                              .value(true)
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("58"))
-                      .value(
-                          ElementValueDiagnosisList.builder()
-                              .diagnoses(
-                                  List.of(
-                                      ElementValueDiagnosis.builder()
-                                          .code("A013")
-                                          .description("Paratyfoidfeber C")
-                                          .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
-                                          .build()
-                                  )
-                              )
-                              .build()
-                      )
-                      .build()
-              )
-          )
-          .build();
+      final var certificate =
+          TestDataCertificate.fk3226CertificateBuilder()
+              .certificateModel(certificateModelFactoryFK3226.create())
+              .elementData(
+                  List.of(
+                      ElementData.builder()
+                          .id(new ElementId("1"))
+                          .value(
+                              ElementValueDateList.builder()
+                                  .dateListId(new FieldId("1.1"))
+                                  .dateList(
+                                      List.of(
+                                          ElementValueDate.builder()
+                                              .dateId(new FieldId("annat"))
+                                              .date(LocalDate.now())
+                                              .build()))
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("1.3"))
+                          .value(
+                              ElementValueText.builder()
+                                  .textId(new FieldId("1.3"))
+                                  .text("Text")
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("52"))
+                          .value(
+                              ElementValueCode.builder()
+                                  .codeId(new FieldId("AKUT_LIVSHOTANDE"))
+                                  .code("AKUT_LIVSHOTANDE")
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("52.3"))
+                          .value(
+                              ElementValueDate.builder()
+                                  .dateId(new FieldId("52.3"))
+                                  .date(LocalDate.now())
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("52.4"))
+                          .value(
+                              ElementValueText.builder()
+                                  .textId(new FieldId("52.4"))
+                                  .text("text")
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("52.5"))
+                          .value(
+                              ElementValueBoolean.builder()
+                                  .booleanId(new FieldId("52.5"))
+                                  .value(false)
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("53"))
+                          .value(
+                              ElementValueBoolean.builder()
+                                  .booleanId(new FieldId("53.1"))
+                                  .value(true)
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("58"))
+                          .value(
+                              ElementValueDiagnosisList.builder()
+                                  .diagnoses(
+                                      List.of(
+                                          ElementValueDiagnosis.builder()
+                                              .code("A013")
+                                              .description("Paratyfoidfeber C")
+                                              .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
+                                              .build()))
+                                  .build())
+                          .build()))
+              .build();
 
       final var xml = generator.generate(certificate, true);
 
-      assertTrue(schematronValidator.validate(certificate.id(), xml,
-          CertificateModelFactoryFK3226.SCHEMATRON_PATH));
+      assertTrue(
+          schematronValidator.validate(
+              certificate.id(), xml, CertificateModelFactoryFK3226.SCHEMATRON_PATH));
     }
 
     @Test
     void shallReturnFalseIfQuestionNarTillstandetBlevAkutLivshotandeIsMissing() {
-      final var certificate = TestDataCertificate.fk3226CertificateBuilder()
-          .certificateModel(certificateModelFactoryFK3226.create())
-          .elementData(
-              List.of(
-                  ElementData.builder()
-                      .id(new ElementId("1"))
-                      .value(
-                          ElementValueDateList.builder()
-                              .dateListId(new FieldId("1.1"))
-                              .dateList(
-                                  List.of(
-                                      ElementValueDate.builder()
-                                          .dateId(new FieldId("annat"))
-                                          .date(LocalDate.now())
-                                          .build()
-                                  )
-                              )
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("1.3"))
-                      .value(
-                          ElementValueText.builder()
-                              .textId(new FieldId("1.3"))
-                              .text("Text")
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("52"))
-                      .value(
-                          ElementValueCode.builder()
-                              .codeId(new FieldId("AKUT_LIVSHOTANDE"))
-                              .code("AKUT_LIVSHOTANDE")
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("52.4"))
-                      .value(
-                          ElementValueText.builder()
-                              .textId(new FieldId("52.4"))
-                              .text("text")
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("52.5"))
-                      .value(
-                          ElementValueBoolean.builder()
-                              .booleanId(new FieldId("52.5"))
-                              .value(false)
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("53"))
-                      .value(
-                          ElementValueBoolean.builder()
-                              .booleanId(new FieldId("53.1"))
-                              .value(true)
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("58"))
-                      .value(
-                          ElementValueDiagnosisList.builder()
-                              .diagnoses(
-                                  List.of(
-                                      ElementValueDiagnosis.builder()
-                                          .code("A013")
-                                          .description("Paratyfoidfeber C")
-                                          .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
-                                          .build()
-                                  )
-                              )
-                              .build()
-                      )
-                      .build()
-              )
-          )
-          .build();
+      final var certificate =
+          TestDataCertificate.fk3226CertificateBuilder()
+              .certificateModel(certificateModelFactoryFK3226.create())
+              .elementData(
+                  List.of(
+                      ElementData.builder()
+                          .id(new ElementId("1"))
+                          .value(
+                              ElementValueDateList.builder()
+                                  .dateListId(new FieldId("1.1"))
+                                  .dateList(
+                                      List.of(
+                                          ElementValueDate.builder()
+                                              .dateId(new FieldId("annat"))
+                                              .date(LocalDate.now())
+                                              .build()))
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("1.3"))
+                          .value(
+                              ElementValueText.builder()
+                                  .textId(new FieldId("1.3"))
+                                  .text("Text")
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("52"))
+                          .value(
+                              ElementValueCode.builder()
+                                  .codeId(new FieldId("AKUT_LIVSHOTANDE"))
+                                  .code("AKUT_LIVSHOTANDE")
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("52.4"))
+                          .value(
+                              ElementValueText.builder()
+                                  .textId(new FieldId("52.4"))
+                                  .text("text")
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("52.5"))
+                          .value(
+                              ElementValueBoolean.builder()
+                                  .booleanId(new FieldId("52.5"))
+                                  .value(false)
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("53"))
+                          .value(
+                              ElementValueBoolean.builder()
+                                  .booleanId(new FieldId("53.1"))
+                                  .value(true)
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("58"))
+                          .value(
+                              ElementValueDiagnosisList.builder()
+                                  .diagnoses(
+                                      List.of(
+                                          ElementValueDiagnosis.builder()
+                                              .code("A013")
+                                              .description("Paratyfoidfeber C")
+                                              .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
+                                              .build()))
+                                  .build())
+                          .build()))
+              .build();
 
       final var xml = generator.generate(certificate, false);
 
-      assertFalse(schematronValidator.validate(certificate.id(), xml,
-          CertificateModelFactoryFK3226.SCHEMATRON_PATH));
+      assertFalse(
+          schematronValidator.validate(
+              certificate.id(), xml, CertificateModelFactoryFK3226.SCHEMATRON_PATH));
     }
 
     @Test
     void shallReturnFalseIfQuestionPatagligtHotMotPatientensLivAkutLivshotandeIsMissing() {
-      final var certificate = TestDataCertificate.fk3226CertificateBuilder()
-          .certificateModel(certificateModelFactoryFK3226.create())
-          .elementData(
-              List.of(
-                  ElementData.builder()
-                      .id(new ElementId("1"))
-                      .value(
-                          ElementValueDateList.builder()
-                              .dateListId(new FieldId("1.1"))
-                              .dateList(
-                                  List.of(
-                                      ElementValueDate.builder()
-                                          .dateId(new FieldId("annat"))
-                                          .date(LocalDate.now())
-                                          .build()
-                                  )
-                              )
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("1.3"))
-                      .value(
-                          ElementValueText.builder()
-                              .textId(new FieldId("1.3"))
-                              .text("Text")
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("52"))
-                      .value(
-                          ElementValueCode.builder()
-                              .codeId(new FieldId("AKUT_LIVSHOTANDE"))
-                              .code("AKUT_LIVSHOTANDE")
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("52.3"))
-                      .value(
-                          ElementValueDate.builder()
-                              .dateId(new FieldId("52.3"))
-                              .date(LocalDate.now())
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("52.5"))
-                      .value(
-                          ElementValueBoolean.builder()
-                              .booleanId(new FieldId("52.5"))
-                              .value(false)
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("53"))
-                      .value(
-                          ElementValueBoolean.builder()
-                              .booleanId(new FieldId("53.1"))
-                              .value(true)
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("58"))
-                      .value(
-                          ElementValueDiagnosisList.builder()
-                              .diagnoses(
-                                  List.of(
-                                      ElementValueDiagnosis.builder()
-                                          .code("A013")
-                                          .description("Paratyfoidfeber C")
-                                          .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
-                                          .build()
-                                  )
-                              )
-                              .build()
-                      )
-                      .build()
-              )
-          )
-          .build();
+      final var certificate =
+          TestDataCertificate.fk3226CertificateBuilder()
+              .certificateModel(certificateModelFactoryFK3226.create())
+              .elementData(
+                  List.of(
+                      ElementData.builder()
+                          .id(new ElementId("1"))
+                          .value(
+                              ElementValueDateList.builder()
+                                  .dateListId(new FieldId("1.1"))
+                                  .dateList(
+                                      List.of(
+                                          ElementValueDate.builder()
+                                              .dateId(new FieldId("annat"))
+                                              .date(LocalDate.now())
+                                              .build()))
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("1.3"))
+                          .value(
+                              ElementValueText.builder()
+                                  .textId(new FieldId("1.3"))
+                                  .text("Text")
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("52"))
+                          .value(
+                              ElementValueCode.builder()
+                                  .codeId(new FieldId("AKUT_LIVSHOTANDE"))
+                                  .code("AKUT_LIVSHOTANDE")
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("52.3"))
+                          .value(
+                              ElementValueDate.builder()
+                                  .dateId(new FieldId("52.3"))
+                                  .date(LocalDate.now())
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("52.5"))
+                          .value(
+                              ElementValueBoolean.builder()
+                                  .booleanId(new FieldId("52.5"))
+                                  .value(false)
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("53"))
+                          .value(
+                              ElementValueBoolean.builder()
+                                  .booleanId(new FieldId("53.1"))
+                                  .value(true)
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("58"))
+                          .value(
+                              ElementValueDiagnosisList.builder()
+                                  .diagnoses(
+                                      List.of(
+                                          ElementValueDiagnosis.builder()
+                                              .code("A013")
+                                              .description("Paratyfoidfeber C")
+                                              .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
+                                              .build()))
+                                  .build())
+                          .build()))
+              .build();
 
       final var xml = generator.generate(certificate, false);
 
-      assertFalse(schematronValidator.validate(certificate.id(), xml,
-          CertificateModelFactoryFK3226.SCHEMATRON_PATH));
+      assertFalse(
+          schematronValidator.validate(
+              certificate.id(), xml, CertificateModelFactoryFK3226.SCHEMATRON_PATH));
     }
 
     @Test
     void shallReturnFalseIfQuestionUppskattaHurLangeTillstandetKommerVaraLivshotandeIsMissing() {
-      final var certificate = TestDataCertificate.fk3226CertificateBuilder()
-          .certificateModel(certificateModelFactoryFK3226.create())
-          .elementData(
-              List.of(
-                  ElementData.builder()
-                      .id(new ElementId("1"))
-                      .value(
-                          ElementValueDateList.builder()
-                              .dateListId(new FieldId("1.1"))
-                              .dateList(
-                                  List.of(
-                                      ElementValueDate.builder()
-                                          .dateId(new FieldId("annat"))
-                                          .date(LocalDate.now())
-                                          .build()
-                                  )
-                              )
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("1.3"))
-                      .value(
-                          ElementValueText.builder()
-                              .textId(new FieldId("1.3"))
-                              .text("Text")
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("52"))
-                      .value(
-                          ElementValueCode.builder()
-                              .codeId(new FieldId("AKUT_LIVSHOTANDE"))
-                              .code("AKUT_LIVSHOTANDE")
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("52.3"))
-                      .value(
-                          ElementValueDate.builder()
-                              .dateId(new FieldId("52.3"))
-                              .date(LocalDate.now())
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("52.4"))
-                      .value(
-                          ElementValueText.builder()
-                              .textId(new FieldId("52.4"))
-                              .text("text")
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("53"))
-                      .value(
-                          ElementValueBoolean.builder()
-                              .booleanId(new FieldId("53.1"))
-                              .value(true)
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("58"))
-                      .value(
-                          ElementValueDiagnosisList.builder()
-                              .diagnoses(
-                                  List.of(
-                                      ElementValueDiagnosis.builder()
-                                          .code("A013")
-                                          .description("Paratyfoidfeber C")
-                                          .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
-                                          .build()
-                                  )
-                              )
-                              .build()
-                      )
-                      .build()
-              )
-          )
-          .build();
+      final var certificate =
+          TestDataCertificate.fk3226CertificateBuilder()
+              .certificateModel(certificateModelFactoryFK3226.create())
+              .elementData(
+                  List.of(
+                      ElementData.builder()
+                          .id(new ElementId("1"))
+                          .value(
+                              ElementValueDateList.builder()
+                                  .dateListId(new FieldId("1.1"))
+                                  .dateList(
+                                      List.of(
+                                          ElementValueDate.builder()
+                                              .dateId(new FieldId("annat"))
+                                              .date(LocalDate.now())
+                                              .build()))
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("1.3"))
+                          .value(
+                              ElementValueText.builder()
+                                  .textId(new FieldId("1.3"))
+                                  .text("Text")
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("52"))
+                          .value(
+                              ElementValueCode.builder()
+                                  .codeId(new FieldId("AKUT_LIVSHOTANDE"))
+                                  .code("AKUT_LIVSHOTANDE")
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("52.3"))
+                          .value(
+                              ElementValueDate.builder()
+                                  .dateId(new FieldId("52.3"))
+                                  .date(LocalDate.now())
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("52.4"))
+                          .value(
+                              ElementValueText.builder()
+                                  .textId(new FieldId("52.4"))
+                                  .text("text")
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("53"))
+                          .value(
+                              ElementValueBoolean.builder()
+                                  .booleanId(new FieldId("53.1"))
+                                  .value(true)
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("58"))
+                          .value(
+                              ElementValueDiagnosisList.builder()
+                                  .diagnoses(
+                                      List.of(
+                                          ElementValueDiagnosis.builder()
+                                              .code("A013")
+                                              .description("Paratyfoidfeber C")
+                                              .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
+                                              .build()))
+                                  .build())
+                          .build()))
+              .build();
 
       final var xml = generator.generate(certificate, false);
 
-      assertFalse(schematronValidator.validate(certificate.id(), xml,
-          CertificateModelFactoryFK3226.SCHEMATRON_PATH));
+      assertFalse(
+          schematronValidator.validate(
+              certificate.id(), xml, CertificateModelFactoryFK3226.SCHEMATRON_PATH));
     }
 
     @Nested
@@ -819,215 +749,190 @@ class SchematronValidationFK3226Test {
 
       @Test
       void shallReturnTrueIfQuestionTillstandetUppskattasLivshotandeTillOchMedIsPresent() {
-        final var certificate = TestDataCertificate.fk3226CertificateBuilder()
-            .certificateModel(certificateModelFactoryFK3226.create())
-            .elementData(
-                List.of(
-                    ElementData.builder()
-                        .id(new ElementId("1"))
-                        .value(
-                            ElementValueDateList.builder()
-                                .dateListId(new FieldId("1.1"))
-                                .dateList(
-                                    List.of(
-                                        ElementValueDate.builder()
-                                            .dateId(new FieldId("annat"))
-                                            .date(LocalDate.now())
-                                            .build()
-                                    )
-                                )
-                                .build()
-                        )
-                        .build(),
-                    ElementData.builder()
-                        .id(new ElementId("1.3"))
-                        .value(
-                            ElementValueText.builder()
-                                .textId(new FieldId("1.3"))
-                                .text("Text")
-                                .build()
-                        )
-                        .build(),
-                    ElementData.builder()
-                        .id(new ElementId("52"))
-                        .value(
-                            ElementValueCode.builder()
-                                .codeId(new FieldId("AKUT_LIVSHOTANDE"))
-                                .code("AKUT_LIVSHOTANDE")
-                                .build()
-                        )
-                        .build(),
-                    ElementData.builder()
-                        .id(new ElementId("52.3"))
-                        .value(
-                            ElementValueDate.builder()
-                                .dateId(new FieldId("52.3"))
-                                .date(LocalDate.now())
-                                .build()
-                        )
-                        .build(),
-                    ElementData.builder()
-                        .id(new ElementId("52.4"))
-                        .value(
-                            ElementValueText.builder()
-                                .textId(new FieldId("52.4"))
-                                .text("text")
-                                .build()
-                        )
-                        .build(),
-                    ElementData.builder()
-                        .id(new ElementId("52.5"))
-                        .value(
-                            ElementValueBoolean.builder()
-                                .booleanId(new FieldId("52.5"))
-                                .value(true)
-                                .build()
-                        )
-                        .build(),
-                    ElementData.builder()
-                        .id(new ElementId("52.6"))
-                        .value(
-                            ElementValueDate.builder()
-                                .dateId(new FieldId("52.6"))
-                                .date(LocalDate.now())
-                                .build()
-                        )
-                        .build(),
-                    ElementData.builder()
-                        .id(new ElementId("53"))
-                        .value(
-                            ElementValueBoolean.builder()
-                                .booleanId(new FieldId("53.1"))
-                                .value(true)
-                                .build()
-                        )
-                        .build(),
-                    ElementData.builder()
-                        .id(new ElementId("58"))
-                        .value(
-                            ElementValueDiagnosisList.builder()
-                                .diagnoses(
-                                    List.of(
-                                        ElementValueDiagnosis.builder()
-                                            .code("A013")
-                                            .description("Paratyfoidfeber C")
-                                            .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
-                                            .build()
-                                    )
-                                )
-                                .build()
-                        )
-                        .build()
-                )
-            )
-            .build();
+        final var certificate =
+            TestDataCertificate.fk3226CertificateBuilder()
+                .certificateModel(certificateModelFactoryFK3226.create())
+                .elementData(
+                    List.of(
+                        ElementData.builder()
+                            .id(new ElementId("1"))
+                            .value(
+                                ElementValueDateList.builder()
+                                    .dateListId(new FieldId("1.1"))
+                                    .dateList(
+                                        List.of(
+                                            ElementValueDate.builder()
+                                                .dateId(new FieldId("annat"))
+                                                .date(LocalDate.now())
+                                                .build()))
+                                    .build())
+                            .build(),
+                        ElementData.builder()
+                            .id(new ElementId("1.3"))
+                            .value(
+                                ElementValueText.builder()
+                                    .textId(new FieldId("1.3"))
+                                    .text("Text")
+                                    .build())
+                            .build(),
+                        ElementData.builder()
+                            .id(new ElementId("52"))
+                            .value(
+                                ElementValueCode.builder()
+                                    .codeId(new FieldId("AKUT_LIVSHOTANDE"))
+                                    .code("AKUT_LIVSHOTANDE")
+                                    .build())
+                            .build(),
+                        ElementData.builder()
+                            .id(new ElementId("52.3"))
+                            .value(
+                                ElementValueDate.builder()
+                                    .dateId(new FieldId("52.3"))
+                                    .date(LocalDate.now())
+                                    .build())
+                            .build(),
+                        ElementData.builder()
+                            .id(new ElementId("52.4"))
+                            .value(
+                                ElementValueText.builder()
+                                    .textId(new FieldId("52.4"))
+                                    .text("text")
+                                    .build())
+                            .build(),
+                        ElementData.builder()
+                            .id(new ElementId("52.5"))
+                            .value(
+                                ElementValueBoolean.builder()
+                                    .booleanId(new FieldId("52.5"))
+                                    .value(true)
+                                    .build())
+                            .build(),
+                        ElementData.builder()
+                            .id(new ElementId("52.6"))
+                            .value(
+                                ElementValueDate.builder()
+                                    .dateId(new FieldId("52.6"))
+                                    .date(LocalDate.now())
+                                    .build())
+                            .build(),
+                        ElementData.builder()
+                            .id(new ElementId("53"))
+                            .value(
+                                ElementValueBoolean.builder()
+                                    .booleanId(new FieldId("53.1"))
+                                    .value(true)
+                                    .build())
+                            .build(),
+                        ElementData.builder()
+                            .id(new ElementId("58"))
+                            .value(
+                                ElementValueDiagnosisList.builder()
+                                    .diagnoses(
+                                        List.of(
+                                            ElementValueDiagnosis.builder()
+                                                .code("A013")
+                                                .description("Paratyfoidfeber C")
+                                                .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
+                                                .build()))
+                                    .build())
+                            .build()))
+                .build();
 
         final var xml = generator.generate(certificate, true);
 
-        assertTrue(schematronValidator.validate(certificate.id(), xml,
-            CertificateModelFactoryFK3226.SCHEMATRON_PATH));
+        assertTrue(
+            schematronValidator.validate(
+                certificate.id(), xml, CertificateModelFactoryFK3226.SCHEMATRON_PATH));
       }
 
       @Test
       void shallReturnFalseIfQuestionTillstandetUppskattasLivshotandeTillOchMedIsMissing() {
-        final var certificate = TestDataCertificate.fk3226CertificateBuilder()
-            .certificateModel(certificateModelFactoryFK3226.create())
-            .elementData(
-                List.of(
-                    ElementData.builder()
-                        .id(new ElementId("1"))
-                        .value(
-                            ElementValueDateList.builder()
-                                .dateListId(new FieldId("1.1"))
-                                .dateList(
-                                    List.of(
-                                        ElementValueDate.builder()
-                                            .dateId(new FieldId("annat"))
-                                            .date(LocalDate.now())
-                                            .build()
-                                    )
-                                )
-                                .build()
-                        )
-                        .build(),
-                    ElementData.builder()
-                        .id(new ElementId("1.3"))
-                        .value(
-                            ElementValueText.builder()
-                                .textId(new FieldId("1.3"))
-                                .text("Text")
-                                .build()
-                        )
-                        .build(),
-                    ElementData.builder()
-                        .id(new ElementId("52"))
-                        .value(
-                            ElementValueCode.builder()
-                                .codeId(new FieldId("AKUT_LIVSHOTANDE"))
-                                .code("AKUT_LIVSHOTANDE")
-                                .build()
-                        )
-                        .build(),
-                    ElementData.builder()
-                        .id(new ElementId("52.3"))
-                        .value(
-                            ElementValueDate.builder()
-                                .dateId(new FieldId("52.3"))
-                                .date(LocalDate.now())
-                                .build()
-                        )
-                        .build(),
-                    ElementData.builder()
-                        .id(new ElementId("52.4"))
-                        .value(
-                            ElementValueText.builder()
-                                .textId(new FieldId("52.4"))
-                                .text("text")
-                                .build()
-                        )
-                        .build(),
-                    ElementData.builder()
-                        .id(new ElementId("52.5"))
-                        .value(
-                            ElementValueBoolean.builder()
-                                .booleanId(new FieldId("52.5"))
-                                .value(true)
-                                .build()
-                        )
-                        .build(),
-                    ElementData.builder()
-                        .id(new ElementId("53"))
-                        .value(
-                            ElementValueBoolean.builder()
-                                .booleanId(new FieldId("53.1"))
-                                .value(true)
-                                .build()
-                        )
-                        .build(),
-                    ElementData.builder()
-                        .id(new ElementId("58"))
-                        .value(
-                            ElementValueDiagnosisList.builder()
-                                .diagnoses(
-                                    List.of(
-                                        ElementValueDiagnosis.builder()
-                                            .code("A013")
-                                            .description("Paratyfoidfeber C")
-                                            .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
-                                            .build()
-                                    )
-                                )
-                                .build()
-                        )
-                        .build()
-                )
-            )
-            .build();
+        final var certificate =
+            TestDataCertificate.fk3226CertificateBuilder()
+                .certificateModel(certificateModelFactoryFK3226.create())
+                .elementData(
+                    List.of(
+                        ElementData.builder()
+                            .id(new ElementId("1"))
+                            .value(
+                                ElementValueDateList.builder()
+                                    .dateListId(new FieldId("1.1"))
+                                    .dateList(
+                                        List.of(
+                                            ElementValueDate.builder()
+                                                .dateId(new FieldId("annat"))
+                                                .date(LocalDate.now())
+                                                .build()))
+                                    .build())
+                            .build(),
+                        ElementData.builder()
+                            .id(new ElementId("1.3"))
+                            .value(
+                                ElementValueText.builder()
+                                    .textId(new FieldId("1.3"))
+                                    .text("Text")
+                                    .build())
+                            .build(),
+                        ElementData.builder()
+                            .id(new ElementId("52"))
+                            .value(
+                                ElementValueCode.builder()
+                                    .codeId(new FieldId("AKUT_LIVSHOTANDE"))
+                                    .code("AKUT_LIVSHOTANDE")
+                                    .build())
+                            .build(),
+                        ElementData.builder()
+                            .id(new ElementId("52.3"))
+                            .value(
+                                ElementValueDate.builder()
+                                    .dateId(new FieldId("52.3"))
+                                    .date(LocalDate.now())
+                                    .build())
+                            .build(),
+                        ElementData.builder()
+                            .id(new ElementId("52.4"))
+                            .value(
+                                ElementValueText.builder()
+                                    .textId(new FieldId("52.4"))
+                                    .text("text")
+                                    .build())
+                            .build(),
+                        ElementData.builder()
+                            .id(new ElementId("52.5"))
+                            .value(
+                                ElementValueBoolean.builder()
+                                    .booleanId(new FieldId("52.5"))
+                                    .value(true)
+                                    .build())
+                            .build(),
+                        ElementData.builder()
+                            .id(new ElementId("53"))
+                            .value(
+                                ElementValueBoolean.builder()
+                                    .booleanId(new FieldId("53.1"))
+                                    .value(true)
+                                    .build())
+                            .build(),
+                        ElementData.builder()
+                            .id(new ElementId("58"))
+                            .value(
+                                ElementValueDiagnosisList.builder()
+                                    .diagnoses(
+                                        List.of(
+                                            ElementValueDiagnosis.builder()
+                                                .code("A013")
+                                                .description("Paratyfoidfeber C")
+                                                .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
+                                                .build()))
+                                    .build())
+                            .build()))
+                .build();
 
         final var xml = generator.generate(certificate, false);
 
-        assertFalse(schematronValidator.validate(certificate.id(), xml,
-            CertificateModelFactoryFK3226.SCHEMATRON_PATH));
+        assertFalse(
+            schematronValidator.validate(
+                certificate.id(), xml, CertificateModelFactoryFK3226.SCHEMATRON_PATH));
       }
     }
   }
@@ -1037,161 +942,142 @@ class SchematronValidationFK3226Test {
 
     @Test
     void shallReturnTrueIfQuestionPatagligtHotMotPatientensLivAnnatIsPresent() {
-      final var certificate = TestDataCertificate.fk3226CertificateBuilder()
-          .certificateModel(certificateModelFactoryFK3226.create())
-          .elementData(
-              List.of(
-                  ElementData.builder()
-                      .id(new ElementId("1"))
-                      .value(
-                          ElementValueDateList.builder()
-                              .dateListId(new FieldId("1.1"))
-                              .dateList(
-                                  List.of(
-                                      ElementValueDate.builder()
-                                          .dateId(new FieldId("annat"))
-                                          .date(LocalDate.now())
-                                          .build()
-                                  )
-                              )
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("1.3"))
-                      .value(
-                          ElementValueText.builder()
-                              .textId(new FieldId("1.3"))
-                              .text("Text")
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("52"))
-                      .value(
-                          ElementValueCode.builder()
-                              .codeId(new FieldId("ANNAT"))
-                              .code("ANNAT")
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("52.7"))
-                      .value(
-                          ElementValueText.builder()
-                              .textId(new FieldId("52.7"))
-                              .text("text")
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("53"))
-                      .value(
-                          ElementValueBoolean.builder()
-                              .booleanId(new FieldId("53.1"))
-                              .value(true)
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("58"))
-                      .value(
-                          ElementValueDiagnosisList.builder()
-                              .diagnoses(
-                                  List.of(
-                                      ElementValueDiagnosis.builder()
-                                          .code("A013")
-                                          .description("Paratyfoidfeber C")
-                                          .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
-                                          .build()
-                                  )
-                              )
-                              .build()
-                      )
-                      .build()
-              )
-          )
-          .build();
+      final var certificate =
+          TestDataCertificate.fk3226CertificateBuilder()
+              .certificateModel(certificateModelFactoryFK3226.create())
+              .elementData(
+                  List.of(
+                      ElementData.builder()
+                          .id(new ElementId("1"))
+                          .value(
+                              ElementValueDateList.builder()
+                                  .dateListId(new FieldId("1.1"))
+                                  .dateList(
+                                      List.of(
+                                          ElementValueDate.builder()
+                                              .dateId(new FieldId("annat"))
+                                              .date(LocalDate.now())
+                                              .build()))
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("1.3"))
+                          .value(
+                              ElementValueText.builder()
+                                  .textId(new FieldId("1.3"))
+                                  .text("Text")
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("52"))
+                          .value(
+                              ElementValueCode.builder()
+                                  .codeId(new FieldId("ANNAT"))
+                                  .code("ANNAT")
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("52.7"))
+                          .value(
+                              ElementValueText.builder()
+                                  .textId(new FieldId("52.7"))
+                                  .text("text")
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("53"))
+                          .value(
+                              ElementValueBoolean.builder()
+                                  .booleanId(new FieldId("53.1"))
+                                  .value(true)
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("58"))
+                          .value(
+                              ElementValueDiagnosisList.builder()
+                                  .diagnoses(
+                                      List.of(
+                                          ElementValueDiagnosis.builder()
+                                              .code("A013")
+                                              .description("Paratyfoidfeber C")
+                                              .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
+                                              .build()))
+                                  .build())
+                          .build()))
+              .build();
 
       final var xml = generator.generate(certificate, true);
 
-      assertTrue(schematronValidator.validate(certificate.id(), xml,
-          CertificateModelFactoryFK3226.SCHEMATRON_PATH));
+      assertTrue(
+          schematronValidator.validate(
+              certificate.id(), xml, CertificateModelFactoryFK3226.SCHEMATRON_PATH));
     }
 
     @Test
     void shallReturnFalseIfQuestionPatagligtHotMotPatientensLivAnnatIsMissing() {
-      final var certificate = TestDataCertificate.fk3226CertificateBuilder()
-          .certificateModel(certificateModelFactoryFK3226.create())
-          .elementData(
-              List.of(
-                  ElementData.builder()
-                      .id(new ElementId("1"))
-                      .value(
-                          ElementValueDateList.builder()
-                              .dateListId(new FieldId("1.1"))
-                              .dateList(
-                                  List.of(
-                                      ElementValueDate.builder()
-                                          .dateId(new FieldId("annat"))
-                                          .date(LocalDate.now())
-                                          .build()
-                                  )
-                              )
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("1.3"))
-                      .value(
-                          ElementValueText.builder()
-                              .textId(new FieldId("1.3"))
-                              .text("Text")
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("52"))
-                      .value(
-                          ElementValueCode.builder()
-                              .codeId(new FieldId("ANNAT"))
-                              .code("ANNAT")
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("53"))
-                      .value(
-                          ElementValueBoolean.builder()
-                              .booleanId(new FieldId("53.1"))
-                              .value(true)
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("58"))
-                      .value(
-                          ElementValueDiagnosisList.builder()
-                              .diagnoses(
-                                  List.of(
-                                      ElementValueDiagnosis.builder()
-                                          .code("A013")
-                                          .description("Paratyfoidfeber C")
-                                          .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
-                                          .build()
-                                  )
-                              )
-                              .build()
-                      )
-                      .build()
-              )
-          )
-          .build();
+      final var certificate =
+          TestDataCertificate.fk3226CertificateBuilder()
+              .certificateModel(certificateModelFactoryFK3226.create())
+              .elementData(
+                  List.of(
+                      ElementData.builder()
+                          .id(new ElementId("1"))
+                          .value(
+                              ElementValueDateList.builder()
+                                  .dateListId(new FieldId("1.1"))
+                                  .dateList(
+                                      List.of(
+                                          ElementValueDate.builder()
+                                              .dateId(new FieldId("annat"))
+                                              .date(LocalDate.now())
+                                              .build()))
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("1.3"))
+                          .value(
+                              ElementValueText.builder()
+                                  .textId(new FieldId("1.3"))
+                                  .text("Text")
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("52"))
+                          .value(
+                              ElementValueCode.builder()
+                                  .codeId(new FieldId("ANNAT"))
+                                  .code("ANNAT")
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("53"))
+                          .value(
+                              ElementValueBoolean.builder()
+                                  .booleanId(new FieldId("53.1"))
+                                  .value(true)
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("58"))
+                          .value(
+                              ElementValueDiagnosisList.builder()
+                                  .diagnoses(
+                                      List.of(
+                                          ElementValueDiagnosis.builder()
+                                              .code("A013")
+                                              .description("Paratyfoidfeber C")
+                                              .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
+                                              .build()))
+                                  .build())
+                          .build()))
+              .build();
 
       final var xml = generator.generate(certificate, false);
 
-      assertFalse(schematronValidator.validate(certificate.id(), xml,
-          CertificateModelFactoryFK3226.SCHEMATRON_PATH));
+      assertFalse(
+          schematronValidator.validate(
+              certificate.id(), xml, CertificateModelFactoryFK3226.SCHEMATRON_PATH));
     }
   }
 
@@ -1200,812 +1086,725 @@ class SchematronValidationFK3226Test {
 
     @Test
     void shallReturnFalseIfQuestionDiagnosIsMissing() {
-      final var certificate = TestDataCertificate.fk3226CertificateBuilder()
-          .certificateModel(certificateModelFactoryFK3226.create())
-          .elementData(
-              List.of(
-                  ElementData.builder()
-                      .id(new ElementId("1"))
-                      .value(
-                          ElementValueDateList.builder()
-                              .dateListId(new FieldId("1.1"))
-                              .dateList(
-                                  List.of(
-                                      ElementValueDate.builder()
-                                          .dateId(new FieldId("annat"))
-                                          .date(LocalDate.now())
-                                          .build()
-                                  )
-                              )
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("1.3"))
-                      .value(
-                          ElementValueText.builder()
-                              .textId(new FieldId("1.3"))
-                              .text("Text")
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("52"))
-                      .value(
-                          ElementValueCode.builder()
-                              .codeId(new FieldId("ENDAST_PALLIATIV"))
-                              .code("ENDAST_PALLIATIV")
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("52.2"))
-                      .value(
-                          ElementValueDate.builder()
-                              .dateId(new FieldId("52.2"))
-                              .date(LocalDate.now())
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("53"))
-                      .value(
-                          ElementValueBoolean.builder()
-                              .booleanId(new FieldId("53.1"))
-                              .value(true)
-                              .build()
-                      )
-                      .build()
-              )
-          )
-          .build();
+      final var certificate =
+          TestDataCertificate.fk3226CertificateBuilder()
+              .certificateModel(certificateModelFactoryFK3226.create())
+              .elementData(
+                  List.of(
+                      ElementData.builder()
+                          .id(new ElementId("1"))
+                          .value(
+                              ElementValueDateList.builder()
+                                  .dateListId(new FieldId("1.1"))
+                                  .dateList(
+                                      List.of(
+                                          ElementValueDate.builder()
+                                              .dateId(new FieldId("annat"))
+                                              .date(LocalDate.now())
+                                              .build()))
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("1.3"))
+                          .value(
+                              ElementValueText.builder()
+                                  .textId(new FieldId("1.3"))
+                                  .text("Text")
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("52"))
+                          .value(
+                              ElementValueCode.builder()
+                                  .codeId(new FieldId("ENDAST_PALLIATIV"))
+                                  .code("ENDAST_PALLIATIV")
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("52.2"))
+                          .value(
+                              ElementValueDate.builder()
+                                  .dateId(new FieldId("52.2"))
+                                  .date(LocalDate.now())
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("53"))
+                          .value(
+                              ElementValueBoolean.builder()
+                                  .booleanId(new FieldId("53.1"))
+                                  .value(true)
+                                  .build())
+                          .build()))
+              .build();
 
       final var xml = generator.generate(certificate, false);
 
-      assertFalse(schematronValidator.validate(certificate.id(), xml,
-          CertificateModelFactoryFK3226.SCHEMATRON_PATH));
+      assertFalse(
+          schematronValidator.validate(
+              certificate.id(), xml, CertificateModelFactoryFK3226.SCHEMATRON_PATH));
     }
 
     @Test
     void shallReturnFalseIfDiagnosisMissingDescription() {
-      final var certificate = TestDataCertificate.fk3226CertificateBuilder()
-          .certificateModel(certificateModelFactoryFK3226.create())
-          .elementData(
-              List.of(
-                  ElementData.builder()
-                      .id(new ElementId("1"))
-                      .value(
-                          ElementValueDateList.builder()
-                              .dateListId(new FieldId("1.1"))
-                              .dateList(
-                                  List.of(
-                                      ElementValueDate.builder()
-                                          .dateId(new FieldId("annat"))
-                                          .date(LocalDate.now())
-                                          .build()
-                                  )
-                              )
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("1.3"))
-                      .value(
-                          ElementValueText.builder()
-                              .textId(new FieldId("1.3"))
-                              .text("Text")
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("52"))
-                      .value(
-                          ElementValueCode.builder()
-                              .codeId(new FieldId("ENDAST_PALLIATIV"))
-                              .code("ENDAST_PALLIATIV")
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("52.2"))
-                      .value(
-                          ElementValueDate.builder()
-                              .dateId(new FieldId("52.2"))
-                              .date(LocalDate.now())
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("53"))
-                      .value(
-                          ElementValueBoolean.builder()
-                              .booleanId(new FieldId("53.1"))
-                              .value(true)
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("58"))
-                      .value(
-                          ElementValueDiagnosisList.builder()
-                              .diagnoses(
-                                  List.of(
-                                      ElementValueDiagnosis.builder()
-                                          .code("A013")
-                                          .description("")
-                                          .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
-                                          .build()
-                                  )
-                              )
-                              .build()
-                      )
-                      .build()
-              )
-          )
-          .build();
+      final var certificate =
+          TestDataCertificate.fk3226CertificateBuilder()
+              .certificateModel(certificateModelFactoryFK3226.create())
+              .elementData(
+                  List.of(
+                      ElementData.builder()
+                          .id(new ElementId("1"))
+                          .value(
+                              ElementValueDateList.builder()
+                                  .dateListId(new FieldId("1.1"))
+                                  .dateList(
+                                      List.of(
+                                          ElementValueDate.builder()
+                                              .dateId(new FieldId("annat"))
+                                              .date(LocalDate.now())
+                                              .build()))
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("1.3"))
+                          .value(
+                              ElementValueText.builder()
+                                  .textId(new FieldId("1.3"))
+                                  .text("Text")
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("52"))
+                          .value(
+                              ElementValueCode.builder()
+                                  .codeId(new FieldId("ENDAST_PALLIATIV"))
+                                  .code("ENDAST_PALLIATIV")
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("52.2"))
+                          .value(
+                              ElementValueDate.builder()
+                                  .dateId(new FieldId("52.2"))
+                                  .date(LocalDate.now())
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("53"))
+                          .value(
+                              ElementValueBoolean.builder()
+                                  .booleanId(new FieldId("53.1"))
+                                  .value(true)
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("58"))
+                          .value(
+                              ElementValueDiagnosisList.builder()
+                                  .diagnoses(
+                                      List.of(
+                                          ElementValueDiagnosis.builder()
+                                              .code("A013")
+                                              .description("")
+                                              .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
+                                              .build()))
+                                  .build())
+                          .build()))
+              .build();
 
       final var xml = generator.generate(certificate, false);
 
-      assertFalse(schematronValidator.validate(certificate.id(), xml,
-          CertificateModelFactoryFK3226.SCHEMATRON_PATH));
+      assertFalse(
+          schematronValidator.validate(
+              certificate.id(), xml, CertificateModelFactoryFK3226.SCHEMATRON_PATH));
     }
 
     @Test
     void shallReturnFalseIfDiagnosisMissingCode() {
-      final var certificate = TestDataCertificate.fk3226CertificateBuilder()
-          .certificateModel(certificateModelFactoryFK3226.create())
-          .elementData(
-              List.of(
-                  ElementData.builder()
-                      .id(new ElementId("1"))
-                      .value(
-                          ElementValueDateList.builder()
-                              .dateListId(new FieldId("1.1"))
-                              .dateList(
-                                  List.of(
-                                      ElementValueDate.builder()
-                                          .dateId(new FieldId("annat"))
-                                          .date(LocalDate.now())
-                                          .build()
-                                  )
-                              )
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("1.3"))
-                      .value(
-                          ElementValueText.builder()
-                              .textId(new FieldId("1.3"))
-                              .text("Text")
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("52"))
-                      .value(
-                          ElementValueCode.builder()
-                              .codeId(new FieldId("ENDAST_PALLIATIV"))
-                              .code("ENDAST_PALLIATIV")
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("52.2"))
-                      .value(
-                          ElementValueDate.builder()
-                              .dateId(new FieldId("52.2"))
-                              .date(LocalDate.now())
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("53"))
-                      .value(
-                          ElementValueBoolean.builder()
-                              .booleanId(new FieldId("53.1"))
-                              .value(true)
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("58"))
-                      .value(
-                          ElementValueDiagnosisList.builder()
-                              .diagnoses(
-                                  List.of(
-                                      ElementValueDiagnosis.builder()
-                                          .code("")
-                                          .description("Paratyfoidfeber C")
-                                          .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
-                                          .build()
-                                  )
-                              )
-                              .build()
-                      )
-                      .build()
-              )
-          )
-          .build();
+      final var certificate =
+          TestDataCertificate.fk3226CertificateBuilder()
+              .certificateModel(certificateModelFactoryFK3226.create())
+              .elementData(
+                  List.of(
+                      ElementData.builder()
+                          .id(new ElementId("1"))
+                          .value(
+                              ElementValueDateList.builder()
+                                  .dateListId(new FieldId("1.1"))
+                                  .dateList(
+                                      List.of(
+                                          ElementValueDate.builder()
+                                              .dateId(new FieldId("annat"))
+                                              .date(LocalDate.now())
+                                              .build()))
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("1.3"))
+                          .value(
+                              ElementValueText.builder()
+                                  .textId(new FieldId("1.3"))
+                                  .text("Text")
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("52"))
+                          .value(
+                              ElementValueCode.builder()
+                                  .codeId(new FieldId("ENDAST_PALLIATIV"))
+                                  .code("ENDAST_PALLIATIV")
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("52.2"))
+                          .value(
+                              ElementValueDate.builder()
+                                  .dateId(new FieldId("52.2"))
+                                  .date(LocalDate.now())
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("53"))
+                          .value(
+                              ElementValueBoolean.builder()
+                                  .booleanId(new FieldId("53.1"))
+                                  .value(true)
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("58"))
+                          .value(
+                              ElementValueDiagnosisList.builder()
+                                  .diagnoses(
+                                      List.of(
+                                          ElementValueDiagnosis.builder()
+                                              .code("")
+                                              .description("Paratyfoidfeber C")
+                                              .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
+                                              .build()))
+                                  .build())
+                          .build()))
+              .build();
 
       final var xml = generator.generate(certificate, false);
 
-      assertFalse(schematronValidator.validate(certificate.id(), xml,
-          CertificateModelFactoryFK3226.SCHEMATRON_PATH));
+      assertFalse(
+          schematronValidator.validate(
+              certificate.id(), xml, CertificateModelFactoryFK3226.SCHEMATRON_PATH));
     }
 
     @Test
     void shallReturnFalseMoreThanFiveDiagnosesArePresent() {
-      final var certificate = TestDataCertificate.fk3226CertificateBuilder()
-          .certificateModel(certificateModelFactoryFK3226.create())
-          .elementData(
-              List.of(
-                  ElementData.builder()
-                      .id(new ElementId("1"))
-                      .value(
-                          ElementValueDateList.builder()
-                              .dateListId(new FieldId("1.1"))
-                              .dateList(
-                                  List.of(
-                                      ElementValueDate.builder()
-                                          .dateId(new FieldId("annat"))
-                                          .date(LocalDate.now())
-                                          .build()
-                                  )
-                              )
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("1.3"))
-                      .value(
-                          ElementValueText.builder()
-                              .textId(new FieldId("1.3"))
-                              .text("Text")
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("52"))
-                      .value(
-                          ElementValueCode.builder()
-                              .codeId(new FieldId("ENDAST_PALLIATIV"))
-                              .code("ENDAST_PALLIATIV")
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("52.2"))
-                      .value(
-                          ElementValueDate.builder()
-                              .dateId(new FieldId("52.2"))
-                              .date(LocalDate.now())
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("53"))
-                      .value(
-                          ElementValueBoolean.builder()
-                              .booleanId(new FieldId("53.1"))
-                              .value(true)
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("58"))
-                      .value(
-                          ElementValueDiagnosisList.builder()
-                              .diagnoses(
-                                  List.of(
-                                      ElementValueDiagnosis.builder()
-                                          .code("A013")
-                                          .description("Paratyfoidfeber C")
-                                          .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
-                                          .build(),
-                                      ElementValueDiagnosis.builder()
-                                          .code("A013")
-                                          .description("Paratyfoidfeber C")
-                                          .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
-                                          .build(),
-                                      ElementValueDiagnosis.builder()
-                                          .code("A013")
-                                          .description("Paratyfoidfeber C")
-                                          .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
-                                          .build(),
-                                      ElementValueDiagnosis.builder()
-                                          .code("A013")
-                                          .description("Paratyfoidfeber C")
-                                          .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
-                                          .build(),
-                                      ElementValueDiagnosis.builder()
-                                          .code("A013")
-                                          .description("Paratyfoidfeber C")
-                                          .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
-                                          .build(),
-                                      ElementValueDiagnosis.builder()
-                                          .code("A013")
-                                          .description("Paratyfoidfeber C")
-                                          .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
-                                          .build()
-                                  )
-                              )
-                              .build()
-                      )
-                      .build()
-              )
-          )
-          .build();
+      final var certificate =
+          TestDataCertificate.fk3226CertificateBuilder()
+              .certificateModel(certificateModelFactoryFK3226.create())
+              .elementData(
+                  List.of(
+                      ElementData.builder()
+                          .id(new ElementId("1"))
+                          .value(
+                              ElementValueDateList.builder()
+                                  .dateListId(new FieldId("1.1"))
+                                  .dateList(
+                                      List.of(
+                                          ElementValueDate.builder()
+                                              .dateId(new FieldId("annat"))
+                                              .date(LocalDate.now())
+                                              .build()))
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("1.3"))
+                          .value(
+                              ElementValueText.builder()
+                                  .textId(new FieldId("1.3"))
+                                  .text("Text")
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("52"))
+                          .value(
+                              ElementValueCode.builder()
+                                  .codeId(new FieldId("ENDAST_PALLIATIV"))
+                                  .code("ENDAST_PALLIATIV")
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("52.2"))
+                          .value(
+                              ElementValueDate.builder()
+                                  .dateId(new FieldId("52.2"))
+                                  .date(LocalDate.now())
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("53"))
+                          .value(
+                              ElementValueBoolean.builder()
+                                  .booleanId(new FieldId("53.1"))
+                                  .value(true)
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("58"))
+                          .value(
+                              ElementValueDiagnosisList.builder()
+                                  .diagnoses(
+                                      List.of(
+                                          ElementValueDiagnosis.builder()
+                                              .code("A013")
+                                              .description("Paratyfoidfeber C")
+                                              .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
+                                              .build(),
+                                          ElementValueDiagnosis.builder()
+                                              .code("A013")
+                                              .description("Paratyfoidfeber C")
+                                              .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
+                                              .build(),
+                                          ElementValueDiagnosis.builder()
+                                              .code("A013")
+                                              .description("Paratyfoidfeber C")
+                                              .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
+                                              .build(),
+                                          ElementValueDiagnosis.builder()
+                                              .code("A013")
+                                              .description("Paratyfoidfeber C")
+                                              .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
+                                              .build(),
+                                          ElementValueDiagnosis.builder()
+                                              .code("A013")
+                                              .description("Paratyfoidfeber C")
+                                              .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
+                                              .build(),
+                                          ElementValueDiagnosis.builder()
+                                              .code("A013")
+                                              .description("Paratyfoidfeber C")
+                                              .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
+                                              .build()))
+                                  .build())
+                          .build()))
+              .build();
 
       final var xml = generator.generate(certificate, false);
 
-      assertFalse(schematronValidator.validate(certificate.id(), xml,
-          CertificateModelFactoryFK3226.SCHEMATRON_PATH));
+      assertFalse(
+          schematronValidator.validate(
+              certificate.id(), xml, CertificateModelFactoryFK3226.SCHEMATRON_PATH));
     }
 
     @Test
     void shallReturnTrueIfFiveDiagnosesArePresent() {
-      final var certificate = TestDataCertificate.fk3226CertificateBuilder()
-          .certificateModel(certificateModelFactoryFK3226.create())
-          .elementData(
-              List.of(
-                  ElementData.builder()
-                      .id(new ElementId("1"))
-                      .value(
-                          ElementValueDateList.builder()
-                              .dateListId(new FieldId("1.1"))
-                              .dateList(
-                                  List.of(
-                                      ElementValueDate.builder()
-                                          .dateId(new FieldId("annat"))
-                                          .date(LocalDate.now())
-                                          .build()
-                                  )
-                              )
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("1.3"))
-                      .value(
-                          ElementValueText.builder()
-                              .textId(new FieldId("1.3"))
-                              .text("Text")
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("52"))
-                      .value(
-                          ElementValueCode.builder()
-                              .codeId(new FieldId("ENDAST_PALLIATIV"))
-                              .code("ENDAST_PALLIATIV")
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("52.2"))
-                      .value(
-                          ElementValueDate.builder()
-                              .dateId(new FieldId("52.2"))
-                              .date(LocalDate.now())
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("53"))
-                      .value(
-                          ElementValueBoolean.builder()
-                              .booleanId(new FieldId("53.1"))
-                              .value(true)
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("58"))
-                      .value(
-                          ElementValueDiagnosisList.builder()
-                              .diagnoses(
-                                  List.of(
-                                      ElementValueDiagnosis.builder()
-                                          .code("A013")
-                                          .description("Paratyfoidfeber C")
-                                          .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
-                                          .build(),
-                                      ElementValueDiagnosis.builder()
-                                          .code("A013")
-                                          .description("Paratyfoidfeber C")
-                                          .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
-                                          .build(),
-                                      ElementValueDiagnosis.builder()
-                                          .code("A013")
-                                          .description("Paratyfoidfeber C")
-                                          .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
-                                          .build(),
-                                      ElementValueDiagnosis.builder()
-                                          .code("A013")
-                                          .description("Paratyfoidfeber C")
-                                          .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
-                                          .build(),
-                                      ElementValueDiagnosis.builder()
-                                          .code("A013")
-                                          .description("Paratyfoidfeber C")
-                                          .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
-                                          .build()
-                                  )
-                              )
-                              .build()
-                      )
-                      .build()
-              )
-          )
-          .build();
+      final var certificate =
+          TestDataCertificate.fk3226CertificateBuilder()
+              .certificateModel(certificateModelFactoryFK3226.create())
+              .elementData(
+                  List.of(
+                      ElementData.builder()
+                          .id(new ElementId("1"))
+                          .value(
+                              ElementValueDateList.builder()
+                                  .dateListId(new FieldId("1.1"))
+                                  .dateList(
+                                      List.of(
+                                          ElementValueDate.builder()
+                                              .dateId(new FieldId("annat"))
+                                              .date(LocalDate.now())
+                                              .build()))
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("1.3"))
+                          .value(
+                              ElementValueText.builder()
+                                  .textId(new FieldId("1.3"))
+                                  .text("Text")
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("52"))
+                          .value(
+                              ElementValueCode.builder()
+                                  .codeId(new FieldId("ENDAST_PALLIATIV"))
+                                  .code("ENDAST_PALLIATIV")
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("52.2"))
+                          .value(
+                              ElementValueDate.builder()
+                                  .dateId(new FieldId("52.2"))
+                                  .date(LocalDate.now())
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("53"))
+                          .value(
+                              ElementValueBoolean.builder()
+                                  .booleanId(new FieldId("53.1"))
+                                  .value(true)
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("58"))
+                          .value(
+                              ElementValueDiagnosisList.builder()
+                                  .diagnoses(
+                                      List.of(
+                                          ElementValueDiagnosis.builder()
+                                              .code("A013")
+                                              .description("Paratyfoidfeber C")
+                                              .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
+                                              .build(),
+                                          ElementValueDiagnosis.builder()
+                                              .code("A013")
+                                              .description("Paratyfoidfeber C")
+                                              .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
+                                              .build(),
+                                          ElementValueDiagnosis.builder()
+                                              .code("A013")
+                                              .description("Paratyfoidfeber C")
+                                              .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
+                                              .build(),
+                                          ElementValueDiagnosis.builder()
+                                              .code("A013")
+                                              .description("Paratyfoidfeber C")
+                                              .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
+                                              .build(),
+                                          ElementValueDiagnosis.builder()
+                                              .code("A013")
+                                              .description("Paratyfoidfeber C")
+                                              .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
+                                              .build()))
+                                  .build())
+                          .build()))
+              .build();
 
       final var xml = generator.generate(certificate, false);
 
-      assertTrue(schematronValidator.validate(certificate.id(), xml,
-          CertificateModelFactoryFK3226.SCHEMATRON_PATH));
+      assertTrue(
+          schematronValidator.validate(
+              certificate.id(), xml, CertificateModelFactoryFK3226.SCHEMATRON_PATH));
     }
 
     @Test
     void shallReturnTrueIfFourDiagnosesArePresent() {
-      final var certificate = TestDataCertificate.fk3226CertificateBuilder()
-          .certificateModel(certificateModelFactoryFK3226.create())
-          .elementData(
-              List.of(
-                  ElementData.builder()
-                      .id(new ElementId("1"))
-                      .value(
-                          ElementValueDateList.builder()
-                              .dateListId(new FieldId("1.1"))
-                              .dateList(
-                                  List.of(
-                                      ElementValueDate.builder()
-                                          .dateId(new FieldId("annat"))
-                                          .date(LocalDate.now())
-                                          .build()
-                                  )
-                              )
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("1.3"))
-                      .value(
-                          ElementValueText.builder()
-                              .textId(new FieldId("1.3"))
-                              .text("Text")
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("52"))
-                      .value(
-                          ElementValueCode.builder()
-                              .codeId(new FieldId("ENDAST_PALLIATIV"))
-                              .code("ENDAST_PALLIATIV")
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("52.2"))
-                      .value(
-                          ElementValueDate.builder()
-                              .dateId(new FieldId("52.2"))
-                              .date(LocalDate.now())
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("53"))
-                      .value(
-                          ElementValueBoolean.builder()
-                              .booleanId(new FieldId("53.1"))
-                              .value(true)
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("58"))
-                      .value(
-                          ElementValueDiagnosisList.builder()
-                              .diagnoses(
-                                  List.of(
-                                      ElementValueDiagnosis.builder()
-                                          .code("A013")
-                                          .description("Paratyfoidfeber C")
-                                          .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
-                                          .build(),
-                                      ElementValueDiagnosis.builder()
-                                          .code("A013")
-                                          .description("Paratyfoidfeber C")
-                                          .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
-                                          .build(),
-                                      ElementValueDiagnosis.builder()
-                                          .code("A013")
-                                          .description("Paratyfoidfeber C")
-                                          .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
-                                          .build()
-                                  )
-                              )
-                              .build()
-                      )
-                      .build()
-              )
-          )
-          .build();
+      final var certificate =
+          TestDataCertificate.fk3226CertificateBuilder()
+              .certificateModel(certificateModelFactoryFK3226.create())
+              .elementData(
+                  List.of(
+                      ElementData.builder()
+                          .id(new ElementId("1"))
+                          .value(
+                              ElementValueDateList.builder()
+                                  .dateListId(new FieldId("1.1"))
+                                  .dateList(
+                                      List.of(
+                                          ElementValueDate.builder()
+                                              .dateId(new FieldId("annat"))
+                                              .date(LocalDate.now())
+                                              .build()))
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("1.3"))
+                          .value(
+                              ElementValueText.builder()
+                                  .textId(new FieldId("1.3"))
+                                  .text("Text")
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("52"))
+                          .value(
+                              ElementValueCode.builder()
+                                  .codeId(new FieldId("ENDAST_PALLIATIV"))
+                                  .code("ENDAST_PALLIATIV")
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("52.2"))
+                          .value(
+                              ElementValueDate.builder()
+                                  .dateId(new FieldId("52.2"))
+                                  .date(LocalDate.now())
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("53"))
+                          .value(
+                              ElementValueBoolean.builder()
+                                  .booleanId(new FieldId("53.1"))
+                                  .value(true)
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("58"))
+                          .value(
+                              ElementValueDiagnosisList.builder()
+                                  .diagnoses(
+                                      List.of(
+                                          ElementValueDiagnosis.builder()
+                                              .code("A013")
+                                              .description("Paratyfoidfeber C")
+                                              .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
+                                              .build(),
+                                          ElementValueDiagnosis.builder()
+                                              .code("A013")
+                                              .description("Paratyfoidfeber C")
+                                              .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
+                                              .build(),
+                                          ElementValueDiagnosis.builder()
+                                              .code("A013")
+                                              .description("Paratyfoidfeber C")
+                                              .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
+                                              .build()))
+                                  .build())
+                          .build()))
+              .build();
 
       final var xml = generator.generate(certificate, false);
 
-      assertTrue(schematronValidator.validate(certificate.id(), xml,
-          CertificateModelFactoryFK3226.SCHEMATRON_PATH));
+      assertTrue(
+          schematronValidator.validate(
+              certificate.id(), xml, CertificateModelFactoryFK3226.SCHEMATRON_PATH));
     }
 
     @Test
     void shallReturnTrueIfThreeDiagnosesArePresent() {
-      final var certificate = TestDataCertificate.fk3226CertificateBuilder()
-          .certificateModel(certificateModelFactoryFK3226.create())
-          .elementData(
-              List.of(
-                  ElementData.builder()
-                      .id(new ElementId("1"))
-                      .value(
-                          ElementValueDateList.builder()
-                              .dateListId(new FieldId("1.1"))
-                              .dateList(
-                                  List.of(
-                                      ElementValueDate.builder()
-                                          .dateId(new FieldId("annat"))
-                                          .date(LocalDate.now())
-                                          .build()
-                                  )
-                              )
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("1.3"))
-                      .value(
-                          ElementValueText.builder()
-                              .textId(new FieldId("1.3"))
-                              .text("Text")
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("52"))
-                      .value(
-                          ElementValueCode.builder()
-                              .codeId(new FieldId("ENDAST_PALLIATIV"))
-                              .code("ENDAST_PALLIATIV")
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("52.2"))
-                      .value(
-                          ElementValueDate.builder()
-                              .dateId(new FieldId("52.2"))
-                              .date(LocalDate.now())
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("53"))
-                      .value(
-                          ElementValueBoolean.builder()
-                              .booleanId(new FieldId("53.1"))
-                              .value(true)
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("58"))
-                      .value(
-                          ElementValueDiagnosisList.builder()
-                              .diagnoses(
-                                  List.of(
-                                      ElementValueDiagnosis.builder()
-                                          .code("A013")
-                                          .description("Paratyfoidfeber C")
-                                          .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
-                                          .build(),
-                                      ElementValueDiagnosis.builder()
-                                          .code("A013")
-                                          .description("Paratyfoidfeber C")
-                                          .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
-                                          .build(),
-                                      ElementValueDiagnosis.builder()
-                                          .code("A013")
-                                          .description("Paratyfoidfeber C")
-                                          .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
-                                          .build()
-                                  )
-                              )
-                              .build()
-                      )
-                      .build()
-              )
-          )
-          .build();
+      final var certificate =
+          TestDataCertificate.fk3226CertificateBuilder()
+              .certificateModel(certificateModelFactoryFK3226.create())
+              .elementData(
+                  List.of(
+                      ElementData.builder()
+                          .id(new ElementId("1"))
+                          .value(
+                              ElementValueDateList.builder()
+                                  .dateListId(new FieldId("1.1"))
+                                  .dateList(
+                                      List.of(
+                                          ElementValueDate.builder()
+                                              .dateId(new FieldId("annat"))
+                                              .date(LocalDate.now())
+                                              .build()))
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("1.3"))
+                          .value(
+                              ElementValueText.builder()
+                                  .textId(new FieldId("1.3"))
+                                  .text("Text")
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("52"))
+                          .value(
+                              ElementValueCode.builder()
+                                  .codeId(new FieldId("ENDAST_PALLIATIV"))
+                                  .code("ENDAST_PALLIATIV")
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("52.2"))
+                          .value(
+                              ElementValueDate.builder()
+                                  .dateId(new FieldId("52.2"))
+                                  .date(LocalDate.now())
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("53"))
+                          .value(
+                              ElementValueBoolean.builder()
+                                  .booleanId(new FieldId("53.1"))
+                                  .value(true)
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("58"))
+                          .value(
+                              ElementValueDiagnosisList.builder()
+                                  .diagnoses(
+                                      List.of(
+                                          ElementValueDiagnosis.builder()
+                                              .code("A013")
+                                              .description("Paratyfoidfeber C")
+                                              .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
+                                              .build(),
+                                          ElementValueDiagnosis.builder()
+                                              .code("A013")
+                                              .description("Paratyfoidfeber C")
+                                              .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
+                                              .build(),
+                                          ElementValueDiagnosis.builder()
+                                              .code("A013")
+                                              .description("Paratyfoidfeber C")
+                                              .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
+                                              .build()))
+                                  .build())
+                          .build()))
+              .build();
 
       final var xml = generator.generate(certificate, false);
 
-      assertTrue(schematronValidator.validate(certificate.id(), xml,
-          CertificateModelFactoryFK3226.SCHEMATRON_PATH));
+      assertTrue(
+          schematronValidator.validate(
+              certificate.id(), xml, CertificateModelFactoryFK3226.SCHEMATRON_PATH));
     }
 
     @Test
     void shallReturnTrueIfTwoDiagnosesArePresent() {
-      final var certificate = TestDataCertificate.fk3226CertificateBuilder()
-          .certificateModel(certificateModelFactoryFK3226.create())
-          .elementData(
-              List.of(
-                  ElementData.builder()
-                      .id(new ElementId("1"))
-                      .value(
-                          ElementValueDateList.builder()
-                              .dateListId(new FieldId("1.1"))
-                              .dateList(
-                                  List.of(
-                                      ElementValueDate.builder()
-                                          .dateId(new FieldId("annat"))
-                                          .date(LocalDate.now())
-                                          .build()
-                                  )
-                              )
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("1.3"))
-                      .value(
-                          ElementValueText.builder()
-                              .textId(new FieldId("1.3"))
-                              .text("Text")
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("52"))
-                      .value(
-                          ElementValueCode.builder()
-                              .codeId(new FieldId("ENDAST_PALLIATIV"))
-                              .code("ENDAST_PALLIATIV")
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("52.2"))
-                      .value(
-                          ElementValueDate.builder()
-                              .dateId(new FieldId("52.2"))
-                              .date(LocalDate.now())
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("53"))
-                      .value(
-                          ElementValueBoolean.builder()
-                              .booleanId(new FieldId("53.1"))
-                              .value(true)
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("58"))
-                      .value(
-                          ElementValueDiagnosisList.builder()
-                              .diagnoses(
-                                  List.of(
-                                      ElementValueDiagnosis.builder()
-                                          .code("A013")
-                                          .description("Paratyfoidfeber C")
-                                          .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
-                                          .build(),
-                                      ElementValueDiagnosis.builder()
-                                          .code("A013")
-                                          .description("Paratyfoidfeber C")
-                                          .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
-                                          .build()
-                                  )
-                              )
-                              .build()
-                      )
-                      .build()
-              )
-          )
-          .build();
+      final var certificate =
+          TestDataCertificate.fk3226CertificateBuilder()
+              .certificateModel(certificateModelFactoryFK3226.create())
+              .elementData(
+                  List.of(
+                      ElementData.builder()
+                          .id(new ElementId("1"))
+                          .value(
+                              ElementValueDateList.builder()
+                                  .dateListId(new FieldId("1.1"))
+                                  .dateList(
+                                      List.of(
+                                          ElementValueDate.builder()
+                                              .dateId(new FieldId("annat"))
+                                              .date(LocalDate.now())
+                                              .build()))
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("1.3"))
+                          .value(
+                              ElementValueText.builder()
+                                  .textId(new FieldId("1.3"))
+                                  .text("Text")
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("52"))
+                          .value(
+                              ElementValueCode.builder()
+                                  .codeId(new FieldId("ENDAST_PALLIATIV"))
+                                  .code("ENDAST_PALLIATIV")
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("52.2"))
+                          .value(
+                              ElementValueDate.builder()
+                                  .dateId(new FieldId("52.2"))
+                                  .date(LocalDate.now())
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("53"))
+                          .value(
+                              ElementValueBoolean.builder()
+                                  .booleanId(new FieldId("53.1"))
+                                  .value(true)
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("58"))
+                          .value(
+                              ElementValueDiagnosisList.builder()
+                                  .diagnoses(
+                                      List.of(
+                                          ElementValueDiagnosis.builder()
+                                              .code("A013")
+                                              .description("Paratyfoidfeber C")
+                                              .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
+                                              .build(),
+                                          ElementValueDiagnosis.builder()
+                                              .code("A013")
+                                              .description("Paratyfoidfeber C")
+                                              .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
+                                              .build()))
+                                  .build())
+                          .build()))
+              .build();
 
       final var xml = generator.generate(certificate, false);
 
-      assertTrue(schematronValidator.validate(certificate.id(), xml,
-          CertificateModelFactoryFK3226.SCHEMATRON_PATH));
+      assertTrue(
+          schematronValidator.validate(
+              certificate.id(), xml, CertificateModelFactoryFK3226.SCHEMATRON_PATH));
     }
 
     @Test
     void shallReturnTrueIfOneDiagnosesArePresent() {
-      final var certificate = TestDataCertificate.fk3226CertificateBuilder()
-          .certificateModel(certificateModelFactoryFK3226.create())
-          .elementData(
-              List.of(
-                  ElementData.builder()
-                      .id(new ElementId("1"))
-                      .value(
-                          ElementValueDateList.builder()
-                              .dateListId(new FieldId("1.1"))
-                              .dateList(
-                                  List.of(
-                                      ElementValueDate.builder()
-                                          .dateId(new FieldId("annat"))
-                                          .date(LocalDate.now())
-                                          .build()
-                                  )
-                              )
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("1.3"))
-                      .value(
-                          ElementValueText.builder()
-                              .textId(new FieldId("1.3"))
-                              .text("Text")
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("52"))
-                      .value(
-                          ElementValueCode.builder()
-                              .codeId(new FieldId("ENDAST_PALLIATIV"))
-                              .code("ENDAST_PALLIATIV")
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("52.2"))
-                      .value(
-                          ElementValueDate.builder()
-                              .dateId(new FieldId("52.2"))
-                              .date(LocalDate.now())
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("53"))
-                      .value(
-                          ElementValueBoolean.builder()
-                              .booleanId(new FieldId("53.1"))
-                              .value(true)
-                              .build()
-                      )
-                      .build(),
-                  ElementData.builder()
-                      .id(new ElementId("58"))
-                      .value(
-                          ElementValueDiagnosisList.builder()
-                              .diagnoses(
-                                  List.of(
-                                      ElementValueDiagnosis.builder()
-                                          .code("A013")
-                                          .description("Paratyfoidfeber C")
-                                          .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
-                                          .build()
-                                  )
-                              )
-                              .build()
-                      )
-                      .build()
-              )
-          )
-          .build();
+      final var certificate =
+          TestDataCertificate.fk3226CertificateBuilder()
+              .certificateModel(certificateModelFactoryFK3226.create())
+              .elementData(
+                  List.of(
+                      ElementData.builder()
+                          .id(new ElementId("1"))
+                          .value(
+                              ElementValueDateList.builder()
+                                  .dateListId(new FieldId("1.1"))
+                                  .dateList(
+                                      List.of(
+                                          ElementValueDate.builder()
+                                              .dateId(new FieldId("annat"))
+                                              .date(LocalDate.now())
+                                              .build()))
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("1.3"))
+                          .value(
+                              ElementValueText.builder()
+                                  .textId(new FieldId("1.3"))
+                                  .text("Text")
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("52"))
+                          .value(
+                              ElementValueCode.builder()
+                                  .codeId(new FieldId("ENDAST_PALLIATIV"))
+                                  .code("ENDAST_PALLIATIV")
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("52.2"))
+                          .value(
+                              ElementValueDate.builder()
+                                  .dateId(new FieldId("52.2"))
+                                  .date(LocalDate.now())
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("53"))
+                          .value(
+                              ElementValueBoolean.builder()
+                                  .booleanId(new FieldId("53.1"))
+                                  .value(true)
+                                  .build())
+                          .build(),
+                      ElementData.builder()
+                          .id(new ElementId("58"))
+                          .value(
+                              ElementValueDiagnosisList.builder()
+                                  .diagnoses(
+                                      List.of(
+                                          ElementValueDiagnosis.builder()
+                                              .code("A013")
+                                              .description("Paratyfoidfeber C")
+                                              .terminology(CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
+                                              .build()))
+                                  .build())
+                          .build()))
+              .build();
 
       final var xml = generator.generate(certificate, false);
 
-      assertTrue(schematronValidator.validate(certificate.id(), xml,
-          CertificateModelFactoryFK3226.SCHEMATRON_PATH));
+      assertTrue(
+          schematronValidator.validate(
+              certificate.id(), xml, CertificateModelFactoryFK3226.SCHEMATRON_PATH));
     }
   }
 }

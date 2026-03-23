@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ag7804;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.ag7804.elements.QuestionNedsattningArbetsformaga.QUESTION_NEDSATTNING_ARBETSFORMAGA_ID;
@@ -25,37 +43,35 @@ public class AG7804CertificateSummaryProvider implements CertificateSummaryProvi
       return "";
     }
 
-    final var elementData = certificate.elementData()
-        .stream()
-        .filter(
-            data -> QUESTION_NEDSATTNING_ARBETSFORMAGA_ID.equals(data.id())
-        )
-        .findFirst();
+    final var elementData =
+        certificate.elementData().stream()
+            .filter(data -> QUESTION_NEDSATTNING_ARBETSFORMAGA_ID.equals(data.id()))
+            .findFirst();
 
     if (elementData.isEmpty()) {
       return "";
     }
 
-    if (!(elementData.get()
-        .value() instanceof ElementValueDateRangeList elementValueDateRangeList)) {
+    if (!(elementData.get().value()
+        instanceof ElementValueDateRangeList elementValueDateRangeList)) {
       throw new IllegalStateException(
-          "Invalid value type. Type was '%s'".formatted(elementData.get().value())
-      );
+          "Invalid value type. Type was '%s'".formatted(elementData.get().value()));
     }
 
-    final var startDate = elementValueDateRangeList.dateRangeList().stream()
-        .map(DateRange::from)
-        .min(LocalDate::compareTo)
-        .orElseThrow(() -> new IllegalStateException("No start date found"))
-        .format(DateTimeFormatter.ISO_LOCAL_DATE);
+    final var startDate =
+        elementValueDateRangeList.dateRangeList().stream()
+            .map(DateRange::from)
+            .min(LocalDate::compareTo)
+            .orElseThrow(() -> new IllegalStateException("No start date found"))
+            .format(DateTimeFormatter.ISO_LOCAL_DATE);
 
-    final var endDate = elementValueDateRangeList.dateRangeList().stream()
-        .map(DateRange::to)
-        .max(LocalDate::compareTo)
-        .orElseThrow(() -> new IllegalStateException("No end date found"))
-        .format(DateTimeFormatter.ISO_LOCAL_DATE);
+    final var endDate =
+        elementValueDateRangeList.dateRangeList().stream()
+            .map(DateRange::to)
+            .max(LocalDate::compareTo)
+            .orElseThrow(() -> new IllegalStateException("No end date found"))
+            .format(DateTimeFormatter.ISO_LOCAL_DATE);
 
-    return startDate + " - "
-        + endDate;
+    return startDate + " - " + endDate;
   }
 }

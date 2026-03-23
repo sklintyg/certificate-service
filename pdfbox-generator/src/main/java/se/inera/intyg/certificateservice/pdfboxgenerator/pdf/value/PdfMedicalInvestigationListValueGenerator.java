@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.pdfboxgenerator.pdf.value;
 
 import java.util.ArrayList;
@@ -11,8 +29,8 @@ import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfConfig
 import se.inera.intyg.certificateservice.pdfboxgenerator.pdf.PdfField;
 
 @Component
-public class PdfMedicalInvestigationListValueGenerator implements
-    PdfElementValue<ElementValueMedicalInvestigationList> {
+public class PdfMedicalInvestigationListValueGenerator
+    implements PdfElementValue<ElementValueMedicalInvestigationList> {
 
   @Override
   public Class<ElementValueMedicalInvestigationList> getType() {
@@ -20,19 +38,22 @@ public class PdfMedicalInvestigationListValueGenerator implements
   }
 
   @Override
-  public List<PdfField> generate(ElementSpecification elementSpecification,
+  public List<PdfField> generate(
+      ElementSpecification elementSpecification,
       ElementValueMedicalInvestigationList elementValue) {
-    final var pdfConfiguration = (PdfConfigurationMedicalInvestigationList) elementSpecification.pdfConfiguration();
+    final var pdfConfiguration =
+        (PdfConfigurationMedicalInvestigationList) elementSpecification.pdfConfiguration();
     return getFields(elementValue, pdfConfiguration);
   }
 
-  private List<PdfField> getFields(ElementValueMedicalInvestigationList medicalInvestigationList,
+  private List<PdfField> getFields(
+      ElementValueMedicalInvestigationList medicalInvestigationList,
       PdfConfigurationMedicalInvestigationList configuration) {
     return medicalInvestigationList.list().stream()
-        .map(medicalInvestigation -> getMedicalInvestigationFields(
-            medicalInvestigation,
-            configuration.list().get(medicalInvestigation.id()))
-        )
+        .map(
+            medicalInvestigation ->
+                getMedicalInvestigationFields(
+                    medicalInvestigation, configuration.list().get(medicalInvestigation.id())))
         .flatMap(List::stream)
         .toList();
   }
@@ -47,12 +68,11 @@ public class PdfMedicalInvestigationListValueGenerator implements
       fields.add(
           PdfField.builder()
               .id(pdfConfigurationMedicalInvestigation.datePdfFieldId().id())
-              .value(medicalInvestigation.date().date() != null
-                  ? medicalInvestigation.date().date().toString()
-                  : ""
-              )
-              .build()
-      );
+              .value(
+                  medicalInvestigation.date().date() != null
+                      ? medicalInvestigation.date().date().toString()
+                      : "")
+              .build());
     }
 
     if (medicalInvestigation.informationSource() != null
@@ -62,8 +82,7 @@ public class PdfMedicalInvestigationListValueGenerator implements
           PdfField.builder()
               .id(pdfConfigurationMedicalInvestigation.sourceTypePdfFieldId().id())
               .value(medicalInvestigation.informationSource().text())
-              .build()
-      );
+              .build());
     }
 
     if (medicalInvestigation.investigationType() != null
@@ -72,10 +91,11 @@ public class PdfMedicalInvestigationListValueGenerator implements
       fields.add(
           PdfField.builder()
               .id(pdfConfigurationMedicalInvestigation.investigationPdfFieldId().id())
-              .value(pdfConfigurationMedicalInvestigation.investigationPdfOptions()
-                  .get(medicalInvestigation.investigationType().code()))
-              .build()
-      );
+              .value(
+                  pdfConfigurationMedicalInvestigation
+                      .investigationPdfOptions()
+                      .get(medicalInvestigation.investigationType().code()))
+              .build());
     }
 
     return fields;

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.testdata;
 
 import static se.inera.intyg.certificateservice.application.testdata.TestDataStaffEntity.AJLA_DOKTOR_ENTITY;
@@ -32,10 +50,11 @@ public class TestDataStaffVersionEntity {
   }
 
   public static final LocalDateTime VALID_TO = LocalDateTime.now().plusYears(1);
-  public static final StaffVersionEntity AJLA_DOKTOR_VERSION_ENTITY = ajlaDoctorVersionEntityBuilder().build();
+  public static final StaffVersionEntity AJLA_DOKTOR_VERSION_ENTITY =
+      ajlaDoctorVersionEntityBuilder().build();
 
-  public static final StaffVersionEntity ALF_DOKTOR_VERSION_ENTITY = alfDoktorVersionEntityBuilder().build();
-
+  public static final StaffVersionEntity ALF_DOKTOR_VERSION_ENTITY =
+      alfDoktorVersionEntityBuilder().build();
 
   public static StaffVersionEntity.StaffVersionEntityBuilder ajlaDoctorVersionEntityBuilder() {
     return StaffVersionEntity.builder()
@@ -48,35 +67,32 @@ public class TestDataStaffVersionEntity {
             StaffRoleEntity.builder()
                 .role(StaffRole.DOCTOR.name())
                 .key(StaffRole.DOCTOR.getKey())
-                .build()
-        )
+                .build())
         .paTitles(
             AJLA_DOCTOR_PA_TITLES.stream()
-                .map(paTitle -> PaTitleVersionEmbeddable.builder()
-                    .code(paTitle.code())
-                    .description(paTitle.description())
-                    .build()
-                )
-                .toList()
-        )
+                .map(
+                    paTitle ->
+                        PaTitleVersionEmbeddable.builder()
+                            .code(paTitle.code())
+                            .description(paTitle.description())
+                            .build())
+                .toList())
         .specialities(
             AJLA_DOCTOR_SPECIALITIES.stream()
-                .map(speciality -> SpecialityVersionEmbeddable.builder()
-                    .speciality(speciality.value())
-                    .build()
-                )
-                .toList()
-        )
+                .map(
+                    speciality ->
+                        SpecialityVersionEmbeddable.builder()
+                            .speciality(speciality.value())
+                            .build())
+                .toList())
         .healthcareProfessionalLicences(
             AJLA_DOCTOR_HEALTH_CARE_PROFESSIONAL_LICENCES.stream()
                 .map(
                     healthCareProfessionalLicence ->
                         HealthcareProfessionalLicenceVersionEmbeddable.builder()
                             .healthcareProfessionalLicence(healthCareProfessionalLicence.value())
-                            .build()
-                )
-                .toList()
-        )
+                            .build())
+                .toList())
         .staff(AJLA_DOKTOR_ENTITY);
   }
 
@@ -91,35 +107,32 @@ public class TestDataStaffVersionEntity {
             StaffRoleEntity.builder()
                 .role(StaffRole.DOCTOR.name())
                 .key(StaffRole.DOCTOR.getKey())
-                .build()
-        )
+                .build())
         .paTitles(
             ALF_DOKTOR_PA_TITLES.stream()
-                .map(paTitle -> PaTitleVersionEmbeddable.builder()
-                    .code(paTitle.code())
-                    .description(paTitle.description())
-                    .build()
-                )
-                .toList()
-        )
+                .map(
+                    paTitle ->
+                        PaTitleVersionEmbeddable.builder()
+                            .code(paTitle.code())
+                            .description(paTitle.description())
+                            .build())
+                .toList())
         .specialities(
             ALF_DOKTOR_SPECIALITIES.stream()
-                .map(speciality -> SpecialityVersionEmbeddable.builder()
-                    .speciality(speciality.value())
-                    .build()
-                )
-                .toList()
-        )
+                .map(
+                    speciality ->
+                        SpecialityVersionEmbeddable.builder()
+                            .speciality(speciality.value())
+                            .build())
+                .toList())
         .healthcareProfessionalLicences(
             ALF_DOCTOR_HEALTH_CARE_PROFESSIONAL_LICENCES.stream()
                 .map(
                     healthCareProfessionalLicence ->
                         HealthcareProfessionalLicenceVersionEmbeddable.builder()
                             .healthcareProfessionalLicence(healthCareProfessionalLicence.value())
-                            .build()
-                )
-                .toList()
-        )
+                            .build())
+                .toList())
         .staff(ALF_DOKTOR_ENTITY);
   }
 }

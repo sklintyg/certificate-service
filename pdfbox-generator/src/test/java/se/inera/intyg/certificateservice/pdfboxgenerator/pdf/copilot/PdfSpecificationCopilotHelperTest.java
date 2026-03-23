@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.pdfboxgenerator.pdf.copilot;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -27,25 +45,25 @@ class PdfSpecificationCopilotHelperTest {
   /**
    * This class can be used to build PdfSpecification and PdfConfigurations for a certificate using
    * GitHub Copilot.
-   * <p>
-   * How to use: 1. Generate a file using this test for the new certificate type 2. Generate a file
-   * using this test for a similar certificate type (one with overflow page if the new one contains
-   * it for example) 3. Attach to context these two files and the already existing PdfSpecification
-   * for the similar certificate 4. Use prompts down.
-   * <p>
-   * Prompt PdfSpecification: Generate a pdf specification for FK4727 following the previous pattern
-   * in PdfSpecification file in your context, but not the values. The values like ids, page indexes
-   * etc. you will get from certificate_type_structure. If overflow page is defined then set those
-   * values. Remember that when values are indexes they start from 0 so it will not be the page
-   * number but page index. If more than one page remember there should be more than one patient id
-   * field in list, one per page.
-   * <p>
-   * Prompt PdfConfiguration for question: Generate a pdf configuration and tests for this question
-   * using the attached Question as idea for structure but the pdf structure for the actual values.
-   * If overflow sheet use constant from PdfSpecification.
+   *
+   * <p>How to use: 1. Generate a file using this test for the new certificate type 2. Generate a
+   * file using this test for a similar certificate type (one with overflow page if the new one
+   * contains it for example) 3. Attach to context these two files and the already existing
+   * PdfSpecification for the similar certificate 4. Use prompts down.
+   *
+   * <p>Prompt PdfSpecification: Generate a pdf specification for FK4727 following the previous
+   * pattern in PdfSpecification file in your context, but not the values. The values like ids, page
+   * indexes etc. you will get from certificate_type_structure. If overflow page is defined then set
+   * those values. Remember that when values are indexes they start from 0 so it will not be the
+   * page number but page index. If more than one page remember there should be more than one
+   * patient id field in list, one per page.
+   *
+   * <p>Prompt PdfConfiguration for question: Generate a pdf configuration and tests for this
+   * question using the attached Question as idea for structure but the pdf structure for the actual
+   * values. If overflow sheet use constant from PdfSpecification.
    */
-
   private PDDocument documentWithAddress;
+
   private PDDocument documentWithoutAddress;
   private StringBuilder originalStructure;
 
@@ -56,38 +74,38 @@ class PdfSpecificationCopilotHelperTest {
   private static final String FK_7804 = "fk7804";
   private static final String FK_7472 = "fk7472";
 
-  private static final Map<String, String> TYPE_TO_VERSION = Map.of(
-      FK_7427, "v1",
-      FK_7426, "v1",
-      FK_3221, "v1",
-      FK_7810, "v1",
-      FK_7804, "v2",
-      FK_7472, "v1"
-  );
+  private static final Map<String, String> TYPE_TO_VERSION =
+      Map.of(
+          FK_7427, "v1",
+          FK_7426, "v1",
+          FK_3221, "v1",
+          FK_7810, "v1",
+          FK_7804, "v2",
+          FK_7472, "v1");
 
   /**
    * To verify that the PDF templates that are delivered by the certificate recipient follows the
    * correct structure these tests can be used.
-   * <p>
-   * If completely new PDF: - Generate structure using writeToFile method - Place this in the pdf
+   *
+   * <p>If completely new PDF: - Generate structure using writeToFile method - Place this in the pdf
    * folder for the type in the resources in app
-   * <p>
-   * If new PDF templates for existing PDF-implementation: - Run these tests to see if the new
+   *
+   * <p>If new PDF templates for existing PDF-implementation: - Run these tests to see if the new
    * templates have differences that disrupt the previous implementation - If so, then fix what
    * needs to be fixed and save a new structure file for the type
    */
 
-  /**
-   * Run to generate structure for the first time and save in resources/pdf folder.
-   */
+  /** Run to generate structure for the first time and save in resources/pdf folder. */
   @Disabled
   @Test
   void shouldCreateStructureFileForPdf() {
     final var certificateType = FK_7804;
     final var classloader = getClass().getClassLoader();
-    final var inputStream = classloader.getResourceAsStream(
-        String.format("%s/pdf/%s_%s.pdf", certificateType, certificateType,
-            TYPE_TO_VERSION.get(certificateType)));
+    final var inputStream =
+        classloader.getResourceAsStream(
+            String.format(
+                "%s/pdf/%s_%s.pdf",
+                certificateType, certificateType, TYPE_TO_VERSION.get(certificateType)));
 
     try {
       final var document = Loader.loadPDF(inputStream.readAllBytes());
@@ -106,14 +124,10 @@ class PdfSpecificationCopilotHelperTest {
 
     final var contentNewStructure = getPdfStructure();
 
-    final var normalizedOriginalStructure = originalStructure.toString()
-        .replaceAll("\r\n", "\n")
-        .replaceAll("\\s+", " ")
-        .trim();
-    final var normalizedExpectedText = contentNewStructure.toString()
-        .replaceAll("\r\n", "\n")
-        .replaceAll("\\s+", " ")
-        .trim();
+    final var normalizedOriginalStructure =
+        originalStructure.toString().replaceAll("\r\n", "\n").replaceAll("\\s+", " ").trim();
+    final var normalizedExpectedText =
+        contentNewStructure.toString().replaceAll("\r\n", "\n").replaceAll("\\s+", " ").trim();
 
     assertEquals(normalizedExpectedText, normalizedOriginalStructure);
   }
@@ -127,20 +141,22 @@ class PdfSpecificationCopilotHelperTest {
     final var idsForTemplateWithoutAddress = getFieldIds(documentWithoutAddress);
 
     final var errors = new ArrayList<String>();
-    final var minSize = Math.min(idsForTemplateWithAddress.size(),
-        idsForTemplateWithoutAddress.size());
+    final var minSize =
+        Math.min(idsForTemplateWithAddress.size(), idsForTemplateWithoutAddress.size());
     for (int i = 0; i < minSize; i++) {
       final var idWithAddress = idsForTemplateWithAddress.get(i);
       final var idWithoutAddress = idsForTemplateWithoutAddress.get(i);
 
       if (!idWithAddress.equals(idWithoutAddress)) {
-        errors.add(String.format("Mismatch at index %d: '%s' vs '%s'", i, idWithAddress,
-            idWithoutAddress));
+        errors.add(
+            String.format(
+                "Mismatch at index %d: '%s' vs '%s'", i, idWithAddress, idWithoutAddress));
       }
     }
     if (idsForTemplateWithAddress.size() != idsForTemplateWithoutAddress.size()) {
       errors.add(
-          String.format("Different number of fields: with address = %d, without address = %d",
+          String.format(
+              "Different number of fields: with address = %d, without address = %d",
               idsForTemplateWithAddress.size(), idsForTemplateWithoutAddress.size()));
     }
 
@@ -149,19 +165,23 @@ class PdfSpecificationCopilotHelperTest {
 
   private void setup(String certificateType) {
     final var classloader = getClass().getClassLoader();
-    final var inputStream = classloader.getResourceAsStream(
-        String.format("%s/pdf/%s_%s.pdf", certificateType, certificateType,
-            TYPE_TO_VERSION.get(certificateType)));
-    final var inputStreamWithoutAddress = classloader.getResourceAsStream(
-        String.format("%s/pdf/%s_%s_no_address.pdf", certificateType, certificateType,
-            TYPE_TO_VERSION.get(certificateType)));
+    final var inputStream =
+        classloader.getResourceAsStream(
+            String.format(
+                "%s/pdf/%s_%s.pdf",
+                certificateType, certificateType, TYPE_TO_VERSION.get(certificateType)));
+    final var inputStreamWithoutAddress =
+        classloader.getResourceAsStream(
+            String.format(
+                "%s/pdf/%s_%s_no_address.pdf",
+                certificateType, certificateType, TYPE_TO_VERSION.get(certificateType)));
 
     try {
       documentWithAddress = Loader.loadPDF(inputStream.readAllBytes());
       documentWithoutAddress = Loader.loadPDF(inputStreamWithoutAddress.readAllBytes());
-      originalStructure = readFileFromResources(
-          String.format("%s/pdf/%s_structure.txt", certificateType, certificateType)
-      );
+      originalStructure =
+          readFileFromResources(
+              String.format("%s/pdf/%s_structure.txt", certificateType, certificateType));
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
@@ -184,8 +204,8 @@ class PdfSpecificationCopilotHelperTest {
     for (PDField page : parentField.getChildren()) {
       content.append(String.format("//Page index %s\n", count++));
       for (PDField field : ((PDNonTerminalField) page).getChildren()) {
-        if (field.getAlternateFieldName() != null && field.getAlternateFieldName()
-            .contains("Fortsättningsblad")) {
+        if (field.getAlternateFieldName() != null
+            && field.getAlternateFieldName().contains("Fortsättningsblad")) {
           content.append("// This is the overflow page\n");
         }
 
@@ -198,13 +218,13 @@ class PdfSpecificationCopilotHelperTest {
           }
         }
 
-        content.append(String.format(
-            "Field ID: %s\nName: %s\nField Type: %s\n%s\n",
-            field.getFullyQualifiedName(),
-            field.getAlternateFieldName(),
-            field.getClass(),
-            extraText)
-        );
+        content.append(
+            String.format(
+                "Field ID: %s\nName: %s\nField Type: %s\n%s\n",
+                field.getFullyQualifiedName(),
+                field.getAlternateFieldName(),
+                field.getClass(),
+                extraText));
       }
     }
     return content;

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.certificate;
 
 import java.util.Collections;
@@ -27,11 +45,11 @@ public class XmlGeneratorDiagnosisList implements XmlGeneratorElementValue {
       return Collections.emptyList();
     }
 
-    if (!(specification.configuration() instanceof ElementConfigurationDiagnosis configurationDiagnosis)) {
+    if (!(specification.configuration()
+        instanceof ElementConfigurationDiagnosis configurationDiagnosis)) {
       throw new IllegalArgumentException(
           "Cannot generate xml for configuration of type '%s'"
-              .formatted(specification.configuration().getClass())
-      );
+              .formatted(specification.configuration().getClass()));
     }
 
     if (diagnosisList.diagnoses() == null || diagnosisList.diagnoses().isEmpty()) {
@@ -41,7 +59,8 @@ public class XmlGeneratorDiagnosisList implements XmlGeneratorElementValue {
     final var objectFactory = new ObjectFactory();
     final var atomicInteger = new AtomicInteger(1);
     return diagnosisList.diagnoses().stream()
-        .map(diagnosis -> {
+        .map(
+            diagnosis -> {
               final var diagnosisAnswer = new Svar();
               diagnosisAnswer.setId(data.id().id());
               diagnosisAnswer.setInstans(atomicInteger.getAndIncrement());
@@ -64,8 +83,7 @@ public class XmlGeneratorDiagnosisList implements XmlGeneratorElementValue {
               diagnosisAnswer.getDelsvar().add(subAnswerDiagnosisCode);
               diagnosisAnswer.getDelsvar().add(subAnswerDiagnosisDescription);
               return diagnosisAnswer;
-            }
-        )
+            })
         .toList();
   }
 

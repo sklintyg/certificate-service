@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.certificate;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -57,72 +75,59 @@ class XmlGeneratorMedicalInvestigationListTest {
   private static ElementData data;
   private ElementSpecification elementSpecification;
 
-  @InjectMocks
-  private XmlGeneratorMedicalInvestigationList xmlGenerator;
+  @InjectMocks private XmlGeneratorMedicalInvestigationList xmlGenerator;
 
   @Nested
   class TestOneRow {
 
     @BeforeEach
     void setup() {
-      data = ElementData.builder()
-          .id(new ElementId(QUESTION_ID))
-          .value(
-              ElementValueMedicalInvestigationList.builder()
-                  .id(new FieldId(VALUE_ID))
-                  .list(
-                      List.of(
-                          MedicalInvestigation.builder()
-                              .id(new FieldId("ROW1"))
-                              .date(
-                                  ElementValueDate.builder()
-                                      .dateId(new FieldId(DATE_ID_ONE))
-                                      .date(DATE_ONE)
-                                      .build()
-                              )
-                              .investigationType(
-                                  ElementValueCode.builder()
-                                      .codeId(new FieldId(CODE_ID_ONE))
-                                      .code(CODE_ONE)
-                                      .build()
-                              )
-                              .informationSource(
-                                  ElementValueText.builder()
-                                      .textId(new FieldId(TEXT_ID_ONE))
-                                      .text(TEXT_ONE)
-                                      .build()
-                              )
-                              .build()
-                      )
-                  )
-                  .build()
-          )
-          .build();
+      data =
+          ElementData.builder()
+              .id(new ElementId(QUESTION_ID))
+              .value(
+                  ElementValueMedicalInvestigationList.builder()
+                      .id(new FieldId(VALUE_ID))
+                      .list(
+                          List.of(
+                              MedicalInvestigation.builder()
+                                  .id(new FieldId("ROW1"))
+                                  .date(
+                                      ElementValueDate.builder()
+                                          .dateId(new FieldId(DATE_ID_ONE))
+                                          .date(DATE_ONE)
+                                          .build())
+                                  .investigationType(
+                                      ElementValueCode.builder()
+                                          .codeId(new FieldId(CODE_ID_ONE))
+                                          .code(CODE_ONE)
+                                          .build())
+                                  .informationSource(
+                                      ElementValueText.builder()
+                                          .textId(new FieldId(TEXT_ID_ONE))
+                                          .text(TEXT_ONE)
+                                          .build())
+                                  .build()))
+                      .build())
+              .build();
 
-      elementSpecification = ElementSpecification.builder()
-          .configuration(
-              ElementConfigurationMedicalInvestigationList.builder()
-                  .id(new FieldId(VALUE_ID))
-                  .list(
-                      List.of(
-                          MedicalInvestigationConfig.builder()
-                              .id(new FieldId("ROW_1"))
-                              .investigationTypeId(new FieldId(CODE_ID_ONE))
-                              .dateId(new FieldId(DATE_ID_ONE))
-                              .informationSourceId(new FieldId(TEXT_ID_ONE))
-                              .typeOptions(List.of(
-                                  new Code(
-                                      CODE_ONE,
-                                      CODE_SYSTEM,
-                                      DISPLAY_NAME
-                                  )
-                              ))
-                              .build()
-                      )
-                  )
-                  .build()
-          )
-          .build();
+      elementSpecification =
+          ElementSpecification.builder()
+              .configuration(
+                  ElementConfigurationMedicalInvestigationList.builder()
+                      .id(new FieldId(VALUE_ID))
+                      .list(
+                          List.of(
+                              MedicalInvestigationConfig.builder()
+                                  .id(new FieldId("ROW_1"))
+                                  .investigationTypeId(new FieldId(CODE_ID_ONE))
+                                  .dateId(new FieldId(DATE_ID_ONE))
+                                  .informationSourceId(new FieldId(TEXT_ID_ONE))
+                                  .typeOptions(
+                                      List.of(new Code(CODE_ONE, CODE_SYSTEM, DISPLAY_NAME)))
+                                  .build()))
+                      .build())
+              .build();
     }
 
     @Test
@@ -133,8 +138,7 @@ class XmlGeneratorMedicalInvestigationListTest {
       assertAll(
           () -> assertEquals(1, response.size()),
           () -> assertEquals(QUESTION_ID, first.getId()),
-          () -> assertEquals(1, first.getInstans())
-      );
+          () -> assertEquals(1, first.getInstans()));
     }
 
     @Test
@@ -151,8 +155,7 @@ class XmlGeneratorMedicalInvestigationListTest {
           () -> assertEquals(QUESTION_ID + ".1", delsvarCode.getId()),
           () -> assertEquals(CODE_ONE, cvType.getCode()),
           () -> assertEquals(CODE_SYSTEM, cvType.getCodeSystem()),
-          () -> assertEquals(DISPLAY_NAME, cvType.getDisplayName())
-      );
+          () -> assertEquals(DISPLAY_NAME, cvType.getDisplayName()));
     }
 
     @Test
@@ -166,8 +169,7 @@ class XmlGeneratorMedicalInvestigationListTest {
       assertAll(
           () -> assertEquals(3, delsvar.size()),
           () -> assertEquals(QUESTION_ID + ".2", delsvarDate.getId()),
-          () -> assertEquals(DATE_ONE.toString(), delsvarDateAsStr)
-      );
+          () -> assertEquals(DATE_ONE.toString(), delsvarDateAsStr));
     }
 
     @Test
@@ -181,43 +183,35 @@ class XmlGeneratorMedicalInvestigationListTest {
       assertAll(
           () -> assertEquals(3, delsvar.size()),
           () -> assertEquals(QUESTION_ID + ".3", delsvarText.getId()),
-          () -> assertEquals(TEXT_ONE, delsvarTextAsStr)
-      );
+          () -> assertEquals(TEXT_ONE, delsvarTextAsStr));
     }
 
     @Test
     void shallMapEmptyIfEmptyCode() {
-      final var data = ElementData.builder()
-          .id(new ElementId(QUESTION_ID))
-          .value(
-              ElementValueMedicalInvestigationList.builder()
-                  .id(new FieldId(VALUE_ID))
-                  .list(
-                      List.of(
-                          MedicalInvestigation.builder()
-                              .id(new FieldId("ROW1"))
-                              .date(
-                                  ElementValueDate.builder()
-                                      .dateId(new FieldId(DATE_ID_ONE))
-                                      .date(DATE_ONE)
-                                      .build()
-                              )
-                              .investigationType(
-                                  ElementValueCode.builder()
-                                      .build()
-                              )
-                              .informationSource(
-                                  ElementValueText.builder()
-                                      .textId(new FieldId(TEXT_ID_ONE))
-                                      .text(TEXT_ONE)
-                                      .build()
-                              )
-                              .build()
-                      )
-                  )
-                  .build()
-          )
-          .build();
+      final var data =
+          ElementData.builder()
+              .id(new ElementId(QUESTION_ID))
+              .value(
+                  ElementValueMedicalInvestigationList.builder()
+                      .id(new FieldId(VALUE_ID))
+                      .list(
+                          List.of(
+                              MedicalInvestigation.builder()
+                                  .id(new FieldId("ROW1"))
+                                  .date(
+                                      ElementValueDate.builder()
+                                          .dateId(new FieldId(DATE_ID_ONE))
+                                          .date(DATE_ONE)
+                                          .build())
+                                  .investigationType(ElementValueCode.builder().build())
+                                  .informationSource(
+                                      ElementValueText.builder()
+                                          .textId(new FieldId(TEXT_ID_ONE))
+                                          .text(TEXT_ONE)
+                                          .build())
+                                  .build()))
+                      .build())
+              .build();
 
       final var response = xmlGenerator.generate(data, elementSpecification);
 
@@ -226,37 +220,30 @@ class XmlGeneratorMedicalInvestigationListTest {
 
     @Test
     void shallMapEmptyIfEmptyDate() {
-      final var data = ElementData.builder()
-          .id(new ElementId(QUESTION_ID))
-          .value(
-              ElementValueMedicalInvestigationList.builder()
-                  .id(new FieldId(VALUE_ID))
-                  .list(
-                      List.of(
-                          MedicalInvestigation.builder()
-                              .id(new FieldId("ROW1"))
-                              .date(
-                                  ElementValueDate.builder()
-                                      .build()
-                              )
-                              .investigationType(
-                                  ElementValueCode.builder()
-                                      .codeId(new FieldId(CODE_ID_ONE))
-                                      .code(CODE_ONE)
-                                      .build()
-                              )
-                              .informationSource(
-                                  ElementValueText.builder()
-                                      .textId(new FieldId(TEXT_ID_ONE))
-                                      .text(TEXT_ONE)
-                                      .build()
-                              )
-                              .build()
-                      )
-                  )
-                  .build()
-          )
-          .build();
+      final var data =
+          ElementData.builder()
+              .id(new ElementId(QUESTION_ID))
+              .value(
+                  ElementValueMedicalInvestigationList.builder()
+                      .id(new FieldId(VALUE_ID))
+                      .list(
+                          List.of(
+                              MedicalInvestigation.builder()
+                                  .id(new FieldId("ROW1"))
+                                  .date(ElementValueDate.builder().build())
+                                  .investigationType(
+                                      ElementValueCode.builder()
+                                          .codeId(new FieldId(CODE_ID_ONE))
+                                          .code(CODE_ONE)
+                                          .build())
+                                  .informationSource(
+                                      ElementValueText.builder()
+                                          .textId(new FieldId(TEXT_ID_ONE))
+                                          .text(TEXT_ONE)
+                                          .build())
+                                  .build()))
+                      .build())
+              .build();
 
       final var response = xmlGenerator.generate(data, elementSpecification);
 
@@ -265,37 +252,30 @@ class XmlGeneratorMedicalInvestigationListTest {
 
     @Test
     void shallMapEmptyIfEmptyInformationSource() {
-      final var data = ElementData.builder()
-          .id(new ElementId(QUESTION_ID))
-          .value(
-              ElementValueMedicalInvestigationList.builder()
-                  .id(new FieldId(VALUE_ID))
-                  .list(
-                      List.of(
-                          MedicalInvestigation.builder()
-                              .id(new FieldId("ROW1"))
-                              .date(
-                                  ElementValueDate.builder()
-                                      .dateId(new FieldId(DATE_ID_ONE))
-                                      .date(DATE_ONE)
-                                      .build()
-                              )
-                              .investigationType(
-                                  ElementValueCode.builder()
-                                      .codeId(new FieldId(CODE_ID_ONE))
-                                      .code(CODE_ONE)
-                                      .build()
-                              )
-                              .informationSource(
-                                  ElementValueText.builder()
-                                      .build()
-                              )
-                              .build()
-                      )
-                  )
-                  .build()
-          )
-          .build();
+      final var data =
+          ElementData.builder()
+              .id(new ElementId(QUESTION_ID))
+              .value(
+                  ElementValueMedicalInvestigationList.builder()
+                      .id(new FieldId(VALUE_ID))
+                      .list(
+                          List.of(
+                              MedicalInvestigation.builder()
+                                  .id(new FieldId("ROW1"))
+                                  .date(
+                                      ElementValueDate.builder()
+                                          .dateId(new FieldId(DATE_ID_ONE))
+                                          .date(DATE_ONE)
+                                          .build())
+                                  .investigationType(
+                                      ElementValueCode.builder()
+                                          .codeId(new FieldId(CODE_ID_ONE))
+                                          .code(CODE_ONE)
+                                          .build())
+                                  .informationSource(ElementValueText.builder().build())
+                                  .build()))
+                      .build())
+              .build();
 
       final var response = xmlGenerator.generate(data, elementSpecification);
 
@@ -308,108 +288,82 @@ class XmlGeneratorMedicalInvestigationListTest {
 
     @BeforeEach
     void setup() {
-      data = ElementData.builder()
-          .id(new ElementId(QUESTION_ID))
-          .value(
-              ElementValueMedicalInvestigationList.builder()
-                  .id(new FieldId(VALUE_ID))
-                  .list(
-                      List.of(
-                          MedicalInvestigation.builder()
-                              .id(new FieldId("ROW_1"))
-                              .date(
-                                  ElementValueDate.builder()
-                                      .dateId(new FieldId(DATE_ID_ONE))
-                                      .date(DATE_ONE)
-                                      .build()
-                              )
-                              .investigationType(
-                                  ElementValueCode.builder()
-                                      .codeId(new FieldId(CODE_ID_ONE))
-                                      .code(CODE_ONE)
-                                      .build()
-                              )
-                              .informationSource(
-                                  ElementValueText.builder()
-                                      .textId(new FieldId(TEXT_ID_ONE))
-                                      .text(TEXT_ONE)
-                                      .build()
-                              )
-                              .build(),
-                          MedicalInvestigation.builder()
-                              .id(new FieldId("ROW_2"))
-                              .date(
-                                  ElementValueDate.builder()
-                                      .dateId(new FieldId(DATE_ID_TWO))
-                                      .date(DATE_TWO)
-                                      .build()
-                              )
-                              .investigationType(
-                                  ElementValueCode.builder()
-                                      .codeId(new FieldId(CODE_ID_TWO))
-                                      .code(CODE_TWO)
-                                      .build()
-                              )
-                              .informationSource(
-                                  ElementValueText.builder()
-                                      .textId(new FieldId(TEXT_ID_TWO))
-                                      .text(TEXT_TWO)
-                                      .build()
-                              )
-                              .build()
-                      )
-                  )
-                  .build()
-          )
-          .build();
+      data =
+          ElementData.builder()
+              .id(new ElementId(QUESTION_ID))
+              .value(
+                  ElementValueMedicalInvestigationList.builder()
+                      .id(new FieldId(VALUE_ID))
+                      .list(
+                          List.of(
+                              MedicalInvestigation.builder()
+                                  .id(new FieldId("ROW_1"))
+                                  .date(
+                                      ElementValueDate.builder()
+                                          .dateId(new FieldId(DATE_ID_ONE))
+                                          .date(DATE_ONE)
+                                          .build())
+                                  .investigationType(
+                                      ElementValueCode.builder()
+                                          .codeId(new FieldId(CODE_ID_ONE))
+                                          .code(CODE_ONE)
+                                          .build())
+                                  .informationSource(
+                                      ElementValueText.builder()
+                                          .textId(new FieldId(TEXT_ID_ONE))
+                                          .text(TEXT_ONE)
+                                          .build())
+                                  .build(),
+                              MedicalInvestigation.builder()
+                                  .id(new FieldId("ROW_2"))
+                                  .date(
+                                      ElementValueDate.builder()
+                                          .dateId(new FieldId(DATE_ID_TWO))
+                                          .date(DATE_TWO)
+                                          .build())
+                                  .investigationType(
+                                      ElementValueCode.builder()
+                                          .codeId(new FieldId(CODE_ID_TWO))
+                                          .code(CODE_TWO)
+                                          .build())
+                                  .informationSource(
+                                      ElementValueText.builder()
+                                          .textId(new FieldId(TEXT_ID_TWO))
+                                          .text(TEXT_TWO)
+                                          .build())
+                                  .build()))
+                      .build())
+              .build();
 
-      elementSpecification = ElementSpecification.builder()
-          .configuration(
-              ElementConfigurationMedicalInvestigationList.builder()
-                  .id(new FieldId(VALUE_ID))
-                  .list(
-                      List.of(
-                          MedicalInvestigationConfig.builder()
-                              .id(new FieldId("ROW_1"))
-                              .investigationTypeId(new FieldId(CODE_ID_ONE))
-                              .dateId(new FieldId(DATE_ID_ONE))
-                              .informationSourceId(new FieldId(TEXT_ID_ONE))
-                              .typeOptions(List.of(
-                                  new Code(
-                                      CODE_ONE,
-                                      CODE_SYSTEM,
-                                      DISPLAY_NAME
-                                  ),
-                                  new Code(
-                                      CODE_TWO,
-                                      CODE_SYSTEM,
-                                      DISPLAY_NAME
-                                  )
-                              ))
-                              .build(),
-                          MedicalInvestigationConfig.builder()
-                              .id(new FieldId("ROW_2"))
-                              .investigationTypeId(new FieldId(CODE_ID_TWO))
-                              .dateId(new FieldId(DATE_ID_TWO))
-                              .informationSourceId(new FieldId(TEXT_ID_TWO))
-                              .typeOptions(List.of(
-                                  new Code(
-                                      CODE_ONE,
-                                      CODE_SYSTEM,
-                                      DISPLAY_NAME
-                                  ),
-                                  new Code(
-                                      CODE_TWO,
-                                      CODE_SYSTEM,
-                                      DISPLAY_NAME_TWO
-                                  )
-                              ))
-                              .build()
-                      )
-                  )
-                  .build()
-          )
-          .build();
+      elementSpecification =
+          ElementSpecification.builder()
+              .configuration(
+                  ElementConfigurationMedicalInvestigationList.builder()
+                      .id(new FieldId(VALUE_ID))
+                      .list(
+                          List.of(
+                              MedicalInvestigationConfig.builder()
+                                  .id(new FieldId("ROW_1"))
+                                  .investigationTypeId(new FieldId(CODE_ID_ONE))
+                                  .dateId(new FieldId(DATE_ID_ONE))
+                                  .informationSourceId(new FieldId(TEXT_ID_ONE))
+                                  .typeOptions(
+                                      List.of(
+                                          new Code(CODE_ONE, CODE_SYSTEM, DISPLAY_NAME),
+                                          new Code(CODE_TWO, CODE_SYSTEM, DISPLAY_NAME)))
+                                  .build(),
+                              MedicalInvestigationConfig.builder()
+                                  .id(new FieldId("ROW_2"))
+                                  .investigationTypeId(new FieldId(CODE_ID_TWO))
+                                  .dateId(new FieldId(DATE_ID_TWO))
+                                  .informationSourceId(new FieldId(TEXT_ID_TWO))
+                                  .typeOptions(
+                                      List.of(
+                                          new Code(CODE_ONE, CODE_SYSTEM, DISPLAY_NAME),
+                                          new Code(CODE_TWO, CODE_SYSTEM, DISPLAY_NAME_TWO)))
+                                  .build()))
+                      .build())
+              .build();
     }
 
     @Test
@@ -420,8 +374,7 @@ class XmlGeneratorMedicalInvestigationListTest {
       assertAll(
           () -> assertEquals(2, response.size()),
           () -> assertEquals(QUESTION_ID, first.getId()),
-          () -> assertEquals(1, first.getInstans())
-      );
+          () -> assertEquals(1, first.getInstans()));
     }
 
     @Test
@@ -432,8 +385,7 @@ class XmlGeneratorMedicalInvestigationListTest {
       assertAll(
           () -> assertEquals(2, response.size()),
           () -> assertEquals(QUESTION_ID, first.getId()),
-          () -> assertEquals(2, first.getInstans())
-      );
+          () -> assertEquals(2, first.getInstans()));
     }
 
     @Test
@@ -450,8 +402,7 @@ class XmlGeneratorMedicalInvestigationListTest {
           () -> assertEquals(QUESTION_ID + ".1", delsvarCode.getId()),
           () -> assertEquals(CODE_ONE, cvType.getCode()),
           () -> assertEquals(CODE_SYSTEM, cvType.getCodeSystem()),
-          () -> assertEquals(DISPLAY_NAME, cvType.getDisplayName())
-      );
+          () -> assertEquals(DISPLAY_NAME, cvType.getDisplayName()));
     }
 
     @Test
@@ -468,8 +419,7 @@ class XmlGeneratorMedicalInvestigationListTest {
           () -> assertEquals(QUESTION_ID + ".1", delsvarCode.getId()),
           () -> assertEquals(CODE_TWO, cvType.getCode()),
           () -> assertEquals(CODE_SYSTEM, cvType.getCodeSystem()),
-          () -> assertEquals(DISPLAY_NAME_TWO, cvType.getDisplayName())
-      );
+          () -> assertEquals(DISPLAY_NAME_TWO, cvType.getDisplayName()));
     }
 
     @Test
@@ -483,8 +433,7 @@ class XmlGeneratorMedicalInvestigationListTest {
       assertAll(
           () -> assertEquals(3, delsvar.size()),
           () -> assertEquals(QUESTION_ID + ".2", delsvarDate.getId()),
-          () -> assertEquals(DATE_ONE.toString(), delsvarDateAsStr)
-      );
+          () -> assertEquals(DATE_ONE.toString(), delsvarDateAsStr));
     }
 
     @Test
@@ -498,8 +447,7 @@ class XmlGeneratorMedicalInvestigationListTest {
       assertAll(
           () -> assertEquals(3, delsvar.size()),
           () -> assertEquals(QUESTION_ID + ".2", delsvarDate.getId()),
-          () -> assertEquals(DATE_TWO.toString(), delsvarDateAsStr)
-      );
+          () -> assertEquals(DATE_TWO.toString(), delsvarDateAsStr));
     }
 
     @Test
@@ -513,8 +461,7 @@ class XmlGeneratorMedicalInvestigationListTest {
       assertAll(
           () -> assertEquals(3, delsvar.size()),
           () -> assertEquals(QUESTION_ID + ".3", delsvarText.getId()),
-          () -> assertEquals(TEXT_ONE, delsvarTextAsStr)
-      );
+          () -> assertEquals(TEXT_ONE, delsvarTextAsStr));
     }
 
     @Test
@@ -528,21 +475,17 @@ class XmlGeneratorMedicalInvestigationListTest {
       assertAll(
           () -> assertEquals(3, delsvar.size()),
           () -> assertEquals(QUESTION_ID + ".3", delsvarText.getId()),
-          () -> assertEquals(TEXT_TWO, delsvarTextAsStr)
-      );
+          () -> assertEquals(TEXT_TWO, delsvarTextAsStr));
     }
   }
 
   @Test
   void shallMapEmptyIfNoValue() {
-    final var data = ElementData.builder()
-        .id(new ElementId(QUESTION_ID))
-        .value(
-            ElementValueDateList.builder()
-                .dateListId(new FieldId(VALUE_ID))
-                .build()
-        )
-        .build();
+    final var data =
+        ElementData.builder()
+            .id(new ElementId(QUESTION_ID))
+            .value(ElementValueDateList.builder().dateListId(new FieldId(VALUE_ID)).build())
+            .build();
 
     final var response = xmlGenerator.generate(data, elementSpecification);
 
@@ -551,40 +494,32 @@ class XmlGeneratorMedicalInvestigationListTest {
 
   @Test
   void shallThrowIfIncorrectConfiguration() {
-    final var data = ElementData.builder()
-        .id(new ElementId(QUESTION_ID))
-        .value(
-            ElementValueMedicalInvestigationList.builder()
-                .id(new FieldId(VALUE_ID))
-                .list(
-                    List.of(
-                        MedicalInvestigation.builder().build()
-                    )
-                )
-                .build()
-        )
-        .build();
+    final var data =
+        ElementData.builder()
+            .id(new ElementId(QUESTION_ID))
+            .value(
+                ElementValueMedicalInvestigationList.builder()
+                    .id(new FieldId(VALUE_ID))
+                    .list(List.of(MedicalInvestigation.builder().build()))
+                    .build())
+            .build();
 
-    elementSpecification = ElementSpecification.builder()
-        .configuration(
-            ElementConfigurationDate.builder().build()
-        )
-        .build();
+    elementSpecification =
+        ElementSpecification.builder()
+            .configuration(ElementConfigurationDate.builder().build())
+            .build();
 
-    assertThrows(IllegalArgumentException.class,
-        () -> xmlGenerator.generate(data, elementSpecification)
-    );
+    assertThrows(
+        IllegalArgumentException.class, () -> xmlGenerator.generate(data, elementSpecification));
   }
 
   @Test
   void shallMapEmptyIfValueIsNotDateRangeList() {
-    final var data = ElementData.builder()
-        .id(new ElementId(QUESTION_ID))
-        .value(
-            ElementValueUnitContactInformation.builder()
-                .build()
-        )
-        .build();
+    final var data =
+        ElementData.builder()
+            .id(new ElementId(QUESTION_ID))
+            .value(ElementValueUnitContactInformation.builder().build())
+            .build();
 
     final var response = xmlGenerator.generate(data, elementSpecification);
 

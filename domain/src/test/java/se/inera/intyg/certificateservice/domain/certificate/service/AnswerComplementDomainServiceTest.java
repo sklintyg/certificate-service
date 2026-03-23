@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.certificate.service;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -36,24 +54,15 @@ import se.inera.intyg.certificateservice.domain.message.service.SetMessagesToHan
 @ExtendWith(MockitoExtension.class)
 class AnswerComplementDomainServiceTest {
 
-  private static final List<Message> MESSAGES = List.of(
-      Message.builder()
-          .type(MessageType.COMPLEMENT)
-          .answer(
-              Answer.builder().build()
-          )
-          .build()
-  );
+  private static final List<Message> MESSAGES =
+      List.of(
+          Message.builder().type(MessageType.COMPLEMENT).answer(Answer.builder().build()).build());
   private static final Content CONTENT = new Content("content");
   private static final MessageId MESSAGE_ID = new MessageId("messageId");
-  @Mock
-  private SetMessagesToHandleDomainService setMessagesToHandleDomainService;
-  @Mock
-  private CertificateRepository certificateRepository;
-  @Mock
-  private MessageEventDomainService messageEventDomainService;
-  @InjectMocks
-  private AnswerComplementDomainService answerComplementDomainService;
+  @Mock private SetMessagesToHandleDomainService setMessagesToHandleDomainService;
+  @Mock private CertificateRepository certificateRepository;
+  @Mock private MessageEventDomainService messageEventDomainService;
+  @InjectMocks private AnswerComplementDomainService answerComplementDomainService;
 
   @Test
   void shallThrowExceptionIfUserDontHasNoAccessToCannotComplement() {
@@ -61,10 +70,9 @@ class AnswerComplementDomainServiceTest {
     doReturn(certificate).when(certificateRepository).getById(CERTIFICATE_ID);
     doReturn(false).when(certificate).allowTo(CANNOT_COMPLEMENT, Optional.of(ACTION_EVALUATION));
 
-    assertThrows(CertificateActionForbidden.class,
-        () -> answerComplementDomainService.answer(CERTIFICATE_ID, ACTION_EVALUATION,
-            CONTENT)
-    );
+    assertThrows(
+        CertificateActionForbidden.class,
+        () -> answerComplementDomainService.answer(CERTIFICATE_ID, ACTION_EVALUATION, CONTENT));
   }
 
   @Test
@@ -75,8 +83,7 @@ class AnswerComplementDomainServiceTest {
     doReturn(true).when(certificate).allowTo(CANNOT_COMPLEMENT, Optional.of(ACTION_EVALUATION));
     doReturn(MESSAGES).when(certificate).messages(MessageType.COMPLEMENT);
 
-    answerComplementDomainService.answer(CERTIFICATE_ID, ACTION_EVALUATION,
-        CONTENT);
+    answerComplementDomainService.answer(CERTIFICATE_ID, ACTION_EVALUATION, CONTENT);
 
     verify(certificate).answerComplement(ACTION_EVALUATION, CONTENT);
   }
@@ -86,12 +93,13 @@ class AnswerComplementDomainServiceTest {
     final var expectedCertificate = mock(MedicalCertificate.class);
 
     doReturn(expectedCertificate).when(certificateRepository).getById(CERTIFICATE_ID);
-    doReturn(true).when(expectedCertificate)
+    doReturn(true)
+        .when(expectedCertificate)
         .allowTo(CANNOT_COMPLEMENT, Optional.of(ACTION_EVALUATION));
     doReturn(MESSAGES).when(expectedCertificate).messages(MessageType.COMPLEMENT);
 
-    final var actualCertificate = answerComplementDomainService.answer(CERTIFICATE_ID,
-        ACTION_EVALUATION, CONTENT);
+    final var actualCertificate =
+        answerComplementDomainService.answer(CERTIFICATE_ID, ACTION_EVALUATION, CONTENT);
 
     assertEquals(expectedCertificate, actualCertificate);
   }
@@ -105,37 +113,29 @@ class AnswerComplementDomainServiceTest {
     doReturn(CERTIFICATE_ID).when(certificate).id();
     doReturn(true).when(certificate).allowTo(CANNOT_COMPLEMENT, Optional.of(ACTION_EVALUATION));
 
-    final var answer = Answer.builder()
-        .id(MESSAGE_ID)
-        .build();
-    doReturn(List.of(
-        Message.builder()
-            .created(LocalDateTime.now())
-            .answer(
-                answer
-            )
-            .build(),
-        Message.builder()
-            .created(LocalDateTime.now().minusDays(1))
-            .answer(
-                Answer.builder().build()
-            )
-            .build()
-    )).when(certificate).messages(MessageType.COMPLEMENT);
+    final var answer = Answer.builder().id(MESSAGE_ID).build();
+    doReturn(
+            List.of(
+                Message.builder().created(LocalDateTime.now()).answer(answer).build(),
+                Message.builder()
+                    .created(LocalDateTime.now().minusDays(1))
+                    .answer(Answer.builder().build())
+                    .build()))
+        .when(certificate)
+        .messages(MessageType.COMPLEMENT);
 
-    answerComplementDomainService.answer(CERTIFICATE_ID, ACTION_EVALUATION,
-        CONTENT);
+    answerComplementDomainService.answer(CERTIFICATE_ID, ACTION_EVALUATION, CONTENT);
 
     verify(messageEventDomainService).publish(certificateEventCaptor.capture());
 
     assertAll(
-        () -> assertEquals(MessageEventType.ANSWER_COMPLEMENT,
-            certificateEventCaptor.getValue().type()),
+        () ->
+            assertEquals(
+                MessageEventType.ANSWER_COMPLEMENT, certificateEventCaptor.getValue().type()),
         () -> assertEquals(MESSAGE_ID, certificateEventCaptor.getValue().messageId()),
         () -> assertEquals(CERTIFICATE_ID, certificateEventCaptor.getValue().certificateId()),
         () -> assertEquals(ACTION_EVALUATION, certificateEventCaptor.getValue().actionEvaluation()),
-        () -> assertTrue(certificateEventCaptor.getValue().duration() >= 0)
-    );
+        () -> assertTrue(certificateEventCaptor.getValue().duration() >= 0));
   }
 
   @Test
@@ -145,13 +145,14 @@ class AnswerComplementDomainServiceTest {
 
     doReturn(certificate).when(certificateRepository).getById(CERTIFICATE_ID);
     doReturn(false).when(certificate).allowTo(CANNOT_COMPLEMENT, Optional.of(ACTION_EVALUATION));
-    doReturn(expectedReason).when(certificate)
+    doReturn(expectedReason)
+        .when(certificate)
         .reasonNotAllowed(CANNOT_COMPLEMENT, Optional.of(ACTION_EVALUATION));
 
-    final var certificateActionForbidden = assertThrows(CertificateActionForbidden.class,
-        () -> answerComplementDomainService.answer(CERTIFICATE_ID, ACTION_EVALUATION,
-            CONTENT)
-    );
+    final var certificateActionForbidden =
+        assertThrows(
+            CertificateActionForbidden.class,
+            () -> answerComplementDomainService.answer(CERTIFICATE_ID, ACTION_EVALUATION, CONTENT));
 
     assertEquals(expectedReason, certificateActionForbidden.reason());
   }
@@ -164,8 +165,7 @@ class AnswerComplementDomainServiceTest {
     doReturn(true).when(certificate).allowTo(CANNOT_COMPLEMENT, Optional.of(ACTION_EVALUATION));
     doReturn(MESSAGES).when(certificate).messages(MessageType.COMPLEMENT);
 
-    answerComplementDomainService.answer(CERTIFICATE_ID, ACTION_EVALUATION,
-        CONTENT);
+    answerComplementDomainService.answer(CERTIFICATE_ID, ACTION_EVALUATION, CONTENT);
 
     final ArgumentCaptor<List<Message>> messagesCaptor = ArgumentCaptor.forClass(List.class);
     verify(setMessagesToHandleDomainService).handle(messagesCaptor.capture());

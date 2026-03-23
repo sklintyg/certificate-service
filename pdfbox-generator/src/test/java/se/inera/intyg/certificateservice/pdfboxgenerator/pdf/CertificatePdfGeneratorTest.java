@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.pdfboxgenerator.pdf;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,16 +52,13 @@ import se.inera.intyg.certificateservice.domain.certificatemodel.model.GeneralPd
 import se.inera.intyg.certificateservice.pdfboxgenerator.pdf.factory.CertificatePdfContextFactory;
 import se.inera.intyg.certificateservice.pdfboxgenerator.pdf.service.CertificatePdfFillService;
 
-
 @ExtendWith(MockitoExtension.class)
 class CertificatePdfGeneratorTest {
 
   private static final String ADDITIONAL_INFO_TEXT = "additionalInfoText";
 
-  @Mock
-  CertificatePdfFillService certificatePdfFillService;
-  @Mock
-  CertificatePdfContextFactory certificatePdfContextFactory;
+  @Mock CertificatePdfFillService certificatePdfFillService;
+  @Mock CertificatePdfContextFactory certificatePdfContextFactory;
 
   private PDDocument document;
 
@@ -59,8 +74,8 @@ class CertificatePdfGeneratorTest {
       document = Loader.loadPDF(inputStream.readAllBytes());
     }
 
-    certificatePdfGenerator = new CertificatePdfGenerator(certificatePdfFillService,
-        certificatePdfContextFactory);
+    certificatePdfGenerator =
+        new CertificatePdfGenerator(certificatePdfFillService, certificatePdfContextFactory);
   }
 
   @Nested
@@ -68,85 +83,79 @@ class CertificatePdfGeneratorTest {
 
     @Test
     void shouldThrowErrorIfNoPdfGeneratorForCertificateType() {
-      final var certificate = MedicalCertificate.builder()
-          .certificateModel(
-              CertificateModel.builder()
-                  .id(
-                      CertificateModelId.builder()
-                          .type(new CertificateType("NOT_IT"))
-                          .build()
-                  )
-                  .build()
-          )
-          .build();
+      final var certificate =
+          MedicalCertificate.builder()
+              .certificateModel(
+                  CertificateModel.builder()
+                      .id(CertificateModelId.builder().type(new CertificateType("NOT_IT")).build())
+                      .build())
+              .build();
 
-      final var options = PdfGeneratorOptions.builder()
-          .additionalInfoText(ADDITIONAL_INFO_TEXT)
-          .citizenFormat(false)
-          .hiddenElements(Collections.emptyList())
-          .build();
+      final var options =
+          PdfGeneratorOptions.builder()
+              .additionalInfoText(ADDITIONAL_INFO_TEXT)
+              .citizenFormat(false)
+              .hiddenElements(Collections.emptyList())
+              .build();
 
       assertThrows(
           IllegalArgumentException.class,
-          () -> certificatePdfGenerator.generate(certificate, options)
-      );
+          () -> certificatePdfGenerator.generate(certificate, options));
     }
 
     @Test
     void shouldThrowErrorIfPdfSpecificationIsWrong() {
-      final var certificateModel = fk7210certificateModelBuilder()
-          .pdfSpecification(GeneralPdfSpecification.builder().build()).build();
+      final var certificateModel =
+          fk7210certificateModelBuilder()
+              .pdfSpecification(GeneralPdfSpecification.builder().build())
+              .build();
 
-      final var certificate = fk7210CertificateBuilder()
-          .certificateModel(certificateModel)
-          .build();
+      final var certificate = fk7210CertificateBuilder().certificateModel(certificateModel).build();
 
-      final var options = PdfGeneratorOptions.builder()
-          .additionalInfoText(ADDITIONAL_INFO_TEXT)
-          .citizenFormat(false)
-          .hiddenElements(Collections.emptyList())
-          .build();
+      final var options =
+          PdfGeneratorOptions.builder()
+              .additionalInfoText(ADDITIONAL_INFO_TEXT)
+              .citizenFormat(false)
+              .hiddenElements(Collections.emptyList())
+              .build();
 
-      assertThrows(IllegalArgumentException.class,
+      assertThrows(
+          IllegalArgumentException.class,
           () -> certificatePdfGenerator.generate(certificate, options));
     }
 
     @Test
     void shouldThrowErrorIfHidingElementsInTemplatePdf() {
-      final var options = PdfGeneratorOptions.builder()
-          .additionalInfoText(ADDITIONAL_INFO_TEXT)
-          .citizenFormat(false)
-          .hiddenElements(
-              Collections.singletonList(new ElementId("1234"))
-          )
-          .build();
+      final var options =
+          PdfGeneratorOptions.builder()
+              .additionalInfoText(ADDITIONAL_INFO_TEXT)
+              .citizenFormat(false)
+              .hiddenElements(Collections.singletonList(new ElementId("1234")))
+              .build();
       final var certificate = buildFK7210Certificate();
 
-      assertThrows(IllegalArgumentException.class,
-          () -> certificatePdfGenerator.generate(
-              certificate,
-              options
-          ));
+      assertThrows(
+          IllegalArgumentException.class,
+          () -> certificatePdfGenerator.generate(certificate, options));
     }
 
     @Test
     void shouldThrowErrorIfPdfFillingFails() {
-      when(certificatePdfContextFactory.create(any(), any(), any())).thenThrow(
-          new IllegalStateException("Creation failed"));
+      when(certificatePdfContextFactory.create(any(), any(), any()))
+          .thenThrow(new IllegalStateException("Creation failed"));
 
-      final var options = PdfGeneratorOptions.builder()
-          .additionalInfoText(ADDITIONAL_INFO_TEXT)
-          .citizenFormat(false)
-          .hiddenElements(Collections.emptyList())
-          .build();
+      final var options =
+          PdfGeneratorOptions.builder()
+              .additionalInfoText(ADDITIONAL_INFO_TEXT)
+              .citizenFormat(false)
+              .hiddenElements(Collections.emptyList())
+              .build();
 
       final var certificate = buildFK7210Certificate();
 
-      assertThrows(IllegalStateException.class,
-          () -> certificatePdfGenerator.generate(
-              certificate,
-              options
-          ));
+      assertThrows(
+          IllegalStateException.class,
+          () -> certificatePdfGenerator.generate(certificate, options));
     }
   }
 
@@ -157,12 +166,14 @@ class CertificatePdfGeneratorTest {
     void setup() throws IOException {
       final var mockContext = mock(CertificatePdfContext.class);
       when(mockContext.getDocument()).thenReturn(document);
-      when(mockContext.toByteArray()).thenAnswer(invocation -> {
-        try (var outputStream = new java.io.ByteArrayOutputStream()) {
-          document.save(outputStream);
-          return outputStream.toByteArray();
-        }
-      });
+      when(mockContext.toByteArray())
+          .thenAnswer(
+              invocation -> {
+                try (var outputStream = new java.io.ByteArrayOutputStream()) {
+                  document.save(outputStream);
+                  return outputStream.toByteArray();
+                }
+              });
       doNothing().when(mockContext).close();
       when(certificatePdfContextFactory.create(any(), any(), any())).thenReturn(mockContext);
       when(certificatePdfFillService.fillDocument(any(CertificatePdfContext.class)))
@@ -174,35 +185,32 @@ class CertificatePdfGeneratorTest {
 
       @Test
       void shouldReturnPDF() {
-        final var options = PdfGeneratorOptions.builder()
-            .additionalInfoText(ADDITIONAL_INFO_TEXT)
-            .citizenFormat(false)
-            .hiddenElements(Collections.emptyList())
-            .build();
+        final var options =
+            PdfGeneratorOptions.builder()
+                .additionalInfoText(ADDITIONAL_INFO_TEXT)
+                .citizenFormat(false)
+                .hiddenElements(Collections.emptyList())
+                .build();
 
-        final var pdf = certificatePdfGenerator.generate(
-            buildFK7210Certificate(),
-            options
-        );
+        final var pdf = certificatePdfGenerator.generate(buildFK7210Certificate(), options);
 
         assertNotEquals(0, pdf.pdfData().length);
       }
 
       @Test
       void shouldSetCorrectFileName() {
-        final var expected = "intyg_om_graviditet_" + LocalDateTime.now()
-            .format((DateTimeFormatter.ofPattern("yy-MM-dd_HHmm")));
+        final var expected =
+            "intyg_om_graviditet_"
+                + LocalDateTime.now().format((DateTimeFormatter.ofPattern("yy-MM-dd_HHmm")));
 
-        final var options = PdfGeneratorOptions.builder()
-            .additionalInfoText(ADDITIONAL_INFO_TEXT)
-            .citizenFormat(false)
-            .hiddenElements(Collections.emptyList())
-            .build();
+        final var options =
+            PdfGeneratorOptions.builder()
+                .additionalInfoText(ADDITIONAL_INFO_TEXT)
+                .citizenFormat(false)
+                .hiddenElements(Collections.emptyList())
+                .build();
 
-        final var pdf = certificatePdfGenerator.generate(
-            buildFK7210Certificate(),
-            options
-        );
+        final var pdf = certificatePdfGenerator.generate(buildFK7210Certificate(), options);
 
         assertEquals(expected, pdf.fileName());
       }
@@ -213,35 +221,32 @@ class CertificatePdfGeneratorTest {
 
       @Test
       void shouldReturnPDF() {
-        final var options = PdfGeneratorOptions.builder()
-            .additionalInfoText(ADDITIONAL_INFO_TEXT)
-            .citizenFormat(false)
-            .hiddenElements(Collections.emptyList())
-            .build();
+        final var options =
+            PdfGeneratorOptions.builder()
+                .additionalInfoText(ADDITIONAL_INFO_TEXT)
+                .citizenFormat(false)
+                .hiddenElements(Collections.emptyList())
+                .build();
 
-        final var pdf = certificatePdfGenerator.generate(
-            buildFK7472Certificate(),
-            options
-        );
+        final var pdf = certificatePdfGenerator.generate(buildFK7472Certificate(), options);
 
         assertNotEquals(0, pdf.pdfData().length);
       }
 
       @Test
       void shouldSetCorrectFileName() {
-        final var expected = "intyg_om_tillfallig_foraldrapenning_" + LocalDateTime.now()
-            .format((DateTimeFormatter.ofPattern("yy-MM-dd_HHmm")));
+        final var expected =
+            "intyg_om_tillfallig_foraldrapenning_"
+                + LocalDateTime.now().format((DateTimeFormatter.ofPattern("yy-MM-dd_HHmm")));
 
-        final var options = PdfGeneratorOptions.builder()
-            .additionalInfoText(ADDITIONAL_INFO_TEXT)
-            .citizenFormat(false)
-            .hiddenElements(Collections.emptyList())
-            .build();
+        final var options =
+            PdfGeneratorOptions.builder()
+                .additionalInfoText(ADDITIONAL_INFO_TEXT)
+                .citizenFormat(false)
+                .hiddenElements(Collections.emptyList())
+                .build();
 
-        final var pdf = certificatePdfGenerator.generate(
-            buildFK7472Certificate(),
-            options
-        );
+        final var pdf = certificatePdfGenerator.generate(buildFK7472Certificate(), options);
 
         assertEquals(expected, pdf.fileName());
       }
@@ -249,13 +254,10 @@ class CertificatePdfGeneratorTest {
   }
 
   private Certificate buildFK7210Certificate() {
-    return fk7210CertificateBuilder()
-        .build();
+    return fk7210CertificateBuilder().build();
   }
 
   private Certificate buildFK7472Certificate() {
-    return fk7472CertificateBuilder()
-        .build();
+    return fk7472CertificateBuilder().build();
   }
 }
-

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service.converter;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -34,34 +52,51 @@ class SickLeaveConverterTest {
   private static final CertificateId CERTIFICATE_ID = new CertificateId("CERT_ID");
   private static final Code TYPE = new Code("TYPE", "CODE_SYSTEM", "CODE_SYSTEM_NAME");
   private static final HsaId SIGNING_DOCTOR_ID = new HsaId("DOCTOR_ID");
-  private static final Name SIGNING_DOCTOR_NAME = Name.builder().firstName("FIRST_NAME")
-      .middleName("MIDDLE_NAME").lastName("LAST_NAME").build();
+  private static final Name SIGNING_DOCTOR_NAME =
+      Name.builder()
+          .firstName("FIRST_NAME")
+          .middleName("MIDDLE_NAME")
+          .lastName("LAST_NAME")
+          .build();
   private static final LocalDateTime SIGNING_DATE_TIME = LocalDateTime.of(2023, 1, 1, 10, 0);
   private static final HsaId ISSUING_UNIT_ID = new HsaId("ISSUING_UNIT_ID");
   private static final UnitName ISSUING_UNIT_NAME = new UnitName("ISSUING_UNIT_NAME");
   private static final HsaId CARE_GIVER_ID = new HsaId("CG_ID");
-  private static final PersonId CIVIC_REGISTRATION_NUMBER = PersonId.builder().id("191212121212")
-      .build();
-  private static final Name PATIENT_NAME = Name.builder().firstName("PATIENT_NAME")
-      .lastName("PATIENT_NAME").middleName("PATIENT_MIDDLE_NAME").build();
-  private static final ElementValueDiagnosis DIAGNOSIS_CODE = ElementValueDiagnosis.builder()
-      .code("D1").build();
-  private static final ElementValueDiagnosis BI_DIAGNOSE_CODE1 = ElementValueDiagnosis.builder()
-      .code("B1").build();
-  private static final ElementValueDiagnosis BI_DIAGNOSE_CODE2 = ElementValueDiagnosis.builder()
-      .code("B2").build();
-  private static final List<ElementValueCode> EMPLOYMENT = List.of(
-      ElementValueCode.builder().code("EMP1").build(),
-      ElementValueCode.builder().code("EMP2").build());
-  private static final Revoked DELETED = Revoked.builder()
-      .revokedBy(Staff.builder().name(SIGNING_DOCTOR_NAME).hsaId(ISSUING_UNIT_ID).build())
-      .revokedAt(LocalDateTime.of(2050, 1, 1, 1, 1, 0)).build();
-  private static final List<DateRange> WORK_CAPACITIES = List.of(
-      DateRange.builder().dateRangeId(new FieldId("10")).from(LocalDate.of(2023, 1, 1))
-          .to(LocalDate.of(2023, 1, 10)).build(),
-      DateRange.builder().dateRangeId(new FieldId("HELT_NEDSATT")).from(LocalDate.of(2023, 1, 10))
-          .to(LocalDate.of(2023, 1, 15)).build()
-  );
+  private static final PersonId CIVIC_REGISTRATION_NUMBER =
+      PersonId.builder().id("191212121212").build();
+  private static final Name PATIENT_NAME =
+      Name.builder()
+          .firstName("PATIENT_NAME")
+          .lastName("PATIENT_NAME")
+          .middleName("PATIENT_MIDDLE_NAME")
+          .build();
+  private static final ElementValueDiagnosis DIAGNOSIS_CODE =
+      ElementValueDiagnosis.builder().code("D1").build();
+  private static final ElementValueDiagnosis BI_DIAGNOSE_CODE1 =
+      ElementValueDiagnosis.builder().code("B1").build();
+  private static final ElementValueDiagnosis BI_DIAGNOSE_CODE2 =
+      ElementValueDiagnosis.builder().code("B2").build();
+  private static final List<ElementValueCode> EMPLOYMENT =
+      List.of(
+          ElementValueCode.builder().code("EMP1").build(),
+          ElementValueCode.builder().code("EMP2").build());
+  private static final Revoked DELETED =
+      Revoked.builder()
+          .revokedBy(Staff.builder().name(SIGNING_DOCTOR_NAME).hsaId(ISSUING_UNIT_ID).build())
+          .revokedAt(LocalDateTime.of(2050, 1, 1, 1, 1, 0))
+          .build();
+  private static final List<DateRange> WORK_CAPACITIES =
+      List.of(
+          DateRange.builder()
+              .dateRangeId(new FieldId("10"))
+              .from(LocalDate.of(2023, 1, 1))
+              .to(LocalDate.of(2023, 1, 10))
+              .build(),
+          DateRange.builder()
+              .dateRangeId(new FieldId("HELT_NEDSATT"))
+              .from(LocalDate.of(2023, 1, 10))
+              .to(LocalDate.of(2023, 1, 15))
+              .build());
   private static final boolean TEST_CERTIFICATE = false;
 
   private SickLeaveConverter converter;
@@ -72,25 +107,26 @@ class SickLeaveConverterTest {
   void setUp() {
     converter = new SickLeaveConverter();
 
-    sickLeaveCertificate = SickLeaveCertificate.builder()
-        .id(CERTIFICATE_ID)
-        .type(TYPE)
-        .signingDoctorId(SIGNING_DOCTOR_ID)
-        .signingDoctorName(SIGNING_DOCTOR_NAME)
-        .signingDateTime(SIGNING_DATE_TIME)
-        .issuingUnitId(ISSUING_UNIT_ID)
-        .issuingUnitName(ISSUING_UNIT_NAME)
-        .careGiverId(CARE_GIVER_ID)
-        .civicRegistrationNumber(CIVIC_REGISTRATION_NUMBER)
-        .patientName(PATIENT_NAME)
-        .diagnoseCode(DIAGNOSIS_CODE)
-        .biDiagnoseCode1(BI_DIAGNOSE_CODE1)
-        .biDiagnoseCode2(BI_DIAGNOSE_CODE2)
-        .employment(EMPLOYMENT)
-        .deleted(DELETED)
-        .workCapacities(WORK_CAPACITIES)
-        .testCertificate(TEST_CERTIFICATE)
-        .build();
+    sickLeaveCertificate =
+        SickLeaveCertificate.builder()
+            .id(CERTIFICATE_ID)
+            .type(TYPE)
+            .signingDoctorId(SIGNING_DOCTOR_ID)
+            .signingDoctorName(SIGNING_DOCTOR_NAME)
+            .signingDateTime(SIGNING_DATE_TIME)
+            .issuingUnitId(ISSUING_UNIT_ID)
+            .issuingUnitName(ISSUING_UNIT_NAME)
+            .careGiverId(CARE_GIVER_ID)
+            .civicRegistrationNumber(CIVIC_REGISTRATION_NUMBER)
+            .patientName(PATIENT_NAME)
+            .diagnoseCode(DIAGNOSIS_CODE)
+            .biDiagnoseCode1(BI_DIAGNOSE_CODE1)
+            .biDiagnoseCode2(BI_DIAGNOSE_CODE2)
+            .employment(EMPLOYMENT)
+            .deleted(DELETED)
+            .workCapacities(WORK_CAPACITIES)
+            .testCertificate(TEST_CERTIFICATE)
+            .build();
   }
 
   @Nested
@@ -160,7 +196,6 @@ class SickLeaveConverterTest {
           () -> assertEquals("D1", dto.getDiagnoseCode()),
           () -> assertEquals("B1", dto.getBiDiagnoseCode1()),
           () -> assertEquals("B2", dto.getBiDiagnoseCode2()));
-
     }
 
     @Test
@@ -199,34 +234,34 @@ class SickLeaveConverterTest {
       assertEquals("2023-01-10", wc1.getToDate());
     }
 
-
     @Test
     void shallConvertPartialWorkCapacityWithoutFrom() {
-      sickLeaveCertificate = SickLeaveCertificate.builder()
-          .id(CERTIFICATE_ID)
-          .type(TYPE)
-          .signingDoctorId(SIGNING_DOCTOR_ID)
-          .signingDoctorName(SIGNING_DOCTOR_NAME)
-          .signingDateTime(SIGNING_DATE_TIME)
-          .issuingUnitId(ISSUING_UNIT_ID)
-          .issuingUnitName(ISSUING_UNIT_NAME)
-          .careGiverId(CARE_GIVER_ID)
-          .civicRegistrationNumber(CIVIC_REGISTRATION_NUMBER)
-          .patientName(PATIENT_NAME)
-          .diagnoseCode(DIAGNOSIS_CODE)
-          .biDiagnoseCode1(BI_DIAGNOSE_CODE1)
-          .biDiagnoseCode2(BI_DIAGNOSE_CODE2)
-          .employment(EMPLOYMENT)
-          .deleted(DELETED)
-          .workCapacities(
-              List.of(
-                  DateRange.builder().dateRangeId(new FieldId("10"))
-                      .to(LocalDate.of(2023, 1, 10)).build()
-              )
-          )
-          .testCertificate(TEST_CERTIFICATE)
-          .extendsCertificateId(CERTIFICATE_ID.id())
-          .build();
+      sickLeaveCertificate =
+          SickLeaveCertificate.builder()
+              .id(CERTIFICATE_ID)
+              .type(TYPE)
+              .signingDoctorId(SIGNING_DOCTOR_ID)
+              .signingDoctorName(SIGNING_DOCTOR_NAME)
+              .signingDateTime(SIGNING_DATE_TIME)
+              .issuingUnitId(ISSUING_UNIT_ID)
+              .issuingUnitName(ISSUING_UNIT_NAME)
+              .careGiverId(CARE_GIVER_ID)
+              .civicRegistrationNumber(CIVIC_REGISTRATION_NUMBER)
+              .patientName(PATIENT_NAME)
+              .diagnoseCode(DIAGNOSIS_CODE)
+              .biDiagnoseCode1(BI_DIAGNOSE_CODE1)
+              .biDiagnoseCode2(BI_DIAGNOSE_CODE2)
+              .employment(EMPLOYMENT)
+              .deleted(DELETED)
+              .workCapacities(
+                  List.of(
+                      DateRange.builder()
+                          .dateRangeId(new FieldId("10"))
+                          .to(LocalDate.of(2023, 1, 10))
+                          .build()))
+              .testCertificate(TEST_CERTIFICATE)
+              .extendsCertificateId(CERTIFICATE_ID.id())
+              .build();
 
       final var dto = converter.toSickLeaveCertificate(sickLeaveCertificate);
 
@@ -238,31 +273,32 @@ class SickLeaveConverterTest {
 
     @Test
     void shallConvertPartialWorkCapacityWithoutTo() {
-      sickLeaveCertificate = SickLeaveCertificate.builder()
-          .id(CERTIFICATE_ID)
-          .type(TYPE)
-          .signingDoctorId(SIGNING_DOCTOR_ID)
-          .signingDoctorName(SIGNING_DOCTOR_NAME)
-          .signingDateTime(SIGNING_DATE_TIME)
-          .issuingUnitId(ISSUING_UNIT_ID)
-          .issuingUnitName(ISSUING_UNIT_NAME)
-          .careGiverId(CARE_GIVER_ID)
-          .civicRegistrationNumber(CIVIC_REGISTRATION_NUMBER)
-          .patientName(PATIENT_NAME)
-          .diagnoseCode(DIAGNOSIS_CODE)
-          .biDiagnoseCode1(BI_DIAGNOSE_CODE1)
-          .biDiagnoseCode2(BI_DIAGNOSE_CODE2)
-          .employment(EMPLOYMENT)
-          .deleted(DELETED)
-          .workCapacities(
-              List.of(
-                  DateRange.builder().dateRangeId(new FieldId("10"))
-                      .from(LocalDate.of(2023, 1, 10)).build()
-              )
-          )
-          .testCertificate(TEST_CERTIFICATE)
-          .extendsCertificateId(CERTIFICATE_ID.id())
-          .build();
+      sickLeaveCertificate =
+          SickLeaveCertificate.builder()
+              .id(CERTIFICATE_ID)
+              .type(TYPE)
+              .signingDoctorId(SIGNING_DOCTOR_ID)
+              .signingDoctorName(SIGNING_DOCTOR_NAME)
+              .signingDateTime(SIGNING_DATE_TIME)
+              .issuingUnitId(ISSUING_UNIT_ID)
+              .issuingUnitName(ISSUING_UNIT_NAME)
+              .careGiverId(CARE_GIVER_ID)
+              .civicRegistrationNumber(CIVIC_REGISTRATION_NUMBER)
+              .patientName(PATIENT_NAME)
+              .diagnoseCode(DIAGNOSIS_CODE)
+              .biDiagnoseCode1(BI_DIAGNOSE_CODE1)
+              .biDiagnoseCode2(BI_DIAGNOSE_CODE2)
+              .employment(EMPLOYMENT)
+              .deleted(DELETED)
+              .workCapacities(
+                  List.of(
+                      DateRange.builder()
+                          .dateRangeId(new FieldId("10"))
+                          .from(LocalDate.of(2023, 1, 10))
+                          .build()))
+              .testCertificate(TEST_CERTIFICATE)
+              .extendsCertificateId(CERTIFICATE_ID.id())
+              .build();
 
       final var dto = converter.toSickLeaveCertificate(sickLeaveCertificate);
 
@@ -288,26 +324,27 @@ class SickLeaveConverterTest {
     @Test
     void shouldHandleNullBiDiagnoseCodes() {
 
-      sickLeaveCertificate = SickLeaveCertificate.builder()
-          .id(CERTIFICATE_ID)
-          .type(TYPE)
-          .signingDoctorId(SIGNING_DOCTOR_ID)
-          .signingDoctorName(SIGNING_DOCTOR_NAME)
-          .signingDateTime(SIGNING_DATE_TIME)
-          .issuingUnitId(ISSUING_UNIT_ID)
-          .issuingUnitName(ISSUING_UNIT_NAME)
-          .careGiverId(CARE_GIVER_ID)
-          .civicRegistrationNumber(CIVIC_REGISTRATION_NUMBER)
-          .patientName(PATIENT_NAME)
-          .diagnoseCode(DIAGNOSIS_CODE)
-          .biDiagnoseCode1(null)
-          .biDiagnoseCode2(null)
-          .employment(EMPLOYMENT)
-          .deleted(DELETED)
-          .workCapacities(WORK_CAPACITIES)
-          .testCertificate(TEST_CERTIFICATE)
-          .extendsCertificateId(CERTIFICATE_ID.id())
-          .build();
+      sickLeaveCertificate =
+          SickLeaveCertificate.builder()
+              .id(CERTIFICATE_ID)
+              .type(TYPE)
+              .signingDoctorId(SIGNING_DOCTOR_ID)
+              .signingDoctorName(SIGNING_DOCTOR_NAME)
+              .signingDateTime(SIGNING_DATE_TIME)
+              .issuingUnitId(ISSUING_UNIT_ID)
+              .issuingUnitName(ISSUING_UNIT_NAME)
+              .careGiverId(CARE_GIVER_ID)
+              .civicRegistrationNumber(CIVIC_REGISTRATION_NUMBER)
+              .patientName(PATIENT_NAME)
+              .diagnoseCode(DIAGNOSIS_CODE)
+              .biDiagnoseCode1(null)
+              .biDiagnoseCode2(null)
+              .employment(EMPLOYMENT)
+              .deleted(DELETED)
+              .workCapacities(WORK_CAPACITIES)
+              .testCertificate(TEST_CERTIFICATE)
+              .extendsCertificateId(CERTIFICATE_ID.id())
+              .build();
 
       final var dto = converter.toSickLeaveCertificate(sickLeaveCertificate);
 
@@ -318,26 +355,27 @@ class SickLeaveConverterTest {
     @Test
     void shouldHandleNullMainDiagnoseCodes() {
 
-      sickLeaveCertificate = SickLeaveCertificate.builder()
-          .id(CERTIFICATE_ID)
-          .type(TYPE)
-          .signingDoctorId(SIGNING_DOCTOR_ID)
-          .signingDoctorName(SIGNING_DOCTOR_NAME)
-          .signingDateTime(SIGNING_DATE_TIME)
-          .issuingUnitId(ISSUING_UNIT_ID)
-          .issuingUnitName(ISSUING_UNIT_NAME)
-          .careGiverId(CARE_GIVER_ID)
-          .civicRegistrationNumber(CIVIC_REGISTRATION_NUMBER)
-          .patientName(PATIENT_NAME)
-          .diagnoseCode(null)
-          .biDiagnoseCode1(BI_DIAGNOSE_CODE1)
-          .biDiagnoseCode2(BI_DIAGNOSE_CODE2)
-          .employment(EMPLOYMENT)
-          .deleted(DELETED)
-          .workCapacities(WORK_CAPACITIES)
-          .testCertificate(TEST_CERTIFICATE)
-          .extendsCertificateId(CERTIFICATE_ID.id())
-          .build();
+      sickLeaveCertificate =
+          SickLeaveCertificate.builder()
+              .id(CERTIFICATE_ID)
+              .type(TYPE)
+              .signingDoctorId(SIGNING_DOCTOR_ID)
+              .signingDoctorName(SIGNING_DOCTOR_NAME)
+              .signingDateTime(SIGNING_DATE_TIME)
+              .issuingUnitId(ISSUING_UNIT_ID)
+              .issuingUnitName(ISSUING_UNIT_NAME)
+              .careGiverId(CARE_GIVER_ID)
+              .civicRegistrationNumber(CIVIC_REGISTRATION_NUMBER)
+              .patientName(PATIENT_NAME)
+              .diagnoseCode(null)
+              .biDiagnoseCode1(BI_DIAGNOSE_CODE1)
+              .biDiagnoseCode2(BI_DIAGNOSE_CODE2)
+              .employment(EMPLOYMENT)
+              .deleted(DELETED)
+              .workCapacities(WORK_CAPACITIES)
+              .testCertificate(TEST_CERTIFICATE)
+              .extendsCertificateId(CERTIFICATE_ID.id())
+              .build();
 
       final var dto = converter.toSickLeaveCertificate(sickLeaveCertificate);
 
@@ -354,18 +392,18 @@ class SickLeaveConverterTest {
 
     @Test
     void shouldConvertWorkCapacityEnum() {
-      final var expected = List.of(
-          SickLeaveCertificateWorkCapacityDTO.builder()
-              .capacityPercentage(10)
-              .fromDate("2023-01-01")
-              .toDate("2023-01-10")
-              .build(),
-          SickLeaveCertificateWorkCapacityDTO.builder()
-              .capacityPercentage(100)
-              .fromDate("2023-01-10")
-              .toDate("2023-01-15")
-              .build()
-      );
+      final var expected =
+          List.of(
+              SickLeaveCertificateWorkCapacityDTO.builder()
+                  .capacityPercentage(10)
+                  .fromDate("2023-01-01")
+                  .toDate("2023-01-10")
+                  .build(),
+              SickLeaveCertificateWorkCapacityDTO.builder()
+                  .capacityPercentage(100)
+                  .fromDate("2023-01-10")
+                  .toDate("2023-01-15")
+                  .build());
 
       final var dto = converter.toSickLeaveCertificate(sickLeaveCertificate);
 
@@ -374,26 +412,27 @@ class SickLeaveConverterTest {
 
     @Test
     void shouldConvertExtendsCertificateId() {
-      sickLeaveCertificate = SickLeaveCertificate.builder()
-          .id(CERTIFICATE_ID)
-          .type(TYPE)
-          .signingDoctorId(SIGNING_DOCTOR_ID)
-          .signingDoctorName(SIGNING_DOCTOR_NAME)
-          .signingDateTime(SIGNING_DATE_TIME)
-          .issuingUnitId(ISSUING_UNIT_ID)
-          .issuingUnitName(ISSUING_UNIT_NAME)
-          .careGiverId(CARE_GIVER_ID)
-          .civicRegistrationNumber(CIVIC_REGISTRATION_NUMBER)
-          .patientName(PATIENT_NAME)
-          .diagnoseCode(DIAGNOSIS_CODE)
-          .biDiagnoseCode1(BI_DIAGNOSE_CODE1)
-          .biDiagnoseCode2(BI_DIAGNOSE_CODE2)
-          .employment(EMPLOYMENT)
-          .deleted(DELETED)
-          .workCapacities(WORK_CAPACITIES)
-          .testCertificate(TEST_CERTIFICATE)
-          .extendsCertificateId("EXTENDS_CERT_ID")
-          .build();
+      sickLeaveCertificate =
+          SickLeaveCertificate.builder()
+              .id(CERTIFICATE_ID)
+              .type(TYPE)
+              .signingDoctorId(SIGNING_DOCTOR_ID)
+              .signingDoctorName(SIGNING_DOCTOR_NAME)
+              .signingDateTime(SIGNING_DATE_TIME)
+              .issuingUnitId(ISSUING_UNIT_ID)
+              .issuingUnitName(ISSUING_UNIT_NAME)
+              .careGiverId(CARE_GIVER_ID)
+              .civicRegistrationNumber(CIVIC_REGISTRATION_NUMBER)
+              .patientName(PATIENT_NAME)
+              .diagnoseCode(DIAGNOSIS_CODE)
+              .biDiagnoseCode1(BI_DIAGNOSE_CODE1)
+              .biDiagnoseCode2(BI_DIAGNOSE_CODE2)
+              .employment(EMPLOYMENT)
+              .deleted(DELETED)
+              .workCapacities(WORK_CAPACITIES)
+              .testCertificate(TEST_CERTIFICATE)
+              .extendsCertificateId("EXTENDS_CERT_ID")
+              .build();
 
       final var dto = converter.toSickLeaveCertificate(sickLeaveCertificate);
 
@@ -402,26 +441,27 @@ class SickLeaveConverterTest {
 
     @Test
     void shouldHandleNullExtendsCertificateId() {
-      sickLeaveCertificate = SickLeaveCertificate.builder()
-          .id(CERTIFICATE_ID)
-          .type(TYPE)
-          .signingDoctorId(SIGNING_DOCTOR_ID)
-          .signingDoctorName(SIGNING_DOCTOR_NAME)
-          .signingDateTime(SIGNING_DATE_TIME)
-          .issuingUnitId(ISSUING_UNIT_ID)
-          .issuingUnitName(ISSUING_UNIT_NAME)
-          .careGiverId(CARE_GIVER_ID)
-          .civicRegistrationNumber(CIVIC_REGISTRATION_NUMBER)
-          .patientName(PATIENT_NAME)
-          .diagnoseCode(DIAGNOSIS_CODE)
-          .biDiagnoseCode1(BI_DIAGNOSE_CODE1)
-          .biDiagnoseCode2(BI_DIAGNOSE_CODE2)
-          .employment(EMPLOYMENT)
-          .deleted(DELETED)
-          .workCapacities(WORK_CAPACITIES)
-          .testCertificate(TEST_CERTIFICATE)
-          .extendsCertificateId(null)
-          .build();
+      sickLeaveCertificate =
+          SickLeaveCertificate.builder()
+              .id(CERTIFICATE_ID)
+              .type(TYPE)
+              .signingDoctorId(SIGNING_DOCTOR_ID)
+              .signingDoctorName(SIGNING_DOCTOR_NAME)
+              .signingDateTime(SIGNING_DATE_TIME)
+              .issuingUnitId(ISSUING_UNIT_ID)
+              .issuingUnitName(ISSUING_UNIT_NAME)
+              .careGiverId(CARE_GIVER_ID)
+              .civicRegistrationNumber(CIVIC_REGISTRATION_NUMBER)
+              .patientName(PATIENT_NAME)
+              .diagnoseCode(DIAGNOSIS_CODE)
+              .biDiagnoseCode1(BI_DIAGNOSE_CODE1)
+              .biDiagnoseCode2(BI_DIAGNOSE_CODE2)
+              .employment(EMPLOYMENT)
+              .deleted(DELETED)
+              .workCapacities(WORK_CAPACITIES)
+              .testCertificate(TEST_CERTIFICATE)
+              .extendsCertificateId(null)
+              .build();
 
       final var dto = converter.toSickLeaveCertificate(sickLeaveCertificate);
 
@@ -496,7 +536,6 @@ class SickLeaveConverterTest {
           () -> assertEquals("D1", dto.getDiagnoseCode()),
           () -> assertEquals("B1", dto.getSecondaryDiagnoseCodes().getFirst()),
           () -> assertEquals("B2", dto.getSecondaryDiagnoseCodes().get(1)));
-
     }
 
     @Test
@@ -518,26 +557,27 @@ class SickLeaveConverterTest {
     @Test
     void shouldHandleNullBiDiagnoseCodes() {
 
-      sickLeaveCertificate = SickLeaveCertificate.builder()
-          .id(CERTIFICATE_ID)
-          .type(TYPE)
-          .signingDoctorId(SIGNING_DOCTOR_ID)
-          .signingDoctorName(SIGNING_DOCTOR_NAME)
-          .signingDateTime(SIGNING_DATE_TIME)
-          .issuingUnitId(ISSUING_UNIT_ID)
-          .issuingUnitName(ISSUING_UNIT_NAME)
-          .careGiverId(CARE_GIVER_ID)
-          .civicRegistrationNumber(CIVIC_REGISTRATION_NUMBER)
-          .patientName(PATIENT_NAME)
-          .diagnoseCode(DIAGNOSIS_CODE)
-          .biDiagnoseCode1(null)
-          .biDiagnoseCode2(null)
-          .employment(EMPLOYMENT)
-          .deleted(DELETED)
-          .workCapacities(WORK_CAPACITIES)
-          .testCertificate(TEST_CERTIFICATE)
-          .extendsCertificateId(CERTIFICATE_ID.id())
-          .build();
+      sickLeaveCertificate =
+          SickLeaveCertificate.builder()
+              .id(CERTIFICATE_ID)
+              .type(TYPE)
+              .signingDoctorId(SIGNING_DOCTOR_ID)
+              .signingDoctorName(SIGNING_DOCTOR_NAME)
+              .signingDateTime(SIGNING_DATE_TIME)
+              .issuingUnitId(ISSUING_UNIT_ID)
+              .issuingUnitName(ISSUING_UNIT_NAME)
+              .careGiverId(CARE_GIVER_ID)
+              .civicRegistrationNumber(CIVIC_REGISTRATION_NUMBER)
+              .patientName(PATIENT_NAME)
+              .diagnoseCode(DIAGNOSIS_CODE)
+              .biDiagnoseCode1(null)
+              .biDiagnoseCode2(null)
+              .employment(EMPLOYMENT)
+              .deleted(DELETED)
+              .workCapacities(WORK_CAPACITIES)
+              .testCertificate(TEST_CERTIFICATE)
+              .extendsCertificateId(CERTIFICATE_ID.id())
+              .build();
 
       final var dto = converter.toSickLeaveCertificateItem(sickLeaveCertificate);
 
@@ -554,18 +594,18 @@ class SickLeaveConverterTest {
 
     @Test
     void shouldConvertWorkCapacity() {
-      final var expected = List.of(
-          SickLeaveCertificateItemWorkCapacityDTO.builder()
-              .reduction(10)
-              .startDate(LocalDate.of(2023, 1, 1))
-              .endDate(LocalDate.of(2023, 1, 10))
-              .build(),
-          SickLeaveCertificateItemWorkCapacityDTO.builder()
-              .reduction(100)
-              .startDate(LocalDate.of(2023, 1, 10))
-              .endDate(LocalDate.of(2023, 1, 15))
-              .build()
-      );
+      final var expected =
+          List.of(
+              SickLeaveCertificateItemWorkCapacityDTO.builder()
+                  .reduction(10)
+                  .startDate(LocalDate.of(2023, 1, 1))
+                  .endDate(LocalDate.of(2023, 1, 10))
+                  .build(),
+              SickLeaveCertificateItemWorkCapacityDTO.builder()
+                  .reduction(100)
+                  .startDate(LocalDate.of(2023, 1, 10))
+                  .endDate(LocalDate.of(2023, 1, 15))
+                  .build());
 
       final var dto = converter.toSickLeaveCertificateItem(sickLeaveCertificate);
 

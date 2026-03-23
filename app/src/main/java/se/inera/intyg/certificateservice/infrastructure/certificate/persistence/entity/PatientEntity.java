@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificate.persistence.entity;
 
 import jakarta.persistence.Column;
@@ -27,26 +45,33 @@ public class PatientEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "`key`")
   private Integer key;
+
   @Column(name = "patient_id", unique = true, updatable = false)
   private String id;
+
   @Column(name = "protected_person")
   private boolean protectedPerson;
+
   @Column(name = "deceased")
   private boolean deceased;
+
   @Column(name = "test_indicated")
   private boolean testIndicated;
+
   @Column(name = "first_name")
   private String firstName;
+
   @Column(name = "middle_name")
   private String middleName;
+
   @Column(name = "last_name")
   private String lastName;
+
   @ManyToOne
   @JoinColumn(name = "patient_id_type_key")
   private PatientIdTypeEntity type;
 
-  @Version
-  private Long version;
+  @Version private Long version;
 
   public void updateWith(PatientEntity source) {
     if (source == null) {

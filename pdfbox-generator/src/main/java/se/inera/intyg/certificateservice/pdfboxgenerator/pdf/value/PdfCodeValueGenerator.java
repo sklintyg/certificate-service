@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.pdfboxgenerator.pdf.value;
 
 import static se.inera.intyg.certificateservice.pdfboxgenerator.pdf.PdfConstants.CHECKED_BOX_VALUE;
@@ -22,8 +40,8 @@ public class PdfCodeValueGenerator implements PdfElementValue<ElementValueCode> 
   }
 
   @Override
-  public List<PdfField> generate(ElementSpecification elementSpecification,
-      ElementValueCode elementValueCode) {
+  public List<PdfField> generate(
+      ElementSpecification elementSpecification, ElementValueCode elementValueCode) {
     final var pdfConfiguration = elementSpecification.pdfConfiguration();
 
     return switch (pdfConfiguration) {
@@ -32,13 +50,14 @@ public class PdfCodeValueGenerator implements PdfElementValue<ElementValueCode> 
           getDropdownField(elementValueCode, dropdownConfig);
       case PdfConfigurationRadioCode radioConfig ->
           getRadioCodeField(elementValueCode, radioConfig);
-      default -> throw new IllegalArgumentException(
-          "Unsupported PDF configuration: " + pdfConfiguration.getClass());
+      default ->
+          throw new IllegalArgumentException(
+              "Unsupported PDF configuration: " + pdfConfiguration.getClass());
     };
   }
 
-  private List<PdfField> getDropdownField(ElementValueCode code,
-      PdfConfigurationDropdownCode dropdownConfig) {
+  private List<PdfField> getDropdownField(
+      ElementValueCode code, PdfConfigurationDropdownCode dropdownConfig) {
     if (codeIsInvalid(code) || !StringUtils.hasLength(code.code())) {
       return Collections.emptyList();
     }
@@ -48,12 +67,7 @@ public class PdfCodeValueGenerator implements PdfElementValue<ElementValueCode> 
       throw new IllegalArgumentException("Code " + code.codeId() + " not found");
     }
 
-    return List.of(
-        PdfField.builder()
-            .id(dropdownConfig.fieldId().id())
-            .value(label)
-            .build()
-    );
+    return List.of(PdfField.builder().id(dropdownConfig.fieldId().id()).value(label).build());
   }
 
   private List<PdfField> getField(ElementValueCode code, PdfConfigurationCode configuration) {
@@ -66,16 +80,11 @@ public class PdfCodeValueGenerator implements PdfElementValue<ElementValueCode> 
       throw new IllegalArgumentException("Code " + code.codeId() + " not found");
     }
 
-    return List.of(
-        PdfField.builder()
-            .id(codeId.id())
-            .value(CHECKED_BOX_VALUE)
-            .build()
-    );
+    return List.of(PdfField.builder().id(codeId.id()).value(CHECKED_BOX_VALUE).build());
   }
 
-  private List<PdfField> getRadioCodeField(ElementValueCode code,
-      PdfConfigurationRadioCode configuration) {
+  private List<PdfField> getRadioCodeField(
+      ElementValueCode code, PdfConfigurationRadioCode configuration) {
     if (codeIsInvalid(code)) {
       return Collections.emptyList();
     }
@@ -86,11 +95,7 @@ public class PdfCodeValueGenerator implements PdfElementValue<ElementValueCode> 
     }
 
     return List.of(
-        PdfField.builder()
-            .id(configuration.radioGroupFieldId().id())
-            .value(codeId.id())
-            .build()
-    );
+        PdfField.builder().id(configuration.radioGroupFieldId().id()).value(codeId.id()).build());
   }
 
   private static boolean codeIsInvalid(ElementValueCode code) {

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificate.persistence.repository;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -29,17 +47,13 @@ import se.inera.intyg.certificateservice.infrastructure.certificate.persistence.
 class MessageRelationAnswerTest {
 
   private static final MessageId MESSAGE_ID = new MessageId("messageId");
-  @Mock
-  private MessageRelationEntityRepository messageRelationEntityRepository;
+  @Mock private MessageRelationEntityRepository messageRelationEntityRepository;
 
-  @Mock
-  private MessageEntityRepository messageEntityRepository;
+  @Mock private MessageEntityRepository messageEntityRepository;
 
-  @Mock
-  private AnswerToMessageEntityMapper answerToMessageEntityMapper;
+  @Mock private AnswerToMessageEntityMapper answerToMessageEntityMapper;
 
-  @InjectMocks
-  private MessageRelationAnswer messageRelationAnswer;
+  @InjectMocks private MessageRelationAnswer messageRelationAnswer;
 
   private final Message message = mock(Message.class);
   private final MessageEntity messageEntity = mock(MessageEntity.class);
@@ -59,24 +73,24 @@ class MessageRelationAnswerTest {
   @Test
   void shallDeleteAnswerIfStatusDeletedDraft() {
     final var answerId = "expectedId";
-    when(message.answer()).thenReturn(
-        Answer.builder()
-            .id(new MessageId(answerId))
-            .status(MessageStatus.DELETED_DRAFT)
-            .build()
-    );
+    when(message.answer())
+        .thenReturn(
+            Answer.builder()
+                .id(new MessageId(answerId))
+                .status(MessageStatus.DELETED_DRAFT)
+                .build());
 
     final var answerEntity = MessageEntity.builder().build();
-    final var messageEntityRelations = MessageRelationEntity.builder()
-        .childMessage(
-            MessageEntity.builder()
-                .id(answerId)
-                .build())
-        .build();
+    final var messageEntityRelations =
+        MessageRelationEntity.builder()
+            .childMessage(MessageEntity.builder().id(answerId).build())
+            .build();
 
-    doReturn(Optional.of(answerEntity)).when(messageEntityRepository)
+    doReturn(Optional.of(answerEntity))
+        .when(messageEntityRepository)
         .findMessageEntityById(answerId);
-    doReturn(List.of(messageEntityRelations)).when(messageRelationEntityRepository)
+    doReturn(List.of(messageEntityRelations))
+        .when(messageRelationEntityRepository)
         .findByParentMessage(messageEntity);
 
     messageRelationAnswer.save(message, messageEntity);
@@ -89,24 +103,24 @@ class MessageRelationAnswerTest {
   @Test
   void shallNotDeleteRelationIfIdDontMatch() {
     final var answerId = "expectedId";
-    when(message.answer()).thenReturn(
-        Answer.builder()
-            .id(new MessageId(answerId))
-            .status(MessageStatus.DELETED_DRAFT)
-            .build()
-    );
+    when(message.answer())
+        .thenReturn(
+            Answer.builder()
+                .id(new MessageId(answerId))
+                .status(MessageStatus.DELETED_DRAFT)
+                .build());
 
     final var answerEntity = MessageEntity.builder().build();
-    final var messageEntityRelations = MessageRelationEntity.builder()
-        .childMessage(
-            MessageEntity.builder()
-                .id("wrongId")
-                .build())
-        .build();
+    final var messageEntityRelations =
+        MessageRelationEntity.builder()
+            .childMessage(MessageEntity.builder().id("wrongId").build())
+            .build();
 
-    doReturn(Optional.of(answerEntity)).when(messageEntityRepository)
+    doReturn(Optional.of(answerEntity))
+        .when(messageEntityRepository)
         .findMessageEntityById(answerId);
-    doReturn(List.of(messageEntityRelations)).when(messageRelationEntityRepository)
+    doReturn(List.of(messageEntityRelations))
+        .when(messageRelationEntityRepository)
         .findByParentMessage(messageEntity);
 
     messageRelationAnswer.save(message, messageEntity);
@@ -119,16 +133,15 @@ class MessageRelationAnswerTest {
   @Test
   void shallNotCreateNewRelationWhenAnswerExistsButMessageRelationsAlreadyContainsAnswer() {
     when(message.answer()).thenReturn(answer);
-    when(messageRelationEntityRepository.findByParentMessage(messageEntity)).thenReturn(
-        List.of(
-            MessageRelationEntity.builder()
-                .messageRelationType(
-                    MessageRelationTypeEntity.builder()
-                        .type(MessageRelationType.ANSWER.name())
-                        .build()
-                )
-                .build()
-        ));
+    when(messageRelationEntityRepository.findByParentMessage(messageEntity))
+        .thenReturn(
+            List.of(
+                MessageRelationEntity.builder()
+                    .messageRelationType(
+                        MessageRelationTypeEntity.builder()
+                            .type(MessageRelationType.ANSWER.name())
+                            .build())
+                    .build()));
     when(answer.id()).thenReturn(MESSAGE_ID);
 
     messageRelationAnswer.save(message, messageEntity);
@@ -140,19 +153,18 @@ class MessageRelationAnswerTest {
   @Test
   void shallSaveMessageRelationEntityIfNoPreviousAnswerIsPresent() {
     when(messageEntityRepository.save(any(MessageEntity.class))).thenReturn(savedAnswer);
-    when(answerToMessageEntityMapper.toEntity(any(MessageEntity.class),
-        any(Answer.class), any())).thenReturn(savedAnswer);
+    when(answerToMessageEntityMapper.toEntity(any(MessageEntity.class), any(Answer.class), any()))
+        .thenReturn(savedAnswer);
     when(message.answer()).thenReturn(answer);
-    when(messageRelationEntityRepository.findByParentMessage(messageEntity)).thenReturn(
-        List.of(
-            MessageRelationEntity.builder()
-                .messageRelationType(
-                    MessageRelationTypeEntity.builder()
-                        .type(MessageRelationType.REMINDER.name())
-                        .build()
-                )
-                .build()
-        ));
+    when(messageRelationEntityRepository.findByParentMessage(messageEntity))
+        .thenReturn(
+            List.of(
+                MessageRelationEntity.builder()
+                    .messageRelationType(
+                        MessageRelationTypeEntity.builder()
+                            .type(MessageRelationType.REMINDER.name())
+                            .build())
+                    .build()));
     when(answer.id()).thenReturn(MESSAGE_ID);
 
     messageRelationAnswer.save(message, messageEntity);

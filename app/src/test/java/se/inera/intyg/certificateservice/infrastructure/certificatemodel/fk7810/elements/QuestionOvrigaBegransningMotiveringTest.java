@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7810.elements;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -41,19 +59,19 @@ class QuestionOvrigaBegransningMotiveringTest {
 
   @Test
   void shallIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationTextArea.builder()
-        .name("Övriga aktivitetsbegränsningar")
-        .label(
-            "Beskriv aktivitetsbegränsningen. Ange grad om det är möjligt och hur aktivitetsbegränsningen kan korrigeras med hjälpmedel.")
-        .description(
-            """
+    final var expectedConfiguration =
+        ElementConfigurationTextArea.builder()
+            .name("Övriga aktivitetsbegränsningar")
+            .label(
+                "Beskriv aktivitetsbegränsningen. Ange grad om det är möjligt och hur aktivitetsbegränsningen kan korrigeras med hjälpmedel.")
+            .description(
+                """
                 Övriga aktivitetsbegränsningar kan vara begränsningar i exempelvis att genomföra
                 <ul>
                 <li>husliga och dagliga sysslor och uppgifter</li><li>handlingar och uppgifter som behövs för grundläggande och sammansatta interaktioner med människor på ett i sammanhanget lämpligt och socialt passande sätt</li><li>handlingar och uppgifter som krävs för att engagera sig i organiserat socialt liv utanför familjen - i samhällsgemenskap, socialt och medborgerligt liv</li><li>uppgifter och handlingar som krävs vid utbildning, arbete, anställning och ekonomiska transaktioner</li></ul>
-                """
-        )
-        .id(new FieldId("69.1"))
-        .build();
+                """)
+            .id(new FieldId("69.1"))
+            .build();
 
     final var element = questionOvrigaBegransningMotivering();
 
@@ -62,23 +80,23 @@ class QuestionOvrigaBegransningMotiveringTest {
 
   @Test
   void shallIncludeRules() {
-    final var expectedRules = List.of(
-        ElementRuleLimit.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.TEXT_LIMIT)
-            .limit(new RuleLimit((short) 4000))
-            .build(),
-        ElementRuleExpression.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.MANDATORY)
-            .expression(new RuleExpression("$69.1"))
-            .build(),
-        ElementRuleExpression.builder()
-            .id(new ElementId("aktivitetsbegransning"))
-            .type(ElementRuleType.SHOW)
-            .expression(new RuleExpression("$19.2"))
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleLimit.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.TEXT_LIMIT)
+                .limit(new RuleLimit((short) 4000))
+                .build(),
+            ElementRuleExpression.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.MANDATORY)
+                .expression(new RuleExpression("$69.1"))
+                .build(),
+            ElementRuleExpression.builder()
+                .id(new ElementId("aktivitetsbegransning"))
+                .type(ElementRuleType.SHOW)
+                .expression(new RuleExpression("$19.2"))
+                .build());
 
     final var element = questionOvrigaBegransningMotivering();
 
@@ -87,26 +105,22 @@ class QuestionOvrigaBegransningMotiveringTest {
 
   @Test
   void shallIncludeValidations() {
-    final var expectedValidations = List.of(
-        ElementValidationText.builder()
-            .mandatory(true)
-            .limit(4000)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationText.builder().mandatory(true).limit(4000).build());
 
     final var element = questionOvrigaBegransningMotivering();
 
     assertEquals(expectedValidations, element.validations());
   }
 
-
   @Test
   void shallIncludePdfConfiguration() {
-    final var expected = PdfConfigurationText.builder()
-        .pdfFieldId(new PdfFieldId("form1[0].Sida4[0].flt_txtOvrigaAktivitetsbegränsningar[0]"))
-        .maxLength(PDF_TEXT_FIELD_LENGTH * 4)
-        .overflowSheetFieldId(OVERFLOW_SHEET_FIELD_ID)
-        .build();
+    final var expected =
+        PdfConfigurationText.builder()
+            .pdfFieldId(new PdfFieldId("form1[0].Sida4[0].flt_txtOvrigaAktivitetsbegränsningar[0]"))
+            .maxLength(PDF_TEXT_FIELD_LENGTH * 4)
+            .overflowSheetFieldId(OVERFLOW_SHEET_FIELD_ID)
+            .build();
 
     final var element = questionOvrigaBegransningMotivering();
 
@@ -118,22 +132,17 @@ class QuestionOvrigaBegransningMotiveringTest {
 
     @Test
     void shallReturnTrueIfElementPresent() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("aktivitetsbegransning"))
-              .value(
-                  ElementValueCodeList.builder()
-                      .list(
-                          List.of(
-                              ElementValueCode.builder()
-                                  .codeId(new FieldId("19.2"))
-                                  .build()
-                          )
-                      )
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("aktivitetsbegransning"))
+                  .value(
+                      ElementValueCodeList.builder()
+                          .list(
+                              List.of(
+                                  ElementValueCode.builder().codeId(new FieldId("19.2")).build()))
+                          .build())
+                  .build());
 
       final var element = questionOvrigaBegransningMotivering();
 
@@ -144,22 +153,19 @@ class QuestionOvrigaBegransningMotiveringTest {
 
     @Test
     void shallReturnFalseIfElementPresent() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("aktivitetsbegransning"))
-              .value(
-                  ElementValueCodeList.builder()
-                      .list(
-                          List.of(
-                              ElementValueCode.builder()
-                                  .codeId(new FieldId("missing"))
-                                  .build()
-                          )
-                      )
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("aktivitetsbegransning"))
+                  .value(
+                      ElementValueCodeList.builder()
+                          .list(
+                              List.of(
+                                  ElementValueCode.builder()
+                                      .codeId(new FieldId("missing"))
+                                      .build()))
+                          .build())
+                  .build());
 
       final var element = questionOvrigaBegransningMotivering();
 
@@ -171,10 +177,11 @@ class QuestionOvrigaBegransningMotiveringTest {
 
   @Test
   void shallIncludeVisibilityConfiguration() {
-    final var expectedVisibilityConfiguration = ElementVisibilityConfigurationsCheckboxMultipleCode.builder()
-        .elementId(AKTIVITETSBAGRENSNINGAR_ID)
-        .fieldId(AKTIVITETSBAGRENSNINGAR_OVRIG_ID)
-        .build();
+    final var expectedVisibilityConfiguration =
+        ElementVisibilityConfigurationsCheckboxMultipleCode.builder()
+            .elementId(AKTIVITETSBAGRENSNINGAR_ID)
+            .fieldId(AKTIVITETSBAGRENSNINGAR_OVRIG_ID)
+            .build();
 
     final var element = questionOvrigaBegransningMotivering();
 

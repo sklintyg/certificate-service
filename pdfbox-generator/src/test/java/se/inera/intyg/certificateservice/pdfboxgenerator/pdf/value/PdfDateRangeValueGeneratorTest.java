@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.pdfboxgenerator.pdf.value;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,7 +36,8 @@ class PdfDateRangeValueGeneratorTest {
   private static final LocalDate FROM_DATE = LocalDate.now().minusDays(10);
   private static final LocalDate TO_DATE = LocalDate.now();
 
-  private static final PdfDateRangeValueGenerator pdfDateRangeValueGenerator = new PdfDateRangeValueGenerator();
+  private static final PdfDateRangeValueGenerator pdfDateRangeValueGenerator =
+      new PdfDateRangeValueGenerator();
 
   @Test
   void shouldReturnType() {
@@ -27,30 +46,22 @@ class PdfDateRangeValueGeneratorTest {
 
   @Test
   void shouldSetValuesIfDateRangeProvided() {
-    final var expected = List.of(
-        PdfField.builder()
-            .id(FROM_FIELD_ID)
-            .value(FROM_DATE.toString())
-            .build(),
-        PdfField.builder()
-            .id(TO_FIELD_ID)
-            .value(TO_DATE.toString())
-            .build()
-    );
+    final var expected =
+        List.of(
+            PdfField.builder().id(FROM_FIELD_ID).value(FROM_DATE.toString()).build(),
+            PdfField.builder().id(TO_FIELD_ID).value(TO_DATE.toString()).build());
 
-    final var elementSpecification = ElementSpecification.builder()
-        .pdfConfiguration(
-            PdfConfigurationDateRange.builder()
-                .from(new PdfFieldId(FROM_FIELD_ID))
-                .to(new PdfFieldId(TO_FIELD_ID))
-                .build()
-        )
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .pdfConfiguration(
+                PdfConfigurationDateRange.builder()
+                    .from(new PdfFieldId(FROM_FIELD_ID))
+                    .to(new PdfFieldId(TO_FIELD_ID))
+                    .build())
+            .build();
 
-    final var elementValue = ElementValueDateRange.builder()
-        .fromDate(FROM_DATE)
-        .toDate(TO_DATE)
-        .build();
+    final var elementValue =
+        ElementValueDateRange.builder().fromDate(FROM_DATE).toDate(TO_DATE).build();
 
     final var result = pdfDateRangeValueGenerator.generate(elementSpecification, elementValue);
 
@@ -59,25 +70,19 @@ class PdfDateRangeValueGeneratorTest {
 
   @Test
   void shouldSetOnlyFromDateIfToDateIsNull() {
-    final var expected = List.of(
-        PdfField.builder()
-            .id(FROM_FIELD_ID)
-            .value(FROM_DATE.toString())
-            .build()
-    );
+    final var expected =
+        List.of(PdfField.builder().id(FROM_FIELD_ID).value(FROM_DATE.toString()).build());
 
-    final var elementSpecification = ElementSpecification.builder()
-        .pdfConfiguration(
-            PdfConfigurationDateRange.builder()
-                .from(new PdfFieldId(FROM_FIELD_ID))
-                .to(new PdfFieldId(TO_FIELD_ID))
-                .build()
-        )
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .pdfConfiguration(
+                PdfConfigurationDateRange.builder()
+                    .from(new PdfFieldId(FROM_FIELD_ID))
+                    .to(new PdfFieldId(TO_FIELD_ID))
+                    .build())
+            .build();
 
-    final var elementValue = ElementValueDateRange.builder()
-        .fromDate(FROM_DATE)
-        .build();
+    final var elementValue = ElementValueDateRange.builder().fromDate(FROM_DATE).build();
 
     final var result = pdfDateRangeValueGenerator.generate(elementSpecification, elementValue);
 
@@ -86,25 +91,19 @@ class PdfDateRangeValueGeneratorTest {
 
   @Test
   void shouldSetOnlyToDateIfFromDateIsNull() {
-    final var expected = List.of(
-        PdfField.builder()
-            .id(TO_FIELD_ID)
-            .value(TO_DATE.toString())
-            .build()
-    );
+    final var expected =
+        List.of(PdfField.builder().id(TO_FIELD_ID).value(TO_DATE.toString()).build());
 
-    final var elementSpecification = ElementSpecification.builder()
-        .pdfConfiguration(
-            PdfConfigurationDateRange.builder()
-                .from(new PdfFieldId(FROM_FIELD_ID))
-                .to(new PdfFieldId(TO_FIELD_ID))
-                .build()
-        )
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .pdfConfiguration(
+                PdfConfigurationDateRange.builder()
+                    .from(new PdfFieldId(FROM_FIELD_ID))
+                    .to(new PdfFieldId(TO_FIELD_ID))
+                    .build())
+            .build();
 
-    final var elementValue = ElementValueDateRange.builder()
-        .toDate(TO_DATE)
-        .build();
+    final var elementValue = ElementValueDateRange.builder().toDate(TO_DATE).build();
 
     final var result = pdfDateRangeValueGenerator.generate(elementSpecification, elementValue);
 
@@ -113,14 +112,14 @@ class PdfDateRangeValueGeneratorTest {
 
   @Test
   void shouldReturnEmptyListIfBothDatesAreNull() {
-    final var elementSpecification = ElementSpecification.builder()
-        .pdfConfiguration(
-            PdfConfigurationDateRange.builder()
-                .from(new PdfFieldId(FROM_FIELD_ID))
-                .to(new PdfFieldId(TO_FIELD_ID))
-                .build()
-        )
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .pdfConfiguration(
+                PdfConfigurationDateRange.builder()
+                    .from(new PdfFieldId(FROM_FIELD_ID))
+                    .to(new PdfFieldId(TO_FIELD_ID))
+                    .build())
+            .build();
 
     final var elementValue = ElementValueDateRange.builder().build();
 

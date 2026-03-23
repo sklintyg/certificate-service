@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service.converter;
 
 import java.util.Collections;
@@ -17,8 +35,8 @@ import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementTy
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.MedicalInvestigationConfig;
 
 @Component
-public class CertificateDataValueConverterMedicalInvestigationList implements
-    CertificateDataValueConverter {
+public class CertificateDataValueConverterMedicalInvestigationList
+    implements CertificateDataValueConverter {
 
   private static final String LEGACY_CODE = "SYNHABILITERING";
   private static final String CURRENT_CODE = "SYNHABILITERINGEN";
@@ -29,61 +47,69 @@ public class CertificateDataValueConverterMedicalInvestigationList implements
   }
 
   @Override
-  public CertificateDataValue convert(ElementSpecification elementSpecification,
-      ElementValue elementValue) {
+  public CertificateDataValue convert(
+      ElementSpecification elementSpecification, ElementValue elementValue) {
     if (elementValue != null && !(elementValue instanceof ElementValueMedicalInvestigationList)) {
       throw new IllegalStateException(
-          "Invalid value type. Type was '%s'".formatted(elementValue.getClass())
-      );
+          "Invalid value type. Type was '%s'".formatted(elementValue.getClass()));
     }
 
-    if (!(elementSpecification.configuration() instanceof ElementConfigurationMedicalInvestigationList
-        elementConfiguration)) {
+    if (!(elementSpecification.configuration()
+        instanceof ElementConfigurationMedicalInvestigationList elementConfiguration)) {
       throw new IllegalStateException(
-          "Invalid configuration type. Type was '%s'".formatted(
-              elementSpecification.configuration().type())
-      );
+          "Invalid configuration type. Type was '%s'"
+              .formatted(elementSpecification.configuration().type()));
     }
 
-    final var valueForConversion = !isValueDefined(elementValue)
-        || ((ElementValueMedicalInvestigationList) elementValue).list().isEmpty()
-        ? elementConfiguration.emptyValue() : elementValue;
+    final var valueForConversion =
+        !isValueDefined(elementValue)
+                || ((ElementValueMedicalInvestigationList) elementValue).list().isEmpty()
+            ? elementConfiguration.emptyValue()
+            : elementValue;
 
     return CertificateDataValueMedicalInvestigationList.builder()
         .id(elementConfiguration.id().value())
         .list(
             isValueDefined(valueForConversion)
-                ? ((ElementValueMedicalInvestigationList) valueForConversion).list()
-                .stream()
-                .map(medicalInvestigation -> {
-                      final var medicalInvestigationConfig = getMedicalInvestigationConfig(
-                          valueForConversion,
-                          elementConfiguration,
-                          medicalInvestigation
-                      );
+                ? ((ElementValueMedicalInvestigationList) valueForConversion)
+                    .list().stream()
+                        .map(
+                            medicalInvestigation -> {
+                              final var medicalInvestigationConfig =
+                                  getMedicalInvestigationConfig(
+                                      valueForConversion,
+                                      elementConfiguration,
+                                      medicalInvestigation);
 
-                      return CertificateDataValueMedicalInvestigation.builder()
-                          .id(medicalInvestigationConfig.id().value())
-                          .date(CertificateDataValueDate.builder()
-                              .id(medicalInvestigationConfig.dateId().value())
-                              .date(medicalInvestigation.date().date())
-                              .build())
-                          .informationSource(CertificateDataValueText.builder()
-                              .id(medicalInvestigationConfig.informationSourceId().value())
-                              .text(medicalInvestigation.informationSource().text())
-                              .build())
-                          .investigationType(CertificateDataValueCode.builder()
-                              .id(medicalInvestigationConfig.investigationTypeId().value())
-                              .code(
-                                  mapLegacyCode(
-                                      medicalInvestigationConfig,
-                                      medicalInvestigation.investigationType().code()
-                                  )
-                              )
-                              .build())
-                          .build();
-                    }
-                ).toList()
+                              return CertificateDataValueMedicalInvestigation.builder()
+                                  .id(medicalInvestigationConfig.id().value())
+                                  .date(
+                                      CertificateDataValueDate.builder()
+                                          .id(medicalInvestigationConfig.dateId().value())
+                                          .date(medicalInvestigation.date().date())
+                                          .build())
+                                  .informationSource(
+                                      CertificateDataValueText.builder()
+                                          .id(
+                                              medicalInvestigationConfig
+                                                  .informationSourceId()
+                                                  .value())
+                                          .text(medicalInvestigation.informationSource().text())
+                                          .build())
+                                  .investigationType(
+                                      CertificateDataValueCode.builder()
+                                          .id(
+                                              medicalInvestigationConfig
+                                                  .investigationTypeId()
+                                                  .value())
+                                          .code(
+                                              mapLegacyCode(
+                                                  medicalInvestigationConfig,
+                                                  medicalInvestigation.investigationType().code()))
+                                          .build())
+                                  .build();
+                            })
+                        .toList()
                 : Collections.emptyList())
         .build();
   }
@@ -113,12 +139,12 @@ public class CertificateDataValueConverterMedicalInvestigationList implements
     return value.list() != null && !value.list().isEmpty();
   }
 
-  private static String mapLegacyCode(MedicalInvestigationConfig medicalInvestigationConfig,
-      String code) {
+  private static String mapLegacyCode(
+      MedicalInvestigationConfig medicalInvestigationConfig, String code) {
     if (code != null && medicalInvestigationConfig.legacyMapping().containsKey(code)) {
       return medicalInvestigationConfig.legacyMapping().get(code).code();
     }
-    
+
     return code;
   }
 }

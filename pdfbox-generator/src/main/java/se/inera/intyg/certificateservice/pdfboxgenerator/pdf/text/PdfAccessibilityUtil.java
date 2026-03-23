@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.pdfboxgenerator.pdf.text;
 
 import java.io.IOException;
@@ -23,22 +41,22 @@ public class PdfAccessibilityUtil {
     throw new IllegalStateException("Utility class");
   }
 
-  public static PDStructureElement createNewOverflowPageTag(PDDocument pdf, PDPage page,
-      TemplatePdfSpecification templatePdfSpecification) {
+  public static PDStructureElement createNewOverflowPageTag(
+      PDDocument pdf, PDPage page, TemplatePdfSpecification templatePdfSpecification) {
     final var structuredTree = pdf.getDocumentCatalog().getStructureTreeRoot();
-    final var documentTag = getFirstChildFromStructuredElement(
-        structuredTree.getKids(),
-        "Pdf doesnt have expected root element for tags"
-    );
+    final var documentTag =
+        getFirstChildFromStructuredElement(
+            structuredTree.getKids(), "Pdf doesnt have expected root element for tags");
 
     final var pageContainer = createNewContainer(documentTag, "Page", null);
 
     final var watermarkContainer = createNewContainer(pageContainer, StandardStructureTypes.DIV, 0);
-    templatePdfSpecification.untaggedWatermarks()
+    templatePdfSpecification
+        .untaggedWatermarks()
         .forEach(watermark -> addContentToSection(page, watermarkContainer, watermark, COSName.P));
 
     final var section = createNewContainer(pageContainer, StandardStructureTypes.SECT, 0);
-    createNewContainer(section, StandardStructureTypes.DIV, 0); //For page number
+    createNewContainer(section, StandardStructureTypes.DIV, 0); // For page number
 
     final var patientIdDiv = createNewContainer(section, StandardStructureTypes.DIV, 1);
     addContentToSection(page, patientIdDiv, "Personnummer", COSName.P);
@@ -49,20 +67,13 @@ public class PdfAccessibilityUtil {
     return pageContainer;
   }
 
-  private static void addContentToSection(PDPage page, PDStructureElement section, String text,
-      COSName name, String nameAsText) {
-    addContentToCurrentSection(
-        page,
-        null,
-        section,
-        name,
-        nameAsText,
-        text
-    );
+  private static void addContentToSection(
+      PDPage page, PDStructureElement section, String text, COSName name, String nameAsText) {
+    addContentToCurrentSection(page, null, section, name, nameAsText, text);
   }
 
-  private static void addContentToSection(PDPage page, PDStructureElement section, String text,
-      COSName name) {
+  private static void addContentToSection(
+      PDPage page, PDStructureElement section, String text, COSName name) {
     addContentToSection(page, section, text, name, name.getName());
   }
 
@@ -97,8 +108,8 @@ public class PdfAccessibilityUtil {
     return (PDStructureElement) pageTag.getKids().getLast();
   }
 
-  public static PDStructureElement getDivInQuestionSection(PDDocument pdf, int index,
-      int pageIndex) {
+  public static PDStructureElement getDivInQuestionSection(
+      PDDocument pdf, int index, int pageIndex) {
     final var structuredTree = pdf.getDocumentCatalog().getStructureTreeRoot();
 
     final var pageTag = getPageTag(structuredTree, pageIndex);
@@ -107,10 +118,11 @@ public class PdfAccessibilityUtil {
       return pageTag;
     }
 
-    final var containerWithMostKids = pageTag.getKids().stream()
-        .map(PDStructureElement.class::cast)
-        .map(PDStructureNode::getKids)
-        .max(Comparator.comparing(List::size));
+    final var containerWithMostKids =
+        pageTag.getKids().stream()
+            .map(PDStructureElement.class::cast)
+            .map(PDStructureNode::getKids)
+            .max(Comparator.comparing(List::size));
 
     if (containerWithMostKids.isEmpty() || containerWithMostKids.get().size() - 1 < index) {
       throw new IllegalStateException("Does not exist div to place tag in");
@@ -119,8 +131,7 @@ public class PdfAccessibilityUtil {
     return (PDStructureElement) containerWithMostKids.get().get(index);
   }
 
-  public static PDStructureElement getFirstChildFromStructuredElement(List<Object> kids,
-      String s) {
+  public static PDStructureElement getFirstChildFromStructuredElement(List<Object> kids, String s) {
     if (kids.isEmpty()) {
       throw new IllegalStateException(s);
     }
@@ -128,8 +139,8 @@ public class PdfAccessibilityUtil {
     return (PDStructureElement) kids.getFirst();
   }
 
-  public static PDStructureElement getChildFromStructuredElement(PDStructureElement element,
-      int index) {
+  public static PDStructureElement getChildFromStructuredElement(
+      PDStructureElement element, int index) {
     final var kids = element.getKids();
     if (kids.isEmpty()) {
       throw new IllegalStateException("Pdf doesnt have expected div/section element");
@@ -149,9 +160,8 @@ public class PdfAccessibilityUtil {
     return new PDPageContentStream(document, currentPage, AppendMode.APPEND, true, true);
   }
 
-  public static COSDictionary beginMarkedContent(PDPageContentStream contentStream, COSName name,
-      int mcid)
-      throws IOException {
+  public static COSDictionary beginMarkedContent(
+      PDPageContentStream contentStream, COSName name, int mcid) throws IOException {
     final var currentMarkedContentDictionary = new COSDictionary();
     currentMarkedContentDictionary.setName("Tag" + System.currentTimeMillis(), name.getName());
     currentMarkedContentDictionary.setInt(COSName.MCID, mcid);
@@ -159,8 +169,14 @@ public class PdfAccessibilityUtil {
     return currentMarkedContentDictionary;
   }
 
-  public static void addContentToCurrentSection(PDPage page, COSDictionary markedContentDictionary,
-      PDStructureElement currentSection, COSName name, String type, String text, boolean prepend) {
+  public static void addContentToCurrentSection(
+      PDPage page,
+      COSDictionary markedContentDictionary,
+      PDStructureElement currentSection,
+      COSName name,
+      String type,
+      String text,
+      boolean prepend) {
     final var newContent = new PDStructureElement(type, currentSection);
     newContent.setActualText(text);
     newContent.setPage(page);
@@ -179,29 +195,29 @@ public class PdfAccessibilityUtil {
     }
   }
 
-  public static void addContentToCurrentSection(PDPage page, COSDictionary markedContentDictionary,
-      PDStructureElement currentSection, COSName name, String type, String text) {
-    addContentToCurrentSection(page, markedContentDictionary, currentSection, name, type, text,
-        false);
+  public static void addContentToCurrentSection(
+      PDPage page,
+      COSDictionary markedContentDictionary,
+      PDStructureElement currentSection,
+      COSName name,
+      String type,
+      String text) {
+    addContentToCurrentSection(
+        page, markedContentDictionary, currentSection, name, type, text, false);
   }
 
   // --- Private helper functions --- //
 
   private static PDStructureElement getPageTag(PDStructureTreeRoot structuredTree, int pageIndex) {
-    final var documentTag = getFirstChildFromStructuredElement(
-        structuredTree.getKids(),
-        "Pdf doesnt have expected root element for tags"
-    );
+    final var documentTag =
+        getFirstChildFromStructuredElement(
+            structuredTree.getKids(), "Pdf doesnt have expected root element for tags");
 
-    return getChildFromStructuredElement(
-        documentTag,
-        pageIndex
-    );
+    return getChildFromStructuredElement(documentTag, pageIndex);
   }
 
-
-  private static PDStructureElement createNewContainer(PDStructureElement pdStructureElement,
-      String type, Integer index) {
+  private static PDStructureElement createNewContainer(
+      PDStructureElement pdStructureElement, String type, Integer index) {
     final var newDiv = new PDStructureElement(type, pdStructureElement);
 
     final var pageTagKids = pdStructureElement.getKids();
@@ -215,5 +231,4 @@ public class PdfAccessibilityUtil {
 
     return newDiv;
   }
-
 }

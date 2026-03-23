@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service.converter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,24 +52,25 @@ class CertificateDataValueConverterIntegerTest {
 
   @Test
   void shouldThrowExceptionIfWrongClassOfValueIfElementValueNotNull() {
-    final var configuration = ElementSpecification.builder()
-        .id(new ElementId(ELEMENT_ID))
-        .configuration(elementConfigurationInteger)
-        .build();
+    final var configuration =
+        ElementSpecification.builder()
+            .id(new ElementId(ELEMENT_ID))
+            .configuration(elementConfigurationInteger)
+            .build();
 
     final var elementValueText = ElementValueText.builder().build();
 
-    assertThrows(IllegalStateException.class,
-        () -> converter.convert(configuration, elementValueText)
-    );
+    assertThrows(
+        IllegalStateException.class, () -> converter.convert(configuration, elementValueText));
   }
 
   @Test
   void shouldNotThrowExceptionIfWrongClassOfValueIfElementValueIsNull() {
-    final var configuration = ElementSpecification.builder()
-        .id(new ElementId(ELEMENT_ID))
-        .configuration(elementConfigurationInteger)
-        .build();
+    final var configuration =
+        ElementSpecification.builder()
+            .id(new ElementId(ELEMENT_ID))
+            .configuration(elementConfigurationInteger)
+            .build();
 
     final var result = converter.convert(configuration, null);
     assertNull(((CertificateDataValueInteger) result).getValue());
@@ -59,20 +78,16 @@ class CertificateDataValueConverterIntegerTest {
 
   @Test
   void shouldThrowExceptionIfWrongClassOfConfig() {
-    final var configuration = ElementSpecification.builder()
-        .id(new ElementId(ELEMENT_ID))
-        .configuration(
-            ElementConfigurationTextField.builder()
-                .id(FIELD_ID)
-                .build()
-        )
-        .build();
+    final var configuration =
+        ElementSpecification.builder()
+            .id(new ElementId(ELEMENT_ID))
+            .configuration(ElementConfigurationTextField.builder().id(FIELD_ID).build())
+            .build();
 
     final var elementValueInteger = ElementValueInteger.builder().build();
 
-    assertThrows(IllegalStateException.class,
-        () -> converter.convert(configuration, elementValueInteger)
-    );
+    assertThrows(
+        IllegalStateException.class, () -> converter.convert(configuration, elementValueInteger));
   }
 
   @Test
@@ -82,10 +97,11 @@ class CertificateDataValueConverterIntegerTest {
 
   @Test
   void shallCreateCertificateDataIntegerValue() {
-    final var configuration = ElementSpecification.builder()
-        .id(new ElementId(ELEMENT_ID))
-        .configuration(elementConfigurationInteger)
-        .build();
+    final var configuration =
+        ElementSpecification.builder()
+            .id(new ElementId(ELEMENT_ID))
+            .configuration(elementConfigurationInteger)
+            .build();
 
     final var elementValueInteger = ElementValueInteger.builder().build();
 
@@ -96,9 +112,8 @@ class CertificateDataValueConverterIntegerTest {
 
   @Test
   void shallSetIdFromConfigurationIntegerValue() {
-    final var configuration = ElementSpecification.builder()
-        .configuration(elementConfigurationInteger)
-        .build();
+    final var configuration =
+        ElementSpecification.builder().configuration(elementConfigurationInteger).build();
 
     final var elementValueInteger = ElementValueInteger.builder().build();
 
@@ -109,28 +124,26 @@ class CertificateDataValueConverterIntegerTest {
 
   @Test
   void shallSetUnitOfMeassurementFromConfiguration() {
-    final var configuration = ElementSpecification.builder()
-        .configuration(elementConfigurationInteger)
-        .build();
+    final var configuration =
+        ElementSpecification.builder().configuration(elementConfigurationInteger).build();
 
     final var elementValueInteger = ElementValueInteger.builder().build();
 
     final var result = converter.convert(configuration, elementValueInteger);
 
-    assertEquals(UNIT_OF_MEASUREMENT,
-        ((CertificateDataValueInteger) result).getUnitOfMeasurement());
+    assertEquals(
+        UNIT_OF_MEASUREMENT, ((CertificateDataValueInteger) result).getUnitOfMeasurement());
   }
 
   @Test
   void shallSetCorrectValueForIntegerValue() {
-    final var configuration = ElementSpecification.builder()
-        .id(new ElementId(ELEMENT_ID))
-        .configuration(elementConfigurationInteger)
-        .build();
+    final var configuration =
+        ElementSpecification.builder()
+            .id(new ElementId(ELEMENT_ID))
+            .configuration(elementConfigurationInteger)
+            .build();
 
-    final var elementValueInteger = ElementValueInteger.builder()
-        .value(TEST_VALUE)
-        .build();
+    final var elementValueInteger = ElementValueInteger.builder().value(TEST_VALUE).build();
 
     final var result = converter.convert(configuration, elementValueInteger);
 
@@ -139,16 +152,18 @@ class CertificateDataValueConverterIntegerTest {
 
   @Test
   void shallSetValueToNull() {
-    final var configuration = ElementSpecification.builder()
-        .id(new ElementId(ELEMENT_ID))
-        .configuration(elementConfigurationInteger)
-        .build();
+    final var configuration =
+        ElementSpecification.builder()
+            .id(new ElementId(ELEMENT_ID))
+            .configuration(elementConfigurationInteger)
+            .build();
 
     final var elementValueInteger = ElementValueInteger.builder().build();
 
     final var result = converter.convert(configuration, elementValueInteger);
 
-    assertNull(((CertificateDataValueInteger) result).getValue(),
+    assertNull(
+        ((CertificateDataValueInteger) result).getValue(),
         "If no value is provided value should be null");
   }
 }

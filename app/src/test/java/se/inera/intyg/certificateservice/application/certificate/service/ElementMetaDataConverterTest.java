@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,16 +36,15 @@ class ElementMetaDataConverterTest {
   private static final String ZIP_CODE = "zipCode";
   private static final String CITY = "city";
   private static final String PHONE_NUMBER = "phoneNumber";
-  private static final UnitDTO UNIT_DTO = UnitDTO.builder()
-      .address(ADDRESS)
-      .zipCode(ZIP_CODE)
-      .city(CITY)
-      .phoneNumber(PHONE_NUMBER)
-      .build();
-  private static final CertificateMetadataDTO CERTIFICATE_METADATA_DTO =
-      CertificateMetadataDTO.builder()
-          .unit(UNIT_DTO)
+  private static final UnitDTO UNIT_DTO =
+      UnitDTO.builder()
+          .address(ADDRESS)
+          .zipCode(ZIP_CODE)
+          .city(CITY)
+          .phoneNumber(PHONE_NUMBER)
           .build();
+  private static final CertificateMetadataDTO CERTIFICATE_METADATA_DTO =
+      CertificateMetadataDTO.builder().unit(UNIT_DTO).build();
 
   @BeforeEach
   void setUp() {
@@ -36,60 +53,65 @@ class ElementMetaDataConverterTest {
 
   @Test
   void shallIncludeIssuingUnitAddress() {
-    final var expectedAddressElement = (ElementValueUnitContactInformation) ElementData.builder()
-        .value(ElementValueUnitContactInformation.builder()
-            .address(ADDRESS)
-            .build())
-        .build().value();
+    final var expectedAddressElement =
+        (ElementValueUnitContactInformation)
+            ElementData.builder()
+                .value(ElementValueUnitContactInformation.builder().address(ADDRESS).build())
+                .build()
+                .value();
 
-    final var actualElements = (ElementValueUnitContactInformation) converter.convert(
-            CERTIFICATE_METADATA_DTO)
-        .get(0).value();
+    final var actualElements =
+        (ElementValueUnitContactInformation)
+            converter.convert(CERTIFICATE_METADATA_DTO).get(0).value();
 
     assertEquals(actualElements.address(), expectedAddressElement.address());
   }
 
   @Test
   void shallIncludeIssuingUnitZipCode() {
-    final var expectedAddressElement = (ElementValueUnitContactInformation) ElementData.builder()
-        .value(ElementValueUnitContactInformation.builder()
-            .zipCode(ZIP_CODE)
-            .build())
-        .build().value();
+    final var expectedAddressElement =
+        (ElementValueUnitContactInformation)
+            ElementData.builder()
+                .value(ElementValueUnitContactInformation.builder().zipCode(ZIP_CODE).build())
+                .build()
+                .value();
 
-    final var actualElements = (ElementValueUnitContactInformation) converter.convert(
-            CERTIFICATE_METADATA_DTO)
-        .get(0).value();
+    final var actualElements =
+        (ElementValueUnitContactInformation)
+            converter.convert(CERTIFICATE_METADATA_DTO).get(0).value();
 
     assertEquals(actualElements.zipCode(), expectedAddressElement.zipCode());
   }
 
   @Test
   void shallIncludeIssuingUnitCity() {
-    final var expectedAddressElement = (ElementValueUnitContactInformation) ElementData.builder()
-        .value(ElementValueUnitContactInformation.builder()
-            .city(CITY)
-            .build())
-        .build().value();
+    final var expectedAddressElement =
+        (ElementValueUnitContactInformation)
+            ElementData.builder()
+                .value(ElementValueUnitContactInformation.builder().city(CITY).build())
+                .build()
+                .value();
 
-    final var actualElements = (ElementValueUnitContactInformation) converter.convert(
-            CERTIFICATE_METADATA_DTO)
-        .get(0).value();
+    final var actualElements =
+        (ElementValueUnitContactInformation)
+            converter.convert(CERTIFICATE_METADATA_DTO).get(0).value();
 
     assertEquals(actualElements.city(), expectedAddressElement.city());
   }
 
   @Test
   void shallIncludeIssuingUnitPhoneNumber() {
-    final var expectedAddressElement = (ElementValueUnitContactInformation) ElementData.builder()
-        .value(ElementValueUnitContactInformation.builder()
-            .phoneNumber(PHONE_NUMBER)
-            .build())
-        .build().value();
+    final var expectedAddressElement =
+        (ElementValueUnitContactInformation)
+            ElementData.builder()
+                .value(
+                    ElementValueUnitContactInformation.builder().phoneNumber(PHONE_NUMBER).build())
+                .build()
+                .value();
 
-    final var actualElements = (ElementValueUnitContactInformation) converter.convert(
-            CERTIFICATE_METADATA_DTO)
-        .get(0).value();
+    final var actualElements =
+        (ElementValueUnitContactInformation)
+            converter.convert(CERTIFICATE_METADATA_DTO).get(0).value();
 
     assertEquals(actualElements.phoneNumber(), expectedAddressElement.phoneNumber());
   }

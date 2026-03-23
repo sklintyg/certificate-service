@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.certificate;
 
 import jakarta.xml.bind.JAXBContext;
@@ -26,41 +44,32 @@ public class XmlGeneratorCertificateWithQAV3 implements XmlGeneratorCertificates
 
   @Override
   public Xml generate(java.util.List<Certificate> certificates) {
-    return marshall(
-        listCertificatesForCareWithQAResponseType(
-            list(certificates)
-        )
-    );
+    return marshall(listCertificatesForCareWithQAResponseType(list(certificates)));
   }
 
   private List list(java.util.List<Certificate> certificates) {
     final var list = new List();
-    certificates.forEach(certificate -> {
-      final var listItem = new ListItem();
-      listItem.setIntyg(
-          certificate.xml() == null
-              ? XmlGeneratorIntyg.intyg(certificate, null, xmlGeneratorValue)
-              : unmarshall(certificate.xml().xml()).getIntyg()
-      );
-      listItem.setSkickadeFragor(
-          toArenden(
-              certificate.messages().stream()
-                  .filter(Message::hasAuthoredStaff)
-                  .toList()
-          )
-      );
-      listItem.setMottagnaFragor(
-          toArenden(
-              certificate.messages().stream()
-                  .filter(message -> !message.hasAuthoredStaff())
-                  .toList()
-          )
-      );
-      listItem.setRef(
-          certificate.externalReference() != null ? certificate.externalReference().value() : null
-      );
-      list.getItem().add(listItem);
-    });
+    certificates.forEach(
+        certificate -> {
+          final var listItem = new ListItem();
+          listItem.setIntyg(
+              certificate.xml() == null
+                  ? XmlGeneratorIntyg.intyg(certificate, null, xmlGeneratorValue)
+                  : unmarshall(certificate.xml().xml()).getIntyg());
+          listItem.setSkickadeFragor(
+              toArenden(
+                  certificate.messages().stream().filter(Message::hasAuthoredStaff).toList()));
+          listItem.setMottagnaFragor(
+              toArenden(
+                  certificate.messages().stream()
+                      .filter(message -> !message.hasAuthoredStaff())
+                      .toList()));
+          listItem.setRef(
+              certificate.externalReference() != null
+                  ? certificate.externalReference().value()
+                  : null);
+          list.getItem().add(listItem);
+        });
 
     return list;
   }
@@ -68,21 +77,9 @@ public class XmlGeneratorCertificateWithQAV3 implements XmlGeneratorCertificates
   private Arenden toArenden(java.util.List<Message> messages) {
     final var arenden = new Arenden();
     arenden.setTotalt(messages.size());
-    arenden.setBesvarade(
-        (int) messages.stream()
-            .filter(Message::hasAnswer)
-            .count()
-    );
-    arenden.setEjBesvarade(
-        (int) messages.stream()
-            .filter(message -> !message.hasAnswer())
-            .count()
-    );
-    arenden.setHanterade(
-        (int) messages.stream()
-            .filter(Message::isHandled)
-            .count()
-    );
+    arenden.setBesvarade((int) messages.stream().filter(Message::hasAnswer).count());
+    arenden.setEjBesvarade((int) messages.stream().filter(message -> !message.hasAnswer()).count());
+    arenden.setHanterade((int) messages.stream().filter(Message::isHandled).count());
 
     return arenden;
   }
@@ -92,17 +89,18 @@ public class XmlGeneratorCertificateWithQAV3 implements XmlGeneratorCertificates
       final var context = JAXBContext.newInstance(RegisterCertificateType.class);
       final var unmarshaller = context.createUnmarshaller();
       final var stringReader = new StringReader(xml);
-      final var jaxbElement = (JAXBElement<RegisterCertificateType>) unmarshaller.unmarshal(
-          stringReader);
+      final var jaxbElement =
+          (JAXBElement<RegisterCertificateType>) unmarshaller.unmarshal(stringReader);
       return jaxbElement.getValue();
     } catch (Exception ex) {
       throw new IllegalStateException(ex);
     }
   }
 
-  private static ListCertificatesForCareWithQAResponseType listCertificatesForCareWithQAResponseType(
-      List list) {
-    final var listCertificatesForCareWithQAResponseType = new ListCertificatesForCareWithQAResponseType();
+  private static ListCertificatesForCareWithQAResponseType
+      listCertificatesForCareWithQAResponseType(List list) {
+    final var listCertificatesForCareWithQAResponseType =
+        new ListCertificatesForCareWithQAResponseType();
     listCertificatesForCareWithQAResponseType.setList(list);
     return listCertificatesForCareWithQAResponseType;
   }
@@ -110,13 +108,13 @@ public class XmlGeneratorCertificateWithQAV3 implements XmlGeneratorCertificates
   private static Xml marshall(
       ListCertificatesForCareWithQAResponseType listCertificatesForCareWithQAResponseType) {
     final var factory = new ObjectFactory();
-    final var element = factory.createListCertificatesForCareWithQAResponse(
-        listCertificatesForCareWithQAResponseType);
+    final var element =
+        factory.createListCertificatesForCareWithQAResponse(
+            listCertificatesForCareWithQAResponseType);
     try {
-      final var context = JAXBContext.newInstance(
-          ListCertificatesForCareWithQAResponseType.class,
-          DatePeriodType.class
-      );
+      final var context =
+          JAXBContext.newInstance(
+              ListCertificatesForCareWithQAResponseType.class, DatePeriodType.class);
       final var writer = new StringWriter();
       context.createMarshaller().marshal(element, writer);
       return new Xml(XmlNamespaceTrimmer.trim(writer.toString()));

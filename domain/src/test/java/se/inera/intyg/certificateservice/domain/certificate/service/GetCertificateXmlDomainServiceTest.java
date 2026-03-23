@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.certificate.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,21 +52,14 @@ class GetCertificateXmlDomainServiceTest {
   private static final Revision REVISION = new Revision(99);
   private static final ActionEvaluation ACTION_EVALUATION = ActionEvaluation.builder().build();
   public static final Xml XML = new Xml("XML");
-  public static final CertificateXml CERTIFICATE_XML = CertificateXml.builder()
-      .certificateId(CERTIFICATE_ID)
-      .revision(REVISION)
-      .xml(XML)
-      .build();
+  public static final CertificateXml CERTIFICATE_XML =
+      CertificateXml.builder().certificateId(CERTIFICATE_ID).revision(REVISION).xml(XML).build();
 
-  @Mock
-  private Certificate certificate;
-  @Mock
-  private CertificateRepository certificateRepository;
-  @Mock
-  XmlGenerator xmlGenerator;
+  @Mock private Certificate certificate;
+  @Mock private CertificateRepository certificateRepository;
+  @Mock XmlGenerator xmlGenerator;
 
-  @InjectMocks
-  GetCertificateXmlDomainService getCertificateXmlDomainService;
+  @InjectMocks GetCertificateXmlDomainService getCertificateXmlDomainService;
 
   @BeforeEach
   void setUp() {
@@ -117,20 +128,23 @@ class GetCertificateXmlDomainServiceTest {
   @Test
   void shallThrowIfNotAllowedToRead() {
     doReturn(false).when(certificate).allowTo(READ, Optional.of(ACTION_EVALUATION));
-    assertThrows(CertificateActionForbidden.class,
-        () -> getCertificateXmlDomainService.get(CERTIFICATE_ID, ACTION_EVALUATION)
-    );
+    assertThrows(
+        CertificateActionForbidden.class,
+        () -> getCertificateXmlDomainService.get(CERTIFICATE_ID, ACTION_EVALUATION));
   }
 
   @Test
   void shallIncludeReasonNotAllowedToException() {
     final var expectedReason = List.of("expectedReason");
     doReturn(false).when(certificate).allowTo(READ, Optional.of(ACTION_EVALUATION));
-    doReturn(expectedReason).when(certificate)
+    doReturn(expectedReason)
+        .when(certificate)
         .reasonNotAllowed(READ, Optional.of(ACTION_EVALUATION));
 
-    final var certificateActionForbidden = assertThrows(CertificateActionForbidden.class,
-        () -> getCertificateXmlDomainService.get(CERTIFICATE_ID, ACTION_EVALUATION));
+    final var certificateActionForbidden =
+        assertThrows(
+            CertificateActionForbidden.class,
+            () -> getCertificateXmlDomainService.get(CERTIFICATE_ID, ACTION_EVALUATION));
 
     assertEquals(expectedReason, certificateActionForbidden.reason());
   }

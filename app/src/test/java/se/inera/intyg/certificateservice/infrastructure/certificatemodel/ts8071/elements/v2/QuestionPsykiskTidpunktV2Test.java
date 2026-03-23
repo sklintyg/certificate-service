@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.v2;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -35,10 +53,12 @@ class QuestionPsykiskTidpunktV2Test {
 
   @Test
   void shouldIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationTextField.builder()
-        .name("När hade personen senast läkarkontakt med anledning av sin diagnos? Ange tidpunkt")
-        .id(new FieldId("19.3"))
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationTextField.builder()
+            .name(
+                "När hade personen senast läkarkontakt med anledning av sin diagnos? Ange tidpunkt")
+            .id(new FieldId("19.3"))
+            .build();
 
     final var element = QuestionPsykiskTidpunktV2.questionPsykiskTidpunktV2();
 
@@ -47,23 +67,23 @@ class QuestionPsykiskTidpunktV2Test {
 
   @Test
   void shouldIncludeRules() {
-    final var expectedRules = List.of(
-        ElementRuleExpression.builder()
-            .id(QUESTION_PSYKISK_V2_ID)
-            .type(ElementRuleType.SHOW)
-            .expression(new RuleExpression("$" + QUESTION_PSYKISK_V2_FIELD_ID.value()))
-            .build(),
-        ElementRuleExpression.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.MANDATORY)
-            .expression(new RuleExpression("$19.3"))
-            .build(),
-        ElementRuleLimit.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.TEXT_LIMIT)
-            .limit(new RuleLimit((short) 50))
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleExpression.builder()
+                .id(QUESTION_PSYKISK_V2_ID)
+                .type(ElementRuleType.SHOW)
+                .expression(new RuleExpression("$" + QUESTION_PSYKISK_V2_FIELD_ID.value()))
+                .build(),
+            ElementRuleExpression.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.MANDATORY)
+                .expression(new RuleExpression("$19.3"))
+                .build(),
+            ElementRuleLimit.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.TEXT_LIMIT)
+                .limit(new RuleLimit((short) 50))
+                .build());
 
     final var element = QuestionPsykiskTidpunktV2.questionPsykiskTidpunktV2();
 
@@ -72,12 +92,8 @@ class QuestionPsykiskTidpunktV2Test {
 
   @Test
   void shouldIncludeValidations() {
-    final var expectedValidations = List.of(
-        ElementValidationText.builder()
-            .mandatory(true)
-            .limit(50)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationText.builder().mandatory(true).limit(50).build());
 
     final var element = QuestionPsykiskTidpunktV2.questionPsykiskTidpunktV2();
 
@@ -96,16 +112,12 @@ class QuestionPsykiskTidpunktV2Test {
 
     @Test
     void shouldReturnTrueIfBooleanIsTrue() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(QUESTION_PSYKISK_V2_ID)
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(true)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(QUESTION_PSYKISK_V2_ID)
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
 
       final var element = QuestionPsykiskTidpunktV2.questionPsykiskTidpunktV2();
 
@@ -116,16 +128,12 @@ class QuestionPsykiskTidpunktV2Test {
 
     @Test
     void shouldReturnFalseIfElementMissing() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("other"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(true)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("other"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
 
       final var element = QuestionPsykiskTidpunktV2.questionPsykiskTidpunktV2();
 
@@ -136,16 +144,12 @@ class QuestionPsykiskTidpunktV2Test {
 
     @Test
     void shouldReturnFalseIfBooleanIsFalse() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(QUESTION_PSYKISK_V2_ID)
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(false)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(QUESTION_PSYKISK_V2_ID)
+                  .value(ElementValueBoolean.builder().value(false).build())
+                  .build());
 
       final var element = QuestionPsykiskTidpunktV2.questionPsykiskTidpunktV2();
 
@@ -155,4 +159,3 @@ class QuestionPsykiskTidpunktV2Test {
     }
   }
 }
-

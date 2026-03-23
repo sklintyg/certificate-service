@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.prefill;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -47,70 +65,70 @@ class PrefillCustomDiagnosisListConverterTest {
   private static final String DIAGNOS_DESCRIPTION = "diagnos_description";
   private static final String DIAGNOS_DESCRIPTION_2 = "diagnos_description_2";
 
-  private static final ElementSpecification SPECIFICATION = ElementSpecification.builder()
-      .id(ELEMENT_ID)
-      .configuration(
-          ElementConfigurationDiagnosis.builder()
-              .id(FIELD_ID)
-              .terminology(List.of(
-                  new ElementDiagnosisTerminology("ICD-10-SE", "ICD-10-SE", "1.2.752.116.1.1.1",
-                      List.of("1.2.752.116.1.1.1", "1.2.752.116.1.1.1.1.8",
-                          "1.2.752.116.1.1.1.1.3"))))
-              .list(
-                  List.of(
-                      new ElementDiagnosisListItem(DIAGNOS_FIELD_ID),
-                      new ElementDiagnosisListItem(DIAGNOS_2_FIELD_ID)
-                  )
-              )
-              .build()
-      )
-      .build();
+  private static final ElementSpecification SPECIFICATION =
+      ElementSpecification.builder()
+          .id(ELEMENT_ID)
+          .configuration(
+              ElementConfigurationDiagnosis.builder()
+                  .id(FIELD_ID)
+                  .terminology(
+                      List.of(
+                          new ElementDiagnosisTerminology(
+                              "ICD-10-SE",
+                              "ICD-10-SE",
+                              "1.2.752.116.1.1.1",
+                              List.of(
+                                  "1.2.752.116.1.1.1",
+                                  "1.2.752.116.1.1.1.1.8",
+                                  "1.2.752.116.1.1.1.1.3"))))
+                  .list(
+                      List.of(
+                          new ElementDiagnosisListItem(DIAGNOS_FIELD_ID),
+                          new ElementDiagnosisListItem(DIAGNOS_2_FIELD_ID)))
+                  .build())
+          .build();
 
-  private static final ElementData EXPECTED_ELEMENT_DATA = ElementData.builder()
-      .id(ELEMENT_ID)
-      .value(
-          ElementValueDiagnosisList.builder()
-              .diagnoses(
-                  List.of(
-                      ElementValueDiagnosis.builder()
-                          .id(DIAGNOS_FIELD_ID)
-                          .code(DIAGNOS_CODE)
-                          .description(DIAGNOS_DESCRIPTION)
-                          .terminology("ICD-10-SE")
-                          .build(),
-                      ElementValueDiagnosis.builder()
-                          .id(DIAGNOS_2_FIELD_ID)
-                          .code(DIAGNOS_CODE_2)
-                          .description(DIAGNOS_DESCRIPTION_2)
-                          .terminology("ICD-10-SE")
-                          .build()
-                  )
-              )
-              .build()
-      ).build();
+  private static final ElementData EXPECTED_ELEMENT_DATA =
+      ElementData.builder()
+          .id(ELEMENT_ID)
+          .value(
+              ElementValueDiagnosisList.builder()
+                  .diagnoses(
+                      List.of(
+                          ElementValueDiagnosis.builder()
+                              .id(DIAGNOS_FIELD_ID)
+                              .code(DIAGNOS_CODE)
+                              .description(DIAGNOS_DESCRIPTION)
+                              .terminology("ICD-10-SE")
+                              .build(),
+                          ElementValueDiagnosis.builder()
+                              .id(DIAGNOS_2_FIELD_ID)
+                              .code(DIAGNOS_CODE_2)
+                              .description(DIAGNOS_DESCRIPTION_2)
+                              .terminology("ICD-10-SE")
+                              .build()))
+                  .build())
+          .build();
 
-  private static final ElementData EXPECTED_ELEMENT_DATA_MIN = ElementData.builder()
-      .id(ELEMENT_ID)
-      .value(
-          ElementValueDiagnosisList.builder()
-              .diagnoses(
-                  List.of(
-                      ElementValueDiagnosis.builder()
-                          .id(DIAGNOS_FIELD_ID)
-                          .code(DIAGNOS_CODE)
-                          .description(DIAGNOS_DESCRIPTION)
-                          .terminology("ICD-10-SE")
-                          .build()
-                  )
-              )
-              .build()
-      ).build();
+  private static final ElementData EXPECTED_ELEMENT_DATA_MIN =
+      ElementData.builder()
+          .id(ELEMENT_ID)
+          .value(
+              ElementValueDiagnosisList.builder()
+                  .diagnoses(
+                      List.of(
+                          ElementValueDiagnosis.builder()
+                              .id(DIAGNOS_FIELD_ID)
+                              .code(DIAGNOS_CODE)
+                              .description(DIAGNOS_DESCRIPTION)
+                              .terminology("ICD-10-SE")
+                              .build()))
+                  .build())
+          .build();
 
-  @Mock
-  private DiagnosisCodeRepository diagnosisCodeRepository;
+  @Mock private DiagnosisCodeRepository diagnosisCodeRepository;
 
-  @InjectMocks
-  private PrefillCustomDiagnosisListConverter converter;
+  @InjectMocks private PrefillCustomDiagnosisListConverter converter;
 
   @Test
   void shouldReturnNullIfNoAnswerExists() {
@@ -125,10 +143,8 @@ class PrefillCustomDiagnosisListConverterTest {
     final var svar = new Svar();
     svar.setId(SPECIFICATION.id().id());
     prefill.getSvar().add(svar);
-    final var expectedErrors = List.of(
-        PrefillError.wrongNumberOfSubAnswers(
-            SPECIFICATION.id().id(), 1, 0)
-    );
+    final var expectedErrors =
+        List.of(PrefillError.wrongNumberOfSubAnswers(SPECIFICATION.id().id(), 1, 0));
 
     final var result = converter.prefillAnswer(SPECIFICATION, prefill);
 
@@ -138,12 +154,13 @@ class PrefillCustomDiagnosisListConverterTest {
   @Test
   void shouldReturnPrefillAnswerWithInvalidDiagnosisCode() {
     final var prefill = getPrefill();
-    doReturn(Optional.empty()).when(diagnosisCodeRepository)
+    doReturn(Optional.empty())
+        .when(diagnosisCodeRepository)
         .findByCode(new DiagnosisCode(DIAGNOS_CODE));
-    final var expectedErrors = List.of(
-        PrefillError.invalidDiagnosisCode(DIAGNOS_CODE),
-        PrefillError.invalidDiagnosisCode(DIAGNOS_CODE_2)
-    );
+    final var expectedErrors =
+        List.of(
+            PrefillError.invalidDiagnosisCode(DIAGNOS_CODE),
+            PrefillError.invalidDiagnosisCode(DIAGNOS_CODE_2));
 
     final var result = converter.prefillAnswer(SPECIFICATION, prefill);
 
@@ -153,9 +170,11 @@ class PrefillCustomDiagnosisListConverterTest {
   @Test
   void shouldReturnElementDataIfOneAnswerHasInvalidFormat() {
     final var prefill = getPrefill();
-    doReturn(Optional.empty()).when(diagnosisCodeRepository)
+    doReturn(Optional.empty())
+        .when(diagnosisCodeRepository)
         .findByCode(new DiagnosisCode(DIAGNOS_CODE_2));
-    doReturn(Optional.of(Diagnosis.builder().build())).when(diagnosisCodeRepository)
+    doReturn(Optional.of(Diagnosis.builder().build()))
+        .when(diagnosisCodeRepository)
         .findByCode(new DiagnosisCode(DIAGNOS_CODE));
 
     final var result = converter.prefillAnswer(SPECIFICATION, prefill);
@@ -163,17 +182,19 @@ class PrefillCustomDiagnosisListConverterTest {
     assertAll(
         () -> assertEquals(EXPECTED_ELEMENT_DATA_MIN, result.getElementData()),
         () -> assertEquals(1, result.getErrors().size()),
-        () -> assertEquals(PrefillErrorType.INVALID_DIAGNOSIS_CODE,
-            result.getErrors().getFirst().type())
-    );
+        () ->
+            assertEquals(
+                PrefillErrorType.INVALID_DIAGNOSIS_CODE, result.getErrors().getFirst().type()));
   }
 
   @Test
   void shouldReturnPrefillAnswerIfAnswerExists() {
     final var prefill = getPrefill();
-    doReturn(Optional.of(Diagnosis.builder().build())).when(diagnosisCodeRepository)
+    doReturn(Optional.of(Diagnosis.builder().build()))
+        .when(diagnosisCodeRepository)
         .findByCode(new DiagnosisCode(DIAGNOS_CODE));
-    doReturn(Optional.of(Diagnosis.builder().build())).when(diagnosisCodeRepository)
+    doReturn(Optional.of(Diagnosis.builder().build()))
+        .when(diagnosisCodeRepository)
         .findByCode(new DiagnosisCode(DIAGNOS_CODE_2));
 
     final var result = converter.prefillAnswer(SPECIFICATION, prefill);
@@ -194,23 +215,21 @@ class PrefillCustomDiagnosisListConverterTest {
         .when(diagnosisCodeRepository)
         .findByCode(new DiagnosisCode(DIAGNOS_CODE_2));
 
-    doReturn(Diagnosis.builder()
-        .description(new DiagnosisDescription(expectedDescription))
-        .build())
+    doReturn(Diagnosis.builder().description(new DiagnosisDescription(expectedDescription)).build())
         .when(diagnosisCodeRepository)
         .getByCode(new DiagnosisCode(DIAGNOS_CODE_2));
     final var result = converter.prefillAnswer(SPECIFICATION, prefill);
 
     final var value = (ElementValueDiagnosisList) result.getElementData().value();
 
-    assertEquals(expectedDescription,
+    assertEquals(
+        expectedDescription,
         value.diagnoses().stream()
             .filter(d -> DIAGNOS_CODE_2.equals(d.code()))
             .findFirst()
             .get()
             .description());
   }
-
 
   @Test
   void shouldMapEquivalentCodeSystemsOids() {
@@ -229,12 +248,10 @@ class PrefillCustomDiagnosisListConverterTest {
     delsvar2Code.setId("4.4");
 
     delsvar1Description.getContent().add(DIAGNOS_DESCRIPTION);
-    delsvar1Code.getContent()
-        .add(createCVTypeElement(DIAGNOS_CODE, "1.2.752.116.1.1.1.1.8"));
+    delsvar1Code.getContent().add(createCVTypeElement(DIAGNOS_CODE, "1.2.752.116.1.1.1.1.8"));
 
     delsvar2Description.getContent().add(DIAGNOS_DESCRIPTION_2);
-    delsvar2Code.getContent()
-        .add(createCVTypeElement(DIAGNOS_CODE_2, "1.2.752.116.1.1.1.1.3"));
+    delsvar2Code.getContent().add(createCVTypeElement(DIAGNOS_CODE_2, "1.2.752.116.1.1.1.1.3"));
 
     svar.getDelsvar().add(delsvar1Description);
     svar.getDelsvar().add(delsvar1Code);
@@ -244,9 +261,11 @@ class PrefillCustomDiagnosisListConverterTest {
 
     prefill.getSvar().add(svar);
 
-    doReturn(Optional.of(Diagnosis.builder().build())).when(diagnosisCodeRepository)
+    doReturn(Optional.of(Diagnosis.builder().build()))
+        .when(diagnosisCodeRepository)
         .findByCode(new DiagnosisCode(DIAGNOS_CODE));
-    doReturn(Optional.of(Diagnosis.builder().build())).when(diagnosisCodeRepository)
+    doReturn(Optional.of(Diagnosis.builder().build()))
+        .when(diagnosisCodeRepository)
         .findByCode(new DiagnosisCode(DIAGNOS_CODE_2));
 
     final var result = converter.prefillAnswer(SPECIFICATION, prefill);
@@ -323,4 +342,3 @@ class PrefillCustomDiagnosisListConverterTest {
     return getElement(cvType, factory::createCv);
   }
 }
-

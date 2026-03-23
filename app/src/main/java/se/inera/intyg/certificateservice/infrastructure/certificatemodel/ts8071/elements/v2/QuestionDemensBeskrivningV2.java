@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.v2;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.v2.QuestionDemensV2.QUESTION_DEMENS_V2_FIELD_ID;
@@ -15,10 +33,8 @@ import se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.
 
 public class QuestionDemensBeskrivningV2 {
 
-  public static final ElementId QUESTION_DEMENS_BESKRIVNING_V2_ID = new ElementId(
-      "16.3");
-  public static final FieldId QUESTION_DEMENS_BESKRIVNING_V2_FIELD_ID = new FieldId(
-      "16.3");
+  public static final ElementId QUESTION_DEMENS_BESKRIVNING_V2_ID = new ElementId("16.3");
+  public static final FieldId QUESTION_DEMENS_BESKRIVNING_V2_FIELD_ID = new FieldId("16.3");
   private static final int TEXT_LIMIT = 250;
 
   private QuestionDemensBeskrivningV2() {
@@ -32,38 +48,20 @@ public class QuestionDemensBeskrivningV2 {
             ElementConfigurationTextArea.builder()
                 .id(QUESTION_DEMENS_BESKRIVNING_V2_FIELD_ID)
                 .name("Ange vilka tecken, eventuell diagnos och grad")
-                .build()
-        )
+                .build())
         .rules(
             List.of(
                 CertificateElementRuleFactory.show(
-                    QUESTION_DEMENS_V2_ID,
-                    QUESTION_DEMENS_V2_FIELD_ID
-                ),
+                    QUESTION_DEMENS_V2_ID, QUESTION_DEMENS_V2_FIELD_ID),
                 CertificateElementRuleFactory.mandatory(
-                    QUESTION_DEMENS_BESKRIVNING_V2_ID,
-                    QUESTION_DEMENS_BESKRIVNING_V2_FIELD_ID
-                ),
+                    QUESTION_DEMENS_BESKRIVNING_V2_ID, QUESTION_DEMENS_BESKRIVNING_V2_FIELD_ID),
                 CertificateElementRuleFactory.limit(
-                    QUESTION_DEMENS_BESKRIVNING_V2_ID, (short) TEXT_LIMIT
-                )
-            )
-        )
-        .shouldValidate(
-            ElementDataPredicateFactory.valueBoolean(QUESTION_DEMENS_V2_ID)
-        )
+                    QUESTION_DEMENS_BESKRIVNING_V2_ID, (short) TEXT_LIMIT)))
+        .shouldValidate(ElementDataPredicateFactory.valueBoolean(QUESTION_DEMENS_V2_ID))
         .mapping(
-            new ElementMapping(QuestionKognitivStorningV2.QUESTION_KOGNITIV_STORNING_V2_ID, null)
-        )
+            new ElementMapping(QuestionKognitivStorningV2.QUESTION_KOGNITIV_STORNING_V2_ID, null))
         .validations(
-            List.of(
-                ElementValidationText.builder()
-                    .mandatory(true)
-                    .limit(TEXT_LIMIT)
-                    .build()
-            )
-        )
+            List.of(ElementValidationText.builder().mandatory(true).limit(TEXT_LIMIT).build()))
         .build();
   }
 }
-

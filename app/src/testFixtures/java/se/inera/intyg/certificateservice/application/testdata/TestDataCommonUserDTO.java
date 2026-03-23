@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.testdata;
 
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataUserConstants.AJLA_DOCTOR_AGREEMENT;
@@ -74,7 +92,8 @@ public class TestDataCommonUserDTO {
   }
 
   public static final UserDTO AJLA_DOCTOR_DTO = ajlaDoktorDtoBuilder().build();
-  public static final UserDTO ALVA_VARDADMINISTRATOR_DTO = alvaVardadministratorDtoBuilder().build();
+  public static final UserDTO ALVA_VARDADMINISTRATOR_DTO =
+      alvaVardadministratorDtoBuilder().build();
   public static final UserDTO ANNA_SJUKSKOTERSKA_DTO = annaSjukskoterskaDtoBuilder().build();
   public static final UserDTO BERTIL_BARNMORSKA_DTO = bertilBarnmorskaDtoBuilder().build();
   public static final UserDTO DAN_DENTIST_DTO = danDentistDtoBuilder().build();
@@ -89,19 +108,14 @@ public class TestDataCommonUserDTO {
         .role(RoleTypeDTO.toRoleType(AJLA_DOCTOR_ROLE))
         .paTitles(
             AJLA_DOCTOR_PA_TITLES.stream()
-                .map(paTitle ->
-                    PaTitleDTO.builder()
-                        .code(paTitle.code())
-                        .description(paTitle.description())
-                        .build()
-                )
-                .toList()
-        )
-        .specialities(
-            AJLA_DOCTOR_SPECIALITIES.stream()
-                .map(Speciality::value)
-                .toList()
-        )
+                .map(
+                    paTitle ->
+                        PaTitleDTO.builder()
+                            .code(paTitle.code())
+                            .description(paTitle.description())
+                            .build())
+                .toList())
+        .specialities(AJLA_DOCTOR_SPECIALITIES.stream().map(Speciality::value).toList())
         .blocked(AJLA_DOCTOR_BLOCKED.value())
         .allowCopy(AJLA_DOCTOR_ALLOW_COPY.value())
         .agreement(AJLA_DOCTOR_AGREEMENT.value())
@@ -109,8 +123,7 @@ public class TestDataCommonUserDTO {
         .healthCareProfessionalLicence(
             AJLA_DOCTOR_HEALTH_CARE_PROFESSIONAL_LICENCES.stream()
                 .map(HealthCareProfessionalLicence::value)
-                .toList()
-        )
+                .toList())
         .responsibleHospName(AJLA_DOCTOR_RESPONSIBLE_ISSUER.value())
         .srsActive(AJLA_DOCTOR_SRS_ACTIVE.value());
   }
@@ -150,8 +163,7 @@ public class TestDataCommonUserDTO {
         .healthCareProfessionalLicence(
             ANNA_SJUKSKOTERSKA_HEALTH_CARE_PROFESSIONAL_LICENCES.stream()
                 .map(HealthCareProfessionalLicence::value)
-                .toList()
-        )
+                .toList())
         .srsActive(ANNA_SJUKSKOTERSKA_SRS_ACTIVE.value());
   }
 
@@ -172,8 +184,7 @@ public class TestDataCommonUserDTO {
         .healthCareProfessionalLicence(
             BERTIL_BARNMORSKA_HEALTH_CARE_PROFESSIONAL_LICENCES.stream()
                 .map(HealthCareProfessionalLicence::value)
-                .toList()
-        )
+                .toList())
         .srsActive(BERTIL_BARNMORSKA_SRS_ACTIVE.value());
   }
 
@@ -194,8 +205,7 @@ public class TestDataCommonUserDTO {
         .healthCareProfessionalLicence(
             DAN_DENTIST_HEALTH_CARE_PROFESSIONAL_LICENCES.stream()
                 .map(HealthCareProfessionalLicence::value)
-                .toList()
-        )
+                .toList())
         .srsActive(DAN_DENTIST_SRS_ACTIVE.value());
   }
 }

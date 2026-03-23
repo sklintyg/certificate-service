@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.pdfboxgenerator.pdf;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -46,30 +64,21 @@ import se.inera.intyg.certificateservice.pdfboxgenerator.pdf.text.TextUtil;
 @ExtendWith(MockitoExtension.class)
 class PdfOverflowPageFillServiceTest {
 
-  @Mock
-  private PdfPaginationUtil pdfPaginationUtil;
-  @Mock
-  private PdfOverflowPageFactory pdfOverflowPageFactory;
-  @Mock
-  private PdfAdditionalInformationTextGenerator pdfAdditionalInformationTextGenerator;
-  @Mock
-  private TextUtil textUtil;
-  @Mock
-  private TextFieldAppearanceFactory textFieldAppearanceFactory;
+  @Mock private PdfPaginationUtil pdfPaginationUtil;
+  @Mock private PdfOverflowPageFactory pdfOverflowPageFactory;
+  @Mock private PdfAdditionalInformationTextGenerator pdfAdditionalInformationTextGenerator;
+  @Mock private TextUtil textUtil;
+  @Mock private TextFieldAppearanceFactory textFieldAppearanceFactory;
 
-  @InjectMocks
-  private PdfOverflowPageFillService pdfOverflowPageFillService;
-
+  @InjectMocks private PdfOverflowPageFillService pdfOverflowPageFillService;
 
   @Test
   void shouldReturnWhenNoOverflowPageIndex() {
-    final var context = CertificatePdfContext.builder()
-        .templatePdfSpecification(
-            TemplatePdfSpecification.builder()
-                .overFlowPageIndex(null)
-                .build()
-        )
-        .build();
+    final var context =
+        CertificatePdfContext.builder()
+            .templatePdfSpecification(
+                TemplatePdfSpecification.builder().overFlowPageIndex(null).build())
+            .build();
 
     pdfOverflowPageFillService.setFieldValuesAppendix(context, List.of(mock(PdfField.class)));
 
@@ -78,13 +87,13 @@ class PdfOverflowPageFillServiceTest {
 
   @Test
   void shouldReturnWhenNoAppendedFields() {
-    final var context = CertificatePdfContext.builder()
-        .templatePdfSpecification(
-            TemplatePdfSpecification.builder()
-                .overFlowPageIndex(new OverflowPageIndex(0))
-                .build()
-        )
-        .build();
+    final var context =
+        CertificatePdfContext.builder()
+            .templatePdfSpecification(
+                TemplatePdfSpecification.builder()
+                    .overFlowPageIndex(new OverflowPageIndex(0))
+                    .build())
+            .build();
 
     pdfOverflowPageFillService.setFieldValuesAppendix(context, List.of());
 
@@ -94,56 +103,44 @@ class PdfOverflowPageFillServiceTest {
   @Test
   void shouldFillSingleOverflowPageWithoutCreatingNewPages() throws IOException {
     final var context = mockContext();
-    final var pdfField = PdfField.builder()
-        .id("overflowField")
-        .value("Some long text that causes overflow")
-        .append(true)
-        .build();
+    final var pdfField =
+        PdfField.builder()
+            .id("overflowField")
+            .value("Some long text that causes overflow")
+            .append(true)
+            .build();
 
-    when(pdfPaginationUtil.paginateFields(
-        eq(context),
-        eq(List.of(pdfField)),
-        any(PDField.class)
-    )).thenReturn(List.of(List.of(pdfField)));
+    when(pdfPaginationUtil.paginateFields(eq(context), eq(List.of(pdfField)), any(PDField.class)))
+        .thenReturn(List.of(List.of(pdfField)));
 
-    when(context.getFontResolver().resolveFont(pdfField)).thenReturn(
-        new PDType1Font(FontName.HELVETICA));
+    when(context.getFontResolver().resolveFont(pdfField))
+        .thenReturn(new PDType1Font(FontName.HELVETICA));
 
     pdfOverflowPageFillService.setFieldValuesAppendix(context, List.of(pdfField));
 
     verify(pdfOverflowPageFactory, never()).create(any());
     verify(pdfAdditionalInformationTextGenerator, never())
-        .addOverFlowPageText(any(), anyInt(), anyList(), anyFloat(), anyFloat(), anyFloat(), any(),
-            anyInt());
+        .addOverFlowPageText(
+            any(), anyInt(), anyList(), anyFloat(), anyFloat(), anyFloat(), any(), anyInt());
   }
 
   @Test
   void shouldCreateNewPagesForAdditionalOverflowPages() throws IOException {
     final var context = mockContext();
 
-    final var pdfField1 = PdfField.builder()
-        .id("overflowField")
-        .value("Some long text")
-        .append(true)
-        .build();
+    final var pdfField1 =
+        PdfField.builder().id("overflowField").value("Some long text").append(true).build();
 
-    final var pdfField2 = PdfField.builder()
-        .id("overflowField")
-        .value("Some more long text")
-        .append(true)
-        .build();
+    final var pdfField2 =
+        PdfField.builder().id("overflowField").value("Some more long text").append(true).build();
 
     when(pdfPaginationUtil.paginateFields(any(), anyList(), any()))
-        .thenReturn(List.of(
-            List.of(pdfField1),
-            List.of(pdfField2)
-        ));
+        .thenReturn(List.of(List.of(pdfField1), List.of(pdfField2)));
 
     when(context.getFontResolver().resolveFont(any()))
         .thenReturn(new PDType1Font(FontName.HELVETICA));
 
-    when(pdfOverflowPageFactory.create(context))
-        .thenReturn(new PDPage());
+    when(pdfOverflowPageFactory.create(context)).thenReturn(new PDPage());
 
     final var textFieldAppearance = mock(TextFieldAppearance.class);
     when(textFieldAppearance.getFontSize()).thenReturn(12.0f);
@@ -151,44 +148,39 @@ class PdfOverflowPageFillServiceTest {
     when(textFieldAppearanceFactory.create(any(PDField.class)))
         .thenReturn(Optional.of(textFieldAppearance));
 
-    try (var mocked =
-        mockStatic(PdfAccessibilityUtil.class)) {
+    try (var mocked = mockStatic(PdfAccessibilityUtil.class)) {
 
-      mocked.when(() ->
-          PdfAccessibilityUtil.createNewOverflowPageTag(any(), any(), any())
-      ).thenReturn(null);
+      mocked
+          .when(() -> PdfAccessibilityUtil.createNewOverflowPageTag(any(), any(), any()))
+          .thenReturn(null);
 
       pdfOverflowPageFillService.setFieldValuesAppendix(context, List.of(pdfField1));
     }
 
     verify(pdfOverflowPageFactory, times(1)).create(context);
     verify(pdfAdditionalInformationTextGenerator, times(1))
-        .addOverFlowPageText(any(), anyInt(), anyList(),
-            anyFloat(), anyFloat(), anyFloat(),
-            any(), anyInt());
+        .addOverFlowPageText(
+            any(), anyInt(), anyList(), anyFloat(), anyFloat(), anyFloat(), any(), anyInt());
   }
 
   @Test
   void shouldAddPatientIdToNewOverflowPages() throws IOException {
     final var context = mockContext();
 
-    final var pdfField = PdfField.builder()
-        .id("overflowField")
-        .value("Some long text that causes overflow")
-        .append(true)
-        .build();
+    final var pdfField =
+        PdfField.builder()
+            .id("overflowField")
+            .value("Some long text that causes overflow")
+            .append(true)
+            .build();
 
     when(pdfPaginationUtil.paginateFields(any(), anyList(), any()))
-        .thenReturn(List.of(
-            List.of(pdfField),
-            List.of(pdfField)
-        ));
+        .thenReturn(List.of(List.of(pdfField), List.of(pdfField)));
 
     when(context.getFontResolver().resolveFont(any()))
         .thenReturn(new PDType1Font(FontName.HELVETICA));
 
-    when(pdfOverflowPageFactory.create(context))
-        .thenReturn(new PDPage());
+    when(pdfOverflowPageFactory.create(context)).thenReturn(new PDPage());
 
     final var textFieldAppearance = mock(TextFieldAppearance.class);
     when(textFieldAppearance.getFontSize()).thenReturn(12.0f);
@@ -199,69 +191,49 @@ class PdfOverflowPageFillServiceTest {
     when(textUtil.wrapLine(anyString(), anyFloat(), anyFloat(), any()))
         .thenReturn(List.of("wrapped line"));
 
-    try (var mocked =
-        mockStatic(PdfAccessibilityUtil.class)) {
+    try (var mocked = mockStatic(PdfAccessibilityUtil.class)) {
 
-      mocked.when(() ->
-          PdfAccessibilityUtil.createNewOverflowPageTag(any(), any(), any())
-      ).thenReturn(null);
+      mocked
+          .when(() -> PdfAccessibilityUtil.createNewOverflowPageTag(any(), any(), any()))
+          .thenReturn(null);
 
       pdfOverflowPageFillService.setFieldValuesAppendix(context, List.of(pdfField));
     }
 
     verify(pdfAdditionalInformationTextGenerator, times(1))
-        .addPatientId(
-            any(),
-            anyInt(),
-            anyFloat(),
-            anyFloat(),
-            anyString(),
-            anyFloat(),
-            anyInt()
-        );
+        .addPatientId(any(), anyInt(), anyFloat(), anyFloat(), anyString(), anyFloat(), anyInt());
   }
 
   @Test
   void shouldThrowExceptionWhenOverflowFieldIsNotVariableTextField() {
     final var context = mockContext();
 
-    final var pdfField1 = PdfField.builder()
-        .id("overflowField")
-        .value("Some long text")
-        .append(true)
-        .build();
+    final var pdfField1 =
+        PdfField.builder().id("overflowField").value("Some long text").append(true).build();
 
-    final var pdfField2 = PdfField.builder()
-        .id("overflowField")
-        .value("Some more long text")
-        .append(true)
-        .build();
+    final var pdfField2 =
+        PdfField.builder().id("overflowField").value("Some more long text").append(true).build();
 
     when(pdfPaginationUtil.paginateFields(any(), anyList(), any()))
-        .thenReturn(List.of(
-            List.of(pdfField1),
-            List.of(pdfField2)
-        ));
+        .thenReturn(List.of(List.of(pdfField1), List.of(pdfField2)));
 
     when(context.getFontResolver().resolveFont(any()))
         .thenReturn(new PDType1Font(FontName.HELVETICA));
 
-    when(pdfOverflowPageFactory.create(context))
-        .thenReturn(new PDPage());
+    when(pdfOverflowPageFactory.create(context)).thenReturn(new PDPage());
 
-    when(textFieldAppearanceFactory.create(any(PDField.class)))
-        .thenReturn(Optional.empty());
+    when(textFieldAppearanceFactory.create(any(PDField.class))).thenReturn(Optional.empty());
 
     try (var mocked = mockStatic(PdfAccessibilityUtil.class)) {
-      mocked.when(() ->
-          PdfAccessibilityUtil.createNewOverflowPageTag(any(), any(), any())
-      ).thenReturn(null);
+      mocked
+          .when(() -> PdfAccessibilityUtil.createNewOverflowPageTag(any(), any(), any()))
+          .thenReturn(null);
 
       final var pdfFieldList = List.of(pdfField1);
 
-      assertThrows(IllegalStateException.class, () ->
-          pdfOverflowPageFillService.setFieldValuesAppendix(context, pdfFieldList)
-      );
+      assertThrows(
+          IllegalStateException.class,
+          () -> pdfOverflowPageFillService.setFieldValuesAppendix(context, pdfFieldList));
     }
   }
 
@@ -281,25 +253,13 @@ class PdfOverflowPageFillServiceTest {
     return CertificatePdfContext.builder()
         .document(document)
         .mcid(new AtomicInteger())
-        .pdfFields(
-            List.of(
-                PdfField.builder()
-                    .value("191212-1212")
-                    .patientField(true)
-                    .build()
-            )
-        )
+        .pdfFields(List.of(PdfField.builder().value("191212-1212").patientField(true).build()))
         .certificate(MedicalCertificate.builder().build())
         .templatePdfSpecification(
             TemplatePdfSpecification.builder()
                 .overFlowPageIndex(new OverflowPageIndex(0))
-                .patientIdFieldIds(
-                    List.of(
-                        new PdfFieldId("overflowField")
-                    )
-                )
-                .build()
-        )
+                .patientIdFieldIds(List.of(new PdfFieldId("overflowField")))
+                .build())
         .fontResolver(mock(PdfFontResolver.class))
         .build();
   }

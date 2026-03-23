@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.pdfboxgenerator.pdf;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,12 +46,13 @@ class CertificatePdfContextFactoryTest {
     factory = new CertificatePdfContextFactory(new TextFieldAppearanceFactory());
 
     certificate = fk7472CertificateBuilder().build();
-    options = PdfGeneratorOptions.builder()
-        .additionalInfoText("Additional info")
-        .citizenFormat(false)
-        .build();
-    templatePdfSpecification = (TemplatePdfSpecification) certificate.certificateModel()
-        .pdfSpecification();
+    options =
+        PdfGeneratorOptions.builder()
+            .additionalInfoText("Additional info")
+            .citizenFormat(false)
+            .build();
+    templatePdfSpecification =
+        (TemplatePdfSpecification) certificate.certificateModel().pdfSpecification();
   }
 
   @Nested
@@ -69,13 +88,11 @@ class CertificatePdfContextFactoryTest {
 
     @Test
     void shouldCreateContextWithCitizenFormat() {
-      final var citizenOptions = PdfGeneratorOptions.builder()
-          .additionalInfoText("info")
-          .citizenFormat(true)
-          .build();
+      final var citizenOptions =
+          PdfGeneratorOptions.builder().additionalInfoText("info").citizenFormat(true).build();
 
-      try (final var context = factory.create(certificate, citizenOptions,
-          templatePdfSpecification)) {
+      try (final var context =
+          factory.create(certificate, citizenOptions, templatePdfSpecification)) {
         assertTrue(context.isCitizenFormat());
       } catch (Exception e) {
         throw new RuntimeException(e);
@@ -107,12 +124,10 @@ class CertificatePdfContextFactoryTest {
 
     @Test
     void shouldUseAddressTemplateForUnsentCertificate() {
-      final var unsentCertificate = fk7472CertificateBuilder()
-          .sent(null)
-          .build();
+      final var unsentCertificate = fk7472CertificateBuilder().sent(null).build();
 
-      try (final var context = factory.create(unsentCertificate, options,
-          templatePdfSpecification)) {
+      try (final var context =
+          factory.create(unsentCertificate, options, templatePdfSpecification)) {
         assertNotNull(context.getDocument());
       } catch (Exception e) {
         throw new RuntimeException(e);
@@ -121,11 +136,10 @@ class CertificatePdfContextFactoryTest {
 
     @Test
     void shouldUseNoAddressTemplateForSentCertificate() {
-      final var sentCertificate = fk7472CertificateBuilder()
-          .sent(Sent.builder()
-              .sentAt(java.time.LocalDateTime.now())
-              .build())
-          .build();
+      final var sentCertificate =
+          fk7472CertificateBuilder()
+              .sent(Sent.builder().sentAt(java.time.LocalDateTime.now()).build())
+              .build();
 
       try (final var context = factory.create(sentCertificate, options, templatePdfSpecification)) {
         assertNotNull(context.getDocument());
@@ -136,13 +150,11 @@ class CertificatePdfContextFactoryTest {
 
     @Test
     void shouldUseNoAddressTemplateForCitizenFormat() {
-      final var citizenOptions = PdfGeneratorOptions.builder()
-          .additionalInfoText("info")
-          .citizenFormat(true)
-          .build();
+      final var citizenOptions =
+          PdfGeneratorOptions.builder().additionalInfoText("info").citizenFormat(true).build();
 
-      try (final var context = factory.create(certificate, citizenOptions,
-          templatePdfSpecification)) {
+      try (final var context =
+          factory.create(certificate, citizenOptions, templatePdfSpecification)) {
         assertNotNull(context.getDocument());
       } catch (Exception e) {
         throw new RuntimeException(e);
@@ -151,20 +163,20 @@ class CertificatePdfContextFactoryTest {
 
     @Test
     void shouldThrowExceptionWhenTemplateNotFound() {
-      final var invalidSpec = TemplatePdfSpecification.builder()
-          .pdfTemplatePath("non-existent-template.pdf")
-          .pdfNoAddressTemplatePath("non-existent-template-no-address.pdf")
-          .signature(templatePdfSpecification.signature())
-          .patientIdFieldIds(templatePdfSpecification.patientIdFieldIds())
-          .pdfMcid(templatePdfSpecification.pdfMcid())
-          .build();
+      final var invalidSpec =
+          TemplatePdfSpecification.builder()
+              .pdfTemplatePath("non-existent-template.pdf")
+              .pdfNoAddressTemplatePath("non-existent-template-no-address.pdf")
+              .signature(templatePdfSpecification.signature())
+              .patientIdFieldIds(templatePdfSpecification.patientIdFieldIds())
+              .pdfMcid(templatePdfSpecification.pdfMcid())
+              .build();
 
-      final var exception = assertThrows(IllegalStateException.class,
-          () -> factory.create(certificate, options, invalidSpec));
+      final var exception =
+          assertThrows(
+              IllegalStateException.class, () -> factory.create(certificate, options, invalidSpec));
 
       assertTrue(exception.getMessage().contains("Pdf template not found at path"));
     }
   }
 }
-
-

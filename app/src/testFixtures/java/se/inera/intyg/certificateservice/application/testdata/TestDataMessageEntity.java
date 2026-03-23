@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.testdata;
 
 import static se.inera.intyg.certificateservice.application.testdata.TestDataCertificateEntity.certificateEntityBuilder;
@@ -32,10 +50,12 @@ public class TestDataMessageEntity {
     throw new IllegalStateException("Utility class");
   }
 
-  public static final MessageEntity COMPLEMENT_MESSAGE_ENTITY = complementMessageEntityBuilder().build();
+  public static final MessageEntity COMPLEMENT_MESSAGE_ENTITY =
+      complementMessageEntityBuilder().build();
   public static final MessageEntity CONTACT_MESSAGE_ENTITY = contactMessageEntityBuilder().build();
   public static final MessageEntity ANSWER_MESSAGE_ENTITY = answerMessageEntityBuilder().build();
-  public static final MessageEntity REMINDER_MESSAGE_ENTITY = reminderMessageEntityBuilder().build();
+  public static final MessageEntity REMINDER_MESSAGE_ENTITY =
+      reminderMessageEntityBuilder().build();
 
   public static final Integer MESSAGE_KEY = 999;
 
@@ -56,31 +76,22 @@ public class TestDataMessageEntity {
             MessageStatusEntity.builder()
                 .key(MessageStatusEnum.SENT.getKey())
                 .status(MessageStatusEnum.SENT.name())
-                .build()
-        )
+                .build())
         .messageType(
             MessageTypeEntity.builder()
                 .key(MessageTypeEnum.COMPLEMENT.getKey())
                 .type(MessageTypeEnum.COMPLEMENT.name())
-                .build()
-        )
+                .build())
         .contactInfo(
             CONTACT_INFO.stream()
-                .map(info ->
-                    MessageContactInfoEmbeddable.builder()
-                        .info(info)
-                        .build()
-                )
-                .toList()
-        )
+                .map(info -> MessageContactInfoEmbeddable.builder().info(info).build())
+                .toList())
         .complements(
             List.of(
                 MessageComplementEmbeddable.builder()
                     .elementId(COMPLEMENT_QUESTION_ID_ONE)
                     .content(COMPLEMENT_TEXT_ONE)
-                    .build()
-            )
-        )
+                    .build()))
         .certificate(certificateEntityBuilder().build());
   }
 
@@ -101,23 +112,16 @@ public class TestDataMessageEntity {
             MessageStatusEntity.builder()
                 .key(MessageStatusEnum.SENT.getKey())
                 .status(MessageStatusEnum.SENT.name())
-                .build()
-        )
+                .build())
         .messageType(
             MessageTypeEntity.builder()
                 .key(MessageTypeEnum.CONTACT.getKey())
                 .type(MessageTypeEnum.CONTACT.name())
-                .build()
-        )
+                .build())
         .contactInfo(
             CONTACT_INFO.stream()
-                .map(info ->
-                    MessageContactInfoEmbeddable.builder()
-                        .info(info)
-                        .build()
-                )
-                .toList()
-        )
+                .map(info -> MessageContactInfoEmbeddable.builder().info(info).build())
+                .toList())
         .complements(Collections.emptyList())
         .authoredByStaff(AJLA_DOKTOR_ENTITY)
         .certificate(certificateEntityBuilder().build());
@@ -138,23 +142,16 @@ public class TestDataMessageEntity {
             MessageStatusEntity.builder()
                 .key(MessageStatusEnum.SENT.getKey())
                 .status(MessageStatusEnum.SENT.name())
-                .build()
-        )
+                .build())
         .messageType(
             MessageTypeEntity.builder()
                 .key(MessageTypeEnum.ANSWER.getKey())
                 .type(MessageTypeEnum.ANSWER.name())
-                .build()
-        )
+                .build())
         .contactInfo(
             CONTACT_INFO.stream()
-                .map(info ->
-                    MessageContactInfoEmbeddable.builder()
-                        .info(info)
-                        .build()
-                )
-                .toList()
-        )
+                .map(info -> MessageContactInfoEmbeddable.builder().info(info).build())
+                .toList())
         .certificate(certificateEntityBuilder().build());
   }
 
@@ -172,17 +169,11 @@ public class TestDataMessageEntity {
             MessageTypeEntity.builder()
                 .key(MessageTypeEnum.REMINDER.getKey())
                 .type(MessageTypeEnum.REMINDER.name())
-                .build()
-        )
+                .build())
         .contactInfo(
             CONTACT_INFO.stream()
-                .map(info ->
-                    MessageContactInfoEmbeddable.builder()
-                        .info(info)
-                        .build()
-                )
-                .toList()
-        )
+                .map(info -> MessageContactInfoEmbeddable.builder().info(info).build())
+                .toList())
         .certificate(certificateEntityBuilder().build());
   }
 }

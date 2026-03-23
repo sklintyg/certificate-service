@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.message.service.converter;
 
 import java.util.List;
@@ -33,13 +51,11 @@ public class QuestionConverter {
         .author(
             message.authoredStaff() != null
                 ? message.authoredStaff().name().fullName()
-                : message.author().name()
-        )
+                : message.author().name())
         .subject(
             message.authoredStaff() != null
                 ? message.subject().subject()
-                : message.type().displayName() + " - " + message.subject().subject()
-        )
+                : message.type().displayName() + " - " + message.subject().subject())
         .sent(message.sent())
         .isHandled(message.status().equals(MessageStatus.HANDLED))
         .isForwarded(message.forwarded().value())
@@ -49,40 +65,25 @@ public class QuestionConverter {
         .answeredByCertificate(
             message.type().equals(MessageType.COMPLEMENT)
                 ? certificateRelationConverter.convert(
-                certificate.latestChildRelation(
-                    RelationType.COMPLEMENT
-                ))
-                : null
-        )
-        .contactInfo(
-            message.contactInfo().lines()
-        )
-        .reminders(
-            message.reminders().stream()
-                .map(reminderConverter::convert)
-                .toList()
-        )
+                    certificate.latestChildRelation(RelationType.COMPLEMENT))
+                : null)
+        .contactInfo(message.contactInfo().lines())
+        .reminders(message.reminders().stream().map(reminderConverter::convert).toList())
         .complements(
             message.complements().stream()
                 .map(complement -> complementConverter.convert(complement, certificate))
-                .toList()
-        )
-        .links(
-            messageActionLinks.stream()
-                .map(messageActionLinkConverter::convert)
-                .toList()
-        )
+                .toList())
+        .links(messageActionLinks.stream().map(messageActionLinkConverter::convert).toList())
         .answer(
             message.answer() != null
                 ? AnswerDTO.builder()
-                .id(message.answer().id().id())
-                .author(getAuthor(message.answer()))
-                .sent(message.answer().sent())
-                .message(message.answer().content().content())
-                .contactInfo(getContactInfo(message))
-                .build()
-                : null
-        )
+                    .id(message.answer().id().id())
+                    .author(getAuthor(message.answer()))
+                    .sent(message.answer().sent())
+                    .message(message.answer().content().content())
+                    .contactInfo(getContactInfo(message))
+                    .build()
+                : null)
         .build();
   }
 
@@ -93,10 +94,9 @@ public class QuestionConverter {
   }
 
   private static List<String> getContactInfo(Message message) {
-    return
-        message.answer().contactInfo() != null && !message.answer().contactInfo().lines().isEmpty()
-            ? message.answer().contactInfo().lines()
-            : null;
+    return message.answer().contactInfo() != null
+            && !message.answer().contactInfo().lines().isEmpty()
+        ? message.answer().contactInfo().lines()
+        : null;
   }
-
 }

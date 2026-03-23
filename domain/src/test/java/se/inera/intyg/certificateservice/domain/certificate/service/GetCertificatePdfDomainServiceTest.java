@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.certificate.service;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -41,20 +59,14 @@ class GetCertificatePdfDomainServiceTest {
   private static final Pdf PDF = new Pdf(PDF_DATA, FILE_NAME);
   private static final String ADDITIONAL_INFO_TEXT = "additionalInfoText";
 
-  @Mock
-  private Certificate certificate;
-  @Mock
-  private CertificateRepository certificateRepository;
+  @Mock private Certificate certificate;
+  @Mock private CertificateRepository certificateRepository;
 
-  @Mock
-  private CertificateEventDomainService certificateEventDomainService;
-  @Mock
-  private PdfGenerator pdfGenerator;
-  @Mock
-  private PdfGeneratorProvider pdfGeneratorProvider;
+  @Mock private CertificateEventDomainService certificateEventDomainService;
+  @Mock private PdfGenerator pdfGenerator;
+  @Mock private PdfGeneratorProvider pdfGeneratorProvider;
 
-  @InjectMocks
-  GetCertificatePdfDomainService getCertificatePdfDomainService;
+  @InjectMocks GetCertificatePdfDomainService getCertificatePdfDomainService;
 
   @BeforeEach
   void setUp() {
@@ -66,10 +78,10 @@ class GetCertificatePdfDomainServiceTest {
 
     @BeforeEach
     void setUp() {
-      doReturn(true).when(certificate)
+      doReturn(true)
+          .when(certificate)
           .allowTo(CertificateActionType.PRINT, Optional.of(ACTION_EVALUATION));
-      doReturn(pdfGenerator)
-          .when(pdfGeneratorProvider).provider(certificate);
+      doReturn(pdfGenerator).when(pdfGeneratorProvider).provider(certificate);
     }
 
     @Test
@@ -103,17 +115,18 @@ class GetCertificatePdfDomainServiceTest {
 
     @Test
     void shallReturnResponseWithPdfFromGenerator() {
-      final var options = PdfGeneratorOptions.builder()
-          .additionalInfoText(ADDITIONAL_INFO_TEXT)
-          .citizenFormat(false)
-          .hiddenElements(Collections.emptyList())
-          .build();
+      final var options =
+          PdfGeneratorOptions.builder()
+              .additionalInfoText(ADDITIONAL_INFO_TEXT)
+              .citizenFormat(false)
+              .hiddenElements(Collections.emptyList())
+              .build();
 
-      doReturn(PDF).when(pdfGenerator)
-          .generate(certificate, options);
+      doReturn(PDF).when(pdfGenerator).generate(certificate, options);
 
-      final var response = getCertificatePdfDomainService.get(CERTIFICATE_ID, ACTION_EVALUATION,
-          ADDITIONAL_INFO_TEXT);
+      final var response =
+          getCertificatePdfDomainService.get(
+              CERTIFICATE_ID, ACTION_EVALUATION, ADDITIONAL_INFO_TEXT);
 
       assertEquals(PDF, response);
     }
@@ -124,21 +137,22 @@ class GetCertificatePdfDomainServiceTest {
 
     @Test
     void shallThrowIfNotAllowedToPrint() {
-      doReturn(false).when(certificate)
+      doReturn(false)
+          .when(certificate)
           .allowTo(CertificateActionType.PRINT, Optional.of(ACTION_EVALUATION));
-      assertThrows(CertificateActionForbidden.class,
-          () -> getCertificatePdfDomainService.get(CERTIFICATE_ID, ACTION_EVALUATION,
-              ADDITIONAL_INFO_TEXT)
-      );
+      assertThrows(
+          CertificateActionForbidden.class,
+          () ->
+              getCertificatePdfDomainService.get(
+                  CERTIFICATE_ID, ACTION_EVALUATION, ADDITIONAL_INFO_TEXT));
     }
-
   }
 
   @Test
   void shallPublishGetCertificateEvent() {
-    doReturn(pdfGenerator)
-        .when(pdfGeneratorProvider).provider(certificate);
-    doReturn(true).when(certificate)
+    doReturn(pdfGenerator).when(pdfGeneratorProvider).provider(certificate);
+    doReturn(true)
+        .when(certificate)
         .allowTo(CertificateActionType.PRINT, Optional.of(ACTION_EVALUATION));
     getCertificatePdfDomainService.get(CERTIFICATE_ID, ACTION_EVALUATION, ADDITIONAL_INFO_TEXT);
 
@@ -149,24 +163,26 @@ class GetCertificatePdfDomainServiceTest {
         () -> assertEquals(CertificateEventType.PRINT, certificateEventCaptor.getValue().type()),
         () -> assertEquals(certificate, certificateEventCaptor.getValue().certificate()),
         () -> assertEquals(ACTION_EVALUATION, certificateEventCaptor.getValue().actionEvaluation()),
-        () -> assertTrue(certificateEventCaptor.getValue().duration() >= 0)
-    );
+        () -> assertTrue(certificateEventCaptor.getValue().duration() >= 0));
   }
 
   @Test
   void shallIncludeReasonNotAllowedToException() {
     final var expectedReason = List.of("expectedReason");
-    doReturn(false).when(certificate)
+    doReturn(false)
+        .when(certificate)
         .allowTo(CertificateActionType.PRINT, Optional.of(ACTION_EVALUATION));
-    doReturn(expectedReason).when(certificate)
+    doReturn(expectedReason)
+        .when(certificate)
         .reasonNotAllowed(CertificateActionType.PRINT, Optional.of(ACTION_EVALUATION));
 
-    final var certificateActionForbidden = assertThrows(CertificateActionForbidden.class,
-        () -> getCertificatePdfDomainService.get(CERTIFICATE_ID, ACTION_EVALUATION,
-            ADDITIONAL_INFO_TEXT)
-    );
+    final var certificateActionForbidden =
+        assertThrows(
+            CertificateActionForbidden.class,
+            () ->
+                getCertificatePdfDomainService.get(
+                    CERTIFICATE_ID, ACTION_EVALUATION, ADDITIONAL_INFO_TEXT));
 
     assertEquals(expectedReason, certificateActionForbidden.reason());
   }
 }
-

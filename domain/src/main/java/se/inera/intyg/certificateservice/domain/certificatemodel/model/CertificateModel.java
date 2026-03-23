@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.certificatemodel.model;
 
 import java.math.BigDecimal;
@@ -38,8 +56,10 @@ public class CertificateModel implements Comparator<ElementId> {
   LocalDateTime activeFrom;
   Boolean availableForCitizen;
   List<CertificateActionSpecification> certificateActionSpecifications;
+
   @Builder.Default
   List<MessageActionSpecification> messageActionSpecifications = Collections.emptyList();
+
   List<ElementSpecification> elementSpecifications;
   SchematronPath schematronPath;
   List<CertificateText> texts;
@@ -47,14 +67,11 @@ public class CertificateModel implements Comparator<ElementId> {
   List<CertificateMessageType> messageTypes;
   PdfSpecification pdfSpecification;
   CertificateConfirmationModalProvider confirmationModalProvider;
-  @With
-  CertificateActionFactory certificateActionFactory;
+  @With CertificateActionFactory certificateActionFactory;
   SickLeaveProvider sickLeaveProvider;
   CitizenAvailableFunctionsProvider citizenAvailableFunctionsProvider;
   CertificateModelId ableToCreateDraftForModel;
-  @Builder.Default
-  @With
-  List<CertificateModel> versions = Collections.emptyList();
+  @Builder.Default @With List<CertificateModel> versions = Collections.emptyList();
   CertificateGenerelPrintProvider generalPrintProvider;
 
   public List<CertificateAction> actions() {
@@ -73,9 +90,7 @@ public class CertificateModel implements Comparator<ElementId> {
 
   public List<CertificateAction> actions(Optional<ActionEvaluation> actionEvaluation) {
     return actions().stream()
-        .filter(certificateAction ->
-            certificateAction.evaluate(Optional.empty(), actionEvaluation)
-        )
+        .filter(certificateAction -> certificateAction.evaluate(Optional.empty(), actionEvaluation))
         .toList();
   }
 
@@ -85,8 +100,8 @@ public class CertificateModel implements Comparator<ElementId> {
         .toList();
   }
 
-  public boolean allowTo(CertificateActionType certificateActionType,
-      Optional<ActionEvaluation> actionEvaluation) {
+  public boolean allowTo(
+      CertificateActionType certificateActionType, Optional<ActionEvaluation> actionEvaluation) {
     return actions().stream()
         .filter(certificateAction -> certificateActionType.equals(certificateAction.getType()))
         .findFirst()
@@ -94,14 +109,14 @@ public class CertificateModel implements Comparator<ElementId> {
         .orElse(false);
   }
 
-  public List<String> reasonNotAllowed(CertificateActionType certificateActionType,
-      Optional<ActionEvaluation> actionEvaluation) {
+  public List<String> reasonNotAllowed(
+      CertificateActionType certificateActionType, Optional<ActionEvaluation> actionEvaluation) {
     return actions().stream()
         .filter(certificateAction -> certificateActionType.equals(certificateAction.getType()))
         .findFirst()
-        .map(certificateAction ->
-            certificateAction.reasonNotAllowed(Optional.empty(), actionEvaluation)
-        )
+        .map(
+            certificateAction ->
+                certificateAction.reasonNotAllowed(Optional.empty(), actionEvaluation))
         .orElse(Collections.emptyList());
   }
 
@@ -116,24 +131,20 @@ public class CertificateModel implements Comparator<ElementId> {
         .map(elementSpecification -> elementSpecification.elementSpecification(id))
         .findAny()
         .orElseThrow(
-            () -> new IllegalArgumentException("No element with id '%s' exists".formatted(id))
-        );
+            () -> new IllegalArgumentException("No element with id '%s' exists".formatted(id)));
   }
 
   public boolean certificateActionExists(CertificateActionType certificateActionType) {
-    return certificateActionSpecifications()
-        .stream()
+    return certificateActionSpecifications().stream()
         .anyMatch(
-            specification -> specification.certificateActionType().equals(certificateActionType)
-        );
+            specification -> specification.certificateActionType().equals(certificateActionType));
   }
 
   public Optional<CertificateActionSpecification> certificateAction(
       CertificateActionType certificateActionType) {
     return certificateActionSpecifications().stream()
         .filter(
-            specification -> specification.certificateActionType().equals(certificateActionType)
-        )
+            specification -> specification.certificateActionType().equals(certificateActionType))
         .findFirst();
   }
 
@@ -149,12 +160,8 @@ public class CertificateModel implements Comparator<ElementId> {
     }
 
     return elementSpecifications.stream()
-        .flatMap(element ->
-            Stream.concat(
-                Stream.of(element.id()),
-                flatten(element.children()).stream()
-            )
-        )
+        .flatMap(
+            element -> Stream.concat(Stream.of(element.id()), flatten(element.children()).stream()))
         .toList();
   }
 

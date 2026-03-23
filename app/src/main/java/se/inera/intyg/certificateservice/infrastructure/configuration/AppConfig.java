@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.configuration;
 
 import java.util.List;
@@ -99,8 +117,12 @@ public class AppConfig {
       CertificateEventDomainService certificateEventDomainService,
       CertificateActionConfigurationRepository certificateActionConfigurationRepository,
       PrefillProcessor prefillProcessor) {
-    return new CreateCertificateDomainService(certificateModelRepository, certificateRepository,
-        certificateEventDomainService, certificateActionConfigurationRepository, prefillProcessor);
+    return new CreateCertificateDomainService(
+        certificateModelRepository,
+        certificateRepository,
+        certificateEventDomainService,
+        certificateActionConfigurationRepository,
+        prefillProcessor);
   }
 
   @Bean
@@ -128,8 +150,8 @@ public class AppConfig {
   public ValidateCertificateDomainService validateCertificateDomainService(
       CertificateRepository certificateRepository,
       CertificateEventDomainService certificateEventDomainService) {
-    return new ValidateCertificateDomainService(certificateRepository,
-        certificateEventDomainService);
+    return new ValidateCertificateDomainService(
+        certificateRepository, certificateEventDomainService);
   }
 
   @Bean
@@ -163,14 +185,13 @@ public class AppConfig {
   }
 
   @Bean
-  public XmlGenerator xmlGenerator(XmlGeneratorValue xmlGeneratorValue,
-      XmlValidationService xmlValidationService) {
+  public XmlGenerator xmlGenerator(
+      XmlGeneratorValue xmlGeneratorValue, XmlValidationService xmlValidationService) {
     return new XmlGeneratorCertificateV4(xmlGeneratorValue, xmlValidationService);
   }
 
   @Bean
-  public PrefillProcessor prefillProcessor(
-      PrefillHandler prefillHandler) {
+  public PrefillProcessor prefillProcessor(PrefillHandler prefillHandler) {
     return new PrefillService(prefillHandler);
   }
 
@@ -187,27 +208,34 @@ public class AppConfig {
   @Bean
   public SignCertificateDomainService signCertificateDomainService(
       CertificateRepository certificateRepository,
-      CertificateEventDomainService certificateEventDomainService, XmlGenerator xmlGenerator,
+      CertificateEventDomainService certificateEventDomainService,
+      XmlGenerator xmlGenerator,
       SetMessagesToHandleDomainService setMessagesToHandleDomainService) {
-    return new SignCertificateDomainService(certificateRepository, certificateEventDomainService,
-        xmlGenerator, setMessagesToHandleDomainService);
+    return new SignCertificateDomainService(
+        certificateRepository,
+        certificateEventDomainService,
+        xmlGenerator,
+        setMessagesToHandleDomainService);
   }
 
   @Bean
   public SignCertificateWithoutSignatureDomainService signCertificateWithoutSignatureDomainService(
       CertificateRepository certificateRepository,
-      CertificateEventDomainService certificateEventDomainService, XmlGenerator xmlGenerator,
+      CertificateEventDomainService certificateEventDomainService,
+      XmlGenerator xmlGenerator,
       SetMessagesToHandleDomainService setMessagesToHandleDomainService) {
-    return new SignCertificateWithoutSignatureDomainService(certificateRepository,
-        certificateEventDomainService, xmlGenerator, setMessagesToHandleDomainService);
+    return new SignCertificateWithoutSignatureDomainService(
+        certificateRepository,
+        certificateEventDomainService,
+        xmlGenerator,
+        setMessagesToHandleDomainService);
   }
 
   @Bean
   public SendCertificateDomainService sendCertificateDomainService(
       CertificateRepository certificateRepository,
       CertificateEventDomainService certificateEventDomainService) {
-    return new SendCertificateDomainService(certificateRepository,
-        certificateEventDomainService);
+    return new SendCertificateDomainService(certificateRepository, certificateEventDomainService);
   }
 
   @Bean
@@ -216,22 +244,25 @@ public class AppConfig {
       CertificateEventDomainService certificateEventDomainService,
       SetMessagesToHandleDomainService setMessagesToHandleDomainService,
       SetMessagesToUnhandledDomainService setMessagesToUnhandledDomainService) {
-    return new RevokeCertificateDomainService(certificateRepository,
-        certificateEventDomainService, setMessagesToHandleDomainService,
+    return new RevokeCertificateDomainService(
+        certificateRepository,
+        certificateEventDomainService,
+        setMessagesToHandleDomainService,
         setMessagesToUnhandledDomainService);
   }
 
   @Bean
   public GetCertificatePdfDomainService getCertificatePdfDomainService(
-      CertificateRepository certificateRepository, PdfGeneratorProvider pdfGeneratorProvider,
+      CertificateRepository certificateRepository,
+      PdfGeneratorProvider pdfGeneratorProvider,
       CertificateEventDomainService certificateEventDomainService) {
-    return new GetCertificatePdfDomainService(certificateRepository, pdfGeneratorProvider,
-        certificateEventDomainService);
+    return new GetCertificatePdfDomainService(
+        certificateRepository, pdfGeneratorProvider, certificateEventDomainService);
   }
 
   @Bean
-  public XmlValidationService xmlValidationService(XmlSchemaValidator xmlSchemaValidator,
-      XmlSchematronValidator xmlSchematronValidator) {
+  public XmlValidationService xmlValidationService(
+      XmlSchemaValidator xmlSchemaValidator, XmlSchematronValidator xmlSchematronValidator) {
     return new XmlValidationService(xmlSchematronValidator, xmlSchemaValidator);
   }
 
@@ -239,8 +270,8 @@ public class AppConfig {
   public ReplaceCertificateDomainService replaceCertificateDomainService(
       CertificateRepository certificateRepository,
       CertificateEventDomainService certificateEventDomainService) {
-    return new ReplaceCertificateDomainService(certificateRepository,
-        certificateEventDomainService);
+    return new ReplaceCertificateDomainService(
+        certificateRepository, certificateEventDomainService);
   }
 
   @Bean
@@ -262,16 +293,19 @@ public class AppConfig {
       CertificateRepository certificateRepository,
       CertificateEventDomainService certificateEventDomainService,
       PrefillProcessor prefillProcessor) {
-    return new RenewExternalCertificateDomainService(certificateModelRepository,
-        certificateRepository, certificateEventDomainService, prefillProcessor);
+    return new RenewExternalCertificateDomainService(
+        certificateModelRepository,
+        certificateRepository,
+        certificateEventDomainService,
+        prefillProcessor);
   }
 
   @Bean
   public ComplementCertificateDomainService complementCertificateDomainService(
       CertificateRepository certificateRepository,
       CertificateEventDomainService certificateEventDomainService) {
-    return new ComplementCertificateDomainService(certificateRepository,
-        certificateEventDomainService);
+    return new ComplementCertificateDomainService(
+        certificateRepository, certificateEventDomainService);
   }
 
   @Bean
@@ -284,8 +318,8 @@ public class AppConfig {
   public SendCitizenCertificateDomainService sendCitizenCertificateDomainService(
       CertificateRepository certificateRepository,
       CertificateEventDomainService certificateEventDomainService) {
-    return new SendCitizenCertificateDomainService(certificateRepository,
-        certificateEventDomainService);
+    return new SendCitizenCertificateDomainService(
+        certificateRepository, certificateEventDomainService);
   }
 
   @Bean
@@ -340,8 +374,8 @@ public class AppConfig {
       CertificateRepository certificateRepository,
       SetMessagesToHandleDomainService setMessagesToHandleDomainService,
       MessageEventDomainService messageEventDomainService) {
-    return new AnswerComplementDomainService(certificateRepository,
-        setMessagesToHandleDomainService, messageEventDomainService);
+    return new AnswerComplementDomainService(
+        certificateRepository, setMessagesToHandleDomainService, messageEventDomainService);
   }
 
   @Bean
@@ -357,8 +391,7 @@ public class AppConfig {
   }
 
   @Bean
-  public SaveMessageDomainService saveMessageDomainService(
-      MessageRepository messageRepository) {
+  public SaveMessageDomainService saveMessageDomainService(MessageRepository messageRepository) {
     return new SaveMessageDomainService(messageRepository);
   }
 
@@ -370,21 +403,17 @@ public class AppConfig {
 
   @Bean
   public SendMessageDomainService sendMessageDomainService(
-      MessageRepository messageRepository,
-      MessageEventDomainService messageEventDomainService) {
-    return new SendMessageDomainService(messageRepository,
-        messageEventDomainService);
+      MessageRepository messageRepository, MessageEventDomainService messageEventDomainService) {
+    return new SendMessageDomainService(messageRepository, messageEventDomainService);
   }
 
   @Bean
-  public SaveAnswerDomainService saveAnswerDomainService(
-      MessageRepository messageRepository) {
+  public SaveAnswerDomainService saveAnswerDomainService(MessageRepository messageRepository) {
     return new SaveAnswerDomainService(messageRepository);
   }
 
   @Bean
-  public DeleteAnswerDomainService deleteAnswerDomainService(
-      MessageRepository messageRepository) {
+  public DeleteAnswerDomainService deleteAnswerDomainService(MessageRepository messageRepository) {
     return new DeleteAnswerDomainService(messageRepository);
   }
 
@@ -422,8 +451,8 @@ public class AppConfig {
   public GetCertificatesWithQAInternalDomainService getPatientCertificatesWithQADomainService(
       CertificateRepository certificateRepository,
       XmlGeneratorCertificatesForCareWithQA xmlGeneratorCertificatesForCareWithQA) {
-    return new GetCertificatesWithQAInternalDomainService(certificateRepository,
-        xmlGeneratorCertificatesForCareWithQA);
+    return new GetCertificatesWithQAInternalDomainService(
+        certificateRepository, xmlGeneratorCertificatesForCareWithQA);
   }
 
   @Bean
@@ -441,8 +470,8 @@ public class AppConfig {
   public GetCertificateEventsDomainService getCertificateEventsDomainService(
       CertificateRepository certificateRepository,
       GetCertificateEventsOfTypeDomainService getCertificateEventsOfTypeDomainService) {
-    return new GetCertificateEventsDomainService(certificateRepository,
-        getCertificateEventsOfTypeDomainService);
+    return new GetCertificateEventsDomainService(
+        certificateRepository, getCertificateEventsOfTypeDomainService);
   }
 
   @Bean
@@ -456,16 +485,16 @@ public class AppConfig {
   public SetCertificateReadyForSignDomainService setCertificateReadyForSignDomainService(
       CertificateRepository certificateRepository,
       CertificateEventDomainService certificateEventDomainService) {
-    return new SetCertificateReadyForSignDomainService(certificateRepository,
-        certificateEventDomainService);
+    return new SetCertificateReadyForSignDomainService(
+        certificateRepository, certificateEventDomainService);
   }
 
   @Bean
   public ListAvailableCertificateModelsDomainService listAvailableCertificateModelsDomainService(
       CertificateModelRepository certificateModelRepository,
       CertificateActionConfigurationRepository certificateActionConfigurationRepository) {
-    return new ListAvailableCertificateModelsDomainService(certificateModelRepository,
-        certificateActionConfigurationRepository);
+    return new ListAvailableCertificateModelsDomainService(
+        certificateModelRepository, certificateActionConfigurationRepository);
   }
 
   @Bean
@@ -502,8 +531,8 @@ public class AppConfig {
       CertificateRepository certificateRepository,
       CertificateModelRepository certificateModelRepository,
       CertificateEventDomainService certificateEventDomainService) {
-    return new CreateDraftFromCertificateDomainService(certificateRepository,
-        certificateModelRepository, certificateEventDomainService);
+    return new CreateDraftFromCertificateDomainService(
+        certificateRepository, certificateModelRepository, certificateEventDomainService);
   }
 
   @Bean
@@ -516,8 +545,8 @@ public class AppConfig {
   public UpdateWithCertificateCandidateDomainService updateWithCertificateCandidateDomainService(
       CertificateRepository certificateRepository,
       CertificateEventDomainService certificateEventDomainService) {
-    return new UpdateWithCertificateCandidateDomainService(certificateRepository,
-        certificateEventDomainService);
+    return new UpdateWithCertificateCandidateDomainService(
+        certificateRepository, certificateEventDomainService);
   }
 
   @Bean

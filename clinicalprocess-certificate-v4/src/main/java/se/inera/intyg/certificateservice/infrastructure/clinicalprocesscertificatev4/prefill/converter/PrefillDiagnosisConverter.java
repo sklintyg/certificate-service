@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.prefill.converter;
 
 import java.util.ArrayList;
@@ -38,92 +56,87 @@ public class PrefillDiagnosisConverter implements PrefillStandardConverter {
   }
 
   @Override
-  public PrefillAnswer prefillAnswer(ElementSpecification specification,
-      Forifyllnad prefill) {
+  public PrefillAnswer prefillAnswer(ElementSpecification specification, Forifyllnad prefill) {
 
-    if (!(specification.configuration() instanceof ElementConfigurationDiagnosis elementConfigurationDiagnosis)) {
-      return PrefillAnswer.builder()
-          .errors(List.of(PrefillError.wrongConfigurationType()))
-          .build();
+    if (!(specification.configuration()
+        instanceof ElementConfigurationDiagnosis elementConfigurationDiagnosis)) {
+      return PrefillAnswer.builder().errors(List.of(PrefillError.wrongConfigurationType())).build();
     }
 
-    final var answers = prefill.getSvar().stream()
-        .filter(svar -> svar.getId().equals(specification.id().id()))
-        .toList();
+    final var answers =
+        prefill.getSvar().stream()
+            .filter(svar -> svar.getId().equals(specification.id().id()))
+            .toList();
 
     if (answers.isEmpty()) {
       return null;
     }
 
     final var prefillErrors = new ArrayList<PrefillError>();
-    final var data = ElementData.builder()
-        .id(specification.id())
-        .value(
-            ElementValueDiagnosisList.builder()
-                .diagnoses(
-                    answers.stream()
-                        .map(answer -> {
-                          try {
+    final var data =
+        ElementData.builder()
+            .id(specification.id())
+            .value(
+                ElementValueDiagnosisList.builder()
+                    .diagnoses(
+                        answers.stream()
+                            .map(
+                                answer -> {
+                                  try {
 
-                            final var validationErrors = new ArrayList<PrefillError>();
-                            validationErrors.addAll(
-                                PrefillValidator.validateMinimumNumberOfDelsvar(
-                                    answer,
-                                    MINIMUM_SUB_ANSWERS,
-                                    specification)
-                            );
+                                    final var validationErrors = new ArrayList<PrefillError>();
+                                    validationErrors.addAll(
+                                        PrefillValidator.validateMinimumNumberOfDelsvar(
+                                            answer, MINIMUM_SUB_ANSWERS, specification));
 
-                            validationErrors.addAll(
-                                PrefillValidator.validateDiagnosisCode(
-                                    getCvTypes(specification, answer),
-                                    diagnosisCodeRepository
-                                )
-                            );
+                                    validationErrors.addAll(
+                                        PrefillValidator.validateDiagnosisCode(
+                                            getCvTypes(specification, answer),
+                                            diagnosisCodeRepository));
 
-                            if (!validationErrors.isEmpty()) {
-                              prefillErrors.addAll(validationErrors);
-                              return null;
-                            }
+                                    if (!validationErrors.isEmpty()) {
+                                      prefillErrors.addAll(validationErrors);
+                                      return null;
+                                    }
 
-                            final var instance = answer.getInstans() - 1;
-                            return toElementValueDiagnosis(
-                                answer.getDelsvar(),
-                                elementConfigurationDiagnosis,
-                                instance,
-                                specification
-                            );
-                          } catch (Exception e) {
-                            prefillErrors.add(
-                                PrefillError.invalidFormat(answer.getId(), e.getMessage()));
-                            return null;
-                          }
-                        })
-                        .filter(Objects::nonNull)
-                        .toList())
-                .build())
-        .build();
+                                    final var instance = answer.getInstans() - 1;
+                                    return toElementValueDiagnosis(
+                                        answer.getDelsvar(),
+                                        elementConfigurationDiagnosis,
+                                        instance,
+                                        specification);
+                                  } catch (Exception e) {
+                                    prefillErrors.add(
+                                        PrefillError.invalidFormat(answer.getId(), e.getMessage()));
+                                    return null;
+                                  }
+                                })
+                            .filter(Objects::nonNull)
+                            .toList())
+                    .build())
+            .build();
 
-    return PrefillAnswer.builder()
-        .elementData(data)
-        .errors(prefillErrors)
-        .build();
+    return PrefillAnswer.builder().elementData(data).errors(prefillErrors).build();
   }
 
   private List<CVType> getCvTypes(ElementSpecification specification, Svar answer) {
     return answer.getDelsvar().stream()
-        .filter(subAnswer -> subAnswer.getId()
-            .equals(CV_TYPE_IDENTIFIER.formatted(specification.id().id())))
+        .filter(
+            subAnswer ->
+                subAnswer.getId().equals(CV_TYPE_IDENTIFIER.formatted(specification.id().id())))
         .map(subAnswer -> PrefillUnmarshaller.cvType(subAnswer.getContent()))
         .map(Optional::orElseThrow)
         .toList();
   }
 
-  private ElementValueDiagnosis toElementValueDiagnosis(List<Delsvar> subAnswers,
-      ElementConfigurationDiagnosis elementConfigurationDiagnosis, Integer instance,
+  private ElementValueDiagnosis toElementValueDiagnosis(
+      List<Delsvar> subAnswers,
+      ElementConfigurationDiagnosis elementConfigurationDiagnosis,
+      Integer instance,
       ElementSpecification specification) {
     final var subAnswerCode = getSubAnswerCode(subAnswers, specification);
-    final var subAnswerDescription = getSubAnswerDescription(subAnswers, specification,
-        subAnswerCode.getCode());
+    final var subAnswerDescription =
+        getSubAnswerDescription(subAnswers, specification, subAnswerCode.getCode());
 
     return ElementValueDiagnosis.builder()
         .id(elementConfigurationDiagnosis.list().get(instance).id())
@@ -133,12 +146,12 @@ public class PrefillDiagnosisConverter implements PrefillStandardConverter {
         .build();
   }
 
-  private static CVType getSubAnswerCode(List<Delsvar> subAnswers,
-      ElementSpecification specification) {
+  private static CVType getSubAnswerCode(
+      List<Delsvar> subAnswers, ElementSpecification specification) {
     return subAnswers.stream()
-        .filter(subAnswer -> subAnswer.getId()
-            .equals(CV_TYPE_IDENTIFIER.formatted(specification.id().id()))
-        )
+        .filter(
+            subAnswer ->
+                subAnswer.getId().equals(CV_TYPE_IDENTIFIER.formatted(specification.id().id())))
         .map(subAnswer -> PrefillUnmarshaller.cvType(subAnswer.getContent()).orElseThrow())
         .findFirst()
         .orElseThrow();
@@ -149,29 +162,34 @@ public class PrefillDiagnosisConverter implements PrefillStandardConverter {
    * Delsvar, it falls back to using the description associated with the diagnosis code from the
    * repository.
    *
-   * @param subAnswers    List of Delsvar objects to search for the description.
+   * @param subAnswers List of Delsvar objects to search for the description.
    * @param specification The element specification.
-   * @param code          The diagnosis code used to fetch the description if missing.
+   * @param code The diagnosis code used to fetch the description if missing.
    * @return The description string.
    */
-  private String getSubAnswerDescription(List<Delsvar> subAnswers,
-      ElementSpecification specification, String code) {
+  private String getSubAnswerDescription(
+      List<Delsvar> subAnswers, ElementSpecification specification, String code) {
     return subAnswers.stream()
-        .filter(subAnswer -> subAnswer.getId()
-            .equals(DESCRIPTION_IDENTIFIER.formatted(specification.id().id()))
-        )
+        .filter(
+            subAnswer ->
+                subAnswer.getId().equals(DESCRIPTION_IDENTIFIER.formatted(specification.id().id())))
         .map(subAnswer -> subAnswer.getContent().getFirst())
         .findFirst()
         .map(String.class::cast)
-        .orElseGet(() -> diagnosisCodeRepository.getByCode(new DiagnosisCode(code)).description()
-            .description());
+        .orElseGet(
+            () ->
+                diagnosisCodeRepository
+                    .getByCode(new DiagnosisCode(code))
+                    .description()
+                    .description());
   }
 
-  private static String getTerminology(ElementConfigurationDiagnosis elementConfigurationDiagnosis,
-      CVType cvType) {
+  private static String getTerminology(
+      ElementConfigurationDiagnosis elementConfigurationDiagnosis, CVType cvType) {
     return elementConfigurationDiagnosis.terminology().stream()
-        .filter(elementDiagnosisTerminology -> elementDiagnosisTerminology.isValidCodeSystem(
-            cvType.getCodeSystem()))
+        .filter(
+            elementDiagnosisTerminology ->
+                elementDiagnosisTerminology.isValidCodeSystem(cvType.getCodeSystem()))
         .findFirst()
         .orElseThrow()
         .id();

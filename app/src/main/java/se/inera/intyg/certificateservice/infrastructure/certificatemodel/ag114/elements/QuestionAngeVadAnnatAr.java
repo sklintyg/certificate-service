@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ag114.elements;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.ag114.elements.QuestionGrundForMedicinsktUnderlag.QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID;
@@ -31,46 +49,27 @@ public class QuestionAngeVadAnnatAr {
             ElementConfigurationTextField.builder()
                 .id(QUESTION_ANGE_VAD_ANNAT_AR_FIELD_ID)
                 .name("Ange vad annat är")
-                .build()
-        )
+                .build())
         .rules(
             List.of(
                 CertificateElementRuleFactory.show(
-                    QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID,
-                    ANNAT_FIELD_ID
-                ),
+                    QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID, ANNAT_FIELD_ID),
                 CertificateElementRuleFactory.mandatory(
-                    QUESTION_ANGE_VAD_ANNAT_AR_ID,
-                    QUESTION_ANGE_VAD_ANNAT_AR_FIELD_ID
-                ),
-                CertificateElementRuleFactory.limit(
-                    QUESTION_ANGE_VAD_ANNAT_AR_ID,
-                    (short) 50
-                )
-            )
-        )
-        .validations(
-            List.of(
-                ElementValidationText.builder()
-                    .mandatory(true)
-                    .limit(50)
-                    .build()
-            )
-        )
+                    QUESTION_ANGE_VAD_ANNAT_AR_ID, QUESTION_ANGE_VAD_ANNAT_AR_FIELD_ID),
+                CertificateElementRuleFactory.limit(QUESTION_ANGE_VAD_ANNAT_AR_ID, (short) 50)))
+        .validations(List.of(ElementValidationText.builder().mandatory(true).limit(50).build()))
         .mapping(
             new ElementMapping(
-                QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID,
-                CodeSystemKvFkmu0001.ANNAT
-            )
-        )
+                QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID, CodeSystemKvFkmu0001.ANNAT))
         .shouldValidate(
-            elementData -> elementData.stream()
-                .filter(data -> data.id().equals(QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID))
-                .map(element -> (ElementValueDateList) element.value())
-                .anyMatch(value -> value.dateList().stream().anyMatch(
-                    valueDate -> valueDate.dateId().equals(ANNAT_FIELD_ID))
-                )
-        )
+            elementData ->
+                elementData.stream()
+                    .filter(data -> data.id().equals(QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID))
+                    .map(element -> (ElementValueDateList) element.value())
+                    .anyMatch(
+                        value ->
+                            value.dateList().stream()
+                                .anyMatch(valueDate -> valueDate.dateId().equals(ANNAT_FIELD_ID))))
         .build();
   }
 }

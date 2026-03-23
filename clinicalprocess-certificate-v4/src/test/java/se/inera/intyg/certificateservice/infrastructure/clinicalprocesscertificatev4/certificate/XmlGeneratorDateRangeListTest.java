@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.certificate;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -43,8 +61,7 @@ class XmlGeneratorDateRangeListTest {
   private static final LocalDate TO_2 = LocalDate.now().plusDays(1);
   private static ElementData data;
 
-  @InjectMocks
-  private XmlGeneratorDateRangeList xmlGenerator;
+  @InjectMocks private XmlGeneratorDateRangeList xmlGenerator;
   private ElementSpecification elementSpecification;
 
   @Nested
@@ -52,42 +69,35 @@ class XmlGeneratorDateRangeListTest {
 
     @BeforeEach
     void setup() {
-      data = ElementData.builder()
-          .id(new ElementId(QUESTION_ID))
-          .value(ElementValueDateRangeList.builder()
-              .dateRangeListId(new FieldId(VALUE_ID))
-              .dateRangeList(
-                  List.of(
-                      DateRange.builder()
-                          .dateRangeId(new FieldId(RANGE_ID))
-                          .from(FROM)
-                          .to(TO)
-                          .build()
-                  )
-              )
-              .build())
-          .build();
+      data =
+          ElementData.builder()
+              .id(new ElementId(QUESTION_ID))
+              .value(
+                  ElementValueDateRangeList.builder()
+                      .dateRangeListId(new FieldId(VALUE_ID))
+                      .dateRangeList(
+                          List.of(
+                              DateRange.builder()
+                                  .dateRangeId(new FieldId(RANGE_ID))
+                                  .from(FROM)
+                                  .to(TO)
+                                  .build()))
+                      .build())
+              .build();
 
-      elementSpecification = ElementSpecification.builder()
-          .configuration(
-              ElementConfigurationCheckboxDateRangeList.builder()
-                  .id(new FieldId(VALUE_ID))
-                  .dateRanges(
-                      List.of(
-                          new ElementConfigurationCode(
-                              new FieldId(RANGE_ID),
-                              "label",
-                              new Code(
-                                  "CODE",
-                                  "CODE_SYSTEM",
-                                  "DISPLAY_NAME"
-                              )
-                          )
-                      )
-                  )
-                  .build()
-          )
-          .build();
+      elementSpecification =
+          ElementSpecification.builder()
+              .configuration(
+                  ElementConfigurationCheckboxDateRangeList.builder()
+                      .id(new FieldId(VALUE_ID))
+                      .dateRanges(
+                          List.of(
+                              new ElementConfigurationCode(
+                                  new FieldId(RANGE_ID),
+                                  "label",
+                                  new Code("CODE", "CODE_SYSTEM", "DISPLAY_NAME"))))
+                      .build())
+              .build();
     }
 
     @Test
@@ -98,8 +108,7 @@ class XmlGeneratorDateRangeListTest {
       assertAll(
           () -> assertEquals(1, response.size()),
           () -> assertEquals(QUESTION_ID, first.getId()),
-          () -> assertEquals(1, first.getInstans())
-      );
+          () -> assertEquals(1, first.getInstans()));
     }
 
     @Test
@@ -116,8 +125,7 @@ class XmlGeneratorDateRangeListTest {
           () -> assertEquals(QUESTION_ID + ".1", delsvarCode.getId()),
           () -> assertEquals("CODE", cvType.getCode()),
           () -> assertEquals("CODE_SYSTEM", cvType.getCodeSystem()),
-          () -> assertEquals("DISPLAY_NAME", cvType.getDisplayName())
-      );
+          () -> assertEquals("DISPLAY_NAME", cvType.getDisplayName()));
     }
 
     @Test
@@ -133,8 +141,7 @@ class XmlGeneratorDateRangeListTest {
           () -> assertEquals(2, delsvar.size()),
           () -> assertEquals(QUESTION_ID + ".2", delsvarDateRange.getId()),
           () -> assertEquals(FROM, toLocalDate(dateRange.getStart())),
-          () -> assertEquals(TO, toLocalDate(dateRange.getEnd()))
-      );
+          () -> assertEquals(TO, toLocalDate(dateRange.getEnd())));
     }
   }
 
@@ -143,56 +150,44 @@ class XmlGeneratorDateRangeListTest {
 
     @BeforeEach
     void setup() {
-      data = ElementData.builder()
-          .id(new ElementId(QUESTION_ID))
-          .value(ElementValueDateRangeList.builder()
-              .dateRangeListId(new FieldId(VALUE_ID))
-              .dateRangeList(
-                  List.of(
-                      DateRange.builder()
-                          .dateRangeId(new FieldId(RANGE_ID))
-                          .from(FROM)
-                          .to(TO)
-                          .build(),
-                      DateRange.builder()
-                          .dateRangeId(new FieldId(RANGE_ID_2))
-                          .from(FROM_2)
-                          .to(TO_2)
-                          .build()
-                  )
-              )
-              .build())
-          .build();
+      data =
+          ElementData.builder()
+              .id(new ElementId(QUESTION_ID))
+              .value(
+                  ElementValueDateRangeList.builder()
+                      .dateRangeListId(new FieldId(VALUE_ID))
+                      .dateRangeList(
+                          List.of(
+                              DateRange.builder()
+                                  .dateRangeId(new FieldId(RANGE_ID))
+                                  .from(FROM)
+                                  .to(TO)
+                                  .build(),
+                              DateRange.builder()
+                                  .dateRangeId(new FieldId(RANGE_ID_2))
+                                  .from(FROM_2)
+                                  .to(TO_2)
+                                  .build()))
+                      .build())
+              .build();
 
-      elementSpecification = ElementSpecification.builder()
-          .configuration(
-              ElementConfigurationCheckboxDateRangeList.builder()
-                  .id(new FieldId(VALUE_ID))
-                  .dateRanges(
-                      List.of(
-                          new ElementConfigurationCode(
-                              new FieldId(RANGE_ID),
-                              "label",
-                              new Code(
-                                  "CODE",
-                                  "CODE_SYSTEM",
-                                  "DISPLAY_NAME"
-                              )
-                          ),
-                          new ElementConfigurationCode(
-                              new FieldId(RANGE_ID_2),
-                              "labelTwo",
-                              new Code(
-                                  "CODE_TWO",
-                                  "CODE_SYSTEM",
-                                  "DISPLAY_NAME_TWO"
-                              )
-                          )
-                      )
-                  )
-                  .build()
-          )
-          .build();
+      elementSpecification =
+          ElementSpecification.builder()
+              .configuration(
+                  ElementConfigurationCheckboxDateRangeList.builder()
+                      .id(new FieldId(VALUE_ID))
+                      .dateRanges(
+                          List.of(
+                              new ElementConfigurationCode(
+                                  new FieldId(RANGE_ID),
+                                  "label",
+                                  new Code("CODE", "CODE_SYSTEM", "DISPLAY_NAME")),
+                              new ElementConfigurationCode(
+                                  new FieldId(RANGE_ID_2),
+                                  "labelTwo",
+                                  new Code("CODE_TWO", "CODE_SYSTEM", "DISPLAY_NAME_TWO"))))
+                      .build())
+              .build();
     }
 
     @Test
@@ -203,8 +198,7 @@ class XmlGeneratorDateRangeListTest {
       assertAll(
           () -> assertEquals(2, response.size()),
           () -> assertEquals(QUESTION_ID, first.getId()),
-          () -> assertEquals(1, first.getInstans())
-      );
+          () -> assertEquals(1, first.getInstans()));
     }
 
     @Test
@@ -215,8 +209,7 @@ class XmlGeneratorDateRangeListTest {
       assertAll(
           () -> assertEquals(2, response.size()),
           () -> assertEquals(QUESTION_ID, first.getId()),
-          () -> assertEquals(2, first.getInstans())
-      );
+          () -> assertEquals(2, first.getInstans()));
     }
 
     @Test
@@ -233,8 +226,7 @@ class XmlGeneratorDateRangeListTest {
           () -> assertEquals(QUESTION_ID + ".1", delsvarCode.getId()),
           () -> assertEquals("CODE", cvType.getCode()),
           () -> assertEquals("CODE_SYSTEM", cvType.getCodeSystem()),
-          () -> assertEquals("DISPLAY_NAME", cvType.getDisplayName())
-      );
+          () -> assertEquals("DISPLAY_NAME", cvType.getDisplayName()));
     }
 
     @Test
@@ -251,8 +243,7 @@ class XmlGeneratorDateRangeListTest {
           () -> assertEquals(QUESTION_ID + ".1", delsvarCode.getId()),
           () -> assertEquals("CODE_TWO", cvType.getCode()),
           () -> assertEquals("CODE_SYSTEM", cvType.getCodeSystem()),
-          () -> assertEquals("DISPLAY_NAME_TWO", cvType.getDisplayName())
-      );
+          () -> assertEquals("DISPLAY_NAME_TWO", cvType.getDisplayName()));
     }
 
     @Test
@@ -268,8 +259,7 @@ class XmlGeneratorDateRangeListTest {
           () -> assertEquals(2, delsvar.size()),
           () -> assertEquals(QUESTION_ID + ".2", delsvarDateRange.getId()),
           () -> assertEquals(FROM, toLocalDate(dateRange.getStart())),
-          () -> assertEquals(TO, toLocalDate(dateRange.getEnd()))
-      );
+          () -> assertEquals(TO, toLocalDate(dateRange.getEnd())));
     }
 
     @Test
@@ -285,20 +275,18 @@ class XmlGeneratorDateRangeListTest {
           () -> assertEquals(2, delsvar.size()),
           () -> assertEquals(QUESTION_ID + ".2", delsvarDateRange.getId()),
           () -> assertEquals(FROM_2, toLocalDate(dateRange.getStart())),
-          () -> assertEquals(TO_2, toLocalDate(dateRange.getEnd()))
-      );
+          () -> assertEquals(TO_2, toLocalDate(dateRange.getEnd())));
     }
   }
 
   @Test
   void shouldMapEmptyIfNoValue() {
-    final var data = ElementData.builder()
-        .value(ElementValueDateRangeList.builder()
-            .dateRangeListId(new FieldId(VALUE_ID))
-            .build()
-        )
-        .id(new ElementId(QUESTION_ID))
-        .build();
+    final var data =
+        ElementData.builder()
+            .value(
+                ElementValueDateRangeList.builder().dateRangeListId(new FieldId(VALUE_ID)).build())
+            .id(new ElementId(QUESTION_ID))
+            .build();
 
     final var response = xmlGenerator.generate(data, elementSpecification);
 
@@ -307,43 +295,38 @@ class XmlGeneratorDateRangeListTest {
 
   @Test
   void shallThrowIfIncorrectConfiguration() {
-    final var data = ElementData.builder()
-        .id(new ElementId(QUESTION_ID))
-        .value(
-            ElementValueDateRangeList.builder()
-                .dateRangeListId(new FieldId(VALUE_ID))
-                .dateRangeList(
-                    List.of(
-                        DateRange.builder()
-                            .dateRangeId(new FieldId(RANGE_ID))
-                            .from(FROM)
-                            .to(TO)
-                            .build()
-                    )
-                )
-                .build()
-        )
-        .build();
+    final var data =
+        ElementData.builder()
+            .id(new ElementId(QUESTION_ID))
+            .value(
+                ElementValueDateRangeList.builder()
+                    .dateRangeListId(new FieldId(VALUE_ID))
+                    .dateRangeList(
+                        List.of(
+                            DateRange.builder()
+                                .dateRangeId(new FieldId(RANGE_ID))
+                                .from(FROM)
+                                .to(TO)
+                                .build()))
+                    .build())
+            .build();
 
-    elementSpecification = ElementSpecification.builder()
-        .configuration(
-            ElementConfigurationDate.builder().build()
-        )
-        .build();
+    elementSpecification =
+        ElementSpecification.builder()
+            .configuration(ElementConfigurationDate.builder().build())
+            .build();
 
-    assertThrows(IllegalArgumentException.class,
-        () -> xmlGenerator.generate(data, elementSpecification)
-    );
+    assertThrows(
+        IllegalArgumentException.class, () -> xmlGenerator.generate(data, elementSpecification));
   }
 
   @Test
   void shouldMapEmptyIfValueIsNotDateRangeList() {
-    final var data = ElementData.builder()
-        .value(ElementValueUnitContactInformation.builder()
-            .build()
-        )
-        .id(new ElementId(QUESTION_ID))
-        .build();
+    final var data =
+        ElementData.builder()
+            .value(ElementValueUnitContactInformation.builder().build())
+            .id(new ElementId(QUESTION_ID))
+            .build();
 
     final var response = xmlGenerator.generate(data, elementSpecification);
 
@@ -351,9 +334,6 @@ class XmlGeneratorDateRangeListTest {
   }
 
   private static LocalDate toLocalDate(XMLGregorianCalendar xmlFormat) {
-    return LocalDate.of(
-        xmlFormat.getYear(),
-        xmlFormat.getMonth(),
-        xmlFormat.getDay());
+    return LocalDate.of(xmlFormat.getYear(), xmlFormat.getMonth(), xmlFormat.getDay());
   }
 }

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.action.certificate.model;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -35,55 +53,55 @@ class ActionRuleCertificateTypeActiveForUnitTest {
   private static final CertificateType CERTIFICATE_TYPE = new CertificateType(FK_3226_TYPE);
   private static final String ALLOW = "allow";
   private static final String BLOCK = "block";
-  @Mock
-  CertificateActionConfigurationRepository certificateActionConfigurationRepository;
+  @Mock CertificateActionConfigurationRepository certificateActionConfigurationRepository;
+
   @InjectMocks
   private ActionRuleCertificateTypeActiveForUnit actionRuleCertificateTypeActiveForUnit;
+
   private Certificate certificate;
   private ActionEvaluation actionEvaluation;
 
   @BeforeEach
   void setUp() {
-    certificate = MedicalCertificate
-        .builder()
-        .certificateModel(
-            CertificateModel.builder()
-                .id(
-                    CertificateModelId.builder()
-                        .type(CERTIFICATE_TYPE)
-                        .build()
-                )
-                .build()
-        )
-        .build();
+    certificate =
+        MedicalCertificate.builder()
+            .certificateModel(
+                CertificateModel.builder()
+                    .id(CertificateModelId.builder().type(CERTIFICATE_TYPE).build())
+                    .build())
+            .build();
 
-    actionEvaluation = ActionEvaluation.builder()
-        .subUnit(ALFA_MEDICINSKT_CENTRUM)
-        .careUnit(ALFA_VARDCENTRAL)
-        .careProvider(ALFA_REGIONEN)
-        .build();
+    actionEvaluation =
+        ActionEvaluation.builder()
+            .subUnit(ALFA_MEDICINSKT_CENTRUM)
+            .careUnit(ALFA_VARDCENTRAL)
+            .careProvider(ALFA_REGIONEN)
+            .build();
   }
 
   @Test
   void shallReturnFalseIfCertificateIsMissing() {
-    final var result = actionRuleCertificateTypeActiveForUnit.evaluate(Optional.empty(),
-        Optional.of(actionEvaluation));
+    final var result =
+        actionRuleCertificateTypeActiveForUnit.evaluate(
+            Optional.empty(), Optional.of(actionEvaluation));
     assertFalse(result);
   }
 
   @Test
   void shallReturnFalseIfActionEvaluationIsMissing() {
-    final var result = actionRuleCertificateTypeActiveForUnit.evaluate(Optional.of(certificate),
-        Optional.empty());
+    final var result =
+        actionRuleCertificateTypeActiveForUnit.evaluate(Optional.of(certificate), Optional.empty());
     assertFalse(result);
   }
 
   @Test
   void shallReturnTrueIfNoConfigurationForTypeExists() {
-    doReturn(Collections.emptyList()).when(certificateActionConfigurationRepository)
+    doReturn(Collections.emptyList())
+        .when(certificateActionConfigurationRepository)
         .findAccessConfiguration(CERTIFICATE_TYPE);
-    final var result = actionRuleCertificateTypeActiveForUnit.evaluate(Optional.of(certificate),
-        Optional.of(actionEvaluation));
+    final var result =
+        actionRuleCertificateTypeActiveForUnit.evaluate(
+            Optional.of(certificate), Optional.of(actionEvaluation));
 
     assertTrue(result);
   }
@@ -93,203 +111,212 @@ class ActionRuleCertificateTypeActiveForUnitTest {
 
     @Test
     void shallReturnTrueIfTypeIsAllowAndSubUnitIsPresentInIssuingUnitConfigurationWithinDateTime() {
-      final var actionEvaluation = ActionEvaluation.builder()
-          .subUnit(ALFA_MEDICINSKT_CENTRUM)
-          .careUnit(ALFA_VARDCENTRAL)
-          .careProvider(ALFA_REGIONEN)
-          .build();
+      final var actionEvaluation =
+          ActionEvaluation.builder()
+              .subUnit(ALFA_MEDICINSKT_CENTRUM)
+              .careUnit(ALFA_VARDCENTRAL)
+              .careProvider(ALFA_REGIONEN)
+              .build();
 
-      final var certificateAccessConfigurations = List.of(
-          CertificateAccessConfiguration.builder()
-              .certificateType(FK_3226_TYPE)
-              .configuration(
-                  List.of(
-                      CertificateAccessUnitConfiguration.builder()
-                          .type(ALLOW)
-                          .issuedOnUnit(List.of(ALFA_MEDICINSKT_CENTRUM.hsaId().id()))
-                          .fromDateTime(LocalDateTime.now().minusDays(1))
-                          .toDateTime(LocalDateTime.now().plusDays(1))
-                          .build()
-                  )
-              )
-              .build()
-      );
+      final var certificateAccessConfigurations =
+          List.of(
+              CertificateAccessConfiguration.builder()
+                  .certificateType(FK_3226_TYPE)
+                  .configuration(
+                      List.of(
+                          CertificateAccessUnitConfiguration.builder()
+                              .type(ALLOW)
+                              .issuedOnUnit(List.of(ALFA_MEDICINSKT_CENTRUM.hsaId().id()))
+                              .fromDateTime(LocalDateTime.now().minusDays(1))
+                              .toDateTime(LocalDateTime.now().plusDays(1))
+                              .build()))
+                  .build());
 
-      doReturn(certificateAccessConfigurations).when(certificateActionConfigurationRepository)
+      doReturn(certificateAccessConfigurations)
+          .when(certificateActionConfigurationRepository)
           .findAccessConfiguration(CERTIFICATE_TYPE);
 
-      final var result = actionRuleCertificateTypeActiveForUnit.evaluate(Optional.of(certificate),
-          Optional.of(actionEvaluation));
+      final var result =
+          actionRuleCertificateTypeActiveForUnit.evaluate(
+              Optional.of(certificate), Optional.of(actionEvaluation));
 
       assertTrue(result);
     }
 
     @Test
-    void shallReturnTrueIfTypeIsAllowAndSubUnitIsPresentInIssuingUnitConfigurationButFromDateTimeIsNull() {
-      final var actionEvaluation = ActionEvaluation.builder()
-          .subUnit(ALFA_MEDICINSKT_CENTRUM)
-          .careUnit(ALFA_VARDCENTRAL)
-          .careProvider(ALFA_REGIONEN)
-          .build();
+    void
+        shallReturnTrueIfTypeIsAllowAndSubUnitIsPresentInIssuingUnitConfigurationButFromDateTimeIsNull() {
+      final var actionEvaluation =
+          ActionEvaluation.builder()
+              .subUnit(ALFA_MEDICINSKT_CENTRUM)
+              .careUnit(ALFA_VARDCENTRAL)
+              .careProvider(ALFA_REGIONEN)
+              .build();
 
-      final var certificateAccessConfigurations = List.of(
-          CertificateAccessConfiguration.builder()
-              .certificateType(FK_3226_TYPE)
-              .configuration(
-                  List.of(
-                      CertificateAccessUnitConfiguration.builder()
-                          .type(ALLOW)
-                          .issuedOnUnit(List.of(ALFA_MEDICINSKT_CENTRUM.hsaId().id()))
-                          .fromDateTime(null)
-                          .toDateTime(LocalDateTime.now().plusDays(1))
-                          .build()
-                  )
-              )
-              .build()
-      );
+      final var certificateAccessConfigurations =
+          List.of(
+              CertificateAccessConfiguration.builder()
+                  .certificateType(FK_3226_TYPE)
+                  .configuration(
+                      List.of(
+                          CertificateAccessUnitConfiguration.builder()
+                              .type(ALLOW)
+                              .issuedOnUnit(List.of(ALFA_MEDICINSKT_CENTRUM.hsaId().id()))
+                              .fromDateTime(null)
+                              .toDateTime(LocalDateTime.now().plusDays(1))
+                              .build()))
+                  .build());
 
-      doReturn(certificateAccessConfigurations).when(certificateActionConfigurationRepository)
+      doReturn(certificateAccessConfigurations)
+          .when(certificateActionConfigurationRepository)
           .findAccessConfiguration(CERTIFICATE_TYPE);
 
-      final var result = actionRuleCertificateTypeActiveForUnit.evaluate(Optional.of(certificate),
-          Optional.of(actionEvaluation));
+      final var result =
+          actionRuleCertificateTypeActiveForUnit.evaluate(
+              Optional.of(certificate), Optional.of(actionEvaluation));
 
       assertTrue(result);
     }
-
 
     @Test
     void shallReturnTrueIfTypeIsAllowAndCareUnitIsPresentInCareUnitConfigurationWithinDateTime() {
 
-      final var actionEvaluation = ActionEvaluation.builder()
-          .subUnit(ALFA_MEDICINSKT_CENTRUM)
-          .careUnit(ALFA_VARDCENTRAL)
-          .careProvider(ALFA_REGIONEN)
-          .build();
+      final var actionEvaluation =
+          ActionEvaluation.builder()
+              .subUnit(ALFA_MEDICINSKT_CENTRUM)
+              .careUnit(ALFA_VARDCENTRAL)
+              .careProvider(ALFA_REGIONEN)
+              .build();
 
-      final var certificateAccessConfigurations = List.of(
-          CertificateAccessConfiguration.builder()
-              .certificateType(FK_3226_TYPE)
-              .configuration(
-                  List.of(
-                      CertificateAccessUnitConfiguration.builder()
-                          .type(ALLOW)
-                          .careUnit(List.of(ALFA_VARDCENTRAL.hsaId().id()))
-                          .fromDateTime(LocalDateTime.now().minusDays(1))
-                          .toDateTime(LocalDateTime.now().plusDays(1))
-                          .build()
-                  )
-              )
-              .build()
-      );
+      final var certificateAccessConfigurations =
+          List.of(
+              CertificateAccessConfiguration.builder()
+                  .certificateType(FK_3226_TYPE)
+                  .configuration(
+                      List.of(
+                          CertificateAccessUnitConfiguration.builder()
+                              .type(ALLOW)
+                              .careUnit(List.of(ALFA_VARDCENTRAL.hsaId().id()))
+                              .fromDateTime(LocalDateTime.now().minusDays(1))
+                              .toDateTime(LocalDateTime.now().plusDays(1))
+                              .build()))
+                  .build());
 
-      doReturn(certificateAccessConfigurations).when(certificateActionConfigurationRepository)
+      doReturn(certificateAccessConfigurations)
+          .when(certificateActionConfigurationRepository)
           .findAccessConfiguration(CERTIFICATE_TYPE);
 
-      final var result = actionRuleCertificateTypeActiveForUnit.evaluate(Optional.of(certificate),
-          Optional.of(actionEvaluation));
+      final var result =
+          actionRuleCertificateTypeActiveForUnit.evaluate(
+              Optional.of(certificate), Optional.of(actionEvaluation));
 
       assertTrue(result);
     }
 
     @Test
-    void shallReturnTrueIfTypeIsAllowAndCareUnitIsPresentInCareUnitConfigurationButFromDateTimeIsNull() {
+    void
+        shallReturnTrueIfTypeIsAllowAndCareUnitIsPresentInCareUnitConfigurationButFromDateTimeIsNull() {
 
-      final var actionEvaluation = ActionEvaluation.builder()
-          .subUnit(ALFA_MEDICINSKT_CENTRUM)
-          .careUnit(ALFA_VARDCENTRAL)
-          .careProvider(ALFA_REGIONEN)
-          .build();
+      final var actionEvaluation =
+          ActionEvaluation.builder()
+              .subUnit(ALFA_MEDICINSKT_CENTRUM)
+              .careUnit(ALFA_VARDCENTRAL)
+              .careProvider(ALFA_REGIONEN)
+              .build();
 
-      final var certificateAccessConfigurations = List.of(
-          CertificateAccessConfiguration.builder()
-              .certificateType(FK_3226_TYPE)
-              .configuration(
-                  List.of(
-                      CertificateAccessUnitConfiguration.builder()
-                          .type(ALLOW)
-                          .careUnit(List.of(ALFA_VARDCENTRAL.hsaId().id()))
-                          .fromDateTime(null)
-                          .toDateTime(LocalDateTime.now().plusDays(1))
-                          .build()
-                  )
-              )
-              .build()
-      );
+      final var certificateAccessConfigurations =
+          List.of(
+              CertificateAccessConfiguration.builder()
+                  .certificateType(FK_3226_TYPE)
+                  .configuration(
+                      List.of(
+                          CertificateAccessUnitConfiguration.builder()
+                              .type(ALLOW)
+                              .careUnit(List.of(ALFA_VARDCENTRAL.hsaId().id()))
+                              .fromDateTime(null)
+                              .toDateTime(LocalDateTime.now().plusDays(1))
+                              .build()))
+                  .build());
 
-      doReturn(certificateAccessConfigurations).when(certificateActionConfigurationRepository)
+      doReturn(certificateAccessConfigurations)
+          .when(certificateActionConfigurationRepository)
           .findAccessConfiguration(CERTIFICATE_TYPE);
 
-      final var result = actionRuleCertificateTypeActiveForUnit.evaluate(Optional.of(certificate),
-          Optional.of(actionEvaluation));
+      final var result =
+          actionRuleCertificateTypeActiveForUnit.evaluate(
+              Optional.of(certificate), Optional.of(actionEvaluation));
 
       assertTrue(result);
     }
 
     @Test
-    void shallReturnTrueIfTypeIsAllowAndCareProviderIsPresentInCareProviderConfigurationWithinDateTime() {
+    void
+        shallReturnTrueIfTypeIsAllowAndCareProviderIsPresentInCareProviderConfigurationWithinDateTime() {
 
-      final var actionEvaluation = ActionEvaluation.builder()
-          .subUnit(ALFA_MEDICINSKT_CENTRUM)
-          .careUnit(ALFA_VARDCENTRAL)
-          .careProvider(ALFA_REGIONEN)
-          .build();
+      final var actionEvaluation =
+          ActionEvaluation.builder()
+              .subUnit(ALFA_MEDICINSKT_CENTRUM)
+              .careUnit(ALFA_VARDCENTRAL)
+              .careProvider(ALFA_REGIONEN)
+              .build();
 
-      final var certificateAccessConfigurations = List.of(
-          CertificateAccessConfiguration.builder()
-              .certificateType(FK_3226_TYPE)
-              .configuration(
-                  List.of(
-                      CertificateAccessUnitConfiguration.builder()
-                          .type(ALLOW)
-                          .careProviders(List.of(ALFA_REGIONEN.hsaId().id()))
-                          .fromDateTime(LocalDateTime.now().minusDays(1))
-                          .toDateTime(LocalDateTime.now().plusDays(1))
-                          .build()
-                  )
-              )
-              .build()
-      );
+      final var certificateAccessConfigurations =
+          List.of(
+              CertificateAccessConfiguration.builder()
+                  .certificateType(FK_3226_TYPE)
+                  .configuration(
+                      List.of(
+                          CertificateAccessUnitConfiguration.builder()
+                              .type(ALLOW)
+                              .careProviders(List.of(ALFA_REGIONEN.hsaId().id()))
+                              .fromDateTime(LocalDateTime.now().minusDays(1))
+                              .toDateTime(LocalDateTime.now().plusDays(1))
+                              .build()))
+                  .build());
 
-      doReturn(certificateAccessConfigurations).when(certificateActionConfigurationRepository)
+      doReturn(certificateAccessConfigurations)
+          .when(certificateActionConfigurationRepository)
           .findAccessConfiguration(CERTIFICATE_TYPE);
 
-      final var result = actionRuleCertificateTypeActiveForUnit.evaluate(Optional.of(certificate),
-          Optional.of(actionEvaluation));
+      final var result =
+          actionRuleCertificateTypeActiveForUnit.evaluate(
+              Optional.of(certificate), Optional.of(actionEvaluation));
 
       assertTrue(result);
     }
 
     @Test
-    void shallReturnTrueIfTypeIsAllowAndCareProviderIsPresentInCareProviderConfigurationButFromDateTimeIsNull() {
+    void
+        shallReturnTrueIfTypeIsAllowAndCareProviderIsPresentInCareProviderConfigurationButFromDateTimeIsNull() {
 
-      final var actionEvaluation = ActionEvaluation.builder()
-          .subUnit(ALFA_MEDICINSKT_CENTRUM)
-          .careUnit(ALFA_VARDCENTRAL)
-          .careProvider(ALFA_REGIONEN)
-          .build();
+      final var actionEvaluation =
+          ActionEvaluation.builder()
+              .subUnit(ALFA_MEDICINSKT_CENTRUM)
+              .careUnit(ALFA_VARDCENTRAL)
+              .careProvider(ALFA_REGIONEN)
+              .build();
 
-      final var certificateAccessConfigurations = List.of(
-          CertificateAccessConfiguration.builder()
-              .certificateType(FK_3226_TYPE)
-              .configuration(
-                  List.of(
-                      CertificateAccessUnitConfiguration.builder()
-                          .type(ALLOW)
-                          .careProviders(List.of(ALFA_REGIONEN.hsaId().id()))
-                          .fromDateTime(null)
-                          .toDateTime(LocalDateTime.now().plusDays(1))
-                          .build()
-                  )
-              )
-              .build()
-      );
+      final var certificateAccessConfigurations =
+          List.of(
+              CertificateAccessConfiguration.builder()
+                  .certificateType(FK_3226_TYPE)
+                  .configuration(
+                      List.of(
+                          CertificateAccessUnitConfiguration.builder()
+                              .type(ALLOW)
+                              .careProviders(List.of(ALFA_REGIONEN.hsaId().id()))
+                              .fromDateTime(null)
+                              .toDateTime(LocalDateTime.now().plusDays(1))
+                              .build()))
+                  .build());
 
-      doReturn(certificateAccessConfigurations).when(certificateActionConfigurationRepository)
+      doReturn(certificateAccessConfigurations)
+          .when(certificateActionConfigurationRepository)
           .findAccessConfiguration(CERTIFICATE_TYPE);
 
-      final var result = actionRuleCertificateTypeActiveForUnit.evaluate(Optional.of(certificate),
-          Optional.of(actionEvaluation));
+      final var result =
+          actionRuleCertificateTypeActiveForUnit.evaluate(
+              Optional.of(certificate), Optional.of(actionEvaluation));
 
       assertTrue(result);
     }
@@ -297,33 +324,34 @@ class ActionRuleCertificateTypeActiveForUnitTest {
     @Test
     void shallReturnTrueIfTypeIsAllowAndFromDateIsBeforeTodayWithToDateAsNullWithMatchingUnit() {
 
-      final var actionEvaluation = ActionEvaluation.builder()
-          .subUnit(ALFA_MEDICINSKT_CENTRUM)
-          .careUnit(ALFA_VARDCENTRAL)
-          .careProvider(ALFA_REGIONEN)
-          .build();
+      final var actionEvaluation =
+          ActionEvaluation.builder()
+              .subUnit(ALFA_MEDICINSKT_CENTRUM)
+              .careUnit(ALFA_VARDCENTRAL)
+              .careProvider(ALFA_REGIONEN)
+              .build();
 
-      final var certificateAccessConfigurations = List.of(
-          CertificateAccessConfiguration.builder()
-              .certificateType(FK_3226_TYPE)
-              .configuration(
-                  List.of(
-                      CertificateAccessUnitConfiguration.builder()
-                          .type(ALLOW)
-                          .careProviders(List.of(ALFA_REGIONEN.hsaId().id()))
-                          .fromDateTime(LocalDateTime.now().minusDays(1))
-                          .toDateTime(null)
-                          .build()
-                  )
-              )
-              .build()
-      );
+      final var certificateAccessConfigurations =
+          List.of(
+              CertificateAccessConfiguration.builder()
+                  .certificateType(FK_3226_TYPE)
+                  .configuration(
+                      List.of(
+                          CertificateAccessUnitConfiguration.builder()
+                              .type(ALLOW)
+                              .careProviders(List.of(ALFA_REGIONEN.hsaId().id()))
+                              .fromDateTime(LocalDateTime.now().minusDays(1))
+                              .toDateTime(null)
+                              .build()))
+                  .build());
 
-      doReturn(certificateAccessConfigurations).when(certificateActionConfigurationRepository)
+      doReturn(certificateAccessConfigurations)
+          .when(certificateActionConfigurationRepository)
           .findAccessConfiguration(CERTIFICATE_TYPE);
 
-      final var result = actionRuleCertificateTypeActiveForUnit.evaluate(Optional.of(certificate),
-          Optional.of(actionEvaluation));
+      final var result =
+          actionRuleCertificateTypeActiveForUnit.evaluate(
+              Optional.of(certificate), Optional.of(actionEvaluation));
 
       assertTrue(result);
     }
@@ -331,33 +359,34 @@ class ActionRuleCertificateTypeActiveForUnitTest {
     @Test
     void shallReturnTrueIfFromDateAndToDateIsMissingSinceRuleIsInactive() {
 
-      final var actionEvaluation = ActionEvaluation.builder()
-          .subUnit(ALFA_MEDICINSKT_CENTRUM)
-          .careUnit(ALFA_VARDCENTRAL)
-          .careProvider(ALFA_REGIONEN)
-          .build();
+      final var actionEvaluation =
+          ActionEvaluation.builder()
+              .subUnit(ALFA_MEDICINSKT_CENTRUM)
+              .careUnit(ALFA_VARDCENTRAL)
+              .careProvider(ALFA_REGIONEN)
+              .build();
 
-      final var certificateAccessConfigurations = List.of(
-          CertificateAccessConfiguration.builder()
-              .certificateType(FK_3226_TYPE)
-              .configuration(
-                  List.of(
-                      CertificateAccessUnitConfiguration.builder()
-                          .type(ALLOW)
-                          .careProviders(List.of(ALFA_REGIONEN.hsaId().id()))
-                          .fromDateTime(null)
-                          .toDateTime(null)
-                          .build()
-                  )
-              )
-              .build()
-      );
+      final var certificateAccessConfigurations =
+          List.of(
+              CertificateAccessConfiguration.builder()
+                  .certificateType(FK_3226_TYPE)
+                  .configuration(
+                      List.of(
+                          CertificateAccessUnitConfiguration.builder()
+                              .type(ALLOW)
+                              .careProviders(List.of(ALFA_REGIONEN.hsaId().id()))
+                              .fromDateTime(null)
+                              .toDateTime(null)
+                              .build()))
+                  .build());
 
-      doReturn(certificateAccessConfigurations).when(certificateActionConfigurationRepository)
+      doReturn(certificateAccessConfigurations)
+          .when(certificateActionConfigurationRepository)
           .findAccessConfiguration(CERTIFICATE_TYPE);
 
-      final var result = actionRuleCertificateTypeActiveForUnit.evaluate(Optional.of(certificate),
-          Optional.of(actionEvaluation));
+      final var result =
+          actionRuleCertificateTypeActiveForUnit.evaluate(
+              Optional.of(certificate), Optional.of(actionEvaluation));
 
       assertTrue(result);
     }
@@ -365,33 +394,34 @@ class ActionRuleCertificateTypeActiveForUnitTest {
     @Test
     void shallReturnTrueIfTypeIsAllowAndUnitNotFoundInConfigurationThatIsInactive() {
 
-      final var actionEvaluation = ActionEvaluation.builder()
-          .subUnit(ALFA_MEDICINSKT_CENTRUM)
-          .careUnit(ALFA_VARDCENTRAL)
-          .careProvider(ALFA_REGIONEN)
-          .build();
+      final var actionEvaluation =
+          ActionEvaluation.builder()
+              .subUnit(ALFA_MEDICINSKT_CENTRUM)
+              .careUnit(ALFA_VARDCENTRAL)
+              .careProvider(ALFA_REGIONEN)
+              .build();
 
-      final var certificateAccessConfigurations = List.of(
-          CertificateAccessConfiguration.builder()
-              .certificateType(FK_3226_TYPE)
-              .configuration(
-                  List.of(
-                      CertificateAccessUnitConfiguration.builder()
-                          .type(ALLOW)
-                          .careProviders(List.of(BETA_HUDMOTTAGNINGEN.hsaId().id()))
-                          .fromDateTime(LocalDateTime.now().plusDays(1))
-                          .toDateTime(null)
-                          .build()
-                  )
-              )
-              .build()
-      );
+      final var certificateAccessConfigurations =
+          List.of(
+              CertificateAccessConfiguration.builder()
+                  .certificateType(FK_3226_TYPE)
+                  .configuration(
+                      List.of(
+                          CertificateAccessUnitConfiguration.builder()
+                              .type(ALLOW)
+                              .careProviders(List.of(BETA_HUDMOTTAGNINGEN.hsaId().id()))
+                              .fromDateTime(LocalDateTime.now().plusDays(1))
+                              .toDateTime(null)
+                              .build()))
+                  .build());
 
-      doReturn(certificateAccessConfigurations).when(certificateActionConfigurationRepository)
+      doReturn(certificateAccessConfigurations)
+          .when(certificateActionConfigurationRepository)
           .findAccessConfiguration(CERTIFICATE_TYPE);
 
-      final var result = actionRuleCertificateTypeActiveForUnit.evaluate(Optional.of(certificate),
-          Optional.of(actionEvaluation));
+      final var result =
+          actionRuleCertificateTypeActiveForUnit.evaluate(
+              Optional.of(certificate), Optional.of(actionEvaluation));
 
       assertTrue(result);
     }
@@ -399,33 +429,34 @@ class ActionRuleCertificateTypeActiveForUnitTest {
     @Test
     void shallReturnFalseIfTypeIsAllowAndUnitNotFoundInConfigurationThatIsActive() {
 
-      final var actionEvaluation = ActionEvaluation.builder()
-          .subUnit(ALFA_MEDICINSKT_CENTRUM)
-          .careUnit(ALFA_VARDCENTRAL)
-          .careProvider(ALFA_REGIONEN)
-          .build();
+      final var actionEvaluation =
+          ActionEvaluation.builder()
+              .subUnit(ALFA_MEDICINSKT_CENTRUM)
+              .careUnit(ALFA_VARDCENTRAL)
+              .careProvider(ALFA_REGIONEN)
+              .build();
 
-      final var certificateAccessConfigurations = List.of(
-          CertificateAccessConfiguration.builder()
-              .certificateType(FK_3226_TYPE)
-              .configuration(
-                  List.of(
-                      CertificateAccessUnitConfiguration.builder()
-                          .type(ALLOW)
-                          .careProviders(List.of(BETA_HUDMOTTAGNINGEN.hsaId().id()))
-                          .fromDateTime(LocalDateTime.now().minusDays(1))
-                          .toDateTime(null)
-                          .build()
-                  )
-              )
-              .build()
-      );
+      final var certificateAccessConfigurations =
+          List.of(
+              CertificateAccessConfiguration.builder()
+                  .certificateType(FK_3226_TYPE)
+                  .configuration(
+                      List.of(
+                          CertificateAccessUnitConfiguration.builder()
+                              .type(ALLOW)
+                              .careProviders(List.of(BETA_HUDMOTTAGNINGEN.hsaId().id()))
+                              .fromDateTime(LocalDateTime.now().minusDays(1))
+                              .toDateTime(null)
+                              .build()))
+                  .build());
 
-      doReturn(certificateAccessConfigurations).when(certificateActionConfigurationRepository)
+      doReturn(certificateAccessConfigurations)
+          .when(certificateActionConfigurationRepository)
           .findAccessConfiguration(CERTIFICATE_TYPE);
 
-      final var result = actionRuleCertificateTypeActiveForUnit.evaluate(Optional.of(certificate),
-          Optional.of(actionEvaluation));
+      final var result =
+          actionRuleCertificateTypeActiveForUnit.evaluate(
+              Optional.of(certificate), Optional.of(actionEvaluation));
 
       assertFalse(result);
     }
@@ -435,206 +466,216 @@ class ActionRuleCertificateTypeActiveForUnitTest {
   class BlockTest {
 
     @Test
-    void shallReturnFalseIfTypeIsBlockAndSubUnitIsPresentInIssuingUnitConfigurationWithinDateTime() {
+    void
+        shallReturnFalseIfTypeIsBlockAndSubUnitIsPresentInIssuingUnitConfigurationWithinDateTime() {
 
-      final var actionEvaluation = ActionEvaluation.builder()
-          .subUnit(ALFA_MEDICINSKT_CENTRUM)
-          .careUnit(ALFA_VARDCENTRAL)
-          .careProvider(ALFA_REGIONEN)
-          .build();
+      final var actionEvaluation =
+          ActionEvaluation.builder()
+              .subUnit(ALFA_MEDICINSKT_CENTRUM)
+              .careUnit(ALFA_VARDCENTRAL)
+              .careProvider(ALFA_REGIONEN)
+              .build();
 
-      final var certificateAccessConfigurations = List.of(
-          CertificateAccessConfiguration.builder()
-              .certificateType(FK_3226_TYPE)
-              .configuration(
-                  List.of(
-                      CertificateAccessUnitConfiguration.builder()
-                          .type(BLOCK)
-                          .issuedOnUnit(List.of(ALFA_MEDICINSKT_CENTRUM.hsaId().id()))
-                          .fromDateTime(LocalDateTime.now().minusDays(1))
-                          .toDateTime(LocalDateTime.now().plusDays(1))
-                          .build()
-                  )
-              )
-              .build()
-      );
+      final var certificateAccessConfigurations =
+          List.of(
+              CertificateAccessConfiguration.builder()
+                  .certificateType(FK_3226_TYPE)
+                  .configuration(
+                      List.of(
+                          CertificateAccessUnitConfiguration.builder()
+                              .type(BLOCK)
+                              .issuedOnUnit(List.of(ALFA_MEDICINSKT_CENTRUM.hsaId().id()))
+                              .fromDateTime(LocalDateTime.now().minusDays(1))
+                              .toDateTime(LocalDateTime.now().plusDays(1))
+                              .build()))
+                  .build());
 
-      doReturn(certificateAccessConfigurations).when(certificateActionConfigurationRepository)
+      doReturn(certificateAccessConfigurations)
+          .when(certificateActionConfigurationRepository)
           .findAccessConfiguration(CERTIFICATE_TYPE);
 
-      final var result = actionRuleCertificateTypeActiveForUnit.evaluate(Optional.of(certificate),
-          Optional.of(actionEvaluation));
+      final var result =
+          actionRuleCertificateTypeActiveForUnit.evaluate(
+              Optional.of(certificate), Optional.of(actionEvaluation));
 
       assertFalse(result);
     }
 
     @Test
-    void shallReturnTrueIfTypeIsBlockAndSubUnitIsPresentInIssuingUnitConfigurationButFromDateTimeIsNull() {
+    void
+        shallReturnTrueIfTypeIsBlockAndSubUnitIsPresentInIssuingUnitConfigurationButFromDateTimeIsNull() {
 
-      final var actionEvaluation = ActionEvaluation.builder()
-          .subUnit(ALFA_MEDICINSKT_CENTRUM)
-          .careUnit(ALFA_VARDCENTRAL)
-          .careProvider(ALFA_REGIONEN)
-          .build();
+      final var actionEvaluation =
+          ActionEvaluation.builder()
+              .subUnit(ALFA_MEDICINSKT_CENTRUM)
+              .careUnit(ALFA_VARDCENTRAL)
+              .careProvider(ALFA_REGIONEN)
+              .build();
 
-      final var certificateAccessConfigurations = List.of(
-          CertificateAccessConfiguration.builder()
-              .certificateType(FK_3226_TYPE)
-              .configuration(
-                  List.of(
-                      CertificateAccessUnitConfiguration.builder()
-                          .type(BLOCK)
-                          .issuedOnUnit(List.of(ALFA_MEDICINSKT_CENTRUM.hsaId().id()))
-                          .fromDateTime(null)
-                          .toDateTime(LocalDateTime.now().plusDays(1))
-                          .build()
-                  )
-              )
-              .build()
-      );
+      final var certificateAccessConfigurations =
+          List.of(
+              CertificateAccessConfiguration.builder()
+                  .certificateType(FK_3226_TYPE)
+                  .configuration(
+                      List.of(
+                          CertificateAccessUnitConfiguration.builder()
+                              .type(BLOCK)
+                              .issuedOnUnit(List.of(ALFA_MEDICINSKT_CENTRUM.hsaId().id()))
+                              .fromDateTime(null)
+                              .toDateTime(LocalDateTime.now().plusDays(1))
+                              .build()))
+                  .build());
 
-      doReturn(certificateAccessConfigurations).when(certificateActionConfigurationRepository)
+      doReturn(certificateAccessConfigurations)
+          .when(certificateActionConfigurationRepository)
           .findAccessConfiguration(CERTIFICATE_TYPE);
 
-      final var result = actionRuleCertificateTypeActiveForUnit.evaluate(Optional.of(certificate),
-          Optional.of(actionEvaluation));
+      final var result =
+          actionRuleCertificateTypeActiveForUnit.evaluate(
+              Optional.of(certificate), Optional.of(actionEvaluation));
 
       assertTrue(result);
     }
-
 
     @Test
     void shallReturnFalseIfTypeIsBlockAndCareUnitIsPresentInCareUnitConfigurationWithinDateTime() {
 
-      final var actionEvaluation = ActionEvaluation.builder()
-          .subUnit(ALFA_MEDICINSKT_CENTRUM)
-          .careUnit(ALFA_VARDCENTRAL)
-          .careProvider(ALFA_REGIONEN)
-          .build();
+      final var actionEvaluation =
+          ActionEvaluation.builder()
+              .subUnit(ALFA_MEDICINSKT_CENTRUM)
+              .careUnit(ALFA_VARDCENTRAL)
+              .careProvider(ALFA_REGIONEN)
+              .build();
 
-      final var certificateAccessConfigurations = List.of(
-          CertificateAccessConfiguration.builder()
-              .certificateType(FK_3226_TYPE)
-              .configuration(
-                  List.of(
-                      CertificateAccessUnitConfiguration.builder()
-                          .type(BLOCK)
-                          .careUnit(List.of(ALFA_VARDCENTRAL.hsaId().id()))
-                          .fromDateTime(LocalDateTime.now().minusDays(1))
-                          .toDateTime(LocalDateTime.now().plusDays(1))
-                          .build()
-                  )
-              )
-              .build()
-      );
+      final var certificateAccessConfigurations =
+          List.of(
+              CertificateAccessConfiguration.builder()
+                  .certificateType(FK_3226_TYPE)
+                  .configuration(
+                      List.of(
+                          CertificateAccessUnitConfiguration.builder()
+                              .type(BLOCK)
+                              .careUnit(List.of(ALFA_VARDCENTRAL.hsaId().id()))
+                              .fromDateTime(LocalDateTime.now().minusDays(1))
+                              .toDateTime(LocalDateTime.now().plusDays(1))
+                              .build()))
+                  .build());
 
-      doReturn(certificateAccessConfigurations).when(certificateActionConfigurationRepository)
+      doReturn(certificateAccessConfigurations)
+          .when(certificateActionConfigurationRepository)
           .findAccessConfiguration(CERTIFICATE_TYPE);
 
-      final var result = actionRuleCertificateTypeActiveForUnit.evaluate(Optional.of(certificate),
-          Optional.of(actionEvaluation));
+      final var result =
+          actionRuleCertificateTypeActiveForUnit.evaluate(
+              Optional.of(certificate), Optional.of(actionEvaluation));
 
       assertFalse(result);
     }
 
     @Test
-    void shallReturnTrueIfTypeIsBlockAndCareUnitIsPresentInCareUnitConfigurationButFromDateTimeIsNull() {
+    void
+        shallReturnTrueIfTypeIsBlockAndCareUnitIsPresentInCareUnitConfigurationButFromDateTimeIsNull() {
 
-      final var actionEvaluation = ActionEvaluation.builder()
-          .subUnit(ALFA_MEDICINSKT_CENTRUM)
-          .careUnit(ALFA_VARDCENTRAL)
-          .careProvider(ALFA_REGIONEN)
-          .build();
+      final var actionEvaluation =
+          ActionEvaluation.builder()
+              .subUnit(ALFA_MEDICINSKT_CENTRUM)
+              .careUnit(ALFA_VARDCENTRAL)
+              .careProvider(ALFA_REGIONEN)
+              .build();
 
-      final var certificateAccessConfigurations = List.of(
-          CertificateAccessConfiguration.builder()
-              .certificateType(FK_3226_TYPE)
-              .configuration(
-                  List.of(
-                      CertificateAccessUnitConfiguration.builder()
-                          .type(BLOCK)
-                          .careUnit(List.of(ALFA_VARDCENTRAL.hsaId().id()))
-                          .fromDateTime(null)
-                          .toDateTime(LocalDateTime.now().plusDays(1))
-                          .build()
-                  )
-              )
-              .build()
-      );
+      final var certificateAccessConfigurations =
+          List.of(
+              CertificateAccessConfiguration.builder()
+                  .certificateType(FK_3226_TYPE)
+                  .configuration(
+                      List.of(
+                          CertificateAccessUnitConfiguration.builder()
+                              .type(BLOCK)
+                              .careUnit(List.of(ALFA_VARDCENTRAL.hsaId().id()))
+                              .fromDateTime(null)
+                              .toDateTime(LocalDateTime.now().plusDays(1))
+                              .build()))
+                  .build());
 
-      doReturn(certificateAccessConfigurations).when(certificateActionConfigurationRepository)
+      doReturn(certificateAccessConfigurations)
+          .when(certificateActionConfigurationRepository)
           .findAccessConfiguration(CERTIFICATE_TYPE);
 
-      final var result = actionRuleCertificateTypeActiveForUnit.evaluate(Optional.of(certificate),
-          Optional.of(actionEvaluation));
+      final var result =
+          actionRuleCertificateTypeActiveForUnit.evaluate(
+              Optional.of(certificate), Optional.of(actionEvaluation));
 
       assertTrue(result);
     }
 
     @Test
-    void shallReturnFalseIfTypeIsBlockAndCareProviderIsPresentInCareProviderConfigurationWithinDateTime() {
+    void
+        shallReturnFalseIfTypeIsBlockAndCareProviderIsPresentInCareProviderConfigurationWithinDateTime() {
 
-      final var actionEvaluation = ActionEvaluation.builder()
-          .subUnit(ALFA_MEDICINSKT_CENTRUM)
-          .careUnit(ALFA_VARDCENTRAL)
-          .careProvider(ALFA_REGIONEN)
-          .build();
+      final var actionEvaluation =
+          ActionEvaluation.builder()
+              .subUnit(ALFA_MEDICINSKT_CENTRUM)
+              .careUnit(ALFA_VARDCENTRAL)
+              .careProvider(ALFA_REGIONEN)
+              .build();
 
-      final var certificateAccessConfigurations = List.of(
-          CertificateAccessConfiguration.builder()
-              .certificateType(FK_3226_TYPE)
-              .configuration(
-                  List.of(
-                      CertificateAccessUnitConfiguration.builder()
-                          .type(BLOCK)
-                          .careProviders(List.of(ALFA_REGIONEN.hsaId().id()))
-                          .fromDateTime(LocalDateTime.now().minusDays(1))
-                          .toDateTime(LocalDateTime.now().plusDays(1))
-                          .build()
-                  )
-              )
-              .build()
-      );
+      final var certificateAccessConfigurations =
+          List.of(
+              CertificateAccessConfiguration.builder()
+                  .certificateType(FK_3226_TYPE)
+                  .configuration(
+                      List.of(
+                          CertificateAccessUnitConfiguration.builder()
+                              .type(BLOCK)
+                              .careProviders(List.of(ALFA_REGIONEN.hsaId().id()))
+                              .fromDateTime(LocalDateTime.now().minusDays(1))
+                              .toDateTime(LocalDateTime.now().plusDays(1))
+                              .build()))
+                  .build());
 
-      doReturn(certificateAccessConfigurations).when(certificateActionConfigurationRepository)
+      doReturn(certificateAccessConfigurations)
+          .when(certificateActionConfigurationRepository)
           .findAccessConfiguration(CERTIFICATE_TYPE);
 
-      final var result = actionRuleCertificateTypeActiveForUnit.evaluate(Optional.of(certificate),
-          Optional.of(actionEvaluation));
+      final var result =
+          actionRuleCertificateTypeActiveForUnit.evaluate(
+              Optional.of(certificate), Optional.of(actionEvaluation));
 
       assertFalse(result);
     }
 
     @Test
-    void shallReturnTrueIfTypeIsBlockAndCareProviderIsPresentInCareProviderConfigurationButFromDateTimeIsNull() {
+    void
+        shallReturnTrueIfTypeIsBlockAndCareProviderIsPresentInCareProviderConfigurationButFromDateTimeIsNull() {
 
-      final var actionEvaluation = ActionEvaluation.builder()
-          .subUnit(ALFA_MEDICINSKT_CENTRUM)
-          .careUnit(ALFA_VARDCENTRAL)
-          .careProvider(ALFA_REGIONEN)
-          .build();
+      final var actionEvaluation =
+          ActionEvaluation.builder()
+              .subUnit(ALFA_MEDICINSKT_CENTRUM)
+              .careUnit(ALFA_VARDCENTRAL)
+              .careProvider(ALFA_REGIONEN)
+              .build();
 
-      final var certificateAccessConfigurations = List.of(
-          CertificateAccessConfiguration.builder()
-              .certificateType(FK_3226_TYPE)
-              .configuration(
-                  List.of(
-                      CertificateAccessUnitConfiguration.builder()
-                          .type(BLOCK)
-                          .careProviders(List.of(ALFA_REGIONEN.hsaId().id()))
-                          .fromDateTime(null)
-                          .toDateTime(LocalDateTime.now().plusDays(1))
-                          .build()
-                  )
-              )
-              .build()
-      );
+      final var certificateAccessConfigurations =
+          List.of(
+              CertificateAccessConfiguration.builder()
+                  .certificateType(FK_3226_TYPE)
+                  .configuration(
+                      List.of(
+                          CertificateAccessUnitConfiguration.builder()
+                              .type(BLOCK)
+                              .careProviders(List.of(ALFA_REGIONEN.hsaId().id()))
+                              .fromDateTime(null)
+                              .toDateTime(LocalDateTime.now().plusDays(1))
+                              .build()))
+                  .build());
 
-      doReturn(certificateAccessConfigurations).when(certificateActionConfigurationRepository)
+      doReturn(certificateAccessConfigurations)
+          .when(certificateActionConfigurationRepository)
           .findAccessConfiguration(CERTIFICATE_TYPE);
 
-      final var result = actionRuleCertificateTypeActiveForUnit.evaluate(Optional.of(certificate),
-          Optional.of(actionEvaluation));
+      final var result =
+          actionRuleCertificateTypeActiveForUnit.evaluate(
+              Optional.of(certificate), Optional.of(actionEvaluation));
 
       assertTrue(result);
     }
@@ -642,33 +683,34 @@ class ActionRuleCertificateTypeActiveForUnitTest {
     @Test
     void shallReturnFalseIfTypeIsBlockAndFromDateIsBeforeTodayWithToDateAsNullWithMatchingUnit() {
 
-      final var actionEvaluation = ActionEvaluation.builder()
-          .subUnit(ALFA_MEDICINSKT_CENTRUM)
-          .careUnit(ALFA_VARDCENTRAL)
-          .careProvider(ALFA_REGIONEN)
-          .build();
+      final var actionEvaluation =
+          ActionEvaluation.builder()
+              .subUnit(ALFA_MEDICINSKT_CENTRUM)
+              .careUnit(ALFA_VARDCENTRAL)
+              .careProvider(ALFA_REGIONEN)
+              .build();
 
-      final var certificateAccessConfigurations = List.of(
-          CertificateAccessConfiguration.builder()
-              .certificateType(FK_3226_TYPE)
-              .configuration(
-                  List.of(
-                      CertificateAccessUnitConfiguration.builder()
-                          .type(BLOCK)
-                          .careProviders(List.of(ALFA_REGIONEN.hsaId().id()))
-                          .fromDateTime(LocalDateTime.now().minusDays(1))
-                          .toDateTime(null)
-                          .build()
-                  )
-              )
-              .build()
-      );
+      final var certificateAccessConfigurations =
+          List.of(
+              CertificateAccessConfiguration.builder()
+                  .certificateType(FK_3226_TYPE)
+                  .configuration(
+                      List.of(
+                          CertificateAccessUnitConfiguration.builder()
+                              .type(BLOCK)
+                              .careProviders(List.of(ALFA_REGIONEN.hsaId().id()))
+                              .fromDateTime(LocalDateTime.now().minusDays(1))
+                              .toDateTime(null)
+                              .build()))
+                  .build());
 
-      doReturn(certificateAccessConfigurations).when(certificateActionConfigurationRepository)
+      doReturn(certificateAccessConfigurations)
+          .when(certificateActionConfigurationRepository)
           .findAccessConfiguration(CERTIFICATE_TYPE);
 
-      final var result = actionRuleCertificateTypeActiveForUnit.evaluate(Optional.of(certificate),
-          Optional.of(actionEvaluation));
+      final var result =
+          actionRuleCertificateTypeActiveForUnit.evaluate(
+              Optional.of(certificate), Optional.of(actionEvaluation));
 
       assertFalse(result);
     }
@@ -676,33 +718,34 @@ class ActionRuleCertificateTypeActiveForUnitTest {
     @Test
     void shallReturnTrueIfFromDateAndToDateIsMissingSinceRuleIsInactive() {
 
-      final var actionEvaluation = ActionEvaluation.builder()
-          .subUnit(ALFA_MEDICINSKT_CENTRUM)
-          .careUnit(ALFA_VARDCENTRAL)
-          .careProvider(ALFA_REGIONEN)
-          .build();
+      final var actionEvaluation =
+          ActionEvaluation.builder()
+              .subUnit(ALFA_MEDICINSKT_CENTRUM)
+              .careUnit(ALFA_VARDCENTRAL)
+              .careProvider(ALFA_REGIONEN)
+              .build();
 
-      final var certificateAccessConfigurations = List.of(
-          CertificateAccessConfiguration.builder()
-              .certificateType(FK_3226_TYPE)
-              .configuration(
-                  List.of(
-                      CertificateAccessUnitConfiguration.builder()
-                          .type(BLOCK)
-                          .careProviders(List.of(ALFA_REGIONEN.hsaId().id()))
-                          .fromDateTime(null)
-                          .toDateTime(null)
-                          .build()
-                  )
-              )
-              .build()
-      );
+      final var certificateAccessConfigurations =
+          List.of(
+              CertificateAccessConfiguration.builder()
+                  .certificateType(FK_3226_TYPE)
+                  .configuration(
+                      List.of(
+                          CertificateAccessUnitConfiguration.builder()
+                              .type(BLOCK)
+                              .careProviders(List.of(ALFA_REGIONEN.hsaId().id()))
+                              .fromDateTime(null)
+                              .toDateTime(null)
+                              .build()))
+                  .build());
 
-      doReturn(certificateAccessConfigurations).when(certificateActionConfigurationRepository)
+      doReturn(certificateAccessConfigurations)
+          .when(certificateActionConfigurationRepository)
           .findAccessConfiguration(CERTIFICATE_TYPE);
 
-      final var result = actionRuleCertificateTypeActiveForUnit.evaluate(Optional.of(certificate),
-          Optional.of(actionEvaluation));
+      final var result =
+          actionRuleCertificateTypeActiveForUnit.evaluate(
+              Optional.of(certificate), Optional.of(actionEvaluation));
 
       assertTrue(result);
     }
@@ -710,72 +753,74 @@ class ActionRuleCertificateTypeActiveForUnitTest {
     @Test
     void shallReturnTrueIfTypeIsBlockedAndUnitNotFoundInConfigurationThatIsInactive() {
 
-      final var actionEvaluation = ActionEvaluation.builder()
-          .subUnit(ALFA_MEDICINSKT_CENTRUM)
-          .careUnit(ALFA_VARDCENTRAL)
-          .careProvider(ALFA_REGIONEN)
-          .build();
+      final var actionEvaluation =
+          ActionEvaluation.builder()
+              .subUnit(ALFA_MEDICINSKT_CENTRUM)
+              .careUnit(ALFA_VARDCENTRAL)
+              .careProvider(ALFA_REGIONEN)
+              .build();
 
-      final var certificateAccessConfigurations = List.of(
-          CertificateAccessConfiguration.builder()
-              .certificateType(FK_3226_TYPE)
-              .configuration(
-                  List.of(
-                      CertificateAccessUnitConfiguration.builder()
-                          .type(BLOCK)
-                          .careProviders(List.of(BETA_HUDMOTTAGNINGEN.hsaId().id()))
-                          .fromDateTime(LocalDateTime.now().plusDays(1))
-                          .toDateTime(null)
-                          .build()
-                  )
-              )
-              .build()
-      );
+      final var certificateAccessConfigurations =
+          List.of(
+              CertificateAccessConfiguration.builder()
+                  .certificateType(FK_3226_TYPE)
+                  .configuration(
+                      List.of(
+                          CertificateAccessUnitConfiguration.builder()
+                              .type(BLOCK)
+                              .careProviders(List.of(BETA_HUDMOTTAGNINGEN.hsaId().id()))
+                              .fromDateTime(LocalDateTime.now().plusDays(1))
+                              .toDateTime(null)
+                              .build()))
+                  .build());
 
-      doReturn(certificateAccessConfigurations).when(certificateActionConfigurationRepository)
+      doReturn(certificateAccessConfigurations)
+          .when(certificateActionConfigurationRepository)
           .findAccessConfiguration(CERTIFICATE_TYPE);
 
-      final var result = actionRuleCertificateTypeActiveForUnit.evaluate(Optional.of(certificate),
-          Optional.of(actionEvaluation));
+      final var result =
+          actionRuleCertificateTypeActiveForUnit.evaluate(
+              Optional.of(certificate), Optional.of(actionEvaluation));
 
       assertTrue(result);
     }
 
     @Test
     void shallReturnTrueIfTypeIsBlockedAndUnitNotFoundInConfigurationThatIsActive() {
-      final var actionEvaluation = ActionEvaluation.builder()
-          .subUnit(ALFA_MEDICINSKT_CENTRUM)
-          .careUnit(ALFA_VARDCENTRAL)
-          .careProvider(ALFA_REGIONEN)
-          .build();
+      final var actionEvaluation =
+          ActionEvaluation.builder()
+              .subUnit(ALFA_MEDICINSKT_CENTRUM)
+              .careUnit(ALFA_VARDCENTRAL)
+              .careProvider(ALFA_REGIONEN)
+              .build();
 
-      final var certificateAccessConfigurations = List.of(
-          CertificateAccessConfiguration.builder()
-              .certificateType(FK_3226_TYPE)
-              .configuration(
-                  List.of(
-                      CertificateAccessUnitConfiguration.builder()
-                          .type(BLOCK)
-                          .careProviders(List.of(BETA_HUDMOTTAGNINGEN.hsaId().id()))
-                          .fromDateTime(LocalDateTime.now().plusDays(1))
-                          .toDateTime(null)
-                          .build(),
-                      CertificateAccessUnitConfiguration.builder()
-                          .type(BLOCK)
-                          .careProviders(List.of(BETA_HUDMOTTAGNINGEN.hsaId().id()))
-                          .fromDateTime(LocalDateTime.now().minusDays(1))
-                          .toDateTime(null)
-                          .build()
-                  )
-              )
-              .build()
-      );
+      final var certificateAccessConfigurations =
+          List.of(
+              CertificateAccessConfiguration.builder()
+                  .certificateType(FK_3226_TYPE)
+                  .configuration(
+                      List.of(
+                          CertificateAccessUnitConfiguration.builder()
+                              .type(BLOCK)
+                              .careProviders(List.of(BETA_HUDMOTTAGNINGEN.hsaId().id()))
+                              .fromDateTime(LocalDateTime.now().plusDays(1))
+                              .toDateTime(null)
+                              .build(),
+                          CertificateAccessUnitConfiguration.builder()
+                              .type(BLOCK)
+                              .careProviders(List.of(BETA_HUDMOTTAGNINGEN.hsaId().id()))
+                              .fromDateTime(LocalDateTime.now().minusDays(1))
+                              .toDateTime(null)
+                              .build()))
+                  .build());
 
-      doReturn(certificateAccessConfigurations).when(certificateActionConfigurationRepository)
+      doReturn(certificateAccessConfigurations)
+          .when(certificateActionConfigurationRepository)
           .findAccessConfiguration(CERTIFICATE_TYPE);
 
-      final var result = actionRuleCertificateTypeActiveForUnit.evaluate(Optional.of(certificate),
-          Optional.of(actionEvaluation));
+      final var result =
+          actionRuleCertificateTypeActiveForUnit.evaluate(
+              Optional.of(certificate), Optional.of(actionEvaluation));
 
       assertTrue(result);
     }
@@ -785,41 +830,43 @@ class ActionRuleCertificateTypeActiveForUnitTest {
   class BlockAndAllowTest {
 
     @Test
-    void shallReturnFalseIfSubUnitIsPresentInIssuingUnitConfigurationWithinDateTimeAndBlockedIsActive() {
+    void
+        shallReturnFalseIfSubUnitIsPresentInIssuingUnitConfigurationWithinDateTimeAndBlockedIsActive() {
 
-      final var actionEvaluation = ActionEvaluation.builder()
-          .subUnit(ALFA_MEDICINSKT_CENTRUM)
-          .careUnit(ALFA_VARDCENTRAL)
-          .careProvider(ALFA_REGIONEN)
-          .build();
+      final var actionEvaluation =
+          ActionEvaluation.builder()
+              .subUnit(ALFA_MEDICINSKT_CENTRUM)
+              .careUnit(ALFA_VARDCENTRAL)
+              .careProvider(ALFA_REGIONEN)
+              .build();
 
-      final var certificateAccessConfigurations = List.of(
-          CertificateAccessConfiguration.builder()
-              .certificateType(FK_3226_TYPE)
-              .configuration(
-                  List.of(
-                      CertificateAccessUnitConfiguration.builder()
-                          .type(ALLOW)
-                          .issuedOnUnit(List.of(ALFA_MEDICINSKT_CENTRUM.hsaId().id()))
-                          .fromDateTime(LocalDateTime.now().minusDays(1))
-                          .toDateTime(LocalDateTime.now().plusDays(1))
-                          .build(),
-                      CertificateAccessUnitConfiguration.builder()
-                          .type(BLOCK)
-                          .issuedOnUnit(List.of(ALFA_MEDICINSKT_CENTRUM.hsaId().id()))
-                          .fromDateTime(LocalDateTime.now().minusDays(1))
-                          .toDateTime(LocalDateTime.now().plusDays(1))
-                          .build()
-                  )
-              )
-              .build()
-      );
+      final var certificateAccessConfigurations =
+          List.of(
+              CertificateAccessConfiguration.builder()
+                  .certificateType(FK_3226_TYPE)
+                  .configuration(
+                      List.of(
+                          CertificateAccessUnitConfiguration.builder()
+                              .type(ALLOW)
+                              .issuedOnUnit(List.of(ALFA_MEDICINSKT_CENTRUM.hsaId().id()))
+                              .fromDateTime(LocalDateTime.now().minusDays(1))
+                              .toDateTime(LocalDateTime.now().plusDays(1))
+                              .build(),
+                          CertificateAccessUnitConfiguration.builder()
+                              .type(BLOCK)
+                              .issuedOnUnit(List.of(ALFA_MEDICINSKT_CENTRUM.hsaId().id()))
+                              .fromDateTime(LocalDateTime.now().minusDays(1))
+                              .toDateTime(LocalDateTime.now().plusDays(1))
+                              .build()))
+                  .build());
 
-      doReturn(certificateAccessConfigurations).when(certificateActionConfigurationRepository)
+      doReturn(certificateAccessConfigurations)
+          .when(certificateActionConfigurationRepository)
           .findAccessConfiguration(CERTIFICATE_TYPE);
 
-      final var result = actionRuleCertificateTypeActiveForUnit.evaluate(Optional.of(certificate),
-          Optional.of(actionEvaluation));
+      final var result =
+          actionRuleCertificateTypeActiveForUnit.evaluate(
+              Optional.of(certificate), Optional.of(actionEvaluation));
 
       assertFalse(result);
     }
@@ -827,200 +874,208 @@ class ActionRuleCertificateTypeActiveForUnitTest {
     @Test
     void shallReturnTrueIfSubUnitIsPresentInIssuingUnitConfigurationAndBlockIsInactive() {
 
-      final var actionEvaluation = ActionEvaluation.builder()
-          .subUnit(ALFA_MEDICINSKT_CENTRUM)
-          .careUnit(ALFA_VARDCENTRAL)
-          .careProvider(ALFA_REGIONEN)
-          .build();
+      final var actionEvaluation =
+          ActionEvaluation.builder()
+              .subUnit(ALFA_MEDICINSKT_CENTRUM)
+              .careUnit(ALFA_VARDCENTRAL)
+              .careProvider(ALFA_REGIONEN)
+              .build();
 
-      final var certificateAccessConfigurations = List.of(
-          CertificateAccessConfiguration.builder()
-              .certificateType(FK_3226_TYPE)
-              .configuration(
-                  List.of(
-                      CertificateAccessUnitConfiguration.builder()
-                          .type(ALLOW)
-                          .issuedOnUnit(List.of(ALFA_MEDICINSKT_CENTRUM.hsaId().id()))
-                          .fromDateTime(LocalDateTime.now().minusDays(1))
-                          .toDateTime(LocalDateTime.now().plusDays(1))
-                          .build(),
-                      CertificateAccessUnitConfiguration.builder()
-                          .type(BLOCK)
-                          .issuedOnUnit(List.of(ALFA_MEDICINSKT_CENTRUM.hsaId().id()))
-                          .fromDateTime(null)
-                          .toDateTime(LocalDateTime.now().plusDays(1))
-                          .build()
-                  )
-              )
-              .build()
-      );
+      final var certificateAccessConfigurations =
+          List.of(
+              CertificateAccessConfiguration.builder()
+                  .certificateType(FK_3226_TYPE)
+                  .configuration(
+                      List.of(
+                          CertificateAccessUnitConfiguration.builder()
+                              .type(ALLOW)
+                              .issuedOnUnit(List.of(ALFA_MEDICINSKT_CENTRUM.hsaId().id()))
+                              .fromDateTime(LocalDateTime.now().minusDays(1))
+                              .toDateTime(LocalDateTime.now().plusDays(1))
+                              .build(),
+                          CertificateAccessUnitConfiguration.builder()
+                              .type(BLOCK)
+                              .issuedOnUnit(List.of(ALFA_MEDICINSKT_CENTRUM.hsaId().id()))
+                              .fromDateTime(null)
+                              .toDateTime(LocalDateTime.now().plusDays(1))
+                              .build()))
+                  .build());
 
-      doReturn(certificateAccessConfigurations).when(certificateActionConfigurationRepository)
+      doReturn(certificateAccessConfigurations)
+          .when(certificateActionConfigurationRepository)
           .findAccessConfiguration(CERTIFICATE_TYPE);
 
-      final var result = actionRuleCertificateTypeActiveForUnit.evaluate(Optional.of(certificate),
-          Optional.of(actionEvaluation));
-
-      assertTrue(result);
-    }
-
-
-    @Test
-    void shallReturnFalseIfCareUnitIsPresentInCareUnitConfigurationWithinDateTimeAndBlockedIsActive() {
-
-      final var actionEvaluation = ActionEvaluation.builder()
-          .subUnit(ALFA_MEDICINSKT_CENTRUM)
-          .careUnit(ALFA_VARDCENTRAL)
-          .careProvider(ALFA_REGIONEN)
-          .build();
-
-      final var certificateAccessConfigurations = List.of(
-          CertificateAccessConfiguration.builder()
-              .certificateType(FK_3226_TYPE)
-              .configuration(
-                  List.of(
-                      CertificateAccessUnitConfiguration.builder()
-                          .type(ALLOW)
-                          .careUnit(List.of(ALFA_VARDCENTRAL.hsaId().id()))
-                          .fromDateTime(LocalDateTime.now().minusDays(1))
-                          .toDateTime(LocalDateTime.now().plusDays(1))
-                          .build(),
-                      CertificateAccessUnitConfiguration.builder()
-                          .type(BLOCK)
-                          .careUnit(List.of(ALFA_VARDCENTRAL.hsaId().id()))
-                          .fromDateTime(LocalDateTime.now().minusDays(1))
-                          .toDateTime(LocalDateTime.now().plusDays(1))
-                          .build()
-                  )
-              )
-              .build()
-      );
-
-      doReturn(certificateAccessConfigurations).when(certificateActionConfigurationRepository)
-          .findAccessConfiguration(CERTIFICATE_TYPE);
-
-      final var result = actionRuleCertificateTypeActiveForUnit.evaluate(Optional.of(certificate),
-          Optional.of(actionEvaluation));
-
-      assertFalse(result);
-    }
-
-    @Test
-    void shallReturnTrueIfCareUnitIsPresentInCareUnitConfigurationWithinDateTimeButBlockedIsInactive() {
-
-      final var actionEvaluation = ActionEvaluation.builder()
-          .subUnit(ALFA_MEDICINSKT_CENTRUM)
-          .careUnit(ALFA_VARDCENTRAL)
-          .careProvider(ALFA_REGIONEN)
-          .build();
-
-      final var certificateAccessConfigurations = List.of(
-          CertificateAccessConfiguration.builder()
-              .certificateType(FK_3226_TYPE)
-              .configuration(
-                  List.of(
-                      CertificateAccessUnitConfiguration.builder()
-                          .type(ALLOW)
-                          .careUnit(List.of(ALFA_VARDCENTRAL.hsaId().id()))
-                          .fromDateTime(LocalDateTime.now().minusDays(1))
-                          .toDateTime(LocalDateTime.now().plusDays(1))
-                          .build(),
-                      CertificateAccessUnitConfiguration.builder()
-                          .type(BLOCK)
-                          .careUnit(List.of(ALFA_VARDCENTRAL.hsaId().id()))
-                          .fromDateTime(null)
-                          .toDateTime(LocalDateTime.now().plusDays(1))
-                          .build()
-                  )
-              )
-              .build()
-      );
-
-      doReturn(certificateAccessConfigurations).when(certificateActionConfigurationRepository)
-          .findAccessConfiguration(CERTIFICATE_TYPE);
-
-      final var result = actionRuleCertificateTypeActiveForUnit.evaluate(Optional.of(certificate),
-          Optional.of(actionEvaluation));
+      final var result =
+          actionRuleCertificateTypeActiveForUnit.evaluate(
+              Optional.of(certificate), Optional.of(actionEvaluation));
 
       assertTrue(result);
     }
 
     @Test
-    void shallReturnFalseIfCareProviderIsPresentInCareProviderConfigurationWithinDateTimeButBlockedIsActive() {
+    void
+        shallReturnFalseIfCareUnitIsPresentInCareUnitConfigurationWithinDateTimeAndBlockedIsActive() {
 
-      final var actionEvaluation = ActionEvaluation.builder()
-          .subUnit(ALFA_MEDICINSKT_CENTRUM)
-          .careUnit(ALFA_VARDCENTRAL)
-          .careProvider(ALFA_REGIONEN)
-          .build();
+      final var actionEvaluation =
+          ActionEvaluation.builder()
+              .subUnit(ALFA_MEDICINSKT_CENTRUM)
+              .careUnit(ALFA_VARDCENTRAL)
+              .careProvider(ALFA_REGIONEN)
+              .build();
 
-      final var certificateAccessConfigurations = List.of(
-          CertificateAccessConfiguration.builder()
-              .certificateType(FK_3226_TYPE)
-              .configuration(
-                  List.of(
-                      CertificateAccessUnitConfiguration.builder()
-                          .type(ALLOW)
-                          .careProviders(List.of(ALFA_REGIONEN.hsaId().id()))
-                          .fromDateTime(LocalDateTime.now().minusDays(1))
-                          .toDateTime(LocalDateTime.now().plusDays(1))
-                          .build(),
-                      CertificateAccessUnitConfiguration.builder()
-                          .type(BLOCK)
-                          .careProviders(List.of(ALFA_REGIONEN.hsaId().id()))
-                          .fromDateTime(LocalDateTime.now().minusDays(1))
-                          .toDateTime(LocalDateTime.now().plusDays(1))
-                          .build()
-                  )
-              )
-              .build()
-      );
+      final var certificateAccessConfigurations =
+          List.of(
+              CertificateAccessConfiguration.builder()
+                  .certificateType(FK_3226_TYPE)
+                  .configuration(
+                      List.of(
+                          CertificateAccessUnitConfiguration.builder()
+                              .type(ALLOW)
+                              .careUnit(List.of(ALFA_VARDCENTRAL.hsaId().id()))
+                              .fromDateTime(LocalDateTime.now().minusDays(1))
+                              .toDateTime(LocalDateTime.now().plusDays(1))
+                              .build(),
+                          CertificateAccessUnitConfiguration.builder()
+                              .type(BLOCK)
+                              .careUnit(List.of(ALFA_VARDCENTRAL.hsaId().id()))
+                              .fromDateTime(LocalDateTime.now().minusDays(1))
+                              .toDateTime(LocalDateTime.now().plusDays(1))
+                              .build()))
+                  .build());
 
-      doReturn(certificateAccessConfigurations).when(certificateActionConfigurationRepository)
+      doReturn(certificateAccessConfigurations)
+          .when(certificateActionConfigurationRepository)
           .findAccessConfiguration(CERTIFICATE_TYPE);
 
-      final var result = actionRuleCertificateTypeActiveForUnit.evaluate(Optional.of(certificate),
-          Optional.of(actionEvaluation));
+      final var result =
+          actionRuleCertificateTypeActiveForUnit.evaluate(
+              Optional.of(certificate), Optional.of(actionEvaluation));
 
       assertFalse(result);
     }
 
     @Test
-    void shallReturnTrueIfCareProviderIsPresentInCareProviderConfigurationWithinDateTimeButBlockedIsInactive() {
+    void
+        shallReturnTrueIfCareUnitIsPresentInCareUnitConfigurationWithinDateTimeButBlockedIsInactive() {
 
-      final var actionEvaluation = ActionEvaluation.builder()
-          .subUnit(ALFA_MEDICINSKT_CENTRUM)
-          .careUnit(ALFA_VARDCENTRAL)
-          .careProvider(ALFA_REGIONEN)
-          .build();
+      final var actionEvaluation =
+          ActionEvaluation.builder()
+              .subUnit(ALFA_MEDICINSKT_CENTRUM)
+              .careUnit(ALFA_VARDCENTRAL)
+              .careProvider(ALFA_REGIONEN)
+              .build();
 
-      final var certificateAccessConfigurations = List.of(
-          CertificateAccessConfiguration.builder()
-              .certificateType(FK_3226_TYPE)
-              .configuration(
-                  List.of(
-                      CertificateAccessUnitConfiguration.builder()
-                          .type(ALLOW)
-                          .careProviders(List.of(ALFA_REGIONEN.hsaId().id()))
-                          .fromDateTime(LocalDateTime.now().minusDays(1))
-                          .toDateTime(LocalDateTime.now().plusDays(1))
-                          .build(),
-                      CertificateAccessUnitConfiguration.builder()
-                          .type(BLOCK)
-                          .careProviders(List.of(ALFA_REGIONEN.hsaId().id()))
-                          .fromDateTime(null)
-                          .toDateTime(LocalDateTime.now().plusDays(1))
-                          .build()
-                  )
-              )
-              .build()
-      );
+      final var certificateAccessConfigurations =
+          List.of(
+              CertificateAccessConfiguration.builder()
+                  .certificateType(FK_3226_TYPE)
+                  .configuration(
+                      List.of(
+                          CertificateAccessUnitConfiguration.builder()
+                              .type(ALLOW)
+                              .careUnit(List.of(ALFA_VARDCENTRAL.hsaId().id()))
+                              .fromDateTime(LocalDateTime.now().minusDays(1))
+                              .toDateTime(LocalDateTime.now().plusDays(1))
+                              .build(),
+                          CertificateAccessUnitConfiguration.builder()
+                              .type(BLOCK)
+                              .careUnit(List.of(ALFA_VARDCENTRAL.hsaId().id()))
+                              .fromDateTime(null)
+                              .toDateTime(LocalDateTime.now().plusDays(1))
+                              .build()))
+                  .build());
 
-      doReturn(certificateAccessConfigurations).when(certificateActionConfigurationRepository)
+      doReturn(certificateAccessConfigurations)
+          .when(certificateActionConfigurationRepository)
           .findAccessConfiguration(CERTIFICATE_TYPE);
 
-      final var result = actionRuleCertificateTypeActiveForUnit.evaluate(Optional.of(certificate),
-          Optional.of(actionEvaluation));
+      final var result =
+          actionRuleCertificateTypeActiveForUnit.evaluate(
+              Optional.of(certificate), Optional.of(actionEvaluation));
+
+      assertTrue(result);
+    }
+
+    @Test
+    void
+        shallReturnFalseIfCareProviderIsPresentInCareProviderConfigurationWithinDateTimeButBlockedIsActive() {
+
+      final var actionEvaluation =
+          ActionEvaluation.builder()
+              .subUnit(ALFA_MEDICINSKT_CENTRUM)
+              .careUnit(ALFA_VARDCENTRAL)
+              .careProvider(ALFA_REGIONEN)
+              .build();
+
+      final var certificateAccessConfigurations =
+          List.of(
+              CertificateAccessConfiguration.builder()
+                  .certificateType(FK_3226_TYPE)
+                  .configuration(
+                      List.of(
+                          CertificateAccessUnitConfiguration.builder()
+                              .type(ALLOW)
+                              .careProviders(List.of(ALFA_REGIONEN.hsaId().id()))
+                              .fromDateTime(LocalDateTime.now().minusDays(1))
+                              .toDateTime(LocalDateTime.now().plusDays(1))
+                              .build(),
+                          CertificateAccessUnitConfiguration.builder()
+                              .type(BLOCK)
+                              .careProviders(List.of(ALFA_REGIONEN.hsaId().id()))
+                              .fromDateTime(LocalDateTime.now().minusDays(1))
+                              .toDateTime(LocalDateTime.now().plusDays(1))
+                              .build()))
+                  .build());
+
+      doReturn(certificateAccessConfigurations)
+          .when(certificateActionConfigurationRepository)
+          .findAccessConfiguration(CERTIFICATE_TYPE);
+
+      final var result =
+          actionRuleCertificateTypeActiveForUnit.evaluate(
+              Optional.of(certificate), Optional.of(actionEvaluation));
+
+      assertFalse(result);
+    }
+
+    @Test
+    void
+        shallReturnTrueIfCareProviderIsPresentInCareProviderConfigurationWithinDateTimeButBlockedIsInactive() {
+
+      final var actionEvaluation =
+          ActionEvaluation.builder()
+              .subUnit(ALFA_MEDICINSKT_CENTRUM)
+              .careUnit(ALFA_VARDCENTRAL)
+              .careProvider(ALFA_REGIONEN)
+              .build();
+
+      final var certificateAccessConfigurations =
+          List.of(
+              CertificateAccessConfiguration.builder()
+                  .certificateType(FK_3226_TYPE)
+                  .configuration(
+                      List.of(
+                          CertificateAccessUnitConfiguration.builder()
+                              .type(ALLOW)
+                              .careProviders(List.of(ALFA_REGIONEN.hsaId().id()))
+                              .fromDateTime(LocalDateTime.now().minusDays(1))
+                              .toDateTime(LocalDateTime.now().plusDays(1))
+                              .build(),
+                          CertificateAccessUnitConfiguration.builder()
+                              .type(BLOCK)
+                              .careProviders(List.of(ALFA_REGIONEN.hsaId().id()))
+                              .fromDateTime(null)
+                              .toDateTime(LocalDateTime.now().plusDays(1))
+                              .build()))
+                  .build());
+
+      doReturn(certificateAccessConfigurations)
+          .when(certificateActionConfigurationRepository)
+          .findAccessConfiguration(CERTIFICATE_TYPE);
+
+      final var result =
+          actionRuleCertificateTypeActiveForUnit.evaluate(
+              Optional.of(certificate), Optional.of(actionEvaluation));
 
       assertTrue(result);
     }
@@ -1028,39 +1083,40 @@ class ActionRuleCertificateTypeActiveForUnitTest {
     @Test
     void shallReturnFalseIfBothAllowAndBlockIsActiveWithNoMatchingUnit() {
 
-      final var actionEvaluation = ActionEvaluation.builder()
-          .subUnit(ALFA_MEDICINSKT_CENTRUM)
-          .careUnit(ALFA_VARDCENTRAL)
-          .careProvider(ALFA_REGIONEN)
-          .build();
+      final var actionEvaluation =
+          ActionEvaluation.builder()
+              .subUnit(ALFA_MEDICINSKT_CENTRUM)
+              .careUnit(ALFA_VARDCENTRAL)
+              .careProvider(ALFA_REGIONEN)
+              .build();
 
-      final var certificateAccessConfigurations = List.of(
-          CertificateAccessConfiguration.builder()
-              .certificateType(FK_3226_TYPE)
-              .configuration(
-                  List.of(
-                      CertificateAccessUnitConfiguration.builder()
-                          .type(ALLOW)
-                          .careProviders(List.of(BETA_HUDMOTTAGNINGEN.hsaId().id()))
-                          .fromDateTime(LocalDateTime.now().minusDays(1))
-                          .toDateTime(LocalDateTime.now().plusDays(1))
-                          .build(),
-                      CertificateAccessUnitConfiguration.builder()
-                          .type(BLOCK)
-                          .careProviders(List.of(BETA_HUDMOTTAGNINGEN.hsaId().id()))
-                          .fromDateTime(LocalDateTime.now().minusDays(1))
-                          .toDateTime(LocalDateTime.now().plusDays(1))
-                          .build()
-                  )
-              )
-              .build()
-      );
+      final var certificateAccessConfigurations =
+          List.of(
+              CertificateAccessConfiguration.builder()
+                  .certificateType(FK_3226_TYPE)
+                  .configuration(
+                      List.of(
+                          CertificateAccessUnitConfiguration.builder()
+                              .type(ALLOW)
+                              .careProviders(List.of(BETA_HUDMOTTAGNINGEN.hsaId().id()))
+                              .fromDateTime(LocalDateTime.now().minusDays(1))
+                              .toDateTime(LocalDateTime.now().plusDays(1))
+                              .build(),
+                          CertificateAccessUnitConfiguration.builder()
+                              .type(BLOCK)
+                              .careProviders(List.of(BETA_HUDMOTTAGNINGEN.hsaId().id()))
+                              .fromDateTime(LocalDateTime.now().minusDays(1))
+                              .toDateTime(LocalDateTime.now().plusDays(1))
+                              .build()))
+                  .build());
 
-      doReturn(certificateAccessConfigurations).when(certificateActionConfigurationRepository)
+      doReturn(certificateAccessConfigurations)
+          .when(certificateActionConfigurationRepository)
           .findAccessConfiguration(CERTIFICATE_TYPE);
 
-      final var result = actionRuleCertificateTypeActiveForUnit.evaluate(Optional.of(certificate),
-          Optional.of(actionEvaluation));
+      final var result =
+          actionRuleCertificateTypeActiveForUnit.evaluate(
+              Optional.of(certificate), Optional.of(actionEvaluation));
 
       assertFalse(result);
     }

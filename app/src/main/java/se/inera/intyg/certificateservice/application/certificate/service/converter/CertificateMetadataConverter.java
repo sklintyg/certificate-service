@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service.converter;
 
 import static se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementConfigurationUnitContactInformation.UNIT_CONTACT_INFORMATION;
@@ -26,15 +44,14 @@ import se.inera.intyg.certificateservice.domain.certificate.model.Status;
 @RequiredArgsConstructor
 public class CertificateMetadataConverter {
 
-  /**
-   * Default values until functionality has been implemented in domain model
-   */
+  /** Default values until functionality has been implemented in domain model */
   private final CertificateUnitConverter certificateUnitConverter;
+
   private final CertificateMessageTypeConverter certificateMessageTypeConverter;
   private final CertificateConfirmationModalConverter confirmationModalConverter;
 
-  public CertificateMetadataDTO convert(Certificate certificate,
-      ActionEvaluation actionEvaluation) {
+  public CertificateMetadataDTO convert(
+      Certificate certificate, ActionEvaluation actionEvaluation) {
     return CertificateMetadataDTO.builder()
         .id(certificate.id().id())
         .type(certificate.certificateModel().id().type().type())
@@ -47,62 +64,41 @@ public class CertificateMetadataConverter {
         .created(certificate.created())
         .testCertificate(certificate.certificateMetaData().patient().testIndicated().value())
         .availableForCitizen(certificate.certificateModel().availableForCitizen())
-        .patient(
-            toPatientDTO(certificate)
-        )
+        .patient(toPatientDTO(certificate))
         .unit(
             certificateUnitConverter.convert(
                 certificate.certificateMetaData().issuingUnit(),
                 certificate.elementData().stream()
                     .filter(data -> data.id().equals(UNIT_CONTACT_INFORMATION))
-                    .findFirst()
-            )
-        )
+                    .findFirst()))
         .careUnit(
             UnitDTO.builder()
                 .unitId(certificate.certificateMetaData().careUnit().hsaId().id())
-                .unitName(
-                    certificate.certificateMetaData().careUnit().name().name()
-                )
-                .build()
-        )
+                .unitName(certificate.certificateMetaData().careUnit().name().name())
+                .build())
         .careProvider(
             UnitDTO.builder()
                 .unitId(certificate.certificateMetaData().careProvider().hsaId().id())
-                .unitName(
-                    certificate.certificateMetaData().careProvider().name().name()
-                )
-                .build()
-        )
+                .unitName(certificate.certificateMetaData().careProvider().name().name())
+                .build())
         .issuedBy(
             StaffDTO.builder()
-                .personId(
-                    certificate.certificateMetaData().issuer().hsaId().id()
-                )
-                .firstName(
-                    certificate.certificateMetaData().issuer().name().firstName()
-                )
-                .middleName(
-                    certificate.certificateMetaData().issuer().name().middleName()
-                )
-                .lastName(
-                    certificate.certificateMetaData().issuer().name().lastName()
-                )
-                .fullName(
-                    certificate.certificateMetaData().issuer().name().fullName()
-                )
-                .build()
-        )
+                .personId(certificate.certificateMetaData().issuer().hsaId().id())
+                .firstName(certificate.certificateMetaData().issuer().name().firstName())
+                .middleName(certificate.certificateMetaData().issuer().name().middleName())
+                .lastName(certificate.certificateMetaData().issuer().name().lastName())
+                .fullName(certificate.certificateMetaData().issuer().name().fullName())
+                .build())
         .createdBy(
-            certificate.certificateMetaData().creator() != null ?
-                StaffDTO.builder()
+            certificate.certificateMetaData().creator() != null
+                ? StaffDTO.builder()
                     .personId(certificate.certificateMetaData().creator().hsaId().id())
                     .firstName(certificate.certificateMetaData().creator().name().firstName())
                     .middleName(certificate.certificateMetaData().creator().name().middleName())
                     .lastName(certificate.certificateMetaData().creator().name().lastName())
                     .fullName(certificate.certificateMetaData().creator().name().fullName())
-                    .build() : null
-        )
+                    .build()
+                : null)
         .forwarded(certificate.forwarded() != null && certificate.forwarded().value())
         .latestMajorVersion(certificate.certificateModel().isLastestActiveVersion())
         .isInactiveCertificateType(!certificate.certificateModel().isLastestActiveVersion())
@@ -114,40 +110,41 @@ public class CertificateMetadataConverter {
         .modified(certificate.modified())
         .externalReference(
             certificate.externalReference() != null
-                ? certificate.externalReference().value() : null
-        )
-        .relations(
-            toRelations(certificate.parent(), certificate.children())
-        )
+                ? certificate.externalReference().value()
+                : null)
+        .relations(toRelations(certificate.parent(), certificate.children()))
         .summary(convertSummary(certificate))
         .messageTypes(
             certificate.certificateModel().messageTypes() != null
                 ? certificate.certificateModel().messageTypes().stream()
-                .map(certificateMessageTypeConverter::convert)
-                .toList()
-                : null
-        )
-        .responsibleHospName(certificate.certificateMetaData().responsibleIssuer() != null
-            ? certificate.certificateMetaData().responsibleIssuer().value()
-            : null)
+                    .map(certificateMessageTypeConverter::convert)
+                    .toList()
+                : null)
+        .responsibleHospName(
+            certificate.certificateMetaData().responsibleIssuer() != null
+                ? certificate.certificateMetaData().responsibleIssuer().value()
+                : null)
         .confirmationModal(
-            certificate.certificateModel().confirmationModalProvider() != null ?
-                confirmationModalConverter.convert(
-                    certificate.certificateModel().confirmationModalProvider()
-                        .of(certificate, actionEvaluation)
-                ) : null
-        )
+            certificate.certificateModel().confirmationModalProvider() != null
+                ? confirmationModalConverter.convert(
+                    certificate
+                        .certificateModel()
+                        .confirmationModalProvider()
+                        .of(certificate, actionEvaluation))
+                : null)
         .readyForSign(
             certificate.readyForSign() != null ? certificate.readyForSign().readyForSignAt() : null)
         .revokedAt(certificate.revoked() != null ? certificate.revoked().revokedAt() : null)
-        .revokedBy(certificate.revoked() != null && certificate.revoked().revokedBy() != null ?
-            StaffDTO.builder()
-                .personId(certificate.revoked().revokedBy().hsaId().id())
-                .firstName(certificate.revoked().revokedBy().name().firstName())
-                .middleName(certificate.revoked().revokedBy().name().middleName())
-                .lastName(certificate.revoked().revokedBy().name().lastName())
-                .fullName(certificate.revoked().revokedBy().name().fullName())
-                .build() : null)
+        .revokedBy(
+            certificate.revoked() != null && certificate.revoked().revokedBy() != null
+                ? StaffDTO.builder()
+                    .personId(certificate.revoked().revokedBy().hsaId().id())
+                    .firstName(certificate.revoked().revokedBy().name().firstName())
+                    .middleName(certificate.revoked().revokedBy().name().middleName())
+                    .lastName(certificate.revoked().revokedBy().name().lastName())
+                    .fullName(certificate.revoked().revokedBy().name().fullName())
+                    .build()
+                : null)
         .build();
   }
 
@@ -156,8 +153,8 @@ public class CertificateMetadataConverter {
       return null;
     }
 
-    final var certificateSummary = certificate.certificateModel().summaryProvider()
-        .summaryOf(certificate);
+    final var certificateSummary =
+        certificate.certificateModel().summaryProvider().summaryOf(certificate);
 
     return CertificateSummaryDTO.builder()
         .label(certificateSummary.label())
@@ -167,16 +164,13 @@ public class CertificateMetadataConverter {
 
   private CertificateRelationsDTO toRelations(Relation parent, List<Relation> children) {
     return CertificateRelationsDTO.builder()
-        .parent(
-            toRelation(parent)
-        )
+        .parent(toRelation(parent))
         .children(
             children.stream()
                 .filter(Objects::nonNull)
                 .filter(relation -> !Status.REVOKED.equals(relation.certificate().status()))
                 .map(this::toRelation)
-                .toList()
-        )
+                .toList())
         .build();
   }
 
@@ -224,8 +218,7 @@ public class CertificateMetadataConverter {
             PersonIdDTO.builder()
                 .id(patient.id().idWithDash())
                 .type(patient.id().type().name())
-                .build()
-        )
+                .build())
         .firstName(patient.name().firstName())
         .middleName(patient.name().middleName())
         .lastName(patient.name().lastName())

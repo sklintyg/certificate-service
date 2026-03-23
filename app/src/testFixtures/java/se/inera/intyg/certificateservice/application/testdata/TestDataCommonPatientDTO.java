@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.testdata;
 
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataPatientConstants.ALVE_REACT_ALFREDSSON_CITY;
@@ -56,13 +74,17 @@ public class TestDataCommonPatientDTO {
     throw new IllegalStateException("Utility class");
   }
 
-  public static final PatientDTO ATHENA_REACT_ANDERSSON_DTO = athenaReactAnderssonDtoBuilder().build();
-  public static final PersonIdDTO ATHENA_REACT_ANDERSSON_PERSON_ID_DTO = PersonIdDTO.builder()
-      .type(PersonIdTypeDTO.PERSONAL_IDENTITY_NUMBER)
-      .id(ATHENA_REACT_ANDERSSON_ID)
-      .build();
-  public static final PatientDTO ALVE_REACT_ALFREDSSON_DTO = alveReactAlfredssonDtoBuilder().build();
-  public static final PatientDTO ATLAS_REACT_ABRAHAMSSON_DTO = atlasReactAbrahamssonDtoBuilder().build();
+  public static final PatientDTO ATHENA_REACT_ANDERSSON_DTO =
+      athenaReactAnderssonDtoBuilder().build();
+  public static final PersonIdDTO ATHENA_REACT_ANDERSSON_PERSON_ID_DTO =
+      PersonIdDTO.builder()
+          .type(PersonIdTypeDTO.PERSONAL_IDENTITY_NUMBER)
+          .id(ATHENA_REACT_ANDERSSON_ID)
+          .build();
+  public static final PatientDTO ALVE_REACT_ALFREDSSON_DTO =
+      alveReactAlfredssonDtoBuilder().build();
+  public static final PatientDTO ATLAS_REACT_ABRAHAMSSON_DTO =
+      atlasReactAbrahamssonDtoBuilder().build();
   public static final PatientDTO ANONYMA_REACT_ATTILA_DTO = anonymaReactAttilaDtoBuilder().build();
 
   public static PatientDTOBuilder athenaReactAnderssonDtoBuilder() {
@@ -71,8 +93,7 @@ public class TestDataCommonPatientDTO {
             PersonIdDTO.builder()
                 .type(PersonIdTypeDTO.PERSONAL_IDENTITY_NUMBER)
                 .id(ATHENA_REACT_ANDERSSON_ID)
-                .build()
-        )
+                .build())
         .city(ATHENA_REACT_ANDERSSON_CITY)
         .street(ATHENA_REACT_ANDERSSON_STREET)
         .zipCode(ATHENA_REACT_ANDERSSON_ZIP_CODE)
@@ -91,8 +112,7 @@ public class TestDataCommonPatientDTO {
             PersonIdDTO.builder()
                 .type(PersonIdTypeDTO.PERSONAL_IDENTITY_NUMBER)
                 .id(ALVE_REACT_ALFREDSSON_ID)
-                .build()
-        )
+                .build())
         .city(ALVE_REACT_ALFREDSSON_CITY)
         .street(ALVE_REACT_ALFREDSSON_STREET)
         .zipCode(ALVE_REACT_ALFREDSSON_ZIP_CODE)
@@ -111,8 +131,7 @@ public class TestDataCommonPatientDTO {
             PersonIdDTO.builder()
                 .type(PersonIdTypeDTO.PERSONAL_IDENTITY_NUMBER)
                 .id(ATLAS_REACT_ABRAHAMSSON_ID)
-                .build()
-        )
+                .build())
         .city(ATLAS_REACT_ABRAHAMSSON_CITY)
         .street(ATLAS_REACT_ABRAHAMSSON_STREET)
         .zipCode(ATLAS_REACT_ABRAHAMSSON_ZIP_CODE)
@@ -131,8 +150,7 @@ public class TestDataCommonPatientDTO {
             PersonIdDTO.builder()
                 .type(PersonIdTypeDTO.PERSONAL_IDENTITY_NUMBER)
                 .id(ANONYMA_REACT_ATTILA_ID)
-                .build()
-        )
+                .build())
         .city(ANONYMA_REACT_ATTILA_CITY)
         .street(ANONYMA_REACT_ATTILA_STREET)
         .zipCode(ANONYMA_REACT_ATTILA_ZIP_CODE)

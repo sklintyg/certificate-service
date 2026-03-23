@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.pdfboxgenerator.pdf.value;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,17 +46,14 @@ class PdfElementValueGeneratorTest {
 
   private static final ElementId ELEMENT_ID = new ElementId("1");
 
-  private final MedicalCertificate.MedicalCertificateBuilder certificateBuilder = fk7210CertificateBuilder();
-  private final ElementSpecification elementSpecification = ElementSpecification.builder()
-      .id(ELEMENT_ID)
-      .build();
+  private final MedicalCertificate.MedicalCertificateBuilder certificateBuilder =
+      fk7210CertificateBuilder();
+  private final ElementSpecification elementSpecification =
+      ElementSpecification.builder().id(ELEMENT_ID).build();
 
-  @Mock
-  private PdfDateValueGenerator pdfDateValueGenerator;
-  @Mock
-  private PdfTextValueGenerator pdfTextValueGenerator;
-  @Mock
-  private CertificateModel certificateModel;
+  @Mock private PdfDateValueGenerator pdfDateValueGenerator;
+  @Mock private PdfTextValueGenerator pdfTextValueGenerator;
+  @Mock private CertificateModel certificateModel;
 
   private PdfElementValueGenerator pdfElementValueGenerator;
 
@@ -47,41 +62,31 @@ class PdfElementValueGeneratorTest {
     doReturn(ElementValueDate.class).when(pdfDateValueGenerator).getType();
     doReturn(ElementValueText.class).when(pdfTextValueGenerator).getType();
 
-    pdfElementValueGenerator = new PdfElementValueGenerator(
-        List.of(pdfDateValueGenerator, pdfTextValueGenerator)
-    );
+    pdfElementValueGenerator =
+        new PdfElementValueGenerator(List.of(pdfDateValueGenerator, pdfTextValueGenerator));
 
     certificateBuilder.certificateModel(certificateModel);
   }
 
   @Test
   void shouldReturnListOfPdfFields() {
-    final var expected = List.of(
-        PdfField.builder()
-            .id(FK7210_PDF_FODELSEDATUM_FIELD_ID.id())
-            .value(LocalDate.now().toString())
-            .build()
-    );
+    final var expected =
+        List.of(
+            PdfField.builder()
+                .id(FK7210_PDF_FODELSEDATUM_FIELD_ID.id())
+                .value(LocalDate.now().toString())
+                .build());
 
     final var elementValue = ElementValueDate.builder().build();
-    final var elementData = ElementData.builder()
-        .id(ELEMENT_ID)
-        .value(elementValue)
-        .build();
+    final var elementData = ElementData.builder().id(ELEMENT_ID).value(elementValue).build();
 
-    final var certificate = certificateBuilder.elementData(
-            List.of(
-                elementData
-            )
-        )
-        .build();
+    final var certificate = certificateBuilder.elementData(List.of(elementData)).build();
 
-    doReturn(List.of(elementSpecification)).when(certificateModel)
-        .elementSpecifications();
+    doReturn(List.of(elementSpecification)).when(certificateModel).elementSpecifications();
 
-    doReturn(expected).when(pdfDateValueGenerator).generate(
-        elementSpecification, ElementValueDate.builder().build()
-    );
+    doReturn(expected)
+        .when(pdfDateValueGenerator)
+        .generate(elementSpecification, ElementValueDate.builder().build());
 
     final var response = pdfElementValueGenerator.generate(certificate);
 
@@ -92,21 +97,13 @@ class PdfElementValueGeneratorTest {
   void shouldThrowIllegalStateExceptionIfUnableToFindGeneratorForType() {
     final var elementValue = ElementValueBoolean.builder().build();
 
-    final var certificate = certificateBuilder.elementData(
-            List.of(
-                ElementData.builder()
-                    .id(ELEMENT_ID)
-                    .value(elementValue)
-                    .build()
-            )
-        )
-        .build();
+    final var certificate =
+        certificateBuilder
+            .elementData(List.of(ElementData.builder().id(ELEMENT_ID).value(elementValue).build()))
+            .build();
 
-    doReturn(List.of(elementSpecification)).when(certificateModel)
-        .elementSpecifications();
+    doReturn(List.of(elementSpecification)).when(certificateModel).elementSpecifications();
 
-    assertThrows(IllegalStateException.class,
-        () -> pdfElementValueGenerator.generate(certificate)
-    );
+    assertThrows(IllegalStateException.class, () -> pdfElementValueGenerator.generate(certificate));
   }
 }

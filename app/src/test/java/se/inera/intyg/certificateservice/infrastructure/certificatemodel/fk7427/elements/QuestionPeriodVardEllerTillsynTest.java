@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7427.elements;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,12 +46,13 @@ class QuestionPeriodVardEllerTillsynTest {
 
   @Test
   void shouldIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationDateRange.builder()
-        .name("Under vilken period behöver barnet vård eller tillsyn?")
-        .labelFrom("Fr.o.m")
-        .labelTo("T.o.m")
-        .id(new FieldId("62.6"))
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationDateRange.builder()
+            .name("Under vilken period behöver barnet vård eller tillsyn?")
+            .labelFrom("Fr.o.m")
+            .labelTo("T.o.m")
+            .id(new FieldId("62.6"))
+            .build();
 
     final var element = QuestionPeriodVardEllerTillsyn.questionPeriodVardEllerTillsyn();
 
@@ -42,13 +61,13 @@ class QuestionPeriodVardEllerTillsynTest {
 
   @Test
   void shouldIncludeRules() {
-    final var expectedRules = List.of(
-        ElementRuleExpression.builder()
-            .id(new ElementId("62.6"))
-            .type(ElementRuleType.MANDATORY)
-            .expression(new RuleExpression("$62.6"))
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleExpression.builder()
+                .id(new ElementId("62.6"))
+                .type(ElementRuleType.MANDATORY)
+                .expression(new RuleExpression("$62.6"))
+                .build());
 
     final var element = QuestionPeriodVardEllerTillsyn.questionPeriodVardEllerTillsyn();
 
@@ -57,9 +76,7 @@ class QuestionPeriodVardEllerTillsynTest {
 
   @Test
   void shouldIncludeValidation() {
-    final var expectedValidation = ElementValidationDateRange.builder()
-        .mandatory(true)
-        .build();
+    final var expectedValidation = ElementValidationDateRange.builder().mandatory(true).build();
 
     final var element = QuestionPeriodVardEllerTillsyn.questionPeriodVardEllerTillsyn();
 
@@ -68,10 +85,11 @@ class QuestionPeriodVardEllerTillsynTest {
 
   @Test
   void shouldIncludePdfConfiguration() {
-    final var expectedPdfConfiguration = PdfConfigurationDateRange.builder()
-        .from(new PdfFieldId("form1[0].#subform[2].flt_datumFranMed[0]"))
-        .to(new PdfFieldId("form1[0].#subform[2].flt_datumTillMed[0]"))
-        .build();
+    final var expectedPdfConfiguration =
+        PdfConfigurationDateRange.builder()
+            .from(new PdfFieldId("form1[0].#subform[2].flt_datumFranMed[0]"))
+            .to(new PdfFieldId("form1[0].#subform[2].flt_datumTillMed[0]"))
+            .build();
 
     final var element = QuestionPeriodVardEllerTillsyn.questionPeriodVardEllerTillsyn();
 

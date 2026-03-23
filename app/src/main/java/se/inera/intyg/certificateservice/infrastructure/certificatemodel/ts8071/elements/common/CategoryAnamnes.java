@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.common;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.common.QuestionSynfunktioner.QUESTION_SYNFUNKTIONER_FIELD_ID;
@@ -17,25 +35,15 @@ public class CategoryAnamnes {
     throw new IllegalStateException("Utility class");
   }
 
-  public static ElementSpecification categoryAnamnes(
-      ElementSpecification... children) {
+  public static ElementSpecification categoryAnamnes(ElementSpecification... children) {
     return ElementSpecification.builder()
         .id(INTYGET_ANAMNES_CATEGORY_ID)
-        .configuration(
-            ElementConfigurationCategory.builder()
-                .name("Anamnesfrågor")
-                .build()
-        )
-        .rules(List.of(
+        .configuration(ElementConfigurationCategory.builder().name("Anamnesfrågor").build())
+        .rules(
+            List.of(
                 CertificateElementRuleFactory.showIfNot(
-                    QUESTION_SYNFUNKTIONER_ID,
-                    QUESTION_SYNFUNKTIONER_FIELD_ID
-                )
-            )
-        )
-        .children(
-            List.of(children)
-        )
+                    QUESTION_SYNFUNKTIONER_ID, QUESTION_SYNFUNKTIONER_FIELD_ID)))
+        .children(List.of(children))
         .build();
   }
 }

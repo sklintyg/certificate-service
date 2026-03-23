@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7426;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -32,24 +50,22 @@ import se.inera.intyg.certificateservice.domain.message.model.Subject;
 
 class CertificateModelFactoryFK7426Test {
 
-  @Mock
-  private CertificateActionFactory certificateActionFactory;
+  @Mock private CertificateActionFactory certificateActionFactory;
   private static final String TYPE = "fk7426";
   private static final String VERSION = "1.0";
   private CertificateModelFactoryFK7426 certificateModelFactoryFK7426;
 
   private static final String LOGICAL_ADDRESS = "L-A";
 
-  @Mock
-  private DiagnosisCodeRepository diagnosisCodeRepository;
+  @Mock private DiagnosisCodeRepository diagnosisCodeRepository;
 
   @BeforeEach
   void setUp() {
-    certificateModelFactoryFK7426 = new CertificateModelFactoryFK7426(certificateActionFactory,
-        diagnosisCodeRepository);
+    certificateModelFactoryFK7426 =
+        new CertificateModelFactoryFK7426(certificateActionFactory, diagnosisCodeRepository);
 
-    ReflectionTestUtils.setField(certificateModelFactoryFK7426, "fkLogicalAddress",
-        LOGICAL_ADDRESS);
+    ReflectionTestUtils.setField(
+        certificateModelFactoryFK7426, "fkLogicalAddress", LOGICAL_ADDRESS);
   }
 
   @Test
@@ -76,7 +92,8 @@ class CertificateModelFactoryFK7426Test {
 
   @Test
   void shallIncludeName() {
-    final var expectedName = "Läkarutlåtande tillfällig föräldrapenning för ett allvarligt sjukt barn som inte har fyllt 18 år";
+    final var expectedName =
+        "Läkarutlåtande tillfällig föräldrapenning för ett allvarligt sjukt barn som inte har fyllt 18 år";
 
     final var certificateModel = certificateModelFactoryFK7426.create();
 
@@ -100,11 +117,7 @@ class CertificateModelFactoryFK7426Test {
   @Test
   void shallIncludeActiveFrom() {
     final var expectedActiveFrom = LocalDateTime.now(ZoneId.systemDefault());
-    ReflectionTestUtils.setField(
-        certificateModelFactoryFK7426,
-        "activeFrom",
-        expectedActiveFrom
-    );
+    ReflectionTestUtils.setField(certificateModelFactoryFK7426, "activeFrom", expectedActiveFrom);
 
     final var certificateModel = certificateModelFactoryFK7426.create();
 
@@ -120,11 +133,8 @@ class CertificateModelFactoryFK7426Test {
 
   @Test
   void shallIncludeRecipient() {
-    final var expectedRecipient = new Recipient(
-        new RecipientId("FKASSA"),
-        "Försäkringskassan",
-        LOGICAL_ADDRESS
-    );
+    final var expectedRecipient =
+        new Recipient(new RecipientId("FKASSA"), "Försäkringskassan", LOGICAL_ADDRESS);
 
     final var certificateModel = certificateModelFactoryFK7426.create();
 
@@ -137,8 +147,7 @@ class CertificateModelFactoryFK7426Test {
 
     assertAll(
         () -> assertNotNull(certificateModel.certificateActionSpecifications()),
-        () -> assertFalse(certificateModel.certificateActionSpecifications().isEmpty())
-    );
+        () -> assertFalse(certificateModel.certificateActionSpecifications().isEmpty()));
   }
 
   @Test
@@ -147,26 +156,25 @@ class CertificateModelFactoryFK7426Test {
 
     assertAll(
         () -> assertNotNull(certificateModel.messageActionSpecifications()),
-        () -> assertFalse(certificateModel.messageActionSpecifications().isEmpty())
-    );
+        () -> assertFalse(certificateModel.messageActionSpecifications().isEmpty()));
   }
 
   @Test
   void shallIncludeMessageTypes() {
-    final var expectedMessageTypes = List.of(
-        CertificateMessageType.builder()
-            .type(MessageType.MISSING)
-            .subject(new Subject(MessageType.MISSING.displayName()))
-            .build(),
-        CertificateMessageType.builder()
-            .type(MessageType.CONTACT)
-            .subject(new Subject(MessageType.CONTACT.displayName()))
-            .build(),
-        CertificateMessageType.builder()
-            .type(MessageType.OTHER)
-            .subject(new Subject(MessageType.OTHER.displayName()))
-            .build()
-    );
+    final var expectedMessageTypes =
+        List.of(
+            CertificateMessageType.builder()
+                .type(MessageType.MISSING)
+                .subject(new Subject(MessageType.MISSING.displayName()))
+                .build(),
+            CertificateMessageType.builder()
+                .type(MessageType.CONTACT)
+                .subject(new Subject(MessageType.CONTACT.displayName()))
+                .build(),
+            CertificateMessageType.builder()
+                .type(MessageType.OTHER)
+                .subject(new Subject(MessageType.OTHER.displayName()))
+                .build());
 
     final var certificateModel = certificateModelFactoryFK7426.create();
     assertEquals(expectedMessageTypes, certificateModel.messageTypes());
@@ -183,8 +191,8 @@ class CertificateModelFactoryFK7426Test {
   void shallIncludeSchematronPath() {
     final var certificateModel = certificateModelFactoryFK7426.create();
 
-    assertEquals("fk7426/schematron/lu_tfp_asb_18.v1.sch",
-        certificateModel.schematronPath().value());
+    assertEquals(
+        "fk7426/schematron/lu_tfp_asb_18.v1.sch", certificateModel.schematronPath().value());
   }
 
   @Nested
@@ -197,10 +205,8 @@ class CertificateModelFactoryFK7426Test {
 
       assertTrue(
           certificateModel.elementSpecificationExists(new ElementId(elementId)),
-          "Expected elementId: '%s' to exist in elementSpecifications '%s'".formatted(
-              elementId, certificateModel.elementSpecifications()
-          )
-      );
+          "Expected elementId: '%s' to exist in elementSpecifications '%s'"
+              .formatted(elementId, certificateModel.elementSpecifications()));
     }
 
     private static List<Arguments> provideElementSpecifications() {
@@ -227,8 +233,7 @@ class CertificateModelFactoryFK7426Test {
           Arguments.of("62"),
           Arguments.of("62.2"),
           Arguments.of("62.3"),
-          Arguments.of("62.4")
-      );
+          Arguments.of("62.4"));
     }
   }
 }

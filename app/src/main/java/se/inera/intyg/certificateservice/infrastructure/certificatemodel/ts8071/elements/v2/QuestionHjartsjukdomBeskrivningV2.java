@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.v2;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.common.QuestionHjartsjukdom.QUESTION_HJARTSJUKDOM_FIELD_ID;
@@ -15,10 +33,8 @@ import se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.
 
 public class QuestionHjartsjukdomBeskrivningV2 {
 
-  public static final ElementId QUESTION_HJARTSJUKDOM_BESKRIVNING_V2_ID = new ElementId(
-      "11.2");
-  public static final FieldId QUESTION_HJARTSJUKDOM_BESKRIVNING_V2_FIELD_ID = new FieldId(
-      "11.2");
+  public static final ElementId QUESTION_HJARTSJUKDOM_BESKRIVNING_V2_ID = new ElementId("11.2");
+  public static final FieldId QUESTION_HJARTSJUKDOM_BESKRIVNING_V2_FIELD_ID = new FieldId("11.2");
 
   private QuestionHjartsjukdomBeskrivningV2() {
     throw new IllegalStateException("Utility class");
@@ -31,35 +47,19 @@ public class QuestionHjartsjukdomBeskrivningV2 {
             ElementConfigurationTextArea.builder()
                 .id(QUESTION_HJARTSJUKDOM_BESKRIVNING_V2_FIELD_ID)
                 .name("Ange vilken sjukdom och tidpunkt för diagnos")
-                .build()
-        )
+                .build())
         .rules(
             List.of(
                 CertificateElementRuleFactory.show(
-                    QUESTION_HJARTSJUKDOM_ID,
-                    QUESTION_HJARTSJUKDOM_FIELD_ID
-                ),
+                    QUESTION_HJARTSJUKDOM_ID, QUESTION_HJARTSJUKDOM_FIELD_ID),
                 CertificateElementRuleFactory.mandatory(
                     QUESTION_HJARTSJUKDOM_BESKRIVNING_V2_ID,
-                    QUESTION_HJARTSJUKDOM_BESKRIVNING_V2_FIELD_ID
-                ),
+                    QUESTION_HJARTSJUKDOM_BESKRIVNING_V2_FIELD_ID),
                 CertificateElementRuleFactory.limit(
-                    QUESTION_HJARTSJUKDOM_BESKRIVNING_V2_ID,
-                    (short) 250)
-            )
-        )
-        .shouldValidate(
-            ElementDataPredicateFactory.valueBoolean(QUESTION_HJARTSJUKDOM_ID)
-        )
+                    QUESTION_HJARTSJUKDOM_BESKRIVNING_V2_ID, (short) 250)))
+        .shouldValidate(ElementDataPredicateFactory.valueBoolean(QUESTION_HJARTSJUKDOM_ID))
         .mapping(new ElementMapping(QUESTION_HJARTSJUKDOM_ID, null))
-        .validations(
-            List.of(
-                ElementValidationText.builder()
-                    .mandatory(true)
-                    .limit(250)
-                    .build()
-            )
-        )
+        .validations(List.of(ElementValidationText.builder().mandatory(true).limit(250).build()))
         .build();
   }
 }

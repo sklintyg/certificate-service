@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.elements.ElementUnitContactInformation.issuingUnitContactInfo;
@@ -57,11 +75,13 @@ public class CertificateModelFactoryFK3226 implements CertificateModelFactory {
   private static final String VERSION = "1.0";
   private static final CertificateTypeName FK3226_TYPE_NAME = new CertificateTypeName("FK3226");
   private static final String NAME = "Läkarutlåtande för närståendepenning";
-  private static final String DESCRIPTION = """
+  private static final String DESCRIPTION =
+      """
          <b className="iu-fw-heading">Vad är närståendepenning?</b><br>
          <p>Närståendepenning är en ersättning för den som avstår från förvärvsarbete, arbetslöshetsersättning (a-kassa) eller föräldrapenning för att vara med en patient som är svårt sjuk i lagens mening. I lagen definierar man svårt sjuk som att patientens hälsotillstånd är så nedsatt att det finns ett påtagligt hot mot hens liv i nuläget eller på viss tids sikt. Sjukdomstillstånd som på flera års sikt utvecklas till livshotande tillstånd ger däremot inte rätt till närståendepenning.</p>
       """;
-  private static final String DETAILED_DESCRIPTION = """
+  private static final String DETAILED_DESCRIPTION =
+      """
       <b className="iu-fw-heading">Vad är närståendepenning?</b><br>
       <p>Närståendepenning är en ersättning för den som avstår från att förvärvsarbeta för att vara med en patient som är svårt sjuk i lagens mening. I lagen definierar man svårt sjuk som att patientens hälsotillstånd är så nedsatt att det finns ett påtagligt hot mot hens liv på viss tids sikt. Sjukdomstillstånd som på flera års sikt utvecklas till livshotande tillstånd ger däremot inte rätt till närståendepenning.</p>
       <b className="iu-fw-heading">Vem är närstående?</b><br>
@@ -73,13 +93,14 @@ public class CertificateModelFactoryFK3226 implements CertificateModelFactory {
       <ol><li>Patienten har blivit smittad när hen fick blod- eller blodprodukter, och smittades när hen behandlades av den svenska hälso- och sjukvården.</li><li>Patienten har blivit smittad av nuvarande eller före detta make, maka, sambo eller registrerade partner, och den personen smittades när hen behandlades av den svenska hälso- och sjukvården.</li></ol>
       """;
 
-  public static final CertificateModelId FK3226_V1_0 = CertificateModelId.builder()
-      .type(new CertificateType(FK_3226))
-      .version(new CertificateVersion(VERSION))
-      .build();
+  public static final CertificateModelId FK3226_V1_0 =
+      CertificateModelId.builder()
+          .type(new CertificateType(FK_3226))
+          .version(new CertificateVersion(VERSION))
+          .build();
 
-  public static final SchematronPath SCHEMATRON_PATH = new SchematronPath(
-      "fk3226/schematron/lunsp.v1.sch");
+  public static final SchematronPath SCHEMATRON_PATH =
+      new SchematronPath("fk3226/schematron/lunsp.v1.sch");
 
   @Override
   public CertificateModel create() {
@@ -97,13 +118,10 @@ public class CertificateModelFactoryFK3226 implements CertificateModelFactory {
             List.of(
                 CertificateText.builder()
                     .text(
-                        "Det här är ditt intyg. Intyget innehåller all information som vården fyllt i. Du kan inte ändra något i ditt intyg. Har du frågor kontaktar du den som skrivit ditt intyg."
-                    )
+                        "Det här är ditt intyg. Intyget innehåller all information som vården fyllt i. Du kan inte ändra något i ditt intyg. Har du frågor kontaktar du den som skrivit ditt intyg.")
                     .type(CertificateTextType.PREAMBLE_TEXT)
                     .links(Collections.emptyList())
-                    .build()
-            )
-        )
+                    .build()))
         .recipient(CertificateRecipientFactory.fkassa(fkLogicalAddress))
         .messageTypes(
             List.of(
@@ -118,20 +136,14 @@ public class CertificateModelFactoryFK3226 implements CertificateModelFactory {
                 CertificateMessageType.builder()
                     .type(MessageType.OTHER)
                     .subject(new Subject(MessageType.OTHER.displayName()))
-                    .build()
-            )
-        )
+                    .build()))
         .schematronPath(SCHEMATRON_PATH)
         .pdfSpecification(FK3226PdfSpecification.create())
         .certificateActionSpecifications(FK3226CertificateActionSpecification.create())
         .messageActionSpecifications(FK3226MessageActionSpecification.create())
         .elementSpecifications(
             List.of(
-                categoryGrund(
-                    questionUtlatandeBaseratPa(
-                        questionUtlatandeBaseratPaAnnat()
-                    )
-                ),
+                categoryGrund(questionUtlatandeBaseratPa(questionUtlatandeBaseratPaAnnat())),
                 categoryHot(
                     questionDiagnos(diagnosisCodeRepository),
                     questionPatientBehandlingOchVardsituation(
@@ -140,16 +152,11 @@ public class CertificateModelFactoryFK3226 implements CertificateModelFactory {
                         questionPatagligtHotMotPatientensLivAkutLivshotande(),
                         questionUppskattaHurLangeTillstandetKommerVaraLivshotande(),
                         questionTillstandetUppskattasLivshotandeTillOchMed(),
-                        questionPatagligtHotMotPatientensLivAnnat()
-                    )
-                ),
+                        questionPatagligtHotMotPatientensLivAnnat())),
                 categorySamtycke(
                     messageForutsattningarForAttLamnaSkriftligtSamtycke(),
-                    questionForutsattningarForAttLamnaSkriftligtSamtycke()
-                ),
-                issuingUnitContactInfo()
-            )
-        )
+                    questionForutsattningarForAttLamnaSkriftligtSamtycke()),
+                issuingUnitContactInfo()))
         .certificateActionFactory(certificateActionFactory)
         .build();
   }

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements;
 
 import java.util.List;
@@ -29,72 +47,72 @@ public class QuestionDiagnos {
   public static final FieldId DIAGNOS_5 = new FieldId("diagnos5");
   private static final short DIAGNOSIS_CODE_LIMIT = (short) 81;
 
-  private static final PdfFieldId PDF_DIAGNOSIS_FIELD_ID_PREFIX = new PdfFieldId(
-      "form1[0].#subform[0].flt_txt");
-  private static final PdfFieldId PDF_DIAGNOSE_ID_1 = new PdfFieldId(
-      "form1[0].#subform[0].flt_txtDiagnoser[0]");
-  private static final PdfFieldId PDF_CODE_ID_1_1 = new PdfFieldId(
-      "form1[0].#subform[0].flt_txtDiaKod1[0]");
-  private static final PdfFieldId PDF_CODE_ID_1_2 = new PdfFieldId(
-      "form1[0].#subform[0].flt_txtDiaKod2[0]");
-  private static final PdfFieldId PDF_CODE_ID_1_3 = new PdfFieldId(
-      "form1[0].#subform[0].flt_txtDiaKod3[0]");
-  private static final PdfFieldId PDF_CODE_ID_1_4 = new PdfFieldId(
-      "form1[0].#subform[0].flt_txtDiaKod4[0]");
-  private static final PdfFieldId PDF_CODE_ID_1_5 = new PdfFieldId(
-      "form1[0].#subform[0].flt_txtDiaKod5[0]");
+  private static final PdfFieldId PDF_DIAGNOSIS_FIELD_ID_PREFIX =
+      new PdfFieldId("form1[0].#subform[0].flt_txt");
+  private static final PdfFieldId PDF_DIAGNOSE_ID_1 =
+      new PdfFieldId("form1[0].#subform[0].flt_txtDiagnoser[0]");
+  private static final PdfFieldId PDF_CODE_ID_1_1 =
+      new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod1[0]");
+  private static final PdfFieldId PDF_CODE_ID_1_2 =
+      new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod2[0]");
+  private static final PdfFieldId PDF_CODE_ID_1_3 =
+      new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod3[0]");
+  private static final PdfFieldId PDF_CODE_ID_1_4 =
+      new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod4[0]");
+  private static final PdfFieldId PDF_CODE_ID_1_5 =
+      new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod5[0]");
 
-  private static final PdfFieldId PDF_DIAGNOSE_ID_2 = new PdfFieldId(
-      "form1[0].#subform[0].flt_txtDiagnoser2[0]");
-  private static final PdfFieldId PDF_CODE_ID_2_1 = new PdfFieldId(
-      "form1[0].#subform[0].flt_txtDiaKod6[0]");
-  private static final PdfFieldId PDF_CODE_ID_2_2 = new PdfFieldId(
-      "form1[0].#subform[0].flt_txtDiaKod7[0]");
-  private static final PdfFieldId PDF_CODE_ID_2_3 = new PdfFieldId(
-      "form1[0].#subform[0].flt_txtDiaKod8[0]");
-  private static final PdfFieldId PDF_CODE_ID_2_4 = new PdfFieldId(
-      "form1[0].#subform[0].flt_txtDiaKod9[0]");
-  private static final PdfFieldId PDF_CODE_ID_2_5 = new PdfFieldId(
-      "form1[0].#subform[0].flt_txtDiaKod10[0]");
+  private static final PdfFieldId PDF_DIAGNOSE_ID_2 =
+      new PdfFieldId("form1[0].#subform[0].flt_txtDiagnoser2[0]");
+  private static final PdfFieldId PDF_CODE_ID_2_1 =
+      new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod6[0]");
+  private static final PdfFieldId PDF_CODE_ID_2_2 =
+      new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod7[0]");
+  private static final PdfFieldId PDF_CODE_ID_2_3 =
+      new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod8[0]");
+  private static final PdfFieldId PDF_CODE_ID_2_4 =
+      new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod9[0]");
+  private static final PdfFieldId PDF_CODE_ID_2_5 =
+      new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod10[0]");
 
-  private static final PdfFieldId PDF_DIAGNOSE_ID_3 = new PdfFieldId(
-      "form1[0].#subform[0].flt_txtDiagnoser3[0]");
-  private static final PdfFieldId PDF_CODE_ID_3_1 = new PdfFieldId(
-      "form1[0].#subform[0].flt_txtDiaKod11[0]");
-  private static final PdfFieldId PDF_CODE_ID_3_2 = new PdfFieldId(
-      "form1[0].#subform[0].flt_txtDiaKod12[0]");
-  private static final PdfFieldId PDF_CODE_ID_3_3 = new PdfFieldId(
-      "form1[0].#subform[0].flt_txtDiaKod13[0]");
-  private static final PdfFieldId PDF_CODE_ID_3_4 = new PdfFieldId(
-      "form1[0].#subform[0].flt_txtDiaKod14[0]");
-  private static final PdfFieldId PDF_CODE_ID_3_5 = new PdfFieldId(
-      "form1[0].#subform[0].flt_txtDiaKod15[0]");
+  private static final PdfFieldId PDF_DIAGNOSE_ID_3 =
+      new PdfFieldId("form1[0].#subform[0].flt_txtDiagnoser3[0]");
+  private static final PdfFieldId PDF_CODE_ID_3_1 =
+      new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod11[0]");
+  private static final PdfFieldId PDF_CODE_ID_3_2 =
+      new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod12[0]");
+  private static final PdfFieldId PDF_CODE_ID_3_3 =
+      new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod13[0]");
+  private static final PdfFieldId PDF_CODE_ID_3_4 =
+      new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod14[0]");
+  private static final PdfFieldId PDF_CODE_ID_3_5 =
+      new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod15[0]");
 
-  private static final PdfFieldId PDF_DIAGNOSE_ID_4 = new PdfFieldId(
-      "form1[0].#subform[0].flt_txtDiagnoser4[0]");
-  private static final PdfFieldId PDF_CODE_ID_4_1 = new PdfFieldId(
-      "form1[0].#subform[0].flt_txtDiaKod16[0]");
-  private static final PdfFieldId PDF_CODE_ID_4_2 = new PdfFieldId(
-      "form1[0].#subform[0].flt_txtDiaKod17[0]");
-  private static final PdfFieldId PDF_CODE_ID_4_3 = new PdfFieldId(
-      "form1[0].#subform[0].flt_txtDiaKod18[0]");
-  private static final PdfFieldId PDF_CODE_ID_4_4 = new PdfFieldId(
-      "form1[0].#subform[0].flt_txtDiaKod19[0]");
-  private static final PdfFieldId PDF_CODE_ID_4_5 = new PdfFieldId(
-      "form1[0].#subform[0].flt_txtDiaKod20[0]");
+  private static final PdfFieldId PDF_DIAGNOSE_ID_4 =
+      new PdfFieldId("form1[0].#subform[0].flt_txtDiagnoser4[0]");
+  private static final PdfFieldId PDF_CODE_ID_4_1 =
+      new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod16[0]");
+  private static final PdfFieldId PDF_CODE_ID_4_2 =
+      new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod17[0]");
+  private static final PdfFieldId PDF_CODE_ID_4_3 =
+      new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod18[0]");
+  private static final PdfFieldId PDF_CODE_ID_4_4 =
+      new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod19[0]");
+  private static final PdfFieldId PDF_CODE_ID_4_5 =
+      new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod20[0]");
 
-  private static final PdfFieldId PDF_DIAGNOSE_ID_5 = new PdfFieldId(
-      "form1[0].#subform[0].flt_txtDiagnoser5[0]");
-  private static final PdfFieldId PDF_CODE_ID_5_1 = new PdfFieldId(
-      "form1[0].#subform[0].flt_txtDiaKod21[0]");
-  private static final PdfFieldId PDF_CODE_ID_5_2 = new PdfFieldId(
-      "form1[0].#subform[0].flt_txtDiaKod22[0]");
-  private static final PdfFieldId PDF_CODE_ID_5_3 = new PdfFieldId(
-      "form1[0].#subform[0].flt_txtDiaKod23[0]");
-  private static final PdfFieldId PDF_CODE_ID_5_4 = new PdfFieldId(
-      "form1[0].#subform[0].flt_txtDiaKod24[0]");
-  private static final PdfFieldId PDF_CODE_ID_5_5 = new PdfFieldId(
-      "form1[0].#subform[0].flt_txtDiaKod25[0]");
+  private static final PdfFieldId PDF_DIAGNOSE_ID_5 =
+      new PdfFieldId("form1[0].#subform[0].flt_txtDiagnoser5[0]");
+  private static final PdfFieldId PDF_CODE_ID_5_1 =
+      new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod21[0]");
+  private static final PdfFieldId PDF_CODE_ID_5_2 =
+      new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod22[0]");
+  private static final PdfFieldId PDF_CODE_ID_5_3 =
+      new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod23[0]");
+  private static final PdfFieldId PDF_CODE_ID_5_4 =
+      new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod24[0]");
+  private static final PdfFieldId PDF_CODE_ID_5_5 =
+      new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod25[0]");
 
   private QuestionDiagnos() {
     throw new IllegalStateException("Utility class");
@@ -115,42 +133,27 @@ public class QuestionDiagnos {
                             "Ange alla diagnoser som sammantaget medför ett påtagligt hot mot patientens liv.")
                         .level(MessageLevel.OBSERVE)
                         .includedForStatuses(List.of(Status.DRAFT))
-                        .build()
-                )
-                .terminology(
-                    List.of(
-                        CodeSystemIcd10Se.deprecatedTerminology()
-                    )
-                )
+                        .build())
+                .terminology(List.of(CodeSystemIcd10Se.deprecatedTerminology()))
                 .list(
                     List.of(
                         new ElementDiagnosisListItem(DIAGNOS_1),
                         new ElementDiagnosisListItem(DIAGNOS_2),
                         new ElementDiagnosisListItem(DIAGNOS_3),
                         new ElementDiagnosisListItem(DIAGNOS_4),
-                        new ElementDiagnosisListItem(DIAGNOS_5)
-                    )
-                )
-                .build()
-        )
+                        new ElementDiagnosisListItem(DIAGNOS_5)))
+                .build())
         .rules(
             List.of(
-                CertificateElementRuleFactory.mandatoryExist(DIAGNOSIS_ID,
-                    DIAGNOS_1),
-                CertificateElementRuleFactory.limit(DIAGNOSIS_ID, DIAGNOSIS_CODE_LIMIT)
-            )
-        )
+                CertificateElementRuleFactory.mandatoryExist(DIAGNOSIS_ID, DIAGNOS_1),
+                CertificateElementRuleFactory.limit(DIAGNOSIS_ID, DIAGNOSIS_CODE_LIMIT)))
         .validations(
             List.of(
                 ElementValidationDiagnosis.builder()
                     .mandatoryField(DIAGNOS_1)
-                    .order(
-                        List.of(DIAGNOS_1, DIAGNOS_2, DIAGNOS_3, DIAGNOS_4, DIAGNOS_5)
-                    )
+                    .order(List.of(DIAGNOS_1, DIAGNOS_2, DIAGNOS_3, DIAGNOS_4, DIAGNOS_5))
                     .diagnosisCodeRepository(diagnosisCodeRepository)
-                    .build()
-            )
-        )
+                    .build()))
         .pdfConfiguration(
             PdfConfigurationDiagnoses.builder()
                 .prefix(PDF_DIAGNOSIS_FIELD_ID_PREFIX)
@@ -163,55 +166,57 @@ public class QuestionDiagnos {
                             .pdfNameFieldId(PDF_DIAGNOSE_ID_1)
                             .pdfCodeFieldIds(
                                 List.of(
-                                    PDF_CODE_ID_1_1, PDF_CODE_ID_1_2, PDF_CODE_ID_1_3,
-                                    PDF_CODE_ID_1_4, PDF_CODE_ID_1_5
-                                )
-                            )
+                                    PDF_CODE_ID_1_1,
+                                    PDF_CODE_ID_1_2,
+                                    PDF_CODE_ID_1_3,
+                                    PDF_CODE_ID_1_4,
+                                    PDF_CODE_ID_1_5))
                             .build(),
                         DIAGNOS_2,
                         PdfConfigurationDiagnosis.builder()
                             .pdfNameFieldId(PDF_DIAGNOSE_ID_2)
                             .pdfCodeFieldIds(
                                 List.of(
-                                    PDF_CODE_ID_2_1, PDF_CODE_ID_2_2, PDF_CODE_ID_2_3,
-                                    PDF_CODE_ID_2_4, PDF_CODE_ID_2_5
-                                )
-                            )
+                                    PDF_CODE_ID_2_1,
+                                    PDF_CODE_ID_2_2,
+                                    PDF_CODE_ID_2_3,
+                                    PDF_CODE_ID_2_4,
+                                    PDF_CODE_ID_2_5))
                             .build(),
                         DIAGNOS_3,
                         PdfConfigurationDiagnosis.builder()
                             .pdfNameFieldId(PDF_DIAGNOSE_ID_3)
                             .pdfCodeFieldIds(
                                 List.of(
-                                    PDF_CODE_ID_3_1, PDF_CODE_ID_3_2, PDF_CODE_ID_3_3,
-                                    PDF_CODE_ID_3_4, PDF_CODE_ID_3_5
-                                )
-                            )
+                                    PDF_CODE_ID_3_1,
+                                    PDF_CODE_ID_3_2,
+                                    PDF_CODE_ID_3_3,
+                                    PDF_CODE_ID_3_4,
+                                    PDF_CODE_ID_3_5))
                             .build(),
                         DIAGNOS_4,
                         PdfConfigurationDiagnosis.builder()
                             .pdfNameFieldId(PDF_DIAGNOSE_ID_4)
                             .pdfCodeFieldIds(
                                 List.of(
-                                    PDF_CODE_ID_4_1, PDF_CODE_ID_4_2, PDF_CODE_ID_4_3,
-                                    PDF_CODE_ID_4_4, PDF_CODE_ID_4_5
-                                )
-                            )
+                                    PDF_CODE_ID_4_1,
+                                    PDF_CODE_ID_4_2,
+                                    PDF_CODE_ID_4_3,
+                                    PDF_CODE_ID_4_4,
+                                    PDF_CODE_ID_4_5))
                             .build(),
                         DIAGNOS_5,
                         PdfConfigurationDiagnosis.builder()
                             .pdfNameFieldId(PDF_DIAGNOSE_ID_5)
                             .pdfCodeFieldIds(
                                 List.of(
-                                    PDF_CODE_ID_5_1, PDF_CODE_ID_5_2, PDF_CODE_ID_5_3,
-                                    PDF_CODE_ID_5_4, PDF_CODE_ID_5_5
-                                )
-                            )
-                            .build()
-                    )
-                )
-                .build()
-        )
+                                    PDF_CODE_ID_5_1,
+                                    PDF_CODE_ID_5_2,
+                                    PDF_CODE_ID_5_3,
+                                    PDF_CODE_ID_5_4,
+                                    PDF_CODE_ID_5_5))
+                            .build()))
+                .build())
         .build();
   }
 }

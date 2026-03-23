@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7426.elements;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,8 +44,7 @@ import se.inera.intyg.certificateservice.domain.validation.model.ElementValidati
 @ExtendWith(MockitoExtension.class)
 class QuestionDiagnosTest {
 
-  @Mock
-  private DiagnosisCodeRepository diagnosisCodeRepository;
+  @Mock private DiagnosisCodeRepository diagnosisCodeRepository;
 
   private static final ElementId ELEMENT_ID = new ElementId("58");
 
@@ -40,23 +57,23 @@ class QuestionDiagnosTest {
 
   @Test
   void shallIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationDiagnosis.builder()
-        .id(new FieldId("58.1"))
-        .name("Barnets diagnos")
-        .terminology(
-            List.of(
-                new ElementDiagnosisTerminology("ICD_10_SE", "ICD-10-SE", "1.2.752.116.1.1.1",
-                    List.of("1.2.752.116.1.1.1.1.8", "1.2.752.116.1.1.1.1.3"))
-            )
-        )
-        .list(
-            List.of(
-                new ElementDiagnosisListItem(new FieldId("huvuddiagnos")),
-                new ElementDiagnosisListItem(new FieldId("diagnos2")),
-                new ElementDiagnosisListItem(new FieldId("diagnos3"))
-            )
-        )
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationDiagnosis.builder()
+            .id(new FieldId("58.1"))
+            .name("Barnets diagnos")
+            .terminology(
+                List.of(
+                    new ElementDiagnosisTerminology(
+                        "ICD_10_SE",
+                        "ICD-10-SE",
+                        "1.2.752.116.1.1.1",
+                        List.of("1.2.752.116.1.1.1.1.8", "1.2.752.116.1.1.1.1.3"))))
+            .list(
+                List.of(
+                    new ElementDiagnosisListItem(new FieldId("huvuddiagnos")),
+                    new ElementDiagnosisListItem(new FieldId("diagnos2")),
+                    new ElementDiagnosisListItem(new FieldId("diagnos3"))))
+            .build();
 
     final var element = QuestionDiagnos.questionDiagnos(diagnosisCodeRepository);
 
@@ -65,13 +82,13 @@ class QuestionDiagnosTest {
 
   @Test
   void shallIncludeRules() {
-    final var expectedRules = List.of(
-        ElementRuleLimit.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.TEXT_LIMIT)
-            .limit(new RuleLimit((short) 81))
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleLimit.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.TEXT_LIMIT)
+                .limit(new RuleLimit((short) 81))
+                .build());
 
     final var element = QuestionDiagnos.questionDiagnos(diagnosisCodeRepository);
 
@@ -80,18 +97,16 @@ class QuestionDiagnosTest {
 
   @Test
   void shallIncludeValidations() {
-    final var expectedValidations = List.of(
-        ElementValidationDiagnosis.builder()
-            .order(
-                List.of(
-                    new FieldId("huvuddiagnos"),
-                    new FieldId("diagnos2"),
-                    new FieldId("diagnos3")
-                )
-            )
-            .diagnosisCodeRepository(diagnosisCodeRepository)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(
+            ElementValidationDiagnosis.builder()
+                .order(
+                    List.of(
+                        new FieldId("huvuddiagnos"),
+                        new FieldId("diagnos2"),
+                        new FieldId("diagnos3")))
+                .diagnosisCodeRepository(diagnosisCodeRepository)
+                .build());
 
     final var element = QuestionDiagnos.questionDiagnos(diagnosisCodeRepository);
 
@@ -100,56 +115,52 @@ class QuestionDiagnosTest {
 
   @Test
   void shallIncludePdfConfiguration() {
-    final var expectedPdfConfiguration = PdfConfigurationDiagnoses.builder()
-        .maxLength(45)
-        .appearance("/ArialMT 9.00 Tf 0 g")
-        .diagnoses(
-            Map.of(
-                new FieldId("huvuddiagnos"),
-                PdfConfigurationDiagnosis.builder()
-                    .pdfNameFieldId(
-                        new PdfFieldId("form1[0].#subform[0].flt_txtAngeFunktionsnedsattning[0]"))
-                    .pdfCodeFieldIds(
-                        List.of(
-                            new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod1[0]"),
-                            new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod2[0]"),
-                            new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod3[0]"),
-                            new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod4[0]"),
-                            new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod5[0]")
-                        )
-                    )
-                    .build(),
-                new FieldId("diagnos2"),
-                PdfConfigurationDiagnosis.builder()
-                    .pdfNameFieldId(
-                        new PdfFieldId("form1[0].#subform[0].flt_txtAngeFunktionsnedsattning2[0]"))
-                    .pdfCodeFieldIds(
-                        List.of(
-                            new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod6[0]"),
-                            new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod7[0]"),
-                            new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod8[0]"),
-                            new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod9[0]"),
-                            new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod10[0]")
-                        )
-                    )
-                    .build(),
-                new FieldId("diagnos3"),
-                PdfConfigurationDiagnosis.builder()
-                    .pdfNameFieldId(
-                        new PdfFieldId("form1[0].#subform[0].flt_txtAngeFunktionsnedsattning3[0]"))
-                    .pdfCodeFieldIds(
-                        List.of(
-                            new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod11[0]"),
-                            new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod12[0]"),
-                            new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod13[0]"),
-                            new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod14[0]"),
-                            new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod15[0]")
-                        )
-                    )
-                    .build()
-            )
-        )
-        .build();
+    final var expectedPdfConfiguration =
+        PdfConfigurationDiagnoses.builder()
+            .maxLength(45)
+            .appearance("/ArialMT 9.00 Tf 0 g")
+            .diagnoses(
+                Map.of(
+                    new FieldId("huvuddiagnos"),
+                    PdfConfigurationDiagnosis.builder()
+                        .pdfNameFieldId(
+                            new PdfFieldId(
+                                "form1[0].#subform[0].flt_txtAngeFunktionsnedsattning[0]"))
+                        .pdfCodeFieldIds(
+                            List.of(
+                                new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod1[0]"),
+                                new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod2[0]"),
+                                new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod3[0]"),
+                                new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod4[0]"),
+                                new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod5[0]")))
+                        .build(),
+                    new FieldId("diagnos2"),
+                    PdfConfigurationDiagnosis.builder()
+                        .pdfNameFieldId(
+                            new PdfFieldId(
+                                "form1[0].#subform[0].flt_txtAngeFunktionsnedsattning2[0]"))
+                        .pdfCodeFieldIds(
+                            List.of(
+                                new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod6[0]"),
+                                new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod7[0]"),
+                                new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod8[0]"),
+                                new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod9[0]"),
+                                new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod10[0]")))
+                        .build(),
+                    new FieldId("diagnos3"),
+                    PdfConfigurationDiagnosis.builder()
+                        .pdfNameFieldId(
+                            new PdfFieldId(
+                                "form1[0].#subform[0].flt_txtAngeFunktionsnedsattning3[0]"))
+                        .pdfCodeFieldIds(
+                            List.of(
+                                new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod11[0]"),
+                                new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod12[0]"),
+                                new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod13[0]"),
+                                new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod14[0]"),
+                                new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod15[0]")))
+                        .build()))
+            .build();
 
     final var element = QuestionDiagnos.questionDiagnos(diagnosisCodeRepository);
 

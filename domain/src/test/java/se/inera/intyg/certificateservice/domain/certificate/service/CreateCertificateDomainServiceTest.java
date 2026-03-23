@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.certificate.service;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -46,29 +64,25 @@ import se.inera.intyg.certificateservice.domain.event.service.CertificateEventDo
 @ExtendWith(MockitoExtension.class)
 class CreateCertificateDomainServiceTest {
 
-  @Mock
-  private PrefillProcessor prefillProcessor;
-  @Mock
-  private CertificateActionConfigurationRepository certificateActionConfigurationRepository;
-  @Mock
-  private CertificateModelRepository certificateModelRepository;
-  @Mock
-  private CertificateRepository certificateRepository;
-  @Mock
-  private CertificateEventDomainService certificateEventDomainService;
-  @InjectMocks
-  private CreateCertificateDomainService createCertificateDomainService;
+  @Mock private PrefillProcessor prefillProcessor;
+  @Mock private CertificateActionConfigurationRepository certificateActionConfigurationRepository;
+  @Mock private CertificateModelRepository certificateModelRepository;
+  @Mock private CertificateRepository certificateRepository;
+  @Mock private CertificateEventDomainService certificateEventDomainService;
+  @InjectMocks private CreateCertificateDomainService createCertificateDomainService;
 
   private static final String TYPE = "type";
-  private static final CertificateModelId CERTIFICATE_MODEL_ID = CertificateModelId.builder()
-      .type(new CertificateType(TYPE))
-      .version(new CertificateVersion("version"))
-      .build();
-  private static final ActionEvaluation ACTION_EVALUATION = ActionEvaluation.builder()
-      .subUnit(ALFA_HUDMOTTAGNINGEN)
-      .careUnit(ALFA_VARDCENTRAL)
-      .careProvider(ALFA_REGIONEN)
-      .build();
+  private static final CertificateModelId CERTIFICATE_MODEL_ID =
+      CertificateModelId.builder()
+          .type(new CertificateType(TYPE))
+          .version(new CertificateVersion("version"))
+          .build();
+  private static final ActionEvaluation ACTION_EVALUATION =
+      ActionEvaluation.builder()
+          .subUnit(ALFA_HUDMOTTAGNINGEN)
+          .careUnit(ALFA_VARDCENTRAL)
+          .careProvider(ALFA_REGIONEN)
+          .build();
   private Certificate certificate = mock(MedicalCertificate.class);
   private CertificateModel certificateModel = mock(CertificateModel.class);
 
@@ -78,20 +92,24 @@ class CreateCertificateDomainServiceTest {
     @BeforeEach
     void setUp() {
       doReturn(CERTIFICATE_MODEL_ID).when(certificateModel).id();
-      doReturn(Collections.emptyList()).when(certificateActionConfigurationRepository)
+      doReturn(Collections.emptyList())
+          .when(certificateActionConfigurationRepository)
           .findAccessConfiguration(CERTIFICATE_MODEL_ID.type());
-      doReturn(certificateModel).when(certificateModelRepository)
+      doReturn(certificateModel)
+          .when(certificateModelRepository)
           .getActiveById(CERTIFICATE_MODEL_ID);
       doReturn(certificate).when(certificateRepository).create(certificateModel);
-      doReturn(true).when(certificateModel)
+      doReturn(true)
+          .when(certificateModel)
           .allowTo(CertificateActionType.CREATE, Optional.of(ACTION_EVALUATION));
       doReturn(certificate).when(certificateRepository).save(certificate);
     }
 
     @Test
     void shallReturnCertificate() {
-      final var actualCertificate = createCertificateDomainService.create(CERTIFICATE_MODEL_ID,
-          ACTION_EVALUATION, null, null);
+      final var actualCertificate =
+          createCertificateDomainService.create(
+              CERTIFICATE_MODEL_ID, ACTION_EVALUATION, null, null);
       assertEquals(certificate, actualCertificate);
     }
 
@@ -103,20 +121,19 @@ class CreateCertificateDomainServiceTest {
       verify(certificateEventDomainService).publish(certificateEventCaptor.capture());
 
       assertAll(
-          () -> assertEquals(CertificateEventType.CREATED,
-              certificateEventCaptor.getValue().type()),
+          () ->
+              assertEquals(CertificateEventType.CREATED, certificateEventCaptor.getValue().type()),
           () -> assertEquals(certificate, certificateEventCaptor.getValue().certificate()),
-          () -> assertEquals(ACTION_EVALUATION,
-              certificateEventCaptor.getValue().actionEvaluation()),
-          () -> assertTrue(certificateEventCaptor.getValue().duration() >= 0)
-      );
+          () ->
+              assertEquals(ACTION_EVALUATION, certificateEventCaptor.getValue().actionEvaluation()),
+          () -> assertTrue(certificateEventCaptor.getValue().duration() >= 0));
     }
 
     @Test
     void shallValidateIfAllowedToCreateCertificate() {
       createCertificateDomainService.create(CERTIFICATE_MODEL_ID, ACTION_EVALUATION, null, null);
-      verify(certificateModel).allowTo(CertificateActionType.CREATE,
-          Optional.of(ACTION_EVALUATION));
+      verify(certificateModel)
+          .allowTo(CertificateActionType.CREATE, Optional.of(ACTION_EVALUATION));
     }
 
     @Test
@@ -127,15 +144,15 @@ class CreateCertificateDomainServiceTest {
 
     @Test
     void shallSetExternalReference() {
-      createCertificateDomainService.create(CERTIFICATE_MODEL_ID, ACTION_EVALUATION,
-          EXTERNAL_REFERENCE, null);
+      createCertificateDomainService.create(
+          CERTIFICATE_MODEL_ID, ACTION_EVALUATION, EXTERNAL_REFERENCE, null);
       verify(certificate).externalReference(EXTERNAL_REFERENCE);
     }
 
     @Test
     void shallPrefill() {
-      createCertificateDomainService.create(CERTIFICATE_MODEL_ID, ACTION_EVALUATION,
-          EXTERNAL_REFERENCE, XML);
+      createCertificateDomainService.create(
+          CERTIFICATE_MODEL_ID, ACTION_EVALUATION, EXTERNAL_REFERENCE, XML);
       verify(certificate).prefill(XML, prefillProcessor);
     }
 
@@ -154,29 +171,35 @@ class CreateCertificateDomainServiceTest {
 
       @BeforeEach
       void setUp() {
-        doReturn(certificateModel).when(certificateModelRepository)
+        doReturn(certificateModel)
+            .when(certificateModelRepository)
             .getActiveById(CERTIFICATE_MODEL_ID);
-        doReturn(false).when(certificateModel)
+        doReturn(false)
+            .when(certificateModel)
             .allowTo(CertificateActionType.CREATE, Optional.of(ACTION_EVALUATION));
       }
 
       @Test
       void shallThrowExceptionIfNotAllowedToCreate() {
-        assertThrows(CertificateActionForbidden.class,
-            () -> createCertificateDomainService.create(CERTIFICATE_MODEL_ID, ACTION_EVALUATION,
-                null, null)
-        );
+        assertThrows(
+            CertificateActionForbidden.class,
+            () ->
+                createCertificateDomainService.create(
+                    CERTIFICATE_MODEL_ID, ACTION_EVALUATION, null, null));
       }
 
       @Test
       void shallIncludeReasonNotAllowedToException() {
         final var expectedReason = List.of("expectedReason");
-        doReturn(expectedReason).when(certificateModel)
+        doReturn(expectedReason)
+            .when(certificateModel)
             .reasonNotAllowed(CertificateActionType.CREATE, Optional.of(ACTION_EVALUATION));
-        final var certificateActionForbidden = assertThrows(CertificateActionForbidden.class,
-            () -> createCertificateDomainService.create(CERTIFICATE_MODEL_ID, ACTION_EVALUATION,
-                null, null)
-        );
+        final var certificateActionForbidden =
+            assertThrows(
+                CertificateActionForbidden.class,
+                () ->
+                    createCertificateDomainService.create(
+                        CERTIFICATE_MODEL_ID, ACTION_EVALUATION, null, null));
         assertEquals(expectedReason, certificateActionForbidden.reason());
       }
     }
@@ -186,35 +209,37 @@ class CreateCertificateDomainServiceTest {
 
       @BeforeEach
       void setUp() {
-        final var certificateAccessConfigurations = List.of(
-            CertificateAccessConfiguration.builder()
-                .certificateType(TYPE)
-                .configuration(
-                    List.of(
-                        CertificateAccessUnitConfiguration.builder()
-                            .type("block")
-                            .fromDateTime(LocalDateTime.now().minusDays(1))
-                            .careUnit(List.of(ALFA_VARDCENTRAL.hsaId().id()))
-                            .build()
-                    )
-                )
-                .build()
-        );
+        final var certificateAccessConfigurations =
+            List.of(
+                CertificateAccessConfiguration.builder()
+                    .certificateType(TYPE)
+                    .configuration(
+                        List.of(
+                            CertificateAccessUnitConfiguration.builder()
+                                .type("block")
+                                .fromDateTime(LocalDateTime.now().minusDays(1))
+                                .careUnit(List.of(ALFA_VARDCENTRAL.hsaId().id()))
+                                .build()))
+                    .build());
         doReturn(CERTIFICATE_MODEL_ID).when(certificateModel).id();
-        doReturn(certificateAccessConfigurations).when(certificateActionConfigurationRepository)
+        doReturn(certificateAccessConfigurations)
+            .when(certificateActionConfigurationRepository)
             .findAccessConfiguration(CERTIFICATE_MODEL_ID.type());
-        doReturn(certificateModel).when(certificateModelRepository)
+        doReturn(certificateModel)
+            .when(certificateModelRepository)
             .getActiveById(CERTIFICATE_MODEL_ID);
-        doReturn(true).when(certificateModel)
+        doReturn(true)
+            .when(certificateModel)
             .allowTo(CertificateActionType.CREATE, Optional.of(ACTION_EVALUATION));
       }
 
       @Test
       void shallThrowExceptionIfUnitNotAllowedToCreate() {
-        assertThrows(CertificateActionForbidden.class,
-            () -> createCertificateDomainService.create(CERTIFICATE_MODEL_ID, ACTION_EVALUATION,
-                null, null)
-        );
+        assertThrows(
+            CertificateActionForbidden.class,
+            () ->
+                createCertificateDomainService.create(
+                    CERTIFICATE_MODEL_ID, ACTION_EVALUATION, null, null));
       }
     }
   }

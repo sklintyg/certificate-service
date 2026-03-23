@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificate.persistence;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,45 +49,31 @@ import se.inera.intyg.certificateservice.infrastructure.certificate.persistence.
 @ExtendWith(MockitoExtension.class)
 class StaffRepositoryTest {
 
-  @Mock
-  private StaffEntityRepository staffEntityRepository;
-  @Mock
-  MetadataVersionRepository metadataVersionRepository;
-  @InjectMocks
-  private StaffRepository staffRepository;
-
+  @Mock private StaffEntityRepository staffEntityRepository;
+  @Mock MetadataVersionRepository metadataVersionRepository;
+  @InjectMocks private StaffRepository staffRepository;
 
   @Test
   void shallReturnEntityFromRepositoryIfExists() {
     doReturn(Optional.of(AJLA_DOKTOR_ENTITY))
-        .when(staffEntityRepository).findByHsaId(AJLA_DOCTOR_HSA_ID);
-    assertEquals(AJLA_DOKTOR_ENTITY,
-        staffRepository.staff(AJLA_DOKTOR)
-    );
+        .when(staffEntityRepository)
+        .findByHsaId(AJLA_DOCTOR_HSA_ID);
+    assertEquals(AJLA_DOKTOR_ENTITY, staffRepository.staff(AJLA_DOKTOR));
   }
 
   @Test
   void shallReturnMappedEntityIfEntityDontExistInRepository() {
-    doReturn(Optional.empty())
-        .when(staffEntityRepository).findByHsaId(AJLA_DOCTOR_HSA_ID);
-    doReturn(AJLA_DOKTOR_ENTITY)
-        .when(staffEntityRepository).save(AJLA_DOKTOR_ENTITY);
+    doReturn(Optional.empty()).when(staffEntityRepository).findByHsaId(AJLA_DOCTOR_HSA_ID);
+    doReturn(AJLA_DOKTOR_ENTITY).when(staffEntityRepository).save(AJLA_DOKTOR_ENTITY);
 
-    assertEquals(AJLA_DOKTOR_ENTITY,
-        staffRepository.staff(AJLA_DOKTOR)
-    );
+    assertEquals(AJLA_DOKTOR_ENTITY, staffRepository.staff(AJLA_DOKTOR));
   }
 
   @Test
   void shallReturnMapOfOneStaffWhenOneUniqueStaffExists() {
     final var expectedStaffs = Map.of(AJLA_DOKTOR.hsaId(), AJLA_DOKTOR_ENTITY);
-    final var certificate = fk7210CertificateBuilder()
-        .sent(
-            Sent.builder()
-                .sentBy(AJLA_DOKTOR)
-                .build()
-        )
-        .build();
+    final var certificate =
+        fk7210CertificateBuilder().sent(Sent.builder().sentBy(AJLA_DOKTOR).build()).build();
 
     doReturn(List.of(AJLA_DOKTOR_ENTITY))
         .when(staffEntityRepository)
@@ -83,21 +87,14 @@ class StaffRepositoryTest {
   @Test
   void shallReturnMapOfOneStaffWhenOneUniqueStaffDontExists() {
     final var expectedStaffs = Map.of(AJLA_DOKTOR.hsaId(), AJLA_DOKTOR_ENTITY);
-    final var certificate = fk7210CertificateBuilder()
-        .sent(
-            Sent.builder()
-                .sentBy(AJLA_DOKTOR)
-                .build()
-        )
-        .build();
+    final var certificate =
+        fk7210CertificateBuilder().sent(Sent.builder().sentBy(AJLA_DOKTOR).build()).build();
 
     doReturn(Collections.emptyList())
         .when(staffEntityRepository)
         .findStaffEntitiesByHsaIdIn(List.of(AJLA_DOCTOR_HSA_ID));
 
-    doReturn(AJLA_DOKTOR_ENTITY)
-        .when(staffEntityRepository)
-        .save(AJLA_DOKTOR_ENTITY);
+    doReturn(AJLA_DOKTOR_ENTITY).when(staffEntityRepository).save(AJLA_DOKTOR_ENTITY);
 
     final var actualStaffs = staffRepository.staffs(certificate);
 
@@ -106,18 +103,13 @@ class StaffRepositoryTest {
 
   @Test
   void shallReturnMapOfTwoStaffWhenTwoUniqueStaffBothExists() {
-    final var expectedStaffs = Map.of(
-        AJLA_DOKTOR.hsaId(), AJLA_DOKTOR_ENTITY,
-        ALF_DOKTOR.hsaId(), ALF_DOKTOR_ENTITY
-    );
+    final var expectedStaffs =
+        Map.of(
+            AJLA_DOKTOR.hsaId(), AJLA_DOKTOR_ENTITY,
+            ALF_DOKTOR.hsaId(), ALF_DOKTOR_ENTITY);
 
-    final var certificate = fk7210CertificateBuilder()
-        .sent(
-            Sent.builder()
-                .sentBy(ALF_DOKTOR)
-                .build()
-        )
-        .build();
+    final var certificate =
+        fk7210CertificateBuilder().sent(Sent.builder().sentBy(ALF_DOKTOR).build()).build();
 
     doReturn(List.of(AJLA_DOKTOR_ENTITY, ALF_DOKTOR_ENTITY))
         .when(staffEntityRepository)
@@ -130,26 +122,19 @@ class StaffRepositoryTest {
 
   @Test
   void shallReturnMapOfTwoStaffWhenTwoUniqueStaffOneExists() {
-    final var expectedStaffs = Map.of(
-        AJLA_DOKTOR.hsaId(), AJLA_DOKTOR_ENTITY,
-        ALF_DOKTOR.hsaId(), ALF_DOKTOR_ENTITY
-    );
+    final var expectedStaffs =
+        Map.of(
+            AJLA_DOKTOR.hsaId(), AJLA_DOKTOR_ENTITY,
+            ALF_DOKTOR.hsaId(), ALF_DOKTOR_ENTITY);
 
-    final var certificate = fk7210CertificateBuilder()
-        .sent(
-            Sent.builder()
-                .sentBy(ALF_DOKTOR)
-                .build()
-        )
-        .build();
+    final var certificate =
+        fk7210CertificateBuilder().sent(Sent.builder().sentBy(ALF_DOKTOR).build()).build();
 
     doReturn(List.of(AJLA_DOKTOR_ENTITY))
         .when(staffEntityRepository)
         .findStaffEntitiesByHsaIdIn(List.of(AJLA_DOCTOR_HSA_ID, ALF_DOKTOR_HSA_ID));
 
-    doReturn(ALF_DOKTOR_ENTITY)
-        .when(staffEntityRepository)
-        .save(ALF_DOKTOR_ENTITY);
+    doReturn(ALF_DOKTOR_ENTITY).when(staffEntityRepository).save(ALF_DOKTOR_ENTITY);
 
     final var actualStaffs = staffRepository.staffs(certificate);
 
@@ -158,30 +143,21 @@ class StaffRepositoryTest {
 
   @Test
   void shallReturnMapOfTwoStaffWhenTwoUniqueStaffNoneExists() {
-    final var expectedStaffs = Map.of(
-        AJLA_DOKTOR.hsaId(), AJLA_DOKTOR_ENTITY,
-        ALF_DOKTOR.hsaId(), ALF_DOKTOR_ENTITY
-    );
+    final var expectedStaffs =
+        Map.of(
+            AJLA_DOKTOR.hsaId(), AJLA_DOKTOR_ENTITY,
+            ALF_DOKTOR.hsaId(), ALF_DOKTOR_ENTITY);
 
-    final var certificate = fk7210CertificateBuilder()
-        .sent(
-            Sent.builder()
-                .sentBy(ALF_DOKTOR)
-                .build()
-        )
-        .build();
+    final var certificate =
+        fk7210CertificateBuilder().sent(Sent.builder().sentBy(ALF_DOKTOR).build()).build();
 
     doReturn(Collections.emptyList())
         .when(staffEntityRepository)
         .findStaffEntitiesByHsaIdIn(List.of(AJLA_DOCTOR_HSA_ID, ALF_DOKTOR_HSA_ID));
 
-    doReturn(AJLA_DOKTOR_ENTITY)
-        .when(staffEntityRepository)
-        .save(AJLA_DOKTOR_ENTITY);
+    doReturn(AJLA_DOKTOR_ENTITY).when(staffEntityRepository).save(AJLA_DOKTOR_ENTITY);
 
-    doReturn(ALF_DOKTOR_ENTITY)
-        .when(staffEntityRepository)
-        .save(ALF_DOKTOR_ENTITY);
+    doReturn(ALF_DOKTOR_ENTITY).when(staffEntityRepository).save(ALF_DOKTOR_ENTITY);
 
     final var actualStaffs = staffRepository.staffs(certificate);
 
@@ -190,30 +166,21 @@ class StaffRepositoryTest {
 
   @Test
   void shallIncludeRevokedStaffInMap() {
-    final var expectedStaffs = Map.of(
-        AJLA_DOKTOR.hsaId(), AJLA_DOKTOR_ENTITY,
-        ALF_DOKTOR.hsaId(), ALF_DOKTOR_ENTITY
-    );
+    final var expectedStaffs =
+        Map.of(
+            AJLA_DOKTOR.hsaId(), AJLA_DOKTOR_ENTITY,
+            ALF_DOKTOR.hsaId(), ALF_DOKTOR_ENTITY);
 
-    final var certificate = fk7210CertificateBuilder()
-        .revoked(
-            Revoked.builder()
-                .revokedBy(ALF_DOKTOR)
-                .build()
-        )
-        .build();
+    final var certificate =
+        fk7210CertificateBuilder().revoked(Revoked.builder().revokedBy(ALF_DOKTOR).build()).build();
 
     doReturn(Collections.emptyList())
         .when(staffEntityRepository)
         .findStaffEntitiesByHsaIdIn(List.of(AJLA_DOCTOR_HSA_ID, ALF_DOKTOR_HSA_ID));
 
-    doReturn(AJLA_DOKTOR_ENTITY)
-        .when(staffEntityRepository)
-        .save(AJLA_DOKTOR_ENTITY);
+    doReturn(AJLA_DOKTOR_ENTITY).when(staffEntityRepository).save(AJLA_DOKTOR_ENTITY);
 
-    doReturn(ALF_DOKTOR_ENTITY)
-        .when(staffEntityRepository)
-        .save(ALF_DOKTOR_ENTITY);
+    doReturn(ALF_DOKTOR_ENTITY).when(staffEntityRepository).save(ALF_DOKTOR_ENTITY);
 
     final var actualStaffs = staffRepository.staffs(certificate);
 
@@ -222,30 +189,23 @@ class StaffRepositoryTest {
 
   @Test
   void shallIncludeReadyForSignStaffInMap() {
-    final var expectedStaffs = Map.of(
-        AJLA_DOKTOR.hsaId(), AJLA_DOKTOR_ENTITY,
-        ALF_DOKTOR.hsaId(), ALF_DOKTOR_ENTITY
-    );
+    final var expectedStaffs =
+        Map.of(
+            AJLA_DOKTOR.hsaId(), AJLA_DOKTOR_ENTITY,
+            ALF_DOKTOR.hsaId(), ALF_DOKTOR_ENTITY);
 
-    final var certificate = fk7210CertificateBuilder()
-        .readyForSign(
-            ReadyForSign.builder()
-                .readyForSignBy(ALF_DOKTOR)
-                .build()
-        )
-        .build();
+    final var certificate =
+        fk7210CertificateBuilder()
+            .readyForSign(ReadyForSign.builder().readyForSignBy(ALF_DOKTOR).build())
+            .build();
 
     doReturn(Collections.emptyList())
         .when(staffEntityRepository)
         .findStaffEntitiesByHsaIdIn(List.of(AJLA_DOCTOR_HSA_ID, ALF_DOKTOR_HSA_ID));
 
-    doReturn(AJLA_DOKTOR_ENTITY)
-        .when(staffEntityRepository)
-        .save(AJLA_DOKTOR_ENTITY);
+    doReturn(AJLA_DOKTOR_ENTITY).when(staffEntityRepository).save(AJLA_DOKTOR_ENTITY);
 
-    doReturn(ALF_DOKTOR_ENTITY)
-        .when(staffEntityRepository)
-        .save(ALF_DOKTOR_ENTITY);
+    doReturn(ALF_DOKTOR_ENTITY).when(staffEntityRepository).save(ALF_DOKTOR_ENTITY);
 
     final var actualStaffs = staffRepository.staffs(certificate);
 
@@ -258,10 +218,12 @@ class StaffRepositoryTest {
     final var updatedEntity = mock(StaffEntity.class);
 
     doReturn(Optional.of(existingEntity))
-        .when(staffEntityRepository).findByHsaId(AJLA_DOCTOR_HSA_ID);
+        .when(staffEntityRepository)
+        .findByHsaId(AJLA_DOCTOR_HSA_ID);
     doReturn(true).when(existingEntity).hasDiff(AJLA_DOKTOR_ENTITY);
     doReturn(updatedEntity)
-        .when(metadataVersionRepository).saveStaffVersion(existingEntity, AJLA_DOKTOR_ENTITY);
+        .when(metadataVersionRepository)
+        .saveStaffVersion(existingEntity, AJLA_DOKTOR_ENTITY);
 
     final var result = staffRepository.staff(AJLA_DOKTOR);
 
@@ -274,7 +236,8 @@ class StaffRepositoryTest {
     final var existingEntity = mock(StaffEntity.class);
 
     doReturn(Optional.of(existingEntity))
-        .when(staffEntityRepository).findByHsaId(AJLA_DOCTOR_HSA_ID);
+        .when(staffEntityRepository)
+        .findByHsaId(AJLA_DOCTOR_HSA_ID);
     doReturn(false).when(existingEntity).hasDiff(AJLA_DOKTOR_ENTITY);
 
     final var result = staffRepository.staff(AJLA_DOKTOR);

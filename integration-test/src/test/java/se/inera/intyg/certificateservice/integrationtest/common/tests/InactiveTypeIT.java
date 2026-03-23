@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.integrationtest.common.tests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,18 +44,14 @@ import se.inera.intyg.certificateservice.integrationtest.common.setup.BaseIntegr
 
 public abstract class InactiveTypeIT extends BaseIntegrationIT {
 
-
   @Test
   @DisplayName("Inaktivt intyg skall ej visas i listan med tillgängliga intygstyper")
   void shallNotReturnInactiveCertificate() {
-    final var response = api().certificateTypeInfo(
-        defaultCertificateTypeInfoRequest()
-    );
+    final var response = api().certificateTypeInfo(defaultCertificateTypeInfoRequest());
 
     assertNull(
         certificateTypeInfo(response.getBody(), type()),
-        "Should not contain %s as it is not active!".formatted(type())
-    );
+        "Should not contain %s as it is not active!".formatted(type()));
   }
 
   @Test
@@ -47,56 +61,57 @@ public abstract class InactiveTypeIT extends BaseIntegrationIT {
 
     assertNull(
         certificateModelId(response.getBody()),
-        () -> "Expected that no version should be returned but instead returned %s"
-            .formatted(certificateModelId(response.getBody()))
-    );
+        () ->
+            "Expected that no version should be returned but instead returned %s"
+                .formatted(certificateModelId(response.getBody())));
   }
 
   @Test
   @DisplayName("Om utkast av inaktivt intyg skapas skall felkod 400 (BAD_REQUEST) returneras")
   void shallReturn400WhenTypeIsNotActive() {
-    final var response = api().createCertificate(
-        defaultCreateCertificateRequest(type(), typeVersion())
-    );
+    final var response =
+        api().createCertificate(defaultCreateCertificateRequest(type(), typeVersion()));
 
     assertEquals(400, response.getStatusCode().value());
   }
 
   @Test
-  @DisplayName("Om utkast av inaktivt intyg försöker redigeras skall felkod 403 (FORBIDDEN) returneras")
+  @DisplayName(
+      "Om utkast av inaktivt intyg försöker redigeras skall felkod 403 (FORBIDDEN) returneras")
   void shallNotBeAbleToEditInactiveCertificateDraft() {
-    final var testCertificate = testabilityApi().addCertificate(
-        defaultTestablilityCertificateRequest(type(), typeVersion())
-    );
+    final var testCertificate =
+        testabilityApi()
+            .addCertificate(defaultTestablilityCertificateRequest(type(), typeVersion()));
 
     final var certificate = certificate(testCertificate.getBody());
 
-    final var response = api().updateCertificate(
-        customUpdateCertificateRequest()
-            .certificate(certificate)
-            .build(),
-        certificateId(testCertificate.getBody())
-    );
+    final var response =
+        api()
+            .updateCertificate(
+                customUpdateCertificateRequest().certificate(certificate).build(),
+                certificateId(testCertificate.getBody()));
 
     assertEquals(403, response.getStatusCode().value());
   }
 
   @Test
-  @DisplayName("Om utkast av inaktivt intyg försöker signeras skall felkod 403 (FORBIDDEN) returneras")
+  @DisplayName(
+      "Om utkast av inaktivt intyg försöker signeras skall felkod 403 (FORBIDDEN) returneras")
   void shallNotBeAbleToSignInactiveCertificateDraft() {
-    final var testCertificate = testabilityApi().addCertificate(
-        defaultTestablilityCertificateRequest(type(), typeVersion())
-    );
+    final var testCertificate =
+        testabilityApi()
+            .addCertificate(defaultTestablilityCertificateRequest(type(), typeVersion()));
 
     final var certificate = certificate(testCertificate.getBody());
 
     assertNotNull(certificate);
 
-    final var response = api().signCertificate(
-        defaultSignCertificateRequest(),
-        certificate.getMetadata().getId(),
-        certificate.getMetadata().getVersion()
-    );
+    final var response =
+        api()
+            .signCertificate(
+                defaultSignCertificateRequest(),
+                certificate.getMetadata().getId(),
+                certificate.getMetadata().getVersion());
 
     assertEquals(403, response.getStatusCode().value());
   }
@@ -104,18 +119,18 @@ public abstract class InactiveTypeIT extends BaseIntegrationIT {
   @Test
   @DisplayName("Om inaktivt intyg försöker ersättas skall felkod 403 (FORBIDDEN) returneras")
   void shallNotBeAbleToReplaceInactiveCertificateDraft() {
-    final var testCertificate = testabilityApi().addCertificate(
-        defaultTestablilityCertificateRequest(type(), typeVersion())
-    );
+    final var testCertificate =
+        testabilityApi()
+            .addCertificate(defaultTestablilityCertificateRequest(type(), typeVersion()));
 
     final var certificate = certificate(testCertificate.getBody());
 
     assertNotNull(certificate);
 
-    final var response = api().replaceCertificate(
-        defaultReplaceCertificateRequest(),
-        certificate.getMetadata().getId()
-    );
+    final var response =
+        api()
+            .replaceCertificate(
+                defaultReplaceCertificateRequest(), certificate.getMetadata().getId());
 
     assertEquals(403, response.getStatusCode().value());
   }
@@ -123,18 +138,16 @@ public abstract class InactiveTypeIT extends BaseIntegrationIT {
   @Test
   @DisplayName("Om inaktivt intyg försöker förnyas skall felkod 403 (FORBIDDEN) returneras")
   void shallNotBeAbleToRenewInactiveCertificateDraft() {
-    final var testCertificate = testabilityApi().addCertificate(
-        defaultTestablilityCertificateRequest(type(), typeVersion())
-    );
+    final var testCertificate =
+        testabilityApi()
+            .addCertificate(defaultTestablilityCertificateRequest(type(), typeVersion()));
 
     final var certificate = certificate(testCertificate.getBody());
 
     assertNotNull(certificate);
 
-    final var response = api().renewCertificate(
-        defaultRenewCertificateRequest(),
-        certificate.getMetadata().getId()
-    );
+    final var response =
+        api().renewCertificate(defaultRenewCertificateRequest(), certificate.getMetadata().getId());
 
     assertEquals(403, response.getStatusCode().value());
   }
@@ -142,14 +155,14 @@ public abstract class InactiveTypeIT extends BaseIntegrationIT {
   @Test
   @DisplayName("Det skall gå att läsa ett inaktivt intyg")
   void shallBeAbleToReadInactiveCertificate() {
-    final var testCertificate = testabilityApi().addCertificate(
-        defaultTestablilityCertificateRequest(type(), typeVersion())
-    );
+    final var testCertificate =
+        testabilityApi()
+            .addCertificate(defaultTestablilityCertificateRequest(type(), typeVersion()));
 
-    final var response = api().getCertificate(
-        defaultGetCertificateRequest(),
-        certificateId(testCertificate.getBody())
-    );
+    final var response =
+        api()
+            .getCertificate(
+                defaultGetCertificateRequest(), certificateId(testCertificate.getBody()));
 
     assertEquals(200, response.getStatusCode().value());
   }
@@ -157,19 +170,20 @@ public abstract class InactiveTypeIT extends BaseIntegrationIT {
   @Test
   @DisplayName("Det skall gå att radera ett utkast av inaktivt intyg")
   void shallBeAbleToDeleteInactiveCertificate() {
-    final var testCertificate = testabilityApi().addCertificate(
-        defaultTestablilityCertificateRequest(type(), typeVersion())
-    );
+    final var testCertificate =
+        testabilityApi()
+            .addCertificate(defaultTestablilityCertificateRequest(type(), typeVersion()));
 
     final var certificate = certificate(testCertificate.getBody());
 
     assertNotNull(certificate);
 
-    final var response = api().deleteCertificate(
-        defaultDeleteCertificateRequest(),
-        certificate.getMetadata().getId(),
-        certificate.getMetadata().getVersion()
-    );
+    final var response =
+        api()
+            .deleteCertificate(
+                defaultDeleteCertificateRequest(),
+                certificate.getMetadata().getId(),
+                certificate.getMetadata().getVersion());
 
     assertEquals(200, response.getStatusCode().value());
   }
@@ -177,19 +191,20 @@ public abstract class InactiveTypeIT extends BaseIntegrationIT {
   @Test
   @DisplayName("Det skall gå att makulera ett signerat inaktivt intyg")
   void shallBeAbleToRevokeSignedInactiveCertificate() {
-    final var testCertificate = testabilityApi().addCertificate(
-        defaultTestablilityCertificateRequest(type(), typeVersion(),
-            CertificateStatusTypeDTO.SIGNED)
-    );
+    final var testCertificate =
+        testabilityApi()
+            .addCertificate(
+                defaultTestablilityCertificateRequest(
+                    type(), typeVersion(), CertificateStatusTypeDTO.SIGNED));
 
     final var certificate = certificate(testCertificate.getBody());
 
     assertNotNull(certificate);
 
-    final var response = api().revokeCertificate(
-        defaultRevokeCertificateRequest(),
-        certificate.getMetadata().getId()
-    );
+    final var response =
+        api()
+            .revokeCertificate(
+                defaultRevokeCertificateRequest(), certificate.getMetadata().getId());
 
     assertEquals(200, response.getStatusCode().value());
   }
@@ -197,19 +212,20 @@ public abstract class InactiveTypeIT extends BaseIntegrationIT {
   @Test
   @DisplayName("Det skall gå att skriva ut ett inaktivt intyg")
   void shallBeAbleToPrintInactiveCertificate() {
-    final var testCertificate = testabilityApi().addCertificate(
-        defaultTestablilityCertificateRequest(type(), typeVersion(),
-            CertificateStatusTypeDTO.SIGNED)
-    );
+    final var testCertificate =
+        testabilityApi()
+            .addCertificate(
+                defaultTestablilityCertificateRequest(
+                    type(), typeVersion(), CertificateStatusTypeDTO.SIGNED));
 
     final var certificate = certificate(testCertificate.getBody());
 
     assertNotNull(certificate);
 
-    final var response = api().getCertificatePdf(
-        defaultGetCertificatePdfRequest(),
-        certificate.getMetadata().getId()
-    );
+    final var response =
+        api()
+            .getCertificatePdf(
+                defaultGetCertificatePdfRequest(), certificate.getMetadata().getId());
 
     assertEquals(200, response.getStatusCode().value());
   }

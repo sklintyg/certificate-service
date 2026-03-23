@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.validation.model;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -43,34 +61,37 @@ class ElementValidationDateRangeListTest {
     @Test
     void shallThrowIllegalArgumentExceptionIfDataIsNull() {
       final Optional<ElementId> categoryId = Optional.empty();
-      assertThrows(IllegalArgumentException.class,
-          () -> elementValidationDateRangeList.validate(null, categoryId, Collections.emptyList())
-      );
+      assertThrows(
+          IllegalArgumentException.class,
+          () -> elementValidationDateRangeList.validate(null, categoryId, Collections.emptyList()));
     }
 
     @Test
     void shallThrowIllegalArgumentExceptionIfValueIsNull() {
       final Optional<ElementId> categoryId = Optional.empty();
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .build();
+      final var elementData = ElementData.builder().id(ELEMENT_ID).build();
 
-      assertThrows(IllegalArgumentException.class,
-          () -> elementValidationDateRangeList.validate(elementData, categoryId,
-              Collections.emptyList()));
+      assertThrows(
+          IllegalArgumentException.class,
+          () ->
+              elementValidationDateRangeList.validate(
+                  elementData, categoryId, Collections.emptyList()));
     }
 
     @Test
     void shallThrowIllegalArgumentExceptionIfValueIsWrongType() {
       final Optional<ElementId> categoryId = Optional.empty();
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(ElementValueUnitContactInformation.builder().build())
-          .build();
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(ElementValueUnitContactInformation.builder().build())
+              .build();
 
-      assertThrows(IllegalArgumentException.class,
-          () -> elementValidationDateRangeList.validate(elementData, categoryId,
-              Collections.emptyList()));
+      assertThrows(
+          IllegalArgumentException.class,
+          () ->
+              elementValidationDateRangeList.validate(
+                  elementData, categoryId, Collections.emptyList()));
     }
   }
 
@@ -79,28 +100,26 @@ class ElementValidationDateRangeListTest {
 
     @BeforeEach
     void setUp() {
-      elementValidationDateRangeList = ElementValidationDateRangeList.builder()
-          .mandatory(true)
-          .build();
+      elementValidationDateRangeList =
+          ElementValidationDateRangeList.builder().mandatory(true).build();
     }
 
     @Test
     void shouldReturnValidationErrorIfEmptyListAsRanges() {
       final var expectedValidationError = getExpectedValidationErrorForMandatory();
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(
-              ElementValueDateRangeList.builder()
-                  .dateRangeListId(FIELD_ID)
-                  .dateRangeList(Collections.emptyList())
-                  .build()
-          )
-          .build();
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueDateRangeList.builder()
+                      .dateRangeListId(FIELD_ID)
+                      .dateRangeList(Collections.emptyList())
+                      .build())
+              .build();
 
-      final var actualResult = elementValidationDateRangeList.validate(
-          elementData,
-          Optional.of(CATEGORY_ID),
-          Collections.emptyList());
+      final var actualResult =
+          elementValidationDateRangeList.validate(
+              elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
 
       assertEquals(expectedValidationError, actualResult);
     }
@@ -108,151 +127,139 @@ class ElementValidationDateRangeListTest {
     @Test
     void shouldReturnValidationErrorIfNullAsRanges() {
       final var expectedValidationError = getExpectedValidationErrorForMandatory();
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(
-              ElementValueDateRangeList.builder()
-                  .dateRangeListId(FIELD_ID)
-                  .build()
-          )
-          .build();
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(ElementValueDateRangeList.builder().dateRangeListId(FIELD_ID).build())
+              .build();
 
-      final var actualResult = elementValidationDateRangeList.validate(
-          elementData,
-          Optional.of(CATEGORY_ID),
-          Collections.emptyList());
+      final var actualResult =
+          elementValidationDateRangeList.validate(
+              elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
 
       assertEquals(expectedValidationError, actualResult);
     }
 
     @Test
     void shouldReturnValidationErrorIfOnlyToDate() {
-      final var expectedValidationError = getExpectedValidationError(
-          "Ange ett datum.",
-          new FieldId(FIELD_ID_RANGE.value() + ".from")
-      );
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(
-              ElementValueDateRangeList.builder()
-                  .dateRangeListId(FIELD_ID)
-                  .dateRangeList(List.of(
-                      DateRange.builder()
-                          .dateRangeId(FIELD_ID_RANGE)
-                          .to(LocalDate.now())
-                          .build()
-                  ))
-                  .build()
-          )
-          .build();
+      final var expectedValidationError =
+          getExpectedValidationError(
+              "Ange ett datum.", new FieldId(FIELD_ID_RANGE.value() + ".from"));
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueDateRangeList.builder()
+                      .dateRangeListId(FIELD_ID)
+                      .dateRangeList(
+                          List.of(
+                              DateRange.builder()
+                                  .dateRangeId(FIELD_ID_RANGE)
+                                  .to(LocalDate.now())
+                                  .build()))
+                      .build())
+              .build();
 
-      final var actualResult = elementValidationDateRangeList.validate(
-          elementData,
-          Optional.of(CATEGORY_ID),
-          Collections.emptyList());
+      final var actualResult =
+          elementValidationDateRangeList.validate(
+              elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
 
       assertEquals(expectedValidationError, actualResult);
     }
 
     @Test
     void shouldReturnValidationErrorIfOnlyFromDate() {
-      final var expectedValidationError = getExpectedValidationError(
-          "Ange ett datum.",
-          new FieldId(FIELD_ID_RANGE.value() + ".to")
-      );
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(
-              ElementValueDateRangeList.builder()
-                  .dateRangeListId(FIELD_ID)
-                  .dateRangeList(List.of(
-                      DateRange.builder()
-                          .dateRangeId(FIELD_ID_RANGE)
-                          .from(LocalDate.now())
-                          .build()
-                  ))
-                  .build()
-          )
-          .build();
+      final var expectedValidationError =
+          getExpectedValidationError(
+              "Ange ett datum.", new FieldId(FIELD_ID_RANGE.value() + ".to"));
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueDateRangeList.builder()
+                      .dateRangeListId(FIELD_ID)
+                      .dateRangeList(
+                          List.of(
+                              DateRange.builder()
+                                  .dateRangeId(FIELD_ID_RANGE)
+                                  .from(LocalDate.now())
+                                  .build()))
+                      .build())
+              .build();
 
-      final var actualResult = elementValidationDateRangeList.validate(
-          elementData,
-          Optional.of(CATEGORY_ID),
-          Collections.emptyList());
+      final var actualResult =
+          elementValidationDateRangeList.validate(
+              elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
 
       assertEquals(expectedValidationError, actualResult);
     }
 
     @Test
     void shouldReturnValidationErrorIfToIsBeforeFrom() {
-      final var expectedValidationError = getExpectedValidationError(
-          "Ange ett slutdatum som infaller efter startdatumet.",
-          new FieldId(FIELD_ID_RANGE.value() + ".range")
-      );
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(
-              ElementValueDateRangeList.builder()
-                  .dateRangeListId(FIELD_ID)
-                  .dateRangeList(List.of(
-                      DateRange.builder()
-                          .dateRangeId(FIELD_ID_RANGE)
-                          .from(LocalDate.now())
-                          .to(LocalDate.now().minusDays(5))
-                          .build()
-                  ))
-                  .build()
-          )
-          .build();
+      final var expectedValidationError =
+          getExpectedValidationError(
+              "Ange ett slutdatum som infaller efter startdatumet.",
+              new FieldId(FIELD_ID_RANGE.value() + ".range"));
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueDateRangeList.builder()
+                      .dateRangeListId(FIELD_ID)
+                      .dateRangeList(
+                          List.of(
+                              DateRange.builder()
+                                  .dateRangeId(FIELD_ID_RANGE)
+                                  .from(LocalDate.now())
+                                  .to(LocalDate.now().minusDays(5))
+                                  .build()))
+                      .build())
+              .build();
 
-      final var actualResult = elementValidationDateRangeList.validate(
-          elementData,
-          Optional.of(CATEGORY_ID),
-          Collections.emptyList());
+      final var actualResult =
+          elementValidationDateRangeList.validate(
+              elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
 
       assertEquals(expectedValidationError, actualResult);
     }
 
     @Test
     void shouldReturnSeveralValidationErrors() {
-      final var expectedValidationErrorIncorrect = getExpectedValidationError(
-          "Ange ett slutdatum som infaller efter startdatumet.",
-          new FieldId(FIELD_ID_RANGE.value() + ".range")
-      );
-      final var expectedValidationErrorIncomplete = getExpectedValidationError(
-          "Ange ett datum.",
-          new FieldId(FIELD_ID_RANGE_2.value() + ".to")
-      );
+      final var expectedValidationErrorIncorrect =
+          getExpectedValidationError(
+              "Ange ett slutdatum som infaller efter startdatumet.",
+              new FieldId(FIELD_ID_RANGE.value() + ".range"));
+      final var expectedValidationErrorIncomplete =
+          getExpectedValidationError(
+              "Ange ett datum.", new FieldId(FIELD_ID_RANGE_2.value() + ".to"));
 
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(
-              ElementValueDateRangeList.builder()
-                  .dateRangeListId(FIELD_ID)
-                  .dateRangeList(List.of(
-                      DateRange.builder()
-                          .dateRangeId(FIELD_ID_RANGE)
-                          .from(LocalDate.now())
-                          .to(LocalDate.now().minusDays(5))
-                          .build(),
-                      DateRange.builder()
-                          .dateRangeId(FIELD_ID_RANGE_2)
-                          .from(LocalDate.now())
-                          .build()
-                  ))
-                  .build()
-          )
-          .build();
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueDateRangeList.builder()
+                      .dateRangeListId(FIELD_ID)
+                      .dateRangeList(
+                          List.of(
+                              DateRange.builder()
+                                  .dateRangeId(FIELD_ID_RANGE)
+                                  .from(LocalDate.now())
+                                  .to(LocalDate.now().minusDays(5))
+                                  .build(),
+                              DateRange.builder()
+                                  .dateRangeId(FIELD_ID_RANGE_2)
+                                  .from(LocalDate.now())
+                                  .build()))
+                      .build())
+              .build();
 
-      final var actualResult = elementValidationDateRangeList.validate(
-          elementData,
-          Optional.of(CATEGORY_ID),
-          Collections.emptyList());
+      final var actualResult =
+          elementValidationDateRangeList.validate(
+              elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
 
       assertAll(
           () -> assertEquals(expectedValidationErrorIncomplete.get(0), actualResult.get(0)),
-          () -> assertEquals(expectedValidationErrorIncorrect.get(0), actualResult.get(1))
-      );
+          () -> assertEquals(expectedValidationErrorIncorrect.get(0), actualResult.get(1)));
     }
 
     @Nested
@@ -260,70 +267,66 @@ class ElementValidationDateRangeListTest {
 
       @Test
       void shouldReturnErrorIfDateRangesHaveSameDayOnFrom() {
-        final var expectedValidationError = getExpectedValidationError(
-            "Ange perioder som inte överlappar varandra.", FIELD_ID
-        );
+        final var expectedValidationError =
+            getExpectedValidationError("Ange perioder som inte överlappar varandra.", FIELD_ID);
 
-        final var elementData = ElementData.builder()
-            .id(ELEMENT_ID)
-            .value(
-                ElementValueDateRangeList.builder()
-                    .dateRangeListId(FIELD_ID)
-                    .dateRangeList(List.of(
-                        DateRange.builder()
-                            .dateRangeId(FIELD_ID_RANGE)
-                            .from(LocalDate.now())
-                            .to(LocalDate.now().plusDays(1))
-                            .build(),
-                        DateRange.builder()
-                            .dateRangeId(FIELD_ID_RANGE_2)
-                            .from(LocalDate.now())
-                            .to(LocalDate.now().plusDays(3))
-                            .build()
-                    ))
-                    .build()
-            )
-            .build();
+        final var elementData =
+            ElementData.builder()
+                .id(ELEMENT_ID)
+                .value(
+                    ElementValueDateRangeList.builder()
+                        .dateRangeListId(FIELD_ID)
+                        .dateRangeList(
+                            List.of(
+                                DateRange.builder()
+                                    .dateRangeId(FIELD_ID_RANGE)
+                                    .from(LocalDate.now())
+                                    .to(LocalDate.now().plusDays(1))
+                                    .build(),
+                                DateRange.builder()
+                                    .dateRangeId(FIELD_ID_RANGE_2)
+                                    .from(LocalDate.now())
+                                    .to(LocalDate.now().plusDays(3))
+                                    .build()))
+                        .build())
+                .build();
 
-        final var actualResult = elementValidationDateRangeList.validate(
-            elementData,
-            Optional.of(CATEGORY_ID),
-            Collections.emptyList());
+        final var actualResult =
+            elementValidationDateRangeList.validate(
+                elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
 
         assertEquals(expectedValidationError, actualResult);
       }
 
       @Test
       void shouldReturnErrorIfDateRangesHaveSameDayOnTo() {
-        final var expectedValidationError = getExpectedValidationError(
-            "Ange perioder som inte överlappar varandra.", FIELD_ID
-        );
+        final var expectedValidationError =
+            getExpectedValidationError("Ange perioder som inte överlappar varandra.", FIELD_ID);
 
-        final var elementData = ElementData.builder()
-            .id(ELEMENT_ID)
-            .value(
-                ElementValueDateRangeList.builder()
-                    .dateRangeListId(FIELD_ID)
-                    .dateRangeList(List.of(
-                        DateRange.builder()
-                            .dateRangeId(FIELD_ID_RANGE)
-                            .from(LocalDate.now().minusDays(1))
-                            .to(LocalDate.now())
-                            .build(),
-                        DateRange.builder()
-                            .dateRangeId(FIELD_ID_RANGE_2)
-                            .from(LocalDate.now().minusDays(2))
-                            .to(LocalDate.now())
-                            .build()
-                    ))
-                    .build()
-            )
-            .build();
+        final var elementData =
+            ElementData.builder()
+                .id(ELEMENT_ID)
+                .value(
+                    ElementValueDateRangeList.builder()
+                        .dateRangeListId(FIELD_ID)
+                        .dateRangeList(
+                            List.of(
+                                DateRange.builder()
+                                    .dateRangeId(FIELD_ID_RANGE)
+                                    .from(LocalDate.now().minusDays(1))
+                                    .to(LocalDate.now())
+                                    .build(),
+                                DateRange.builder()
+                                    .dateRangeId(FIELD_ID_RANGE_2)
+                                    .from(LocalDate.now().minusDays(2))
+                                    .to(LocalDate.now())
+                                    .build()))
+                        .build())
+                .build();
 
-        final var actualResult = elementValidationDateRangeList.validate(
-            elementData,
-            Optional.of(CATEGORY_ID),
-            Collections.emptyList());
+        final var actualResult =
+            elementValidationDateRangeList.validate(
+                elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
 
         assertEquals(expectedValidationError, actualResult);
       }
@@ -331,176 +334,167 @@ class ElementValidationDateRangeListTest {
 
     @Test
     void shouldReturnErrorIfDateRangesHaveOverlappingPeriods() {
-      final var expectedValidationError = getExpectedValidationError(
-          "Ange perioder som inte överlappar varandra.", FIELD_ID
-      );
+      final var expectedValidationError =
+          getExpectedValidationError("Ange perioder som inte överlappar varandra.", FIELD_ID);
 
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(
-              ElementValueDateRangeList.builder()
-                  .dateRangeListId(FIELD_ID)
-                  .dateRangeList(List.of(
-                      DateRange.builder()
-                          .dateRangeId(FIELD_ID_RANGE)
-                          .from(LocalDate.now().minusDays(1))
-                          .to(LocalDate.now().plusDays(10))
-                          .build(),
-                      DateRange.builder()
-                          .dateRangeId(FIELD_ID_RANGE_2)
-                          .from(LocalDate.now())
-                          .to(LocalDate.now().plusDays(5))
-                          .build()
-                  ))
-                  .build()
-          )
-          .build();
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueDateRangeList.builder()
+                      .dateRangeListId(FIELD_ID)
+                      .dateRangeList(
+                          List.of(
+                              DateRange.builder()
+                                  .dateRangeId(FIELD_ID_RANGE)
+                                  .from(LocalDate.now().minusDays(1))
+                                  .to(LocalDate.now().plusDays(10))
+                                  .build(),
+                              DateRange.builder()
+                                  .dateRangeId(FIELD_ID_RANGE_2)
+                                  .from(LocalDate.now())
+                                  .to(LocalDate.now().plusDays(5))
+                                  .build()))
+                      .build())
+              .build();
 
-      final var actualResult = elementValidationDateRangeList.validate(
-          elementData,
-          Optional.of(CATEGORY_ID),
-          Collections.emptyList());
+      final var actualResult =
+          elementValidationDateRangeList.validate(
+              elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
 
       assertEquals(expectedValidationError, actualResult);
     }
 
     @Test
     void shouldReturnErrorIfLowerOverlap() {
-      final var expectedValidationError = getExpectedValidationError(
-          "Ange perioder som inte överlappar varandra.", FIELD_ID
-      );
+      final var expectedValidationError =
+          getExpectedValidationError("Ange perioder som inte överlappar varandra.", FIELD_ID);
 
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(
-              ElementValueDateRangeList.builder()
-                  .dateRangeListId(FIELD_ID)
-                  .dateRangeList(List.of(
-                      DateRange.builder()
-                          .dateRangeId(FIELD_ID_RANGE)
-                          .from(LocalDate.now().minusDays(10))
-                          .to(LocalDate.now().plusDays(10))
-                          .build(),
-                      DateRange.builder()
-                          .dateRangeId(FIELD_ID_RANGE_2)
-                          .from(LocalDate.now())
-                          .to(LocalDate.now().plusDays(15))
-                          .build()
-                  ))
-                  .build()
-          )
-          .build();
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueDateRangeList.builder()
+                      .dateRangeListId(FIELD_ID)
+                      .dateRangeList(
+                          List.of(
+                              DateRange.builder()
+                                  .dateRangeId(FIELD_ID_RANGE)
+                                  .from(LocalDate.now().minusDays(10))
+                                  .to(LocalDate.now().plusDays(10))
+                                  .build(),
+                              DateRange.builder()
+                                  .dateRangeId(FIELD_ID_RANGE_2)
+                                  .from(LocalDate.now())
+                                  .to(LocalDate.now().plusDays(15))
+                                  .build()))
+                      .build())
+              .build();
 
-      final var actualResult = elementValidationDateRangeList.validate(
-          elementData,
-          Optional.of(CATEGORY_ID),
-          Collections.emptyList());
+      final var actualResult =
+          elementValidationDateRangeList.validate(
+              elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
 
       assertEquals(expectedValidationError, actualResult);
     }
 
     @Test
     void shouldReturnErrorIfUpperOverlap() {
-      final var expectedValidationError = getExpectedValidationError(
-          "Ange perioder som inte överlappar varandra.", FIELD_ID
-      );
+      final var expectedValidationError =
+          getExpectedValidationError("Ange perioder som inte överlappar varandra.", FIELD_ID);
 
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(
-              ElementValueDateRangeList.builder()
-                  .dateRangeListId(FIELD_ID)
-                  .dateRangeList(List.of(
-                      DateRange.builder()
-                          .dateRangeId(FIELD_ID_RANGE)
-                          .from(LocalDate.now().plusDays(1))
-                          .to(LocalDate.now().plusDays(20))
-                          .build(),
-                      DateRange.builder()
-                          .dateRangeId(FIELD_ID_RANGE_2)
-                          .from(LocalDate.now())
-                          .to(LocalDate.now().plusDays(15))
-                          .build()
-                  ))
-                  .build()
-          )
-          .build();
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueDateRangeList.builder()
+                      .dateRangeListId(FIELD_ID)
+                      .dateRangeList(
+                          List.of(
+                              DateRange.builder()
+                                  .dateRangeId(FIELD_ID_RANGE)
+                                  .from(LocalDate.now().plusDays(1))
+                                  .to(LocalDate.now().plusDays(20))
+                                  .build(),
+                              DateRange.builder()
+                                  .dateRangeId(FIELD_ID_RANGE_2)
+                                  .from(LocalDate.now())
+                                  .to(LocalDate.now().plusDays(15))
+                                  .build()))
+                      .build())
+              .build();
 
-      final var actualResult = elementValidationDateRangeList.validate(
-          elementData,
-          Optional.of(CATEGORY_ID),
-          Collections.emptyList());
+      final var actualResult =
+          elementValidationDateRangeList.validate(
+              elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
 
       assertEquals(expectedValidationError, actualResult);
     }
 
     @Test
     void shouldReturnErrorIfOneCorrectPeriodButTwoOverlap() {
-      final var expectedValidationError = getExpectedValidationError(
-          "Ange perioder som inte överlappar varandra.", FIELD_ID
-      );
+      final var expectedValidationError =
+          getExpectedValidationError("Ange perioder som inte överlappar varandra.", FIELD_ID);
 
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(
-              ElementValueDateRangeList.builder()
-                  .dateRangeListId(FIELD_ID)
-                  .dateRangeList(List.of(
-                      DateRange.builder()
-                          .dateRangeId(FIELD_ID_RANGE)
-                          .from(LocalDate.now().minusDays(10))
-                          .to(LocalDate.now().plusDays(10))
-                          .build(),
-                      DateRange.builder()
-                          .dateRangeId(FIELD_ID_RANGE_2)
-                          .from(LocalDate.now())
-                          .to(LocalDate.now().plusDays(15))
-                          .build(),
-                      DateRange.builder()
-                          .dateRangeId(FIELD_ID_RANGE_3)
-                          .from(LocalDate.now().plusDays(20))
-                          .to(LocalDate.now().plusDays(25))
-                          .build()
-                  ))
-                  .build()
-          )
-          .build();
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueDateRangeList.builder()
+                      .dateRangeListId(FIELD_ID)
+                      .dateRangeList(
+                          List.of(
+                              DateRange.builder()
+                                  .dateRangeId(FIELD_ID_RANGE)
+                                  .from(LocalDate.now().minusDays(10))
+                                  .to(LocalDate.now().plusDays(10))
+                                  .build(),
+                              DateRange.builder()
+                                  .dateRangeId(FIELD_ID_RANGE_2)
+                                  .from(LocalDate.now())
+                                  .to(LocalDate.now().plusDays(15))
+                                  .build(),
+                              DateRange.builder()
+                                  .dateRangeId(FIELD_ID_RANGE_3)
+                                  .from(LocalDate.now().plusDays(20))
+                                  .to(LocalDate.now().plusDays(25))
+                                  .build()))
+                      .build())
+              .build();
 
-      final var actualResult = elementValidationDateRangeList.validate(
-          elementData,
-          Optional.of(CATEGORY_ID),
-          Collections.emptyList());
+      final var actualResult =
+          elementValidationDateRangeList.validate(
+              elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
 
       assertEquals(expectedValidationError, actualResult);
     }
 
     @Test
     void shouldReturnNoValidationErrorsIfCorrectPeriodsWithNoOverlap() {
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(
-              ElementValueDateRangeList.builder()
-                  .dateRangeListId(FIELD_ID)
-                  .dateRangeList(List.of(
-                      DateRange.builder()
-                          .dateRangeId(FIELD_ID_RANGE_2)
-                          .from(LocalDate.now())
-                          .to(LocalDate.now().plusDays(15))
-                          .build(),
-                      DateRange.builder()
-                          .dateRangeId(FIELD_ID_RANGE_2)
-                          .from(LocalDate.now().plusDays(20))
-                          .to(LocalDate.now().plusDays(25))
-                          .build()
-                  ))
-                  .build()
-          )
-          .build();
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueDateRangeList.builder()
+                      .dateRangeListId(FIELD_ID)
+                      .dateRangeList(
+                          List.of(
+                              DateRange.builder()
+                                  .dateRangeId(FIELD_ID_RANGE_2)
+                                  .from(LocalDate.now())
+                                  .to(LocalDate.now().plusDays(15))
+                                  .build(),
+                              DateRange.builder()
+                                  .dateRangeId(FIELD_ID_RANGE_2)
+                                  .from(LocalDate.now().plusDays(20))
+                                  .to(LocalDate.now().plusDays(25))
+                                  .build()))
+                      .build())
+              .build();
 
-      final var actualResult = elementValidationDateRangeList.validate(
-          elementData,
-          Optional.of(CATEGORY_ID),
-          Collections.emptyList());
+      final var actualResult =
+          elementValidationDateRangeList.validate(
+              elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
 
       assertEquals(Collections.emptyList(), actualResult);
     }
@@ -510,68 +504,64 @@ class ElementValidationDateRangeListTest {
 
       @BeforeEach
       void setUp() {
-        elementValidationDateRangeList = ElementValidationDateRangeList.builder()
-            .min(Period.ofMonths(-1))
-            .build();
+        elementValidationDateRangeList =
+            ElementValidationDateRangeList.builder().min(Period.ofMonths(-1)).build();
       }
 
       @Test
       void shouldReturnValidationErrorIfFromIsBeforeMinValueWhenMinIsNegative() {
-        final var expectedValidationError = getExpectedValidationError(
-            "Ange ett datum som är tidigast %s.".formatted(LocalDate.now().minusMonths(1)),
-            new FieldId(FIELD_ID_RANGE.value() + ".from")
-        );
-        final var elementData = ElementData.builder()
-            .id(ELEMENT_ID)
-            .value(
-                ElementValueDateRangeList.builder()
-                    .dateRangeListId(FIELD_ID)
-                    .dateRangeList(List.of(
-                        DateRange.builder()
-                            .dateRangeId(FIELD_ID_RANGE)
-                            .from(LocalDate.now().minusMonths(1).minusDays(1))
-                            .to(LocalDate.now())
-                            .build()
-                    ))
-                    .build()
-            )
-            .build();
+        final var expectedValidationError =
+            getExpectedValidationError(
+                "Ange ett datum som är tidigast %s.".formatted(LocalDate.now().minusMonths(1)),
+                new FieldId(FIELD_ID_RANGE.value() + ".from"));
+        final var elementData =
+            ElementData.builder()
+                .id(ELEMENT_ID)
+                .value(
+                    ElementValueDateRangeList.builder()
+                        .dateRangeListId(FIELD_ID)
+                        .dateRangeList(
+                            List.of(
+                                DateRange.builder()
+                                    .dateRangeId(FIELD_ID_RANGE)
+                                    .from(LocalDate.now().minusMonths(1).minusDays(1))
+                                    .to(LocalDate.now())
+                                    .build()))
+                        .build())
+                .build();
 
-        final var actualResult = elementValidationDateRangeList.validate(
-            elementData,
-            Optional.of(CATEGORY_ID),
-            Collections.emptyList());
+        final var actualResult =
+            elementValidationDateRangeList.validate(
+                elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
 
         assertEquals(expectedValidationError, actualResult);
       }
 
       @Test
       void shouldReturnValidationErrorIfToIsBeforeMinValueWhenMinIsNegative() {
-        final var expectedValidationError = List.of(
-            getBeforeMinValidationError(".from", -1),
-            getBeforeMinValidationError(".to", -1)
-        );
+        final var expectedValidationError =
+            List.of(
+                getBeforeMinValidationError(".from", -1), getBeforeMinValidationError(".to", -1));
 
-        final var elementData = ElementData.builder()
-            .id(ELEMENT_ID)
-            .value(
-                ElementValueDateRangeList.builder()
-                    .dateRangeListId(FIELD_ID)
-                    .dateRangeList(List.of(
-                        DateRange.builder()
-                            .dateRangeId(FIELD_ID_RANGE)
-                            .from(LocalDate.now().minusMonths(2))
-                            .to(LocalDate.now().minusMonths(1).minusDays(1))
-                            .build()
-                    ))
-                    .build()
-            )
-            .build();
+        final var elementData =
+            ElementData.builder()
+                .id(ELEMENT_ID)
+                .value(
+                    ElementValueDateRangeList.builder()
+                        .dateRangeListId(FIELD_ID)
+                        .dateRangeList(
+                            List.of(
+                                DateRange.builder()
+                                    .dateRangeId(FIELD_ID_RANGE)
+                                    .from(LocalDate.now().minusMonths(2))
+                                    .to(LocalDate.now().minusMonths(1).minusDays(1))
+                                    .build()))
+                        .build())
+                .build();
 
-        final var actualResult = elementValidationDateRangeList.validate(
-            elementData,
-            Optional.of(CATEGORY_ID),
-            Collections.emptyList());
+        final var actualResult =
+            elementValidationDateRangeList.validate(
+                elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
 
         assertEquals(expectedValidationError, actualResult);
       }
@@ -582,95 +572,88 @@ class ElementValidationDateRangeListTest {
 
       @BeforeEach
       void setUp() {
-        elementValidationDateRangeList = ElementValidationDateRangeList.builder()
-            .min(Period.ofMonths(1))
-            .build();
+        elementValidationDateRangeList =
+            ElementValidationDateRangeList.builder().min(Period.ofMonths(1)).build();
       }
 
       @Test
       void shouldReturnValidationErrorIfFromIsBeforeMinValue() {
-        final var expectedValidationError = getExpectedValidationError(
-            "Ange ett datum som är tidigast %s.".formatted(LocalDate.now().plusMonths(1)),
-            new FieldId(FIELD_ID_RANGE.value() + ".from")
-        );
-        final var elementData = ElementData.builder()
-            .id(ELEMENT_ID)
-            .value(
-                ElementValueDateRangeList.builder()
-                    .dateRangeListId(FIELD_ID)
-                    .dateRangeList(List.of(
-                        DateRange.builder()
-                            .dateRangeId(FIELD_ID_RANGE)
-                            .from(LocalDate.now().plusMonths(1).minusDays(1))
-                            .to(LocalDate.now().plusMonths(2))
-                            .build()
-                    ))
-                    .build()
-            )
-            .build();
+        final var expectedValidationError =
+            getExpectedValidationError(
+                "Ange ett datum som är tidigast %s.".formatted(LocalDate.now().plusMonths(1)),
+                new FieldId(FIELD_ID_RANGE.value() + ".from"));
+        final var elementData =
+            ElementData.builder()
+                .id(ELEMENT_ID)
+                .value(
+                    ElementValueDateRangeList.builder()
+                        .dateRangeListId(FIELD_ID)
+                        .dateRangeList(
+                            List.of(
+                                DateRange.builder()
+                                    .dateRangeId(FIELD_ID_RANGE)
+                                    .from(LocalDate.now().plusMonths(1).minusDays(1))
+                                    .to(LocalDate.now().plusMonths(2))
+                                    .build()))
+                        .build())
+                .build();
 
-        final var actualResult = elementValidationDateRangeList.validate(
-            elementData,
-            Optional.of(CATEGORY_ID),
-            Collections.emptyList());
+        final var actualResult =
+            elementValidationDateRangeList.validate(
+                elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
 
         assertEquals(expectedValidationError, actualResult);
       }
 
       @Test
       void shouldReturnValidationErrorIfToIsBeforeMinValueWhenMinIsNegative() {
-        final var expectedValidationError = List.of(
-            getBeforeMinValidationError(".from", 1),
-            getBeforeMinValidationError(".to", 1)
-        );
+        final var expectedValidationError =
+            List.of(getBeforeMinValidationError(".from", 1), getBeforeMinValidationError(".to", 1));
 
-        final var elementData = ElementData.builder()
-            .id(ELEMENT_ID)
-            .value(
-                ElementValueDateRangeList.builder()
-                    .dateRangeListId(FIELD_ID)
-                    .dateRangeList(List.of(
-                        DateRange.builder()
-                            .dateRangeId(FIELD_ID_RANGE)
-                            .from(LocalDate.now())
-                            .to(LocalDate.now().plusMonths(1).minusDays(1))
-                            .build()
-                    ))
-                    .build()
-            )
-            .build();
+        final var elementData =
+            ElementData.builder()
+                .id(ELEMENT_ID)
+                .value(
+                    ElementValueDateRangeList.builder()
+                        .dateRangeListId(FIELD_ID)
+                        .dateRangeList(
+                            List.of(
+                                DateRange.builder()
+                                    .dateRangeId(FIELD_ID_RANGE)
+                                    .from(LocalDate.now())
+                                    .to(LocalDate.now().plusMonths(1).minusDays(1))
+                                    .build()))
+                        .build())
+                .build();
 
-        final var actualResult = elementValidationDateRangeList.validate(
-            elementData,
-            Optional.of(CATEGORY_ID),
-            Collections.emptyList());
+        final var actualResult =
+            elementValidationDateRangeList.validate(
+                elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
 
         assertEquals(expectedValidationError, actualResult);
       }
 
-
       @Test
       void shouldReturnNoValidationErrorIfFromIsOnMinValue() {
-        final var elementData = ElementData.builder()
-            .id(ELEMENT_ID)
-            .value(
-                ElementValueDateRangeList.builder()
-                    .dateRangeListId(FIELD_ID)
-                    .dateRangeList(List.of(
-                        DateRange.builder()
-                            .dateRangeId(FIELD_ID_RANGE)
-                            .from(LocalDate.now().plusMonths(1))
-                            .to(LocalDate.now().plusMonths(2))
-                            .build()
-                    ))
-                    .build()
-            )
-            .build();
+        final var elementData =
+            ElementData.builder()
+                .id(ELEMENT_ID)
+                .value(
+                    ElementValueDateRangeList.builder()
+                        .dateRangeListId(FIELD_ID)
+                        .dateRangeList(
+                            List.of(
+                                DateRange.builder()
+                                    .dateRangeId(FIELD_ID_RANGE)
+                                    .from(LocalDate.now().plusMonths(1))
+                                    .to(LocalDate.now().plusMonths(2))
+                                    .build()))
+                        .build())
+                .build();
 
-        final var actualResult = elementValidationDateRangeList.validate(
-            elementData,
-            Optional.of(CATEGORY_ID),
-            Collections.emptyList());
+        final var actualResult =
+            elementValidationDateRangeList.validate(
+                elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
 
         assertEquals(Collections.emptyList(), actualResult);
       }
@@ -678,26 +661,25 @@ class ElementValidationDateRangeListTest {
 
     @Test
     void shouldReturnNoValidationErrorIfFromIsAfterMinValue() {
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(
-              ElementValueDateRangeList.builder()
-                  .dateRangeListId(FIELD_ID)
-                  .dateRangeList(List.of(
-                      DateRange.builder()
-                          .dateRangeId(FIELD_ID_RANGE)
-                          .from(LocalDate.now())
-                          .to(LocalDate.now())
-                          .build()
-                  ))
-                  .build()
-          )
-          .build();
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueDateRangeList.builder()
+                      .dateRangeListId(FIELD_ID)
+                      .dateRangeList(
+                          List.of(
+                              DateRange.builder()
+                                  .dateRangeId(FIELD_ID_RANGE)
+                                  .from(LocalDate.now())
+                                  .to(LocalDate.now())
+                                  .build()))
+                      .build())
+              .build();
 
-      final var actualResult = elementValidationDateRangeList.validate(
-          elementData,
-          Optional.of(CATEGORY_ID),
-          Collections.emptyList());
+      final var actualResult =
+          elementValidationDateRangeList.validate(
+              elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
 
       assertEquals(Collections.emptyList(), actualResult);
     }
@@ -708,309 +690,286 @@ class ElementValidationDateRangeListTest {
 
     @BeforeEach
     void setUp() {
-      elementValidationDateRangeList = ElementValidationDateRangeList.builder()
-          .max(Period.ofMonths(1))
-          .build();
+      elementValidationDateRangeList =
+          ElementValidationDateRangeList.builder().max(Period.ofMonths(1)).build();
     }
 
     @Test
     void shouldReturnValidationErrorIfToIsAfterMaxValue() {
-      final var expectedValidationError = getExpectedValidationError(
-          "Ange ett datum som är senast %s.".formatted(LocalDate.now().plusMonths(1)),
-          new FieldId(FIELD_ID_RANGE.value() + ".to")
-      );
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(
-              ElementValueDateRangeList.builder()
-                  .dateRangeListId(FIELD_ID)
-                  .dateRangeList(List.of(
-                      DateRange.builder()
-                          .dateRangeId(FIELD_ID_RANGE)
-                          .from(LocalDate.now())
-                          .to(LocalDate.now().plusMonths(1).plusDays(1))
-                          .build()
-                  ))
-                  .build()
-          )
-          .build();
+      final var expectedValidationError =
+          getExpectedValidationError(
+              "Ange ett datum som är senast %s.".formatted(LocalDate.now().plusMonths(1)),
+              new FieldId(FIELD_ID_RANGE.value() + ".to"));
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueDateRangeList.builder()
+                      .dateRangeListId(FIELD_ID)
+                      .dateRangeList(
+                          List.of(
+                              DateRange.builder()
+                                  .dateRangeId(FIELD_ID_RANGE)
+                                  .from(LocalDate.now())
+                                  .to(LocalDate.now().plusMonths(1).plusDays(1))
+                                  .build()))
+                      .build())
+              .build();
 
-      final var actualResult = elementValidationDateRangeList.validate(
-          elementData,
-          Optional.of(CATEGORY_ID),
-          Collections.emptyList());
+      final var actualResult =
+          elementValidationDateRangeList.validate(
+              elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
 
       assertEquals(expectedValidationError, actualResult);
     }
 
     @Test
     void shouldReturnValidationErrorIfFromIsAfterMaxValueAndToIsMissingDate() {
-      final var expectedValidationErrorAfterMax = getExpectedValidationError(
-          "Ange ett datum som är senast %s.".formatted(LocalDate.now().plusMonths(1)),
-          new FieldId(FIELD_ID_RANGE.value() + ".from")
-      );
-      final var expectedValidationErrorIncomplete = getExpectedValidationError(
-          "Ange ett datum.",
-          new FieldId(FIELD_ID_RANGE.value() + ".to")
-      );
+      final var expectedValidationErrorAfterMax =
+          getExpectedValidationError(
+              "Ange ett datum som är senast %s.".formatted(LocalDate.now().plusMonths(1)),
+              new FieldId(FIELD_ID_RANGE.value() + ".from"));
+      final var expectedValidationErrorIncomplete =
+          getExpectedValidationError(
+              "Ange ett datum.", new FieldId(FIELD_ID_RANGE.value() + ".to"));
 
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(
-              ElementValueDateRangeList.builder()
-                  .dateRangeListId(FIELD_ID)
-                  .dateRangeList(List.of(
-                      DateRange.builder()
-                          .dateRangeId(FIELD_ID_RANGE)
-                          .from(LocalDate.now().plusMonths(1).plusDays(1))
-                          .build()
-                  ))
-                  .build()
-          )
-          .build();
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueDateRangeList.builder()
+                      .dateRangeListId(FIELD_ID)
+                      .dateRangeList(
+                          List.of(
+                              DateRange.builder()
+                                  .dateRangeId(FIELD_ID_RANGE)
+                                  .from(LocalDate.now().plusMonths(1).plusDays(1))
+                                  .build()))
+                      .build())
+              .build();
 
-      final var actualResult = elementValidationDateRangeList.validate(
-          elementData,
-          Optional.of(CATEGORY_ID),
-          Collections.emptyList());
+      final var actualResult =
+          elementValidationDateRangeList.validate(
+              elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
 
       assertAll(
           () -> assertEquals(expectedValidationErrorIncomplete.get(0), actualResult.get(0)),
-          () -> assertEquals(expectedValidationErrorAfterMax.get(0), actualResult.get(1))
-      );
+          () -> assertEquals(expectedValidationErrorAfterMax.get(0), actualResult.get(1)));
     }
 
     @Test
     void shouldReturnNoValidationErrorIfFromIsOnMaxValue() {
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(
-              ElementValueDateRangeList.builder()
-                  .dateRangeListId(FIELD_ID)
-                  .dateRangeList(List.of(
-                      DateRange.builder()
-                          .dateRangeId(FIELD_ID_RANGE)
-                          .from(LocalDate.now())
-                          .to(LocalDate.now().plusMonths(1))
-                          .build()
-                  ))
-                  .build()
-          )
-          .build();
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueDateRangeList.builder()
+                      .dateRangeListId(FIELD_ID)
+                      .dateRangeList(
+                          List.of(
+                              DateRange.builder()
+                                  .dateRangeId(FIELD_ID_RANGE)
+                                  .from(LocalDate.now())
+                                  .to(LocalDate.now().plusMonths(1))
+                                  .build()))
+                      .build())
+              .build();
 
-      final var actualResult = elementValidationDateRangeList.validate(
-          elementData,
-          Optional.of(CATEGORY_ID),
-          Collections.emptyList());
+      final var actualResult =
+          elementValidationDateRangeList.validate(
+              elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
 
       assertEquals(Collections.emptyList(), actualResult);
     }
 
     @Test
     void shouldReturnNoValidationErrorIfFromIsBeforeMaxValue() {
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(
-              ElementValueDateRangeList.builder()
-                  .dateRangeListId(FIELD_ID)
-                  .dateRangeList(List.of(
-                      DateRange.builder()
-                          .dateRangeId(FIELD_ID_RANGE)
-                          .from(LocalDate.now())
-                          .to(LocalDate.now().plusMonths(1))
-                          .build()
-                  ))
-                  .build()
-          )
-          .build();
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueDateRangeList.builder()
+                      .dateRangeListId(FIELD_ID)
+                      .dateRangeList(
+                          List.of(
+                              DateRange.builder()
+                                  .dateRangeId(FIELD_ID_RANGE)
+                                  .from(LocalDate.now())
+                                  .to(LocalDate.now().plusMonths(1))
+                                  .build()))
+                      .build())
+              .build();
 
-      final var actualResult = elementValidationDateRangeList.validate(
-          elementData,
-          Optional.of(CATEGORY_ID),
-          Collections.emptyList());
+      final var actualResult =
+          elementValidationDateRangeList.validate(
+              elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
 
       assertEquals(Collections.emptyList(), actualResult);
     }
-
   }
-
 
   @Nested
   class NotMandatory {
 
     @BeforeEach
     void setUp() {
-      elementValidationDateRangeList = ElementValidationDateRangeList.builder()
-          .build();
+      elementValidationDateRangeList = ElementValidationDateRangeList.builder().build();
     }
 
     @Test
     void shouldNotReturnValidationErrorIfEmptyListAsRanges() {
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(
-              ElementValueDateRangeList.builder()
-                  .dateRangeListId(FIELD_ID)
-                  .dateRangeList(Collections.emptyList())
-                  .build()
-          )
-          .build();
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueDateRangeList.builder()
+                      .dateRangeListId(FIELD_ID)
+                      .dateRangeList(Collections.emptyList())
+                      .build())
+              .build();
 
-      final var actualResult = elementValidationDateRangeList.validate(
-          elementData,
-          Optional.of(CATEGORY_ID),
-          Collections.emptyList());
+      final var actualResult =
+          elementValidationDateRangeList.validate(
+              elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
 
       assertEquals(Collections.emptyList(), actualResult);
     }
 
     @Test
     void shouldNotReturnValidationErrorIfNullAsRanges() {
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(
-              ElementValueDateRangeList.builder()
-                  .dateRangeListId(FIELD_ID)
-                  .build()
-          )
-          .build();
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(ElementValueDateRangeList.builder().dateRangeListId(FIELD_ID).build())
+              .build();
 
-      final var actualResult = elementValidationDateRangeList.validate(
-          elementData,
-          Optional.of(CATEGORY_ID),
-          Collections.emptyList());
+      final var actualResult =
+          elementValidationDateRangeList.validate(
+              elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
 
       assertEquals(Collections.emptyList(), actualResult);
     }
 
     @Test
     void shouldReturnValidationErrorIfOnlyToDate() {
-      final var expectedValidationError = getExpectedValidationError(
-          "Ange ett datum.",
-          new FieldId(FIELD_ID_RANGE.value() + ".from")
-      );
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(
-              ElementValueDateRangeList.builder()
-                  .dateRangeListId(FIELD_ID)
-                  .dateRangeList(List.of(
-                      DateRange.builder()
-                          .dateRangeId(FIELD_ID_RANGE)
-                          .to(LocalDate.now())
-                          .build()
-                  ))
-                  .build()
-          )
-          .build();
+      final var expectedValidationError =
+          getExpectedValidationError(
+              "Ange ett datum.", new FieldId(FIELD_ID_RANGE.value() + ".from"));
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueDateRangeList.builder()
+                      .dateRangeListId(FIELD_ID)
+                      .dateRangeList(
+                          List.of(
+                              DateRange.builder()
+                                  .dateRangeId(FIELD_ID_RANGE)
+                                  .to(LocalDate.now())
+                                  .build()))
+                      .build())
+              .build();
 
-      final var actualResult = elementValidationDateRangeList.validate(
-          elementData,
-          Optional.of(CATEGORY_ID),
-          Collections.emptyList());
+      final var actualResult =
+          elementValidationDateRangeList.validate(
+              elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
 
       assertEquals(expectedValidationError, actualResult);
     }
 
     @Test
     void shouldReturnValidationErrorIfOnlyFromDate() {
-      final var expectedValidationError = getExpectedValidationError(
-          "Ange ett datum.",
-          new FieldId(FIELD_ID_RANGE.value() + ".to")
-      );
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(
-              ElementValueDateRangeList.builder()
-                  .dateRangeListId(FIELD_ID)
-                  .dateRangeList(List.of(
-                      DateRange.builder()
-                          .dateRangeId(FIELD_ID_RANGE)
-                          .from(LocalDate.now())
-                          .build()
-                  ))
-                  .build()
-          )
-          .build();
+      final var expectedValidationError =
+          getExpectedValidationError(
+              "Ange ett datum.", new FieldId(FIELD_ID_RANGE.value() + ".to"));
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueDateRangeList.builder()
+                      .dateRangeListId(FIELD_ID)
+                      .dateRangeList(
+                          List.of(
+                              DateRange.builder()
+                                  .dateRangeId(FIELD_ID_RANGE)
+                                  .from(LocalDate.now())
+                                  .build()))
+                      .build())
+              .build();
 
-      final var actualResult = elementValidationDateRangeList.validate(
-          elementData,
-          Optional.of(CATEGORY_ID),
-          Collections.emptyList());
+      final var actualResult =
+          elementValidationDateRangeList.validate(
+              elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
 
       assertEquals(expectedValidationError, actualResult);
     }
 
     @Test
     void shouldReturnValidationErrorIfToIsBeforeFrom() {
-      final var expectedValidationError = getExpectedValidationError(
-          "Ange ett slutdatum som infaller efter startdatumet.",
-          new FieldId(FIELD_ID_RANGE.value() + ".range")
-      );
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(
-              ElementValueDateRangeList.builder()
-                  .dateRangeListId(FIELD_ID)
-                  .dateRangeList(List.of(
-                      DateRange.builder()
-                          .dateRangeId(FIELD_ID_RANGE)
-                          .from(LocalDate.now())
-                          .to(LocalDate.now().minusDays(5))
-                          .build()
-                  ))
-                  .build()
-          )
-          .build();
+      final var expectedValidationError =
+          getExpectedValidationError(
+              "Ange ett slutdatum som infaller efter startdatumet.",
+              new FieldId(FIELD_ID_RANGE.value() + ".range"));
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueDateRangeList.builder()
+                      .dateRangeListId(FIELD_ID)
+                      .dateRangeList(
+                          List.of(
+                              DateRange.builder()
+                                  .dateRangeId(FIELD_ID_RANGE)
+                                  .from(LocalDate.now())
+                                  .to(LocalDate.now().minusDays(5))
+                                  .build()))
+                      .build())
+              .build();
 
-      final var actualResult = elementValidationDateRangeList.validate(
-          elementData,
-          Optional.of(CATEGORY_ID),
-          Collections.emptyList());
+      final var actualResult =
+          elementValidationDateRangeList.validate(
+              elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
 
       assertEquals(expectedValidationError, actualResult);
     }
 
     @Test
     void shouldReturnSeveralValidationErrors() {
-      final var expectedValidationErrorIncorrect = getExpectedValidationError(
-          "Ange ett slutdatum som infaller efter startdatumet.",
-          new FieldId(FIELD_ID_RANGE.value() + ".range")
-      );
-      final var expectedValidationErrorIncomplete = getExpectedValidationError(
-          "Ange ett datum.",
-          new FieldId(FIELD_ID_RANGE_2.value() + ".to")
-      );
+      final var expectedValidationErrorIncorrect =
+          getExpectedValidationError(
+              "Ange ett slutdatum som infaller efter startdatumet.",
+              new FieldId(FIELD_ID_RANGE.value() + ".range"));
+      final var expectedValidationErrorIncomplete =
+          getExpectedValidationError(
+              "Ange ett datum.", new FieldId(FIELD_ID_RANGE_2.value() + ".to"));
 
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(
-              ElementValueDateRangeList.builder()
-                  .dateRangeListId(FIELD_ID)
-                  .dateRangeList(List.of(
-                      DateRange.builder()
-                          .dateRangeId(FIELD_ID_RANGE)
-                          .from(LocalDate.now())
-                          .to(LocalDate.now().minusDays(5))
-                          .build(),
-                      DateRange.builder()
-                          .dateRangeId(FIELD_ID_RANGE_2)
-                          .from(LocalDate.now())
-                          .build()
-                  ))
-                  .build()
-          )
-          .build();
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueDateRangeList.builder()
+                      .dateRangeListId(FIELD_ID)
+                      .dateRangeList(
+                          List.of(
+                              DateRange.builder()
+                                  .dateRangeId(FIELD_ID_RANGE)
+                                  .from(LocalDate.now())
+                                  .to(LocalDate.now().minusDays(5))
+                                  .build(),
+                              DateRange.builder()
+                                  .dateRangeId(FIELD_ID_RANGE_2)
+                                  .from(LocalDate.now())
+                                  .build()))
+                      .build())
+              .build();
 
-      final var actualResult = elementValidationDateRangeList.validate(
-          elementData,
-          Optional.of(CATEGORY_ID),
-          Collections.emptyList());
+      final var actualResult =
+          elementValidationDateRangeList.validate(
+              elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
 
       assertAll(
           () -> assertEquals(expectedValidationErrorIncomplete.get(0), actualResult.get(0)),
-          () -> assertEquals(expectedValidationErrorIncorrect.get(0), actualResult.get(1))
-      );
+          () -> assertEquals(expectedValidationErrorIncorrect.get(0), actualResult.get(1)));
     }
 
     @Nested
@@ -1018,70 +977,66 @@ class ElementValidationDateRangeListTest {
 
       @Test
       void shouldReturnErrorIfDateRangesHaveSameDayOnFrom() {
-        final var expectedValidationError = getExpectedValidationError(
-            "Ange perioder som inte överlappar varandra.", FIELD_ID
-        );
+        final var expectedValidationError =
+            getExpectedValidationError("Ange perioder som inte överlappar varandra.", FIELD_ID);
 
-        final var elementData = ElementData.builder()
-            .id(ELEMENT_ID)
-            .value(
-                ElementValueDateRangeList.builder()
-                    .dateRangeListId(FIELD_ID)
-                    .dateRangeList(List.of(
-                        DateRange.builder()
-                            .dateRangeId(FIELD_ID_RANGE)
-                            .from(LocalDate.now())
-                            .to(LocalDate.now().plusDays(1))
-                            .build(),
-                        DateRange.builder()
-                            .dateRangeId(FIELD_ID_RANGE_2)
-                            .from(LocalDate.now())
-                            .to(LocalDate.now().plusDays(3))
-                            .build()
-                    ))
-                    .build()
-            )
-            .build();
+        final var elementData =
+            ElementData.builder()
+                .id(ELEMENT_ID)
+                .value(
+                    ElementValueDateRangeList.builder()
+                        .dateRangeListId(FIELD_ID)
+                        .dateRangeList(
+                            List.of(
+                                DateRange.builder()
+                                    .dateRangeId(FIELD_ID_RANGE)
+                                    .from(LocalDate.now())
+                                    .to(LocalDate.now().plusDays(1))
+                                    .build(),
+                                DateRange.builder()
+                                    .dateRangeId(FIELD_ID_RANGE_2)
+                                    .from(LocalDate.now())
+                                    .to(LocalDate.now().plusDays(3))
+                                    .build()))
+                        .build())
+                .build();
 
-        final var actualResult = elementValidationDateRangeList.validate(
-            elementData,
-            Optional.of(CATEGORY_ID),
-            Collections.emptyList());
+        final var actualResult =
+            elementValidationDateRangeList.validate(
+                elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
 
         assertEquals(expectedValidationError, actualResult);
       }
 
       @Test
       void shouldReturnErrorIfDateRangesHaveSameDayOnTo() {
-        final var expectedValidationError = getExpectedValidationError(
-            "Ange perioder som inte överlappar varandra.", FIELD_ID
-        );
+        final var expectedValidationError =
+            getExpectedValidationError("Ange perioder som inte överlappar varandra.", FIELD_ID);
 
-        final var elementData = ElementData.builder()
-            .id(ELEMENT_ID)
-            .value(
-                ElementValueDateRangeList.builder()
-                    .dateRangeListId(FIELD_ID)
-                    .dateRangeList(List.of(
-                        DateRange.builder()
-                            .dateRangeId(FIELD_ID_RANGE)
-                            .from(LocalDate.now().minusDays(1))
-                            .to(LocalDate.now())
-                            .build(),
-                        DateRange.builder()
-                            .dateRangeId(FIELD_ID_RANGE_2)
-                            .from(LocalDate.now().minusDays(2))
-                            .to(LocalDate.now())
-                            .build()
-                    ))
-                    .build()
-            )
-            .build();
+        final var elementData =
+            ElementData.builder()
+                .id(ELEMENT_ID)
+                .value(
+                    ElementValueDateRangeList.builder()
+                        .dateRangeListId(FIELD_ID)
+                        .dateRangeList(
+                            List.of(
+                                DateRange.builder()
+                                    .dateRangeId(FIELD_ID_RANGE)
+                                    .from(LocalDate.now().minusDays(1))
+                                    .to(LocalDate.now())
+                                    .build(),
+                                DateRange.builder()
+                                    .dateRangeId(FIELD_ID_RANGE_2)
+                                    .from(LocalDate.now().minusDays(2))
+                                    .to(LocalDate.now())
+                                    .build()))
+                        .build())
+                .build();
 
-        final var actualResult = elementValidationDateRangeList.validate(
-            elementData,
-            Optional.of(CATEGORY_ID),
-            Collections.emptyList());
+        final var actualResult =
+            elementValidationDateRangeList.validate(
+                elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
 
         assertEquals(expectedValidationError, actualResult);
       }
@@ -1089,176 +1044,167 @@ class ElementValidationDateRangeListTest {
 
     @Test
     void shouldReturnErrorIfDateRangesHaveOverlappingPeriods() {
-      final var expectedValidationError = getExpectedValidationError(
-          "Ange perioder som inte överlappar varandra.", FIELD_ID
-      );
+      final var expectedValidationError =
+          getExpectedValidationError("Ange perioder som inte överlappar varandra.", FIELD_ID);
 
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(
-              ElementValueDateRangeList.builder()
-                  .dateRangeListId(FIELD_ID)
-                  .dateRangeList(List.of(
-                      DateRange.builder()
-                          .dateRangeId(FIELD_ID_RANGE)
-                          .from(LocalDate.now().minusDays(1))
-                          .to(LocalDate.now().plusDays(10))
-                          .build(),
-                      DateRange.builder()
-                          .dateRangeId(FIELD_ID_RANGE_2)
-                          .from(LocalDate.now())
-                          .to(LocalDate.now().plusDays(5))
-                          .build()
-                  ))
-                  .build()
-          )
-          .build();
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueDateRangeList.builder()
+                      .dateRangeListId(FIELD_ID)
+                      .dateRangeList(
+                          List.of(
+                              DateRange.builder()
+                                  .dateRangeId(FIELD_ID_RANGE)
+                                  .from(LocalDate.now().minusDays(1))
+                                  .to(LocalDate.now().plusDays(10))
+                                  .build(),
+                              DateRange.builder()
+                                  .dateRangeId(FIELD_ID_RANGE_2)
+                                  .from(LocalDate.now())
+                                  .to(LocalDate.now().plusDays(5))
+                                  .build()))
+                      .build())
+              .build();
 
-      final var actualResult = elementValidationDateRangeList.validate(
-          elementData,
-          Optional.of(CATEGORY_ID),
-          Collections.emptyList());
+      final var actualResult =
+          elementValidationDateRangeList.validate(
+              elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
 
       assertEquals(expectedValidationError, actualResult);
     }
 
     @Test
     void shouldReturnErrorIfLowerOverlap() {
-      final var expectedValidationError = getExpectedValidationError(
-          "Ange perioder som inte överlappar varandra.", FIELD_ID
-      );
+      final var expectedValidationError =
+          getExpectedValidationError("Ange perioder som inte överlappar varandra.", FIELD_ID);
 
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(
-              ElementValueDateRangeList.builder()
-                  .dateRangeListId(FIELD_ID)
-                  .dateRangeList(List.of(
-                      DateRange.builder()
-                          .dateRangeId(FIELD_ID_RANGE)
-                          .from(LocalDate.now().minusDays(10))
-                          .to(LocalDate.now().plusDays(10))
-                          .build(),
-                      DateRange.builder()
-                          .dateRangeId(FIELD_ID_RANGE_2)
-                          .from(LocalDate.now())
-                          .to(LocalDate.now().plusDays(15))
-                          .build()
-                  ))
-                  .build()
-          )
-          .build();
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueDateRangeList.builder()
+                      .dateRangeListId(FIELD_ID)
+                      .dateRangeList(
+                          List.of(
+                              DateRange.builder()
+                                  .dateRangeId(FIELD_ID_RANGE)
+                                  .from(LocalDate.now().minusDays(10))
+                                  .to(LocalDate.now().plusDays(10))
+                                  .build(),
+                              DateRange.builder()
+                                  .dateRangeId(FIELD_ID_RANGE_2)
+                                  .from(LocalDate.now())
+                                  .to(LocalDate.now().plusDays(15))
+                                  .build()))
+                      .build())
+              .build();
 
-      final var actualResult = elementValidationDateRangeList.validate(
-          elementData,
-          Optional.of(CATEGORY_ID),
-          Collections.emptyList());
+      final var actualResult =
+          elementValidationDateRangeList.validate(
+              elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
 
       assertEquals(expectedValidationError, actualResult);
     }
 
     @Test
     void shouldReturnErrorIfUpperOverlap() {
-      final var expectedValidationError = getExpectedValidationError(
-          "Ange perioder som inte överlappar varandra.", FIELD_ID
-      );
+      final var expectedValidationError =
+          getExpectedValidationError("Ange perioder som inte överlappar varandra.", FIELD_ID);
 
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(
-              ElementValueDateRangeList.builder()
-                  .dateRangeListId(FIELD_ID)
-                  .dateRangeList(List.of(
-                      DateRange.builder()
-                          .dateRangeId(FIELD_ID_RANGE)
-                          .from(LocalDate.now().plusDays(1))
-                          .to(LocalDate.now().plusDays(20))
-                          .build(),
-                      DateRange.builder()
-                          .dateRangeId(FIELD_ID_RANGE_2)
-                          .from(LocalDate.now())
-                          .to(LocalDate.now().plusDays(15))
-                          .build()
-                  ))
-                  .build()
-          )
-          .build();
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueDateRangeList.builder()
+                      .dateRangeListId(FIELD_ID)
+                      .dateRangeList(
+                          List.of(
+                              DateRange.builder()
+                                  .dateRangeId(FIELD_ID_RANGE)
+                                  .from(LocalDate.now().plusDays(1))
+                                  .to(LocalDate.now().plusDays(20))
+                                  .build(),
+                              DateRange.builder()
+                                  .dateRangeId(FIELD_ID_RANGE_2)
+                                  .from(LocalDate.now())
+                                  .to(LocalDate.now().plusDays(15))
+                                  .build()))
+                      .build())
+              .build();
 
-      final var actualResult = elementValidationDateRangeList.validate(
-          elementData,
-          Optional.of(CATEGORY_ID),
-          Collections.emptyList());
+      final var actualResult =
+          elementValidationDateRangeList.validate(
+              elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
 
       assertEquals(expectedValidationError, actualResult);
     }
 
     @Test
     void shouldReturnErrorIfOneCorrectPeriodButTwoOverlap() {
-      final var expectedValidationError = getExpectedValidationError(
-          "Ange perioder som inte överlappar varandra.", FIELD_ID
-      );
+      final var expectedValidationError =
+          getExpectedValidationError("Ange perioder som inte överlappar varandra.", FIELD_ID);
 
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(
-              ElementValueDateRangeList.builder()
-                  .dateRangeListId(FIELD_ID)
-                  .dateRangeList(List.of(
-                      DateRange.builder()
-                          .dateRangeId(FIELD_ID_RANGE)
-                          .from(LocalDate.now().minusDays(10))
-                          .to(LocalDate.now().plusDays(10))
-                          .build(),
-                      DateRange.builder()
-                          .dateRangeId(FIELD_ID_RANGE_2)
-                          .from(LocalDate.now())
-                          .to(LocalDate.now().plusDays(15))
-                          .build(),
-                      DateRange.builder()
-                          .dateRangeId(FIELD_ID_RANGE_3)
-                          .from(LocalDate.now().plusDays(20))
-                          .to(LocalDate.now().plusDays(25))
-                          .build()
-                  ))
-                  .build()
-          )
-          .build();
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueDateRangeList.builder()
+                      .dateRangeListId(FIELD_ID)
+                      .dateRangeList(
+                          List.of(
+                              DateRange.builder()
+                                  .dateRangeId(FIELD_ID_RANGE)
+                                  .from(LocalDate.now().minusDays(10))
+                                  .to(LocalDate.now().plusDays(10))
+                                  .build(),
+                              DateRange.builder()
+                                  .dateRangeId(FIELD_ID_RANGE_2)
+                                  .from(LocalDate.now())
+                                  .to(LocalDate.now().plusDays(15))
+                                  .build(),
+                              DateRange.builder()
+                                  .dateRangeId(FIELD_ID_RANGE_3)
+                                  .from(LocalDate.now().plusDays(20))
+                                  .to(LocalDate.now().plusDays(25))
+                                  .build()))
+                      .build())
+              .build();
 
-      final var actualResult = elementValidationDateRangeList.validate(
-          elementData,
-          Optional.of(CATEGORY_ID),
-          Collections.emptyList());
+      final var actualResult =
+          elementValidationDateRangeList.validate(
+              elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
 
       assertEquals(expectedValidationError, actualResult);
     }
 
     @Test
     void shouldReturnNoValidationErrorsIfCorrectPeriodsWithNoOverlap() {
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(
-              ElementValueDateRangeList.builder()
-                  .dateRangeListId(FIELD_ID)
-                  .dateRangeList(List.of(
-                      DateRange.builder()
-                          .dateRangeId(FIELD_ID_RANGE_2)
-                          .from(LocalDate.now())
-                          .to(LocalDate.now().plusDays(15))
-                          .build(),
-                      DateRange.builder()
-                          .dateRangeId(FIELD_ID_RANGE_2)
-                          .from(LocalDate.now().plusDays(20))
-                          .to(LocalDate.now().plusDays(25))
-                          .build()
-                  ))
-                  .build()
-          )
-          .build();
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueDateRangeList.builder()
+                      .dateRangeListId(FIELD_ID)
+                      .dateRangeList(
+                          List.of(
+                              DateRange.builder()
+                                  .dateRangeId(FIELD_ID_RANGE_2)
+                                  .from(LocalDate.now())
+                                  .to(LocalDate.now().plusDays(15))
+                                  .build(),
+                              DateRange.builder()
+                                  .dateRangeId(FIELD_ID_RANGE_2)
+                                  .from(LocalDate.now().plusDays(20))
+                                  .to(LocalDate.now().plusDays(25))
+                                  .build()))
+                      .build())
+              .build();
 
-      final var actualResult = elementValidationDateRangeList.validate(
-          elementData,
-          Optional.of(CATEGORY_ID),
-          Collections.emptyList());
+      final var actualResult =
+          elementValidationDateRangeList.validate(
+              elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
 
       assertEquals(Collections.emptyList(), actualResult);
     }
@@ -1268,120 +1214,113 @@ class ElementValidationDateRangeListTest {
 
       @BeforeEach
       void Setup() {
-        elementValidationDateRangeList = ElementValidationDateRangeList.builder()
-            .min(Period.ofMonths(1))
-            .build();
+        elementValidationDateRangeList =
+            ElementValidationDateRangeList.builder().min(Period.ofMonths(1)).build();
       }
 
       @Test
       void shouldReturnValidationErrorIfFromIsBeforeMinValue() {
-        final var expectedValidationError = getExpectedValidationError(
-            "Ange ett datum som är tidigast %s.".formatted(LocalDate.now().plusMonths(1)),
-            new FieldId(FIELD_ID_RANGE.value() + ".from")
-        );
-        final var elementData = ElementData.builder()
-            .id(ELEMENT_ID)
-            .value(
-                ElementValueDateRangeList.builder()
-                    .dateRangeListId(FIELD_ID)
-                    .dateRangeList(List.of(
-                        DateRange.builder()
-                            .dateRangeId(FIELD_ID_RANGE)
-                            .from(LocalDate.now().plusMonths(1).minusDays(1))
-                            .to(LocalDate.now().plusMonths(2))
-                            .build()
-                    ))
-                    .build()
-            )
-            .build();
+        final var expectedValidationError =
+            getExpectedValidationError(
+                "Ange ett datum som är tidigast %s.".formatted(LocalDate.now().plusMonths(1)),
+                new FieldId(FIELD_ID_RANGE.value() + ".from"));
+        final var elementData =
+            ElementData.builder()
+                .id(ELEMENT_ID)
+                .value(
+                    ElementValueDateRangeList.builder()
+                        .dateRangeListId(FIELD_ID)
+                        .dateRangeList(
+                            List.of(
+                                DateRange.builder()
+                                    .dateRangeId(FIELD_ID_RANGE)
+                                    .from(LocalDate.now().plusMonths(1).minusDays(1))
+                                    .to(LocalDate.now().plusMonths(2))
+                                    .build()))
+                        .build())
+                .build();
 
-        final var actualResult = elementValidationDateRangeList.validate(
-            elementData,
-            Optional.of(CATEGORY_ID),
-            Collections.emptyList());
+        final var actualResult =
+            elementValidationDateRangeList.validate(
+                elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
 
         assertEquals(expectedValidationError, actualResult);
       }
 
       @Test
       void shouldReturnValidationErrorIfToIsBeforeMinValueWhenMinIsNegative() {
-        final var expectedValidationError = List.of(
-            getBeforeMinValidationError(".from", 1),
-            getBeforeMinValidationError(".to", 1)
-        );
+        final var expectedValidationError =
+            List.of(getBeforeMinValidationError(".from", 1), getBeforeMinValidationError(".to", 1));
 
-        final var elementData = ElementData.builder()
-            .id(ELEMENT_ID)
-            .value(
-                ElementValueDateRangeList.builder()
-                    .dateRangeListId(FIELD_ID)
-                    .dateRangeList(List.of(
-                        DateRange.builder()
-                            .dateRangeId(FIELD_ID_RANGE)
-                            .from(LocalDate.now())
-                            .to(LocalDate.now().plusMonths(1).minusDays(1))
-                            .build()
-                    ))
-                    .build()
-            )
-            .build();
+        final var elementData =
+            ElementData.builder()
+                .id(ELEMENT_ID)
+                .value(
+                    ElementValueDateRangeList.builder()
+                        .dateRangeListId(FIELD_ID)
+                        .dateRangeList(
+                            List.of(
+                                DateRange.builder()
+                                    .dateRangeId(FIELD_ID_RANGE)
+                                    .from(LocalDate.now())
+                                    .to(LocalDate.now().plusMonths(1).minusDays(1))
+                                    .build()))
+                        .build())
+                .build();
 
-        final var actualResult = elementValidationDateRangeList.validate(
-            elementData,
-            Optional.of(CATEGORY_ID),
-            Collections.emptyList());
+        final var actualResult =
+            elementValidationDateRangeList.validate(
+                elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
 
         assertEquals(expectedValidationError, actualResult);
       }
 
       @Test
       void shouldReturnNoValidationErrorIfFromIsOnMinValue() {
-        final var elementData = ElementData.builder()
-            .id(ELEMENT_ID)
-            .value(
-                ElementValueDateRangeList.builder()
-                    .dateRangeListId(FIELD_ID)
-                    .dateRangeList(List.of(
-                        DateRange.builder()
-                            .dateRangeId(FIELD_ID_RANGE)
-                            .from(LocalDate.now().plusMonths(1))
-                            .to(LocalDate.now().plusMonths(2))
-                            .build()
-                    ))
-                    .build()
-            )
-            .build();
+        final var elementData =
+            ElementData.builder()
+                .id(ELEMENT_ID)
+                .value(
+                    ElementValueDateRangeList.builder()
+                        .dateRangeListId(FIELD_ID)
+                        .dateRangeList(
+                            List.of(
+                                DateRange.builder()
+                                    .dateRangeId(FIELD_ID_RANGE)
+                                    .from(LocalDate.now().plusMonths(1))
+                                    .to(LocalDate.now().plusMonths(2))
+                                    .build()))
+                        .build())
+                .build();
 
-        final var actualResult = elementValidationDateRangeList.validate(
-            elementData,
-            Optional.of(CATEGORY_ID),
-            Collections.emptyList());
+        final var actualResult =
+            elementValidationDateRangeList.validate(
+                elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
 
         assertEquals(Collections.emptyList(), actualResult);
       }
 
       @Test
       void shouldReturnNoValidationErrorIfFromIsAfterMinValue() {
-        final var elementData = ElementData.builder()
-            .id(ELEMENT_ID)
-            .value(
-                ElementValueDateRangeList.builder()
-                    .dateRangeListId(FIELD_ID)
-                    .dateRangeList(List.of(
-                        DateRange.builder()
-                            .dateRangeId(FIELD_ID_RANGE)
-                            .from(LocalDate.now().plusMonths(1).plusDays(1))
-                            .to(LocalDate.now().plusMonths(2))
-                            .build()
-                    ))
-                    .build()
-            )
-            .build();
+        final var elementData =
+            ElementData.builder()
+                .id(ELEMENT_ID)
+                .value(
+                    ElementValueDateRangeList.builder()
+                        .dateRangeListId(FIELD_ID)
+                        .dateRangeList(
+                            List.of(
+                                DateRange.builder()
+                                    .dateRangeId(FIELD_ID_RANGE)
+                                    .from(LocalDate.now().plusMonths(1).plusDays(1))
+                                    .to(LocalDate.now().plusMonths(2))
+                                    .build()))
+                        .build())
+                .build();
 
-        final var actualResult = elementValidationDateRangeList.validate(
-            elementData,
-            Optional.of(CATEGORY_ID),
-            Collections.emptyList());
+        final var actualResult =
+            elementValidationDateRangeList.validate(
+                elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
 
         assertEquals(Collections.emptyList(), actualResult);
       }
@@ -1393,29 +1332,26 @@ class ElementValidationDateRangeListTest {
 
     @Test
     void shouldReturnNoValidationErrorIfMinIsNull() {
-      elementValidationDateRangeList = ElementValidationDateRangeList.builder()
-          .min(null)
-          .build();
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(
-              ElementValueDateRangeList.builder()
-                  .dateRangeListId(FIELD_ID)
-                  .dateRangeList(List.of(
-                      DateRange.builder()
-                          .dateRangeId(FIELD_ID_RANGE)
-                          .from(LocalDate.now())
-                          .to(LocalDate.now())
-                          .build()
-                  ))
-                  .build()
-          )
-          .build();
+      elementValidationDateRangeList = ElementValidationDateRangeList.builder().min(null).build();
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueDateRangeList.builder()
+                      .dateRangeListId(FIELD_ID)
+                      .dateRangeList(
+                          List.of(
+                              DateRange.builder()
+                                  .dateRangeId(FIELD_ID_RANGE)
+                                  .from(LocalDate.now())
+                                  .to(LocalDate.now())
+                                  .build()))
+                      .build())
+              .build();
 
-      final var actualResult = elementValidationDateRangeList.validate(
-          elementData,
-          Optional.of(CATEGORY_ID),
-          Collections.emptyList());
+      final var actualResult =
+          elementValidationDateRangeList.validate(
+              elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
 
       assertEquals(Collections.emptyList(), actualResult);
     }
@@ -1423,31 +1359,29 @@ class ElementValidationDateRangeListTest {
     @Test
     void shouldReturnNoValidationErrorIfMinIsNotSet() {
       elementValidationDateRangeList = ElementValidationDateRangeList.builder().build();
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(
-              ElementValueDateRangeList.builder()
-                  .dateRangeListId(FIELD_ID)
-                  .dateRangeList(List.of(
-                      DateRange.builder()
-                          .dateRangeId(FIELD_ID_RANGE)
-                          .from(LocalDate.now())
-                          .to(LocalDate.now())
-                          .build()
-                  ))
-                  .build()
-          )
-          .build();
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueDateRangeList.builder()
+                      .dateRangeListId(FIELD_ID)
+                      .dateRangeList(
+                          List.of(
+                              DateRange.builder()
+                                  .dateRangeId(FIELD_ID_RANGE)
+                                  .from(LocalDate.now())
+                                  .to(LocalDate.now())
+                                  .build()))
+                      .build())
+              .build();
 
-      final var actualResult = elementValidationDateRangeList.validate(
-          elementData,
-          Optional.of(CATEGORY_ID),
-          Collections.emptyList());
+      final var actualResult =
+          elementValidationDateRangeList.validate(
+              elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
 
       assertEquals(Collections.emptyList(), actualResult);
     }
   }
-
 
   private static List<ValidationError> getExpectedValidationError(String message, FieldId fieldId) {
     return List.of(
@@ -1456,8 +1390,7 @@ class ElementValidationDateRangeListTest {
             .fieldId(fieldId)
             .categoryId(CATEGORY_ID)
             .message(new ErrorMessage(message))
-            .build()
-    );
+            .build());
   }
 
   private static List<ValidationError> getExpectedValidationErrorForMandatory() {
@@ -1469,8 +1402,9 @@ class ElementValidationDateRangeListTest {
         .elementId(ELEMENT_ID)
         .fieldId(new FieldId(FIELD_ID_RANGE.value() + suffix))
         .categoryId(CATEGORY_ID)
-        .message(new ErrorMessage(
-            "Ange ett datum som är tidigast %s.".formatted(LocalDate.now().plusMonths(min))))
+        .message(
+            new ErrorMessage(
+                "Ange ett datum som är tidigast %s.".formatted(LocalDate.now().plusMonths(min))))
         .build();
   }
 }

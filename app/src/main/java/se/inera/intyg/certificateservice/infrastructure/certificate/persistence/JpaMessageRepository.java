@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificate.persistence;
 
 import java.util.ArrayList;
@@ -33,29 +51,27 @@ public class JpaMessageRepository implements TestabilityMessageRepository {
   private final MessageRelationEntityRepository messageRelationEntityRepository;
   private final MessageEntitySpecificationFactory messageEntitySpecificationFactory;
 
-
   @Override
   public Message save(Message message) {
     if (message == null) {
-      throw new IllegalArgumentException(
-          "Unable to save, message was null"
-      );
+      throw new IllegalArgumentException("Unable to save, message was null");
     }
 
     if (message.status() == MessageStatus.DELETED_DRAFT) {
-      messageEntityRepository.findMessageEntityById(message.id().id())
+      messageEntityRepository
+          .findMessageEntityById(message.id().id())
           .ifPresent(messageEntityRepository::delete);
       return message;
     }
 
-    final var savedEntity = messageEntityRepository.save(
-        messageEntityMapper.toEntity(
-            message,
-            messageEntityRepository.findMessageEntityById(message.id().id())
-                .map(MessageEntity::getKey)
-                .orElse(null)
-        )
-    );
+    final var savedEntity =
+        messageEntityRepository.save(
+            messageEntityMapper.toEntity(
+                message,
+                messageEntityRepository
+                    .findMessageEntityById(message.id().id())
+                    .map(MessageEntity::getKey)
+                    .orElse(null)));
 
     messageRelationRepository.save(message, savedEntity);
 
@@ -75,9 +91,7 @@ public class JpaMessageRepository implements TestabilityMessageRepository {
         .forEach(
             entity ->
                 messageRelationEntityRepository.deleteAllByChildMessageOrParentMessage(
-                    entity,
-                    entity)
-        );
+                    entity, entity));
 
     messageEntityRepository.deleteAllByIdIn(messageIds);
   }
@@ -92,14 +106,13 @@ public class JpaMessageRepository implements TestabilityMessageRepository {
     if (messageId == null) {
       throw new IllegalArgumentException("Cannot get message if messageId is null");
     }
-    final var messageEntity = messageEntityRepository.findMessageEntityById(
-            messageId.id()
-        )
-        .orElseThrow(() ->
-            new IllegalArgumentException(
-                "MessgeId '%s' not present in repository".formatted(messageId)
-            )
-        );
+    final var messageEntity =
+        messageEntityRepository
+            .findMessageEntityById(messageId.id())
+            .orElseThrow(
+                () ->
+                    new IllegalArgumentException(
+                        "MessgeId '%s' not present in repository".formatted(messageId)));
 
     return messageEntityMapper.toDomain(messageEntity);
   }
@@ -108,18 +121,17 @@ public class JpaMessageRepository implements TestabilityMessageRepository {
   public Message findById(MessageId messageId) {
     if (messageId == null) {
       throw new IllegalArgumentException("Cannot get message if messageId is null");
-
     }
-    final var messageEntity = messageEntityRepository.findMessageEntityById(
-            messageId.id()
-        )
-        .orElseThrow(() ->
-            new IllegalArgumentException(
-                "MessgeId '%s' not present in repository".formatted(messageId)
-            )
-        );
+    final var messageEntity =
+        messageEntityRepository
+            .findMessageEntityById(messageId.id())
+            .orElseThrow(
+                () ->
+                    new IllegalArgumentException(
+                        "MessgeId '%s' not present in repository".formatted(messageId)));
 
-    return messageRelationEntityRepository.findByChildMessage(messageEntity)
+    return messageRelationEntityRepository
+        .findByChildMessage(messageEntity)
         .map(relation -> messageEntityMapper.toDomain(relation.getParentMessage()))
         .orElse(messageEntityMapper.toDomain(messageEntity));
   }
@@ -134,34 +146,35 @@ public class JpaMessageRepository implements TestabilityMessageRepository {
         .toList();
   }
 
-
   @Override
-  public List<CertificateMessageCount> findCertificateMessageCountByPatientKeyAndStatusSentAndCreatedAfter(
-      List<PersonId> patientIds, int maxDays) {
+  public List<CertificateMessageCount>
+      findCertificateMessageCountByPatientKeyAndStatusSentAndCreatedAfter(
+          List<PersonId> patientIds, int maxDays) {
 
     final var results = new ArrayList<CertificateMessageCountEntity>();
 
     for (int i = 0; i < patientIds.size(); i += BATCH_SIZE) {
-      List<String> batch = patientIds.subList(i,
-              Math.min(i + BATCH_SIZE, patientIds.size()))
-          .stream()
-          .map(PersonId::idWithoutDash)
-          .toList();
+      List<String> batch =
+          patientIds.subList(i, Math.min(i + BATCH_SIZE, patientIds.size())).stream()
+              .map(PersonId::idWithoutDash)
+              .toList();
       results.addAll(messageEntityRepository.getMessageCountForCertificates(batch, maxDays));
     }
 
-    return results.stream().map(certificateMessageCount ->
-            new CertificateMessageCount(
-                new CertificateId(certificateMessageCount.getCertificateId()),
-                certificateMessageCount.getComplementsCount(),
-                certificateMessageCount.getOthersCount()
-            ))
+    return results.stream()
+        .map(
+            certificateMessageCount ->
+                new CertificateMessageCount(
+                    new CertificateId(certificateMessageCount.getCertificateId()),
+                    certificateMessageCount.getComplementsCount(),
+                    certificateMessageCount.getOthersCount()))
         .toList();
-
   }
 
   private boolean messageIsValidType(Message message) {
-    return message.type() == MessageType.ANSWER || message.type() == MessageType.REMINDER
-        || message.type() == MessageType.MISSING || message.status() == MessageStatus.DRAFT;
+    return message.type() == MessageType.ANSWER
+        || message.type() == MessageType.REMINDER
+        || message.type() == MessageType.MISSING
+        || message.status() == MessageStatus.DRAFT;
   }
 }

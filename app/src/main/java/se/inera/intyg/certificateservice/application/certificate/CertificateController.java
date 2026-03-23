@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate;
 
 import static se.inera.intyg.certificateservice.logging.MdcLogConstants.EVENT_TYPE_ACCESSED;
@@ -149,7 +167,8 @@ public class CertificateController {
   @OptimisticLockErrorHandler
   DeleteCertificateResponse deleteCertificate(
       @RequestBody DeleteCertificateRequest deleteCertificateRequest,
-      @PathVariable("certificateId") String certificateId, @PathVariable("version") Long version) {
+      @PathVariable("certificateId") String certificateId,
+      @PathVariable("version") Long version) {
     return deleteCertificateService.delete(deleteCertificateRequest, certificateId, version);
   }
 
@@ -174,18 +193,22 @@ public class CertificateController {
   @OptimisticLockErrorHandler
   SignCertificateResponse signCertificate(
       @RequestBody SignCertificateRequest signCertificateRequest,
-      @PathVariable("certificateId") String certificateId, @PathVariable("version") Long version) {
+      @PathVariable("certificateId") String certificateId,
+      @PathVariable("version") Long version) {
     return signCertificateService.sign(signCertificateRequest, certificateId, version);
   }
 
   @PostMapping("/{certificateId}/signwithoutsignature/{version}")
-  @PerformanceLogging(eventAction = "sign-certificate-without-signature", eventType = EVENT_TYPE_CHANGE)
+  @PerformanceLogging(
+      eventAction = "sign-certificate-without-signature",
+      eventType = EVENT_TYPE_CHANGE)
   @OptimisticLockErrorHandler
   SignCertificateResponse signCertificateWithoutSignature(
       @RequestBody SignCertificateWithoutSignatureRequest signCertificateRequest,
-      @PathVariable("certificateId") String certificateId, @PathVariable("version") Long version) {
-    return signCertificateWithoutSignatureService.sign(signCertificateRequest, certificateId,
-        version);
+      @PathVariable("certificateId") String certificateId,
+      @PathVariable("version") Long version) {
+    return signCertificateWithoutSignatureService.sign(
+        signCertificateRequest, certificateId, version);
   }
 
   @PostMapping("/{certificateId}/send")
@@ -285,7 +308,9 @@ public class CertificateController {
   }
 
   @PostMapping("/{certificateId}/draft")
-  @PerformanceLogging(eventAction = "create-draft-from-certificate", eventType = EVENT_TYPE_CREATION)
+  @PerformanceLogging(
+      eventAction = "create-draft-from-certificate",
+      eventType = EVENT_TYPE_CREATION)
   CreateDraftFromCertificateResponse createDraftFromCertificate(
       @RequestBody CreateDraftFromCertificateRequest request,
       @PathVariable("certificateId") String certificateId) {
@@ -301,12 +326,14 @@ public class CertificateController {
   }
 
   @PostMapping("/{certificateId}/candidate/{candidateCertificateId}")
-  @PerformanceLogging(eventAction = "update-with-certificate-candidate", eventType = EVENT_TYPE_ACCESSED)
+  @PerformanceLogging(
+      eventAction = "update-with-certificate-candidate",
+      eventType = EVENT_TYPE_ACCESSED)
   UpdateWithCertificateCandidateResponse updateWithCertificateCandidate(
       @RequestBody UpdateWithCertificateCandidateRequest request,
       @PathVariable("certificateId") String certificateId,
       @PathVariable("candidateCertificateId") String candidateCertificateId) {
-    return updateWithCertificateCandidateService.update(request, certificateId,
-        candidateCertificateId);
+    return updateWithCertificateCandidateService.update(
+        request, certificateId, candidateCertificateId);
   }
 }

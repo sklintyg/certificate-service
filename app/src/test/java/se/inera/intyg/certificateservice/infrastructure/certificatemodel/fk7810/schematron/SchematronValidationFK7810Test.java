@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7810.schematron;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -53,49 +71,42 @@ import se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertifica
 class SchematronValidationFK7810Test {
 
   private static final ActionEvaluation ACTION_EVALUATION = ActionEvaluation.builder().build();
-  @Mock
-  private CertificateActionFactory certificateActionFactory;
-  @Mock
-  private DiagnosisCodeRepository diagnosisCodeRepository;
+  @Mock private CertificateActionFactory certificateActionFactory;
+  @Mock private DiagnosisCodeRepository diagnosisCodeRepository;
   private SchematronValidator schematronValidator;
-  private final XmlGeneratorCertificateV4 generator = new XmlGeneratorCertificateV4(
-      new XmlGeneratorValue(
-          List.of(
-              new XmlGeneratorDate(),
-              new XmlGeneratorText(),
-              new XmlGeneratorDateList(),
-              new XmlGeneratorBoolean(),
-              new XmlGeneratorCode(),
-              new XmlGeneratorDiagnosisList(),
-              new XmlGeneratorDateRange(),
-              new XmlGeneratorMedicalInvestigationList()
-          ),
-          Collections.emptyList()
-      ),
-      new XmlValidationService(
-          new SchematronValidator(),
-          new SchemaValidatorV4()
-      )
-  );
+  private final XmlGeneratorCertificateV4 generator =
+      new XmlGeneratorCertificateV4(
+          new XmlGeneratorValue(
+              List.of(
+                  new XmlGeneratorDate(),
+                  new XmlGeneratorText(),
+                  new XmlGeneratorDateList(),
+                  new XmlGeneratorBoolean(),
+                  new XmlGeneratorCode(),
+                  new XmlGeneratorDiagnosisList(),
+                  new XmlGeneratorDateRange(),
+                  new XmlGeneratorMedicalInvestigationList()),
+              Collections.emptyList()),
+          new XmlValidationService(new SchematronValidator(), new SchemaValidatorV4()));
 
   private CertificateModelFactoryFK7810 CertificateModelFactoryFK7810;
 
   @BeforeEach
   void setUp() {
     schematronValidator = new SchematronValidator();
-    CertificateModelFactoryFK7810 = new CertificateModelFactoryFK7810(certificateActionFactory,
-        diagnosisCodeRepository);
+    CertificateModelFactoryFK7810 =
+        new CertificateModelFactoryFK7810(certificateActionFactory, diagnosisCodeRepository);
   }
 
   @Test
   void shallReturnTrueForValidCertificate() {
-    final var certificate = TestDataCertificate.fk7810CertificateBuilder()
-        .certificateModel(CertificateModelFactoryFK7810.create())
-        .build();
+    final var certificate =
+        TestDataCertificate.fk7810CertificateBuilder()
+            .certificateModel(CertificateModelFactoryFK7810.create())
+            .build();
 
     final var xml = generator.generate(certificate, true);
-    assertTrue(schematronValidator.validate(certificate.id(), xml,
-        SCHEMATRON_PATH));
+    assertTrue(schematronValidator.validate(certificate.id(), xml, SCHEMATRON_PATH));
   }
 
   @Nested
@@ -103,293 +114,300 @@ class SchematronValidationFK7810Test {
 
     @Test
     void shallReturnFalseIfMoreThanFiveMU() {
-      final var certificate = TestDataCertificate.fk7810CertificateBuilder()
-          .certificateModel(CertificateModelFactoryFK7810.create())
-          .build();
+      final var certificate =
+          TestDataCertificate.fk7810CertificateBuilder()
+              .certificateModel(CertificateModelFactoryFK7810.create())
+              .build();
 
-      final var element = certificate.elementData().stream()
-          .filter(elementData -> elementData.id().equals(new ElementId("1")))
-          .findFirst()
-          .orElseThrow();
+      final var element =
+          certificate.elementData().stream()
+              .filter(elementData -> elementData.id().equals(new ElementId("1")))
+              .findFirst()
+              .orElseThrow();
 
       final var value = (ElementValueDateList) element.value();
-      final var elementData = element.withValue(value.withDateList(
-              List.of(
-                  ElementValueDate.builder()
-                      .dateId(new FieldId("fysisktMote"))
-                      .date(LocalDate.now())
-                      .build(),
-                  ElementValueDate.builder()
-                      .dateId(new FieldId("fysisktMote"))
-                      .date(LocalDate.now())
-                      .build(),
-                  ElementValueDate.builder()
-                      .dateId(new FieldId("fysisktMote"))
-                      .date(LocalDate.now())
-                      .build(),
-                  ElementValueDate.builder()
-                      .dateId(new FieldId("fysisktMote"))
-                      .date(LocalDate.now())
-                      .build(),
-                  ElementValueDate.builder()
-                      .dateId(new FieldId("fysisktMote"))
-                      .date(LocalDate.now())
-                      .build(),
-                  ElementValueDate.builder()
-                      .dateId(new FieldId("fysisktMote"))
-                      .date(LocalDate.now())
-                      .build()
-              )
-          )
-      );
+      final var elementData =
+          element.withValue(
+              value.withDateList(
+                  List.of(
+                      ElementValueDate.builder()
+                          .dateId(new FieldId("fysisktMote"))
+                          .date(LocalDate.now())
+                          .build(),
+                      ElementValueDate.builder()
+                          .dateId(new FieldId("fysisktMote"))
+                          .date(LocalDate.now())
+                          .build(),
+                      ElementValueDate.builder()
+                          .dateId(new FieldId("fysisktMote"))
+                          .date(LocalDate.now())
+                          .build(),
+                      ElementValueDate.builder()
+                          .dateId(new FieldId("fysisktMote"))
+                          .date(LocalDate.now())
+                          .build(),
+                      ElementValueDate.builder()
+                          .dateId(new FieldId("fysisktMote"))
+                          .date(LocalDate.now())
+                          .build(),
+                      ElementValueDate.builder()
+                          .dateId(new FieldId("fysisktMote"))
+                          .date(LocalDate.now())
+                          .build())));
 
-      final var updatedElementData = certificate.elementData().stream()
-          .map(data -> data.id().equals(new ElementId("1")) ? elementData : data)
-          .toList();
+      final var updatedElementData =
+          certificate.elementData().stream()
+              .map(data -> data.id().equals(new ElementId("1")) ? elementData : data)
+              .toList();
       certificate.updateData(updatedElementData, new Revision(0), ACTION_EVALUATION);
 
       final var xml = generator.generate(certificate, false);
-      assertFalse(schematronValidator.validate(certificate.id(), xml,
-          SCHEMATRON_PATH));
+      assertFalse(schematronValidator.validate(certificate.id(), xml, SCHEMATRON_PATH));
     }
 
     @Test
     void shallReturnFalseIfMoreThanOneOccurenceOfMU() {
-      final var certificate = TestDataCertificate.fk7810CertificateBuilder()
-          .certificateModel(CertificateModelFactoryFK7810.create())
-          .build();
+      final var certificate =
+          TestDataCertificate.fk7810CertificateBuilder()
+              .certificateModel(CertificateModelFactoryFK7810.create())
+              .build();
 
-      final var element = certificate.elementData().stream()
-          .filter(elementData -> elementData.id().equals(new ElementId("1")))
-          .findFirst()
-          .orElseThrow();
+      final var element =
+          certificate.elementData().stream()
+              .filter(elementData -> elementData.id().equals(new ElementId("1")))
+              .findFirst()
+              .orElseThrow();
 
       final var value = (ElementValueDateList) element.value();
-      final var elementData = element.withValue(value.withDateList(
-              List.of(
-                  ElementValueDate.builder()
-                      .dateId(new FieldId("fysisktMote"))
-                      .date(LocalDate.now())
-                      .build(),
-                  ElementValueDate.builder()
-                      .dateId(new FieldId("fysisktMote"))
-                      .date(LocalDate.now())
-                      .build()
-              )
-          )
-      );
+      final var elementData =
+          element.withValue(
+              value.withDateList(
+                  List.of(
+                      ElementValueDate.builder()
+                          .dateId(new FieldId("fysisktMote"))
+                          .date(LocalDate.now())
+                          .build(),
+                      ElementValueDate.builder()
+                          .dateId(new FieldId("fysisktMote"))
+                          .date(LocalDate.now())
+                          .build())));
 
-      final var updatedElementData = certificate.elementData().stream()
-          .map(data -> data.id().equals(new ElementId("1")) ? elementData : data)
-          .toList();
+      final var updatedElementData =
+          certificate.elementData().stream()
+              .map(data -> data.id().equals(new ElementId("1")) ? elementData : data)
+              .toList();
       certificate.updateData(updatedElementData, new Revision(0), ACTION_EVALUATION);
 
       final var xml = generator.generate(certificate, false);
-      assertFalse(schematronValidator.validate(certificate.id(), xml,
-          SCHEMATRON_PATH));
+      assertFalse(schematronValidator.validate(certificate.id(), xml, SCHEMATRON_PATH));
     }
 
     @Test
     void shallReturnFalseIfMissingValues() {
-      final var certificate = TestDataCertificate.fk7810CertificateBuilder()
-          .certificateModel(CertificateModelFactoryFK7810.create())
-          .build();
+      final var certificate =
+          TestDataCertificate.fk7810CertificateBuilder()
+              .certificateModel(CertificateModelFactoryFK7810.create())
+              .build();
 
-      final var element = certificate.elementData().stream()
-          .filter(elementData -> elementData.id().equals(new ElementId("1")))
-          .findFirst()
-          .orElseThrow();
+      final var element =
+          certificate.elementData().stream()
+              .filter(elementData -> elementData.id().equals(new ElementId("1")))
+              .findFirst()
+              .orElseThrow();
 
       final var value = (ElementValueDateList) element.value();
       final var elementData = element.withValue(value.withDateList(Collections.emptyList()));
 
-      final var updatedElementData = certificate.elementData().stream()
-          .map(data -> data.id().equals(new ElementId("1")) ? elementData : data)
-          .toList();
+      final var updatedElementData =
+          certificate.elementData().stream()
+              .map(data -> data.id().equals(new ElementId("1")) ? elementData : data)
+              .toList();
       certificate.updateData(updatedElementData, new Revision(0), ACTION_EVALUATION);
 
       final var xml = generator.generate(certificate, false);
-      assertFalse(schematronValidator.validate(certificate.id(), xml,
-          SCHEMATRON_PATH));
+      assertFalse(schematronValidator.validate(certificate.id(), xml, SCHEMATRON_PATH));
     }
 
     @Test
     void shallReturnFalseIfAnnatUnderlagNotAnswered() {
-      final var certificate = TestDataCertificate.fk7810CertificateBuilder()
-          .certificateModel(CertificateModelFactoryFK7810.create())
-          .build();
+      final var certificate =
+          TestDataCertificate.fk7810CertificateBuilder()
+              .certificateModel(CertificateModelFactoryFK7810.create())
+              .build();
 
-      final var element = certificate.elementData().stream()
-          .filter(elementData -> elementData.id().equals(new ElementId("3")))
-          .findFirst()
-          .orElseThrow();
+      final var element =
+          certificate.elementData().stream()
+              .filter(elementData -> elementData.id().equals(new ElementId("3")))
+              .findFirst()
+              .orElseThrow();
 
       final var value = (ElementValueBoolean) element.value();
       final var elementData = element.withValue(value.withValue(null));
 
-      final var updatedElementData = certificate.elementData().stream()
-          .map(data -> data.id().equals(new ElementId("3")) ? elementData : data)
-          .toList();
+      final var updatedElementData =
+          certificate.elementData().stream()
+              .map(data -> data.id().equals(new ElementId("3")) ? elementData : data)
+              .toList();
       certificate.updateData(updatedElementData, new Revision(0), ACTION_EVALUATION);
 
       final var xml = generator.generate(certificate, false);
-      assertFalse(schematronValidator.validate(certificate.id(), xml,
-          SCHEMATRON_PATH));
+      assertFalse(schematronValidator.validate(certificate.id(), xml, SCHEMATRON_PATH));
     }
 
     @Test
     void shallReturnFalseIfAnnatHasValueAndTextIsMissing() {
-      final var certificate = TestDataCertificate.fk7810CertificateBuilder()
-          .certificateModel(CertificateModelFactoryFK7810.create())
-          .build();
+      final var certificate =
+          TestDataCertificate.fk7810CertificateBuilder()
+              .certificateModel(CertificateModelFactoryFK7810.create())
+              .build();
 
-      final var element = certificate.elementData().stream()
-          .filter(elementData -> elementData.id().equals(new ElementId("1")))
-          .findFirst()
-          .orElseThrow();
+      final var element =
+          certificate.elementData().stream()
+              .filter(elementData -> elementData.id().equals(new ElementId("1")))
+              .findFirst()
+              .orElseThrow();
 
       final var value = (ElementValueDateList) element.value();
-      final var elementData = element.withValue(value.withDateList(
-              List.of(
-                  ElementValueDate.builder()
-                      .dateId(new FieldId("annat"))
-                      .date(LocalDate.now())
-                      .build()
-              )
-          )
-      );
+      final var elementData =
+          element.withValue(
+              value.withDateList(
+                  List.of(
+                      ElementValueDate.builder()
+                          .dateId(new FieldId("annat"))
+                          .date(LocalDate.now())
+                          .build())));
 
-      final var updatedElementData = certificate.elementData().stream()
-          .map(data -> data.id().equals(new ElementId("1")) ? elementData : data)
-          .toList();
+      final var updatedElementData =
+          certificate.elementData().stream()
+              .map(data -> data.id().equals(new ElementId("1")) ? elementData : data)
+              .toList();
       certificate.updateData(updatedElementData, new Revision(0), ACTION_EVALUATION);
 
       final var xml = generator.generate(certificate, false);
-      assertFalse(schematronValidator.validate(certificate.id(), xml,
-          SCHEMATRON_PATH));
+      assertFalse(schematronValidator.validate(certificate.id(), xml, SCHEMATRON_PATH));
     }
 
     @Test
     void shallReturnFalseIfAnhorigHasValueAndTextIsMissing() {
-      final var certificate = TestDataCertificate.fk7810CertificateBuilder()
-          .certificateModel(CertificateModelFactoryFK7810.create())
-          .build();
+      final var certificate =
+          TestDataCertificate.fk7810CertificateBuilder()
+              .certificateModel(CertificateModelFactoryFK7810.create())
+              .build();
 
-      final var element = certificate.elementData().stream()
-          .filter(elementData -> elementData.id().equals(new ElementId("1")))
-          .findFirst()
-          .orElseThrow();
+      final var element =
+          certificate.elementData().stream()
+              .filter(elementData -> elementData.id().equals(new ElementId("1")))
+              .findFirst()
+              .orElseThrow();
 
       final var value = (ElementValueDateList) element.value();
-      final var elementData = element.withValue(value.withDateList(
-              List.of(
-                  ElementValueDate.builder()
-                      .dateId(new FieldId("anhorig"))
-                      .date(LocalDate.now())
-                      .build()
-              )
-          )
-      );
+      final var elementData =
+          element.withValue(
+              value.withDateList(
+                  List.of(
+                      ElementValueDate.builder()
+                          .dateId(new FieldId("anhorig"))
+                          .date(LocalDate.now())
+                          .build())));
 
-      final var updatedElementData = certificate.elementData().stream()
-          .map(data -> data.id().equals(new ElementId("1")) ? elementData : data)
-          .toList();
+      final var updatedElementData =
+          certificate.elementData().stream()
+              .map(data -> data.id().equals(new ElementId("1")) ? elementData : data)
+              .toList();
       certificate.updateData(updatedElementData, new Revision(0), ACTION_EVALUATION);
 
       final var xml = generator.generate(certificate, false);
-      assertFalse(schematronValidator.validate(certificate.id(), xml,
-          SCHEMATRON_PATH));
+      assertFalse(schematronValidator.validate(certificate.id(), xml, SCHEMATRON_PATH));
     }
 
     @Test
     void shallReturnFalseIfAnnatUnderlagAndMissingMedicalInvestigation() {
-      final var certificate = TestDataCertificate.fk7810CertificateBuilder()
-          .certificateModel(CertificateModelFactoryFK7810.create())
-          .build();
+      final var certificate =
+          TestDataCertificate.fk7810CertificateBuilder()
+              .certificateModel(CertificateModelFactoryFK7810.create())
+              .build();
 
-      final var element = certificate.elementData().stream()
-          .filter(elementData -> elementData.id().equals(new ElementId("4")))
-          .findFirst()
-          .orElseThrow();
+      final var element =
+          certificate.elementData().stream()
+              .filter(elementData -> elementData.id().equals(new ElementId("4")))
+              .findFirst()
+              .orElseThrow();
 
       final var value = (ElementValueMedicalInvestigationList) element.value();
       final var elementData = element.withValue(value.withList(Collections.emptyList()));
 
-      final var updatedElementData = certificate.elementData().stream()
-          .map(data -> data.id().equals(new ElementId("4")) ? elementData : data)
-          .toList();
+      final var updatedElementData =
+          certificate.elementData().stream()
+              .map(data -> data.id().equals(new ElementId("4")) ? elementData : data)
+              .toList();
       certificate.updateData(updatedElementData, new Revision(0), ACTION_EVALUATION);
 
       final var xml = generator.generate(certificate, false);
-      assertFalse(schematronValidator.validate(certificate.id(), xml,
-          SCHEMATRON_PATH));
+      assertFalse(schematronValidator.validate(certificate.id(), xml, SCHEMATRON_PATH));
     }
 
     @Test
     void shallReturnFalseIfAnnatUnderlagMissingMandatoryFields() {
-      final var certificate = TestDataCertificate.fk7810CertificateBuilder()
-          .certificateModel(CertificateModelFactoryFK7810.create())
-          .build();
+      final var certificate =
+          TestDataCertificate.fk7810CertificateBuilder()
+              .certificateModel(CertificateModelFactoryFK7810.create())
+              .build();
 
-      final var element = certificate.elementData().stream()
-          .filter(elementData -> elementData.id().equals(new ElementId("4")))
-          .findFirst()
-          .orElseThrow();
+      final var element =
+          certificate.elementData().stream()
+              .filter(elementData -> elementData.id().equals(new ElementId("4")))
+              .findFirst()
+              .orElseThrow();
 
       final var value = (ElementValueMedicalInvestigationList) element.value();
-      final var elementData = element.withValue(value.withList(
-              List.of(
-                  MedicalInvestigation.builder()
-                      .id(new FieldId("medicalInvestigation1"))
-                      .informationSource(
-                          ElementValueText.builder()
-                              .textId(new FieldId(
-                                  "medicalInvestigation1_INFORMATION_SOURCE"))
-                              .build()
-                      )
-                      .investigationType(
-                          ElementValueCode.builder()
-                              .codeId(new FieldId(
-                                  "medicalInvestigation1_INVESTIGATION_TYPE"))
-                              .code("LOGOPED")
-                              .build()
-                      )
-                      .date(
-                          ElementValueDate.builder()
-                              .dateId(new FieldId("medicalInvestigation1_DATE"))
-                              .date(LocalDate.now())
-                              .build())
-                      .build()
-              )
-          )
-      );
+      final var elementData =
+          element.withValue(
+              value.withList(
+                  List.of(
+                      MedicalInvestigation.builder()
+                          .id(new FieldId("medicalInvestigation1"))
+                          .informationSource(
+                              ElementValueText.builder()
+                                  .textId(new FieldId("medicalInvestigation1_INFORMATION_SOURCE"))
+                                  .build())
+                          .investigationType(
+                              ElementValueCode.builder()
+                                  .codeId(new FieldId("medicalInvestigation1_INVESTIGATION_TYPE"))
+                                  .code("LOGOPED")
+                                  .build())
+                          .date(
+                              ElementValueDate.builder()
+                                  .dateId(new FieldId("medicalInvestigation1_DATE"))
+                                  .date(LocalDate.now())
+                                  .build())
+                          .build())));
 
-      final var updatedElementData = certificate.elementData().stream()
-          .map(data -> data.id().equals(new ElementId("4")) ? elementData : data)
-          .toList();
+      final var updatedElementData =
+          certificate.elementData().stream()
+              .map(data -> data.id().equals(new ElementId("4")) ? elementData : data)
+              .toList();
       certificate.updateData(updatedElementData, new Revision(0), ACTION_EVALUATION);
 
       final var xml = generator.generate(certificate, false);
-      assertFalse(schematronValidator.validate(certificate.id(), xml,
-          SCHEMATRON_PATH));
+      assertFalse(schematronValidator.validate(certificate.id(), xml, SCHEMATRON_PATH));
     }
 
     @Test
     void shallReturnFalseIfKannedomNotAnswered() {
-      final var certificate = TestDataCertificate.fk7810CertificateBuilder()
-          .certificateModel(CertificateModelFactoryFK7810.create())
-          .build();
+      final var certificate =
+          TestDataCertificate.fk7810CertificateBuilder()
+              .certificateModel(CertificateModelFactoryFK7810.create())
+              .build();
 
-      final var updatedElementData = certificate.elementData().stream()
-          .filter(elementData -> !elementData.id().equals(new ElementId("2")))
-          .toList();
+      final var updatedElementData =
+          certificate.elementData().stream()
+              .filter(elementData -> !elementData.id().equals(new ElementId("2")))
+              .toList();
 
       certificate.updateData(updatedElementData, new Revision(0), ACTION_EVALUATION);
 
       final var xml = generator.generate(certificate, false);
-      assertFalse(schematronValidator.validate(certificate.id(), xml,
-          SCHEMATRON_PATH));
-
+      assertFalse(schematronValidator.validate(certificate.id(), xml, SCHEMATRON_PATH));
     }
   }
 
@@ -398,178 +416,181 @@ class SchematronValidationFK7810Test {
 
     @Test
     void shallReturnFalseIfMoreThanFiveDiagnosis() {
-      final var certificate = TestDataCertificate.fk7810CertificateBuilder()
-          .certificateModel(CertificateModelFactoryFK7810.create())
-          .build();
+      final var certificate =
+          TestDataCertificate.fk7810CertificateBuilder()
+              .certificateModel(CertificateModelFactoryFK7810.create())
+              .build();
 
-      final var element = certificate.elementData().stream()
-          .filter(elementData -> elementData.id().equals(new ElementId("58")))
-          .findFirst()
-          .orElseThrow();
+      final var element =
+          certificate.elementData().stream()
+              .filter(elementData -> elementData.id().equals(new ElementId("58")))
+              .findFirst()
+              .orElseThrow();
 
       final var value = (ElementValueDiagnosisList) element.value();
-      final var elementData = element.withValue(value.withDiagnoses(
-              List.of(
-                  ElementValueDiagnosis.builder()
-                      .code("A013")
-                      .description("Paratyfoidfeber C")
-                      .terminology("ICD_10_SE")
-                      .build(),
-                  ElementValueDiagnosis.builder()
-                      .code("A013")
-                      .description("Paratyfoidfeber C")
-                      .terminology("ICD_10_SE")
-                      .build(),
-                  ElementValueDiagnosis.builder()
-                      .code("A013")
-                      .description("Paratyfoidfeber C")
-                      .terminology("ICD_10_SE")
-                      .build(),
-                  ElementValueDiagnosis.builder()
-                      .code("A013")
-                      .description("Paratyfoidfeber C")
-                      .terminology("ICD_10_SE")
-                      .build(),
-                  ElementValueDiagnosis.builder()
-                      .code("A013")
-                      .description("Paratyfoidfeber C")
-                      .terminology("ICD_10_SE")
-                      .build(),
-                  ElementValueDiagnosis.builder()
-                      .code("A013")
-                      .description("Paratyfoidfeber C")
-                      .terminology("ICD_10_SE")
-                      .build()
-              )
-          )
-      );
+      final var elementData =
+          element.withValue(
+              value.withDiagnoses(
+                  List.of(
+                      ElementValueDiagnosis.builder()
+                          .code("A013")
+                          .description("Paratyfoidfeber C")
+                          .terminology("ICD_10_SE")
+                          .build(),
+                      ElementValueDiagnosis.builder()
+                          .code("A013")
+                          .description("Paratyfoidfeber C")
+                          .terminology("ICD_10_SE")
+                          .build(),
+                      ElementValueDiagnosis.builder()
+                          .code("A013")
+                          .description("Paratyfoidfeber C")
+                          .terminology("ICD_10_SE")
+                          .build(),
+                      ElementValueDiagnosis.builder()
+                          .code("A013")
+                          .description("Paratyfoidfeber C")
+                          .terminology("ICD_10_SE")
+                          .build(),
+                      ElementValueDiagnosis.builder()
+                          .code("A013")
+                          .description("Paratyfoidfeber C")
+                          .terminology("ICD_10_SE")
+                          .build(),
+                      ElementValueDiagnosis.builder()
+                          .code("A013")
+                          .description("Paratyfoidfeber C")
+                          .terminology("ICD_10_SE")
+                          .build())));
 
-      final var updatedElementData = certificate.elementData().stream()
-          .map(data -> data.id().equals(new ElementId("58")) ? elementData : data)
-          .toList();
+      final var updatedElementData =
+          certificate.elementData().stream()
+              .map(data -> data.id().equals(new ElementId("58")) ? elementData : data)
+              .toList();
       certificate.updateData(updatedElementData, new Revision(0), ACTION_EVALUATION);
 
       final var xml = generator.generate(certificate, false);
-      assertFalse(schematronValidator.validate(certificate.id(), xml,
-          SCHEMATRON_PATH));
+      assertFalse(schematronValidator.validate(certificate.id(), xml, SCHEMATRON_PATH));
     }
 
     @Test
     void shallReturnFalseIfMissingValues() {
-      final var certificate = TestDataCertificate.fk7810CertificateBuilder()
-          .certificateModel(CertificateModelFactoryFK7810.create())
-          .build();
+      final var certificate =
+          TestDataCertificate.fk7810CertificateBuilder()
+              .certificateModel(CertificateModelFactoryFK7810.create())
+              .build();
 
-      final var element = certificate.elementData().stream()
-          .filter(elementData -> elementData.id().equals(new ElementId("58")))
-          .findFirst()
-          .orElseThrow();
+      final var element =
+          certificate.elementData().stream()
+              .filter(elementData -> elementData.id().equals(new ElementId("58")))
+              .findFirst()
+              .orElseThrow();
 
       final var value = (ElementValueDiagnosisList) element.value();
-      final var elementData = element.withValue(value.withDiagnoses(
-              Collections.emptyList()
-          )
-      );
+      final var elementData = element.withValue(value.withDiagnoses(Collections.emptyList()));
 
-      final var updatedElementData = certificate.elementData().stream()
-          .map(data -> data.id().equals(new ElementId("58")) ? elementData : data)
-          .toList();
+      final var updatedElementData =
+          certificate.elementData().stream()
+              .map(data -> data.id().equals(new ElementId("58")) ? elementData : data)
+              .toList();
       certificate.updateData(updatedElementData, new Revision(0), ACTION_EVALUATION);
 
       final var xml = generator.generate(certificate, false);
-      assertFalse(schematronValidator.validate(certificate.id(), xml,
-          SCHEMATRON_PATH));
+      assertFalse(schematronValidator.validate(certificate.id(), xml, SCHEMATRON_PATH));
     }
 
     @Test
     void shallReturnFalseIfSummaryIsMissing() {
-      final var certificate = TestDataCertificate.fk7810CertificateBuilder()
-          .certificateModel(CertificateModelFactoryFK7810.create())
-          .build();
+      final var certificate =
+          TestDataCertificate.fk7810CertificateBuilder()
+              .certificateModel(CertificateModelFactoryFK7810.create())
+              .build();
 
-      final var element = certificate.elementData().stream()
-          .filter(elementData -> elementData.id().equals(new ElementId("5")))
-          .findFirst()
-          .orElseThrow();
+      final var element =
+          certificate.elementData().stream()
+              .filter(elementData -> elementData.id().equals(new ElementId("5")))
+              .findFirst()
+              .orElseThrow();
 
       final var value = (ElementValueText) element.value();
       final var elementData = element.withValue(value.withText(""));
 
-      final var updatedElementData = certificate.elementData().stream()
-          .map(data -> data.id().equals(new ElementId("5")) ? elementData : data)
-          .toList();
+      final var updatedElementData =
+          certificate.elementData().stream()
+              .map(data -> data.id().equals(new ElementId("5")) ? elementData : data)
+              .toList();
       certificate.updateData(updatedElementData, new Revision(0), ACTION_EVALUATION);
 
       final var xml = generator.generate(certificate, false);
-      assertFalse(schematronValidator.validate(certificate.id(), xml,
-          SCHEMATRON_PATH));
+      assertFalse(schematronValidator.validate(certificate.id(), xml, SCHEMATRON_PATH));
     }
-
 
     @Test
     void shallReturnFalseIfDiagnosisDescriptionIsMissing() {
-      final var certificate = TestDataCertificate.fk7810CertificateBuilder()
-          .certificateModel(CertificateModelFactoryFK7810.create())
-          .build();
+      final var certificate =
+          TestDataCertificate.fk7810CertificateBuilder()
+              .certificateModel(CertificateModelFactoryFK7810.create())
+              .build();
 
-      final var element = certificate.elementData().stream()
-          .filter(elementData -> elementData.id().equals(new ElementId("58")))
-          .findFirst()
-          .orElseThrow();
+      final var element =
+          certificate.elementData().stream()
+              .filter(elementData -> elementData.id().equals(new ElementId("58")))
+              .findFirst()
+              .orElseThrow();
 
       final var value = (ElementValueDiagnosisList) element.value();
-      final var elementData = element.withValue(value.withDiagnoses(
-              List.of(
-                  ElementValueDiagnosis.builder()
-                      .code("A013")
-                      .description("")
-                      .terminology("ICD_10_SE")
-                      .build()
-              )
-          )
-      );
+      final var elementData =
+          element.withValue(
+              value.withDiagnoses(
+                  List.of(
+                      ElementValueDiagnosis.builder()
+                          .code("A013")
+                          .description("")
+                          .terminology("ICD_10_SE")
+                          .build())));
 
-      final var updatedElementData = certificate.elementData().stream()
-          .map(data -> data.id().equals(new ElementId("58")) ? elementData : data)
-          .toList();
+      final var updatedElementData =
+          certificate.elementData().stream()
+              .map(data -> data.id().equals(new ElementId("58")) ? elementData : data)
+              .toList();
       certificate.updateData(updatedElementData, new Revision(0), ACTION_EVALUATION);
 
       final var xml = generator.generate(certificate, false);
-      assertFalse(schematronValidator.validate(certificate.id(), xml,
-          SCHEMATRON_PATH));
+      assertFalse(schematronValidator.validate(certificate.id(), xml, SCHEMATRON_PATH));
     }
 
     @Test
     void shallReturnFalseIfDiagnosisCodeIsMalformed() {
-      final var certificate = TestDataCertificate.fk7810CertificateBuilder()
-          .certificateModel(CertificateModelFactoryFK7810.create())
-          .build();
+      final var certificate =
+          TestDataCertificate.fk7810CertificateBuilder()
+              .certificateModel(CertificateModelFactoryFK7810.create())
+              .build();
 
-      final var element = certificate.elementData().stream()
-          .filter(elementData -> elementData.id().equals(new ElementId("58")))
-          .findFirst()
-          .orElseThrow();
+      final var element =
+          certificate.elementData().stream()
+              .filter(elementData -> elementData.id().equals(new ElementId("58")))
+              .findFirst()
+              .orElseThrow();
 
       final var value = (ElementValueDiagnosisList) element.value();
-      final var elementData = element.withValue(value.withDiagnoses(
-              List.of(
-                  ElementValueDiagnosis.builder()
-                      .code("AAAAA")
-                      .description("Paratyfoidfeber C")
-                      .terminology("ICD_10_SE")
-                      .build()
-              )
-          )
-      );
+      final var elementData =
+          element.withValue(
+              value.withDiagnoses(
+                  List.of(
+                      ElementValueDiagnosis.builder()
+                          .code("AAAAA")
+                          .description("Paratyfoidfeber C")
+                          .terminology("ICD_10_SE")
+                          .build())));
 
-      final var updatedElementData = certificate.elementData().stream()
-          .map(data -> data.id().equals(new ElementId("58")) ? elementData : data)
-          .toList();
+      final var updatedElementData =
+          certificate.elementData().stream()
+              .map(data -> data.id().equals(new ElementId("58")) ? elementData : data)
+              .toList();
       certificate.updateData(updatedElementData, new Revision(0), ACTION_EVALUATION);
 
       final var xml = generator.generate(certificate, false);
-      assertFalse(schematronValidator.validate(certificate.id(), xml,
-          SCHEMATRON_PATH));
+      assertFalse(schematronValidator.validate(certificate.id(), xml, SCHEMATRON_PATH));
     }
   }
 
@@ -578,70 +599,74 @@ class SchematronValidationFK7810Test {
 
     @Test
     void shallReturnFalseIfEmptyValues() {
-      final var certificate = TestDataCertificate.fk7810CertificateBuilder()
-          .certificateModel(CertificateModelFactoryFK7810.create())
-          .build();
+      final var certificate =
+          TestDataCertificate.fk7810CertificateBuilder()
+              .certificateModel(CertificateModelFactoryFK7810.create())
+              .build();
 
-      final var element = certificate.elementData().stream()
-          .filter(elementData -> elementData.id().equals(new ElementId("8")))
-          .findFirst()
-          .orElseThrow();
+      final var element =
+          certificate.elementData().stream()
+              .filter(elementData -> elementData.id().equals(new ElementId("8")))
+              .findFirst()
+              .orElseThrow();
 
       final var value = (ElementValueText) element.value();
       final var elementData = element.withValue(value.withText(""));
 
-      final var updatedElementData = certificate.elementData().stream()
-          .map(data -> data.id().equals(new ElementId("8")) ? elementData : data)
-          .toList();
+      final var updatedElementData =
+          certificate.elementData().stream()
+              .map(data -> data.id().equals(new ElementId("8")) ? elementData : data)
+              .toList();
       certificate.updateData(updatedElementData, new Revision(0), ACTION_EVALUATION);
 
       final var xml = generator.generate(certificate, false);
-      assertFalse(schematronValidator.validate(certificate.id(), xml,
-          SCHEMATRON_PATH));
+      assertFalse(schematronValidator.validate(certificate.id(), xml, SCHEMATRON_PATH));
     }
 
     @Test
     void shallReturnFalseIfMissingValues() {
-      final var certificate = TestDataCertificate.fk7810CertificateBuilder()
-          .certificateModel(CertificateModelFactoryFK7810.create())
-          .build();
-      final var updatedElementData = certificate.elementData().stream()
-          .filter(data -> !data.id().equals(new ElementId("8")))
-          .toList();
+      final var certificate =
+          TestDataCertificate.fk7810CertificateBuilder()
+              .certificateModel(CertificateModelFactoryFK7810.create())
+              .build();
+      final var updatedElementData =
+          certificate.elementData().stream()
+              .filter(data -> !data.id().equals(new ElementId("8")))
+              .toList();
       certificate.updateData(updatedElementData, new Revision(0), ACTION_EVALUATION);
 
       final var xml = generator.generate(certificate, false);
-      assertFalse(schematronValidator.validate(certificate.id(), xml,
-          SCHEMATRON_PATH));
+      assertFalse(schematronValidator.validate(certificate.id(), xml, SCHEMATRON_PATH));
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"8", "9", "10", "11", "12", "13", "64", "14"})
     void shallReturnTrueIfOneValueExists(String id) {
-      final var certificate = TestDataCertificate.fk7810CertificateBuilder()
-          .certificateModel(CertificateModelFactoryFK7810.create())
-          .build();
+      final var certificate =
+          TestDataCertificate.fk7810CertificateBuilder()
+              .certificateModel(CertificateModelFactoryFK7810.create())
+              .build();
 
-      var element = ElementData.builder()
-          .id(new ElementId(id))
-          .value(
-              ElementValueText.builder()
-                  .textId(new FieldId("%s.1".formatted(id)))
-                  .text("TEXT")
-                  .build()
-          )
-          .build();
+      var element =
+          ElementData.builder()
+              .id(new ElementId(id))
+              .value(
+                  ElementValueText.builder()
+                      .textId(new FieldId("%s.1".formatted(id)))
+                      .text("TEXT")
+                      .build())
+              .build();
 
-      final var updatedElementData = certificate.elementData().stream()
-          .filter(data -> !data.id().equals(new ElementId("8")))
-          .collect(Collectors.toCollection(ArrayList::new));
+      final var updatedElementData =
+          certificate.elementData().stream()
+              .filter(data -> !data.id().equals(new ElementId("8")))
+              .collect(Collectors.toCollection(ArrayList::new));
 
       updatedElementData.add(element);
       certificate.updateData(updatedElementData, new Revision(0), ACTION_EVALUATION);
 
       final var xml = generator.generate(certificate, false);
-      assertTrue(schematronValidator.validate(certificate.id(), xml,
-          SCHEMATRON_PATH));
+      assertTrue(schematronValidator.validate(certificate.id(), xml, SCHEMATRON_PATH));
     }
   }
 
@@ -650,71 +675,74 @@ class SchematronValidationFK7810Test {
 
     @Test
     void shallReturnFalseIfEmptyValue() {
-      final var certificate = TestDataCertificate.fk7810CertificateBuilder()
-          .certificateModel(CertificateModelFactoryFK7810.create())
-          .build();
+      final var certificate =
+          TestDataCertificate.fk7810CertificateBuilder()
+              .certificateModel(CertificateModelFactoryFK7810.create())
+              .build();
 
-      final var element = certificate.elementData().stream()
-          .filter(elementData -> elementData.id().equals(new ElementId("65")))
-          .findFirst()
-          .orElseThrow();
+      final var element =
+          certificate.elementData().stream()
+              .filter(elementData -> elementData.id().equals(new ElementId("65")))
+              .findFirst()
+              .orElseThrow();
 
       final var value = (ElementValueText) element.value();
       final var elementData = element.withValue(value.withText(""));
 
-      final var updatedElementData = certificate.elementData().stream()
-          .map(data -> data.id().equals(new ElementId("65")) ? elementData : data)
-          .toList();
+      final var updatedElementData =
+          certificate.elementData().stream()
+              .map(data -> data.id().equals(new ElementId("65")) ? elementData : data)
+              .toList();
       certificate.updateData(updatedElementData, new Revision(0), ACTION_EVALUATION);
 
       final var xml = generator.generate(certificate, false);
-      assertFalse(schematronValidator.validate(certificate.id(), xml,
-          SCHEMATRON_PATH));
+      assertFalse(schematronValidator.validate(certificate.id(), xml, SCHEMATRON_PATH));
     }
-
 
     @Test
     void shallReturnFalseIfMissingValues() {
-      final var certificate = TestDataCertificate.fk7810CertificateBuilder()
-          .certificateModel(CertificateModelFactoryFK7810.create())
-          .build();
-      final var updatedElementData = certificate.elementData().stream()
-          .filter(data -> !data.id().equals(new ElementId("65")))
-          .toList();
+      final var certificate =
+          TestDataCertificate.fk7810CertificateBuilder()
+              .certificateModel(CertificateModelFactoryFK7810.create())
+              .build();
+      final var updatedElementData =
+          certificate.elementData().stream()
+              .filter(data -> !data.id().equals(new ElementId("65")))
+              .toList();
       certificate.updateData(updatedElementData, new Revision(0), ACTION_EVALUATION);
 
       final var xml = generator.generate(certificate, false);
-      assertFalse(schematronValidator.validate(certificate.id(), xml,
-          SCHEMATRON_PATH));
+      assertFalse(schematronValidator.validate(certificate.id(), xml, SCHEMATRON_PATH));
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"65", "66", "67", "68", "69"})
     void shallReturnTrueIfOneValueExists(String id) {
-      final var certificate = TestDataCertificate.fk7810CertificateBuilder()
-          .certificateModel(CertificateModelFactoryFK7810.create())
-          .build();
+      final var certificate =
+          TestDataCertificate.fk7810CertificateBuilder()
+              .certificateModel(CertificateModelFactoryFK7810.create())
+              .build();
 
-      var element = ElementData.builder()
-          .id(new ElementId(id))
-          .value(
-              ElementValueText.builder()
-                  .textId(new FieldId("%s.1".formatted(id)))
-                  .text("TEXT")
-                  .build()
-          )
-          .build();
+      var element =
+          ElementData.builder()
+              .id(new ElementId(id))
+              .value(
+                  ElementValueText.builder()
+                      .textId(new FieldId("%s.1".formatted(id)))
+                      .text("TEXT")
+                      .build())
+              .build();
 
-      final var updatedElementData = certificate.elementData().stream()
-          .filter(data -> !data.id().equals(new ElementId("65")))
-          .collect(Collectors.toCollection(ArrayList::new));
+      final var updatedElementData =
+          certificate.elementData().stream()
+              .filter(data -> !data.id().equals(new ElementId("65")))
+              .collect(Collectors.toCollection(ArrayList::new));
 
       updatedElementData.add(element);
       certificate.updateData(updatedElementData, new Revision(0), ACTION_EVALUATION);
 
       final var xml = generator.generate(certificate, false);
-      assertTrue(schematronValidator.validate(certificate.id(), xml,
-          SCHEMATRON_PATH));
+      assertTrue(schematronValidator.validate(certificate.id(), xml, SCHEMATRON_PATH));
     }
   }
 
@@ -723,26 +751,28 @@ class SchematronValidationFK7810Test {
 
     @Test
     void shallReturnFalseIfMissingValues() {
-      final var certificate = TestDataCertificate.fk7810CertificateBuilder()
-          .certificateModel(CertificateModelFactoryFK7810.create())
-          .build();
+      final var certificate =
+          TestDataCertificate.fk7810CertificateBuilder()
+              .certificateModel(CertificateModelFactoryFK7810.create())
+              .build();
 
-      final var element = certificate.elementData().stream()
-          .filter(elementData -> elementData.id().equals(new ElementId("39")))
-          .findFirst()
-          .orElseThrow();
+      final var element =
+          certificate.elementData().stream()
+              .filter(elementData -> elementData.id().equals(new ElementId("39")))
+              .findFirst()
+              .orElseThrow();
 
       final var value = (ElementValueText) element.value();
       final var elementData = element.withValue(value.withText(""));
 
-      final var updatedElementData = certificate.elementData().stream()
-          .map(data -> data.id().equals(new ElementId("39")) ? elementData : data)
-          .toList();
+      final var updatedElementData =
+          certificate.elementData().stream()
+              .map(data -> data.id().equals(new ElementId("39")) ? elementData : data)
+              .toList();
       certificate.updateData(updatedElementData, new Revision(0), ACTION_EVALUATION);
 
       final var xml = generator.generate(certificate, false);
-      assertFalse(schematronValidator.validate(certificate.id(), xml,
-          SCHEMATRON_PATH));
+      assertFalse(schematronValidator.validate(certificate.id(), xml, SCHEMATRON_PATH));
     }
   }
 
@@ -751,50 +781,42 @@ class SchematronValidationFK7810Test {
 
     @Test
     void shallReturnFalseIfPlannedMedicalTreatmentIsNonEmptyAndResponsibleUnitIsEmpty() {
-      final var certificate = TestDataCertificate.fk7810CertificateBuilder()
-          .certificateModel(CertificateModelFactoryFK7810.create())
-          .build();
+      final var certificate =
+          TestDataCertificate.fk7810CertificateBuilder()
+              .certificateModel(CertificateModelFactoryFK7810.create())
+              .build();
 
       final var elementData = new ArrayList<>(certificate.elementData());
-      elementData.add(ElementData.builder()
-          .id(new ElementId("50"))
-          .value(
-              ElementValueText.builder()
-                  .textId(new FieldId("50.1"))
-                  .text("TEXT")
-                  .build()
-          )
-          .build());
+      elementData.add(
+          ElementData.builder()
+              .id(new ElementId("50"))
+              .value(ElementValueText.builder().textId(new FieldId("50.1")).text("TEXT").build())
+              .build());
 
       certificate.updateData(elementData, new Revision(0), ACTION_EVALUATION);
 
       final var xml = generator.generate(certificate, false);
-      assertFalse(schematronValidator.validate(certificate.id(), xml,
-          SCHEMATRON_PATH));
+      assertFalse(schematronValidator.validate(certificate.id(), xml, SCHEMATRON_PATH));
     }
 
     @Test
     void shallReturnFalseIfPlannedMedicalTreatmentIsEmptyAndResponsibleUnitIsNotEmpty() {
-      final var certificate = TestDataCertificate.fk7810CertificateBuilder()
-          .certificateModel(CertificateModelFactoryFK7810.create())
-          .build();
+      final var certificate =
+          TestDataCertificate.fk7810CertificateBuilder()
+              .certificateModel(CertificateModelFactoryFK7810.create())
+              .build();
 
       final var elementData = new ArrayList<>(certificate.elementData());
-      elementData.add(ElementData.builder()
-          .id(new ElementId("50.2"))
-          .value(
-              ElementValueText.builder()
-                  .textId(new FieldId("50.2"))
-                  .text("TEXT")
-                  .build()
-          )
-          .build());
+      elementData.add(
+          ElementData.builder()
+              .id(new ElementId("50.2"))
+              .value(ElementValueText.builder().textId(new FieldId("50.2")).text("TEXT").build())
+              .build());
 
       certificate.updateData(elementData, new Revision(0), ACTION_EVALUATION);
 
       final var xml = generator.generate(certificate, false);
-      assertFalse(schematronValidator.validate(certificate.id(), xml,
-          SCHEMATRON_PATH));
+      assertFalse(schematronValidator.validate(certificate.id(), xml, SCHEMATRON_PATH));
     }
   }
 
@@ -803,98 +825,106 @@ class SchematronValidationFK7810Test {
 
     @Test
     void shallReturnFalseIfStodHSLNotAnswered() {
-      final var certificate = TestDataCertificate.fk7810CertificateBuilder()
-          .certificateModel(CertificateModelFactoryFK7810.create())
-          .build();
+      final var certificate =
+          TestDataCertificate.fk7810CertificateBuilder()
+              .certificateModel(CertificateModelFactoryFK7810.create())
+              .build();
 
-      final var element = certificate.elementData().stream()
-          .filter(elementData -> elementData.id().equals(new ElementId("70")))
-          .findFirst()
-          .orElseThrow();
+      final var element =
+          certificate.elementData().stream()
+              .filter(elementData -> elementData.id().equals(new ElementId("70")))
+              .findFirst()
+              .orElseThrow();
 
       final var value = (ElementValueBoolean) element.value();
       final var elementData = element.withValue(value.withValue(null));
 
-      final var updatedElementData = certificate.elementData().stream()
-          .map(data -> data.id().equals(new ElementId("70")) ? elementData : data)
-          .toList();
+      final var updatedElementData =
+          certificate.elementData().stream()
+              .map(data -> data.id().equals(new ElementId("70")) ? elementData : data)
+              .toList();
       certificate.updateData(updatedElementData, new Revision(0), ACTION_EVALUATION);
 
       final var xml = generator.generate(certificate, false);
-      assertFalse(schematronValidator.validate(certificate.id(), xml,
-          SCHEMATRON_PATH));
+      assertFalse(schematronValidator.validate(certificate.id(), xml, SCHEMATRON_PATH));
     }
 
     @Test
     void shallReturnFalseIfStodEgenVardNotAnswered() {
-      final var certificate = TestDataCertificate.fk7810CertificateBuilder()
-          .certificateModel(CertificateModelFactoryFK7810.create())
-          .build();
+      final var certificate =
+          TestDataCertificate.fk7810CertificateBuilder()
+              .certificateModel(CertificateModelFactoryFK7810.create())
+              .build();
 
-      final var element = certificate.elementData().stream()
-          .filter(elementData -> elementData.id().equals(new ElementId("70.3")))
-          .findFirst()
-          .orElseThrow();
+      final var element =
+          certificate.elementData().stream()
+              .filter(elementData -> elementData.id().equals(new ElementId("70.3")))
+              .findFirst()
+              .orElseThrow();
 
       final var value = (ElementValueBoolean) element.value();
       final var elementData = element.withValue(value.withValue(null));
 
-      final var updatedElementData = certificate.elementData().stream()
-          .map(data -> data.id().equals(new ElementId("70.3")) ? elementData : data)
-          .toList();
+      final var updatedElementData =
+          certificate.elementData().stream()
+              .map(data -> data.id().equals(new ElementId("70.3")) ? elementData : data)
+              .toList();
       certificate.updateData(updatedElementData, new Revision(0), ACTION_EVALUATION);
 
       final var xml = generator.generate(certificate, false);
-      assertFalse(schematronValidator.validate(certificate.id(), xml,
-          SCHEMATRON_PATH));
+      assertFalse(schematronValidator.validate(certificate.id(), xml, SCHEMATRON_PATH));
     }
 
     @Test
     void shallReturnFalseIfStodHSLAndMissingText() {
-      final var certificate = TestDataCertificate.fk7810CertificateBuilder()
-          .certificateModel(CertificateModelFactoryFK7810.create())
-          .build();
+      final var certificate =
+          TestDataCertificate.fk7810CertificateBuilder()
+              .certificateModel(CertificateModelFactoryFK7810.create())
+              .build();
 
-      final var element = certificate.elementData().stream()
-          .filter(elementData -> elementData.id().equals(new ElementId("70.2")))
-          .findFirst()
-          .orElseThrow();
+      final var element =
+          certificate.elementData().stream()
+              .filter(elementData -> elementData.id().equals(new ElementId("70.2")))
+              .findFirst()
+              .orElseThrow();
 
       final var value = (ElementValueText) element.value();
       final var elementData = element.withValue(value.withText(""));
 
-      final var updatedElementData = certificate.elementData().stream()
-          .map(data -> data.id().equals(new ElementId("70.2")) ? elementData : data)
-          .toList();
+      final var updatedElementData =
+          certificate.elementData().stream()
+              .map(data -> data.id().equals(new ElementId("70.2")) ? elementData : data)
+              .toList();
       certificate.updateData(updatedElementData, new Revision(0), ACTION_EVALUATION);
 
       final var xml = generator.generate(certificate, false);
-      assertFalse(schematronValidator.validate(certificate.id(), xml,
-          SCHEMATRON_PATH));
+      assertFalse(schematronValidator.validate(certificate.id(), xml, SCHEMATRON_PATH));
     }
 
     @Test
     void shallReturnFalseIfStodEgenVardAndMissingText() {
-      final var certificate = TestDataCertificate.fk7810CertificateBuilder()
-          .certificateModel(CertificateModelFactoryFK7810.create())
-          .build();
+      final var certificate =
+          TestDataCertificate.fk7810CertificateBuilder()
+              .certificateModel(CertificateModelFactoryFK7810.create())
+              .build();
 
-      final var element = certificate.elementData().stream()
-          .filter(elementData -> elementData.id().equals(new ElementId("70.4")))
-          .findFirst()
-          .orElseThrow();
+      final var element =
+          certificate.elementData().stream()
+              .filter(elementData -> elementData.id().equals(new ElementId("70.4")))
+              .findFirst()
+              .orElseThrow();
 
       final var value = (ElementValueText) element.value();
       final var elementData = element.withValue(value.withText(""));
 
-      final var updatedElementData = certificate.elementData().stream()
-          .map(data -> data.id().equals(new ElementId("70.4")) ? elementData : data)
-          .toList();
+      final var updatedElementData =
+          certificate.elementData().stream()
+              .map(data -> data.id().equals(new ElementId("70.4")) ? elementData : data)
+              .toList();
       certificate.updateData(updatedElementData, new Revision(0), ACTION_EVALUATION);
 
       final var xml = generator.generate(certificate, false);
-      assertFalse(schematronValidator.validate(certificate.id(), xml,
-          SCHEMATRON_PATH));
+      assertFalse(schematronValidator.validate(certificate.id(), xml, SCHEMATRON_PATH));
     }
   }
 }

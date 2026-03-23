@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificate.persistence.entity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -19,15 +37,16 @@ class PatientEntityTest {
     var originalId = target.getId();
     var originalKey = target.getKey();
 
-    var source = athenaReactAnderssonEntityBuilder()
-        .firstName("NewFirst")
-        .middleName("NewMiddle")
-        .lastName("NewLast")
-        .protectedPerson(!ATHENA_REACT_ANDERSSON_ENTITY.isProtectedPerson())
-        .deceased(!ATHENA_REACT_ANDERSSON_ENTITY.isDeceased())
-        .testIndicated(!ATHENA_REACT_ANDERSSON_ENTITY.isTestIndicated())
-        .type(new PatientIdTypeEntity())
-        .build();
+    var source =
+        athenaReactAnderssonEntityBuilder()
+            .firstName("NewFirst")
+            .middleName("NewMiddle")
+            .lastName("NewLast")
+            .protectedPerson(!ATHENA_REACT_ANDERSSON_ENTITY.isProtectedPerson())
+            .deceased(!ATHENA_REACT_ANDERSSON_ENTITY.isDeceased())
+            .testIndicated(!ATHENA_REACT_ANDERSSON_ENTITY.isTestIndicated())
+            .type(new PatientIdTypeEntity())
+            .build();
 
     target.updateWith(source);
 
@@ -44,8 +63,8 @@ class PatientEntityTest {
 
   @Test
   void shallThrowExceptionWhenSourceIsNull() {
-    assertThrows(IllegalArgumentException.class,
-        () -> ATHENA_REACT_ANDERSSON_ENTITY.updateWith(null));
+    assertThrows(
+        IllegalArgumentException.class, () -> ATHENA_REACT_ANDERSSON_ENTITY.updateWith(null));
   }
 
   @Test
@@ -55,76 +74,88 @@ class PatientEntityTest {
 
   @Test
   void shallFindDiffWhenProtectedPersonDiffers() {
-    assertTrue(ATHENA_REACT_ANDERSSON_ENTITY.hasDiff(athenaReactAnderssonEntityBuilder()
-        .protectedPerson(!ATHENA_REACT_ANDERSSON_ENTITY.isProtectedPerson()).build()));
+    assertTrue(
+        ATHENA_REACT_ANDERSSON_ENTITY.hasDiff(
+            athenaReactAnderssonEntityBuilder()
+                .protectedPerson(!ATHENA_REACT_ANDERSSON_ENTITY.isProtectedPerson())
+                .build()));
   }
 
   @Test
   void shallFindDiffWhenDeceasedDiffers() {
-    assertTrue(ATHENA_REACT_ANDERSSON_ENTITY.hasDiff(athenaReactAnderssonEntityBuilder()
-        .deceased(!ATHENA_REACT_ANDERSSON_ENTITY.isDeceased()).build()));
+    assertTrue(
+        ATHENA_REACT_ANDERSSON_ENTITY.hasDiff(
+            athenaReactAnderssonEntityBuilder()
+                .deceased(!ATHENA_REACT_ANDERSSON_ENTITY.isDeceased())
+                .build()));
   }
 
   @Test
   void shallFindDiffWhenTestIndicatedDiffers() {
-    assertTrue(ATHENA_REACT_ANDERSSON_ENTITY.hasDiff(athenaReactAnderssonEntityBuilder()
-        .testIndicated(!ATHENA_REACT_ANDERSSON_ENTITY.isTestIndicated()).build()));
+    assertTrue(
+        ATHENA_REACT_ANDERSSON_ENTITY.hasDiff(
+            athenaReactAnderssonEntityBuilder()
+                .testIndicated(!ATHENA_REACT_ANDERSSON_ENTITY.isTestIndicated())
+                .build()));
   }
 
   @Test
   void shallFindDiffWhenFirstNameDiffers() {
-    assertTrue(ATHENA_REACT_ANDERSSON_ENTITY.hasDiff(athenaReactAnderssonEntityBuilder()
-        .firstName("DifferentFirst").build()));
+    assertTrue(
+        ATHENA_REACT_ANDERSSON_ENTITY.hasDiff(
+            athenaReactAnderssonEntityBuilder().firstName("DifferentFirst").build()));
   }
 
   @Test
   void shallFindDiffWhenMiddleNameDiffers() {
-    assertTrue(ATHENA_REACT_ANDERSSON_ENTITY.hasDiff(athenaReactAnderssonEntityBuilder()
-        .middleName("DifferentMiddle").build()));
+    assertTrue(
+        ATHENA_REACT_ANDERSSON_ENTITY.hasDiff(
+            athenaReactAnderssonEntityBuilder().middleName("DifferentMiddle").build()));
   }
 
   @Test
   void shallFindDiffWhenLastNameDiffers() {
-    assertTrue(ATHENA_REACT_ANDERSSON_ENTITY.hasDiff(athenaReactAnderssonEntityBuilder()
-        .lastName("DifferentLast").build()));
+    assertTrue(
+        ATHENA_REACT_ANDERSSON_ENTITY.hasDiff(
+            athenaReactAnderssonEntityBuilder().lastName("DifferentLast").build()));
   }
 
   @Test
   void shallFindDiffWhenTypeDiffers() {
-    assertTrue(ATHENA_REACT_ANDERSSON_ENTITY.hasDiff(athenaReactAnderssonEntityBuilder()
-        .type(new PatientIdTypeEntity()).build()));
+    assertTrue(
+        ATHENA_REACT_ANDERSSON_ENTITY.hasDiff(
+            athenaReactAnderssonEntityBuilder().type(new PatientIdTypeEntity()).build()));
   }
 
   @Test
   void shallFindDiffWhenAllFieldsDiffer() {
-    var allDiff = PatientEntity.builder()
-        .id(ATHENA_REACT_ANDERSSON_ENTITY.getId())
-        .firstName("F")
-        .middleName("M")
-        .lastName("L")
-        .protectedPerson(!ATHENA_REACT_ANDERSSON_ENTITY.isProtectedPerson())
-        .deceased(!ATHENA_REACT_ANDERSSON_ENTITY.isDeceased())
-        .testIndicated(!ATHENA_REACT_ANDERSSON_ENTITY.isTestIndicated())
-        .type(new PatientIdTypeEntity())
-        .build();
+    var allDiff =
+        PatientEntity.builder()
+            .id(ATHENA_REACT_ANDERSSON_ENTITY.getId())
+            .firstName("F")
+            .middleName("M")
+            .lastName("L")
+            .protectedPerson(!ATHENA_REACT_ANDERSSON_ENTITY.isProtectedPerson())
+            .deceased(!ATHENA_REACT_ANDERSSON_ENTITY.isDeceased())
+            .testIndicated(!ATHENA_REACT_ANDERSSON_ENTITY.isTestIndicated())
+            .type(new PatientIdTypeEntity())
+            .build();
 
     assertTrue(ATHENA_REACT_ANDERSSON_ENTITY.hasDiff(allDiff));
   }
 
   @Test
   void shallThrowExceptionWhenOtherIsNull() {
-    assertThrows(IllegalArgumentException.class,
-        () -> ATHENA_REACT_ANDERSSON_ENTITY.hasDiff(null));
+    assertThrows(IllegalArgumentException.class, () -> ATHENA_REACT_ANDERSSON_ENTITY.hasDiff(null));
   }
 
   @Test
   void shallThrowExceptionWhenComparingPatientsWithDifferentIds() {
-    var patientWithDifferentId = athenaReactAnderssonEntityBuilder()
-        .id(ALVE_REACT_ALFREDSSON_ID)
-        .build();
+    var patientWithDifferentId =
+        athenaReactAnderssonEntityBuilder().id(ALVE_REACT_ALFREDSSON_ID).build();
 
-    assertThrows(IllegalArgumentException.class,
+    assertThrows(
+        IllegalArgumentException.class,
         () -> ATHENA_REACT_ANDERSSON_ENTITY.hasDiff(patientWithDifferentId));
   }
-
 }

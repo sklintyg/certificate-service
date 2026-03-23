@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service.converter;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -24,42 +42,42 @@ class CertificateDataMedicalInvestigationConfigConverterTest {
 
   private CertificateDataMedicalInvestigationConfigConverter converter;
 
-  private static final ElementSpecification ELEMENT_SPECIFICATION = ElementSpecification.builder()
-      .configuration(ElementConfigurationMedicalInvestigationList.builder()
-          .name("NAME")
-          .description("DESCRIPTION")
-          .typeText("TYPE_TEXT")
-          .dateText("DATE_TEXT")
-          .header("HEADER")
-          .label("LABEL")
-          .informationSourceDescription("INFORMATION_SOURCE_DESCRIPTION")
-          .informationSourceText("INFORMATION_SOURCE_TEXT")
-          .list(List.of(
-              MedicalInvestigationConfig.builder()
-                  .id(new FieldId("ID_1"))
-                  .investigationTypeId(new FieldId("TYPE_ID_1"))
-                  .informationSourceId(new FieldId("SOURCE_ID_1"))
-                  .dateId(new FieldId("DATE_ID_1"))
-                  .typeOptions(List.of(
-                      new Code("CODE_1", "CODE_SYSTEM_1", "DISPLAY_NAME_1")
-                  ))
-                  .max(Period.ofDays(1))
-                  .min(Period.ofDays(1))
-                  .build(),
-              MedicalInvestigationConfig.builder()
-                  .id(new FieldId("ID_2"))
-                  .investigationTypeId(new FieldId("TYPE_ID_2"))
-                  .informationSourceId(new FieldId("SOURCE_ID_2"))
-                  .dateId(new FieldId("DATE_ID_2"))
-                  .typeOptions(List.of(
-                      new Code("CODE_2", "CODE_SYSTEM_2", "DISPLAY_NAME_2")
-                  ))
-                  .max(Period.ofDays(2))
-                  .min(Period.ofDays(2))
-                  .build()
-          ))
-          .build())
-      .build();
+  private static final ElementSpecification ELEMENT_SPECIFICATION =
+      ElementSpecification.builder()
+          .configuration(
+              ElementConfigurationMedicalInvestigationList.builder()
+                  .name("NAME")
+                  .description("DESCRIPTION")
+                  .typeText("TYPE_TEXT")
+                  .dateText("DATE_TEXT")
+                  .header("HEADER")
+                  .label("LABEL")
+                  .informationSourceDescription("INFORMATION_SOURCE_DESCRIPTION")
+                  .informationSourceText("INFORMATION_SOURCE_TEXT")
+                  .list(
+                      List.of(
+                          MedicalInvestigationConfig.builder()
+                              .id(new FieldId("ID_1"))
+                              .investigationTypeId(new FieldId("TYPE_ID_1"))
+                              .informationSourceId(new FieldId("SOURCE_ID_1"))
+                              .dateId(new FieldId("DATE_ID_1"))
+                              .typeOptions(
+                                  List.of(new Code("CODE_1", "CODE_SYSTEM_1", "DISPLAY_NAME_1")))
+                              .max(Period.ofDays(1))
+                              .min(Period.ofDays(1))
+                              .build(),
+                          MedicalInvestigationConfig.builder()
+                              .id(new FieldId("ID_2"))
+                              .investigationTypeId(new FieldId("TYPE_ID_2"))
+                              .informationSourceId(new FieldId("SOURCE_ID_2"))
+                              .dateId(new FieldId("DATE_ID_2"))
+                              .typeOptions(
+                                  List.of(new Code("CODE_2", "CODE_SYSTEM_2", "DISPLAY_NAME_2")))
+                              .max(Period.ofDays(2))
+                              .min(Period.ofDays(2))
+                              .build()))
+                  .build())
+          .build();
 
   @BeforeEach
   void setUp() {
@@ -68,16 +86,14 @@ class CertificateDataMedicalInvestigationConfigConverterTest {
 
   @Test
   void shouldThrowExceptionIfWrongClass() {
-    final var elementSpecification = ElementSpecification.builder()
-        .configuration(
-            ElementConfigurationDate.builder().build()
-        )
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .configuration(ElementConfigurationDate.builder().build())
+            .build();
 
-    assertThrows(IllegalStateException.class,
-        () -> converter.convert(elementSpecification,
-            FK7210_CERTIFICATE)
-    );
+    assertThrows(
+        IllegalStateException.class,
+        () -> converter.convert(elementSpecification, FK7210_CERTIFICATE));
   }
 
   @Test
@@ -87,61 +103,70 @@ class CertificateDataMedicalInvestigationConfigConverterTest {
 
   @Test
   void shouldSetCorrectText() {
-    final CertificateDataConfigMedicalInvestigation result = (CertificateDataConfigMedicalInvestigation)
-        converter.convert(ELEMENT_SPECIFICATION, FK3226_CERTIFICATE);
+    final CertificateDataConfigMedicalInvestigation result =
+        (CertificateDataConfigMedicalInvestigation)
+            converter.convert(ELEMENT_SPECIFICATION, FK3226_CERTIFICATE);
 
     assertEquals(ELEMENT_SPECIFICATION.configuration().name(), result.getText());
   }
 
   @Test
   void shouldSetCorrectDescription() {
-    final CertificateDataConfigMedicalInvestigation result = (CertificateDataConfigMedicalInvestigation)
-        converter.convert(ELEMENT_SPECIFICATION, FK3226_CERTIFICATE);
+    final CertificateDataConfigMedicalInvestigation result =
+        (CertificateDataConfigMedicalInvestigation)
+            converter.convert(ELEMENT_SPECIFICATION, FK3226_CERTIFICATE);
 
     assertEquals(ELEMENT_SPECIFICATION.configuration().description(), result.getDescription());
   }
 
   @Test
   void shouldSetCorrectHeader() {
-    final CertificateDataConfigMedicalInvestigation result = (CertificateDataConfigMedicalInvestigation)
-        converter.convert(ELEMENT_SPECIFICATION, FK3226_CERTIFICATE);
+    final CertificateDataConfigMedicalInvestigation result =
+        (CertificateDataConfigMedicalInvestigation)
+            converter.convert(ELEMENT_SPECIFICATION, FK3226_CERTIFICATE);
 
     assertEquals(ELEMENT_SPECIFICATION.configuration().header(), result.getHeader());
   }
 
   @Test
   void shouldSetCorrectLabel() {
-    final CertificateDataConfigMedicalInvestigation result = (CertificateDataConfigMedicalInvestigation)
-        converter.convert(ELEMENT_SPECIFICATION, FK3226_CERTIFICATE);
+    final CertificateDataConfigMedicalInvestigation result =
+        (CertificateDataConfigMedicalInvestigation)
+            converter.convert(ELEMENT_SPECIFICATION, FK3226_CERTIFICATE);
 
     assertEquals(ELEMENT_SPECIFICATION.configuration().label(), result.getLabel());
   }
 
   @Test
   void shouldSetCorrectInformationSourceText() {
-    final CertificateDataConfigMedicalInvestigation result = (CertificateDataConfigMedicalInvestigation)
-        converter.convert(ELEMENT_SPECIFICATION, FK3226_CERTIFICATE);
+    final CertificateDataConfigMedicalInvestigation result =
+        (CertificateDataConfigMedicalInvestigation)
+            converter.convert(ELEMENT_SPECIFICATION, FK3226_CERTIFICATE);
 
-    final var configuration = (ElementConfigurationMedicalInvestigationList) ELEMENT_SPECIFICATION.configuration();
+    final var configuration =
+        (ElementConfigurationMedicalInvestigationList) ELEMENT_SPECIFICATION.configuration();
 
     assertEquals(configuration.informationSourceText(), result.getInformationSourceText());
   }
 
   @Test
   void shouldSetCorrectInformationSourceDescription() {
-    final CertificateDataConfigMedicalInvestigation result = (CertificateDataConfigMedicalInvestigation)
-        converter.convert(ELEMENT_SPECIFICATION, FK3226_CERTIFICATE);
+    final CertificateDataConfigMedicalInvestigation result =
+        (CertificateDataConfigMedicalInvestigation)
+            converter.convert(ELEMENT_SPECIFICATION, FK3226_CERTIFICATE);
 
-    final var configuration = (ElementConfigurationMedicalInvestigationList) ELEMENT_SPECIFICATION.configuration();
+    final var configuration =
+        (ElementConfigurationMedicalInvestigationList) ELEMENT_SPECIFICATION.configuration();
 
-    assertEquals(configuration.informationSourceDescription(),
-        result.getInformationSourceDescription());
+    assertEquals(
+        configuration.informationSourceDescription(), result.getInformationSourceDescription());
   }
 
   @Test
   void shouldSetCorrectValuesForList() {
-    final CertificateDataConfigMedicalInvestigation result = (CertificateDataConfigMedicalInvestigation)
-        converter.convert(ELEMENT_SPECIFICATION, FK3226_CERTIFICATE);
+    final CertificateDataConfigMedicalInvestigation result =
+        (CertificateDataConfigMedicalInvestigation)
+            converter.convert(ELEMENT_SPECIFICATION, FK3226_CERTIFICATE);
 
     final var listItem1 = result.getList().get(0);
     final var listItem2 = result.getList().get(1);
@@ -155,7 +180,6 @@ class CertificateDataMedicalInvestigationConfigConverterTest {
         () -> assertEquals("DISPLAY_NAME_1", listItem1.getTypeOptions().get(0).getLabel()),
         () -> assertEquals(LocalDate.now().plusDays(1), listItem1.getMaxDate()),
         () -> assertEquals(LocalDate.now().plusDays(1), listItem1.getMinDate()),
-
         () -> assertEquals("TYPE_ID_2", listItem2.getInvestigationTypeId()),
         () -> assertEquals("SOURCE_ID_2", listItem2.getInformationSourceId()),
         () -> assertEquals("DATE_ID_2", listItem2.getDateId()),
@@ -163,7 +187,6 @@ class CertificateDataMedicalInvestigationConfigConverterTest {
         () -> assertEquals("CODE_2", listItem2.getTypeOptions().get(0).getCode()),
         () -> assertEquals("DISPLAY_NAME_2", listItem2.getTypeOptions().get(0).getLabel()),
         () -> assertEquals(LocalDate.now().plusDays(2), listItem2.getMaxDate()),
-        () -> assertEquals(LocalDate.now().plusDays(2), listItem2.getMinDate())
-    );
+        () -> assertEquals(LocalDate.now().plusDays(2), listItem2.getMinDate()));
   }
 }

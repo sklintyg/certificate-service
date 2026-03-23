@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.certificate.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -32,40 +50,34 @@ import se.inera.intyg.certificateservice.domain.event.service.CertificateEventDo
 class CreateDraftFromCertificateDomainServiceTest {
 
   private static final CertificateId CERTIFICATE_ID = new CertificateId("certificateId");
-  private static final CertificateModelId CERTIFICATE_MODEL_ID = CertificateModelId.builder()
-      .build();
-  private static final CertificateModel CERTIFICATE_MODEL = CertificateModel.builder()
-      .ableToCreateDraftForModel(CERTIFICATE_MODEL_ID)
-      .build();
-  private static final MedicalCertificate CREATED_CERTIFICATE = MedicalCertificate.builder()
-      .revision(new Revision(0))
-      .build();
-  private static final ExternalReference EXTERNAL_REFERENCE = new ExternalReference(
-      "externalReference");
-  @Mock
-  CertificateRepository certificateRepository;
-  @Mock
-  CertificateModelRepository certificateModelRepository;
-  @Mock
-  CertificateEventDomainService certificateEventDomainService;
-  @InjectMocks
-  CreateDraftFromCertificateDomainService createDraftFromCertificateDomainService;
+  private static final CertificateModelId CERTIFICATE_MODEL_ID =
+      CertificateModelId.builder().build();
+  private static final CertificateModel CERTIFICATE_MODEL =
+      CertificateModel.builder().ableToCreateDraftForModel(CERTIFICATE_MODEL_ID).build();
+  private static final MedicalCertificate CREATED_CERTIFICATE =
+      MedicalCertificate.builder().revision(new Revision(0)).build();
+  private static final ExternalReference EXTERNAL_REFERENCE =
+      new ExternalReference("externalReference");
+  @Mock CertificateRepository certificateRepository;
+  @Mock CertificateModelRepository certificateModelRepository;
+  @Mock CertificateEventDomainService certificateEventDomainService;
+  @InjectMocks CreateDraftFromCertificateDomainService createDraftFromCertificateDomainService;
 
   @Test
-  void shouldThrowCertificateActionForbiddenIfCertificateDoesNotSupportCreateDraftFromCertificate() {
+  void
+      shouldThrowCertificateActionForbiddenIfCertificateDoesNotSupportCreateDraftFromCertificate() {
     final var medicalCertificate = mock(MedicalCertificate.class);
 
     when(certificateRepository.getById(CERTIFICATE_ID)).thenReturn(medicalCertificate);
-    when(medicalCertificate.allowTo(CertificateActionType.CREATE_DRAFT_FROM_CERTIFICATE,
-        Optional.of(ACTION_EVALUATION))).thenReturn(false);
+    when(medicalCertificate.allowTo(
+            CertificateActionType.CREATE_DRAFT_FROM_CERTIFICATE, Optional.of(ACTION_EVALUATION)))
+        .thenReturn(false);
 
-    assertThrows(CertificateActionForbidden.class,
-        () -> createDraftFromCertificateDomainService.create(
-            CERTIFICATE_ID,
-            ACTION_EVALUATION,
-            EXTERNAL_REFERENCE
-        )
-    );
+    assertThrows(
+        CertificateActionForbidden.class,
+        () ->
+            createDraftFromCertificateDomainService.create(
+                CERTIFICATE_ID, ACTION_EVALUATION, EXTERNAL_REFERENCE));
   }
 
   @Test
@@ -73,17 +85,17 @@ class CreateDraftFromCertificateDomainServiceTest {
     final var medicalCertificate = mock(MedicalCertificate.class);
 
     when(certificateRepository.getById(CERTIFICATE_ID)).thenReturn(medicalCertificate);
-    when(medicalCertificate.allowTo(CertificateActionType.CREATE_DRAFT_FROM_CERTIFICATE,
-        Optional.of(ACTION_EVALUATION))).thenReturn(true);
+    when(medicalCertificate.allowTo(
+            CertificateActionType.CREATE_DRAFT_FROM_CERTIFICATE, Optional.of(ACTION_EVALUATION)))
+        .thenReturn(true);
     when(medicalCertificate.certificateModel()).thenReturn(CertificateModel.builder().build());
 
-    final var illegalStateException = assertThrows(IllegalStateException.class,
-        () -> createDraftFromCertificateDomainService.create(
-            CERTIFICATE_ID,
-            ACTION_EVALUATION,
-            EXTERNAL_REFERENCE
-        )
-    );
+    final var illegalStateException =
+        assertThrows(
+            IllegalStateException.class,
+            () ->
+                createDraftFromCertificateDomainService.create(
+                    CERTIFICATE_ID, ACTION_EVALUATION, EXTERNAL_REFERENCE));
 
     assertEquals(
         "Certificate '%s' is not able to create draft for model".formatted(CERTIFICATE_ID.id()),
@@ -95,17 +107,15 @@ class CreateDraftFromCertificateDomainServiceTest {
     final var medicalCertificate = mock(MedicalCertificate.class);
 
     when(certificateRepository.getById(CERTIFICATE_ID)).thenReturn(medicalCertificate);
-    when(medicalCertificate.allowTo(CertificateActionType.CREATE_DRAFT_FROM_CERTIFICATE,
-        Optional.of(ACTION_EVALUATION))).thenReturn(true);
+    when(medicalCertificate.allowTo(
+            CertificateActionType.CREATE_DRAFT_FROM_CERTIFICATE, Optional.of(ACTION_EVALUATION)))
+        .thenReturn(true);
     when(medicalCertificate.certificateModel()).thenReturn(CERTIFICATE_MODEL);
     when(certificateModelRepository.getById(CERTIFICATE_MODEL_ID)).thenReturn(CERTIFICATE_MODEL);
     when(certificateRepository.create(CERTIFICATE_MODEL)).thenReturn(medicalCertificate);
 
     createDraftFromCertificateDomainService.create(
-        CERTIFICATE_ID,
-        ACTION_EVALUATION,
-        EXTERNAL_REFERENCE
-    );
+        CERTIFICATE_ID, ACTION_EVALUATION, EXTERNAL_REFERENCE);
 
     verify(certificateRepository).create(CERTIFICATE_MODEL);
   }
@@ -116,17 +126,15 @@ class CreateDraftFromCertificateDomainServiceTest {
     final var medicalCertificateDraft = mock(MedicalCertificate.class);
 
     when(certificateRepository.getById(CERTIFICATE_ID)).thenReturn(medicalCertificate);
-    when(medicalCertificate.allowTo(CertificateActionType.CREATE_DRAFT_FROM_CERTIFICATE,
-        Optional.of(ACTION_EVALUATION))).thenReturn(true);
+    when(medicalCertificate.allowTo(
+            CertificateActionType.CREATE_DRAFT_FROM_CERTIFICATE, Optional.of(ACTION_EVALUATION)))
+        .thenReturn(true);
     when(medicalCertificate.certificateModel()).thenReturn(CERTIFICATE_MODEL);
     when(certificateModelRepository.getById(CERTIFICATE_MODEL_ID)).thenReturn(CERTIFICATE_MODEL);
     when(certificateRepository.create(CERTIFICATE_MODEL)).thenReturn(medicalCertificateDraft);
 
     createDraftFromCertificateDomainService.create(
-        CERTIFICATE_ID,
-        ACTION_EVALUATION,
-        EXTERNAL_REFERENCE
-    );
+        CERTIFICATE_ID, ACTION_EVALUATION, EXTERNAL_REFERENCE);
 
     verify(medicalCertificateDraft).fillFromCertificate(medicalCertificate);
   }
@@ -137,17 +145,15 @@ class CreateDraftFromCertificateDomainServiceTest {
     final var medicalCertificateDraft = mock(MedicalCertificate.class);
 
     when(certificateRepository.getById(CERTIFICATE_ID)).thenReturn(medicalCertificate);
-    when(medicalCertificate.allowTo(CertificateActionType.CREATE_DRAFT_FROM_CERTIFICATE,
-        Optional.of(ACTION_EVALUATION))).thenReturn(true);
+    when(medicalCertificate.allowTo(
+            CertificateActionType.CREATE_DRAFT_FROM_CERTIFICATE, Optional.of(ACTION_EVALUATION)))
+        .thenReturn(true);
     when(medicalCertificate.certificateModel()).thenReturn(CERTIFICATE_MODEL);
     when(certificateModelRepository.getById(CERTIFICATE_MODEL_ID)).thenReturn(CERTIFICATE_MODEL);
     when(certificateRepository.create(CERTIFICATE_MODEL)).thenReturn(medicalCertificateDraft);
 
     createDraftFromCertificateDomainService.create(
-        CERTIFICATE_ID,
-        ACTION_EVALUATION,
-        EXTERNAL_REFERENCE
-    );
+        CERTIFICATE_ID, ACTION_EVALUATION, EXTERNAL_REFERENCE);
 
     verify(medicalCertificateDraft).updateMetadata(ACTION_EVALUATION);
   }
@@ -158,17 +164,15 @@ class CreateDraftFromCertificateDomainServiceTest {
     final var medicalCertificateDraft = mock(MedicalCertificate.class);
 
     when(certificateRepository.getById(CERTIFICATE_ID)).thenReturn(medicalCertificate);
-    when(medicalCertificate.allowTo(CertificateActionType.CREATE_DRAFT_FROM_CERTIFICATE,
-        Optional.of(ACTION_EVALUATION))).thenReturn(true);
+    when(medicalCertificate.allowTo(
+            CertificateActionType.CREATE_DRAFT_FROM_CERTIFICATE, Optional.of(ACTION_EVALUATION)))
+        .thenReturn(true);
     when(medicalCertificate.certificateModel()).thenReturn(CERTIFICATE_MODEL);
     when(certificateModelRepository.getById(CERTIFICATE_MODEL_ID)).thenReturn(CERTIFICATE_MODEL);
     when(certificateRepository.create(CERTIFICATE_MODEL)).thenReturn(medicalCertificateDraft);
 
     createDraftFromCertificateDomainService.create(
-        CERTIFICATE_ID,
-        ACTION_EVALUATION,
-        EXTERNAL_REFERENCE
-    );
+        CERTIFICATE_ID, ACTION_EVALUATION, EXTERNAL_REFERENCE);
 
     verify(medicalCertificateDraft).externalReference(EXTERNAL_REFERENCE);
   }
@@ -179,17 +183,15 @@ class CreateDraftFromCertificateDomainServiceTest {
     final var medicalCertificateDraft = mock(MedicalCertificate.class);
 
     when(certificateRepository.getById(CERTIFICATE_ID)).thenReturn(medicalCertificate);
-    when(medicalCertificate.allowTo(CertificateActionType.CREATE_DRAFT_FROM_CERTIFICATE,
-        Optional.of(ACTION_EVALUATION))).thenReturn(true);
+    when(medicalCertificate.allowTo(
+            CertificateActionType.CREATE_DRAFT_FROM_CERTIFICATE, Optional.of(ACTION_EVALUATION)))
+        .thenReturn(true);
     when(medicalCertificate.certificateModel()).thenReturn(CERTIFICATE_MODEL);
     when(certificateModelRepository.getById(CERTIFICATE_MODEL_ID)).thenReturn(CERTIFICATE_MODEL);
     when(certificateRepository.create(CERTIFICATE_MODEL)).thenReturn(medicalCertificateDraft);
 
     createDraftFromCertificateDomainService.create(
-        CERTIFICATE_ID,
-        ACTION_EVALUATION,
-        EXTERNAL_REFERENCE
-    );
+        CERTIFICATE_ID, ACTION_EVALUATION, EXTERNAL_REFERENCE);
 
     verify(certificateRepository).save(medicalCertificateDraft);
   }
@@ -200,18 +202,17 @@ class CreateDraftFromCertificateDomainServiceTest {
     final var medicalCertificateDraft = mock(MedicalCertificate.class);
 
     when(certificateRepository.getById(CERTIFICATE_ID)).thenReturn(medicalCertificate);
-    when(medicalCertificate.allowTo(CertificateActionType.CREATE_DRAFT_FROM_CERTIFICATE,
-        Optional.of(ACTION_EVALUATION))).thenReturn(true);
+    when(medicalCertificate.allowTo(
+            CertificateActionType.CREATE_DRAFT_FROM_CERTIFICATE, Optional.of(ACTION_EVALUATION)))
+        .thenReturn(true);
     when(medicalCertificate.certificateModel()).thenReturn(CERTIFICATE_MODEL);
     when(certificateModelRepository.getById(CERTIFICATE_MODEL_ID)).thenReturn(CERTIFICATE_MODEL);
     when(certificateRepository.create(CERTIFICATE_MODEL)).thenReturn(medicalCertificateDraft);
     when(certificateRepository.save(medicalCertificateDraft)).thenReturn(CREATED_CERTIFICATE);
 
-    final var actualCertificate = createDraftFromCertificateDomainService.create(
-        CERTIFICATE_ID,
-        ACTION_EVALUATION,
-        EXTERNAL_REFERENCE
-    );
+    final var actualCertificate =
+        createDraftFromCertificateDomainService.create(
+            CERTIFICATE_ID, ACTION_EVALUATION, EXTERNAL_REFERENCE);
 
     assertEquals(CREATED_CERTIFICATE, actualCertificate);
   }
@@ -222,23 +223,22 @@ class CreateDraftFromCertificateDomainServiceTest {
     final var medicalCertificate = mock(MedicalCertificate.class);
 
     when(certificateRepository.getById(CERTIFICATE_ID)).thenReturn(medicalCertificate);
-    when(medicalCertificate.allowTo(CertificateActionType.CREATE_DRAFT_FROM_CERTIFICATE,
-        Optional.of(ACTION_EVALUATION))).thenReturn(true);
+    when(medicalCertificate.allowTo(
+            CertificateActionType.CREATE_DRAFT_FROM_CERTIFICATE, Optional.of(ACTION_EVALUATION)))
+        .thenReturn(true);
     when(medicalCertificate.certificateModel()).thenReturn(CERTIFICATE_MODEL);
     when(certificateModelRepository.getById(CERTIFICATE_MODEL_ID)).thenReturn(CERTIFICATE_MODEL);
     when(certificateRepository.create(CERTIFICATE_MODEL)).thenReturn(CREATED_CERTIFICATE);
     when(certificateRepository.save(CREATED_CERTIFICATE)).thenReturn(CREATED_CERTIFICATE);
 
     createDraftFromCertificateDomainService.create(
-        CERTIFICATE_ID,
-        ACTION_EVALUATION,
-        EXTERNAL_REFERENCE
-    );
+        CERTIFICATE_ID, ACTION_EVALUATION, EXTERNAL_REFERENCE);
 
     verify(certificateEventDomainService).publish(certificateEventArgumentCaptor.capture());
 
     assertEquals(CREATED_CERTIFICATE, certificateEventArgumentCaptor.getValue().certificate());
-    assertEquals(CertificateEventType.CREATE_DRAFT_FROM_CERTIFICATE,
+    assertEquals(
+        CertificateEventType.CREATE_DRAFT_FROM_CERTIFICATE,
         certificateEventArgumentCaptor.getValue().type());
   }
 }

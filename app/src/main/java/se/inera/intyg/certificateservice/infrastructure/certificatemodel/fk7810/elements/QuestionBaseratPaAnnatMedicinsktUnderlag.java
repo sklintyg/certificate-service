@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7810.elements;
 
 import java.util.List;
@@ -15,12 +33,12 @@ public class QuestionBaseratPaAnnatMedicinsktUnderlag {
 
   public static final ElementId QUESTION_BASERAT_PA_ANNAT_UNDERLAG_ID = new ElementId("3");
   public static final FieldId QUESTION_BASERAT_PA_ANNAT_UNDERLAG_FIELD_ID = new FieldId("3.1");
-  private static final PdfFieldId PDF_BASERAT_PA_ANNAT_UNDERLAG_FIELD_ID = new PdfFieldId(
-      "form1[0].#subform[0].RadioButtonList2[0]");
-  private static final PdfRadioOption PDF_BASERAT_PA_ANNAT_UNDERLAG_OPTION_TRUE = new PdfRadioOption(
-      "2");
-  private static final PdfRadioOption PDF_BASERAT_PA_ANNAT_UNDERLAG_OPTION_FALSE = new PdfRadioOption(
-      "1");
+  private static final PdfFieldId PDF_BASERAT_PA_ANNAT_UNDERLAG_FIELD_ID =
+      new PdfFieldId("form1[0].#subform[0].RadioButtonList2[0]");
+  private static final PdfRadioOption PDF_BASERAT_PA_ANNAT_UNDERLAG_OPTION_TRUE =
+      new PdfRadioOption("2");
+  private static final PdfRadioOption PDF_BASERAT_PA_ANNAT_UNDERLAG_OPTION_FALSE =
+      new PdfRadioOption("1");
 
   private QuestionBaseratPaAnnatMedicinsktUnderlag() {
     throw new IllegalStateException("Utility class");
@@ -35,30 +53,19 @@ public class QuestionBaseratPaAnnatMedicinsktUnderlag {
                 .selectedText("Ja")
                 .unselectedText("Nej")
                 .name("Är utlåtandet även baserat på andra utredningar eller underlag?")
-                .build()
-        )
+                .build())
         .rules(
             List.of(
                 CertificateElementRuleFactory.mandatoryExist(
                     QUESTION_BASERAT_PA_ANNAT_UNDERLAG_ID,
-                    QUESTION_BASERAT_PA_ANNAT_UNDERLAG_FIELD_ID
-                )
-            )
-        )
-        .validations(
-            List.of(
-                ElementValidationBoolean.builder()
-                    .mandatory(true)
-                    .build()
-            )
-        )
+                    QUESTION_BASERAT_PA_ANNAT_UNDERLAG_FIELD_ID)))
+        .validations(List.of(ElementValidationBoolean.builder().mandatory(true).build()))
         .pdfConfiguration(
             PdfConfigurationRadioBoolean.builder()
                 .pdfFieldId(PDF_BASERAT_PA_ANNAT_UNDERLAG_FIELD_ID)
                 .optionTrue(PDF_BASERAT_PA_ANNAT_UNDERLAG_OPTION_TRUE)
                 .optionFalse(PDF_BASERAT_PA_ANNAT_UNDERLAG_OPTION_FALSE)
-                .build()
-        )
+                .build())
         .build();
   }
 }

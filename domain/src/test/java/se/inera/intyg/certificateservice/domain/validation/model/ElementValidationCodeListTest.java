@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.validation.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,34 +52,35 @@ class ElementValidationCodeListListTest {
     @Test
     void shallThrowIllegalArgumentExceptionIfDataIsNull() {
       final Optional<ElementId> categoryId = Optional.empty();
-      assertThrows(IllegalArgumentException.class,
-          () -> elementValidationCodeList.validate(null, categoryId, Collections.emptyList())
-      );
+      assertThrows(
+          IllegalArgumentException.class,
+          () -> elementValidationCodeList.validate(null, categoryId, Collections.emptyList()));
     }
 
     @Test
     void shallThrowIllegalArgumentExceptionIfValueIsNull() {
       final Optional<ElementId> categoryId = Optional.empty();
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .build();
+      final var elementData = ElementData.builder().id(ELEMENT_ID).build();
 
-      assertThrows(IllegalArgumentException.class,
-          () -> elementValidationCodeList.validate(elementData, categoryId,
-              Collections.emptyList()));
+      assertThrows(
+          IllegalArgumentException.class,
+          () ->
+              elementValidationCodeList.validate(elementData, categoryId, Collections.emptyList()));
     }
 
     @Test
     void shallThrowIllegalArgumentExceptionIfValueIsWrongType() {
       final Optional<ElementId> categoryId = Optional.empty();
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(ElementValueUnitContactInformation.builder().build())
-          .build();
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(ElementValueUnitContactInformation.builder().build())
+              .build();
 
-      assertThrows(IllegalArgumentException.class,
-          () -> elementValidationCodeList.validate(elementData, categoryId,
-              Collections.emptyList()));
+      assertThrows(
+          IllegalArgumentException.class,
+          () ->
+              elementValidationCodeList.validate(elementData, categoryId, Collections.emptyList()));
     }
   }
 
@@ -70,165 +89,160 @@ class ElementValidationCodeListListTest {
 
     @Test
     void shallReturnValidationErrorIfMandatoryTrueAndCodeIsNull() {
-      final var expectedValidationErrors = List.of(
-          ValidationError.builder()
-              .elementId(ELEMENT_ID)
-              .fieldId(FIELD_ID)
-              .categoryId(CATEGORY_ID)
-              .message(new ErrorMessage("Välj minst ett alternativ."))
-              .build()
-      );
+      final var expectedValidationErrors =
+          List.of(
+              ValidationError.builder()
+                  .elementId(ELEMENT_ID)
+                  .fieldId(FIELD_ID)
+                  .categoryId(CATEGORY_ID)
+                  .message(new ErrorMessage("Välj minst ett alternativ."))
+                  .build());
 
-      elementValidationCodeList = ElementValidationCodeList.builder()
-          .mandatory(true)
-          .build();
+      elementValidationCodeList = ElementValidationCodeList.builder().mandatory(true).build();
 
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(ElementValueCodeList.builder()
-              .id(FIELD_ID)
-              .list(List.of(
-                  ElementValueCode.builder()
-                      .codeId(new FieldId("ID"))
-                      .build()
-              ))
-              .build())
-          .build();
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueCodeList.builder()
+                      .id(FIELD_ID)
+                      .list(List.of(ElementValueCode.builder().codeId(new FieldId("ID")).build()))
+                      .build())
+              .build();
 
-      final var actualValidationErrors = elementValidationCodeList.validate(elementData,
-          Optional.of(CATEGORY_ID), Collections.emptyList());
+      final var actualValidationErrors =
+          elementValidationCodeList.validate(
+              elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
       assertEquals(expectedValidationErrors, actualValidationErrors);
     }
 
     @Test
     void shallReturnValidationErrorIfMandatoryTrueAndListIsEmpty() {
-      final var expectedValidationErrors = List.of(
-          ValidationError.builder()
-              .elementId(ELEMENT_ID)
-              .fieldId(FIELD_ID)
-              .categoryId(CATEGORY_ID)
-              .message(new ErrorMessage("Välj minst ett alternativ."))
-              .build()
-      );
+      final var expectedValidationErrors =
+          List.of(
+              ValidationError.builder()
+                  .elementId(ELEMENT_ID)
+                  .fieldId(FIELD_ID)
+                  .categoryId(CATEGORY_ID)
+                  .message(new ErrorMessage("Välj minst ett alternativ."))
+                  .build());
 
-      elementValidationCodeList = ElementValidationCodeList.builder()
-          .mandatory(true)
-          .build();
+      elementValidationCodeList = ElementValidationCodeList.builder().mandatory(true).build();
 
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(ElementValueCodeList.builder()
-              .id(FIELD_ID)
-              .list(Collections.emptyList())
-              .build())
-          .build();
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueCodeList.builder().id(FIELD_ID).list(Collections.emptyList()).build())
+              .build();
 
-      final var actualValidationErrors = elementValidationCodeList.validate(elementData,
-          Optional.of(CATEGORY_ID), Collections.emptyList());
+      final var actualValidationErrors =
+          elementValidationCodeList.validate(
+              elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
       assertEquals(expectedValidationErrors, actualValidationErrors);
     }
 
     @Test
     void shallNotReturnValidationErrorIfMandatoryTrueAndCodeHasValue() {
-      elementValidationCodeList = ElementValidationCodeList.builder()
-          .mandatory(false)
-          .build();
+      elementValidationCodeList = ElementValidationCodeList.builder().mandatory(false).build();
 
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(ElementValueCodeList.builder()
-              .id(FIELD_ID)
-              .list(List.of(
-                  ElementValueCode.builder()
-                      .codeId(new FieldId("ID"))
-                      .code("code")
-                      .build()
-              ))
-              .build())
-          .build();
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueCodeList.builder()
+                      .id(FIELD_ID)
+                      .list(
+                          List.of(
+                              ElementValueCode.builder()
+                                  .codeId(new FieldId("ID"))
+                                  .code("code")
+                                  .build()))
+                      .build())
+              .build();
 
-      final var actualValidationErrors = elementValidationCodeList.validate(elementData,
-          Optional.of(CATEGORY_ID), Collections.emptyList());
+      final var actualValidationErrors =
+          elementValidationCodeList.validate(
+              elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
       assertEquals(Collections.emptyList(), actualValidationErrors);
     }
 
     @Test
     void shallReturnValidationErrorIfMandatoryTrueAndCodeIsEmpty() {
-      final var expectedValidationErrors = List.of(
-          ValidationError.builder()
-              .elementId(ELEMENT_ID)
-              .fieldId(FIELD_ID)
-              .categoryId(CATEGORY_ID)
-              .message(new ErrorMessage("Välj minst ett alternativ."))
-              .build()
-      );
+      final var expectedValidationErrors =
+          List.of(
+              ValidationError.builder()
+                  .elementId(ELEMENT_ID)
+                  .fieldId(FIELD_ID)
+                  .categoryId(CATEGORY_ID)
+                  .message(new ErrorMessage("Välj minst ett alternativ."))
+                  .build());
 
-      elementValidationCodeList = ElementValidationCodeList.builder()
-          .mandatory(true)
-          .build();
+      elementValidationCodeList = ElementValidationCodeList.builder().mandatory(true).build();
 
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(ElementValueCodeList.builder()
-              .id(FIELD_ID)
-              .list(List.of(
-                  ElementValueCode.builder()
-                      .codeId(new FieldId("ID"))
-                      .code("")
-                      .build()
-              ))
-              .build())
-          .build();
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueCodeList.builder()
+                      .id(FIELD_ID)
+                      .list(
+                          List.of(
+                              ElementValueCode.builder()
+                                  .codeId(new FieldId("ID"))
+                                  .code("")
+                                  .build()))
+                      .build())
+              .build();
 
-      final var actualValidationErrors = elementValidationCodeList.validate(elementData,
-          Optional.of(CATEGORY_ID), Collections.emptyList());
+      final var actualValidationErrors =
+          elementValidationCodeList.validate(
+              elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
       assertEquals(expectedValidationErrors, actualValidationErrors);
     }
 
     @Test
     void shallNotReturnValidationErrorIfMandatoryFalseAndCodeIsNull() {
-      elementValidationCodeList = ElementValidationCodeList.builder()
-          .mandatory(false)
-          .build();
+      elementValidationCodeList = ElementValidationCodeList.builder().mandatory(false).build();
 
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(ElementValueCodeList.builder()
-              .id(FIELD_ID)
-              .list(List.of(
-                  ElementValueCode.builder()
-                      .codeId(new FieldId("ID"))
-                      .build()
-              ))
-              .build())
-          .build();
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueCodeList.builder()
+                      .id(FIELD_ID)
+                      .list(List.of(ElementValueCode.builder().codeId(new FieldId("ID")).build()))
+                      .build())
+              .build();
 
-      final var actualValidationErrors = elementValidationCodeList.validate(elementData,
-          Optional.of(CATEGORY_ID), Collections.emptyList());
+      final var actualValidationErrors =
+          elementValidationCodeList.validate(
+              elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
       assertEquals(Collections.emptyList(), actualValidationErrors);
     }
 
     @Test
     void shallNotReturnValidationErrorIfMandatoryFalseAndCodeIsEmpty() {
-      elementValidationCodeList = ElementValidationCodeList.builder()
-          .mandatory(false)
-          .build();
+      elementValidationCodeList = ElementValidationCodeList.builder().mandatory(false).build();
 
-      final var elementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(ElementValueCodeList.builder()
-              .id(FIELD_ID)
-              .list(List.of(
-                  ElementValueCode.builder()
-                      .codeId(new FieldId("ID"))
-                      .code("")
-                      .build()
-              ))
-              .build())
-          .build();
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueCodeList.builder()
+                      .id(FIELD_ID)
+                      .list(
+                          List.of(
+                              ElementValueCode.builder()
+                                  .codeId(new FieldId("ID"))
+                                  .code("")
+                                  .build()))
+                      .build())
+              .build();
 
-      final var actualValidationErrors = elementValidationCodeList.validate(elementData,
-          Optional.of(CATEGORY_ID), Collections.emptyList());
+      final var actualValidationErrors =
+          elementValidationCodeList.validate(
+              elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
       assertEquals(Collections.emptyList(), actualValidationErrors);
     }
   }

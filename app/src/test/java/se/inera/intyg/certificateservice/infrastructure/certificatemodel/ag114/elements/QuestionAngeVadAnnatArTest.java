@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ag114.elements;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -35,10 +53,11 @@ class QuestionAngeVadAnnatArTest {
 
   @Test
   void shouldHaveCorrectConfiguration() {
-    final var expectedConfiguration = ElementConfigurationTextField.builder()
-        .id(QUESTION_ANGE_VAD_ANNAT_AR_FIELD_ID)
-        .name("Ange vad annat är")
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationTextField.builder()
+            .id(QUESTION_ANGE_VAD_ANNAT_AR_FIELD_ID)
+            .name("Ange vad annat är")
+            .build();
 
     final var element = QuestionAngeVadAnnatAr.questionAngeVadAnnatAr();
     assertEquals(expectedConfiguration, element.configuration());
@@ -47,43 +66,39 @@ class QuestionAngeVadAnnatArTest {
   @Test
   void shouldIncludeRules() {
     final var element = QuestionAngeVadAnnatAr.questionAngeVadAnnatAr();
-    final var expectedRules = List.of(
-        ElementRuleExpression.builder()
-            .id(QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID)
-            .type(ElementRuleType.SHOW)
-            .expression(new RuleExpression("$ANNAT"))
-            .build(),
-        ElementRuleExpression.builder()
-            .id(QUESTION_ANGE_VAD_ANNAT_AR_ID)
-            .type(ElementRuleType.MANDATORY)
-            .expression(new RuleExpression("$10.3"))
-            .build(),
-        ElementRuleLimit.builder()
-            .id(QUESTION_ANGE_VAD_ANNAT_AR_ID)
-            .type(ElementRuleType.TEXT_LIMIT)
-            .limit(new RuleLimit((short) 50))
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleExpression.builder()
+                .id(QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID)
+                .type(ElementRuleType.SHOW)
+                .expression(new RuleExpression("$ANNAT"))
+                .build(),
+            ElementRuleExpression.builder()
+                .id(QUESTION_ANGE_VAD_ANNAT_AR_ID)
+                .type(ElementRuleType.MANDATORY)
+                .expression(new RuleExpression("$10.3"))
+                .build(),
+            ElementRuleLimit.builder()
+                .id(QUESTION_ANGE_VAD_ANNAT_AR_ID)
+                .type(ElementRuleType.TEXT_LIMIT)
+                .limit(new RuleLimit((short) 50))
+                .build());
     assertEquals(expectedRules, element.rules());
   }
 
   @Test
   void shouldIncludeValidation() {
     final var element = QuestionAngeVadAnnatAr.questionAngeVadAnnatAr();
-    final var expectedValidations = List.of(
-        ElementValidationText.builder()
-            .mandatory(true)
-            .limit(50)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationText.builder().mandatory(true).limit(50).build());
     assertEquals(expectedValidations, element.validations());
   }
 
   @Test
   void shouldIncludeMapping() {
     final var element = QuestionAngeVadAnnatAr.questionAngeVadAnnatAr();
-    final var expectedMapping = new ElementMapping(QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID,
-        CodeSystemKvFkmu0001.ANNAT);
+    final var expectedMapping =
+        new ElementMapping(QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID, CodeSystemKvFkmu0001.ANNAT);
     assertEquals(expectedMapping, element.mapping());
   }
 
@@ -92,21 +107,20 @@ class QuestionAngeVadAnnatArTest {
 
     @Test
     void shouldReturnTrueIfAnnatIsSelected() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID)
-              .value(
-                  ElementValueDateList.builder()
-                      .dateListId(new FieldId("10.1"))
-                      .dateList(List.of(
-                          ElementValueDate.builder()
-                              .dateId(new FieldId(ANNAT.code()))
-                              .build()
-                      ))
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID)
+                  .value(
+                      ElementValueDateList.builder()
+                          .dateListId(new FieldId("10.1"))
+                          .dateList(
+                              List.of(
+                                  ElementValueDate.builder()
+                                      .dateId(new FieldId(ANNAT.code()))
+                                      .build()))
+                          .build())
+                  .build());
 
       final var element = QuestionAngeVadAnnatAr.questionAngeVadAnnatAr();
       final var shouldValidate = element.shouldValidate();
@@ -116,21 +130,20 @@ class QuestionAngeVadAnnatArTest {
 
     @Test
     void shouldReturnFalseIfCodeIsDifferentFromAnnat() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID)
-              .value(
-                  ElementValueDateList.builder()
-                      .dateListId(new FieldId("10.1"))
-                      .dateList(List.of(
-                          ElementValueDate.builder()
-                              .dateId(new FieldId("SOME_OTHER_CODE"))
-                              .build()
-                      ))
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID)
+                  .value(
+                      ElementValueDateList.builder()
+                          .dateListId(new FieldId("10.1"))
+                          .dateList(
+                              List.of(
+                                  ElementValueDate.builder()
+                                      .dateId(new FieldId("SOME_OTHER_CODE"))
+                                      .build()))
+                          .build())
+                  .build());
 
       final var element = QuestionAngeVadAnnatAr.questionAngeVadAnnatAr();
       final var shouldValidate = element.shouldValidate();
@@ -140,17 +153,16 @@ class QuestionAngeVadAnnatArTest {
 
     @Test
     void shouldReturnFalseIfCodeIsNull() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID)
-              .value(
-                  ElementValueDateList.builder()
-                      .dateListId(new FieldId("10.1"))
-                      .dateList(List.of())
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID)
+                  .value(
+                      ElementValueDateList.builder()
+                          .dateListId(new FieldId("10.1"))
+                          .dateList(List.of())
+                          .build())
+                  .build());
 
       final var element = QuestionAngeVadAnnatAr.questionAngeVadAnnatAr();
       final var shouldValidate = element.shouldValidate();

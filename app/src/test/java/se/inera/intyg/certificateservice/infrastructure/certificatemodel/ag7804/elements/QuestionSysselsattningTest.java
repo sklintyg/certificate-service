@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ag7804.elements;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -36,25 +54,30 @@ class QuestionSysselsattningTest {
 
   @Test
   void shouldHaveCorrectConfiguration() {
-    final var expectedConfiguration = ElementConfigurationCheckboxMultipleCode.builder()
-        .id(QUESTION_SYSSELSATTNING_FIELD_ID)
-        .name("I relation till vilken sysselsättning bedömer du arbetsförmågan?")
-        .elementLayout(ElementLayout.ROWS)
-        .list(
-            List.of(
-                new ElementConfigurationCode(new FieldId(NUVARANDE_ARBETE.code()),
-                    NUVARANDE_ARBETE.displayName(), NUVARANDE_ARBETE),
-                new ElementConfigurationCode(new FieldId(ARBETSSOKANDE.code()),
-                    ARBETSSOKANDE.displayName(), ARBETSSOKANDE),
-                new ElementConfigurationCode(new FieldId(FORALDRALEDIG.code()),
-                    FORALDRALEDIG.displayName(), FORALDRALEDIG),
-                new ElementConfigurationCode(new FieldId(STUDIER.code()), STUDIER.displayName(),
-                    STUDIER)
-            )
-        )
-        .description(
-            "Om du kryssar i flera val är det viktigt att du tydliggör under \"Övriga upplysningar\" om sjukskrivningens omfattning eller period skiljer sig åt mellan olika sysselsättningar.")
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationCheckboxMultipleCode.builder()
+            .id(QUESTION_SYSSELSATTNING_FIELD_ID)
+            .name("I relation till vilken sysselsättning bedömer du arbetsförmågan?")
+            .elementLayout(ElementLayout.ROWS)
+            .list(
+                List.of(
+                    new ElementConfigurationCode(
+                        new FieldId(NUVARANDE_ARBETE.code()),
+                        NUVARANDE_ARBETE.displayName(),
+                        NUVARANDE_ARBETE),
+                    new ElementConfigurationCode(
+                        new FieldId(ARBETSSOKANDE.code()),
+                        ARBETSSOKANDE.displayName(),
+                        ARBETSSOKANDE),
+                    new ElementConfigurationCode(
+                        new FieldId(FORALDRALEDIG.code()),
+                        FORALDRALEDIG.displayName(),
+                        FORALDRALEDIG),
+                    new ElementConfigurationCode(
+                        new FieldId(STUDIER.code()), STUDIER.displayName(), STUDIER)))
+            .description(
+                "Om du kryssar i flera val är det viktigt att du tydliggör under \"Övriga upplysningar\" om sjukskrivningens omfattning eller period skiljer sig åt mellan olika sysselsättningar.")
+            .build();
 
     final var element = QuestionSysselsattning.questionSysselsattning();
     assertEquals(expectedConfiguration, element.configuration());
@@ -63,37 +86,28 @@ class QuestionSysselsattningTest {
   @Test
   void shouldIncludeRules() {
     final var element = QuestionSysselsattning.questionSysselsattning();
-    final var expectedRules = List.of(
-        ElementRuleExpression.builder()
-            .id(QUESTION_SYSSELSATTNING_ID)
-            .type(ElementRuleType.MANDATORY)
-            .expression(
-                new RuleExpression(
-                    "exists($ARBETSSOKANDE) || exists($FORALDRALEDIG) || exists($NUVARANDE_ARBETE) || exists($STUDIER)"
-                )
-            )
-            .build(),
-        ElementRuleExpression.builder()
-            .id(QUESTION_SMITTBARARPENNING_ID)
-            .type(ElementRuleType.HIDE)
-            .expression(
-                new RuleExpression(
-                    "$27.1"
-                )
-            )
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleExpression.builder()
+                .id(QUESTION_SYSSELSATTNING_ID)
+                .type(ElementRuleType.MANDATORY)
+                .expression(
+                    new RuleExpression(
+                        "exists($ARBETSSOKANDE) || exists($FORALDRALEDIG) || exists($NUVARANDE_ARBETE) || exists($STUDIER)"))
+                .build(),
+            ElementRuleExpression.builder()
+                .id(QUESTION_SMITTBARARPENNING_ID)
+                .type(ElementRuleType.HIDE)
+                .expression(new RuleExpression("$27.1"))
+                .build());
     assertEquals(expectedRules, element.rules());
   }
 
   @Test
   void shouldIncludeValidation() {
     final var element = QuestionSysselsattning.questionSysselsattning();
-    final var expectedValidations = List.of(
-        ElementValidationCodeList.builder()
-            .mandatory(true)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationCodeList.builder().mandatory(true).build());
     assertEquals(expectedValidations, element.validations());
   }
 
@@ -102,63 +116,51 @@ class QuestionSysselsattningTest {
 
     @Test
     void shallReturnTrueIfBooleanIsFalse() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("27"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(false)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("27"))
+                  .value(ElementValueBoolean.builder().value(false).build())
+                  .build());
 
       final var element = QuestionSysselsattning.questionSysselsattning();
 
-      final var shouldValidate = element.elementSpecification(QUESTION_SYSSELSATTNING_ID)
-          .shouldValidate();
+      final var shouldValidate =
+          element.elementSpecification(QUESTION_SYSSELSATTNING_ID).shouldValidate();
 
       assertTrue(shouldValidate.test(elementData));
     }
 
     @Test
     void shallReturnTrueIfElementMissing() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("8.1"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(true)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("8.1"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
 
       final var element = QuestionSysselsattning.questionSysselsattning();
 
-      final var shouldValidate = element.elementSpecification(QUESTION_SYSSELSATTNING_ID)
-          .shouldValidate();
+      final var shouldValidate =
+          element.elementSpecification(QUESTION_SYSSELSATTNING_ID).shouldValidate();
 
       assertTrue(shouldValidate.test(elementData));
     }
 
     @Test
     void shallReturnFalseIfElementTrue() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("27"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(true)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("27"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
 
       final var element = QuestionSysselsattning.questionSysselsattning();
 
-      final var shouldValidate = element.elementSpecification(QUESTION_SYSSELSATTNING_ID)
-          .shouldValidate();
+      final var shouldValidate =
+          element.elementSpecification(QUESTION_SYSSELSATTNING_ID).shouldValidate();
 
       assertFalse(shouldValidate.test(elementData));
     }

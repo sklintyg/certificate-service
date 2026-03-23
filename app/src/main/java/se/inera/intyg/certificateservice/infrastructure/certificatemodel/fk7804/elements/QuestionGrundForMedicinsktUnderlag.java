@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7804.elements;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7804.elements.QuestionSmittbararpenning.QUESTION_SMITTBARARPENNING_FIELD_ID;
@@ -30,38 +48,38 @@ public class QuestionGrundForMedicinsktUnderlag {
 
   public static ElementSpecification questionGrundForMedicinsktUnderlag(
       ElementSpecification... children) {
-    final var checkboxDates = List.of(
-        CheckboxDate.builder()
-            .id(new FieldId(CodeSystemKvFkmu0001.FYSISKUNDERSOKNING.code()))
-            .label(CodeSystemKvFkmu0001.FYSISKUNDERSOKNING.displayName())
-            .code(CodeSystemKvFkmu0001.FYSISKUNDERSOKNING)
-            .max(Period.ofDays(0))
-            .build(),
-        CheckboxDate.builder()
-            .id(new FieldId(CodeSystemKvFkmu0001.DIGITALUNDERSOKNING.code()))
-            .label(CodeSystemKvFkmu0001.DIGITALUNDERSOKNING.displayName())
-            .code(CodeSystemKvFkmu0001.DIGITALUNDERSOKNING)
-            .max(Period.ofDays(0))
-            .build(),
-        CheckboxDate.builder()
-            .id(new FieldId(CodeSystemKvFkmu0001.TELEFONKONTAKT.code()))
-            .label(CodeSystemKvFkmu0001.TELEFONKONTAKT.displayName())
-            .code(CodeSystemKvFkmu0001.TELEFONKONTAKT)
-            .max(Period.ofDays(0))
-            .build(),
-        CheckboxDate.builder()
-            .id(new FieldId(CodeSystemKvFkmu0001.JOURNALUPPGIFTER.code()))
-            .label(CodeSystemKvFkmu0001.JOURNALUPPGIFTER.displayName())
-            .code(CodeSystemKvFkmu0001.JOURNALUPPGIFTER)
-            .max(Period.ofDays(0))
-            .build(),
-        CheckboxDate.builder()
-            .id(new FieldId(CodeSystemKvFkmu0001.ANNAT.code()))
-            .label(CodeSystemKvFkmu0001.ANNAT.displayName())
-            .code(CodeSystemKvFkmu0001.ANNAT)
-            .max(Period.ofDays(0))
-            .build()
-    );
+    final var checkboxDates =
+        List.of(
+            CheckboxDate.builder()
+                .id(new FieldId(CodeSystemKvFkmu0001.FYSISKUNDERSOKNING.code()))
+                .label(CodeSystemKvFkmu0001.FYSISKUNDERSOKNING.displayName())
+                .code(CodeSystemKvFkmu0001.FYSISKUNDERSOKNING)
+                .max(Period.ofDays(0))
+                .build(),
+            CheckboxDate.builder()
+                .id(new FieldId(CodeSystemKvFkmu0001.DIGITALUNDERSOKNING.code()))
+                .label(CodeSystemKvFkmu0001.DIGITALUNDERSOKNING.displayName())
+                .code(CodeSystemKvFkmu0001.DIGITALUNDERSOKNING)
+                .max(Period.ofDays(0))
+                .build(),
+            CheckboxDate.builder()
+                .id(new FieldId(CodeSystemKvFkmu0001.TELEFONKONTAKT.code()))
+                .label(CodeSystemKvFkmu0001.TELEFONKONTAKT.displayName())
+                .code(CodeSystemKvFkmu0001.TELEFONKONTAKT)
+                .max(Period.ofDays(0))
+                .build(),
+            CheckboxDate.builder()
+                .id(new FieldId(CodeSystemKvFkmu0001.JOURNALUPPGIFTER.code()))
+                .label(CodeSystemKvFkmu0001.JOURNALUPPGIFTER.displayName())
+                .code(CodeSystemKvFkmu0001.JOURNALUPPGIFTER)
+                .max(Period.ofDays(0))
+                .build(),
+            CheckboxDate.builder()
+                .id(new FieldId(CodeSystemKvFkmu0001.ANNAT.code()))
+                .label(CodeSystemKvFkmu0001.ANNAT.displayName())
+                .code(CodeSystemKvFkmu0001.ANNAT)
+                .max(Period.ofDays(0))
+                .build());
 
     return ElementSpecification.builder()
         .id(QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID)
@@ -70,31 +88,19 @@ public class QuestionGrundForMedicinsktUnderlag {
                 .id(QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_FIELD_ID)
                 .name("Intyget är baserat på")
                 .dates(checkboxDates)
-                .build()
-        )
+                .build())
         .rules(
             List.of(
                 CertificateElementRuleFactory.mandatory(
                     QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID,
-                    checkboxDates.stream().map(CheckboxDate::id).toList()
-                ),
+                    checkboxDates.stream().map(CheckboxDate::id).toList()),
                 CertificateElementRuleFactory.hide(
-                    QUESTION_SMITTBARARPENNING_ID,
-                    QUESTION_SMITTBARARPENNING_FIELD_ID
-                )
-            )
-        )
+                    QUESTION_SMITTBARARPENNING_ID, QUESTION_SMITTBARARPENNING_FIELD_ID)))
         .validations(
             List.of(
-                ElementValidationDateList.builder()
-                    .mandatory(true)
-                    .max(Period.ofDays(0))
-                    .build()
-            )
-        )
+                ElementValidationDateList.builder().mandatory(true).max(Period.ofDays(0)).build()))
         .shouldValidate(
-            ElementDataPredicateFactory.checkboxBoolean(QUESTION_SMITTBARARPENNING_ID, false)
-        )
+            ElementDataPredicateFactory.checkboxBoolean(QUESTION_SMITTBARARPENNING_ID, false))
         .children(List.of(children))
         .pdfConfiguration(
             PdfConfigurationDateList.builder()
@@ -115,8 +121,9 @@ public class QuestionGrundForMedicinsktUnderlag {
                             .build(),
                         new FieldId(CodeSystemKvFkmu0001.TELEFONKONTAKT.code()),
                         PdfConfigurationDateCheckbox.builder()
-                            .checkboxFieldId(new PdfFieldId(
-                                "form1[0].#subform[0].ksr_TelefonkontaktPatienten[0]"))
+                            .checkboxFieldId(
+                                new PdfFieldId(
+                                    "form1[0].#subform[0].ksr_TelefonkontaktPatienten[0]"))
                             .dateFieldId(
                                 new PdfFieldId("form1[0].#subform[0].flt_datumTelefonkontakt[0]"))
                             .build(),
@@ -131,11 +138,8 @@ public class QuestionGrundForMedicinsktUnderlag {
                         PdfConfigurationDateCheckbox.builder()
                             .checkboxFieldId(new PdfFieldId("form1[0].#subform[0].ksr_Annat[0]"))
                             .dateFieldId(new PdfFieldId("form1[0].#subform[0].flt_datumAnnat[0]"))
-                            .build()
-                    )
-                )
-                .build()
-        )
+                            .build()))
+                .build())
         .includeWhenRenewing(false)
         .build();
   }

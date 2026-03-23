@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.certificate.service;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -34,19 +52,16 @@ import se.inera.intyg.certificateservice.domain.event.service.CertificateEventDo
 class UpdateWithCertificateCandidateDomainServiceTest {
 
   private static final CertificateId CERTIFICATE_ID = new CertificateId("certificateId");
-  private static final CertificateId CANDIDATE_CERTIFICATE_ID = new CertificateId(
-      "candidateCertificateId");
+  private static final CertificateId CANDIDATE_CERTIFICATE_ID =
+      new CertificateId("candidateCertificateId");
   private static final ActionEvaluation ACTION_EVALUATION = ActionEvaluation.builder().build();
-  private static final ExternalReference EXTERNAL_REFERENCE = new ExternalReference(
-      "externalReference");
-  @Mock
-  private CertificateRepository certificateRepository;
-  @Mock
-  private CertificateEventDomainService certificateEventDomainService;
-  @Mock
-  private Certificate certificate;
-  @Mock
-  private Certificate candidateCertificate;
+  private static final ExternalReference EXTERNAL_REFERENCE =
+      new ExternalReference("externalReference");
+  @Mock private CertificateRepository certificateRepository;
+  @Mock private CertificateEventDomainService certificateEventDomainService;
+  @Mock private Certificate certificate;
+  @Mock private Certificate candidateCertificate;
+
   @InjectMocks
   private UpdateWithCertificateCandidateDomainService updateWithCertificateCandidateDomainService;
 
@@ -57,90 +72,100 @@ class UpdateWithCertificateCandidateDomainServiceTest {
 
   @Test
   void shallValidateIfAllowedToUpdateDraftFromCertificate() {
-    doReturn(true).when(certificate)
+    doReturn(true)
+        .when(certificate)
         .allowTo(UPDATE_DRAFT_FROM_CERTIFICATE, Optional.of(ACTION_EVALUATION));
     doReturn(candidateCertificate).when(certificateRepository).getById(CANDIDATE_CERTIFICATE_ID);
     doReturn(true).when(candidateCertificate).allowTo(READ, Optional.of(ACTION_EVALUATION));
-    updateWithCertificateCandidateDomainService.update(CERTIFICATE_ID, CANDIDATE_CERTIFICATE_ID,
-        ACTION_EVALUATION, EXTERNAL_REFERENCE);
+    updateWithCertificateCandidateDomainService.update(
+        CERTIFICATE_ID, CANDIDATE_CERTIFICATE_ID, ACTION_EVALUATION, EXTERNAL_REFERENCE);
     verify(certificate).allowTo(UPDATE_DRAFT_FROM_CERTIFICATE, Optional.of(ACTION_EVALUATION));
   }
 
   @Test
   void shallThrowIfNotAllowedToReadCandidateCertificate() {
-    doReturn(true).when(certificate)
+    doReturn(true)
+        .when(certificate)
         .allowTo(UPDATE_DRAFT_FROM_CERTIFICATE, Optional.of(ACTION_EVALUATION));
     doReturn(candidateCertificate).when(certificateRepository).getById(CANDIDATE_CERTIFICATE_ID);
     doReturn(false).when(candidateCertificate).allowTo(READ, Optional.of(ACTION_EVALUATION));
-    assertThrows(CertificateActionForbidden.class,
-        () -> updateWithCertificateCandidateDomainService.update(CERTIFICATE_ID,
-            CANDIDATE_CERTIFICATE_ID, ACTION_EVALUATION, EXTERNAL_REFERENCE)
-    );
+    assertThrows(
+        CertificateActionForbidden.class,
+        () ->
+            updateWithCertificateCandidateDomainService.update(
+                CERTIFICATE_ID, CANDIDATE_CERTIFICATE_ID, ACTION_EVALUATION, EXTERNAL_REFERENCE));
   }
 
   @Test
   void shallThrowIfNotAllowedToUpdateDraftFromCertificate() {
-    doReturn(false).when(certificate)
+    doReturn(false)
+        .when(certificate)
         .allowTo(UPDATE_DRAFT_FROM_CERTIFICATE, Optional.of(ACTION_EVALUATION));
-    assertThrows(CertificateActionForbidden.class,
-        () -> updateWithCertificateCandidateDomainService.update(CERTIFICATE_ID,
-            CANDIDATE_CERTIFICATE_ID, ACTION_EVALUATION, EXTERNAL_REFERENCE)
-    );
+    assertThrows(
+        CertificateActionForbidden.class,
+        () ->
+            updateWithCertificateCandidateDomainService.update(
+                CERTIFICATE_ID, CANDIDATE_CERTIFICATE_ID, ACTION_EVALUATION, EXTERNAL_REFERENCE));
   }
 
   @Test
   void shallUpdateCertificateWithCandidateCertificate() {
-    doReturn(true).when(certificate)
+    doReturn(true)
+        .when(certificate)
         .allowTo(UPDATE_DRAFT_FROM_CERTIFICATE, Optional.of(ACTION_EVALUATION));
     doReturn(candidateCertificate).when(certificateRepository).getById(CANDIDATE_CERTIFICATE_ID);
     doReturn(true).when(candidateCertificate).allowTo(READ, Optional.of(ACTION_EVALUATION));
-    updateWithCertificateCandidateDomainService.update(CERTIFICATE_ID,
-        CANDIDATE_CERTIFICATE_ID, ACTION_EVALUATION, EXTERNAL_REFERENCE);
+    updateWithCertificateCandidateDomainService.update(
+        CERTIFICATE_ID, CANDIDATE_CERTIFICATE_ID, ACTION_EVALUATION, EXTERNAL_REFERENCE);
     verify(certificate).fillFromCertificate(candidateCertificate);
   }
 
   @Test
   void shallUpdateCertificateWithExternalReferenceIfNotAlreadyExists() {
-    doReturn(true).when(certificate)
+    doReturn(true)
+        .when(certificate)
         .allowTo(UPDATE_DRAFT_FROM_CERTIFICATE, Optional.of(ACTION_EVALUATION));
     doReturn(candidateCertificate).when(certificateRepository).getById(CANDIDATE_CERTIFICATE_ID);
     doReturn(true).when(candidateCertificate).allowTo(READ, Optional.of(ACTION_EVALUATION));
-    updateWithCertificateCandidateDomainService.update(CERTIFICATE_ID,
-        CANDIDATE_CERTIFICATE_ID, ACTION_EVALUATION, EXTERNAL_REFERENCE);
+    updateWithCertificateCandidateDomainService.update(
+        CERTIFICATE_ID, CANDIDATE_CERTIFICATE_ID, ACTION_EVALUATION, EXTERNAL_REFERENCE);
     verify(certificate).externalReference(EXTERNAL_REFERENCE);
   }
 
   @Test
   void shallNotUpdateCertificateWithExternalReferenceIfAlreadyExists() {
-    doReturn(true).when(certificate)
+    doReturn(true)
+        .when(certificate)
         .allowTo(UPDATE_DRAFT_FROM_CERTIFICATE, Optional.of(ACTION_EVALUATION));
     doReturn(candidateCertificate).when(certificateRepository).getById(CANDIDATE_CERTIFICATE_ID);
     doReturn(true).when(candidateCertificate).allowTo(READ, Optional.of(ACTION_EVALUATION));
     doReturn(EXTERNAL_REFERENCE).when(certificate).externalReference();
-    updateWithCertificateCandidateDomainService.update(CERTIFICATE_ID,
-        CANDIDATE_CERTIFICATE_ID, ACTION_EVALUATION, EXTERNAL_REFERENCE);
+    updateWithCertificateCandidateDomainService.update(
+        CERTIFICATE_ID, CANDIDATE_CERTIFICATE_ID, ACTION_EVALUATION, EXTERNAL_REFERENCE);
     verify(certificate, never()).externalReference(any());
   }
 
   @Test
   void shallUpdateCertificateWithActionEvaluation() {
-    doReturn(true).when(certificate)
+    doReturn(true)
+        .when(certificate)
         .allowTo(UPDATE_DRAFT_FROM_CERTIFICATE, Optional.of(ACTION_EVALUATION));
     doReturn(candidateCertificate).when(certificateRepository).getById(CANDIDATE_CERTIFICATE_ID);
     doReturn(true).when(candidateCertificate).allowTo(READ, Optional.of(ACTION_EVALUATION));
-    updateWithCertificateCandidateDomainService.update(CERTIFICATE_ID,
-        CANDIDATE_CERTIFICATE_ID, ACTION_EVALUATION, EXTERNAL_REFERENCE);
+    updateWithCertificateCandidateDomainService.update(
+        CERTIFICATE_ID, CANDIDATE_CERTIFICATE_ID, ACTION_EVALUATION, EXTERNAL_REFERENCE);
     verify(certificate).updateMetadata(ACTION_EVALUATION);
   }
 
   @Test
   void shallSaveCertificate() {
-    doReturn(true).when(certificate)
+    doReturn(true)
+        .when(certificate)
         .allowTo(UPDATE_DRAFT_FROM_CERTIFICATE, Optional.of(ACTION_EVALUATION));
     doReturn(candidateCertificate).when(certificateRepository).getById(CANDIDATE_CERTIFICATE_ID);
     doReturn(true).when(candidateCertificate).allowTo(READ, Optional.of(ACTION_EVALUATION));
-    updateWithCertificateCandidateDomainService.update(CERTIFICATE_ID,
-        CANDIDATE_CERTIFICATE_ID, ACTION_EVALUATION, EXTERNAL_REFERENCE);
+    updateWithCertificateCandidateDomainService.update(
+        CERTIFICATE_ID, CANDIDATE_CERTIFICATE_ID, ACTION_EVALUATION, EXTERNAL_REFERENCE);
     verify(certificateRepository).save(certificate);
   }
 
@@ -148,14 +173,16 @@ class UpdateWithCertificateCandidateDomainServiceTest {
   void shallReturnSavedCertificate() {
     final var savedCertificate = mock(Certificate.class);
 
-    doReturn(true).when(certificate)
+    doReturn(true)
+        .when(certificate)
         .allowTo(UPDATE_DRAFT_FROM_CERTIFICATE, Optional.of(ACTION_EVALUATION));
     doReturn(candidateCertificate).when(certificateRepository).getById(CANDIDATE_CERTIFICATE_ID);
     doReturn(true).when(candidateCertificate).allowTo(READ, Optional.of(ACTION_EVALUATION));
     doReturn(savedCertificate).when(certificateRepository).save(certificate);
 
-    final var actual = updateWithCertificateCandidateDomainService.update(CERTIFICATE_ID,
-        CANDIDATE_CERTIFICATE_ID, ACTION_EVALUATION, EXTERNAL_REFERENCE);
+    final var actual =
+        updateWithCertificateCandidateDomainService.update(
+            CERTIFICATE_ID, CANDIDATE_CERTIFICATE_ID, ACTION_EVALUATION, EXTERNAL_REFERENCE);
 
     assertEquals(savedCertificate, actual);
   }
@@ -164,24 +191,26 @@ class UpdateWithCertificateCandidateDomainServiceTest {
   void shallPublishUpdateWithCertificateCandidateEvent() {
     final var savedCertificate = mock(Certificate.class);
 
-    doReturn(true).when(certificate)
+    doReturn(true)
+        .when(certificate)
         .allowTo(UPDATE_DRAFT_FROM_CERTIFICATE, Optional.of(ACTION_EVALUATION));
     doReturn(candidateCertificate).when(certificateRepository).getById(CANDIDATE_CERTIFICATE_ID);
     doReturn(true).when(candidateCertificate).allowTo(READ, Optional.of(ACTION_EVALUATION));
     doReturn(savedCertificate).when(certificateRepository).save(certificate);
 
-    updateWithCertificateCandidateDomainService.update(CERTIFICATE_ID,
-        CANDIDATE_CERTIFICATE_ID, ACTION_EVALUATION, EXTERNAL_REFERENCE);
+    updateWithCertificateCandidateDomainService.update(
+        CERTIFICATE_ID, CANDIDATE_CERTIFICATE_ID, ACTION_EVALUATION, EXTERNAL_REFERENCE);
 
     final var certificateEventCaptor = ArgumentCaptor.forClass(CertificateEvent.class);
     verify(certificateEventDomainService).publish(certificateEventCaptor.capture());
 
     assertAll(
-        () -> assertEquals(CertificateEventType.UPDATE_WITH_CERTIFICATE_CANDIDATE,
-            certificateEventCaptor.getValue().type()),
+        () ->
+            assertEquals(
+                CertificateEventType.UPDATE_WITH_CERTIFICATE_CANDIDATE,
+                certificateEventCaptor.getValue().type()),
         () -> assertEquals(savedCertificate, certificateEventCaptor.getValue().certificate()),
         () -> assertEquals(ACTION_EVALUATION, certificateEventCaptor.getValue().actionEvaluation()),
-        () -> assertTrue(certificateEventCaptor.getValue().duration() >= 0)
-    );
+        () -> assertTrue(certificateEventCaptor.getValue().duration() >= 0));
   }
 }

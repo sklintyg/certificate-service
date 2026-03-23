@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7804;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.ag7804.CertificateModelFactoryAG7804.AG7804_V2_0;
@@ -64,8 +82,8 @@ import se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.
 @RequiredArgsConstructor
 public class CertificateModelFactoryFK7804 implements CertificateModelFactory {
 
-  private static final SchematronPath SCHEMATRON_PATH = new SchematronPath(
-      "fk7804/schematron/lisjp.v2.sch");
+  private static final SchematronPath SCHEMATRON_PATH =
+      new SchematronPath("fk7804/schematron/lisjp.v2.sch");
   private final CertificateActionFactory certificateActionFactory;
 
   @Value("${certificate.model.fk7804.v2_0.active.from}")
@@ -80,15 +98,17 @@ public class CertificateModelFactoryFK7804 implements CertificateModelFactory {
   private static final String VERSION = "2.0";
   private static final CertificateTypeName FK7804_TYPE_NAME = new CertificateTypeName("FK7804");
   private static final String NAME = "Läkarintyg för sjukpenning";
-  private static final String DESCRIPTION = """
+  private static final String DESCRIPTION =
+      """
       <b>Vad är sjukpenning?</b>
       Sjukpenning är en ersättning för personer som arbetar i Sverige och har en nedsatt arbetsförmåga på grund av sjukdom. Beroende på hur mycket arbetsförmågan är nedsatt kan man få en fjärdedels, halv, tre fjärdedels eller hel sjukpenning.\s
-      
+
       <b>Andra förmåner som detta läkarintyg används till</b>
       Om du stänger av patienten enligt smittskyddslagen ska du även använda detta intyg.
       """;
 
-  private static final String DETAILED_DESCRIPTION = """
+  private static final String DETAILED_DESCRIPTION =
+      """
       <p>Om du inte känner patienten ska hen styrka sin identitet genom legitimation med foto (HSLF-FS 2018:54).</p>
       <p><b>Vad är sjukpenning?</b><br/>Sjukpenning är en ersättning för personer som har en nedsatt arbetsförmåga på grund av sjukdom. Beroende på hur mycket arbetsförmågan är nedsatt kan man få en fjärdedels, halv, tre fjärdedels eller hel sjukpenning.</p>
       <p><b>Förutsättningar för att få sjukpenning</b><br/>Arbetsförmågan bedöms i förhållande till personens sysselsättning som kan vara nuvarande arbete eller föräldraledighet för vård av barn. För personer som är arbetslösa bedöms arbetsförmågan i förhållandet till att utföra sådant arbete som är normalt förekommande på arbetsmarknaden.</p>
@@ -111,16 +131,18 @@ public class CertificateModelFactoryFK7804 implements CertificateModelFactory {
       """;
 
   public static final String LINK_FK_ID = "LINK_FK";
-  private static final String PREAMBLE_TEXT = """
+  private static final String PREAMBLE_TEXT =
+      """
       Det här är ditt intyg. Intyget innehåller all information som vården fyllt i. Du kan inte ändra något i ditt intyg. Har du frågor kontaktar du den som skrivit ditt intyg. Om du vill ansöka om sjukpenning, gör du det på {LINK_FK}.
       """;
   public static final String URL_FK = "https://www.forsakringskassan.se/";
   public static final String FK_NAME = "Försäkringskassan";
 
-  public static final CertificateModelId FK7804_V2_0 = CertificateModelId.builder()
-      .type(new CertificateType(FK_7804))
-      .version(new CertificateVersion(VERSION))
-      .build();
+  public static final CertificateModelId FK7804_V2_0 =
+      CertificateModelId.builder()
+          .type(new CertificateType(FK_7804))
+          .version(new CertificateVersion(VERSION))
+          .build();
 
   @Override
   public CertificateModel create() {
@@ -137,95 +159,62 @@ public class CertificateModelFactoryFK7804 implements CertificateModelFactory {
         .schematronPath(SCHEMATRON_PATH)
         .sickLeaveProvider(new FK7804SickLeaveProvider())
         .ableToCreateDraftForModel(AG7804_V2_0)
-        .messageTypes(List.of(
-            CertificateMessageType.builder()
-                .type(MessageType.MISSING)
-                .subject(new Subject(MessageType.MISSING.displayName()))
-                .build(),
-            CertificateMessageType.builder()
-                .type(MessageType.COORDINATION)
-                .subject(new Subject(MessageType.COORDINATION.displayName()))
-                .build(),
-            CertificateMessageType.builder()
-                .type(MessageType.CONTACT)
-                .subject(new Subject(MessageType.CONTACT.displayName()))
-                .build(),
-            CertificateMessageType.builder()
-                .type(MessageType.OTHER)
-                .subject(new Subject(MessageType.OTHER.displayName()))
-                .build()
-        ))
+        .messageTypes(
+            List.of(
+                CertificateMessageType.builder()
+                    .type(MessageType.MISSING)
+                    .subject(new Subject(MessageType.MISSING.displayName()))
+                    .build(),
+                CertificateMessageType.builder()
+                    .type(MessageType.COORDINATION)
+                    .subject(new Subject(MessageType.COORDINATION.displayName()))
+                    .build(),
+                CertificateMessageType.builder()
+                    .type(MessageType.CONTACT)
+                    .subject(new Subject(MessageType.CONTACT.displayName()))
+                    .build(),
+                CertificateMessageType.builder()
+                    .type(MessageType.OTHER)
+                    .subject(new Subject(MessageType.OTHER.displayName()))
+                    .build()))
         .texts(
             List.of(
                 CertificateText.builder()
                     .text(PREAMBLE_TEXT)
                     .type(CertificateTextType.PREAMBLE_TEXT)
-                    .links(List.of(CertificateLink.builder()
-                        .url(URL_FK)
-                        .id(LINK_FK_ID)
-                        .name(FK_NAME)
-                        .build()))
-                    .build()
-            )
-        )
+                    .links(
+                        List.of(
+                            CertificateLink.builder()
+                                .url(URL_FK)
+                                .id(LINK_FK_ID)
+                                .name(FK_NAME)
+                                .build()))
+                    .build()))
         .summaryProvider(new FK7804CertificateSummaryProvider())
         .certificateActionSpecifications(FK7804CertificateActionSpecification.create())
         .messageActionSpecifications(FK7804MessageActionSpecification.create())
-        .elementSpecifications(List.of(
-            categorySmittbararpenning(
-                questionSmittbararpenning()
-            ),
-            categoryGrundForMedicinsktUnderlag(
-                questionGrundForMedicinsktUnderlag(
-                    questionAnnanGrundForMedicinsktUnderlag()
-                )
-            ),
-            categorySysselsattning(
-                questionSysselsattning(
-                    questionYrkeOchArbetsuppgifter()
-                )
-            ),
-            categoryDiagnos(
-                questionDiagnos(diagnosisCodeRepository)
-            ),
-            categoryFunktionsnedsattning(
-                questionFunktionsnedsattningar()
-            ),
-            categoryAktivitetsbegransning(
-                questionAktivitetsbegransningar()
-            ),
-            categoryMedicinskBehandling(
-                questionMedicinskBehandling()
-            ),
-            categoryBedomning(
-                questionNedsattningArbetsformaga(
-                    messageStartDateInfo()
-                ),
-                questionArbetsformagaLangreAnBeslutsstod(),
-                questionTransportstod(),
-                questionSvarareAtergangVidOjamnArbetstid(
-                    questionMedicinskaSkalForSvarareAtergang()
-                )
-            ),
-            categoryPrognos(
-                questionPrognos(
-                    questionAntalManader(),
-                    questionGrundForBedomning()
-                )
-            ),
-            categoryAtgarderSomKanFramjaAttergang(
-                questionAtgarderSomKanFramjaAtergang()
-            ),
-            categoryOvrigt(
-                questionOvrigt()
-            ),
-            categoryKontakt(
-                questionKontakt(
-                    questionAngeVarforDuVillHaKontakt()
-                )
-            ),
-            issuingUnitContactInfo()
-        ))
+        .elementSpecifications(
+            List.of(
+                categorySmittbararpenning(questionSmittbararpenning()),
+                categoryGrundForMedicinsktUnderlag(
+                    questionGrundForMedicinsktUnderlag(questionAnnanGrundForMedicinsktUnderlag())),
+                categorySysselsattning(questionSysselsattning(questionYrkeOchArbetsuppgifter())),
+                categoryDiagnos(questionDiagnos(diagnosisCodeRepository)),
+                categoryFunktionsnedsattning(questionFunktionsnedsattningar()),
+                categoryAktivitetsbegransning(questionAktivitetsbegransningar()),
+                categoryMedicinskBehandling(questionMedicinskBehandling()),
+                categoryBedomning(
+                    questionNedsattningArbetsformaga(messageStartDateInfo()),
+                    questionArbetsformagaLangreAnBeslutsstod(),
+                    questionTransportstod(),
+                    questionSvarareAtergangVidOjamnArbetstid(
+                        questionMedicinskaSkalForSvarareAtergang())),
+                categoryPrognos(
+                    questionPrognos(questionAntalManader(), questionGrundForBedomning())),
+                categoryAtgarderSomKanFramjaAttergang(questionAtgarderSomKanFramjaAtergang()),
+                categoryOvrigt(questionOvrigt()),
+                categoryKontakt(questionKontakt(questionAngeVarforDuVillHaKontakt())),
+                issuingUnitContactInfo()))
         .pdfSpecification(FK7804PdfSpecification.create())
         .certificateActionFactory(certificateActionFactory)
         .build();

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.message.service;
 
 import jakarta.transaction.Transactional;
@@ -29,31 +47,28 @@ public class SaveMessageService {
   public SaveMessageResponse save(SaveMessageRequest request, String messageId) {
     saveMessageRequestValidator.validate(request, messageId);
 
-    final var actionEvaluation = actionEvaluationFactory.create(
-        request.getUser(),
-        request.getUnit(),
-        request.getCareUnit(),
-        request.getCareProvider()
-    );
+    final var actionEvaluation =
+        actionEvaluationFactory.create(
+            request.getUser(), request.getUnit(), request.getCareUnit(), request.getCareProvider());
 
     final var question = request.getQuestion();
     final var messageType = MessageType.valueOf(question.getType().name());
 
-    final var certificate = certificateRepository.getById(
-        new CertificateId(question.getCertificateId())
-    );
+    final var certificate =
+        certificateRepository.getById(new CertificateId(question.getCertificateId()));
 
-    final var updatedMessage = saveMessageDomainService.save(
-        certificate,
-        new MessageId(messageId),
-        new Content(question.getMessage()),
-        actionEvaluation,
-        messageType
-    );
+    final var updatedMessage =
+        saveMessageDomainService.save(
+            certificate,
+            new MessageId(messageId),
+            new Content(question.getMessage()),
+            actionEvaluation,
+            messageType);
 
     return SaveMessageResponse.builder()
-        .question(questionConverter.convert(updatedMessage,
-            updatedMessage.actions(actionEvaluation, certificate)))
+        .question(
+            questionConverter.convert(
+                updatedMessage, updatedMessage.actions(actionEvaluation, certificate)))
         .build();
   }
 }

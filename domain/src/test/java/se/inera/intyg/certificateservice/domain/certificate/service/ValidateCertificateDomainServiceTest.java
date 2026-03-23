@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.certificate.service;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -34,14 +52,10 @@ class ValidateCertificateDomainServiceTest {
   private static final CertificateId CERTIFICATE_ID = new CertificateId("certificateId");
   private static final ActionEvaluation ACTION_EVALUATION = ActionEvaluation.builder().build();
   private static final List<ElementData> ELEMENT_DATA_LIST = List.of(ElementData.builder().build());
-  @Mock
-  private CertificateRepository certificateRepository;
-  @Mock
-  private CertificateEventDomainService certificateEventDomainService;
-  @Mock
-  private Certificate certificate;
-  @InjectMocks
-  private ValidateCertificateDomainService validateCertificateDomainService;
+  @Mock private CertificateRepository certificateRepository;
+  @Mock private CertificateEventDomainService certificateEventDomainService;
+  @Mock private Certificate certificate;
+  @InjectMocks private ValidateCertificateDomainService validateCertificateDomainService;
 
   @BeforeEach
   void setUp() {
@@ -58,10 +72,11 @@ class ValidateCertificateDomainServiceTest {
   @Test
   void shallThrowIfNotAllowedToRead() {
     doReturn(false).when(certificate).allowTo(READ, Optional.of(ACTION_EVALUATION));
-    assertThrows(CertificateActionForbidden.class,
-        () -> validateCertificateDomainService.validate(CERTIFICATE_ID, ELEMENT_DATA_LIST,
-            ACTION_EVALUATION)
-    );
+    assertThrows(
+        CertificateActionForbidden.class,
+        () ->
+            validateCertificateDomainService.validate(
+                CERTIFICATE_ID, ELEMENT_DATA_LIST, ACTION_EVALUATION));
   }
 
   @Test
@@ -71,8 +86,9 @@ class ValidateCertificateDomainServiceTest {
     doReturn(true).when(certificate).allowTo(READ, Optional.of(ACTION_EVALUATION));
     doReturn(expectedResult).when(certificate).validate(ELEMENT_DATA_LIST);
 
-    final var actualResult = validateCertificateDomainService.validate(CERTIFICATE_ID,
-        ELEMENT_DATA_LIST, ACTION_EVALUATION);
+    final var actualResult =
+        validateCertificateDomainService.validate(
+            CERTIFICATE_ID, ELEMENT_DATA_LIST, ACTION_EVALUATION);
     assertEquals(expectedResult, actualResult);
   }
 
@@ -89,25 +105,27 @@ class ValidateCertificateDomainServiceTest {
     verify(certificateEventDomainService).publish(certificateEventCaptor.capture());
 
     assertAll(
-        () -> assertEquals(CertificateEventType.VALIDATED,
-            certificateEventCaptor.getValue().type()),
+        () ->
+            assertEquals(CertificateEventType.VALIDATED, certificateEventCaptor.getValue().type()),
         () -> assertEquals(certificate, certificateEventCaptor.getValue().certificate()),
         () -> assertEquals(ACTION_EVALUATION, certificateEventCaptor.getValue().actionEvaluation()),
-        () -> assertTrue(certificateEventCaptor.getValue().duration() >= 0)
-    );
+        () -> assertTrue(certificateEventCaptor.getValue().duration() >= 0));
   }
 
   @Test
   void shallIncludeReasonNotAllowedToException() {
     final var expectedReason = List.of("expectedReason");
     doReturn(false).when(certificate).allowTo(READ, Optional.of(ACTION_EVALUATION));
-    doReturn(expectedReason).when(certificate)
+    doReturn(expectedReason)
+        .when(certificate)
         .reasonNotAllowed(READ, Optional.of(ACTION_EVALUATION));
 
-    final var certificateActionForbidden = assertThrows(CertificateActionForbidden.class,
-        () -> validateCertificateDomainService.validate(CERTIFICATE_ID, ELEMENT_DATA_LIST,
-            ACTION_EVALUATION)
-    );
+    final var certificateActionForbidden =
+        assertThrows(
+            CertificateActionForbidden.class,
+            () ->
+                validateCertificateDomainService.validate(
+                    CERTIFICATE_ID, ELEMENT_DATA_LIST, ACTION_EVALUATION));
 
     assertEquals(expectedReason, certificateActionForbidden.reason());
   }

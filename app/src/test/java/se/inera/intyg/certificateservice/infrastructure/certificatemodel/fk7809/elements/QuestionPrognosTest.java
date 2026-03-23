@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7809.elements;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,11 +47,12 @@ class QuestionPrognosTest {
 
   @Test
   void shallIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationTextArea.builder()
-        .name(
-            "Hur förväntas patientens funktionsnedsättning och aktivitetsbegränsningar utvecklas över tid?")
-        .id(new FieldId("51.1"))
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationTextArea.builder()
+            .name(
+                "Hur förväntas patientens funktionsnedsättning och aktivitetsbegränsningar utvecklas över tid?")
+            .id(new FieldId("51.1"))
+            .build();
 
     final var element = QuestionPrognos.questionPrognos();
 
@@ -42,18 +61,18 @@ class QuestionPrognosTest {
 
   @Test
   void shallIncludeRules() {
-    final var expectedRules = List.of(
-        ElementRuleExpression.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.MANDATORY)
-            .expression(new RuleExpression("$51.1"))
-            .build(),
-        ElementRuleLimit.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.TEXT_LIMIT)
-            .limit(new RuleLimit((short) 4000))
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleExpression.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.MANDATORY)
+                .expression(new RuleExpression("$51.1"))
+                .build(),
+            ElementRuleLimit.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.TEXT_LIMIT)
+                .limit(new RuleLimit((short) 4000))
+                .build());
 
     final var element = QuestionPrognos.questionPrognos();
 
@@ -62,12 +81,8 @@ class QuestionPrognosTest {
 
   @Test
   void shallIncludeValidations() {
-    final var expectedValidations = List.of(
-        ElementValidationText.builder()
-            .mandatory(true)
-            .limit(4000)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationText.builder().mandatory(true).limit(4000).build());
 
     final var element = QuestionPrognos.questionPrognos();
 
@@ -76,12 +91,14 @@ class QuestionPrognosTest {
 
   @Test
   void shallIncludePdfConfiguration() {
-    final var expected = PdfConfigurationText.builder()
-        .pdfFieldId(
-            new PdfFieldId("form1[0].#subform[3].flt_txtPatientenslFunktionsnedsattning[0]"))
-        .maxLength(265)
-        .overflowSheetFieldId(new PdfFieldId(("form1[0].#subform[4].flt_txtFortsattningsblad[0]")))
-        .build();
+    final var expected =
+        PdfConfigurationText.builder()
+            .pdfFieldId(
+                new PdfFieldId("form1[0].#subform[3].flt_txtPatientenslFunktionsnedsattning[0]"))
+            .maxLength(265)
+            .overflowSheetFieldId(
+                new PdfFieldId(("form1[0].#subform[4].flt_txtFortsattningsblad[0]")))
+            .build();
 
     final var element = QuestionPrognos.questionPrognos();
 

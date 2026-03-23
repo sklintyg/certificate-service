@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.prefill.converter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,51 +49,44 @@ class PrefillDropdownCodeConverterTest {
   private static final FieldId CODE_FIELD_ID = new FieldId("2");
   private static final FieldId FIELD_ID = new FieldId("F2");
   private static final String CODE = "code1";
-  private static final ElementSpecification SPECIFICATION = ElementSpecification.builder()
-      .id(ELEMENT_ID)
-      .configuration(
-          ElementConfigurationDropdownCode.builder()
-              .id(FIELD_ID)
-              .list(
-                  List.of(
-                      new ElementConfigurationCode(new FieldId(""), "default empty value",
-                          null),
-                      new ElementConfigurationCode(
-                          CODE_FIELD_ID, "Code 1", new Code(CODE, "S1", "D1")),
-                      new ElementConfigurationCode(new FieldId("F2"), "Code 2",
-                          new Code("C2", "S1", "D2"))
-                  )
-              )
-              .build()
-      )
-      .build();
-  private static final ElementData EXPECTED_ELEMENT_DATA = ElementData.builder()
-      .id(ELEMENT_ID)
-      .value(
-          ElementValueCode.builder()
-              .codeId(CODE_FIELD_ID)
-              .code(CODE)
-              .build()
-      ).build();
+  private static final ElementSpecification SPECIFICATION =
+      ElementSpecification.builder()
+          .id(ELEMENT_ID)
+          .configuration(
+              ElementConfigurationDropdownCode.builder()
+                  .id(FIELD_ID)
+                  .list(
+                      List.of(
+                          new ElementConfigurationCode(
+                              new FieldId(""), "default empty value", null),
+                          new ElementConfigurationCode(
+                              CODE_FIELD_ID, "Code 1", new Code(CODE, "S1", "D1")),
+                          new ElementConfigurationCode(
+                              new FieldId("F2"), "Code 2", new Code("C2", "S1", "D2"))))
+                  .build())
+          .build();
+  private static final ElementData EXPECTED_ELEMENT_DATA =
+      ElementData.builder()
+          .id(ELEMENT_ID)
+          .value(ElementValueCode.builder().codeId(CODE_FIELD_ID).code(CODE).build())
+          .build();
 
-  private final PrefillDropdownCodeConverter prefillDropdownCodeConverter = new PrefillDropdownCodeConverter();
+  private final PrefillDropdownCodeConverter prefillDropdownCodeConverter =
+      new PrefillDropdownCodeConverter();
 
   @Test
   void shouldReturnSupportsDropdownCode() {
-    assertEquals(ElementConfigurationDropdownCode.class,
-        prefillDropdownCodeConverter.supports());
+    assertEquals(ElementConfigurationDropdownCode.class, prefillDropdownCodeConverter.supports());
   }
 
   @Nested
   class PrefillAnswerWithForifyllnad {
 
-
     @Test
     void shouldReturnNullIfNoAnswersOrSubAnswers() {
       final var prefill = new Forifyllnad();
 
-      PrefillAnswer result = prefillDropdownCodeConverter.prefillAnswer(SPECIFICATION,
-          prefill);
+      PrefillAnswer result = prefillDropdownCodeConverter.prefillAnswer(SPECIFICATION, prefill);
 
       assertNull(result);
     }
@@ -93,10 +104,7 @@ class PrefillDropdownCodeConverterTest {
 
       final var result = prefillDropdownCodeConverter.prefillAnswer(SPECIFICATION, prefill);
 
-      assertEquals(
-          PrefillErrorType.INVALID_FORMAT,
-          result.getErrors().getFirst().type()
-      );
+      assertEquals(PrefillErrorType.INVALID_FORMAT, result.getErrors().getFirst().type());
     }
 
     @Test
@@ -112,10 +120,7 @@ class PrefillDropdownCodeConverterTest {
 
       final var result = prefillDropdownCodeConverter.prefillAnswer(SPECIFICATION, prefill);
 
-      assertEquals(
-          PrefillErrorType.INVALID_SUB_ANSWER_ID,
-          result.getErrors().getFirst().type()
-      );
+      assertEquals(PrefillErrorType.INVALID_SUB_ANSWER_ID, result.getErrors().getFirst().type());
     }
 
     @Test
@@ -147,37 +152,31 @@ class PrefillDropdownCodeConverterTest {
       svar.getDelsvar().add(delsvar);
       prefill.getSvar().add(svar);
 
-      final var specification = ElementSpecification.builder()
-          .id(new ElementId(FIELD_ID.value()))
-          .configuration(
-              ElementConfigurationDropdownCode.builder()
-                  .id(FIELD_ID)
-                  .list(
-                      List.of(
-                          new ElementConfigurationCode(
-                              CODE_FIELD_ID, "Code 1", new Code(CODE, "S1", "D1")),
-                          new ElementConfigurationCode(new FieldId("F2"), "Code 2",
-                              new Code("C2", "S1", "D2"))
-                      )
-                  )
-                  .build()
-          )
-          .build();
+      final var specification =
+          ElementSpecification.builder()
+              .id(new ElementId(FIELD_ID.value()))
+              .configuration(
+                  ElementConfigurationDropdownCode.builder()
+                      .id(FIELD_ID)
+                      .list(
+                          List.of(
+                              new ElementConfigurationCode(
+                                  CODE_FIELD_ID, "Code 1", new Code(CODE, "S1", "D1")),
+                              new ElementConfigurationCode(
+                                  new FieldId("F2"), "Code 2", new Code("C2", "S1", "D2"))))
+                      .build())
+              .build();
 
       final var result = prefillDropdownCodeConverter.prefillAnswer(specification, prefill);
 
-      final var expected = PrefillAnswer.builder()
-          .elementData(
-              ElementData.builder()
-                  .id(new ElementId(FIELD_ID.value()))
-                  .value(
-                      ElementValueCode.builder()
-                          .codeId(CODE_FIELD_ID)
-                          .code(CODE)
-                          .build()
-                  ).build()
-          )
-          .build();
+      final var expected =
+          PrefillAnswer.builder()
+              .elementData(
+                  ElementData.builder()
+                      .id(new ElementId(FIELD_ID.value()))
+                      .value(ElementValueCode.builder().codeId(CODE_FIELD_ID).code(CODE).build())
+                      .build())
+              .build();
 
       assertEquals(expected, result);
     }
@@ -195,9 +194,7 @@ class PrefillDropdownCodeConverterTest {
 
       final var result = prefillDropdownCodeConverter.prefillAnswer(SPECIFICATION, prefill);
 
-      final var expected = PrefillAnswer.builder()
-          .elementData(EXPECTED_ELEMENT_DATA)
-          .build();
+      final var expected = PrefillAnswer.builder().elementData(EXPECTED_ELEMENT_DATA).build();
 
       assertEquals(expected, result);
     }
@@ -205,17 +202,15 @@ class PrefillDropdownCodeConverterTest {
     @Test
     void shouldReturnErrorIfWrongConfigurationType() {
       final var prefill = new Forifyllnad();
-      final var wrongSpec = ElementSpecification.builder()
-          .id(ELEMENT_ID)
-          .configuration(ElementConfigurationCategory.builder().build())
-          .build();
+      final var wrongSpec =
+          ElementSpecification.builder()
+              .id(ELEMENT_ID)
+              .configuration(ElementConfigurationCategory.builder().build())
+              .build();
 
       final var result = prefillDropdownCodeConverter.prefillAnswer(wrongSpec, prefill);
 
-      assertEquals(
-          PrefillErrorType.TECHNICAL_ERROR,
-          result.getErrors().getFirst().type()
-      );
+      assertEquals(PrefillErrorType.TECHNICAL_ERROR, result.getErrors().getFirst().type());
     }
 
     @Test
@@ -232,10 +227,7 @@ class PrefillDropdownCodeConverterTest {
 
       final var result = prefillDropdownCodeConverter.prefillAnswer(SPECIFICATION, prefill);
 
-      assertEquals(
-          PrefillErrorType.WRONG_NUMBER_OF_ANSWERS,
-          result.getErrors().getFirst().type()
-      );
+      assertEquals(PrefillErrorType.WRONG_NUMBER_OF_ANSWERS, result.getErrors().getFirst().type());
     }
 
     @Test
@@ -255,10 +247,7 @@ class PrefillDropdownCodeConverterTest {
 
       final var result = prefillDropdownCodeConverter.prefillAnswer(SPECIFICATION, prefill);
 
-      assertEquals(
-          PrefillErrorType.WRONG_NUMBER_OF_ANSWERS,
-          result.getErrors().getFirst().type()
-      );
+      assertEquals(PrefillErrorType.WRONG_NUMBER_OF_ANSWERS, result.getErrors().getFirst().type());
     }
 
     @Test
@@ -274,10 +263,7 @@ class PrefillDropdownCodeConverterTest {
 
       final var result = prefillDropdownCodeConverter.prefillAnswer(SPECIFICATION, prefill);
 
-      assertEquals(
-          PrefillErrorType.WRONG_NUMBER_OF_ANSWERS,
-          result.getErrors().getFirst().type()
-      );
+      assertEquals(PrefillErrorType.WRONG_NUMBER_OF_ANSWERS, result.getErrors().getFirst().type());
     }
 
     private static Element createCVTypeElement() {

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.pdfboxgenerator.pdf.value;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -36,25 +54,15 @@ class PdfTextValueGeneratorTest {
 
     @Test
     void shouldSetValueIfElementDataWithTextValue() {
-      final var expected = List.of(
-          PdfField.builder()
-              .id(FIELD_ID)
-              .value(VALUE)
-              .offset(0)
-              .build()
-      );
+      final var expected = List.of(PdfField.builder().id(FIELD_ID).value(VALUE).offset(0).build());
 
-      final var elementSpecification = ElementSpecification.builder()
-          .pdfConfiguration(
-              PdfConfigurationText.builder()
-                  .pdfFieldId(new PdfFieldId(FIELD_ID))
-                  .build()
-          )
-          .build();
+      final var elementSpecification =
+          ElementSpecification.builder()
+              .pdfConfiguration(
+                  PdfConfigurationText.builder().pdfFieldId(new PdfFieldId(FIELD_ID)).build())
+              .build();
 
-      final var elementValue = ElementValueText.builder()
-          .text(VALUE)
-          .build();
+      final var elementValue = ElementValueText.builder().text(VALUE).build();
 
       final var result = pdfTextValueGenerator.generate(elementSpecification, elementValue);
 
@@ -63,16 +71,13 @@ class PdfTextValueGeneratorTest {
 
     @Test
     void shouldReturnEmptyListIfElementDataWithoutTextValue() {
-      final var elementSpecification = ElementSpecification.builder()
-          .pdfConfiguration(
-              PdfConfigurationText.builder()
-                  .pdfFieldId(new PdfFieldId(FIELD_ID))
-                  .build()
-          )
-          .build();
+      final var elementSpecification =
+          ElementSpecification.builder()
+              .pdfConfiguration(
+                  PdfConfigurationText.builder().pdfFieldId(new PdfFieldId(FIELD_ID)).build())
+              .build();
 
-      final var elementValue = ElementValueText.builder()
-          .build();
+      final var elementValue = ElementValueText.builder().build();
 
       final var result = pdfTextValueGenerator.generate(elementSpecification, elementValue);
 
@@ -85,33 +90,21 @@ class PdfTextValueGeneratorTest {
 
     @Test
     void shouldSetValueIfUnderMaxLength() {
-      final var expected = List.of(
-          PdfField.builder()
-              .id(FIELD_ID)
-              .value(VALUE)
-              .offset(10)
-              .build()
-      );
+      final var expected = List.of(PdfField.builder().id(FIELD_ID).value(VALUE).offset(10).build());
 
-      final var elementSpecification = ElementSpecification.builder()
-          .configuration(
-              ElementConfigurationTextField.builder()
-                  .name(QUESTION_NAME)
-                  .build()
-          )
-          .pdfConfiguration(
-              PdfConfigurationText.builder()
-                  .pdfFieldId(new PdfFieldId(FIELD_ID))
-                  .maxLength(100)
-                  .overflowSheetFieldId(OVERFLOW_SHEET_ID)
-                  .offset(10)
-                  .build()
-          )
-          .build();
+      final var elementSpecification =
+          ElementSpecification.builder()
+              .configuration(ElementConfigurationTextField.builder().name(QUESTION_NAME).build())
+              .pdfConfiguration(
+                  PdfConfigurationText.builder()
+                      .pdfFieldId(new PdfFieldId(FIELD_ID))
+                      .maxLength(100)
+                      .overflowSheetFieldId(OVERFLOW_SHEET_ID)
+                      .offset(10)
+                      .build())
+              .build();
 
-      final var elementValue = ElementValueText.builder()
-          .text(VALUE)
-          .build();
+      final var elementValue = ElementValueText.builder().text(VALUE).build();
 
       final var result = pdfTextValueGenerator.generate(elementSpecification, elementValue);
 
@@ -121,41 +114,28 @@ class PdfTextValueGeneratorTest {
 
   @Test
   void shouldSplitValueIfOverMaxLengthWhenShortLimit() {
-    final var expected = List.of(
-        PdfField.builder()
-            .id(FIELD_ID)
-            .value(START_VALUE)
-            .build(),
-        PdfField.builder()
-            .id(OVERFLOW_SHEET_ID.id())
-            .value(QUESTION_NAME)
-            .append(true)
-            .build(),
-        PdfField.builder()
-            .id(OVERFLOW_SHEET_ID.id())
-            .value(END_VALUE + "\n")
-            .append(true)
-            .build()
-    );
+    final var expected =
+        List.of(
+            PdfField.builder().id(FIELD_ID).value(START_VALUE).build(),
+            PdfField.builder().id(OVERFLOW_SHEET_ID.id()).value(QUESTION_NAME).append(true).build(),
+            PdfField.builder()
+                .id(OVERFLOW_SHEET_ID.id())
+                .value(END_VALUE + "\n")
+                .append(true)
+                .build());
 
-    final var elementSpecification = ElementSpecification.builder()
-        .configuration(
-            ElementConfigurationTextField.builder()
-                .name(QUESTION_NAME)
-                .build()
-        )
-        .pdfConfiguration(
-            PdfConfigurationText.builder()
-                .pdfFieldId(new PdfFieldId(FIELD_ID))
-                .maxLength(12)
-                .overflowSheetFieldId(OVERFLOW_SHEET_ID)
-                .build()
-        )
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .configuration(ElementConfigurationTextField.builder().name(QUESTION_NAME).build())
+            .pdfConfiguration(
+                PdfConfigurationText.builder()
+                    .pdfFieldId(new PdfFieldId(FIELD_ID))
+                    .maxLength(12)
+                    .overflowSheetFieldId(OVERFLOW_SHEET_ID)
+                    .build())
+            .build();
 
-    final var elementValue = ElementValueText.builder()
-        .text(VALUE)
-        .build();
+    final var elementValue = ElementValueText.builder().text(VALUE).build();
 
     final var result = pdfTextValueGenerator.generate(elementSpecification, elementValue);
 
@@ -164,41 +144,28 @@ class PdfTextValueGeneratorTest {
 
   @Test
   void shouldSplitValueIfOverMaxLengthWhenLargeLimit() {
-    final var expected = List.of(
-        PdfField.builder()
-            .id(FIELD_ID)
-            .value(LARGE_START_VALUE)
-            .build(),
-        PdfField.builder()
-            .id(OVERFLOW_SHEET_ID.id())
-            .value(QUESTION_NAME)
-            .append(true)
-            .build(),
-        PdfField.builder()
-            .id(OVERFLOW_SHEET_ID.id())
-            .value(LARGE_END_VALUE + "\n")
-            .append(true)
-            .build()
-    );
+    final var expected =
+        List.of(
+            PdfField.builder().id(FIELD_ID).value(LARGE_START_VALUE).build(),
+            PdfField.builder().id(OVERFLOW_SHEET_ID.id()).value(QUESTION_NAME).append(true).build(),
+            PdfField.builder()
+                .id(OVERFLOW_SHEET_ID.id())
+                .value(LARGE_END_VALUE + "\n")
+                .append(true)
+                .build());
 
-    final var elementSpecification = ElementSpecification.builder()
-        .configuration(
-            ElementConfigurationTextField.builder()
-                .name(QUESTION_NAME)
-                .build()
-        )
-        .pdfConfiguration(
-            PdfConfigurationText.builder()
-                .pdfFieldId(new PdfFieldId(FIELD_ID))
-                .maxLength(35)
-                .overflowSheetFieldId(OVERFLOW_SHEET_ID)
-                .build()
-        )
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .configuration(ElementConfigurationTextField.builder().name(QUESTION_NAME).build())
+            .pdfConfiguration(
+                PdfConfigurationText.builder()
+                    .pdfFieldId(new PdfFieldId(FIELD_ID))
+                    .maxLength(35)
+                    .overflowSheetFieldId(OVERFLOW_SHEET_ID)
+                    .build())
+            .build();
 
-    final var elementValue = ElementValueText.builder()
-        .text(VALUE)
-        .build();
+    final var elementValue = ElementValueText.builder().text(VALUE).build();
 
     final var result = pdfTextValueGenerator.generate(elementSpecification, elementValue);
 
@@ -207,30 +174,19 @@ class PdfTextValueGeneratorTest {
 
   @Test
   void shouldNotReturnFieldsForOverflowSheetIfNoOverFlowSheetIsProvided() {
-    final var expected = List.of(
-        PdfField.builder()
-            .id(FIELD_ID)
-            .value(START_VALUE)
-            .build()
-    );
+    final var expected = List.of(PdfField.builder().id(FIELD_ID).value(START_VALUE).build());
 
-    final var elementSpecification = ElementSpecification.builder()
-        .configuration(
-            ElementConfigurationTextField.builder()
-                .name(QUESTION_NAME)
-                .build()
-        )
-        .pdfConfiguration(
-            PdfConfigurationText.builder()
-                .pdfFieldId(new PdfFieldId(FIELD_ID))
-                .maxLength(12)
-                .build()
-        )
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .configuration(ElementConfigurationTextField.builder().name(QUESTION_NAME).build())
+            .pdfConfiguration(
+                PdfConfigurationText.builder()
+                    .pdfFieldId(new PdfFieldId(FIELD_ID))
+                    .maxLength(12)
+                    .build())
+            .build();
 
-    final var elementValue = ElementValueText.builder()
-        .text(VALUE)
-        .build();
+    final var elementValue = ElementValueText.builder().text(VALUE).build();
 
     final var result = pdfTextValueGenerator.generate(elementSpecification, elementValue);
 

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.action.certificate.model;
 
 import java.time.LocalDateTime;
@@ -21,8 +39,8 @@ public class ActionRuleCertificateTypeActiveForUnit implements ActionRule {
   private final CertificateActionConfigurationRepository certificateActionConfigurationRepository;
 
   @Override
-  public boolean evaluate(Optional<Certificate> certificate,
-      Optional<ActionEvaluation> actionEvaluation) {
+  public boolean evaluate(
+      Optional<Certificate> certificate, Optional<ActionEvaluation> actionEvaluation) {
     if (certificate.isEmpty() || actionEvaluation.isEmpty()) {
       return false;
     }
@@ -31,21 +49,18 @@ public class ActionRuleCertificateTypeActiveForUnit implements ActionRule {
   }
 
   public boolean evaluate(CertificateType certificateType, ActionEvaluation actionEvaluation) {
-    final var accessConfigurationForType = certificateActionConfigurationRepository.findAccessConfiguration(
-        certificateType
-    );
+    final var accessConfigurationForType =
+        certificateActionConfigurationRepository.findAccessConfiguration(certificateType);
 
     if (certificateTypeHasNoConfiguration(accessConfigurationForType)) {
       return true;
     }
 
-    final var activeAllowConfiguration = accessConfigurationForType.stream()
-        .flatMap(hasActiveType(ALLOW))
-        .toList();
+    final var activeAllowConfiguration =
+        accessConfigurationForType.stream().flatMap(hasActiveType(ALLOW)).toList();
 
-    final var activeBlockConfiguration = accessConfigurationForType.stream()
-        .flatMap(hasActiveType(BLOCK))
-        .toList();
+    final var activeBlockConfiguration =
+        accessConfigurationForType.stream().flatMap(hasActiveType(BLOCK)).toList();
 
     if (noActiveConfiguration(activeBlockConfiguration, activeAllowConfiguration)) {
       return true;
@@ -56,15 +71,18 @@ public class ActionRuleCertificateTypeActiveForUnit implements ActionRule {
       return false;
     }
 
-    return activeAllowConfiguration.isEmpty() || activeAllowConfiguration.stream()
-        .anyMatch(config -> containsUnit(config, actionEvaluation));
+    return activeAllowConfiguration.isEmpty()
+        || activeAllowConfiguration.stream()
+            .anyMatch(config -> containsUnit(config, actionEvaluation));
   }
 
-  private static Function<CertificateAccessConfiguration, Stream<CertificateAccessUnitConfiguration>> hasActiveType(
-      String type) {
-    return accessConfiguration -> accessConfiguration.configuration().stream()
-        .filter(configuration -> configuration.type().equals(type))
-        .filter(configuration -> configurationIsActive().apply(configuration));
+  private static Function<
+          CertificateAccessConfiguration, Stream<CertificateAccessUnitConfiguration>>
+      hasActiveType(String type) {
+    return accessConfiguration ->
+        accessConfiguration.configuration().stream()
+            .filter(configuration -> configuration.type().equals(type))
+            .filter(configuration -> configurationIsActive().apply(configuration));
   }
 
   private static boolean noActiveConfiguration(
@@ -74,10 +92,9 @@ public class ActionRuleCertificateTypeActiveForUnit implements ActionRule {
   }
 
   private static Function<CertificateAccessUnitConfiguration, Boolean> configurationIsActive() {
-    return configuration -> (configuration.fromDateTime() != null
-        && configuration.fromDateTime().isBefore(NOW))
-        && (configuration.toDateTime() == null
-        || configuration.toDateTime().isAfter(NOW));
+    return configuration ->
+        (configuration.fromDateTime() != null && configuration.fromDateTime().isBefore(NOW))
+            && (configuration.toDateTime() == null || configuration.toDateTime().isAfter(NOW));
   }
 
   private static boolean certificateTypeHasNoConfiguration(

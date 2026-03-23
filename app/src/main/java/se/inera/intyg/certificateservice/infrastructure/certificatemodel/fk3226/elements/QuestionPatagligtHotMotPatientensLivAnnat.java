@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.QuestionPatientensBehandlingOchVardsituation.ANNAT_FIELD_ID;
@@ -17,12 +35,12 @@ import se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.
 
 public class QuestionPatagligtHotMotPatientensLivAnnat {
 
-  private static final ElementId QUESTION_PATAGLIGT_HOT_MOT_PATIENTENS_LIV_ANNAT_ID = new ElementId(
-      "52.7");
-  private static final FieldId QUESTION_PATAGLIGT_HOT_MOT_PATIENTENS_LIV_ANNAT_FIELD_ID = new FieldId(
-      "52.7");
-  private static final PdfFieldId PDF_CONDITION_IS_LIFE_THREATENING_OTHER_FIELD_ID = new PdfFieldId(
-      "form1[0].#subform[1].flt_txtBeskrivSjukdomstillstandet[0]");
+  private static final ElementId QUESTION_PATAGLIGT_HOT_MOT_PATIENTENS_LIV_ANNAT_ID =
+      new ElementId("52.7");
+  private static final FieldId QUESTION_PATAGLIGT_HOT_MOT_PATIENTENS_LIV_ANNAT_FIELD_ID =
+      new FieldId("52.7");
+  private static final PdfFieldId PDF_CONDITION_IS_LIFE_THREATENING_OTHER_FIELD_ID =
+      new PdfFieldId("form1[0].#subform[1].flt_txtBeskrivSjukdomstillstandet[0]");
 
   private QuestionPatagligtHotMotPatientensLivAnnat() {
     throw new IllegalStateException("Utility class");
@@ -37,49 +55,32 @@ public class QuestionPatagligtHotMotPatientensLivAnnat {
                 .name(
                     "Beskriv på vilket sätt sjukdomstillståndet utgör ett påtagligt hot mot patientens liv")
                 .label(
-                    "Ange när tillståndet blev livshotande, och om det är möjligt hur länge hotet mot livet kvarstår när patienten får vård enligt den vårdplan som gäller."
-                )
-                .build()
-        )
+                    "Ange när tillståndet blev livshotande, och om det är möjligt hur länge hotet mot livet kvarstår när patienten får vård enligt den vårdplan som gäller.")
+                .build())
         .rules(
             List.of(
                 CertificateElementRuleFactory.mandatory(
                     QUESTION_PATAGLIGT_HOT_MOT_PATIENTENS_LIV_ANNAT_ID,
-                    QUESTION_PATAGLIGT_HOT_MOT_PATIENTENS_LIV_ANNAT_FIELD_ID
-                ),
+                    QUESTION_PATAGLIGT_HOT_MOT_PATIENTENS_LIV_ANNAT_FIELD_ID),
                 CertificateElementRuleFactory.show(
-                    QUESTION_PATIENTENS_BEHANDLING_OCH_VARDSITUATION_ID,
-                    ANNAT_FIELD_ID
-                ),
+                    QUESTION_PATIENTENS_BEHANDLING_OCH_VARDSITUATION_ID, ANNAT_FIELD_ID),
                 CertificateElementRuleFactory.limit(
-                    QUESTION_PATAGLIGT_HOT_MOT_PATIENTENS_LIV_ANNAT_ID,
-                    (short) 265)
-            )
-        )
-        .validations(
-            List.of(
-                ElementValidationText.builder()
-                    .mandatory(true)
-                    .limit(265)
-                    .build()
-            )
-        )
+                    QUESTION_PATAGLIGT_HOT_MOT_PATIENTENS_LIV_ANNAT_ID, (short) 265)))
+        .validations(List.of(ElementValidationText.builder().mandatory(true).limit(265).build()))
         .shouldValidate(
-            elementData -> elementData.stream()
-                .filter(
-                    data -> data.id().equals(QUESTION_PATIENTENS_BEHANDLING_OCH_VARDSITUATION_ID))
-                .map(element -> (ElementValueCode) element.value())
-                .anyMatch(value -> value.codeId().equals(ANNAT_FIELD_ID))
-        )
-        .mapping(
-            new ElementMapping(QUESTION_PATIENTENS_BEHANDLING_OCH_VARDSITUATION_ID, null)
-        )
+            elementData ->
+                elementData.stream()
+                    .filter(
+                        data ->
+                            data.id().equals(QUESTION_PATIENTENS_BEHANDLING_OCH_VARDSITUATION_ID))
+                    .map(element -> (ElementValueCode) element.value())
+                    .anyMatch(value -> value.codeId().equals(ANNAT_FIELD_ID)))
+        .mapping(new ElementMapping(QUESTION_PATIENTENS_BEHANDLING_OCH_VARDSITUATION_ID, null))
         .pdfConfiguration(
             PdfConfigurationText.builder()
                 .pdfFieldId(PDF_CONDITION_IS_LIFE_THREATENING_OTHER_FIELD_ID)
                 .maxLength(265)
-                .build()
-        )
+                .build())
         .build();
   }
 }

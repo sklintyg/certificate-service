@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service.converter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -19,35 +37,36 @@ class CertificateDataVisualAcuitiesConfigConverterTest {
 
   private CertificateDataVisualAcuitiesConfigConverter converter;
 
-  private static final ElementSpecification ELEMENT_SPECIFICATION = ElementSpecification.builder()
-      .configuration(ElementConfigurationVisualAcuities.builder()
-          .id(new FieldId("id"))
-          .withCorrectionLabel("withCorrectionLabel")
-          .withoutCorrectionLabel("withoutCorrectionLabel")
-          .min(0.0)
-          .max(2.0)
-          .name("name")
-          .rightEye(ElementVisualAcuity.builder()
-              .label("label1")
-              .withCorrectionId("withCorrectionId1")
-              .withoutCorrectionId("withoutCorrectionId1")
-              .build()
-          )
-          .leftEye(ElementVisualAcuity.builder()
-              .label("label2")
-              .withCorrectionId("withCorrectionId2")
-              .withoutCorrectionId("withoutCorrectionId2")
-              .build()
-          )
-          .binocular(ElementVisualAcuity.builder()
-              .label("label3")
-              .withCorrectionId("withCorrectionId3")
-              .withoutCorrectionId("withoutCorrectionId3")
-              .build()
-          )
-          .build()
-      )
-      .build();
+  private static final ElementSpecification ELEMENT_SPECIFICATION =
+      ElementSpecification.builder()
+          .configuration(
+              ElementConfigurationVisualAcuities.builder()
+                  .id(new FieldId("id"))
+                  .withCorrectionLabel("withCorrectionLabel")
+                  .withoutCorrectionLabel("withoutCorrectionLabel")
+                  .min(0.0)
+                  .max(2.0)
+                  .name("name")
+                  .rightEye(
+                      ElementVisualAcuity.builder()
+                          .label("label1")
+                          .withCorrectionId("withCorrectionId1")
+                          .withoutCorrectionId("withoutCorrectionId1")
+                          .build())
+                  .leftEye(
+                      ElementVisualAcuity.builder()
+                          .label("label2")
+                          .withCorrectionId("withCorrectionId2")
+                          .withoutCorrectionId("withoutCorrectionId2")
+                          .build())
+                  .binocular(
+                      ElementVisualAcuity.builder()
+                          .label("label3")
+                          .withCorrectionId("withCorrectionId3")
+                          .withoutCorrectionId("withoutCorrectionId3")
+                          .build())
+                  .build())
+          .build();
 
   @BeforeEach
   void setUp() {
@@ -56,15 +75,14 @@ class CertificateDataVisualAcuitiesConfigConverterTest {
 
   @Test
   void shouldThrowExceptionIfWrongClass() {
-    final var elementSpecification = ElementSpecification.builder()
-        .configuration(
-            ElementConfigurationDate.builder().build()
-        )
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .configuration(ElementConfigurationDate.builder().build())
+            .build();
 
-    assertThrows(IllegalStateException.class,
-        () -> converter.convert(elementSpecification, FK3226_CERTIFICATE)
-    );
+    assertThrows(
+        IllegalStateException.class,
+        () -> converter.convert(elementSpecification, FK3226_CERTIFICATE));
   }
 
   @Test
@@ -74,48 +92,54 @@ class CertificateDataVisualAcuitiesConfigConverterTest {
 
   @Test
   void shouldSetId() {
-    final CertificateDataConfigVisualAcuity result = (CertificateDataConfigVisualAcuity)
-        converter.convert(ELEMENT_SPECIFICATION, FK3226_CERTIFICATE);
+    final CertificateDataConfigVisualAcuity result =
+        (CertificateDataConfigVisualAcuity)
+            converter.convert(ELEMENT_SPECIFICATION, FK3226_CERTIFICATE);
 
     assertEquals("id", result.getId());
   }
 
   @Test
   void shouldSetWithCorrectionLabel() {
-    final CertificateDataConfigVisualAcuity result = (CertificateDataConfigVisualAcuity)
-        converter.convert(ELEMENT_SPECIFICATION, FK3226_CERTIFICATE);
+    final CertificateDataConfigVisualAcuity result =
+        (CertificateDataConfigVisualAcuity)
+            converter.convert(ELEMENT_SPECIFICATION, FK3226_CERTIFICATE);
 
     assertEquals("withCorrectionLabel", result.getWithCorrectionLabel());
   }
 
   @Test
   void shouldSetWithoutCorrectionLabel() {
-    final CertificateDataConfigVisualAcuity result = (CertificateDataConfigVisualAcuity)
-        converter.convert(ELEMENT_SPECIFICATION, FK3226_CERTIFICATE);
+    final CertificateDataConfigVisualAcuity result =
+        (CertificateDataConfigVisualAcuity)
+            converter.convert(ELEMENT_SPECIFICATION, FK3226_CERTIFICATE);
 
     assertEquals("withoutCorrectionLabel", result.getWithoutCorrectionLabel());
   }
 
   @Test
   void shouldSetName() {
-    final CertificateDataConfigVisualAcuity result = (CertificateDataConfigVisualAcuity)
-        converter.convert(ELEMENT_SPECIFICATION, FK3226_CERTIFICATE);
+    final CertificateDataConfigVisualAcuity result =
+        (CertificateDataConfigVisualAcuity)
+            converter.convert(ELEMENT_SPECIFICATION, FK3226_CERTIFICATE);
 
     assertEquals("name", result.getText());
   }
 
   @Test
   void shallIncludeMin() {
-    final CertificateDataConfigVisualAcuity result = (CertificateDataConfigVisualAcuity)
-        converter.convert(ELEMENT_SPECIFICATION, FK3226_CERTIFICATE);
+    final CertificateDataConfigVisualAcuity result =
+        (CertificateDataConfigVisualAcuity)
+            converter.convert(ELEMENT_SPECIFICATION, FK3226_CERTIFICATE);
 
     assertEquals(0.0, result.getMin());
   }
 
   @Test
   void shallIncludeMax() {
-    final CertificateDataConfigVisualAcuity result = (CertificateDataConfigVisualAcuity)
-        converter.convert(ELEMENT_SPECIFICATION, FK3226_CERTIFICATE);
+    final CertificateDataConfigVisualAcuity result =
+        (CertificateDataConfigVisualAcuity)
+            converter.convert(ELEMENT_SPECIFICATION, FK3226_CERTIFICATE);
 
     assertEquals(2.0, result.getMax());
   }
@@ -125,24 +149,27 @@ class CertificateDataVisualAcuitiesConfigConverterTest {
 
     @Test
     void shouldSetWithCorrectionId() {
-      final CertificateDataConfigVisualAcuity result = (CertificateDataConfigVisualAcuity)
-          converter.convert(ELEMENT_SPECIFICATION, FK3226_CERTIFICATE);
+      final CertificateDataConfigVisualAcuity result =
+          (CertificateDataConfigVisualAcuity)
+              converter.convert(ELEMENT_SPECIFICATION, FK3226_CERTIFICATE);
 
       assertEquals("withCorrectionId1", result.getRightEye().getWithCorrectionId());
     }
 
     @Test
     void shouldSetWithoutCorrectionId() {
-      final CertificateDataConfigVisualAcuity result = (CertificateDataConfigVisualAcuity)
-          converter.convert(ELEMENT_SPECIFICATION, FK3226_CERTIFICATE);
+      final CertificateDataConfigVisualAcuity result =
+          (CertificateDataConfigVisualAcuity)
+              converter.convert(ELEMENT_SPECIFICATION, FK3226_CERTIFICATE);
 
       assertEquals("withoutCorrectionId1", result.getRightEye().getWithoutCorrectionId());
     }
 
     @Test
     void shouldSetLabel() {
-      final CertificateDataConfigVisualAcuity result = (CertificateDataConfigVisualAcuity)
-          converter.convert(ELEMENT_SPECIFICATION, FK3226_CERTIFICATE);
+      final CertificateDataConfigVisualAcuity result =
+          (CertificateDataConfigVisualAcuity)
+              converter.convert(ELEMENT_SPECIFICATION, FK3226_CERTIFICATE);
 
       assertEquals("label1", result.getRightEye().getLabel());
     }
@@ -153,24 +180,27 @@ class CertificateDataVisualAcuitiesConfigConverterTest {
 
     @Test
     void shouldSetWithCorrectionId() {
-      final CertificateDataConfigVisualAcuity result = (CertificateDataConfigVisualAcuity)
-          converter.convert(ELEMENT_SPECIFICATION, FK3226_CERTIFICATE);
+      final CertificateDataConfigVisualAcuity result =
+          (CertificateDataConfigVisualAcuity)
+              converter.convert(ELEMENT_SPECIFICATION, FK3226_CERTIFICATE);
 
       assertEquals("withCorrectionId2", result.getLeftEye().getWithCorrectionId());
     }
 
     @Test
     void shouldSetWithoutCorrectionId() {
-      final CertificateDataConfigVisualAcuity result = (CertificateDataConfigVisualAcuity)
-          converter.convert(ELEMENT_SPECIFICATION, FK3226_CERTIFICATE);
+      final CertificateDataConfigVisualAcuity result =
+          (CertificateDataConfigVisualAcuity)
+              converter.convert(ELEMENT_SPECIFICATION, FK3226_CERTIFICATE);
 
       assertEquals("withoutCorrectionId2", result.getLeftEye().getWithoutCorrectionId());
     }
 
     @Test
     void shouldSetLabel() {
-      final CertificateDataConfigVisualAcuity result = (CertificateDataConfigVisualAcuity)
-          converter.convert(ELEMENT_SPECIFICATION, FK3226_CERTIFICATE);
+      final CertificateDataConfigVisualAcuity result =
+          (CertificateDataConfigVisualAcuity)
+              converter.convert(ELEMENT_SPECIFICATION, FK3226_CERTIFICATE);
 
       assertEquals("label2", result.getLeftEye().getLabel());
     }
@@ -181,27 +211,29 @@ class CertificateDataVisualAcuitiesConfigConverterTest {
 
     @Test
     void shouldSetWithCorrectionId() {
-      final CertificateDataConfigVisualAcuity result = (CertificateDataConfigVisualAcuity)
-          converter.convert(ELEMENT_SPECIFICATION, FK3226_CERTIFICATE);
+      final CertificateDataConfigVisualAcuity result =
+          (CertificateDataConfigVisualAcuity)
+              converter.convert(ELEMENT_SPECIFICATION, FK3226_CERTIFICATE);
 
       assertEquals("withCorrectionId3", result.getBinocular().getWithCorrectionId());
     }
 
     @Test
     void shouldSetWithoutCorrectionId() {
-      final CertificateDataConfigVisualAcuity result = (CertificateDataConfigVisualAcuity)
-          converter.convert(ELEMENT_SPECIFICATION, FK3226_CERTIFICATE);
+      final CertificateDataConfigVisualAcuity result =
+          (CertificateDataConfigVisualAcuity)
+              converter.convert(ELEMENT_SPECIFICATION, FK3226_CERTIFICATE);
 
       assertEquals("withoutCorrectionId3", result.getBinocular().getWithoutCorrectionId());
     }
 
     @Test
     void shouldSetLabel() {
-      final CertificateDataConfigVisualAcuity result = (CertificateDataConfigVisualAcuity)
-          converter.convert(ELEMENT_SPECIFICATION, FK3226_CERTIFICATE);
+      final CertificateDataConfigVisualAcuity result =
+          (CertificateDataConfigVisualAcuity)
+              converter.convert(ELEMENT_SPECIFICATION, FK3226_CERTIFICATE);
 
       assertEquals("label3", result.getBinocular().getLabel());
     }
   }
-
 }

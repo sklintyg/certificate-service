@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.v1;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -32,39 +50,35 @@ import se.inera.intyg.certificateservice.domain.validation.model.ElementValidati
 
 class QuestionKorrigeringAvSynskarpaV1Test {
 
-
   @Test
   void shallIncludeId() {
-    Assertions.assertEquals(QUESTION_KORRIGERING_AV_SYNSKARPA_V1_ID,
+    Assertions.assertEquals(
+        QUESTION_KORRIGERING_AV_SYNSKARPA_V1_ID,
         QuestionKorrigeringAvSynskarpaV1.questionKorrigeringAvSynskarpaV1().id());
   }
 
   @Test
   void shallIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationCheckboxMultipleCode.builder()
-        .id(QUESTION_KORRIGERING_AV_SYNSKARPA_V1_FIELD_ID)
-        .name("Korrigering av synskärpa genom")
-        .elementLayout(ElementLayout.ROWS)
-        .list(
-            List.of(
-                new ElementConfigurationCode(
-                    new FieldId(GLASOGON_INGEN_STYRKA_OVER_8_DIOPTRIER.code()),
-                    GLASOGON_INGEN_STYRKA_OVER_8_DIOPTRIER.displayName(),
-                    GLASOGON_INGEN_STYRKA_OVER_8_DIOPTRIER
-                ),
-                new ElementConfigurationCode(
-                    new FieldId(GLASOGON_MED_STYRKA_OVER_8_DIOPTRIER.code()),
-                    GLASOGON_MED_STYRKA_OVER_8_DIOPTRIER.displayName(),
-                    GLASOGON_MED_STYRKA_OVER_8_DIOPTRIER
-                ),
-                new ElementConfigurationCode(
-                    new FieldId(KONTAKTLINSER.code()),
-                    KONTAKTLINSER.displayName(),
-                    KONTAKTLINSER
-                )
-            )
-        )
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationCheckboxMultipleCode.builder()
+            .id(QUESTION_KORRIGERING_AV_SYNSKARPA_V1_FIELD_ID)
+            .name("Korrigering av synskärpa genom")
+            .elementLayout(ElementLayout.ROWS)
+            .list(
+                List.of(
+                    new ElementConfigurationCode(
+                        new FieldId(GLASOGON_INGEN_STYRKA_OVER_8_DIOPTRIER.code()),
+                        GLASOGON_INGEN_STYRKA_OVER_8_DIOPTRIER.displayName(),
+                        GLASOGON_INGEN_STYRKA_OVER_8_DIOPTRIER),
+                    new ElementConfigurationCode(
+                        new FieldId(GLASOGON_MED_STYRKA_OVER_8_DIOPTRIER.code()),
+                        GLASOGON_MED_STYRKA_OVER_8_DIOPTRIER.displayName(),
+                        GLASOGON_MED_STYRKA_OVER_8_DIOPTRIER),
+                    new ElementConfigurationCode(
+                        new FieldId(KONTAKTLINSER.code()),
+                        KONTAKTLINSER.displayName(),
+                        KONTAKTLINSER)))
+            .build();
 
     final var element = QuestionKorrigeringAvSynskarpaV1.questionKorrigeringAvSynskarpaV1();
     assertEquals(expectedConfiguration, element.configuration());
@@ -72,50 +86,34 @@ class QuestionKorrigeringAvSynskarpaV1Test {
 
   @Test
   void shallIncludeRules() {
-    final var expectedRules = List.of(
-        ElementRuleExpression.builder()
-            .id(QUESTION_SYNSKARPA_ID)
-            .type(ElementRuleType.SHOW)
-            .expression(
-                new RuleExpression(
-                    "(('5.2' < 0.8 && '5.1' < 0.8) && (!empty('5.2') && !empty('5.1'))) || (('5.2' < 0.1 || '5.1' < 0.1) && (!empty('5.2') && !empty('5.1')))"
-                )
-            )
-            .build(),
-        ElementRuleExpression.builder()
-            .id(QUESTION_KORRIGERING_AV_SYNSKARPA_V1_ID)
-            .type(ElementRuleType.MANDATORY)
-            .expression(
-                new RuleExpression(
-                    "exists($6.3) || exists($6.1) || exists($6.5)"
-                )
-            )
-            .build(),
-        ElementRuleExpression.builder()
-            .id(QUESTION_KORRIGERING_AV_SYNSKARPA_V1_ID)
-            .type(ElementRuleType.DISABLE_SUB_ELEMENT)
-            .expression(
-                new RuleExpression(
-                    "exists($6.3)"
-                )
-            )
-            .affectedSubElements(
-                List.of(new FieldId(GLASOGON_INGEN_STYRKA_OVER_8_DIOPTRIER.code()))
-            )
-            .build(),
-        ElementRuleExpression.builder()
-            .id(QUESTION_KORRIGERING_AV_SYNSKARPA_V1_ID)
-            .type(ElementRuleType.DISABLE_SUB_ELEMENT)
-            .expression(
-                new RuleExpression(
-                    "exists($6.1)"
-                )
-            )
-            .affectedSubElements(
-                List.of(new FieldId(GLASOGON_MED_STYRKA_OVER_8_DIOPTRIER.code()))
-            )
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleExpression.builder()
+                .id(QUESTION_SYNSKARPA_ID)
+                .type(ElementRuleType.SHOW)
+                .expression(
+                    new RuleExpression(
+                        "(('5.2' < 0.8 && '5.1' < 0.8) && (!empty('5.2') && !empty('5.1'))) || (('5.2' < 0.1 || '5.1' < 0.1) && (!empty('5.2') && !empty('5.1')))"))
+                .build(),
+            ElementRuleExpression.builder()
+                .id(QUESTION_KORRIGERING_AV_SYNSKARPA_V1_ID)
+                .type(ElementRuleType.MANDATORY)
+                .expression(new RuleExpression("exists($6.3) || exists($6.1) || exists($6.5)"))
+                .build(),
+            ElementRuleExpression.builder()
+                .id(QUESTION_KORRIGERING_AV_SYNSKARPA_V1_ID)
+                .type(ElementRuleType.DISABLE_SUB_ELEMENT)
+                .expression(new RuleExpression("exists($6.3)"))
+                .affectedSubElements(
+                    List.of(new FieldId(GLASOGON_INGEN_STYRKA_OVER_8_DIOPTRIER.code())))
+                .build(),
+            ElementRuleExpression.builder()
+                .id(QUESTION_KORRIGERING_AV_SYNSKARPA_V1_ID)
+                .type(ElementRuleType.DISABLE_SUB_ELEMENT)
+                .expression(new RuleExpression("exists($6.1)"))
+                .affectedSubElements(
+                    List.of(new FieldId(GLASOGON_MED_STYRKA_OVER_8_DIOPTRIER.code())))
+                .build());
 
     final var element = QuestionKorrigeringAvSynskarpaV1.questionKorrigeringAvSynskarpaV1();
     assertEquals(expectedRules, element.rules());
@@ -123,9 +121,7 @@ class QuestionKorrigeringAvSynskarpaV1Test {
 
   @Test
   void shallIncludeValidation() {
-    final var expectedValidations = ElementValidationCodeList.builder()
-        .mandatory(true)
-        .build();
+    final var expectedValidations = ElementValidationCodeList.builder().mandatory(true).build();
 
     final var element = QuestionKorrigeringAvSynskarpaV1.questionKorrigeringAvSynskarpaV1();
     assertEquals(expectedValidations, element.validations().getFirst());
@@ -134,9 +130,7 @@ class QuestionKorrigeringAvSynskarpaV1Test {
   @Test
   void shallIncludeChildren() {
     final var expectedChild = questionKorrigeringAvSynskarpaV1();
-    final var element = questionKorrigeringAvSynskarpaV1(
-        expectedChild
-    );
+    final var element = questionKorrigeringAvSynskarpaV1(expectedChild);
 
     assertEquals(expectedChild, element.children().getFirst());
   }
@@ -146,33 +140,22 @@ class QuestionKorrigeringAvSynskarpaV1Test {
 
     @Test
     void shallReturnTrueIfSightWithoutCorrectionForBestEyeIs08AndWorstIs00() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(QUESTION_SYNSKARPA_ID)
-              .value(
-                  ElementValueVisualAcuities.builder()
-                      .rightEye(
-                          VisualAcuity.builder()
-                              .withoutCorrection(
-                                  Correction.builder()
-                                      .value(0.8)
-                                      .build()
-                              )
-                              .build()
-                      )
-                      .leftEye(
-                          VisualAcuity.builder()
-                              .withoutCorrection(
-                                  Correction.builder()
-                                      .value(0.0)
-                                      .build()
-                              )
-                              .build()
-                      )
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(QUESTION_SYNSKARPA_ID)
+                  .value(
+                      ElementValueVisualAcuities.builder()
+                          .rightEye(
+                              VisualAcuity.builder()
+                                  .withoutCorrection(Correction.builder().value(0.8).build())
+                                  .build())
+                          .leftEye(
+                              VisualAcuity.builder()
+                                  .withoutCorrection(Correction.builder().value(0.0).build())
+                                  .build())
+                          .build())
+                  .build());
 
       final var element = QuestionKorrigeringAvSynskarpaV1.questionKorrigeringAvSynskarpaV1();
       assertTrue(element.shouldValidate().test(elementData));
@@ -180,33 +163,22 @@ class QuestionKorrigeringAvSynskarpaV1Test {
 
     @Test
     void shallReturnTrueIfSightWithoutCorrectionForBestEyeIs07AndWorstIs01() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(QUESTION_SYNSKARPA_ID)
-              .value(
-                  ElementValueVisualAcuities.builder()
-                      .rightEye(
-                          VisualAcuity.builder()
-                              .withoutCorrection(
-                                  Correction.builder()
-                                      .value(0.1)
-                                      .build()
-                              )
-                              .build()
-                      )
-                      .leftEye(
-                          VisualAcuity.builder()
-                              .withoutCorrection(
-                                  Correction.builder()
-                                      .value(0.7)
-                                      .build()
-                              )
-                              .build()
-                      )
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(QUESTION_SYNSKARPA_ID)
+                  .value(
+                      ElementValueVisualAcuities.builder()
+                          .rightEye(
+                              VisualAcuity.builder()
+                                  .withoutCorrection(Correction.builder().value(0.1).build())
+                                  .build())
+                          .leftEye(
+                              VisualAcuity.builder()
+                                  .withoutCorrection(Correction.builder().value(0.7).build())
+                                  .build())
+                          .build())
+                  .build());
 
       final var element = QuestionKorrigeringAvSynskarpaV1.questionKorrigeringAvSynskarpaV1();
       assertTrue(element.shouldValidate().test(elementData));
@@ -214,33 +186,22 @@ class QuestionKorrigeringAvSynskarpaV1Test {
 
     @Test
     void shallReturnFalseIfSightWithoutCorrectionForBestEyeIs08AndWorstIs01() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(QUESTION_SYNSKARPA_ID)
-              .value(
-                  ElementValueVisualAcuities.builder()
-                      .rightEye(
-                          VisualAcuity.builder()
-                              .withoutCorrection(
-                                  Correction.builder()
-                                      .value(0.1)
-                                      .build()
-                              )
-                              .build()
-                      )
-                      .leftEye(
-                          VisualAcuity.builder()
-                              .withoutCorrection(
-                                  Correction.builder()
-                                      .value(0.8)
-                                      .build()
-                              )
-                              .build()
-                      )
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(QUESTION_SYNSKARPA_ID)
+                  .value(
+                      ElementValueVisualAcuities.builder()
+                          .rightEye(
+                              VisualAcuity.builder()
+                                  .withoutCorrection(Correction.builder().value(0.1).build())
+                                  .build())
+                          .leftEye(
+                              VisualAcuity.builder()
+                                  .withoutCorrection(Correction.builder().value(0.8).build())
+                                  .build())
+                          .build())
+                  .build());
 
       final var element = QuestionKorrigeringAvSynskarpaV1.questionKorrigeringAvSynskarpaV1();
       assertFalse(element.shouldValidate().test(elementData));
@@ -248,33 +209,22 @@ class QuestionKorrigeringAvSynskarpaV1Test {
 
     @Test
     void shallReturnFalseIfSightWithoutCorrectionForLeftEyeIsNullAndRightEyeIs08() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(QUESTION_SYNSKARPA_ID)
-              .value(
-                  ElementValueVisualAcuities.builder()
-                      .rightEye(
-                          VisualAcuity.builder()
-                              .withoutCorrection(
-                                  Correction.builder()
-                                      .value(0.8)
-                                      .build()
-                              )
-                              .build()
-                      )
-                      .leftEye(
-                          VisualAcuity.builder()
-                              .withoutCorrection(
-                                  Correction.builder()
-                                      .value(null)
-                                      .build()
-                              )
-                              .build()
-                      )
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(QUESTION_SYNSKARPA_ID)
+                  .value(
+                      ElementValueVisualAcuities.builder()
+                          .rightEye(
+                              VisualAcuity.builder()
+                                  .withoutCorrection(Correction.builder().value(0.8).build())
+                                  .build())
+                          .leftEye(
+                              VisualAcuity.builder()
+                                  .withoutCorrection(Correction.builder().value(null).build())
+                                  .build())
+                          .build())
+                  .build());
 
       final var element = QuestionKorrigeringAvSynskarpaV1.questionKorrigeringAvSynskarpaV1();
       assertFalse(element.shouldValidate().test(elementData));
@@ -282,33 +232,22 @@ class QuestionKorrigeringAvSynskarpaV1Test {
 
     @Test
     void shallReturnFalseIfSightForRightEyeIsNullAndLeftEyeIs08() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(QUESTION_SYNSKARPA_ID)
-              .value(
-                  ElementValueVisualAcuities.builder()
-                      .rightEye(
-                          VisualAcuity.builder()
-                              .withoutCorrection(
-                                  Correction.builder()
-                                      .value(null)
-                                      .build()
-                              )
-                              .build()
-                      )
-                      .leftEye(
-                          VisualAcuity.builder()
-                              .withoutCorrection(
-                                  Correction.builder()
-                                      .value(0.8)
-                                      .build()
-                              )
-                              .build()
-                      )
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(QUESTION_SYNSKARPA_ID)
+                  .value(
+                      ElementValueVisualAcuities.builder()
+                          .rightEye(
+                              VisualAcuity.builder()
+                                  .withoutCorrection(Correction.builder().value(null).build())
+                                  .build())
+                          .leftEye(
+                              VisualAcuity.builder()
+                                  .withoutCorrection(Correction.builder().value(0.8).build())
+                                  .build())
+                          .build())
+                  .build());
 
       final var element = QuestionKorrigeringAvSynskarpaV1.questionKorrigeringAvSynskarpaV1();
       assertFalse(element.shouldValidate().test(elementData));

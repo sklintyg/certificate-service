@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.certificatemodel.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -32,72 +50,56 @@ class ElementConfigurationMedicalInvestigationListTest {
   private static final String CODE = "CODE";
   private static final String CODE_TWO = "CODE_TWO";
 
-  private static final ElementConfigurationMedicalInvestigationList CONFIG = ElementConfigurationMedicalInvestigationList.builder()
-      .id(new FieldId(FIELD_ID))
-      .list(
-          List.of(
-              MedicalInvestigationConfig.builder()
-                  .id(new FieldId(ROW_FIELD_ID))
-                  .investigationTypeId(new FieldId(CODE_FIELD_ID))
-                  .typeOptions(
-                      List.of(
-                          new Code(CODE, CODE_SYSTEM, LABEL),
-                          new Code(CODE_TWO, CODE_SYSTEM, LABEL_TWO)
-                      )
-                  )
-                  .dateId(new FieldId(DATE_ID))
-                  .informationSourceId(new FieldId(INFORMATION_SOURCE_ID))
-                  .build(),
-              MedicalInvestigationConfig.builder()
-                  .id(new FieldId(SECOND_ROW_FIELD_ID))
-                  .investigationTypeId(new FieldId(SECOND_CODE_FIELD_ID))
-                  .typeOptions(
-                      List.of(
-                          new Code(CODE, CODE_SYSTEM, LABEL),
-                          new Code(CODE_TWO, CODE_SYSTEM, LABEL_TWO)
-                      )
-                  )
-                  .dateId(new FieldId(SECOND_DATE_ID))
-                  .informationSourceId(new FieldId(SECOND_INFO_ID))
-                  .build()
-          )
-      )
-      .build();
+  private static final ElementConfigurationMedicalInvestigationList CONFIG =
+      ElementConfigurationMedicalInvestigationList.builder()
+          .id(new FieldId(FIELD_ID))
+          .list(
+              List.of(
+                  MedicalInvestigationConfig.builder()
+                      .id(new FieldId(ROW_FIELD_ID))
+                      .investigationTypeId(new FieldId(CODE_FIELD_ID))
+                      .typeOptions(
+                          List.of(
+                              new Code(CODE, CODE_SYSTEM, LABEL),
+                              new Code(CODE_TWO, CODE_SYSTEM, LABEL_TWO)))
+                      .dateId(new FieldId(DATE_ID))
+                      .informationSourceId(new FieldId(INFORMATION_SOURCE_ID))
+                      .build(),
+                  MedicalInvestigationConfig.builder()
+                      .id(new FieldId(SECOND_ROW_FIELD_ID))
+                      .investigationTypeId(new FieldId(SECOND_CODE_FIELD_ID))
+                      .typeOptions(
+                          List.of(
+                              new Code(CODE, CODE_SYSTEM, LABEL),
+                              new Code(CODE_TWO, CODE_SYSTEM, LABEL_TWO)))
+                      .dateId(new FieldId(SECOND_DATE_ID))
+                      .informationSourceId(new FieldId(SECOND_INFO_ID))
+                      .build()))
+          .build();
 
   @Test
   void shallReturnMatchingCode() {
     final var expectedCode = new Code(CODE_TWO, CODE_SYSTEM, LABEL_TWO);
 
-    final var value = ElementValueCode.builder()
-        .codeId(new FieldId(SECOND_CODE_FIELD_ID))
-        .code(CODE_TWO)
-        .build();
+    final var value =
+        ElementValueCode.builder().codeId(new FieldId(SECOND_CODE_FIELD_ID)).code(CODE_TWO).build();
 
     assertEquals(expectedCode, CONFIG.code(value));
   }
 
   @Test
   void shallThrowIfNoMatchingRow() {
-    final var value = ElementValueCode.builder()
-        .codeId(new FieldId("NOT_IT"))
-        .code(CODE)
-        .build();
+    final var value = ElementValueCode.builder().codeId(new FieldId("NOT_IT")).code(CODE).build();
 
-    assertThrows(IllegalArgumentException.class,
-        () -> CONFIG.code(value)
-    );
+    assertThrows(IllegalArgumentException.class, () -> CONFIG.code(value));
   }
 
   @Test
   void shallThrowIfNoMatchingCode() {
-    final var value = ElementValueCode.builder()
-        .codeId(new FieldId(SECOND_CODE_FIELD_ID))
-        .code("NOT_IT")
-        .build();
+    final var value =
+        ElementValueCode.builder().codeId(new FieldId(SECOND_CODE_FIELD_ID)).code("NOT_IT").build();
 
-    assertThrows(IllegalArgumentException.class,
-        () -> CONFIG.code(value)
-    );
+    assertThrows(IllegalArgumentException.class, () -> CONFIG.code(value));
   }
 
   @Test
@@ -106,73 +108,61 @@ class ElementConfigurationMedicalInvestigationListTest {
     final var currentCode = "SYNHABILITERINGEN";
     final var displayName = "Underlag från synhabiliteringen";
 
-    final var configWithLegacySupport = ElementConfigurationMedicalInvestigationList.builder()
-        .id(new FieldId(FIELD_ID))
-        .list(
-            List.of(
-                MedicalInvestigationConfig.builder()
-                    .id(new FieldId(ROW_FIELD_ID))
-                    .investigationTypeId(new FieldId(CODE_FIELD_ID))
-                    .typeOptions(
-                        List.of(
-                            new Code(currentCode, CODE_SYSTEM, displayName)
-                        )
-                    )
-                    .dateId(new FieldId(DATE_ID))
-                    .informationSourceId(new FieldId(INFORMATION_SOURCE_ID))
-                    .legacyMapping(
-                        Map.of("SYNHABILITERING", new Code(currentCode, CODE_SYSTEM, displayName)))
-                    .build()
-            )
-        )
-        .build();
+    final var configWithLegacySupport =
+        ElementConfigurationMedicalInvestigationList.builder()
+            .id(new FieldId(FIELD_ID))
+            .list(
+                List.of(
+                    MedicalInvestigationConfig.builder()
+                        .id(new FieldId(ROW_FIELD_ID))
+                        .investigationTypeId(new FieldId(CODE_FIELD_ID))
+                        .typeOptions(List.of(new Code(currentCode, CODE_SYSTEM, displayName)))
+                        .dateId(new FieldId(DATE_ID))
+                        .informationSourceId(new FieldId(INFORMATION_SOURCE_ID))
+                        .legacyMapping(
+                            Map.of(
+                                "SYNHABILITERING", new Code(currentCode, CODE_SYSTEM, displayName)))
+                        .build()))
+            .build();
 
-    final var valueWithLegacyCode = ElementValueCode.builder()
-        .codeId(new FieldId(CODE_FIELD_ID))
-        .code(legacyCode)
-        .build();
+    final var valueWithLegacyCode =
+        ElementValueCode.builder().codeId(new FieldId(CODE_FIELD_ID)).code(legacyCode).build();
 
     final var result = configWithLegacySupport.code(valueWithLegacyCode);
 
     assertEquals(currentCode, result.code());
     assertEquals(displayName, result.displayName());
   }
-  
+
   @Nested
   class EmptyValue {
 
     @Test
     void shallReturnEmptyValue() {
-      final var emptyValue = ElementValueMedicalInvestigationList.builder()
-          .id(new FieldId(FIELD_ID))
-          .list(
-              List.of(
-                  MedicalInvestigation.builder()
-                      .id(new FieldId(ROW_FIELD_ID))
-                      .date(ElementValueDate.builder()
-                          .dateId(new FieldId(FIELD_ID))
-                          .build())
-                      .investigationType(ElementValueCode.builder()
-                          .codeId(new FieldId(CODE_FIELD_ID))
-                          .build())
-                      .informationSource(ElementValueText.builder()
-                          .textId(new FieldId(FIELD_ID))
-                          .build())
-                      .build(),
-                  MedicalInvestigation.builder()
-                      .id(new FieldId(SECOND_ROW_FIELD_ID))
-                      .date(ElementValueDate.builder()
-                          .dateId(new FieldId(FIELD_ID))
-                          .build())
-                      .investigationType(ElementValueCode.builder()
-                          .codeId(new FieldId(SECOND_CODE_FIELD_ID))
-                          .build())
-                      .informationSource(ElementValueText.builder()
-                          .textId(new FieldId(FIELD_ID))
-                          .build())
-                      .build()
-              ))
-          .build();
+      final var emptyValue =
+          ElementValueMedicalInvestigationList.builder()
+              .id(new FieldId(FIELD_ID))
+              .list(
+                  List.of(
+                      MedicalInvestigation.builder()
+                          .id(new FieldId(ROW_FIELD_ID))
+                          .date(ElementValueDate.builder().dateId(new FieldId(FIELD_ID)).build())
+                          .investigationType(
+                              ElementValueCode.builder().codeId(new FieldId(CODE_FIELD_ID)).build())
+                          .informationSource(
+                              ElementValueText.builder().textId(new FieldId(FIELD_ID)).build())
+                          .build(),
+                      MedicalInvestigation.builder()
+                          .id(new FieldId(SECOND_ROW_FIELD_ID))
+                          .date(ElementValueDate.builder().dateId(new FieldId(FIELD_ID)).build())
+                          .investigationType(
+                              ElementValueCode.builder()
+                                  .codeId(new FieldId(SECOND_CODE_FIELD_ID))
+                                  .build())
+                          .informationSource(
+                              ElementValueText.builder().textId(new FieldId(FIELD_ID)).build())
+                          .build()))
+              .build();
 
       assertEquals(emptyValue, CONFIG.emptyValue());
     }
@@ -180,28 +170,24 @@ class ElementConfigurationMedicalInvestigationListTest {
 
   @Test
   void shallThrowIfLegacyMappingReturnsEmpty() {
-    final var configWithNoMatchingCodes = ElementConfigurationMedicalInvestigationList.builder()
-        .id(new FieldId(FIELD_ID))
-        .list(
-            List.of(
-                MedicalInvestigationConfig.builder()
-                    .id(new FieldId(ROW_FIELD_ID))
-                    .investigationTypeId(new FieldId(CODE_FIELD_ID))
-                    .typeOptions(List.of())
-                    .dateId(new FieldId(DATE_ID))
-                    .informationSourceId(new FieldId(INFORMATION_SOURCE_ID))
-                    .build()
-            )
-        )
-        .build();
+    final var configWithNoMatchingCodes =
+        ElementConfigurationMedicalInvestigationList.builder()
+            .id(new FieldId(FIELD_ID))
+            .list(
+                List.of(
+                    MedicalInvestigationConfig.builder()
+                        .id(new FieldId(ROW_FIELD_ID))
+                        .investigationTypeId(new FieldId(CODE_FIELD_ID))
+                        .typeOptions(List.of())
+                        .dateId(new FieldId(DATE_ID))
+                        .informationSourceId(new FieldId(INFORMATION_SOURCE_ID))
+                        .build()))
+            .build();
 
-    final var valueWithUnknownCode = ElementValueCode.builder()
-        .codeId(new FieldId(CODE_FIELD_ID))
-        .code("UNKNOWN_CODE")
-        .build();
+    final var valueWithUnknownCode =
+        ElementValueCode.builder().codeId(new FieldId(CODE_FIELD_ID)).code("UNKNOWN_CODE").build();
 
-    assertThrows(IllegalArgumentException.class,
-        () -> configWithNoMatchingCodes.code(valueWithUnknownCode)
-    );
+    assertThrows(
+        IllegalArgumentException.class, () -> configWithNoMatchingCodes.code(valueWithUnknownCode));
   }
 }

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7804;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -43,23 +61,24 @@ class FK7804CertificateSendContentProviderTest {
           + "Försäkringskassans system vilket ska göras i samråd med patienten.</br>"
           + "</br>Upplys patienten om att även göra en ansökan om sjukpenning hos Försäkringskassan.";
 
-  private final FK7804CertificateSendContentProvider provider = new FK7804CertificateSendContentProvider();
+  private final FK7804CertificateSendContentProvider provider =
+      new FK7804CertificateSendContentProvider();
 
   @Test
   void shouldThrowIfValueIsNotElementValueDateRangeList() {
-    final var data = ElementData.builder()
-        .id(QUESTION_NEDSATTNING_ARBETSFORMAGA_ID)
-        .value(ElementValueText.builder().build())
-        .build();
+    final var data =
+        ElementData.builder()
+            .id(QUESTION_NEDSATTNING_ARBETSFORMAGA_ID)
+            .value(ElementValueText.builder().build())
+            .build();
 
-    final var cert = MedicalCertificate.builder()
-        .elementData(List.of(data))
-        .build();
+    final var cert = MedicalCertificate.builder().elementData(List.of(data)).build();
 
-    final var illegalStateException = assertThrows(IllegalStateException.class,
-        () -> provider.body(cert));
-    assertEquals(illegalStateException.getMessage()
-        , "Invalid value type. Type was '%s'".formatted(ElementValueText.class));
+    final var illegalStateException =
+        assertThrows(IllegalStateException.class, () -> provider.body(cert));
+    assertEquals(
+        illegalStateException.getMessage(),
+        "Invalid value type. Type was '%s'".formatted(ElementValueText.class));
   }
 
   @Test
@@ -75,9 +94,7 @@ class FK7804CertificateSendContentProviderTest {
                 DateRange.builder()
                     .from(LocalDate.of(2023, 1, 1))
                     .to(LocalDate.of(2023, 1, 14))
-                    .build()
-            )
-        ),
+                    .build())),
         Arguments.of(
             List.of(
                 DateRange.builder()
@@ -91,9 +108,7 @@ class FK7804CertificateSendContentProviderTest {
                 DateRange.builder()
                     .from(LocalDate.of(2023, 1, 11))
                     .to(LocalDate.of(2023, 1, 14))
-                    .build()
-            )
-        ),
+                    .build())),
         Arguments.of(
             List.of(
                 DateRange.builder()
@@ -107,9 +122,7 @@ class FK7804CertificateSendContentProviderTest {
                 DateRange.builder()
                     .from(LocalDate.of(2023, 1, 13))
                     .to(LocalDate.of(2023, 1, 14))
-                    .build()
-            )
-        ),
+                    .build())),
         Arguments.of(
             List.of(
                 DateRange.builder()
@@ -127,9 +140,7 @@ class FK7804CertificateSendContentProviderTest {
                 DateRange.builder()
                     .from(LocalDate.of(2023, 1, 13))
                     .to(LocalDate.of(2023, 1, 14))
-                    .build()
-            )
-        ),
+                    .build())),
         Arguments.of(
             List.of(
                 DateRange.builder()
@@ -143,10 +154,7 @@ class FK7804CertificateSendContentProviderTest {
                 DateRange.builder()
                     .from(LocalDate.of(2023, 1, 1))
                     .to(LocalDate.of(2023, 1, 5))
-                    .build()
-            )
-        )
-    );
+                    .build())));
   }
 
   @ParameterizedTest
@@ -165,9 +173,7 @@ class FK7804CertificateSendContentProviderTest {
                 DateRange.builder()
                     .from(LocalDate.of(2023, 1, 1))
                     .to(LocalDate.of(2023, 1, 15))
-                    .build()
-            )
-        ),
+                    .build())),
         Arguments.of(
             List.of(
                 DateRange.builder()
@@ -181,9 +187,7 @@ class FK7804CertificateSendContentProviderTest {
                 DateRange.builder()
                     .from(LocalDate.of(2023, 1, 11))
                     .to(LocalDate.of(2023, 1, 15))
-                    .build()
-            )
-        ),
+                    .build())),
         Arguments.of(
             List.of(
                 DateRange.builder()
@@ -197,37 +201,27 @@ class FK7804CertificateSendContentProviderTest {
                 DateRange.builder()
                     .from(LocalDate.of(2023, 1, 12))
                     .to(LocalDate.of(2023, 1, 18))
-                    .build()
-            )
-        )
-    );
+                    .build())));
   }
 
   @ParameterizedTest
   @MethodSource("sickLeavePeriodsGreaterThan15Days")
   void shouldReturnShortBodyIfSickLeavePeriodIsGreaterThan14() {
-    final var cert = certificateWithDateRanges(
-        List.of(
-            DateRange.builder()
-                .from(LocalDate.of(2023, 1, 1))
-                .to(LocalDate.of(2023, 1, 15))
-                .build()
-        )
-    );
+    final var cert =
+        certificateWithDateRanges(
+            List.of(
+                DateRange.builder()
+                    .from(LocalDate.of(2023, 1, 1))
+                    .to(LocalDate.of(2023, 1, 15))
+                    .build()));
     final var result = provider.body(cert);
     assertEquals(SHORT_BODY, result);
   }
 
   private static Certificate certificateWithDateRanges(List<DateRange> ranges) {
-    final var value = ElementValueDateRangeList.builder()
-        .dateRangeList(ranges)
-        .build();
-    final var data = ElementData.builder()
-        .id(QUESTION_NEDSATTNING_ARBETSFORMAGA_ID)
-        .value(value)
-        .build();
-    return MedicalCertificate.builder()
-        .elementData(List.of(data))
-        .build();
+    final var value = ElementValueDateRangeList.builder().dateRangeList(ranges).build();
+    final var data =
+        ElementData.builder().id(QUESTION_NEDSATTNING_ARBETSFORMAGA_ID).value(value).build();
+    return MedicalCertificate.builder().elementData(List.of(data)).build();
   }
 }

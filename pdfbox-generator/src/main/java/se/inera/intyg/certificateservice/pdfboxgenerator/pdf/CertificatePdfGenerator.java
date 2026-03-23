@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.pdfboxgenerator.pdf;
 
 import java.time.LocalDateTime;
@@ -22,8 +40,8 @@ public class CertificatePdfGenerator implements PdfGenerator {
   @Override
   public Pdf generate(Certificate certificate, PdfGeneratorOptions options) {
 
-    if (!(certificate.certificateModel()
-        .pdfSpecification() instanceof TemplatePdfSpecification templatePdfSpecification)) {
+    if (!(certificate.certificateModel().pdfSpecification()
+        instanceof TemplatePdfSpecification templatePdfSpecification)) {
       throw new IllegalArgumentException(
           "CertificatePdfFillService can only process TemplatePdfSpecification");
     }
@@ -32,8 +50,8 @@ public class CertificatePdfGenerator implements PdfGenerator {
       throw new IllegalArgumentException("Cannot hide elements for template printing");
     }
 
-    try (final var context = certificatePdfContextFactory.create(certificate, options,
-        templatePdfSpecification)) {
+    try (final var context =
+        certificatePdfContextFactory.create(certificate, options, templatePdfSpecification)) {
 
       certificatePdfFillService.fillDocument(context);
 
@@ -52,8 +70,8 @@ public class CertificatePdfGenerator implements PdfGenerator {
 
   private String getFileName(Certificate certificate) {
     final var certificateName = certificate.certificateModel().name();
-    final var timestamp = LocalDateTime.now()
-        .format((DateTimeFormatter.ofPattern("yy-MM-dd_HHmm")));
+    final var timestamp =
+        LocalDateTime.now().format((DateTimeFormatter.ofPattern("yy-MM-dd_HHmm")));
 
     return String.format("%s_%s", certificateName, timestamp)
         .replace("å", "a")
@@ -65,4 +83,3 @@ public class CertificatePdfGenerator implements PdfGenerator {
         .toLowerCase();
   }
 }
-

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.integrationtest.common.tests;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -28,179 +46,170 @@ public abstract class ValidateCertificateIT extends BaseIntegrationIT {
   @Test
   @DisplayName("Om utkastet saknar 'Vårdenhetens adress' skall valideringsfel returneras")
   void shallReturnListOfErrorsIfMissingUnitContactAddress() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion())
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion()));
 
-    final var certificate = updateUnit(
-        testCertificates,
-        certificate(testCertificates).getMetadata().getUnit()
-            .withAddress("")
-    );
+    final var certificate =
+        updateUnit(
+            testCertificates,
+            certificate(testCertificates).getMetadata().getUnit().withAddress(""));
 
     Objects.requireNonNull(
-        certificate.getData().put(
-            element().id(),
-            updateValue(certificate, element().id(), value())
-        )
-    );
+        certificate
+            .getData()
+            .put(element().id(), updateValue(certificate, element().id(), value())));
 
-    final var response = api().validateCertificate(
-        customValidateCertificateRequest()
-            .certificate(certificate)
-            .build(),
-        certificateId(testCertificates)
-    );
+    final var response =
+        api()
+            .validateCertificate(
+                customValidateCertificateRequest().certificate(certificate).build(),
+                certificateId(testCertificates));
 
     assertAll(
-        () -> assertEquals(1, validationErrors(response).size(),
-            () -> "Wrong number of errors '%s'".formatted(validationErrors(response))
-        ),
-        () -> assertTrue(validationErrors(response).get(0).getText()
-                .contains("Ange postadress."),
-            () -> "Expect to contain 'Ange postadress.' but was '%s'"
-                .formatted(validationErrors(response).get(0))
-        )
-    );
+        () ->
+            assertEquals(
+                1,
+                validationErrors(response).size(),
+                () -> "Wrong number of errors '%s'".formatted(validationErrors(response))),
+        () ->
+            assertTrue(
+                validationErrors(response).get(0).getText().contains("Ange postadress."),
+                () ->
+                    "Expect to contain 'Ange postadress.' but was '%s'"
+                        .formatted(validationErrors(response).get(0))));
   }
 
   @Test
   @DisplayName("Om utkastet saknar 'Vårdenhetens postnummer' skall valideringsfel returneras")
   void shallReturnListOfErrorsIfMissingUnitContactZipCode() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion())
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion()));
 
-    final var certificate = updateUnit(
-        testCertificates,
-        certificate(testCertificates).getMetadata().getUnit()
-            .withZipCode("")
-    );
+    final var certificate =
+        updateUnit(
+            testCertificates,
+            certificate(testCertificates).getMetadata().getUnit().withZipCode(""));
 
     Objects.requireNonNull(
-        certificate.getData().put(
-            element().id(),
-            updateValue(certificate, element().id(), value())
-        )
-    );
+        certificate
+            .getData()
+            .put(element().id(), updateValue(certificate, element().id(), value())));
 
-    final var response = api().validateCertificate(
-        customValidateCertificateRequest()
-            .certificate(certificate)
-            .build(),
-        certificateId(testCertificates)
-    );
+    final var response =
+        api()
+            .validateCertificate(
+                customValidateCertificateRequest().certificate(certificate).build(),
+                certificateId(testCertificates));
 
     assertAll(
-        () -> assertEquals(1, validationErrors(response).size(),
-            () -> "Wrong number of errors '%s'".formatted(validationErrors(response))
-        ),
-        () -> assertTrue(validationErrors(response).get(0).getText()
-                .contains("Ange postnummer."),
-            () -> "Expect to contain 'Ange postnummer.' but was '%s'"
-                .formatted(validationErrors(response).get(0))
-        )
-    );
+        () ->
+            assertEquals(
+                1,
+                validationErrors(response).size(),
+                () -> "Wrong number of errors '%s'".formatted(validationErrors(response))),
+        () ->
+            assertTrue(
+                validationErrors(response).get(0).getText().contains("Ange postnummer."),
+                () ->
+                    "Expect to contain 'Ange postnummer.' but was '%s'"
+                        .formatted(validationErrors(response).get(0))));
   }
 
   @Test
   @DisplayName("Om utkastet saknar 'Vårdenhetens postort' skall valideringsfel returneras")
   void shallReturnListOfErrorsIfMissingUnitContactCity() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion())
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion()));
 
-    final var certificate = updateUnit(
-        testCertificates,
-        certificate(testCertificates).getMetadata().getUnit()
-            .withCity("")
-    );
+    final var certificate =
+        updateUnit(
+            testCertificates, certificate(testCertificates).getMetadata().getUnit().withCity(""));
 
     Objects.requireNonNull(
-        certificate.getData().put(
-            element().id(),
-            updateValue(certificate, element().id(), value())
-        )
-    );
+        certificate
+            .getData()
+            .put(element().id(), updateValue(certificate, element().id(), value())));
 
-    final var response = api().validateCertificate(
-        customValidateCertificateRequest()
-            .certificate(certificate)
-            .build(),
-        certificateId(testCertificates)
-    );
+    final var response =
+        api()
+            .validateCertificate(
+                customValidateCertificateRequest().certificate(certificate).build(),
+                certificateId(testCertificates));
 
     assertAll(
-        () -> assertEquals(1, validationErrors(response).size(),
-            () -> "Wrong number of errors '%s'".formatted(validationErrors(response))
-        ),
-        () -> assertTrue(validationErrors(response).get(0).getText()
-                .contains("Ange postort."),
-            () -> "Expect to contain 'Ange postort.' but was '%s'"
-                .formatted(validationErrors(response).get(0))
-        )
-    );
+        () ->
+            assertEquals(
+                1,
+                validationErrors(response).size(),
+                () -> "Wrong number of errors '%s'".formatted(validationErrors(response))),
+        () ->
+            assertTrue(
+                validationErrors(response).get(0).getText().contains("Ange postort."),
+                () ->
+                    "Expect to contain 'Ange postort.' but was '%s'"
+                        .formatted(validationErrors(response).get(0))));
   }
 
   @Test
   @DisplayName("Om utkastet saknar 'Vårdenhetens telefonnummer' skall valideringsfel returneras")
   void shallReturnListOfErrorsIfMissingUnitContactPhoneNumber() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion())
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion()));
 
-    final var certificate = updateUnit(
-        testCertificates,
-        certificate(testCertificates).getMetadata().getUnit()
-            .withPhoneNumber("")
-    );
+    final var certificate =
+        updateUnit(
+            testCertificates,
+            certificate(testCertificates).getMetadata().getUnit().withPhoneNumber(""));
 
     Objects.requireNonNull(
-        certificate.getData().put(
-            element().id(),
-            updateValue(certificate, element().id(), value())
-        )
-    );
+        certificate
+            .getData()
+            .put(element().id(), updateValue(certificate, element().id(), value())));
 
-    final var response = api().validateCertificate(
-        customValidateCertificateRequest()
-            .certificate(certificate)
-            .build(),
-        certificateId(testCertificates)
-    );
+    final var response =
+        api()
+            .validateCertificate(
+                customValidateCertificateRequest().certificate(certificate).build(),
+                certificateId(testCertificates));
 
     assertAll(
-        () -> assertEquals(1, validationErrors(response).size(),
-            () -> "Wrong number of errors '%s'".formatted(validationErrors(response))
-        ),
-        () -> assertTrue(validationErrors(response).get(0).getText()
-                .contains("Ange telefonnummer."),
-            () -> "Expect to contain 'Ange telefonnummer.' but was '%s'"
-                .formatted(validationErrors(response).get(0))
-        )
-    );
+        () ->
+            assertEquals(
+                1,
+                validationErrors(response).size(),
+                () -> "Wrong number of errors '%s'".formatted(validationErrors(response))),
+        () ->
+            assertTrue(
+                validationErrors(response).get(0).getText().contains("Ange telefonnummer."),
+                () ->
+                    "Expect to contain 'Ange telefonnummer.' but was '%s'"
+                        .formatted(validationErrors(response).get(0))));
   }
 
   @Test
   @DisplayName("Om utkastet saknar värden skall valideringsfel returneras")
   void shallReturnListOfErrorsIfEmptyCertificate() {
 
-    final var certificate = api().createCertificate(defaultCreateCertificateRequest(
-        type(), typeVersion()
-    ));
+    final var certificate =
+        api().createCertificate(defaultCreateCertificateRequest(type(), typeVersion()));
 
-    final var response = api().validateCertificate(
-        customValidateCertificateRequest()
-            .certificate(certificate.getBody().getCertificate())
-            .build(),
-        certificate.getBody().getCertificate().getMetadata().getId()
-    );
+    final var response =
+        api()
+            .validateCertificate(
+                customValidateCertificateRequest()
+                    .certificate(certificate.getBody().getCertificate())
+                    .build(),
+                certificate.getBody().getCertificate().getMetadata().getId());
 
     assertFalse(response.getBody().getValidationErrors().isEmpty());
   }
 
-  private CertificateDataElement updateValue(CertificateDTO certificate, String id,
-      Object expectedValue) {
+  private CertificateDataElement updateValue(
+      CertificateDTO certificate, String id, Object expectedValue) {
     if (expectedValue instanceof String expectedText) {
       return updateTextValue(certificate, id, expectedText);
     }
@@ -211,7 +220,7 @@ public abstract class ValidateCertificateIT extends BaseIntegrationIT {
       return updateBooleanValue(certificate, id, expectedBoolean);
     }
 
-    throw new IllegalStateException("No update function available for type %s"
-        .formatted(expectedValue.getClass()));
+    throw new IllegalStateException(
+        "No update function available for type %s".formatted(expectedValue.getClass()));
   }
 }

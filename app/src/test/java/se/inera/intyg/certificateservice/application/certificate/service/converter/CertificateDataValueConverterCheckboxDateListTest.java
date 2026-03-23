@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service.converter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,22 +47,20 @@ class CertificateDataValueConverterCheckboxDateListTest {
 
   @BeforeEach
   void setUp() {
-    configuration = ElementSpecification.builder()
-        .configuration(
-            ElementConfigurationCheckboxMultipleDate.builder()
-                .id(new FieldId(DATE_LIST_ID))
-                .build()
-        )
-        .build();
+    configuration =
+        ElementSpecification.builder()
+            .configuration(
+                ElementConfigurationCheckboxMultipleDate.builder()
+                    .id(new FieldId(DATE_LIST_ID))
+                    .build())
+            .build();
   }
 
   @Test
   void shallThrowExceptionIfWrongClassOfValue() {
     final var elementValue = ElementValueText.builder().build();
 
-    assertThrows(IllegalStateException.class,
-        () -> converter.convert(configuration, elementValue)
-    );
+    assertThrows(IllegalStateException.class, () -> converter.convert(configuration, elementValue));
   }
 
   @Test
@@ -78,42 +94,40 @@ class CertificateDataValueConverterCheckboxDateListTest {
 
   @Test
   void shallSetCorrectIdForDateValue() {
-    final var elementValue = ElementValueDateList.builder()
-        .dateList(
-            List.of(
-                ElementValueDate.builder()
-                    .dateId(new FieldId("DATE_ID"))
-                    .date(LocalDate.now())
-                    .build()
-            )
-        )
-        .build();
+    final var elementValue =
+        ElementValueDateList.builder()
+            .dateList(
+                List.of(
+                    ElementValueDate.builder()
+                        .dateId(new FieldId("DATE_ID"))
+                        .date(LocalDate.now())
+                        .build()))
+            .build();
 
     final var result = converter.convert(configuration, elementValue);
 
-    assertEquals(elementValue.dateList().get(0).dateId().value(),
-        ((CertificateDataValueDateList) result).getList().get(0).getId()
-    );
+    assertEquals(
+        elementValue.dateList().get(0).dateId().value(),
+        ((CertificateDataValueDateList) result).getList().get(0).getId());
   }
 
   @Test
   void shallSetCorrectDateForDateValue() {
-    final var elementValue = ElementValueDateList.builder()
-        .dateList(
-            List.of(
-                ElementValueDate.builder()
-                    .dateId(new FieldId("DATE_ID"))
-                    .date(LocalDate.now())
-                    .build()
-            )
-        )
-        .build();
+    final var elementValue =
+        ElementValueDateList.builder()
+            .dateList(
+                List.of(
+                    ElementValueDate.builder()
+                        .dateId(new FieldId("DATE_ID"))
+                        .date(LocalDate.now())
+                        .build()))
+            .build();
 
     final var result = converter.convert(configuration, elementValue);
 
-    assertEquals(elementValue.dateList().get(0).date(),
-        ((CertificateDataValueDateList) result).getList().get(0).getDate()
-    );
+    assertEquals(
+        elementValue.dateList().get(0).date(),
+        ((CertificateDataValueDateList) result).getList().get(0).getDate());
   }
 
   @Test
@@ -122,7 +136,8 @@ class CertificateDataValueConverterCheckboxDateListTest {
 
     final var result = converter.convert(configuration, elementValue);
 
-    assertTrue(((CertificateDataValueDateList) result).getList().isEmpty(),
+    assertTrue(
+        ((CertificateDataValueDateList) result).getList().isEmpty(),
         "If no value is provided value should be empty list");
   }
 }

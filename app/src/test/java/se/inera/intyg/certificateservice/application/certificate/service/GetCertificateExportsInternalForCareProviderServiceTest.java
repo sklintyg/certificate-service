@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,46 +44,45 @@ class GetCertificateExportsInternalForCareProviderServiceTest {
   private static final int PAGE = 1;
   private static final int SIZE = 10;
   private static final String CARE_PROVIDER_ID = "careProviderId";
-  @Mock
-  CertificateRepository certificateRepository;
-  @Mock
-  XmlGenerator xmlGenerator;
+  @Mock CertificateRepository certificateRepository;
+  @Mock XmlGenerator xmlGenerator;
+
   @InjectMocks
-  GetCertificateExportsInternalForCareProviderService getCertificateExportsInternalForCareProviderService;
+  GetCertificateExportsInternalForCareProviderService
+      getCertificateExportsInternalForCareProviderService;
 
   @Test
   void shallReturnExportInternalResponseExportInternalResponse() {
-    final var exportCertificateInternalResponses = List.of(
-        ExportCertificateInternalResponse.builder()
-            .certificateId(FK7210_CERTIFICATE.id().id())
-            .xml(XML.base64())
-            .revoked(true)
-            .build(),
-        ExportCertificateInternalResponse.builder()
-            .certificateId(FK3226_CERTIFICATE.id().id())
-            .xml(XML.base64())
-            .revoked(true)
-            .build()
-    );
+    final var exportCertificateInternalResponses =
+        List.of(
+            ExportCertificateInternalResponse.builder()
+                .certificateId(FK7210_CERTIFICATE.id().id())
+                .xml(XML.base64())
+                .revoked(true)
+                .build(),
+            ExportCertificateInternalResponse.builder()
+                .certificateId(FK3226_CERTIFICATE.id().id())
+                .xml(XML.base64())
+                .revoked(true)
+                .build());
 
-    final var expectedResult = ExportInternalResponse.builder()
-        .exports(exportCertificateInternalResponses)
-        .build();
+    final var expectedResult =
+        ExportInternalResponse.builder().exports(exportCertificateInternalResponses).build();
 
-    final var certificateExportPage = CertificateExportPage.builder()
-        .certificates(List.of(FK7210_CERTIFICATE, FK3226_CERTIFICATE))
-        .build();
+    final var certificateExportPage =
+        CertificateExportPage.builder()
+            .certificates(List.of(FK7210_CERTIFICATE, FK3226_CERTIFICATE))
+            .build();
 
-    final var internalRequest = ExportCertificateInternalRequest.builder()
-        .page(PAGE)
-        .size(SIZE)
-        .build();
+    final var internalRequest =
+        ExportCertificateInternalRequest.builder().page(PAGE).size(SIZE).build();
 
-    doReturn(certificateExportPage).when(certificateRepository)
+    doReturn(certificateExportPage)
+        .when(certificateRepository)
         .getExportByCareProviderId(new HsaId(CARE_PROVIDER_ID), PAGE, SIZE);
 
-    final var actualResult = getCertificateExportsInternalForCareProviderService.get(
-        internalRequest, CARE_PROVIDER_ID);
+    final var actualResult =
+        getCertificateExportsInternalForCareProviderService.get(internalRequest, CARE_PROVIDER_ID);
     assertEquals(expectedResult, actualResult);
   }
 }

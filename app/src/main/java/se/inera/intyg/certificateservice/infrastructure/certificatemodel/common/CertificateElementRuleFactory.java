@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.common;
 
 import java.util.Arrays;
@@ -19,17 +37,12 @@ public class CertificateElementRuleFactory {
     throw new IllegalStateException("Utility class");
   }
 
-  public static ElementRule autofill(ElementId id, FieldId fieldId,
-      FieldId toSetFieldId) {
+  public static ElementRule autofill(ElementId id, FieldId fieldId, FieldId toSetFieldId) {
     return ElementRuleAutofill.builder()
         .id(id)
         .type(ElementRuleType.AUTO_FILL)
         .expression(new RuleExpression(singleExpression(fieldId.value())))
-        .fillValue(ElementValueBoolean.builder()
-            .booleanId(toSetFieldId)
-            .value(true)
-            .build()
-        )
+        .fillValue(ElementValueBoolean.builder().booleanId(toSetFieldId).value(true).build())
         .build();
   }
 
@@ -42,21 +55,11 @@ public class CertificateElementRuleFactory {
   }
 
   public static ElementRule show(ElementId id, FieldId fieldId) {
-    return show(
-        id,
-        new RuleExpression(
-            singleExpression(fieldId.value())
-        )
-    );
+    return show(id, new RuleExpression(singleExpression(fieldId.value())));
   }
 
   public static ElementRule hide(ElementId id, FieldId fieldId) {
-    return hide(
-        id,
-        new RuleExpression(
-            singleExpression(fieldId.value())
-        )
-    );
+    return hide(id, new RuleExpression(singleExpression(fieldId.value())));
   }
 
   public static ElementRule show(ElementId id, RuleExpression ruleExpression) {
@@ -71,12 +74,7 @@ public class CertificateElementRuleFactory {
     return ElementRuleExpression.builder()
         .type(ElementRuleType.SHOW)
         .id(id)
-        .expression(
-            new RuleExpression(
-                empty(singleExpression(fieldId.value())
-                )
-            )
-        )
+        .expression(new RuleExpression(empty(singleExpression(fieldId.value()))))
         .build();
   }
 
@@ -97,11 +95,7 @@ public class CertificateElementRuleFactory {
                 multipleAndExpression(
                     null,
                     not(singleExpression(fieldId.value())),
-                    notEmpty(singleExpression(fieldId.value())
-                    )
-                )
-            )
-        )
+                    notEmpty(singleExpression(fieldId.value())))))
         .build();
   }
 
@@ -122,10 +116,7 @@ public class CertificateElementRuleFactory {
                 multipleOrExpression(
                     fieldIds.stream()
                         .map(field -> singleExpression(field.value()))
-                        .toArray(String[]::new)
-                )
-            )
-        )
+                        .toArray(String[]::new))))
         .build();
   }
 
@@ -137,9 +128,7 @@ public class CertificateElementRuleFactory {
     return ElementRuleExpression.builder()
         .id(id)
         .type(ElementRuleType.MANDATORY)
-        .expression(
-            orExists(fieldIds)
-        )
+        .expression(orExists(fieldIds))
         .build();
   }
 
@@ -147,12 +136,9 @@ public class CertificateElementRuleFactory {
     return ElementRuleExpression.builder()
         .id(id)
         .type(ElementRuleType.SHOW)
-        .expression(
-            orExists(fieldIds)
-        )
+        .expression(orExists(fieldIds))
         .build();
   }
-
 
   public static ElementRule mandatoryAndExist(ElementId id, List<FieldId> fieldIds) {
     return ElementRuleExpression.builder()
@@ -163,10 +149,7 @@ public class CertificateElementRuleFactory {
                 multipleAndExpressionWithExists(
                     fieldIds.stream()
                         .map(field -> singleExpression(field.value()))
-                        .toArray(String[]::new)
-                )
-            )
-        )
+                        .toArray(String[]::new))))
         .build();
   }
 
@@ -183,10 +166,7 @@ public class CertificateElementRuleFactory {
                 multipleOrExpressionWithNotEmpty(
                     fieldIds.stream()
                         .map(field -> singleExpression(field.value()))
-                        .toArray(String[]::new)
-                )
-            )
-        )
+                        .toArray(String[]::new))))
         .build();
   }
 
@@ -202,11 +182,7 @@ public class CertificateElementRuleFactory {
     return ElementRuleExpression.builder()
         .id(id)
         .type(ElementRuleType.DISABLE)
-        .expression(
-            new RuleExpression(
-                singleExpression(fieldId.value())
-            )
-        )
+        .expression(new RuleExpression(singleExpression(fieldId.value())))
         .build();
   }
 
@@ -214,17 +190,12 @@ public class CertificateElementRuleFactory {
     return ElementRuleExpression.builder()
         .id(id)
         .type(ElementRuleType.DISABLE)
-        .expression(
-            new RuleExpression(
-                empty(singleExpression(fieldId.value()))
-            )
-        )
+        .expression(new RuleExpression(empty(singleExpression(fieldId.value()))))
         .build();
   }
 
-
-  public static ElementRule disableSubElements(ElementId id, List<FieldId> elementsForExpression,
-      List<FieldId> elementsToDisable) {
+  public static ElementRule disableSubElements(
+      ElementId id, List<FieldId> elementsForExpression, List<FieldId> elementsToDisable) {
     return ElementRuleExpression.builder()
         .id(id)
         .type(ElementRuleType.DISABLE_SUB_ELEMENT)
@@ -232,73 +203,36 @@ public class CertificateElementRuleFactory {
         .expression(
             new RuleExpression(
                 multipleOrExpressionWithExists(
-                    elementsForExpression.stream()
-                        .map(FieldId::value)
-                        .toArray(String[]::new)
-                )
-            )
-        )
+                    elementsForExpression.stream().map(FieldId::value).toArray(String[]::new))))
         .build();
   }
 
-  public static ElementRule visualAcuities(ElementId parent, FieldId leftEye,
-      FieldId rightEye) {
-    return CertificateElementRuleFactory.show(parent,
+  public static ElementRule visualAcuities(ElementId parent, FieldId leftEye, FieldId rightEye) {
+    return CertificateElementRuleFactory.show(
+        parent,
         new RuleExpression(
             multipleOrExpression(
                 wrapWithParenthesis(
                     multipleAndExpressions(
                         wrapWithParenthesis(
                             multipleAndExpressions(
-                                lessThan(
-                                    withCitation(leftEye.value()),
-                                    "0.8"
-                                ),
-                                lessThan(
-                                    withCitation(rightEye.value()),
-                                    "0.8"
-                                )
-                            )
-                        ),
+                                lessThan(withCitation(leftEye.value()), "0.8"),
+                                lessThan(withCitation(rightEye.value()), "0.8"))),
                         wrapWithParenthesis(
                             multipleAndExpressions(
-                                wrapWithNotEmpty(
-                                    withCitation(leftEye.value())),
-                                wrapWithNotEmpty(
-                                    withCitation(rightEye.value()))
-                            )
-                        )
-                    )
-                ),
+                                wrapWithNotEmpty(withCitation(leftEye.value())),
+                                wrapWithNotEmpty(withCitation(rightEye.value())))))),
                 wrapWithParenthesis(
                     multipleAndExpressions(
                         multipleAndExpressions(
                             wrapWithParenthesis(
                                 multipleOrExpression(
-                                    lessThan(
-                                        withCitation(leftEye.value()),
-                                        "0.1"
-                                    ),
-                                    lessThan(
-                                        withCitation(rightEye.value()),
-                                        "0.1"
-                                    )
-                                )
-                            )
-                        ),
+                                    lessThan(withCitation(leftEye.value()), "0.1"),
+                                    lessThan(withCitation(rightEye.value()), "0.1")))),
                         wrapWithParenthesis(
                             multipleAndExpressions(
-                                wrapWithNotEmpty(
-                                    withCitation(leftEye.value())),
-                                wrapWithNotEmpty(
-                                    withCitation(rightEye.value()))
-                            )
-                        )
-                    )
-                )
-            )
-        )
-    );
+                                wrapWithNotEmpty(withCitation(leftEye.value())),
+                                wrapWithNotEmpty(withCitation(rightEye.value())))))))));
   }
 
   public static String singleExpression(String id) {
@@ -310,31 +244,37 @@ public class CertificateElementRuleFactory {
   }
 
   private static String multipleOrExpressionWithWrapsWith(String wrapWith, String... expression) {
-    return Arrays.stream(expression).reduce("", (s, s2) -> {
-      if (!s.isEmpty()) {
-        s += " || ";
-      }
-      if (wrapWith != null) {
-        s += wrapWith + "(" + s2 + ")";
-      } else {
-        s += s2;
-      }
-      return s;
-    });
+    return Arrays.stream(expression)
+        .reduce(
+            "",
+            (s, s2) -> {
+              if (!s.isEmpty()) {
+                s += " || ";
+              }
+              if (wrapWith != null) {
+                s += wrapWith + "(" + s2 + ")";
+              } else {
+                s += s2;
+              }
+              return s;
+            });
   }
 
   public static String multipleAndExpression(String wrapWith, String... expression) {
-    return Arrays.stream(expression).reduce("", (s, s2) -> {
-      if (!s.isEmpty()) {
-        s += " && ";
-      }
-      if (wrapWith != null) {
-        s += wrapWith + "(" + s2 + ")";
-      } else {
-        s += s2;
-      }
-      return s;
-    });
+    return Arrays.stream(expression)
+        .reduce(
+            "",
+            (s, s2) -> {
+              if (!s.isEmpty()) {
+                s += " && ";
+              }
+              if (wrapWith != null) {
+                s += wrapWith + "(" + s2 + ")";
+              } else {
+                s += s2;
+              }
+              return s;
+            });
   }
 
   private static RuleExpression orExists(List<FieldId> fieldIds) {
@@ -342,9 +282,7 @@ public class CertificateElementRuleFactory {
         multipleOrExpressionWithExists(
             fieldIds.stream()
                 .map(field -> singleExpression(field.value()))
-                .toArray(String[]::new)
-        )
-    );
+                .toArray(String[]::new)));
   }
 
   public static String multipleOrExpressionWithExists(String... expression) {
@@ -372,13 +310,16 @@ public class CertificateElementRuleFactory {
   }
 
   public static String multipleAndExpressions(String... expression) {
-    return Arrays.stream(expression).reduce("", (s, s2) -> {
-      if (!s.isEmpty()) {
-        s += " && ";
-      }
-      s += s2;
-      return s;
-    });
+    return Arrays.stream(expression)
+        .reduce(
+            "",
+            (s, s2) -> {
+              if (!s.isEmpty()) {
+                s += " && ";
+              }
+              s += s2;
+              return s;
+            });
   }
 
   public static String wrapWithParenthesis(String expression) {

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.unit.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,26 +51,26 @@ import se.inera.intyg.certificateservice.domain.validation.model.ValidationResul
 @ExtendWith(MockitoExtension.class)
 class GetUnitCertificatesDomainServiceTest {
 
-  @Mock
-  private CertificateRepository certificateRepository;
-  @InjectMocks
-  private GetUnitCertificatesDomainService getUnitCertificatesDomainService;
+  @Mock private CertificateRepository certificateRepository;
+  @InjectMocks private GetUnitCertificatesDomainService getUnitCertificatesDomainService;
 
   private ActionEvaluation.ActionEvaluationBuilder actionEvaluationBuilder;
   private CertificatesRequestBuilder certificatesRequestBuilder;
 
   @BeforeEach
   void setUp() {
-    actionEvaluationBuilder = ActionEvaluation.builder()
-        .patient(ATHENA_REACT_ANDERSSON)
-        .user(AJLA_DOKTOR)
-        .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
-        .careUnit(ALFA_MEDICINCENTRUM)
-        .careProvider(ALFA_REGIONEN);
+    actionEvaluationBuilder =
+        ActionEvaluation.builder()
+            .patient(ATHENA_REACT_ANDERSSON)
+            .user(AJLA_DOKTOR)
+            .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
+            .careUnit(ALFA_MEDICINCENTRUM)
+            .careProvider(ALFA_REGIONEN);
 
-    certificatesRequestBuilder = CertificatesRequest.builder()
-        .issuedUnitIds(List.of(ALFA_ALLERGIMOTTAGNINGEN.hsaId()))
-        .personId(ATHENA_REACT_ANDERSSON.id());
+    certificatesRequestBuilder =
+        CertificatesRequest.builder()
+            .issuedUnitIds(List.of(ALFA_ALLERGIMOTTAGNINGEN.hsaId()))
+            .personId(ATHENA_REACT_ANDERSSON.id());
   }
 
   @Test
@@ -61,15 +79,15 @@ class GetUnitCertificatesDomainServiceTest {
     final var certificatesRequest = certificatesRequestBuilder.build();
 
     final var certificate = mock(MedicalCertificate.class);
-    doReturn(true).when(certificate)
+    doReturn(true)
+        .when(certificate)
         .allowTo(CertificateActionType.READ, Optional.of(actionEvaluation));
-    doReturn(List.of(certificate)).when(certificateRepository)
+    doReturn(List.of(certificate))
+        .when(certificateRepository)
         .findByCertificatesRequest(certificatesRequest);
 
-    final var actualResult = getUnitCertificatesDomainService.get(
-        certificatesRequest,
-        actionEvaluation
-    );
+    final var actualResult =
+        getUnitCertificatesDomainService.get(certificatesRequest, actionEvaluation);
 
     assertEquals(List.of(certificate), actualResult);
   }
@@ -81,17 +99,18 @@ class GetUnitCertificatesDomainServiceTest {
 
     final var certificate1 = mock(MedicalCertificate.class);
     final var certificate2 = mock(MedicalCertificate.class);
-    doReturn(true).when(certificate1)
+    doReturn(true)
+        .when(certificate1)
         .allowTo(CertificateActionType.READ, Optional.of(actionEvaluation));
-    doReturn(false).when(certificate2)
+    doReturn(false)
+        .when(certificate2)
         .allowTo(CertificateActionType.READ, Optional.of(actionEvaluation));
-    doReturn(List.of(certificate1, certificate2)).when(certificateRepository)
+    doReturn(List.of(certificate1, certificate2))
+        .when(certificateRepository)
         .findByCertificatesRequest(certificatesRequest);
 
-    final var actualResult = getUnitCertificatesDomainService.get(
-        certificatesRequest,
-        actionEvaluation
-    );
+    final var actualResult =
+        getUnitCertificatesDomainService.get(certificatesRequest, actionEvaluation);
 
     assertEquals(List.of(certificate1), actualResult);
   }
@@ -99,9 +118,7 @@ class GetUnitCertificatesDomainServiceTest {
   @Test
   void shallAddIssuedUnitIfNoIssuedUnitProvidedAndIsOnSubUnit() {
     final var actionEvaluation = actionEvaluationBuilder.build();
-    final var certificatesRequest = certificatesRequestBuilder
-        .issuedUnitIds(null)
-        .build();
+    final var certificatesRequest = certificatesRequestBuilder.issuedUnitIds(null).build();
 
     final var certificateRequestCaptor = ArgumentCaptor.forClass(CertificatesRequest.class);
 
@@ -109,20 +126,16 @@ class GetUnitCertificatesDomainServiceTest {
 
     verify(certificateRepository).findByCertificatesRequest(certificateRequestCaptor.capture());
 
-    assertEquals(List.of(ALFA_ALLERGIMOTTAGNINGEN.hsaId()),
-        certificateRequestCaptor.getValue().issuedUnitIds()
-    );
+    assertEquals(
+        List.of(ALFA_ALLERGIMOTTAGNINGEN.hsaId()),
+        certificateRequestCaptor.getValue().issuedUnitIds());
   }
 
   @Test
   void shallAddCareUnitIfNoIssuedUnitProvidedAndIsOnCareUnit() {
-    final var actionEvaluation = actionEvaluationBuilder
-        .subUnit(ALFA_MEDICINSKT_CENTRUM)
-        .build();
+    final var actionEvaluation = actionEvaluationBuilder.subUnit(ALFA_MEDICINSKT_CENTRUM).build();
 
-    final var certificatesRequest = certificatesRequestBuilder
-        .issuedUnitIds(null)
-        .build();
+    final var certificatesRequest = certificatesRequestBuilder.issuedUnitIds(null).build();
 
     final var certificateRequestCaptor = ArgumentCaptor.forClass(CertificatesRequest.class);
 
@@ -130,30 +143,27 @@ class GetUnitCertificatesDomainServiceTest {
 
     verify(certificateRepository).findByCertificatesRequest(certificateRequestCaptor.capture());
 
-    assertEquals(ALFA_MEDICINCENTRUM.hsaId(),
-        certificateRequestCaptor.getValue().careUnitId()
-    );
+    assertEquals(ALFA_MEDICINCENTRUM.hsaId(), certificateRequestCaptor.getValue().careUnitId());
   }
 
   @Test
   void shallNotReturnValidCertificatesIfAskingForInValidCertificates() {
     final var actionEvaluation = actionEvaluationBuilder.build();
 
-    final var certificatesRequest = certificatesRequestBuilder
-        .validCertificates(Boolean.FALSE)
-        .build();
+    final var certificatesRequest =
+        certificatesRequestBuilder.validCertificates(Boolean.FALSE).build();
 
     final var certificate = mock(MedicalCertificate.class);
-    doReturn(true).when(certificate)
+    doReturn(true)
+        .when(certificate)
         .allowTo(CertificateActionType.READ, Optional.of(actionEvaluation));
     doReturn(ValidationResult.builder().build()).when(certificate).validate();
-    doReturn(List.of(certificate)).when(certificateRepository)
+    doReturn(List.of(certificate))
+        .when(certificateRepository)
         .findByCertificatesRequest(certificatesRequest);
 
-    final var actualResult = getUnitCertificatesDomainService.get(
-        certificatesRequest,
-        actionEvaluation
-    );
+    final var actualResult =
+        getUnitCertificatesDomainService.get(certificatesRequest, actionEvaluation);
 
     assertEquals(Collections.emptyList(), actualResult);
   }
@@ -162,25 +172,22 @@ class GetUnitCertificatesDomainServiceTest {
   void shallNotReturnInValidCertificatesIfAskingForValidCertificates() {
     final var actionEvaluation = actionEvaluationBuilder.build();
 
-    final var certificatesRequest = certificatesRequestBuilder
-        .validCertificates(Boolean.TRUE)
-        .build();
+    final var certificatesRequest =
+        certificatesRequestBuilder.validCertificates(Boolean.TRUE).build();
 
     final var certificate = mock(MedicalCertificate.class);
-    doReturn(true).when(certificate)
+    doReturn(true)
+        .when(certificate)
         .allowTo(CertificateActionType.READ, Optional.of(actionEvaluation));
-    doReturn(
-        ValidationResult.builder()
-            .errors(List.of(ValidationError.builder().build()))
-            .build()
-    ).when(certificate).validate();
-    doReturn(List.of(certificate)).when(certificateRepository)
+    doReturn(ValidationResult.builder().errors(List.of(ValidationError.builder().build())).build())
+        .when(certificate)
+        .validate();
+    doReturn(List.of(certificate))
+        .when(certificateRepository)
         .findByCertificatesRequest(certificatesRequest);
 
-    final var actualResult = getUnitCertificatesDomainService.get(
-        certificatesRequest,
-        actionEvaluation
-    );
+    final var actualResult =
+        getUnitCertificatesDomainService.get(certificatesRequest, actionEvaluation);
 
     assertEquals(Collections.emptyList(), actualResult);
   }

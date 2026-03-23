@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -27,62 +45,55 @@ class QuestionNarAktivaBehandlingenAvslutadesTest {
 
   @Test
   void shallIncludeId() {
-    final var element = QuestionNarAktivaBehandlingenAvslutades.questionNarAktivaBehandlingenAvslutades();
+    final var element =
+        QuestionNarAktivaBehandlingenAvslutades.questionNarAktivaBehandlingenAvslutades();
 
     assertEquals(ELEMENT_ID, element.id());
   }
 
   @Test
   void shallIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationDate.builder()
-        .id(new FieldId("52.2"))
-        .name("Ange när den aktiva behandlingen avslutades")
-        .max(Period.ofDays(0))
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationDate.builder()
+            .id(new FieldId("52.2"))
+            .name("Ange när den aktiva behandlingen avslutades")
+            .max(Period.ofDays(0))
+            .build();
 
-    final var element = QuestionNarAktivaBehandlingenAvslutades.questionNarAktivaBehandlingenAvslutades();
+    final var element =
+        QuestionNarAktivaBehandlingenAvslutades.questionNarAktivaBehandlingenAvslutades();
 
     assertEquals(expectedConfiguration, element.configuration());
   }
 
   @Test
   void shallIncludeRules() {
-    final var expectedRules = List.of(
-        ElementRuleExpression.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.MANDATORY)
-            .expression(
-                new RuleExpression(
-                    "$52.2"
-                )
-            )
-            .build(),
-        ElementRuleExpression.builder()
-            .id(new ElementId("52"))
-            .type(ElementRuleType.SHOW)
-            .expression(
-                new RuleExpression(
-                    "$ENDAST_PALLIATIV"
-                )
-            )
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleExpression.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.MANDATORY)
+                .expression(new RuleExpression("$52.2"))
+                .build(),
+            ElementRuleExpression.builder()
+                .id(new ElementId("52"))
+                .type(ElementRuleType.SHOW)
+                .expression(new RuleExpression("$ENDAST_PALLIATIV"))
+                .build());
 
-    final var element = QuestionNarAktivaBehandlingenAvslutades.questionNarAktivaBehandlingenAvslutades();
+    final var element =
+        QuestionNarAktivaBehandlingenAvslutades.questionNarAktivaBehandlingenAvslutades();
 
     assertEquals(expectedRules, element.rules());
   }
 
   @Test
   void shallIncludeValidations() {
-    final var expectedValidations = List.of(
-        ElementValidationDate.builder()
-            .mandatory(true)
-            .max(Period.ofDays(0))
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationDate.builder().mandatory(true).max(Period.ofDays(0)).build());
 
-    final var element = QuestionNarAktivaBehandlingenAvslutades.questionNarAktivaBehandlingenAvslutades();
+    final var element =
+        QuestionNarAktivaBehandlingenAvslutades.questionNarAktivaBehandlingenAvslutades();
 
     assertEquals(expectedValidations, element.validations());
   }
@@ -92,42 +103,34 @@ class QuestionNarAktivaBehandlingenAvslutadesTest {
 
     @Test
     void shallReturnTrueIfElementPresent() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("52"))
-              .value(
-                  ElementValueCode.builder()
-                      .codeId(new FieldId("ENDAST_PALLIATIV"))
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("52"))
+                  .value(ElementValueCode.builder().codeId(new FieldId("ENDAST_PALLIATIV")).build())
+                  .build());
 
-      final var element = QuestionNarAktivaBehandlingenAvslutades.questionNarAktivaBehandlingenAvslutades();
+      final var element =
+          QuestionNarAktivaBehandlingenAvslutades.questionNarAktivaBehandlingenAvslutades();
 
-      final var shouldValidate = element.elementSpecification(ELEMENT_ID)
-          .shouldValidate();
+      final var shouldValidate = element.elementSpecification(ELEMENT_ID).shouldValidate();
 
       assertTrue(shouldValidate.test(elementData));
     }
 
     @Test
     void shallReturnFalseIfElementMissing() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("52"))
-              .value(
-                  ElementValueCode.builder()
-                      .codeId(new FieldId("annat"))
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("52"))
+                  .value(ElementValueCode.builder().codeId(new FieldId("annat")).build())
+                  .build());
 
-      final var element = QuestionNarAktivaBehandlingenAvslutades.questionNarAktivaBehandlingenAvslutades();
+      final var element =
+          QuestionNarAktivaBehandlingenAvslutades.questionNarAktivaBehandlingenAvslutades();
 
-      final var shouldValidate = element.elementSpecification(ELEMENT_ID)
-          .shouldValidate();
+      final var shouldValidate = element.elementSpecification(ELEMENT_ID).shouldValidate();
 
       assertFalse(shouldValidate.test(elementData));
     }
@@ -135,22 +138,23 @@ class QuestionNarAktivaBehandlingenAvslutadesTest {
 
   @Test
   void shallIncludeCustomMapping() {
-    final var expectedConfiguration = new ElementMapping(
-        new ElementId("52"), null
-    );
+    final var expectedConfiguration = new ElementMapping(new ElementId("52"), null);
 
-    final var element = QuestionNarAktivaBehandlingenAvslutades.questionNarAktivaBehandlingenAvslutades();
+    final var element =
+        QuestionNarAktivaBehandlingenAvslutades.questionNarAktivaBehandlingenAvslutades();
 
     assertEquals(expectedConfiguration, element.mapping());
   }
 
   @Test
   void shallIncludePdfConfiguration() {
-    final var expected = PdfConfigurationDate.builder()
-        .pdfFieldId(new PdfFieldId("form1[0].#subform[1].flt_datumBehandlingenAvslutad[0]"))
-        .build();
+    final var expected =
+        PdfConfigurationDate.builder()
+            .pdfFieldId(new PdfFieldId("form1[0].#subform[1].flt_datumBehandlingenAvslutad[0]"))
+            .build();
 
-    final var element = QuestionNarAktivaBehandlingenAvslutades.questionNarAktivaBehandlingenAvslutades();
+    final var element =
+        QuestionNarAktivaBehandlingenAvslutades.questionNarAktivaBehandlingenAvslutades();
 
     assertEquals(expected, element.pdfConfiguration());
   }

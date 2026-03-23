@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7810;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,64 +44,47 @@ class FK7810CertificateSummaryProviderTest {
 
   private static final String DESCRIPTION = "description";
 
-  @InjectMocks
-  private FK7810CertificateSummaryProvider provider;
+  @InjectMocks private FK7810CertificateSummaryProvider provider;
 
   @Test
   void shallIncludeLabel() {
-    assertEquals("Avser diagnos",
-        provider.summaryOf(MedicalCertificate.builder().build()).label()
-    );
+    assertEquals("Avser diagnos", provider.summaryOf(MedicalCertificate.builder().build()).label());
   }
 
   @Nested
   class ValueTests {
 
-
     @Test
     void shallReturnEmptyValueIfCertificateSignedIsNull() {
-      final var certificate = MedicalCertificate.builder()
-          .signed(null)
-          .build();
+      final var certificate = MedicalCertificate.builder().signed(null).build();
 
-      assertTrue(
-          provider.summaryOf(certificate).value().isEmpty()
-      );
+      assertTrue(provider.summaryOf(certificate).value().isEmpty());
     }
 
     @Test
     void shallReturnEmptyValueIfCertificateCertificateDontContainDiagnosisValue() {
-      final var certificate = MedicalCertificate.builder()
-          .signed(LocalDateTime.now())
-          .elementData(
-              List.of(
-                  ElementData.builder()
-                      .id(new ElementId("notDiagnosisId"))
-                      .build()
-              )
-          )
-          .build();
+      final var certificate =
+          MedicalCertificate.builder()
+              .signed(LocalDateTime.now())
+              .elementData(
+                  List.of(ElementData.builder().id(new ElementId("notDiagnosisId")).build()))
+              .build();
 
-      assertTrue(
-          provider.summaryOf(certificate).value().isEmpty()
-      );
+      assertTrue(provider.summaryOf(certificate).value().isEmpty());
     }
 
     @Test
     void shallThrowIfCertificateCertificateContainDiagnosisValueButWrongType() {
-      final var certificate = MedicalCertificate.builder()
-          .signed(LocalDateTime.now())
-          .elementData(
-              List.of(
-                  ElementData.builder()
-                      .id(DIAGNOSIS_ID)
-                      .value(
-                          ElementValueText.builder().build()
-                      )
-                      .build()
-              )
-          )
-          .build();
+      final var certificate =
+          MedicalCertificate.builder()
+              .signed(LocalDateTime.now())
+              .elementData(
+                  List.of(
+                      ElementData.builder()
+                          .id(DIAGNOSIS_ID)
+                          .value(ElementValueText.builder().build())
+                          .build()))
+              .build();
 
       assertThrows(IllegalStateException.class, () -> provider.summaryOf(certificate));
     }
@@ -91,56 +92,48 @@ class FK7810CertificateSummaryProviderTest {
     @Test
     void shallReturnValueFromDiagnosisIfCertificateContainDiagnosisValue() {
       final var expectedCode = "expectedCode";
-      final var certificate = MedicalCertificate.builder()
-          .signed(LocalDateTime.now())
-          .elementData(
-              List.of(
-                  ElementData.builder()
-                      .id(DIAGNOSIS_ID)
-                      .value(
-                          ElementValueDiagnosisList.builder()
-                              .diagnoses(
-                                  List.of(
-                                      ElementValueDiagnosis.builder()
-                                          .id(DIAGNOS_1)
-                                          .description(expectedCode)
-                                          .build()
-                                  )
-                              )
-                              .build()
-                      )
-                      .build()
-              )
-          )
-          .build();
+      final var certificate =
+          MedicalCertificate.builder()
+              .signed(LocalDateTime.now())
+              .elementData(
+                  List.of(
+                      ElementData.builder()
+                          .id(DIAGNOSIS_ID)
+                          .value(
+                              ElementValueDiagnosisList.builder()
+                                  .diagnoses(
+                                      List.of(
+                                          ElementValueDiagnosis.builder()
+                                              .id(DIAGNOS_1)
+                                              .description(expectedCode)
+                                              .build()))
+                                  .build())
+                          .build()))
+              .build();
 
       assertEquals(expectedCode, provider.summaryOf(certificate).value());
     }
 
     @Test
     void shallReturnEmptyValueFromDiagnosisIfCertificateContainDiagnosisValueButNotCorrectId() {
-      final var certificate = MedicalCertificate.builder()
-          .signed(LocalDateTime.now())
-          .elementData(
-              List.of(
-                  ElementData.builder()
-                      .id(DIAGNOSIS_ID)
-                      .value(
-                          ElementValueDiagnosisList.builder()
-                              .diagnoses(
-                                  List.of(
-                                      ElementValueDiagnosis.builder()
-                                          .id(new FieldId("wrongId"))
-                                          .description(DESCRIPTION)
-                                          .build()
-                                  )
-                              )
-                              .build()
-                      )
-                      .build()
-              )
-          )
-          .build();
+      final var certificate =
+          MedicalCertificate.builder()
+              .signed(LocalDateTime.now())
+              .elementData(
+                  List.of(
+                      ElementData.builder()
+                          .id(DIAGNOSIS_ID)
+                          .value(
+                              ElementValueDiagnosisList.builder()
+                                  .diagnoses(
+                                      List.of(
+                                          ElementValueDiagnosis.builder()
+                                              .id(new FieldId("wrongId"))
+                                              .description(DESCRIPTION)
+                                              .build()))
+                                  .build())
+                          .build()))
+              .build();
 
       assertTrue(provider.summaryOf(certificate).value().isEmpty());
     }

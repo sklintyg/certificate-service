@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.certificate;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -40,49 +58,40 @@ class XmlGeneratorCodeListTest {
   private static ElementData data;
   private ElementSpecification elementSpecification;
 
-  @InjectMocks
-  private XmlGeneratorCodeList xmlGenerator;
+  @InjectMocks private XmlGeneratorCodeList xmlGenerator;
 
   @Nested
   class TestOneCode {
 
     @BeforeEach
     void setup() {
-      data = ElementData.builder()
-          .id(new ElementId(QUESTION_ID))
-          .value(
-              ElementValueCodeList.builder()
-                  .id(new FieldId(VALUE_ID))
-                  .list(
-                      List.of(
-                          ElementValueCode.builder()
-                              .codeId(new FieldId(CODE_ID_ONE))
-                              .code(CODE_ONE)
-                              .build()
-                      )
-                  )
-                  .build()
-          )
-          .build();
-      elementSpecification = ElementSpecification.builder()
-          .configuration(
-              ElementConfigurationCheckboxMultipleCode.builder()
-                  .id(new FieldId(VALUE_ID))
-                  .list(
-                      List.of(
-                          new ElementConfigurationCode(
-                              new FieldId(CODE_ID_ONE),
-                              "label",
-                              new Code(
-                                  "CODE",
-                                  "CODE_SYSTEM",
-                                  "DISPLAY_NAME"
-                              )
-                          ))
-                  )
-                  .build()
-          )
-          .build();
+      data =
+          ElementData.builder()
+              .id(new ElementId(QUESTION_ID))
+              .value(
+                  ElementValueCodeList.builder()
+                      .id(new FieldId(VALUE_ID))
+                      .list(
+                          List.of(
+                              ElementValueCode.builder()
+                                  .codeId(new FieldId(CODE_ID_ONE))
+                                  .code(CODE_ONE)
+                                  .build()))
+                      .build())
+              .build();
+      elementSpecification =
+          ElementSpecification.builder()
+              .configuration(
+                  ElementConfigurationCheckboxMultipleCode.builder()
+                      .id(new FieldId(VALUE_ID))
+                      .list(
+                          List.of(
+                              new ElementConfigurationCode(
+                                  new FieldId(CODE_ID_ONE),
+                                  "label",
+                                  new Code("CODE", "CODE_SYSTEM", "DISPLAY_NAME"))))
+                      .build())
+              .build();
     }
 
     @Test
@@ -93,8 +102,7 @@ class XmlGeneratorCodeListTest {
       assertAll(
           () -> assertEquals(1, response.size()),
           () -> assertEquals(QUESTION_ID, first.getId()),
-          () -> assertEquals(1, first.getInstans())
-      );
+          () -> assertEquals(1, first.getInstans()));
     }
 
     @Test
@@ -111,8 +119,7 @@ class XmlGeneratorCodeListTest {
           () -> assertEquals(VALUE_ID, delsvarCode.getId()),
           () -> assertEquals("CODE", cvType.getCode()),
           () -> assertEquals("CODE_SYSTEM", cvType.getCodeSystem()),
-          () -> assertEquals("DISPLAY_NAME", cvType.getDisplayName())
-      );
+          () -> assertEquals("DISPLAY_NAME", cvType.getDisplayName()));
     }
   }
 
@@ -121,56 +128,42 @@ class XmlGeneratorCodeListTest {
 
     @BeforeEach
     void setup() {
-      data = ElementData.builder()
-          .id(new ElementId(QUESTION_ID))
-          .value(
-              ElementValueCodeList.builder()
-                  .id(new FieldId(VALUE_ID))
-                  .list(
-                      List.of(
-                          ElementValueCode.builder()
-                              .codeId(new FieldId(CODE_ID_ONE))
-                              .code(CODE_ONE)
-                              .build(),
-                          ElementValueCode.builder()
-                              .codeId(new FieldId(CODE_ID_TWO))
-                              .code(CODE_TWO)
-                              .build()
-                      )
-                  )
-                  .build()
-          )
-          .build();
+      data =
+          ElementData.builder()
+              .id(new ElementId(QUESTION_ID))
+              .value(
+                  ElementValueCodeList.builder()
+                      .id(new FieldId(VALUE_ID))
+                      .list(
+                          List.of(
+                              ElementValueCode.builder()
+                                  .codeId(new FieldId(CODE_ID_ONE))
+                                  .code(CODE_ONE)
+                                  .build(),
+                              ElementValueCode.builder()
+                                  .codeId(new FieldId(CODE_ID_TWO))
+                                  .code(CODE_TWO)
+                                  .build()))
+                      .build())
+              .build();
 
-      elementSpecification = ElementSpecification.builder()
-          .configuration(
-              ElementConfigurationCheckboxMultipleCode.builder()
-                  .id(new FieldId(VALUE_ID))
-                  .list(
-                      List.of(
-                          new ElementConfigurationCode(
-                              new FieldId(CODE_ID_ONE),
-                              "label",
-                              new Code(
-                                  "CODE",
-                                  "CODE_SYSTEM",
-                                  "DISPLAY_NAME"
-                              )
-                          ),
-                          new ElementConfigurationCode(
-                              new FieldId(CODE_ID_TWO),
-                              "labelTwo",
-                              new Code(
-                                  "CODE_TWO",
-                                  "CODE_SYSTEM",
-                                  "DISPLAY_NAME_TWO"
-                              )
-                          )
-                      )
-                  )
-                  .build()
-          )
-          .build();
+      elementSpecification =
+          ElementSpecification.builder()
+              .configuration(
+                  ElementConfigurationCheckboxMultipleCode.builder()
+                      .id(new FieldId(VALUE_ID))
+                      .list(
+                          List.of(
+                              new ElementConfigurationCode(
+                                  new FieldId(CODE_ID_ONE),
+                                  "label",
+                                  new Code("CODE", "CODE_SYSTEM", "DISPLAY_NAME")),
+                              new ElementConfigurationCode(
+                                  new FieldId(CODE_ID_TWO),
+                                  "labelTwo",
+                                  new Code("CODE_TWO", "CODE_SYSTEM", "DISPLAY_NAME_TWO"))))
+                      .build())
+              .build();
     }
 
     @Test
@@ -181,8 +174,7 @@ class XmlGeneratorCodeListTest {
       assertAll(
           () -> assertEquals(2, response.size()),
           () -> assertEquals(QUESTION_ID, first.getId()),
-          () -> assertEquals(1, first.getInstans())
-      );
+          () -> assertEquals(1, first.getInstans()));
     }
 
     @Test
@@ -193,8 +185,7 @@ class XmlGeneratorCodeListTest {
       assertAll(
           () -> assertEquals(2, response.size()),
           () -> assertEquals(QUESTION_ID, first.getId()),
-          () -> assertEquals(2, first.getInstans())
-      );
+          () -> assertEquals(2, first.getInstans()));
     }
 
     @Test
@@ -211,8 +202,7 @@ class XmlGeneratorCodeListTest {
           () -> assertEquals(VALUE_ID, delsvarCode.getId()),
           () -> assertEquals("CODE", cvType.getCode()),
           () -> assertEquals("CODE_SYSTEM", cvType.getCodeSystem()),
-          () -> assertEquals("DISPLAY_NAME", cvType.getDisplayName())
-      );
+          () -> assertEquals("DISPLAY_NAME", cvType.getDisplayName()));
     }
 
     @Test
@@ -229,21 +219,17 @@ class XmlGeneratorCodeListTest {
           () -> assertEquals(VALUE_ID, delsvarCode.getId()),
           () -> assertEquals("CODE_TWO", cvType.getCode()),
           () -> assertEquals("CODE_SYSTEM", cvType.getCodeSystem()),
-          () -> assertEquals("DISPLAY_NAME_TWO", cvType.getDisplayName())
-      );
+          () -> assertEquals("DISPLAY_NAME_TWO", cvType.getDisplayName()));
     }
   }
 
   @Test
   void shallMapEmptyIfNoValue() {
-    final var data = ElementData.builder()
-        .id(new ElementId(QUESTION_ID))
-        .value(
-            ElementValueCodeList.builder()
-                .id(new FieldId(VALUE_ID))
-                .build()
-        )
-        .build();
+    final var data =
+        ElementData.builder()
+            .id(new ElementId(QUESTION_ID))
+            .value(ElementValueCodeList.builder().id(new FieldId(VALUE_ID)).build())
+            .build();
 
     final var response = xmlGenerator.generate(data, elementSpecification);
 
@@ -252,47 +238,40 @@ class XmlGeneratorCodeListTest {
 
   @Test
   void shallThrowIfIncorrectConfiguration() {
-    final var data = ElementData.builder()
-        .id(new ElementId(QUESTION_ID))
-        .value(
-            ElementValueCodeList.builder()
-                .id(new FieldId(VALUE_ID))
-                .list(
-                    List.of(
-                        ElementValueCode.builder()
-                            .codeId(new FieldId(CODE_ID_ONE))
-                            .code(CODE_ONE)
-                            .build()
-                    )
-                )
-                .build()
-        )
-        .build();
+    final var data =
+        ElementData.builder()
+            .id(new ElementId(QUESTION_ID))
+            .value(
+                ElementValueCodeList.builder()
+                    .id(new FieldId(VALUE_ID))
+                    .list(
+                        List.of(
+                            ElementValueCode.builder()
+                                .codeId(new FieldId(CODE_ID_ONE))
+                                .code(CODE_ONE)
+                                .build()))
+                    .build())
+            .build();
 
-    elementSpecification = ElementSpecification.builder()
-        .configuration(
-            ElementConfigurationDate.builder().build()
-        )
-        .build();
+    elementSpecification =
+        ElementSpecification.builder()
+            .configuration(ElementConfigurationDate.builder().build())
+            .build();
 
-    assertThrows(IllegalArgumentException.class,
-        () -> xmlGenerator.generate(data, elementSpecification)
-    );
+    assertThrows(
+        IllegalArgumentException.class, () -> xmlGenerator.generate(data, elementSpecification));
   }
 
   @Test
   void shallMapEmptyIfValueIsNotCodeRangeList() {
-    final var data = ElementData.builder()
-        .id(new ElementId(QUESTION_ID))
-        .value(
-            ElementValueUnitContactInformation.builder()
-                .build()
-        )
-        .build();
+    final var data =
+        ElementData.builder()
+            .id(new ElementId(QUESTION_ID))
+            .value(ElementValueUnitContactInformation.builder().build())
+            .build();
 
     final var response = xmlGenerator.generate(data, elementSpecification);
 
     assertTrue(response.isEmpty());
   }
-
 }

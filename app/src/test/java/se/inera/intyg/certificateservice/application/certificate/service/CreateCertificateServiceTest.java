@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -40,87 +58,77 @@ import se.inera.intyg.certificateservice.domain.common.model.ExternalReference;
 @ExtendWith(MockitoExtension.class)
 class CreateCertificateServiceTest {
 
-  @Mock
-  private CreateCertificateRequestValidator createCertificateRequestValidator;
-  @Mock
-  private ActionEvaluationFactory actionEvaluationFactory;
-  @Mock
-  private CreateCertificateDomainService createCertificateDomainService;
-  @Mock
-  private CertificateConverter certificateConverter;
-  @Mock
-  private ResourceLinkConverter resourceLinkConverter;
-  @InjectMocks
-  private CreateCertificateService createCertificateService;
+  @Mock private CreateCertificateRequestValidator createCertificateRequestValidator;
+  @Mock private ActionEvaluationFactory actionEvaluationFactory;
+  @Mock private CreateCertificateDomainService createCertificateDomainService;
+  @Mock private CertificateConverter certificateConverter;
+  @Mock private ResourceLinkConverter resourceLinkConverter;
+  @InjectMocks private CreateCertificateService createCertificateService;
 
   private static final String TYPE = "type";
   private static final String VERSION = "version";
-  private static final CreateCertificateRequest CREATE_CERTIFICATE_REQUEST = CreateCertificateRequest.builder()
-      .certificateModelId(
-          CertificateModelIdDTO.builder()
-              .type(TYPE)
-              .version(VERSION)
-              .build()
-      )
-      .user(AJLA_DOCTOR_DTO)
-      .careProvider(ALFA_REGIONEN_DTO)
-      .careUnit(ALFA_MEDICINCENTRUM_DTO)
-      .unit(ALFA_ALLERGIMOTTAGNINGEN_DTO)
-      .patient(ATHENA_REACT_ANDERSSON_DTO)
-      .externalReference(EXTERNAL_REF)
-      .build();
+  private static final CreateCertificateRequest CREATE_CERTIFICATE_REQUEST =
+      CreateCertificateRequest.builder()
+          .certificateModelId(CertificateModelIdDTO.builder().type(TYPE).version(VERSION).build())
+          .user(AJLA_DOCTOR_DTO)
+          .careProvider(ALFA_REGIONEN_DTO)
+          .careUnit(ALFA_MEDICINCENTRUM_DTO)
+          .unit(ALFA_ALLERGIMOTTAGNINGEN_DTO)
+          .patient(ATHENA_REACT_ANDERSSON_DTO)
+          .externalReference(EXTERNAL_REF)
+          .build();
 
   @Test
   void shallThrowIfRequestIsInvalid() {
     final var request = CreateCertificateRequest.builder().build();
 
-    doThrow(IllegalArgumentException.class).when(createCertificateRequestValidator)
+    doThrow(IllegalArgumentException.class)
+        .when(createCertificateRequestValidator)
         .validate(request);
 
-    assertThrows(IllegalArgumentException.class,
-        () -> createCertificateService.create(request)
-    );
+    assertThrows(IllegalArgumentException.class, () -> createCertificateService.create(request));
   }
 
   @Test
   void shallReturnResponseWithCreatedCertificate() {
     final var resourceLinkDTO = ResourceLinkDTO.builder().build();
-    final var expectedReponse = CreateCertificateResponse.builder()
-        .certificate(
-            CertificateDTO.builder()
-                .links(List.of(resourceLinkDTO))
-                .build()
-        )
-        .build();
+    final var expectedReponse =
+        CreateCertificateResponse.builder()
+            .certificate(CertificateDTO.builder().links(List.of(resourceLinkDTO)).build())
+            .build();
 
     final var actionEvaluation = ActionEvaluation.builder().build();
-    doReturn(actionEvaluation).when(actionEvaluationFactory).create(
-        CREATE_CERTIFICATE_REQUEST.getPatient(),
-        CREATE_CERTIFICATE_REQUEST.getUser(),
-        CREATE_CERTIFICATE_REQUEST.getUnit(),
-        CREATE_CERTIFICATE_REQUEST.getCareUnit(),
-        CREATE_CERTIFICATE_REQUEST.getCareProvider()
-    );
+    doReturn(actionEvaluation)
+        .when(actionEvaluationFactory)
+        .create(
+            CREATE_CERTIFICATE_REQUEST.getPatient(),
+            CREATE_CERTIFICATE_REQUEST.getUser(),
+            CREATE_CERTIFICATE_REQUEST.getUnit(),
+            CREATE_CERTIFICATE_REQUEST.getCareUnit(),
+            CREATE_CERTIFICATE_REQUEST.getCareProvider());
 
     final var certificate = mock(MedicalCertificate.class);
-    doReturn(certificate).when(createCertificateDomainService).create(
-        CertificateModelId.builder()
-            .type(new CertificateType(TYPE))
-            .version(new CertificateVersion(VERSION))
-            .build(),
-        actionEvaluation,
-        new ExternalReference(EXTERNAL_REF),
-        null
-    );
+    doReturn(certificate)
+        .when(createCertificateDomainService)
+        .create(
+            CertificateModelId.builder()
+                .type(new CertificateType(TYPE))
+                .version(new CertificateVersion(VERSION))
+                .build(),
+            actionEvaluation,
+            new ExternalReference(EXTERNAL_REF),
+            null);
 
     final var certificateAction = mock(CertificateAction.class);
     final List<CertificateAction> certificateActions = List.of(certificateAction);
     doReturn(certificateActions).when(certificate).actionsInclude(Optional.of(actionEvaluation));
 
-    doReturn(resourceLinkDTO).when(resourceLinkConverter).convert(certificateAction,
-        Optional.of(certificate), actionEvaluation);
+    doReturn(resourceLinkDTO)
+        .when(resourceLinkConverter)
+        .convert(certificateAction, Optional.of(certificate), actionEvaluation);
 
-    doReturn(expectedReponse.getCertificate()).when(certificateConverter)
+    doReturn(expectedReponse.getCertificate())
+        .when(certificateConverter)
         .convert(certificate, List.of(resourceLinkDTO), actionEvaluation);
 
     final var actualResponse = createCertificateService.create(CREATE_CERTIFICATE_REQUEST);

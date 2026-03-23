@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.message.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,20 +47,15 @@ import se.inera.intyg.certificateservice.domain.message.repository.MessageReposi
 @ExtendWith(MockitoExtension.class)
 class ReceiveComplementMessageDomainServiceTest {
 
-  @Mock
-  private CertificateModel certificateModel;
+  @Mock private CertificateModel certificateModel;
 
-  @Mock
-  private Certificate certificate;
+  @Mock private Certificate certificate;
 
-  @Mock
-  private CertificateRepository certificateRepository;
+  @Mock private CertificateRepository certificateRepository;
 
-  @Mock
-  private MessageRepository messageRepository;
+  @Mock private MessageRepository messageRepository;
 
-  @InjectMocks
-  private ReceiveComplementMessageDomainService receiveComplementMessageDomainService;
+  @InjectMocks private ReceiveComplementMessageDomainService receiveComplementMessageDomainService;
 
   @BeforeEach
   void setUp() {
@@ -51,40 +64,44 @@ class ReceiveComplementMessageDomainServiceTest {
 
   @Test
   void shallThrowExceptionIfNotAllowedOnCertificate() {
-    doReturn(false).when(certificate)
+    doReturn(false)
+        .when(certificate)
         .allowTo(CertificateActionType.RECEIVE_COMPLEMENT, Optional.empty());
     doReturn(CERTIFICATE_ID).when(certificate).id();
 
-    assertThrows(CertificateActionForbidden.class,
-        () -> receiveComplementMessageDomainService.receive(COMPLEMENT_MESSAGE)
-    );
+    assertThrows(
+        CertificateActionForbidden.class,
+        () -> receiveComplementMessageDomainService.receive(COMPLEMENT_MESSAGE));
   }
 
   @Test
   void shallThrowExceptionIfNotSamePatientAsCertificate() {
-    doReturn(true).when(certificate)
+    doReturn(true)
+        .when(certificate)
         .allowTo(CertificateActionType.RECEIVE_COMPLEMENT, Optional.empty());
     doReturn(CERTIFICATE_ID).when(certificate).id();
     doReturn(false).when(certificate).isCertificateIssuedOnPatient(ATHENA_REACT_ANDERSSON.id());
 
-    assertThrows(CertificateActionForbidden.class,
-        () -> receiveComplementMessageDomainService.receive(COMPLEMENT_MESSAGE)
-    );
+    assertThrows(
+        CertificateActionForbidden.class,
+        () -> receiveComplementMessageDomainService.receive(COMPLEMENT_MESSAGE));
   }
 
   @Test
   void shallThrowExceptionIfElementIdFromComplementIsNotPresentInCertificate() {
-    doReturn(true).when(certificate)
+    doReturn(true)
+        .when(certificate)
         .allowTo(CertificateActionType.RECEIVE_COMPLEMENT, Optional.empty());
     doReturn(CERTIFICATE_ID).when(certificate).id();
     doReturn(true).when(certificate).isCertificateIssuedOnPatient(ATHENA_REACT_ANDERSSON.id());
     doReturn(certificateModel).when(certificate).certificateModel();
-    doReturn(false).when(certificateModel)
+    doReturn(false)
+        .when(certificateModel)
         .elementSpecificationExists(new ElementId(COMPLEMENT_QUESTION_ID_ONE));
 
-    assertThrows(IllegalStateException.class,
-        () -> receiveComplementMessageDomainService.receive(COMPLEMENT_MESSAGE)
-    );
+    assertThrows(
+        IllegalStateException.class,
+        () -> receiveComplementMessageDomainService.receive(COMPLEMENT_MESSAGE));
   }
 
   @Nested
@@ -92,11 +109,13 @@ class ReceiveComplementMessageDomainServiceTest {
 
     @BeforeEach
     void setUp() {
-      doReturn(true).when(certificate)
+      doReturn(true)
+          .when(certificate)
           .allowTo(CertificateActionType.RECEIVE_COMPLEMENT, Optional.empty());
       doReturn(true).when(certificate).isCertificateIssuedOnPatient(ATHENA_REACT_ANDERSSON.id());
       doReturn(certificateModel).when(certificate).certificateModel();
-      doReturn(true).when(certificateModel)
+      doReturn(true)
+          .when(certificateModel)
           .elementSpecificationExists(new ElementId(COMPLEMENT_QUESTION_ID_ONE));
     }
 
@@ -114,8 +133,7 @@ class ReceiveComplementMessageDomainServiceTest {
 
       doReturn(expectedMessage).when(messageRepository).save(COMPLEMENT_MESSAGE);
 
-      final var actualMessage = receiveComplementMessageDomainService.receive(COMPLEMENT_MESSAGE
-      );
+      final var actualMessage = receiveComplementMessageDomainService.receive(COMPLEMENT_MESSAGE);
 
       assertEquals(expectedMessage, actualMessage);
     }

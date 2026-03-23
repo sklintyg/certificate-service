@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.prefill;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,25 +40,19 @@ class PrefillTextFieldConverterTest {
   private static final ElementId ELEMENT_ID = new ElementId("1");
   private static final FieldId FIELD_ID = new FieldId("2");
   private static final String VALUE = "text";
-  private static final ElementSpecification SPECIFICATION = ElementSpecification.builder()
-      .id(ELEMENT_ID)
-      .configuration(
-          ElementConfigurationTextField.builder()
-              .id(FIELD_ID)
-              .build()
-      )
-      .build();
-  private static final ElementData EXPECTED_ELEMENT_DATA = ElementData.builder()
-      .id(ELEMENT_ID)
-      .value(
-          ElementValueText.builder()
-              .textId(FIELD_ID)
-              .text(VALUE)
-              .build()
-      )
-      .build();
+  private static final ElementSpecification SPECIFICATION =
+      ElementSpecification.builder()
+          .id(ELEMENT_ID)
+          .configuration(ElementConfigurationTextField.builder().id(FIELD_ID).build())
+          .build();
+  private static final ElementData EXPECTED_ELEMENT_DATA =
+      ElementData.builder()
+          .id(ELEMENT_ID)
+          .value(ElementValueText.builder().textId(FIELD_ID).text(VALUE).build())
+          .build();
 
-  private final PrefillTextFieldConverter prefillTextFieldConverter = new PrefillTextFieldConverter();
+  private final PrefillTextFieldConverter prefillTextFieldConverter =
+      new PrefillTextFieldConverter();
 
   @Test
   void shouldReturnSupportsTextFieldd() {
@@ -72,23 +84,20 @@ class PrefillTextFieldConverterTest {
 
       final var result = prefillTextFieldConverter.prefillAnswer(SPECIFICATION, prefill);
 
-      assertEquals(
-          PrefillErrorType.INVALID_SUB_ANSWER_ID,
-          result.getErrors().getFirst().type()
-      );
+      assertEquals(PrefillErrorType.INVALID_SUB_ANSWER_ID, result.getErrors().getFirst().type());
     }
 
     @Test
     void shouldReturnPrefillAnswerIfSubAnswerExists() {
-      final var expectedElementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(
-              ElementValueText.builder()
-                  .textId(new FieldId(ELEMENT_ID.id()))
-                  .text(VALUE)
-                  .build()
-          )
-          .build();
+      final var expectedElementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueText.builder()
+                      .textId(new FieldId(ELEMENT_ID.id()))
+                      .text(VALUE)
+                      .build())
+              .build();
 
       final var prefill = new Forifyllnad();
       final var svar = new Svar();
@@ -99,20 +108,16 @@ class PrefillTextFieldConverterTest {
       svar.getDelsvar().add(delsvar);
       prefill.getSvar().add(svar);
 
-      final var specification = ElementSpecification.builder()
-          .id(ELEMENT_ID)
-          .configuration(
-              ElementConfigurationTextField.builder()
-                  .id(new FieldId(ELEMENT_ID.id()))
-                  .build()
-          )
-          .build();
+      final var specification =
+          ElementSpecification.builder()
+              .id(ELEMENT_ID)
+              .configuration(
+                  ElementConfigurationTextField.builder().id(new FieldId(ELEMENT_ID.id())).build())
+              .build();
 
       final var result = prefillTextFieldConverter.prefillAnswer(specification, prefill);
 
-      final var expected = PrefillAnswer.builder()
-          .elementData(expectedElementData)
-          .build();
+      final var expected = PrefillAnswer.builder().elementData(expectedElementData).build();
 
       assertEquals(expected, result);
     }
@@ -130,9 +135,7 @@ class PrefillTextFieldConverterTest {
 
       final var result = prefillTextFieldConverter.prefillAnswer(SPECIFICATION, prefill);
 
-      final var expected = PrefillAnswer.builder()
-          .elementData(EXPECTED_ELEMENT_DATA)
-          .build();
+      final var expected = PrefillAnswer.builder().elementData(EXPECTED_ELEMENT_DATA).build();
 
       assertEquals(expected, result);
     }
@@ -140,17 +143,15 @@ class PrefillTextFieldConverterTest {
     @Test
     void shouldReturnErrorIfWrongConfigurationType() {
       final var prefill = new Forifyllnad();
-      final var wrongSpec = ElementSpecification.builder()
-          .id(ELEMENT_ID)
-          .configuration(ElementConfigurationCategory.builder().build())
-          .build();
+      final var wrongSpec =
+          ElementSpecification.builder()
+              .id(ELEMENT_ID)
+              .configuration(ElementConfigurationCategory.builder().build())
+              .build();
 
       final var result = prefillTextFieldConverter.prefillAnswer(wrongSpec, prefill);
 
-      assertEquals(
-          PrefillErrorType.TECHNICAL_ERROR,
-          result.getErrors().getFirst().type()
-      );
+      assertEquals(PrefillErrorType.TECHNICAL_ERROR, result.getErrors().getFirst().type());
     }
 
     @Test
@@ -167,10 +168,7 @@ class PrefillTextFieldConverterTest {
 
       final var result = prefillTextFieldConverter.prefillAnswer(SPECIFICATION, prefill);
 
-      assertEquals(
-          PrefillErrorType.WRONG_NUMBER_OF_ANSWERS,
-          result.getErrors().getFirst().type()
-      );
+      assertEquals(PrefillErrorType.WRONG_NUMBER_OF_ANSWERS, result.getErrors().getFirst().type());
     }
 
     @Test
@@ -192,10 +190,7 @@ class PrefillTextFieldConverterTest {
 
       final var result = prefillTextFieldConverter.prefillAnswer(SPECIFICATION, prefill);
 
-      assertEquals(
-          PrefillErrorType.WRONG_NUMBER_OF_ANSWERS,
-          result.getErrors().getFirst().type()
-      );
+      assertEquals(PrefillErrorType.WRONG_NUMBER_OF_ANSWERS, result.getErrors().getFirst().type());
     }
 
     @Test
@@ -212,10 +207,7 @@ class PrefillTextFieldConverterTest {
 
       final var result = prefillTextFieldConverter.prefillAnswer(SPECIFICATION, prefill);
 
-      assertEquals(
-          PrefillErrorType.WRONG_NUMBER_OF_ANSWERS,
-          result.getErrors().getFirst().type()
-      );
+      assertEquals(PrefillErrorType.WRONG_NUMBER_OF_ANSWERS, result.getErrors().getFirst().type());
     }
   }
 }

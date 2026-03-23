@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificate.persistence.entity.mapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -27,35 +45,25 @@ class CertificateDataEntityMapperTest {
   private static final LocalDate DATE = LocalDate.parse("2024-02-16");
   private static final FieldId DATE_ID = new FieldId("DATE_ID");
   private static final String ID = "F10";
-  @Mock
-  private ElementDataMapper elementDataMapper;
-  @InjectMocks
-  private CertificateDataEntityMapper certificateDataEntityMapper;
-
+  @Mock private ElementDataMapper elementDataMapper;
+  @InjectMocks private CertificateDataEntityMapper certificateDataEntityMapper;
 
   @Test
   void shouldConvertToEntity() {
-    final var mappedElementData = MappedElementData.builder()
-        .id(ID)
-        .value(
-            MappedElementValueDate.builder()
-                .dateId(DATE_ID.value())
-                .date(DATE)
-                .build()
-        )
-        .build();
+    final var mappedElementData =
+        MappedElementData.builder()
+            .id(ID)
+            .value(MappedElementValueDate.builder().dateId(DATE_ID.value()).date(DATE).build())
+            .build();
 
     final var expected =
         "[{\"id\":\"F10\",\"value\":{\"type\":\"DATE\",\"dateId\":\"DATE_ID\",\"date\":\"2024-02-16\"}}]";
 
-    final var element = ElementData.builder()
-        .id(new ElementId(ID))
-        .value(ElementValueDate
-            .builder()
-            .date(DATE)
-            .dateId(DATE_ID)
-            .build())
-        .build();
+    final var element =
+        ElementData.builder()
+            .id(new ElementId(ID))
+            .value(ElementValueDate.builder().date(DATE).dateId(DATE_ID).build())
+            .build();
 
     doReturn(mappedElementData).when(elementDataMapper).toMapped(element);
     final var response = certificateDataEntityMapper.toEntity(List.of(element));
@@ -67,16 +75,12 @@ class CertificateDataEntityMapperTest {
   void shouldConvertToDomain() {
     final var json =
         "[{\"id\":\"F10\",\"value\":{\"type\":\"DATE\",\"date\":\"2024-02-16\",\"dateId\":\"DATE_ID\"}}]";
-    final var expected = List.of(
-        ElementData.builder()
-            .id(new ElementId("F10"))
-            .value(ElementValueDate
-                .builder()
-                .date(DATE)
-                .dateId(DATE_ID)
-                .build())
-            .build()
-    );
+    final var expected =
+        List.of(
+            ElementData.builder()
+                .id(new ElementId("F10"))
+                .value(ElementValueDate.builder().date(DATE).dateId(DATE_ID).build())
+                .build());
 
     doReturn(expected.get(0)).when(elementDataMapper).toDomain(any());
     final var response = certificateDataEntityMapper.toDomain(new CertificateDataEntity(json));
@@ -86,12 +90,9 @@ class CertificateDataEntityMapperTest {
 
   @Test
   void shouldThrowErrorIfJsonStringIsFormattedWrong() {
-    final var json =
-        "[{\"id\":\"F10\",\"value\":{\"type\":\"DATE\",\"date\":\"2024\"}}]";
+    final var json = "[{\"id\":\"F10\",\"value\":{\"type\":\"DATE\",\"date\":\"2024\"}}]";
     final var object = new CertificateDataEntity(json);
 
-    assertThrows(IllegalStateException.class,
-        () -> certificateDataEntityMapper.toDomain(object)
-    );
+    assertThrows(IllegalStateException.class, () -> certificateDataEntityMapper.toDomain(object));
   }
 }

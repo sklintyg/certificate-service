@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.integrationtest.fk3221;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -85,15 +103,15 @@ public class FK3221ActiveIT extends ActiveCertificatesIT {
   void setUp() {
     super.setUpBaseIT();
 
-    baseTestabilityUtilities = fk3221TestSetup()
-        .testabilityUtilities(
-            TestabilityUtilities.builder()
-                .api(api)
-                .internalApi(internalApi)
-                .testabilityApi(testabilityApi)
-                .build()
-        )
-        .build();
+    baseTestabilityUtilities =
+        fk3221TestSetup()
+            .testabilityUtilities(
+                TestabilityUtilities.builder()
+                    .api(api)
+                    .internalApi(internalApi)
+                    .testabilityApi(testabilityApi)
+                    .build())
+            .build();
   }
 
   @AfterEach
@@ -140,102 +158,104 @@ public class FK3221ActiveIT extends ActiveCertificatesIT {
       return baseTestabilityUtilities;
     }
 
-    private static final String FUNKTIONSNEDSATTNING_MOTIVERING_KOMMUNIKATION_SOCIAL_INTERAKTION_ID = "9";
+    private static final String
+        FUNKTIONSNEDSATTNING_MOTIVERING_KOMMUNIKATION_SOCIAL_INTERAKTION_ID = "9";
 
     @Test
     @DisplayName("Kompletteringsbegäran skall sättas som hanterad när förnyade intyget signeras")
     void shallSetComplementAsHandledWhenRenewingCertificateIsSigned() {
-      final var testCertificates = testabilityApi().addCertificates(
-          defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED)
-      );
+      final var testCertificates =
+          testabilityApi()
+              .addCertificates(
+                  defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED));
 
-      api().sendCertificate(
-          defaultSendCertificateRequest(),
-          certificateId(testCertificates)
-      );
+      api().sendCertificate(defaultSendCertificateRequest(), certificateId(testCertificates));
 
-      api().receiveMessage(
-          incomingComplementMessageBuilder()
-              .certificateId(certificateId(testCertificates))
-              .complements(List.of(incomingComplementDTOBuilder()
-                  .questionId(questionId())
-                  .build()))
-              .build()
-      );
+      api()
+          .receiveMessage(
+              incomingComplementMessageBuilder()
+                  .certificateId(certificateId(testCertificates))
+                  .complements(
+                      List.of(incomingComplementDTOBuilder().questionId(questionId()).build()))
+                  .build());
 
-      final var renewResponse = api().renewCertificate(
-          defaultRenewCertificateRequest(),
-          certificateId(testCertificates)
-      );
+      final var renewResponse =
+          api().renewCertificate(defaultRenewCertificateRequest(), certificateId(testCertificates));
 
       final var renewingCertificate = certificate(renewResponse.getBody());
 
-      Objects.requireNonNull(renewingCertificate).getData().put(
-          QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID.id(),
-          updateDateListValue(renewingCertificate, QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID.id(),
-              List.of(
-                  CertificateDataValueDate.builder()
-                      .id(UTLATANDE_BASERAT_PA_JOURNALUPPGIFTER_FIELD_ID)
-                      .date(LocalDate.now())
-                      .build()
-              )
-          )
-      );
+      Objects.requireNonNull(renewingCertificate)
+          .getData()
+          .put(
+              QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID.id(),
+              updateDateListValue(
+                  renewingCertificate,
+                  QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID.id(),
+                  List.of(
+                      CertificateDataValueDate.builder()
+                          .id(UTLATANDE_BASERAT_PA_JOURNALUPPGIFTER_FIELD_ID)
+                          .date(LocalDate.now())
+                          .build())));
 
-      final var updateResponse = api().updateCertificate(
-          customUpdateCertificateRequest()
-              .certificate(renewingCertificate)
-              .build(),
-          certificateId(renewResponse.getBody())
-      );
+      final var updateResponse =
+          api()
+              .updateCertificate(
+                  customUpdateCertificateRequest().certificate(renewingCertificate).build(),
+                  certificateId(renewResponse.getBody()));
 
-      api().signCertificate(
-          defaultSignCertificateRequest(),
-          certificateId(renewResponse.getBody()),
-          Objects.requireNonNull(certificate(updateResponse.getBody())).getMetadata().getVersion()
-      );
+      api()
+          .signCertificate(
+              defaultSignCertificateRequest(),
+              certificateId(renewResponse.getBody()),
+              Objects.requireNonNull(certificate(updateResponse.getBody()))
+                  .getMetadata()
+                  .getVersion());
 
-      final var messagesForCertificate = api().getMessagesForCertificate(
-          defaultGetCertificateMessageRequest(),
-          certificateId(testCertificates)
-      );
+      final var messagesForCertificate =
+          api()
+              .getMessagesForCertificate(
+                  defaultGetCertificateMessageRequest(), certificateId(testCertificates));
 
-      assertTrue(questions(messagesForCertificate.getBody()).getFirst().isHandled(),
-          "Expected that complement message was handled, but it was not!"
-      );
+      assertTrue(
+          questions(messagesForCertificate.getBody()).getFirst().isHandled(),
+          "Expected that complement message was handled, but it was not!");
     }
 
     @Test
-    @DisplayName("Tidigare dold fråga ska bli synlig efter komplettering om en kompletteringsbegäran finns på frågan")
+    @DisplayName(
+        "Tidigare dold fråga ska bli synlig efter komplettering om en kompletteringsbegäran finns på frågan")
     void shallDisplayPreviouslyHiddenQuestionOnCertificateIfItHasComplement() {
-      final var testCertificates = testabilityApi().addCertificates(
-          defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED)
-      );
+      final var testCertificates =
+          testabilityApi()
+              .addCertificates(
+                  defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED));
 
-      api().sendCertificate(
-          defaultSendCertificateRequest(),
-          certificateId(testCertificates)
-      );
+      api().sendCertificate(defaultSendCertificateRequest(), certificateId(testCertificates));
 
-      api().receiveMessage(
-          incomingComplementMessageBuilder()
-              .certificateId(certificateId(testCertificates))
-              .complements(List.of(incomingComplementDTOBuilder()
-                  .questionId(FUNKTIONSNEDSATTNING_MOTIVERING_KOMMUNIKATION_SOCIAL_INTERAKTION_ID)
-                  .build()))
-              .build()
-      );
+      api()
+          .receiveMessage(
+              incomingComplementMessageBuilder()
+                  .certificateId(certificateId(testCertificates))
+                  .complements(
+                      List.of(
+                          incomingComplementDTOBuilder()
+                              .questionId(
+                                  FUNKTIONSNEDSATTNING_MOTIVERING_KOMMUNIKATION_SOCIAL_INTERAKTION_ID)
+                              .build()))
+                  .build());
 
-      final var response = api().complementCertificate(
-          defaultComplementCertificateRequest(),
-          certificateId(testCertificates)
-      );
+      final var response =
+          api()
+              .complementCertificate(
+                  defaultComplementCertificateRequest(), certificateId(testCertificates));
 
       final var certificate = Objects.requireNonNull(response.getBody()).getCertificate();
       assertEquals(200, response.getStatusCode().value());
       assertNotNull(certificate);
-      assertTrue(certificate.getData()
-          .containsKey(FUNKTIONSNEDSATTNING_MOTIVERING_KOMMUNIKATION_SOCIAL_INTERAKTION_ID));
+      assertTrue(
+          certificate
+              .getData()
+              .containsKey(FUNKTIONSNEDSATTNING_MOTIVERING_KOMMUNIKATION_SOCIAL_INTERAKTION_ID));
     }
   }
 
@@ -249,9 +269,7 @@ public class FK3221ActiveIT extends ActiveCertificatesIT {
     }
 
     protected static Stream<Arguments> rolesAccessToProtectedPerson() {
-      return Stream.of(
-          Arguments.of(AJLA_DOCTOR_DTO)
-      );
+      return Stream.of(Arguments.of(AJLA_DOCTOR_DTO));
     }
   }
 
@@ -298,14 +316,11 @@ public class FK3221ActiveIT extends ActiveCertificatesIT {
       return Stream.of(
           Arguments.of(ALVA_VARDADMINISTRATOR_DTO),
           Arguments.of(BERTIL_BARNMORSKA_DTO),
-          Arguments.of(ANNA_SJUKSKOTERSKA_DTO)
-      );
+          Arguments.of(ANNA_SJUKSKOTERSKA_DTO));
     }
 
     protected static Stream<Arguments> rolesAccessToProtectedPerson() {
-      return Stream.of(
-          Arguments.of(AJLA_DOCTOR_DTO)
-      );
+      return Stream.of(Arguments.of(AJLA_DOCTOR_DTO));
     }
   }
 
@@ -319,9 +334,7 @@ public class FK3221ActiveIT extends ActiveCertificatesIT {
     }
 
     protected static Stream<Arguments> rolesNoAccessToProtectedPerson() {
-      return Stream.of(
-          Arguments.of(ALVA_VARDADMINISTRATOR_DTO)
-      );
+      return Stream.of(Arguments.of(ALVA_VARDADMINISTRATOR_DTO));
     }
   }
 
@@ -345,9 +358,7 @@ public class FK3221ActiveIT extends ActiveCertificatesIT {
     }
 
     protected static Stream<Arguments> rolesNoAccessToProtectedPerson() {
-      return Stream.of(
-          Arguments.of(ALVA_VARDADMINISTRATOR_DTO)
-      );
+      return Stream.of(Arguments.of(ALVA_VARDADMINISTRATOR_DTO));
     }
   }
 
@@ -364,14 +375,11 @@ public class FK3221ActiveIT extends ActiveCertificatesIT {
       return Stream.of(
           Arguments.of(ALVA_VARDADMINISTRATOR_DTO),
           Arguments.of(BERTIL_BARNMORSKA_DTO),
-          Arguments.of(ANNA_SJUKSKOTERSKA_DTO)
-      );
+          Arguments.of(ANNA_SJUKSKOTERSKA_DTO));
     }
 
     protected static Stream<Arguments> rolesAccessToProtectedPerson() {
-      return Stream.of(
-          Arguments.of(AJLA_DOCTOR_DTO)
-      );
+      return Stream.of(Arguments.of(AJLA_DOCTOR_DTO));
     }
   }
 
@@ -435,7 +443,6 @@ public class FK3221ActiveIT extends ActiveCertificatesIT {
     }
   }
 
-
   @Nested
   @DisplayName(TYPE + "Finns meddelandet i tjänsten")
   class MessagesExists extends MessageExistsIT {
@@ -459,8 +466,7 @@ public class FK3221ActiveIT extends ActiveCertificatesIT {
       return Stream.of(
           Arguments.of(ALVA_VARDADMINISTRATOR_DTO),
           Arguments.of(BERTIL_BARNMORSKA_DTO),
-          Arguments.of(ANNA_SJUKSKOTERSKA_DTO)
-      );
+          Arguments.of(ANNA_SJUKSKOTERSKA_DTO));
     }
   }
 
@@ -532,7 +538,6 @@ public class FK3221ActiveIT extends ActiveCertificatesIT {
     protected BaseTestabilityUtilities testabilityUtilities() {
       return baseTestabilityUtilities;
     }
-
   }
 
   @Nested
@@ -578,14 +583,11 @@ public class FK3221ActiveIT extends ActiveCertificatesIT {
       return Stream.of(
           Arguments.of(ALVA_VARDADMINISTRATOR_DTO),
           Arguments.of(BERTIL_BARNMORSKA_DTO),
-          Arguments.of(ANNA_SJUKSKOTERSKA_DTO)
-      );
+          Arguments.of(ANNA_SJUKSKOTERSKA_DTO));
     }
 
     protected static Stream<Arguments> rolesAccessToProtectedPerson() {
-      return Stream.of(
-          Arguments.of(AJLA_DOCTOR_DTO)
-      );
+      return Stream.of(Arguments.of(AJLA_DOCTOR_DTO));
     }
   }
 
@@ -622,8 +624,7 @@ public class FK3221ActiveIT extends ActiveCertificatesIT {
       return Stream.of(
           Arguments.of(ALVA_VARDADMINISTRATOR_DTO),
           Arguments.of(BERTIL_BARNMORSKA_DTO),
-          Arguments.of(ANNA_SJUKSKOTERSKA_DTO)
-      );
+          Arguments.of(ANNA_SJUKSKOTERSKA_DTO));
     }
   }
 

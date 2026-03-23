@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -48,37 +66,29 @@ class UpdateCertificateServiceTest {
 
   private static final String CERTIFICATE_ID = "certificateId";
   private static final String QUESTION_ID = "questionId";
-  private static final ExternalReference EXTERNAL_REFERENCE = new ExternalReference(
-      "externalReference");
-  @Mock
-  private UpdateCertificateRequestValidator updateCertificateRequestValidator;
+  private static final ExternalReference EXTERNAL_REFERENCE =
+      new ExternalReference("externalReference");
+  @Mock private UpdateCertificateRequestValidator updateCertificateRequestValidator;
 
-  @Mock
-  private ActionEvaluationFactory actionEvaluationFactory;
-  @Mock
-  private ElementCertificateConverter elementCertificateConverter;
-  @Mock
-  private UpdateCertificateDomainService updateCertificateDomainService;
+  @Mock private ActionEvaluationFactory actionEvaluationFactory;
+  @Mock private ElementCertificateConverter elementCertificateConverter;
+  @Mock private UpdateCertificateDomainService updateCertificateDomainService;
 
-  @Mock
-  private CertificateConverter certificateConverter;
+  @Mock private CertificateConverter certificateConverter;
 
-  @Mock
-  private ResourceLinkConverter resourceLinkConverter;
+  @Mock private ResourceLinkConverter resourceLinkConverter;
 
-  @InjectMocks
-  private UpdateCertificateService updateCertificateService;
+  @InjectMocks private UpdateCertificateService updateCertificateService;
 
   @Test
   void shallThrowIfRequestIsInvalid() {
     final var request = UpdateCertificateRequest.builder().build();
-    doThrow(IllegalStateException.class).when(updateCertificateRequestValidator).validate(
-        request,
-        CERTIFICATE_ID
-    );
-    assertThrows(IllegalStateException.class,
-        () -> updateCertificateService.update(request, CERTIFICATE_ID)
-    );
+    doThrow(IllegalStateException.class)
+        .when(updateCertificateRequestValidator)
+        .validate(request, CERTIFICATE_ID);
+    assertThrows(
+        IllegalStateException.class,
+        () -> updateCertificateService.update(request, CERTIFICATE_ID));
   }
 
   @Nested
@@ -88,9 +98,7 @@ class UpdateCertificateServiceTest {
     private CertificateDTO certificateDTO;
     private ActionEvaluation actionEvaluation;
     private List<ElementData> elementDataList;
-    @Mock
-    private Certificate certificate;
-
+    @Mock private Certificate certificate;
 
     @BeforeEach
     void setUp() {
@@ -101,89 +109,96 @@ class UpdateCertificateServiceTest {
 
       final var resourceLinkDTO = ResourceLinkDTO.builder().build();
       final var unitDTO = UnitDTO.builder().build();
-      certificateDTO = CertificateDTO.builder()
-          .data(
-              Map.of(QUESTION_ID, CertificateDataElement.builder()
-                  .config(CertificateDataConfigDate.builder()
-                      .build())
-                  .build())
-          )
-          .links(
-              List.of(resourceLinkDTO)
-          )
-          .metadata(
-              CertificateMetadataDTO.builder()
-                  .unit(unitDTO)
-                  .build()
-          )
-          .build();
+      certificateDTO =
+          CertificateDTO.builder()
+              .data(
+                  Map.of(
+                      QUESTION_ID,
+                      CertificateDataElement.builder()
+                          .config(CertificateDataConfigDate.builder().build())
+                          .build()))
+              .links(List.of(resourceLinkDTO))
+              .metadata(CertificateMetadataDTO.builder().unit(unitDTO).build())
+              .build();
 
       expectedCertificateDTO = CertificateDTO.builder().build();
 
-      doReturn(actionEvaluation).when(actionEvaluationFactory).create(
-          ATHENA_REACT_ANDERSSON_DTO,
-          AJLA_DOCTOR_DTO,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      doReturn(actionEvaluation)
+          .when(actionEvaluationFactory)
+          .create(
+              ATHENA_REACT_ANDERSSON_DTO,
+              AJLA_DOCTOR_DTO,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
-      doReturn(elementDataList).when(elementCertificateConverter)
-          .convert(certificateDTO);
+      doReturn(elementDataList).when(elementCertificateConverter).convert(certificateDTO);
 
       final var certificateAction = mock(CertificateAction.class);
       final List<CertificateAction> certificateActions = List.of(certificateAction);
       doReturn(certificateActions).when(certificate).actionsInclude(Optional.of(actionEvaluation));
 
-      doReturn(resourceLinkDTO).when(resourceLinkConverter)
+      doReturn(resourceLinkDTO)
+          .when(resourceLinkConverter)
           .convert(certificateAction, Optional.of(certificate), actionEvaluation);
-      doReturn(expectedCertificateDTO).when(certificateConverter)
+      doReturn(expectedCertificateDTO)
+          .when(certificateConverter)
           .convert(certificate, List.of(resourceLinkDTO), actionEvaluation);
     }
 
     @Test
     void shallReturnUpdateCertificateResponseWithoutExternalReference() {
-      doReturn(certificate).when(updateCertificateDomainService).update(
-          new CertificateId(CERTIFICATE_ID), elementDataList, actionEvaluation,
-          new Revision(0), null);
-      final var expectedResult = UpdateCertificateResponse.builder()
-          .certificate(expectedCertificateDTO)
-          .build();
+      doReturn(certificate)
+          .when(updateCertificateDomainService)
+          .update(
+              new CertificateId(CERTIFICATE_ID),
+              elementDataList,
+              actionEvaluation,
+              new Revision(0),
+              null);
+      final var expectedResult =
+          UpdateCertificateResponse.builder().certificate(expectedCertificateDTO).build();
 
-      final var actualResult = updateCertificateService.update(
-          UpdateCertificateRequest.builder()
-              .user(AJLA_DOCTOR_DTO)
-              .patient(ATHENA_REACT_ANDERSSON_DTO)
-              .unit(ALFA_ALLERGIMOTTAGNINGEN_DTO)
-              .careUnit(ALFA_MEDICINCENTRUM_DTO)
-              .careProvider(ALFA_REGIONEN_DTO)
-              .certificate(certificateDTO)
-              .build(),
-          CERTIFICATE_ID);
+      final var actualResult =
+          updateCertificateService.update(
+              UpdateCertificateRequest.builder()
+                  .user(AJLA_DOCTOR_DTO)
+                  .patient(ATHENA_REACT_ANDERSSON_DTO)
+                  .unit(ALFA_ALLERGIMOTTAGNINGEN_DTO)
+                  .careUnit(ALFA_MEDICINCENTRUM_DTO)
+                  .careProvider(ALFA_REGIONEN_DTO)
+                  .certificate(certificateDTO)
+                  .build(),
+              CERTIFICATE_ID);
 
       assertEquals(expectedResult, actualResult);
     }
 
     @Test
     void shallReturnUpdateCertificateResponseWithExternalReference() {
-      doReturn(certificate).when(updateCertificateDomainService).update(
-          new CertificateId(CERTIFICATE_ID), elementDataList, actionEvaluation,
-          new Revision(0), EXTERNAL_REFERENCE);
-      final var expectedResult = UpdateCertificateResponse.builder()
-          .certificate(expectedCertificateDTO)
-          .build();
+      doReturn(certificate)
+          .when(updateCertificateDomainService)
+          .update(
+              new CertificateId(CERTIFICATE_ID),
+              elementDataList,
+              actionEvaluation,
+              new Revision(0),
+              EXTERNAL_REFERENCE);
+      final var expectedResult =
+          UpdateCertificateResponse.builder().certificate(expectedCertificateDTO).build();
 
-      final var actualResult = updateCertificateService.update(
-          UpdateCertificateRequest.builder()
-              .user(AJLA_DOCTOR_DTO)
-              .patient(ATHENA_REACT_ANDERSSON_DTO)
-              .unit(ALFA_ALLERGIMOTTAGNINGEN_DTO)
-              .careUnit(ALFA_MEDICINCENTRUM_DTO)
-              .careProvider(ALFA_REGIONEN_DTO)
-              .certificate(certificateDTO)
-              .externalReference(EXTERNAL_REFERENCE.value())
-              .build(),
-          CERTIFICATE_ID);
+      final var actualResult =
+          updateCertificateService.update(
+              UpdateCertificateRequest.builder()
+                  .user(AJLA_DOCTOR_DTO)
+                  .patient(ATHENA_REACT_ANDERSSON_DTO)
+                  .unit(ALFA_ALLERGIMOTTAGNINGEN_DTO)
+                  .careUnit(ALFA_MEDICINCENTRUM_DTO)
+                  .careProvider(ALFA_REGIONEN_DTO)
+                  .certificate(certificateDTO)
+                  .externalReference(EXTERNAL_REFERENCE.value())
+                  .build(),
+              CERTIFICATE_ID);
 
       assertEquals(expectedResult, actualResult);
     }

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ag114.elements;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,11 +47,12 @@ class QuestionKontaktBeskrivningTest {
 
   @Test
   void shouldHaveCorrectConfiguration() {
-    final var expectedConfiguration = ElementConfigurationTextArea.builder()
-        .id(QUESTION_KONTAKT_BESKRIVNING_FIELD_ID)
-        .name(
-            "Ange varför du vill ha kontakt och vem som i första hand ska kontaktas samt kontaktuppgifter")
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationTextArea.builder()
+            .id(QUESTION_KONTAKT_BESKRIVNING_FIELD_ID)
+            .name(
+                "Ange varför du vill ha kontakt och vem som i första hand ska kontaktas samt kontaktuppgifter")
+            .build();
 
     final var element = QuestionKontaktBeskrivning.questionKontaktBeskrivning();
     assertEquals(expectedConfiguration, element.configuration());
@@ -42,29 +61,26 @@ class QuestionKontaktBeskrivningTest {
   @Test
   void shouldIncludeRules() {
     final var element = QuestionKontaktBeskrivning.questionKontaktBeskrivning();
-    final var expectedRules = List.of(
-        ElementRuleExpression.builder()
-            .id(QUESTION_KONTAKT_ID)
-            .type(ElementRuleType.SHOW)
-            .expression(new RuleExpression("$9.1"))
-            .build(),
-        ElementRuleExpression.builder()
-            .id(QUESTION_KONTAKT_BESKRIVNING_ID)
-            .type(ElementRuleType.MANDATORY)
-            .expression(new RuleExpression("$9.2"))
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleExpression.builder()
+                .id(QUESTION_KONTAKT_ID)
+                .type(ElementRuleType.SHOW)
+                .expression(new RuleExpression("$9.1"))
+                .build(),
+            ElementRuleExpression.builder()
+                .id(QUESTION_KONTAKT_BESKRIVNING_ID)
+                .type(ElementRuleType.MANDATORY)
+                .expression(new RuleExpression("$9.2"))
+                .build());
     assertEquals(expectedRules, element.rules());
   }
 
   @Test
   void shouldIncludeValidation() {
     final var element = QuestionKontaktBeskrivning.questionKontaktBeskrivning();
-    final var expectedValidations = List.of(
-        ElementValidationText.builder()
-            .mandatory(true)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationText.builder().mandatory(true).build());
     assertEquals(expectedValidations, element.validations());
   }
 
@@ -80,16 +96,12 @@ class QuestionKontaktBeskrivningTest {
 
     @Test
     void shouldReturnTrueIfParentQuestionIsTrue() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(QUESTION_KONTAKT_ID)
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(true)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(QUESTION_KONTAKT_ID)
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
 
       final var element = QuestionKontaktBeskrivning.questionKontaktBeskrivning();
       final var shouldValidate = element.shouldValidate();
@@ -99,16 +111,12 @@ class QuestionKontaktBeskrivningTest {
 
     @Test
     void shouldReturnFalseIfParentQuestionIsFalse() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(QUESTION_KONTAKT_ID)
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(false)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(QUESTION_KONTAKT_ID)
+                  .value(ElementValueBoolean.builder().value(false).build())
+                  .build());
 
       final var element = QuestionKontaktBeskrivning.questionKontaktBeskrivning();
       final var shouldValidate = element.shouldValidate();
@@ -118,16 +126,12 @@ class QuestionKontaktBeskrivningTest {
 
     @Test
     void shouldReturnFalseIfParentQuestionIsNull() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(QUESTION_KONTAKT_ID)
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(null)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(QUESTION_KONTAKT_ID)
+                  .value(ElementValueBoolean.builder().value(null).build())
+                  .build());
 
       final var element = QuestionKontaktBeskrivning.questionKontaktBeskrivning();
       final var shouldValidate = element.shouldValidate();

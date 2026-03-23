@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service.converter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -23,44 +41,37 @@ class CertificateDataValueConverterRadioBooleanTest {
 
   private static final String ELEMENT_ID = "elementId";
   private static final FieldId FIELD_ID = new FieldId("fieldId");
-  private final CertificateDataValueConverterRadioBoolean converter = new CertificateDataValueConverterRadioBoolean();
+  private final CertificateDataValueConverterRadioBoolean converter =
+      new CertificateDataValueConverterRadioBoolean();
   private ElementConfigurationRadioBoolean elementConfigurationRadioBoolean;
 
   @BeforeEach
   void setUp() {
-    elementConfigurationRadioBoolean = ElementConfigurationRadioBoolean.builder()
-        .id(FIELD_ID)
-        .build();
+    elementConfigurationRadioBoolean =
+        ElementConfigurationRadioBoolean.builder().id(FIELD_ID).build();
   }
 
   @Test
   void shouldThrowExceptionIfWrongClassOfValueIfElementValueNotNull() {
-    final var configuration = ElementSpecification.builder()
-        .id(new ElementId(ELEMENT_ID))
-        .configuration(
-            ElementConfigurationRadioBoolean.builder()
-                .id(FIELD_ID)
-                .build()
-        )
-        .build();
+    final var configuration =
+        ElementSpecification.builder()
+            .id(new ElementId(ELEMENT_ID))
+            .configuration(ElementConfigurationRadioBoolean.builder().id(FIELD_ID).build())
+            .build();
 
     final var elementValueDate = ElementValueText.builder().build();
 
-    assertThrows(IllegalStateException.class,
-        () -> converter.convert(configuration, elementValueDate)
-    );
+    assertThrows(
+        IllegalStateException.class, () -> converter.convert(configuration, elementValueDate));
   }
 
   @Test
   void shouldNotThrowExceptionIfWrongClassOfValueIfElementValueIsNull() {
-    final var configuration = ElementSpecification.builder()
-        .id(new ElementId(ELEMENT_ID))
-        .configuration(
-            ElementConfigurationRadioBoolean.builder()
-                .id(FIELD_ID)
-                .build()
-        )
-        .build();
+    final var configuration =
+        ElementSpecification.builder()
+            .id(new ElementId(ELEMENT_ID))
+            .configuration(ElementConfigurationRadioBoolean.builder().id(FIELD_ID).build())
+            .build();
 
     final var result = converter.convert(configuration, null);
     assertNull(((CertificateDataValueBoolean) result).getSelected());
@@ -68,19 +79,15 @@ class CertificateDataValueConverterRadioBooleanTest {
 
   @Test
   void shouldThrowExceptionIfWrongClassOfConfig() {
-    final var configuration = ElementSpecification.builder()
-        .configuration(
-            ElementConfigurationTextArea.builder()
-                .id(FIELD_ID)
-                .build()
-        )
-        .build();
+    final var configuration =
+        ElementSpecification.builder()
+            .configuration(ElementConfigurationTextArea.builder().id(FIELD_ID).build())
+            .build();
 
     final var elementValueDate = ElementValueDate.builder().build();
 
-    assertThrows(IllegalStateException.class,
-        () -> converter.convert(configuration, elementValueDate)
-    );
+    assertThrows(
+        IllegalStateException.class, () -> converter.convert(configuration, elementValueDate));
   }
 
   @Test
@@ -90,10 +97,11 @@ class CertificateDataValueConverterRadioBooleanTest {
 
   @Test
   void shallCreateCertificateDataValueBoolean() {
-    final var configuration = ElementSpecification.builder()
-        .id(new ElementId(ELEMENT_ID))
-        .configuration(elementConfigurationRadioBoolean)
-        .build();
+    final var configuration =
+        ElementSpecification.builder()
+            .id(new ElementId(ELEMENT_ID))
+            .configuration(elementConfigurationRadioBoolean)
+            .build();
 
     final var elementValueBoolean = ElementValueBoolean.builder().build();
 
@@ -104,11 +112,8 @@ class CertificateDataValueConverterRadioBooleanTest {
 
   @Test
   void shallSetIdFromConfiguration() {
-    final var configuration = ElementSpecification.builder()
-        .configuration(
-            elementConfigurationRadioBoolean
-        )
-        .build();
+    final var configuration =
+        ElementSpecification.builder().configuration(elementConfigurationRadioBoolean).build();
 
     final var elementValueDate = ElementValueBoolean.builder().build();
 
@@ -119,16 +124,13 @@ class CertificateDataValueConverterRadioBooleanTest {
 
   @Test
   void shallSetCorrectSelectedValue() {
-    final var configuration = ElementSpecification.builder()
-        .id(new ElementId(ELEMENT_ID))
-        .configuration(
-            elementConfigurationRadioBoolean
-        )
-        .build();
+    final var configuration =
+        ElementSpecification.builder()
+            .id(new ElementId(ELEMENT_ID))
+            .configuration(elementConfigurationRadioBoolean)
+            .build();
 
-    final var elementValueDate = ElementValueBoolean.builder()
-        .value(true)
-        .build();
+    final var elementValueDate = ElementValueBoolean.builder().value(true).build();
 
     final var result = converter.convert(configuration, elementValueDate);
 

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service.converter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -9,9 +27,9 @@ import org.junit.jupiter.api.Test;
 import se.inera.intyg.certificateservice.application.certificate.dto.config.CertificateDataConfigDateRange;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementConfigurationDateRange;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementConfigurationTextArea;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementId;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementSpecification;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementType;
-import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementId;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.FieldId;
 
 class CertificateDataDateRangeConfigConverterTest {
@@ -28,17 +46,17 @@ class CertificateDataDateRangeConfigConverterTest {
   @BeforeEach
   void setUp() {
     converter = new CertificateDataDateRangeConfigConverter();
-    elementSpecification = ElementSpecification.builder()
-        .id(new ElementId(ID))
-        .configuration(
-            ElementConfigurationDateRange.builder()
-                .id(new FieldId((FIELD_ID)))
-                .name(NAME)
-                .labelFrom(LABEL_FROM)
-                .labelTo(LABEL_TO)
-                .build()
-        )
-        .build();
+    elementSpecification =
+        ElementSpecification.builder()
+            .id(new ElementId(ID))
+            .configuration(
+                ElementConfigurationDateRange.builder()
+                    .id(new FieldId((FIELD_ID)))
+                    .name(NAME)
+                    .labelFrom(LABEL_FROM)
+                    .labelTo(LABEL_TO)
+                    .build())
+            .build();
   }
 
   @Test
@@ -48,26 +66,25 @@ class CertificateDataDateRangeConfigConverterTest {
 
   @Test
   void shouldThrowExceptionIfWrongClass() {
-    final var invalidElementSpecification = ElementSpecification.builder()
-        .configuration(
-            ElementConfigurationTextArea.builder()
-                .build()
-        )
-        .build();
+    final var invalidElementSpecification =
+        ElementSpecification.builder()
+            .configuration(ElementConfigurationTextArea.builder().build())
+            .build();
 
-    assertThrows(IllegalStateException.class,
-        () -> converter.convert(invalidElementSpecification, FK7427_CERTIFICATE)
-    );
+    assertThrows(
+        IllegalStateException.class,
+        () -> converter.convert(invalidElementSpecification, FK7427_CERTIFICATE));
   }
 
   @Test
   void shouldReturnConvertedConfig() {
-    final var expected = CertificateDataConfigDateRange.builder()
-        .id(FIELD_ID)
-        .text(NAME)
-        .fromLabel(LABEL_FROM)
-        .toLabel(LABEL_TO)
-        .build();
+    final var expected =
+        CertificateDataConfigDateRange.builder()
+            .id(FIELD_ID)
+            .text(NAME)
+            .fromLabel(LABEL_FROM)
+            .toLabel(LABEL_TO)
+            .build();
 
     final var response = converter.convert(elementSpecification, FK7427_CERTIFICATE);
 

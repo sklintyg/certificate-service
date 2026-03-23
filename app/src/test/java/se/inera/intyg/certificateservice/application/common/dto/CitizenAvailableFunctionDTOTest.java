@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.common.dto;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -14,40 +32,41 @@ class CitizenAvailableFunctionDTOTest {
 
   @Test
   void shouldConvertDomainToDTO() {
-    final var availableFunction = CitizenAvailableFunction.builder()
-        .type(CitizenAvailableFunctionType.PRINT_CERTIFICATE)
-        .name("Print")
-        .description("Print description")
-        .title("Print title")
-        .body("Print body")
-        .information(
-            List.of(
-                CitizenAvailableFunctionInformation.builder()
-                    .id(new ElementId("ID"))
-                    .type(CitizenAvailableFunctionInformationType.ALERT)
-                    .text("Some info text")
-                    .build()
-            )
-        )
-        .enabled(true)
-        .build();
+    final var availableFunction =
+        CitizenAvailableFunction.builder()
+            .type(CitizenAvailableFunctionType.PRINT_CERTIFICATE)
+            .name("Print")
+            .description("Print description")
+            .title("Print title")
+            .body("Print body")
+            .information(
+                List.of(
+                    CitizenAvailableFunctionInformation.builder()
+                        .id(new ElementId("ID"))
+                        .type(CitizenAvailableFunctionInformationType.ALERT)
+                        .text("Some info text")
+                        .build()))
+            .enabled(true)
+            .build();
 
-    final var expected = AvailableFunctionDTO.builder()
-        .type(
-            se.inera.intyg.certificateservice.application.common.dto.AvailableFunctionType.PRINT_CERTIFICATE)
-        .name("Print")
-        .description("Print description")
-        .title("Print title")
-        .body("Print body")
-        .enabled(true)
-        .information(List.of(
-            InformationDTO.builder()
-                .id("ID")
-                .type(InformationType.ALERT)
-                .text("Some info text")
-                .build()
-        ))
-        .build();
+    final var expected =
+        AvailableFunctionDTO.builder()
+            .type(
+                se.inera.intyg.certificateservice.application.common.dto.AvailableFunctionType
+                    .PRINT_CERTIFICATE)
+            .name("Print")
+            .description("Print description")
+            .title("Print title")
+            .body("Print body")
+            .enabled(true)
+            .information(
+                List.of(
+                    InformationDTO.builder()
+                        .id("ID")
+                        .type(InformationType.ALERT)
+                        .text("Some info text")
+                        .build()))
+            .build();
 
     final var actual = AvailableFunctionDTO.toDTO(availableFunction);
 

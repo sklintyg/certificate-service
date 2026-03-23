@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -21,73 +39,79 @@ class QuestionForutsattningarForAttLamnaSkriftligtSamtyckeTest {
 
   @Test
   void shallIncludeId() {
-    final var element = QuestionForutsattningarForAttLamnaSkriftligtSamtycke.questionForutsattningarForAttLamnaSkriftligtSamtycke();
+    final var element =
+        QuestionForutsattningarForAttLamnaSkriftligtSamtycke
+            .questionForutsattningarForAttLamnaSkriftligtSamtycke();
 
     assertEquals(ELEMENT_ID, element.id());
   }
 
   @Test
   void shallIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationRadioBoolean.builder()
-        .id(new FieldId("53.1"))
-        .name(
-            "Har patienten de medicinska förutsättningarna för att kunna lämna samtycke?")
-        .selectedText("Ja")
-        .unselectedText("Nej")
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationRadioBoolean.builder()
+            .id(new FieldId("53.1"))
+            .name("Har patienten de medicinska förutsättningarna för att kunna lämna samtycke?")
+            .selectedText("Ja")
+            .unselectedText("Nej")
+            .build();
 
-    final var element = QuestionForutsattningarForAttLamnaSkriftligtSamtycke.questionForutsattningarForAttLamnaSkriftligtSamtycke();
+    final var element =
+        QuestionForutsattningarForAttLamnaSkriftligtSamtycke
+            .questionForutsattningarForAttLamnaSkriftligtSamtycke();
 
     assertEquals(expectedConfiguration, element.configuration());
   }
 
   @Test
   void shallIncludeRules() {
-    final var expectedRules = List.of(
-        ElementRuleExpression.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.MANDATORY)
-            .expression(
-                new RuleExpression(
-                    "exists($53.1)"
-                )
-            )
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleExpression.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.MANDATORY)
+                .expression(new RuleExpression("exists($53.1)"))
+                .build());
 
-    final var element = QuestionForutsattningarForAttLamnaSkriftligtSamtycke.questionForutsattningarForAttLamnaSkriftligtSamtycke();
+    final var element =
+        QuestionForutsattningarForAttLamnaSkriftligtSamtycke
+            .questionForutsattningarForAttLamnaSkriftligtSamtycke();
 
     assertEquals(expectedRules, element.rules());
   }
 
   @Test
   void shallIncludeValidations() {
-    final var expectedValidations = List.of(
-        ElementValidationBoolean.builder()
-            .mandatory(true)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationBoolean.builder().mandatory(true).build());
 
-    final var element = QuestionForutsattningarForAttLamnaSkriftligtSamtycke.questionForutsattningarForAttLamnaSkriftligtSamtycke();
+    final var element =
+        QuestionForutsattningarForAttLamnaSkriftligtSamtycke
+            .questionForutsattningarForAttLamnaSkriftligtSamtycke();
 
     assertEquals(expectedValidations, element.validations());
   }
 
   @Test
   void shallIncludePdfConfiguration() {
-    final var expected = PdfConfigurationBoolean.builder()
-        .checkboxTrue(new PdfFieldId("form1[0].#subform[1].ksr_Ja_Modul3[0]"))
-        .checkboxFalse(new PdfFieldId("form1[0].#subform[1].ksr_Nej_Modul3[0]"))
-        .build();
+    final var expected =
+        PdfConfigurationBoolean.builder()
+            .checkboxTrue(new PdfFieldId("form1[0].#subform[1].ksr_Ja_Modul3[0]"))
+            .checkboxFalse(new PdfFieldId("form1[0].#subform[1].ksr_Nej_Modul3[0]"))
+            .build();
 
-    final var element = QuestionForutsattningarForAttLamnaSkriftligtSamtycke.questionForutsattningarForAttLamnaSkriftligtSamtycke();
+    final var element =
+        QuestionForutsattningarForAttLamnaSkriftligtSamtycke
+            .questionForutsattningarForAttLamnaSkriftligtSamtycke();
 
     assertEquals(expected, element.pdfConfiguration());
   }
 
   @Test
   void shouldHaveIncludeWhenRenewingFalse() {
-    final var element = QuestionForutsattningarForAttLamnaSkriftligtSamtycke.questionForutsattningarForAttLamnaSkriftligtSamtycke();
+    final var element =
+        QuestionForutsattningarForAttLamnaSkriftligtSamtycke
+            .questionForutsattningarForAttLamnaSkriftligtSamtycke();
     assertFalse(element.includeWhenRenewing());
   }
 }

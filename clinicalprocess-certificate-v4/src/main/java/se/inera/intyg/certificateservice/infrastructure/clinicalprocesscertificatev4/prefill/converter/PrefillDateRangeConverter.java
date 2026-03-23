@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.prefill.converter;
 
 import java.util.ArrayList;
@@ -26,23 +44,23 @@ public class PrefillDateRangeConverter implements PrefillStandardConverter {
   }
 
   @Override
-  public PrefillAnswer prefillAnswer(ElementSpecification specification,
-      Forifyllnad prefill) {
-    if (!(specification.configuration() instanceof ElementConfigurationDateRange configurationDateRange)) {
-      return PrefillAnswer.builder()
-          .errors(List.of(PrefillError.wrongConfigurationType()))
-          .build();
+  public PrefillAnswer prefillAnswer(ElementSpecification specification, Forifyllnad prefill) {
+    if (!(specification.configuration()
+        instanceof ElementConfigurationDateRange configurationDateRange)) {
+      return PrefillAnswer.builder().errors(List.of(PrefillError.wrongConfigurationType())).build();
     }
 
-    final var answers = prefill.getSvar().stream()
-        .filter(svar -> svar.getId().equals(specification.id().id()))
-        .toList();
+    final var answers =
+        prefill.getSvar().stream()
+            .filter(svar -> svar.getId().equals(specification.id().id()))
+            .toList();
 
-    final var subAnswers = prefill.getSvar().stream()
-        .map(Svar::getDelsvar)
-        .flatMap(List::stream)
-        .filter(delsvar -> delsvar.getId().equals(specification.id().id()))
-        .toList();
+    final var subAnswers =
+        prefill.getSvar().stream()
+            .map(Svar::getDelsvar)
+            .flatMap(List::stream)
+            .filter(delsvar -> delsvar.getId().equals(specification.id().id()))
+            .toList();
 
     if (answers.isEmpty() && subAnswers.isEmpty()) {
       return null;
@@ -50,32 +68,19 @@ public class PrefillDateRangeConverter implements PrefillStandardConverter {
 
     final var prefillErrors = new ArrayList<PrefillError>();
     prefillErrors.addAll(
-        PrefillValidator.validateSingleAnswerOrSubAnswer(
-            answers,
-            subAnswers,
-            specification
-        )
-    );
+        PrefillValidator.validateSingleAnswerOrSubAnswer(answers, subAnswers, specification));
 
     prefillErrors.addAll(
         PrefillValidator.validateDelsvarId(
-            SubAnswersUtil.get(answers, subAnswers),
-            configurationDateRange,
-            specification
-        )
-    );
+            SubAnswersUtil.get(answers, subAnswers), configurationDateRange, specification));
 
     if (!prefillErrors.isEmpty()) {
-      return PrefillAnswer.builder()
-          .errors(prefillErrors)
-          .build();
+      return PrefillAnswer.builder().errors(prefillErrors).build();
     }
 
     try {
       final var content = getContent(subAnswers, answers, configurationDateRange);
-      final var datePeriodAnswer = PrefillUnmarshaller.datePeriodType(
-          content
-      );
+      final var datePeriodAnswer = PrefillUnmarshaller.datePeriodType(content);
 
       return PrefillAnswer.builder()
           .elementData(
@@ -84,34 +89,32 @@ public class PrefillDateRangeConverter implements PrefillStandardConverter {
                   .value(
                       ElementValueDateRange.builder()
                           .id(configurationDateRange.id())
-                          .fromDate(PrefillUnmarshaller.toLocalDate(
-                              datePeriodAnswer.orElseThrow().getStart())
-                          )
+                          .fromDate(
+                              PrefillUnmarshaller.toLocalDate(
+                                  datePeriodAnswer.orElseThrow().getStart()))
                           .toDate(
                               PrefillUnmarshaller.toLocalDate(
-                                  datePeriodAnswer.orElseThrow().getEnd())
-                          )
-                          .build()
-                  ).build()
-          )
+                                  datePeriodAnswer.orElseThrow().getEnd()))
+                          .build())
+                  .build())
           .build();
     } catch (Exception ex) {
       return PrefillAnswer.invalidFormat(specification.id().id(), ex.getMessage());
     }
   }
 
-  private static List<Object> getContent(List<Delsvar> subAnswers, List<Svar> answers,
+  private static List<Object> getContent(
+      List<Delsvar> subAnswers,
+      List<Svar> answers,
       ElementConfigurationDateRange configurationDateRange) {
     if (!subAnswers.isEmpty()) {
       return subAnswers.stream()
           .filter(subAnswer -> subAnswer.getId().equals(configurationDateRange.id().value()))
-          .toList().
-          getFirst()
+          .toList()
+          .getFirst()
           .getContent();
     }
-    return answers.getFirst()
-        .getDelsvar()
-        .stream()
+    return answers.getFirst().getDelsvar().stream()
         .filter(subAnswer -> subAnswer.getId().equals(configurationDateRange.id().value()))
         .toList()
         .getFirst()

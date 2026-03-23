@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.common;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -37,14 +55,15 @@ class QuestionRorlighetHjalpaPassagerareTest {
 
   @Test
   void shallIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationRadioBoolean.builder()
-        .name(
-            "Har personen en nedsättning av rörelseförmågan som gör att personen inte kan "
-                + "hjälpa passagerare in och ut ur fordonet samt med bilbälte?")
-        .id(new FieldId("10.3"))
-        .selectedText("Ja")
-        .unselectedText("Nej")
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationRadioBoolean.builder()
+            .name(
+                "Har personen en nedsättning av rörelseförmågan som gör att personen inte kan "
+                    + "hjälpa passagerare in och ut ur fordonet samt med bilbälte?")
+            .id(new FieldId("10.3"))
+            .selectedText("Ja")
+            .unselectedText("Nej")
+            .build();
 
     final var element = QuestionRorlighetHjalpaPassagerare.questionRorlighetHjalpaPassagerare();
 
@@ -53,23 +72,20 @@ class QuestionRorlighetHjalpaPassagerareTest {
 
   @Test
   void shallIncludeRules() {
-    final var expectedRule = List.of(
-        ElementRuleExpression.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.MANDATORY)
-            .expression(
-                new RuleExpression(
-                    "exists($10.3)"
-                )
-            )
-            .build(),
-        ElementRuleExpression.builder()
-            .id(new ElementId("1"))
-            .type(ElementRuleType.SHOW)
-            .expression(new RuleExpression(
-                "exists(gr_II_III) || exists(forlang_gr_II_III) || exists(tax_leg)"))
-            .build()
-    );
+    final var expectedRule =
+        List.of(
+            ElementRuleExpression.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.MANDATORY)
+                .expression(new RuleExpression("exists($10.3)"))
+                .build(),
+            ElementRuleExpression.builder()
+                .id(new ElementId("1"))
+                .type(ElementRuleType.SHOW)
+                .expression(
+                    new RuleExpression(
+                        "exists(gr_II_III) || exists(forlang_gr_II_III) || exists(tax_leg)"))
+                .build());
 
     final var element = QuestionRorlighetHjalpaPassagerare.questionRorlighetHjalpaPassagerare();
 
@@ -78,11 +94,8 @@ class QuestionRorlighetHjalpaPassagerareTest {
 
   @Test
   void shallIncludeValidation() {
-    final var expectedValidations = List.of(
-        ElementValidationBoolean.builder()
-            .mandatory(true)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationBoolean.builder().mandatory(true).build());
 
     final var element = QuestionRorlighetHjalpaPassagerare.questionRorlighetHjalpaPassagerare();
 
@@ -101,23 +114,20 @@ class QuestionRorlighetHjalpaPassagerareTest {
 
     @Test
     void shallReturnTrueIfCodeIsGR23() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("1"))
-              .value(
-                  ElementValueCodeList.builder()
-                      .list(
-                          List.of(
-                              ElementValueCode.builder()
-                                  .codeId(new FieldId(GR_II_III.code()))
-                                  .code(GR_II_III.code())
-                                  .build()
-                          )
-                      )
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("1"))
+                  .value(
+                      ElementValueCodeList.builder()
+                          .list(
+                              List.of(
+                                  ElementValueCode.builder()
+                                      .codeId(new FieldId(GR_II_III.code()))
+                                      .code(GR_II_III.code())
+                                      .build()))
+                          .build())
+                  .build());
 
       final var element = QuestionRorlighetHjalpaPassagerare.questionRorlighetHjalpaPassagerare();
 
@@ -128,23 +138,20 @@ class QuestionRorlighetHjalpaPassagerareTest {
 
     @Test
     void shallReturnTrueIfCodeIsForlangGR23F() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("1"))
-              .value(
-                  ElementValueCodeList.builder()
-                      .list(
-                          List.of(
-                              ElementValueCode.builder()
-                                  .codeId(new FieldId(FORLANG_GR_II_III.code()))
-                                  .code(FORLANG_GR_II_III.code())
-                                  .build()
-                          )
-                      )
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("1"))
+                  .value(
+                      ElementValueCodeList.builder()
+                          .list(
+                              List.of(
+                                  ElementValueCode.builder()
+                                      .codeId(new FieldId(FORLANG_GR_II_III.code()))
+                                      .code(FORLANG_GR_II_III.code())
+                                      .build()))
+                          .build())
+                  .build());
 
       final var element = QuestionRorlighetHjalpaPassagerare.questionRorlighetHjalpaPassagerare();
 
@@ -153,26 +160,22 @@ class QuestionRorlighetHjalpaPassagerareTest {
       assertTrue(shouldValidate.test(elementData));
     }
 
-
     @Test
     void shallReturnTrueIfCodeIsTaxi() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("1"))
-              .value(
-                  ElementValueCodeList.builder()
-                      .list(
-                          List.of(
-                              ElementValueCode.builder()
-                                  .codeId(new FieldId(TAXI.code()))
-                                  .code(TAXI.code())
-                                  .build()
-                          )
-                      )
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("1"))
+                  .value(
+                      ElementValueCodeList.builder()
+                          .list(
+                              List.of(
+                                  ElementValueCode.builder()
+                                      .codeId(new FieldId(TAXI.code()))
+                                      .code(TAXI.code())
+                                      .build()))
+                          .build())
+                  .build());
 
       final var element = QuestionRorlighetHjalpaPassagerare.questionRorlighetHjalpaPassagerare();
 
@@ -183,16 +186,12 @@ class QuestionRorlighetHjalpaPassagerareTest {
 
     @Test
     void shallReturnFalseIfElementMissing() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("7.1"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(true)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("7.1"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
 
       final var element = QuestionRorlighetHjalpaPassagerare.questionRorlighetHjalpaPassagerare();
 
@@ -203,23 +202,20 @@ class QuestionRorlighetHjalpaPassagerareTest {
 
     @Test
     void shallReturnFalseIfElementCodeIsNotGR23OrTaxi() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("1"))
-              .value(
-                  ElementValueCodeList.builder()
-                      .list(
-                          List.of(
-                              ElementValueCode.builder()
-                                  .codeId(new FieldId(GR_II.code()))
-                                  .code(GR_II.code())
-                                  .build()
-                          )
-                      )
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("1"))
+                  .value(
+                      ElementValueCodeList.builder()
+                          .list(
+                              List.of(
+                                  ElementValueCode.builder()
+                                      .codeId(new FieldId(GR_II.code()))
+                                      .code(GR_II.code())
+                                      .build()))
+                          .build())
+                  .build());
 
       final var element = QuestionRorlighetHjalpaPassagerare.questionRorlighetHjalpaPassagerare();
 

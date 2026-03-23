@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.action.message.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,16 +44,15 @@ import se.inera.intyg.certificateservice.domain.staff.model.Staff;
 @ExtendWith(MockitoExtension.class)
 class MessageActionHandleMessageTest {
 
-
   private MessageActionHandleMessage messageAction;
-  private final MessageActionSpecification actionSpecification = MessageActionSpecification.builder()
-      .messageActionType(MessageActionType.HANDLE_MESSAGE)
-      .build();
+  private final MessageActionSpecification actionSpecification =
+      MessageActionSpecification.builder()
+          .messageActionType(MessageActionType.HANDLE_MESSAGE)
+          .build();
 
   @BeforeEach
   void setUp() {
-    messageAction = (MessageActionHandleMessage) MessageActionFactory.create(
-        actionSpecification);
+    messageAction = (MessageActionHandleMessage) MessageActionFactory.create(actionSpecification);
   }
 
   @Nested
@@ -60,9 +77,7 @@ class MessageActionHandleMessageTest {
 
     @Test
     void shallReturnFalseIfNotAdministrativeQuestion() {
-      final var message = Message.builder()
-          .type(MessageType.COMPLEMENT)
-          .build();
+      final var message = Message.builder().type(MessageType.COMPLEMENT).build();
       final var certificateActions = mock(CertificateAction.class);
       doReturn(CertificateActionType.HANDLE_MESSAGE).when(certificateActions).getType();
       assertFalse(messageAction.evaluate(List.of(certificateActions), message));
@@ -70,10 +85,8 @@ class MessageActionHandleMessageTest {
 
     @Test
     void shallReturnFalseIfAdministrativeQuestionFromRecipientThatIsAnswered() {
-      final var message = Message.builder()
-          .type(MessageType.CONTACT)
-          .answer(Answer.builder().build())
-          .build();
+      final var message =
+          Message.builder().type(MessageType.CONTACT).answer(Answer.builder().build()).build();
 
       final var certificateActions = mock(CertificateAction.class);
       doReturn(CertificateActionType.HANDLE_MESSAGE).when(certificateActions).getType();
@@ -82,11 +95,12 @@ class MessageActionHandleMessageTest {
 
     @Test
     void shallReturnTrueIfAdministrativeQuestionFromCareThatIsAnswered() {
-      final var message = Message.builder()
-          .type(MessageType.CONTACT)
-          .authoredStaff(Staff.create(AJLA_DOKTOR))
-          .answer(Answer.builder().build())
-          .build();
+      final var message =
+          Message.builder()
+              .type(MessageType.CONTACT)
+              .authoredStaff(Staff.create(AJLA_DOKTOR))
+              .answer(Answer.builder().build())
+              .build();
 
       final var certificateActions = mock(CertificateAction.class);
       doReturn(CertificateActionType.HANDLE_MESSAGE).when(certificateActions).getType();
@@ -95,10 +109,11 @@ class MessageActionHandleMessageTest {
 
     @Test
     void shallReturnTrueIfAdministrativeQuestionFromCareThatIsNotAnswered() {
-      final var message = Message.builder()
-          .type(MessageType.CONTACT)
-          .authoredStaff(Staff.create(AJLA_DOKTOR))
-          .build();
+      final var message =
+          Message.builder()
+              .type(MessageType.CONTACT)
+              .authoredStaff(Staff.create(AJLA_DOKTOR))
+              .build();
 
       final var certificateActions = mock(CertificateAction.class);
       doReturn(CertificateActionType.HANDLE_MESSAGE).when(certificateActions).getType();
@@ -107,9 +122,7 @@ class MessageActionHandleMessageTest {
 
     @Test
     void shallReturnTrueIfAdministrativeQuestionFromRecipientThatIsNotAnswered() {
-      final var message = Message.builder()
-          .type(MessageType.CONTACT)
-          .build();
+      final var message = Message.builder().type(MessageType.CONTACT).build();
 
       final var certificateActions = mock(CertificateAction.class);
       doReturn(CertificateActionType.HANDLE_MESSAGE).when(certificateActions).getType();
@@ -122,12 +135,13 @@ class MessageActionHandleMessageTest {
 
     @Test
     void shallReturnMessageActionLink() {
-      final var expectedLink = MessageActionLink.builder()
-          .type(MessageActionType.HANDLE_MESSAGE)
-          .name("Hantera")
-          .description("Hantera fråga")
-          .enabled(true)
-          .build();
+      final var expectedLink =
+          MessageActionLink.builder()
+              .type(MessageActionType.HANDLE_MESSAGE)
+              .name("Hantera")
+              .description("Hantera fråga")
+              .enabled(true)
+              .build();
 
       assertEquals(expectedLink, messageAction.actionLink());
     }

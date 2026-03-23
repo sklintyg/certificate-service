@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.action.certificate.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -27,54 +45,53 @@ class CertificateActionInactiveCertificateModelTest {
       CertificateActionSpecification.builder()
           .certificateActionType(CertificateActionType.INACTIVE_CERTIFICATE_MODEL)
           .build();
-  @Mock
-  CertificateActionConfigurationRepository certificateActionConfigurationRepository;
-  @InjectMocks
-  CertificateActionFactory certificateActionFactory;
+  @Mock CertificateActionConfigurationRepository certificateActionConfigurationRepository;
+  @InjectMocks CertificateActionFactory certificateActionFactory;
 
   @BeforeEach
   void setUp() {
-    certificateActionInactiveCertificateModel = (CertificateActionInactiveCertificateModel) certificateActionFactory.create(
-        CERTIFICATE_ACTION_SPECIFICATION
-    );
+    certificateActionInactiveCertificateModel =
+        (CertificateActionInactiveCertificateModel)
+            certificateActionFactory.create(CERTIFICATE_ACTION_SPECIFICATION);
 
     certificateBuilder = fk7804CertificateBuilder();
   }
 
   @Test
   void shallReturnTypeFromSpecification() {
-    assertEquals(CertificateActionType.INACTIVE_CERTIFICATE_MODEL,
+    assertEquals(
+        CertificateActionType.INACTIVE_CERTIFICATE_MODEL,
         certificateActionInactiveCertificateModel.getType());
   }
 
   @Test
   void shouldReturnTrueIfCertificateModelIsInactive() {
-    final var certificate = certificateBuilder
-        .certificateModel(
-            fk7804certificateModelBuilder()
-                .activeFrom(LocalDateTime.now().plusDays(1))
-                .build()
-        )
-        .build();
+    final var certificate =
+        certificateBuilder
+            .certificateModel(
+                fk7804certificateModelBuilder().activeFrom(LocalDateTime.now().plusDays(1)).build())
+            .build();
 
-    final var result = certificateActionInactiveCertificateModel.evaluate(
-        Optional.of(certificate), Optional.empty());
+    final var result =
+        certificateActionInactiveCertificateModel.evaluate(
+            Optional.of(certificate), Optional.empty());
 
     assertTrue(result);
   }
 
   @Test
   void shouldReturnFalseIfCertificateModelIsActive() {
-    final var certificate = certificateBuilder
-        .certificateModel(
-            fk7804certificateModelBuilder()
-                .activeFrom(LocalDateTime.now().minusDays(1))
-                .build()
-        )
-        .build();
+    final var certificate =
+        certificateBuilder
+            .certificateModel(
+                fk7804certificateModelBuilder()
+                    .activeFrom(LocalDateTime.now().minusDays(1))
+                    .build())
+            .build();
 
-    final var result = certificateActionInactiveCertificateModel.evaluate(
-        Optional.of(certificate), Optional.empty());
+    final var result =
+        certificateActionInactiveCertificateModel.evaluate(
+            Optional.of(certificate), Optional.empty());
 
     assertFalse(result);
   }

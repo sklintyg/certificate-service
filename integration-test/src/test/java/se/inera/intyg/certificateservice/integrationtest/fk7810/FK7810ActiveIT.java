@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.integrationtest.fk7810;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -73,15 +91,15 @@ public class FK7810ActiveIT extends ActiveCertificatesIT {
   void setUp() {
     super.setUpBaseIT();
 
-    baseTestabilityUtilities = fk7810TestSetup()
-        .testabilityUtilities(
-            TestabilityUtilities.builder()
-                .api(api)
-                .internalApi(internalApi)
-                .testabilityApi(testabilityApi)
-                .build()
-        )
-        .build();
+    baseTestabilityUtilities =
+        fk7810TestSetup()
+            .testabilityUtilities(
+                TestabilityUtilities.builder()
+                    .api(api)
+                    .internalApi(internalApi)
+                    .testabilityApi(testabilityApi)
+                    .build())
+            .build();
   }
 
   @AfterEach
@@ -128,39 +146,44 @@ public class FK7810ActiveIT extends ActiveCertificatesIT {
       return baseTestabilityUtilities;
     }
 
-    private static final String FUNKTIONSNEDSATTNING_MOTIVERING_KOMMUNIKATION_SOCIAL_INTERAKTION_ID = "9";
+    private static final String
+        FUNKTIONSNEDSATTNING_MOTIVERING_KOMMUNIKATION_SOCIAL_INTERAKTION_ID = "9";
 
     @Test
-    @DisplayName("Tidigare dold fråga ska bli synlig efter komplettering om en kompletteringsbegäran finns på frågan")
+    @DisplayName(
+        "Tidigare dold fråga ska bli synlig efter komplettering om en kompletteringsbegäran finns på frågan")
     void shallDisplayPreviouslyHiddenQuestionOnCertificateIfItHasComplement() {
-      final var testCertificates = testabilityApi().addCertificates(
-          defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED)
-      );
+      final var testCertificates =
+          testabilityApi()
+              .addCertificates(
+                  defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED));
 
-      api().sendCertificate(
-          defaultSendCertificateRequest(),
-          certificateId(testCertificates)
-      );
+      api().sendCertificate(defaultSendCertificateRequest(), certificateId(testCertificates));
 
-      api().receiveMessage(
-          incomingComplementMessageBuilder()
-              .certificateId(certificateId(testCertificates))
-              .complements(List.of(incomingComplementDTOBuilder()
-                  .questionId(FUNKTIONSNEDSATTNING_MOTIVERING_KOMMUNIKATION_SOCIAL_INTERAKTION_ID)
-                  .build()))
-              .build()
-      );
+      api()
+          .receiveMessage(
+              incomingComplementMessageBuilder()
+                  .certificateId(certificateId(testCertificates))
+                  .complements(
+                      List.of(
+                          incomingComplementDTOBuilder()
+                              .questionId(
+                                  FUNKTIONSNEDSATTNING_MOTIVERING_KOMMUNIKATION_SOCIAL_INTERAKTION_ID)
+                              .build()))
+                  .build());
 
-      final var response = api().complementCertificate(
-          defaultComplementCertificateRequest(),
-          certificateId(testCertificates)
-      );
+      final var response =
+          api()
+              .complementCertificate(
+                  defaultComplementCertificateRequest(), certificateId(testCertificates));
 
       final var certificate = Objects.requireNonNull(response.getBody()).getCertificate();
       assertEquals(200, response.getStatusCode().value());
       assertNotNull(certificate);
-      assertTrue(certificate.getData()
-          .containsKey(FUNKTIONSNEDSATTNING_MOTIVERING_KOMMUNIKATION_SOCIAL_INTERAKTION_ID));
+      assertTrue(
+          certificate
+              .getData()
+              .containsKey(FUNKTIONSNEDSATTNING_MOTIVERING_KOMMUNIKATION_SOCIAL_INTERAKTION_ID));
     }
   }
 
@@ -174,9 +197,7 @@ public class FK7810ActiveIT extends ActiveCertificatesIT {
     }
 
     protected static Stream<Arguments> rolesAccessToProtectedPerson() {
-      return Stream.of(
-          Arguments.of(AJLA_DOCTOR_DTO)
-      );
+      return Stream.of(Arguments.of(AJLA_DOCTOR_DTO));
     }
   }
 
@@ -223,14 +244,11 @@ public class FK7810ActiveIT extends ActiveCertificatesIT {
       return Stream.of(
           Arguments.of(ALVA_VARDADMINISTRATOR_DTO),
           Arguments.of(BERTIL_BARNMORSKA_DTO),
-          Arguments.of(ANNA_SJUKSKOTERSKA_DTO)
-      );
+          Arguments.of(ANNA_SJUKSKOTERSKA_DTO));
     }
 
     protected static Stream<Arguments> rolesAccessToProtectedPerson() {
-      return Stream.of(
-          Arguments.of(AJLA_DOCTOR_DTO)
-      );
+      return Stream.of(Arguments.of(AJLA_DOCTOR_DTO));
     }
   }
 
@@ -247,8 +265,7 @@ public class FK7810ActiveIT extends ActiveCertificatesIT {
       return Stream.of(
           Arguments.of(ALVA_VARDADMINISTRATOR_DTO),
           Arguments.of(BERTIL_BARNMORSKA_DTO),
-          Arguments.of(ANNA_SJUKSKOTERSKA_DTO)
-      );
+          Arguments.of(ANNA_SJUKSKOTERSKA_DTO));
     }
   }
 
@@ -272,9 +289,7 @@ public class FK7810ActiveIT extends ActiveCertificatesIT {
     }
 
     protected static Stream<Arguments> rolesNoAccessToProtectedPerson() {
-      return Stream.of(
-          Arguments.of(ALVA_VARDADMINISTRATOR_DTO)
-      );
+      return Stream.of(Arguments.of(ALVA_VARDADMINISTRATOR_DTO));
     }
   }
 
@@ -291,14 +306,11 @@ public class FK7810ActiveIT extends ActiveCertificatesIT {
       return Stream.of(
           Arguments.of(ALVA_VARDADMINISTRATOR_DTO),
           Arguments.of(BERTIL_BARNMORSKA_DTO),
-          Arguments.of(ANNA_SJUKSKOTERSKA_DTO)
-      );
+          Arguments.of(ANNA_SJUKSKOTERSKA_DTO));
     }
 
     protected static Stream<Arguments> rolesAccessToProtectedPerson() {
-      return Stream.of(
-          Arguments.of(AJLA_DOCTOR_DTO)
-      );
+      return Stream.of(Arguments.of(AJLA_DOCTOR_DTO));
     }
   }
 
@@ -362,7 +374,6 @@ public class FK7810ActiveIT extends ActiveCertificatesIT {
     }
   }
 
-
   @Nested
   @DisplayName(TYPE + "Finns meddelandet i tjänsten")
   class MessagesExists extends MessageExistsIT {
@@ -386,8 +397,7 @@ public class FK7810ActiveIT extends ActiveCertificatesIT {
       return Stream.of(
           Arguments.of(ALVA_VARDADMINISTRATOR_DTO),
           Arguments.of(BERTIL_BARNMORSKA_DTO),
-          Arguments.of(ANNA_SJUKSKOTERSKA_DTO)
-      );
+          Arguments.of(ANNA_SJUKSKOTERSKA_DTO));
     }
   }
 
@@ -504,14 +514,11 @@ public class FK7810ActiveIT extends ActiveCertificatesIT {
       return Stream.of(
           Arguments.of(ALVA_VARDADMINISTRATOR_DTO),
           Arguments.of(BERTIL_BARNMORSKA_DTO),
-          Arguments.of(ANNA_SJUKSKOTERSKA_DTO)
-      );
+          Arguments.of(ANNA_SJUKSKOTERSKA_DTO));
     }
 
     protected static Stream<Arguments> rolesAccessToProtectedPerson() {
-      return Stream.of(
-          Arguments.of(AJLA_DOCTOR_DTO)
-      );
+      return Stream.of(Arguments.of(AJLA_DOCTOR_DTO));
     }
   }
 
@@ -548,11 +555,9 @@ public class FK7810ActiveIT extends ActiveCertificatesIT {
       return Stream.of(
           Arguments.of(ALVA_VARDADMINISTRATOR_DTO),
           Arguments.of(BERTIL_BARNMORSKA_DTO),
-          Arguments.of(ANNA_SJUKSKOTERSKA_DTO)
-      );
+          Arguments.of(ANNA_SJUKSKOTERSKA_DTO));
     }
   }
-
 
   @Nested
   @DisplayName(TYPE + "Administrativ ärendekommunikation")

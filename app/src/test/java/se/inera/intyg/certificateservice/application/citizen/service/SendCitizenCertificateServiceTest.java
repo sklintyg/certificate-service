@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.citizen.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -27,54 +45,51 @@ import se.inera.intyg.certificateservice.domain.common.model.PersonIdType;
 @ExtendWith(MockitoExtension.class)
 class SendCitizenCertificateServiceTest {
 
-  private static final PersonIdDTO PERSON_ID_DTO = PersonIdDTO.builder()
-      .id("191212121212")
-      .type(PersonIdTypeDTO.PERSONAL_IDENTITY_NUMBER)
-      .build();
+  private static final PersonIdDTO PERSON_ID_DTO =
+      PersonIdDTO.builder()
+          .id("191212121212")
+          .type(PersonIdTypeDTO.PERSONAL_IDENTITY_NUMBER)
+          .build();
   private static final String CERTIFICATE_ID = "certificateId";
-  private static final SendCitizenCertificateRequest SEND_CITIZEN_CERTIFICATE_REQUEST = SendCitizenCertificateRequest.builder()
-      .personId(PERSON_ID_DTO)
-      .build();
-  @Mock
-  SendCitizenCertificateDomainService sendCitizenCertificateDomainService;
-  @Mock
-  CitizenCertificateRequestValidator citizenCertificateRequestValidator;
-  @Mock
-  CertificateConverter certificateConverter;
-  @InjectMocks
-  SendCitizenCertificateService sendCitizenCertificateService;
+  private static final SendCitizenCertificateRequest SEND_CITIZEN_CERTIFICATE_REQUEST =
+      SendCitizenCertificateRequest.builder().personId(PERSON_ID_DTO).build();
+  @Mock SendCitizenCertificateDomainService sendCitizenCertificateDomainService;
+  @Mock CitizenCertificateRequestValidator citizenCertificateRequestValidator;
+  @Mock CertificateConverter certificateConverter;
+  @InjectMocks SendCitizenCertificateService sendCitizenCertificateService;
 
   @Test
   void shallThrowIfRequestIsInvalid() {
-    doThrow(IllegalArgumentException.class).when(citizenCertificateRequestValidator).validate(
-        CERTIFICATE_ID, PERSON_ID_DTO
-    );
+    doThrow(IllegalArgumentException.class)
+        .when(citizenCertificateRequestValidator)
+        .validate(CERTIFICATE_ID, PERSON_ID_DTO);
 
-    assertThrows(IllegalArgumentException.class,
+    assertThrows(
+        IllegalArgumentException.class,
         () -> sendCitizenCertificateService.send(SEND_CITIZEN_CERTIFICATE_REQUEST, CERTIFICATE_ID));
   }
 
   @Test
   void shallReturnSendCitizenCertificateResponse() {
     final var expectedCertificate = CertificateDTO.builder().build();
-    final var expectedResult = SendCitizenCertificateResponse.builder()
-        .citizenCertificate(expectedCertificate)
-        .build();
+    final var expectedResult =
+        SendCitizenCertificateResponse.builder().citizenCertificate(expectedCertificate).build();
     final var certificate = MedicalCertificate.builder().build();
 
-    doReturn(certificate).when(sendCitizenCertificateDomainService)
+    doReturn(certificate)
+        .when(sendCitizenCertificateDomainService)
         .send(
             new CertificateId(CERTIFICATE_ID),
             PersonId.builder()
                 .id(PERSON_ID_DTO.getId())
                 .type(PersonIdType.PERSONAL_IDENTITY_NUMBER)
-                .build()
-        );
-    doReturn(expectedCertificate).when(certificateConverter)
+                .build());
+    doReturn(expectedCertificate)
+        .when(certificateConverter)
         .convertForCitizen(certificate, Collections.emptyList());
 
-    final var result = sendCitizenCertificateService.send(SEND_CITIZEN_CERTIFICATE_REQUEST,
-        CERTIFICATE_ID);
+    final var result =
+        sendCitizenCertificateService.send(SEND_CITIZEN_CERTIFICATE_REQUEST, CERTIFICATE_ID);
 
     assertEquals(expectedResult, result);
   }

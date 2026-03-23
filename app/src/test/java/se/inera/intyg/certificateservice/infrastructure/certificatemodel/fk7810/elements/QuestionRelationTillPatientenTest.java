@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7810.elements;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -37,11 +55,11 @@ class QuestionRelationTillPatientenTest {
 
   @Test
   void shallIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationTextField.builder()
-        .name(
-            "Ange anhörigs eller annans relation till patienten")
-        .id(new FieldId("1.4"))
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationTextField.builder()
+            .name("Ange anhörigs eller annans relation till patienten")
+            .id(new FieldId("1.4"))
+            .build();
 
     final var element = questionRelationTillPatienten();
 
@@ -50,46 +68,33 @@ class QuestionRelationTillPatientenTest {
 
   @Test
   void shallIncludeRules() {
-    final var expectedRules = List.of(
-        ElementRuleExpression.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.MANDATORY)
-            .expression(
-                new RuleExpression(
-                    "$1.4"
-                )
-            )
-            .build(),
-        ElementRuleLimit.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.TEXT_LIMIT)
-            .limit(new RuleLimit((short) 4000))
-            .build(),
-        ElementRuleExpression.builder()
-            .id(new ElementId("1"))
-            .type(ElementRuleType.SHOW)
-            .expression(
-                new RuleExpression(
-                    "$anhorig"
-                )
-            )
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleExpression.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.MANDATORY)
+                .expression(new RuleExpression("$1.4"))
+                .build(),
+            ElementRuleLimit.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.TEXT_LIMIT)
+                .limit(new RuleLimit((short) 4000))
+                .build(),
+            ElementRuleExpression.builder()
+                .id(new ElementId("1"))
+                .type(ElementRuleType.SHOW)
+                .expression(new RuleExpression("$anhorig"))
+                .build());
 
     final var element = questionRelationTillPatienten();
 
     assertEquals(expectedRules, element.rules());
-
   }
 
   @Test
   void shallIncludeValidations() {
-    final var expectedValidations = List.of(
-        ElementValidationText.builder()
-            .mandatory(true)
-            .limit(4000)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationText.builder().mandatory(true).limit(4000).build());
 
     final var element = questionRelationTillPatienten();
 
@@ -101,67 +106,59 @@ class QuestionRelationTillPatientenTest {
 
     @Test
     void shallReturnTrueIfElementPresent() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("1"))
-              .value(
-                  ElementValueDateList.builder()
-                      .dateList(
-                          List.of(
-                              ElementValueDate.builder()
-                                  .dateId(new FieldId("anhorig"))
-                                  .build()
-                          )
-                      )
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("1"))
+                  .value(
+                      ElementValueDateList.builder()
+                          .dateList(
+                              List.of(
+                                  ElementValueDate.builder()
+                                      .dateId(new FieldId("anhorig"))
+                                      .build()))
+                          .build())
+                  .build());
 
       final var element = questionRelationTillPatienten();
 
-      final var shouldValidate = element
-          .shouldValidate();
+      final var shouldValidate = element.shouldValidate();
 
       assertTrue(shouldValidate.test(elementData));
     }
 
     @Test
     void shallReturnFalseIfElementMissing() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("2"))
-              .value(
-                  ElementValueDateList.builder()
-                      .dateList(
-                          List.of(
-                              ElementValueDate.builder()
-                                  .dateId(new FieldId("anhorig"))
-                                  .build()
-                          )
-                      )
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("2"))
+                  .value(
+                      ElementValueDateList.builder()
+                          .dateList(
+                              List.of(
+                                  ElementValueDate.builder()
+                                      .dateId(new FieldId("anhorig"))
+                                      .build()))
+                          .build())
+                  .build());
 
       final var element = QuestionRelationTillPatienten.questionRelationTillPatienten();
 
-      final var shouldValidate = element
-          .shouldValidate();
+      final var shouldValidate = element.shouldValidate();
 
       assertFalse(shouldValidate.test(elementData));
     }
   }
 
-
   @Test
   void shallIncludePdfConfiguration() {
-    final var expected = PdfConfigurationText.builder()
-        .pdfFieldId(new PdfFieldId("form1[0].#subform[0].flt_txtAnhorigAnnanReleation[0]"))
-        .maxLength(27)
-        .overflowSheetFieldId(OVERFLOW_SHEET_FIELD_ID)
-        .build();
+    final var expected =
+        PdfConfigurationText.builder()
+            .pdfFieldId(new PdfFieldId("form1[0].#subform[0].flt_txtAnhorigAnnanReleation[0]"))
+            .maxLength(27)
+            .overflowSheetFieldId(OVERFLOW_SHEET_FIELD_ID)
+            .build();
 
     final var element = questionRelationTillPatienten();
 

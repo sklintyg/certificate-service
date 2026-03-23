@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.message.model;
 
 import java.time.LocalDate;
@@ -40,21 +58,19 @@ public class Message {
   private Forwarded forwarded;
   private LocalDate lastDateToReply;
   private MessageContactInfo contactInfo;
-  @Builder.Default
-  private final List<Complement> complements = Collections.emptyList();
+  @Builder.Default private final List<Complement> complements = Collections.emptyList();
   private Answer answer;
-  @Builder.Default
-  private List<Reminder> reminders = Collections.emptyList();
+  @Builder.Default private List<Reminder> reminders = Collections.emptyList();
   private Staff authoredStaff;
   private List<MessageAction> messageActions;
 
-  public List<MessageActionLink> actionsInclude(ActionEvaluation actionEvaluation,
-      Certificate certificate) {
+  public List<MessageActionLink> actionsInclude(
+      ActionEvaluation actionEvaluation, Certificate certificate) {
     return actions(actionEvaluation, certificate);
   }
 
-  public List<MessageActionLink> actions(ActionEvaluation actionEvaluation,
-      Certificate certificate) {
+  public List<MessageActionLink> actions(
+      ActionEvaluation actionEvaluation, Certificate certificate) {
     final var certificateActions = certificate.actionsInclude(Optional.of(actionEvaluation));
     return certificate.certificateModel().messageActions().stream()
         .filter(messageAction -> messageAction.evaluate(certificateActions, this))
@@ -70,11 +86,10 @@ public class Message {
     return !type.equals(MessageType.COMPLEMENT);
   }
 
-  public boolean actionAvailable(CertificateActionType certificateActionType,
-      List<CertificateAction> certificateActions) {
+  public boolean actionAvailable(
+      CertificateActionType certificateActionType, List<CertificateAction> certificateActions) {
     return certificateActions.stream()
-        .anyMatch(certificateAction -> certificateAction.getType()
-            .equals(certificateActionType));
+        .anyMatch(certificateAction -> certificateAction.getType().equals(certificateActionType));
   }
 
   public void handle() {
@@ -92,16 +107,11 @@ public class Message {
   }
 
   public void remind(Reminder reminder) {
-    this.reminders = Stream.concat(
-            this.reminders.stream(),
-            Stream.of(reminder)
-        )
-        .toList();
+    this.reminders = Stream.concat(this.reminders.stream(), Stream.of(reminder)).toList();
   }
 
-
-  public static Message create(MessageType messageType, Content content,
-      CertificateId certificateId, Staff staff) {
+  public static Message create(
+      MessageType messageType, Content content, CertificateId certificateId, Staff staff) {
     return Message.builder()
         .id(new MessageId(UUID.randomUUID().toString()))
         .author(new Author(staff.name().fullName()))
@@ -130,9 +140,8 @@ public class Message {
   public void delete() {
     if (this.status != MessageStatus.DRAFT) {
       throw new IllegalStateException(
-          "Incorrect status '%s' - required status is '%s' to delete".formatted(this.status,
-              MessageStatus.DRAFT)
-      );
+          "Incorrect status '%s' - required status is '%s' to delete"
+              .formatted(this.status, MessageStatus.DRAFT));
     }
     this.status = MessageStatus.DELETED_DRAFT;
   }
@@ -143,14 +152,15 @@ public class Message {
 
   public void saveAnswer(Staff staff, Content content) {
     if (answer == null) {
-      this.answer = Answer.builder()
-          .id(new MessageId(UUID.randomUUID().toString()))
-          .subject(subject)
-          .content(content)
-          .status(MessageStatus.DRAFT)
-          .author(new Author(staff.name().fullName()))
-          .authoredStaff(staff)
-          .build();
+      this.answer =
+          Answer.builder()
+              .id(new MessageId(UUID.randomUUID().toString()))
+              .subject(subject)
+              .content(content)
+              .status(MessageStatus.DRAFT)
+              .author(new Author(staff.name().fullName()))
+              .authoredStaff(staff)
+              .build();
     } else {
       answer.save(staff, content);
     }
@@ -158,27 +168,26 @@ public class Message {
 
   public void deleteAnswer() {
     if (this.answer == null) {
-      throw new IllegalStateException(
-          "Can`t delete answer because answer is null"
-      );
+      throw new IllegalStateException("Can`t delete answer because answer is null");
     }
     if (this.answer.status() != MessageStatus.DRAFT) {
       throw new IllegalStateException(
-          "Incorrect status '%s' - required status is '%s' to delete answer".formatted(this.status,
-              MessageStatus.DRAFT)
-      );
+          "Incorrect status '%s' - required status is '%s' to delete answer"
+              .formatted(this.status, MessageStatus.DRAFT));
     }
     this.answer.delete();
   }
 
   public void sendAnswer(Staff staff, Content content) {
-    if (type(List.of(MessageType.COMPLEMENT, MessageType.REMINDER, MessageType.MISSING,
-        MessageType.ANSWER))) {
+    if (type(
+        List.of(
+            MessageType.COMPLEMENT,
+            MessageType.REMINDER,
+            MessageType.MISSING,
+            MessageType.ANSWER))) {
       throw new IllegalStateException(
-          "Incorrect type '%s' - required type is '%s' or '%s' to send answer".formatted(
-              this.type,
-              MessageType.CONTACT, MessageType.OTHER)
-      );
+          "Incorrect type '%s' - required type is '%s' or '%s' to send answer"
+              .formatted(this.type, MessageType.CONTACT, MessageType.OTHER));
     }
     this.answer.send(staff, content);
     this.handle();

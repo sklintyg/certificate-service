@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ag7804;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -29,21 +47,19 @@ class CertificateModelFactoryAG7804Test {
   private static final String TYPE = "ag7804";
   private static final String VERSION = "2.0";
 
-  @Mock
-  private CertificateActionFactory certificateActionFactory;
+  @Mock private CertificateActionFactory certificateActionFactory;
 
-  @Mock
-  private DiagnosisCodeRepository diagnosisCodeRepository;
+  @Mock private DiagnosisCodeRepository diagnosisCodeRepository;
 
   private CertificateModelFactoryAG7804 certificateModelFactoryAG7804;
 
   @BeforeEach
   void setUp() {
-    certificateModelFactoryAG7804 = new CertificateModelFactoryAG7804(
-        certificateActionFactory,
-        diagnosisCodeRepository
-    );
-    ReflectionTestUtils.setField(certificateModelFactoryAG7804, "activeFrom",
+    certificateModelFactoryAG7804 =
+        new CertificateModelFactoryAG7804(certificateActionFactory, diagnosisCodeRepository);
+    ReflectionTestUtils.setField(
+        certificateModelFactoryAG7804,
+        "activeFrom",
         java.time.LocalDateTime.now(java.time.ZoneId.systemDefault()));
   }
 
@@ -95,11 +111,7 @@ class CertificateModelFactoryAG7804Test {
   @Test
   void shouldIncludeActiveFrom() {
     final var expectedActiveFrom = LocalDateTime.now(ZoneId.systemDefault());
-    ReflectionTestUtils.setField(
-        certificateModelFactoryAG7804,
-        "activeFrom",
-        expectedActiveFrom
-    );
+    ReflectionTestUtils.setField(certificateModelFactoryAG7804, "activeFrom", expectedActiveFrom);
 
     final var certificateModel = certificateModelFactoryAG7804.create();
 
@@ -117,8 +129,8 @@ class CertificateModelFactoryAG7804Test {
   void shouldIncludeSummaryProvider() {
     final var certificateModel = certificateModelFactoryAG7804.create();
 
-    assertEquals(AG7804CertificateSummaryProvider.class,
-        certificateModel.summaryProvider().getClass());
+    assertEquals(
+        AG7804CertificateSummaryProvider.class, certificateModel.summaryProvider().getClass());
   }
 
   @Test
@@ -134,8 +146,7 @@ class CertificateModelFactoryAG7804Test {
 
     assertAll(
         () -> assertNotNull(certificateModel.certificateActionSpecifications()),
-        () -> assertFalse(certificateModel.certificateActionSpecifications().isEmpty())
-    );
+        () -> assertFalse(certificateModel.certificateActionSpecifications().isEmpty()));
   }
 
   @Test
@@ -149,16 +160,48 @@ class CertificateModelFactoryAG7804Test {
   class CertificateSpecifications {
 
     @ParameterizedTest
-    @ValueSource(strings = {
-        "KAT_1", "KAT_2", "KAT_3", "KAT_4", "KAT_5", "KAT_6", "KAT_7", "KAT_8", "KAT_9", "KAT_10",
-        "KAT_11", "KAT_12", "UNIT_CONTACT_INFORMATION", "27", "1", "1.3", "28", "29", "19", "32",
-        "37", "34", "33", "33.2", "6", "44", "25", "39", "39.2", "39.4", "103", "103.2", "100"
-    })
+    @ValueSource(
+        strings = {
+          "KAT_1",
+          "KAT_2",
+          "KAT_3",
+          "KAT_4",
+          "KAT_5",
+          "KAT_6",
+          "KAT_7",
+          "KAT_8",
+          "KAT_9",
+          "KAT_10",
+          "KAT_11",
+          "KAT_12",
+          "UNIT_CONTACT_INFORMATION",
+          "27",
+          "1",
+          "1.3",
+          "28",
+          "29",
+          "19",
+          "32",
+          "37",
+          "34",
+          "33",
+          "33.2",
+          "6",
+          "44",
+          "25",
+          "39",
+          "39.2",
+          "39.4",
+          "103",
+          "103.2",
+          "100"
+        })
     void shouldIncludeCategories(String id) {
       final var elementId = new ElementId(id);
       final var certificateModel = certificateModelFactoryAG7804.create();
 
-      assertTrue(certificateModel.elementSpecificationExists(elementId),
+      assertTrue(
+          certificateModel.elementSpecificationExists(elementId),
           "Expected elementId: '%s' to exist in elementSpecifications".formatted(elementId));
     }
   }

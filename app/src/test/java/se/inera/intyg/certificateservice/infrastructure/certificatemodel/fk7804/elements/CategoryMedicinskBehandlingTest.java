@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7804.elements;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,16 +43,16 @@ class CategoryMedicinskBehandlingTest {
 
   @Test
   void shallIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationCategory.builder()
-        .name("Medicinsk behandling")
-        .description(
-            """
-                Här beskriver du de medicinska behandlingar/åtgärder som kan påverka arbetsförmågan, vad de förväntas leda till, och en (preliminär) tidplan för åtgärderna.
-                
-                Om olika åtgärder behöver ske i viss ordning är det bra om du beskriver detta.
+    final var expectedConfiguration =
+        ElementConfigurationCategory.builder()
+            .name("Medicinsk behandling")
+            .description(
                 """
-        )
-        .build();
+                Här beskriver du de medicinska behandlingar/åtgärder som kan påverka arbetsförmågan, vad de förväntas leda till, och en (preliminär) tidplan för åtgärderna.
+
+                Om olika åtgärder behöver ske i viss ordning är det bra om du beskriver detta.
+                """)
+            .build();
 
     final var element = categoryMedicinskBehandling();
 
@@ -44,13 +62,13 @@ class CategoryMedicinskBehandlingTest {
   @Test
   void shallIncludeRules() {
     final var element = categoryMedicinskBehandling();
-    final var expectedRules = List.of(
-        ElementRuleExpression.builder()
-            .id(QUESTION_SMITTBARARPENNING_ID)
-            .type(ElementRuleType.HIDE)
-            .expression(new RuleExpression("$" + QUESTION_SMITTBARARPENNING_FIELD_ID.value()))
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleExpression.builder()
+                .id(QUESTION_SMITTBARARPENNING_ID)
+                .type(ElementRuleType.HIDE)
+                .expression(new RuleExpression("$" + QUESTION_SMITTBARARPENNING_FIELD_ID.value()))
+                .build());
     assertEquals(expectedRules, element.rules());
   }
 }

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.certificate.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,11 +36,7 @@ class ElementValueUnitContactInformationTest {
 
     @Test
     void shouldReturnTrueIfNull() {
-      assertTrue(
-          ElementValueUnitContactInformation.builder()
-              .build()
-              .isEmpty()
-      );
+      assertTrue(ElementValueUnitContactInformation.builder().build().isEmpty());
     }
 
     @Test
@@ -34,8 +48,7 @@ class ElementValueUnitContactInformationTest {
               .zipCode("ZipCode")
               .phoneNumber("PhoneNumber")
               .build()
-              .isEmpty()
-      );
+              .isEmpty());
     }
 
     @Test
@@ -46,8 +59,7 @@ class ElementValueUnitContactInformationTest {
               .city("City")
               .zipCode("ZipCode")
               .build()
-              .isEmpty()
-      );
+              .isEmpty());
     }
   }
 
@@ -57,12 +69,8 @@ class ElementValueUnitContactInformationTest {
     @Test
     void shouldReturnAddressIfIssuedUnitAddressNull() {
       final var original = contactInfoElementValueBuilder().build();
-      final var issuingUnit = alfaAllergimottagningenBuilder()
-          .address(
-              UnitAddress.builder()
-                  .build()
-          )
-          .build();
+      final var issuingUnit =
+          alfaAllergimottagningenBuilder().address(UnitAddress.builder().build()).build();
 
       final var actual = original.copy(issuingUnit);
       assertEquals(original.address(), actual.address());
@@ -71,13 +79,10 @@ class ElementValueUnitContactInformationTest {
     @Test
     void shouldReturnAddressIfIssuedUnitAddressEmpty() {
       final var original = contactInfoElementValueBuilder().build();
-      final var issuingUnit = alfaAllergimottagningenBuilder()
-          .address(
-              UnitAddress.builder()
-                  .address("")
-                  .build()
-          )
-          .build();
+      final var issuingUnit =
+          alfaAllergimottagningenBuilder()
+              .address(UnitAddress.builder().address("").build())
+              .build();
 
       final var actual = original.copy(issuingUnit);
       assertEquals(original.address(), actual.address());
@@ -86,13 +91,10 @@ class ElementValueUnitContactInformationTest {
     @Test
     void shouldReturnIssuedUnitAddressIfIssuedUnitAddressExists() {
       final var original = contactInfoElementValueBuilder().build();
-      final var issuingUnit = alfaAllergimottagningenBuilder()
-          .address(
-              UnitAddress.builder()
-                  .address("New Address")
-                  .build()
-          )
-          .build();
+      final var issuingUnit =
+          alfaAllergimottagningenBuilder()
+              .address(UnitAddress.builder().address("New Address").build())
+              .build();
 
       final var actual = original.copy(issuingUnit);
       assertEquals("New Address", actual.address());
@@ -101,12 +103,8 @@ class ElementValueUnitContactInformationTest {
     @Test
     void shouldReturnCityIfIssuedUnitCityNull() {
       final var original = contactInfoElementValueBuilder().build();
-      final var issuingUnit = alfaAllergimottagningenBuilder()
-          .address(
-              UnitAddress.builder()
-                  .build()
-          )
-          .build();
+      final var issuingUnit =
+          alfaAllergimottagningenBuilder().address(UnitAddress.builder().build()).build();
 
       final var actual = original.copy(issuingUnit);
       assertEquals(original.city(), actual.city());
@@ -115,13 +113,8 @@ class ElementValueUnitContactInformationTest {
     @Test
     void shouldReturnCityIfIssuedUnitCityEmpty() {
       final var original = contactInfoElementValueBuilder().build();
-      final var issuingUnit = alfaAllergimottagningenBuilder()
-          .address(
-              UnitAddress.builder()
-                  .city("")
-                  .build()
-          )
-          .build();
+      final var issuingUnit =
+          alfaAllergimottagningenBuilder().address(UnitAddress.builder().city("").build()).build();
 
       final var actual = original.copy(issuingUnit);
       assertEquals(original.city(), actual.city());
@@ -130,13 +123,10 @@ class ElementValueUnitContactInformationTest {
     @Test
     void shouldReturnIssuedUnitCityIfIssuedUnitCityExists() {
       final var original = contactInfoElementValueBuilder().build();
-      final var issuingUnit = alfaAllergimottagningenBuilder()
-          .address(
-              UnitAddress.builder()
-                  .city("New City")
-                  .build()
-          )
-          .build();
+      final var issuingUnit =
+          alfaAllergimottagningenBuilder()
+              .address(UnitAddress.builder().city("New City").build())
+              .build();
 
       final var actual = original.copy(issuingUnit);
       assertEquals("New City", actual.city());
@@ -145,12 +135,8 @@ class ElementValueUnitContactInformationTest {
     @Test
     void shouldReturnZipCodeIfIssuedUnitZipCodeNull() {
       final var original = contactInfoElementValueBuilder().build();
-      final var issuingUnit = alfaAllergimottagningenBuilder()
-          .address(
-              UnitAddress.builder()
-                  .build()
-          )
-          .build();
+      final var issuingUnit =
+          alfaAllergimottagningenBuilder().address(UnitAddress.builder().build()).build();
 
       final var actual = original.copy(issuingUnit);
       assertEquals(original.zipCode(), actual.zipCode());
@@ -159,13 +145,10 @@ class ElementValueUnitContactInformationTest {
     @Test
     void shouldReturnZipCodeIfIssuedUnitZipCodeEmpty() {
       final var original = contactInfoElementValueBuilder().build();
-      final var issuingUnit = alfaAllergimottagningenBuilder()
-          .address(
-              UnitAddress.builder()
-                  .zipCode("")
-                  .build()
-          )
-          .build();
+      final var issuingUnit =
+          alfaAllergimottagningenBuilder()
+              .address(UnitAddress.builder().zipCode("").build())
+              .build();
 
       final var actual = original.copy(issuingUnit);
       assertEquals(original.zipCode(), actual.zipCode());
@@ -174,13 +157,10 @@ class ElementValueUnitContactInformationTest {
     @Test
     void shouldReturnIssuedUnitZipCodeIfIssuedUnitZipCodeExists() {
       final var original = contactInfoElementValueBuilder().build();
-      final var issuingUnit = alfaAllergimottagningenBuilder()
-          .address(
-              UnitAddress.builder()
-                  .zipCode("New ZipCode")
-                  .build()
-          )
-          .build();
+      final var issuingUnit =
+          alfaAllergimottagningenBuilder()
+              .address(UnitAddress.builder().zipCode("New ZipCode").build())
+              .build();
 
       final var actual = original.copy(issuingUnit);
       assertEquals("New ZipCode", actual.zipCode());
@@ -189,12 +169,8 @@ class ElementValueUnitContactInformationTest {
     @Test
     void shouldReturnPhoneNumberIfIssuedUnitPhoneNumberNull() {
       final var original = contactInfoElementValueBuilder().build();
-      final var issuingUnit = alfaAllergimottagningenBuilder()
-          .contactInfo(
-              UnitContactInfo.builder()
-                  .build()
-          )
-          .build();
+      final var issuingUnit =
+          alfaAllergimottagningenBuilder().contactInfo(UnitContactInfo.builder().build()).build();
 
       final var actual = original.copy(issuingUnit);
       assertEquals(original.phoneNumber(), actual.phoneNumber());
@@ -203,13 +179,10 @@ class ElementValueUnitContactInformationTest {
     @Test
     void shouldReturnPhoneNumberIfIssuedUnitPhoneNumberEmpty() {
       final var original = contactInfoElementValueBuilder().build();
-      final var issuingUnit = alfaAllergimottagningenBuilder()
-          .contactInfo(
-              UnitContactInfo.builder()
-                  .phoneNumber("")
-                  .build()
-          )
-          .build();
+      final var issuingUnit =
+          alfaAllergimottagningenBuilder()
+              .contactInfo(UnitContactInfo.builder().phoneNumber("").build())
+              .build();
 
       final var actual = original.copy(issuingUnit);
       assertEquals(original.phoneNumber(), actual.phoneNumber());
@@ -218,13 +191,10 @@ class ElementValueUnitContactInformationTest {
     @Test
     void shouldReturnIssuedUnitPhoneNumberIfIssuedUnitPhoneNumberExists() {
       final var original = contactInfoElementValueBuilder().build();
-      final var issuingUnit = alfaAllergimottagningenBuilder()
-          .contactInfo(
-              UnitContactInfo.builder()
-                  .phoneNumber("New PhoneNumber")
-                  .build()
-          )
-          .build();
+      final var issuingUnit =
+          alfaAllergimottagningenBuilder()
+              .contactInfo(UnitContactInfo.builder().phoneNumber("New PhoneNumber").build())
+              .build();
 
       final var actual = original.copy(issuingUnit);
       assertEquals("New PhoneNumber", actual.phoneNumber());

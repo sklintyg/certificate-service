@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.patient.service.validator;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -11,25 +29,24 @@ import se.inera.intyg.certificateservice.application.certificate.dto.Certificate
 
 class CertificatesWithQAInternalRequestValidatorTest {
 
-  private static final List<String> CERTIFICATE_IDS = List.of("certificateId1", "certificateId2",
-      "certificateId3");
+  private static final List<String> CERTIFICATE_IDS =
+      List.of("certificateId1", "certificateId2", "certificateId3");
   private CertificatesWithQARequestValidator validator;
   private CertificatesWithQAInternalRequest.CertificatesWithQAInternalRequestBuilder requestBuilder;
 
   @BeforeEach
   void setUp() {
     validator = new CertificatesWithQARequestValidator();
-    requestBuilder = CertificatesWithQAInternalRequest.builder()
-        .certificateIds(CERTIFICATE_IDS);
+    requestBuilder = CertificatesWithQAInternalRequest.builder().certificateIds(CERTIFICATE_IDS);
   }
 
   @Test
   void shallThrowIfCertificateIdsIsNull() {
     final var request = requestBuilder.certificateIds(null).build();
-    final var illegalArgumentException = assertThrows(IllegalArgumentException.class,
-        () -> validator.validate(request));
-    assertEquals("Required parameter missing: certificateIds",
-        illegalArgumentException.getMessage());
+    final var illegalArgumentException =
+        assertThrows(IllegalArgumentException.class, () -> validator.validate(request));
+    assertEquals(
+        "Required parameter missing: certificateIds", illegalArgumentException.getMessage());
   }
 
   @Test

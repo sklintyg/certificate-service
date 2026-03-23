@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7810.elements;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7810.elements.QuestionFunktionsnedsattning.FUNKTIONSNEDSATTNING_ANDNINGS_ID;
@@ -7,15 +25,14 @@ import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementSp
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.FieldId;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfFieldId;
 
-public class QuestionAndningsFunktionMotivering extends
-    AbstractFunktionsnedsattningMotivering {
+public class QuestionAndningsFunktionMotivering extends AbstractFunktionsnedsattningMotivering {
 
-  public static final ElementId FUNKTIONSNEDSATTNING_MOTIVERING_ANDNINGS_FUNKTION_ID = new ElementId(
-      "64");
-  private static final FieldId FUNKTIONSNEDSATTNING_MOTIVERING_ANDNINGS_FUNKTION_FIELD_ID = new FieldId(
-      "64.1");
-  private static final PdfFieldId PDF_FIELD_ID = new PdfFieldId(
-      "form1[0].Sida3[0].flt_txtAndningsfunktioner[0]");
+  public static final ElementId FUNKTIONSNEDSATTNING_MOTIVERING_ANDNINGS_FUNKTION_ID =
+      new ElementId("64");
+  private static final FieldId FUNKTIONSNEDSATTNING_MOTIVERING_ANDNINGS_FUNKTION_FIELD_ID =
+      new FieldId("64.1");
+  private static final PdfFieldId PDF_FIELD_ID =
+      new PdfFieldId("form1[0].Sida3[0].flt_txtAndningsfunktioner[0]");
 
   private QuestionAndningsFunktionMotivering() {
     throw new IllegalStateException("Utility class");
@@ -34,7 +51,6 @@ public class QuestionAndningsFunktionMotivering extends
             <li>funktioner att andas in luft i lungorna, gasutbyte mellan luft och blod samt utandning</li><li>funktioner i muskler som är involverade i andning</li></ul>
             Inklusive eventuella åtgärder av annan person, så som slemsugning och hjälp att hantera respirator
             """,
-        PDF_FIELD_ID
-    );
+        PDF_FIELD_ID);
   }
 }

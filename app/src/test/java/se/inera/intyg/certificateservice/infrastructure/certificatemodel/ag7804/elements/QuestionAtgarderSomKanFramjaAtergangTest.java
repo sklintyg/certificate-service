@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ag7804.elements;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,51 +49,49 @@ class QuestionAtgarderSomKanFramjaAtergangTest {
 
   @Test
   void shouldIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationTextArea.builder()
-        .id(new FieldId("44.1"))
-        .name(
-            "Här kan du beskriva andra åtgärder än åtgärder inom hälso- och sjukvården som kan främja återgången i arbete")
-        .label(
-            "Beskriv gärna hur åtgärderna kan främja återgången i arbete eller annan aktuell sysselsättning.")
-        .description("""
+    final var expectedConfiguration =
+        ElementConfigurationTextArea.builder()
+            .id(new FieldId("44.1"))
+            .name(
+                "Här kan du beskriva andra åtgärder än åtgärder inom hälso- och sjukvården som kan främja återgången i arbete")
+            .label(
+                "Beskriv gärna hur åtgärderna kan främja återgången i arbete eller annan aktuell sysselsättning.")
+            .description(
+                """
             Åtgärderna kan exempelvis handla om att patienten har en regelbunden kontakt med arbetsplatsen. Det kan också vara arbetsanpassning, som anpassning av arbetstider, arbetsuppgifter eller arbetsplatsen.
-            
+
             Du kan även föreslå att patienten får arbetsträna vilket innebär att vara på en arbetsplats och delta
             i verksamheten utan krav på produktivitet.\s
-            
+
             Tänk på att det är Försäkringskassan eller Arbetsförmedlingen som beslutar om arbetsträning. De föreslagna åtgärderna är exempel på möjliga åtgärder och det kan finnas flera åtgärder som är lämpliga.
             """)
-        .build();
+            .build();
     final var element = QuestionAtgarderSomKanFramjaAtergang.questionAtgarderSomKanFramjaAtergang();
     assertEquals(expectedConfiguration, element.configuration());
   }
 
   @Test
   void shouldIncludeRules() {
-    final var expectedRules = List.of(
-        ElementRuleLimit.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.TEXT_LIMIT)
-            .limit(new RuleLimit((short) 4000))
-            .build(),
-        ElementRuleExpression.builder()
-            .id(new ElementId("27"))
-            .type(ElementRuleType.HIDE)
-            .expression(new RuleExpression("$27.1"))
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleLimit.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.TEXT_LIMIT)
+                .limit(new RuleLimit((short) 4000))
+                .build(),
+            ElementRuleExpression.builder()
+                .id(new ElementId("27"))
+                .type(ElementRuleType.HIDE)
+                .expression(new RuleExpression("$27.1"))
+                .build());
     final var element = QuestionAtgarderSomKanFramjaAtergang.questionAtgarderSomKanFramjaAtergang();
     assertEquals(expectedRules, element.rules());
   }
 
   @Test
   void shouldIncludeValidations() {
-    final var expectedValidations = List.of(
-        ElementValidationText.builder()
-            .mandatory(false)
-            .limit(4000)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationText.builder().mandatory(false).limit(4000).build());
     final var element = QuestionAtgarderSomKanFramjaAtergang.questionAtgarderSomKanFramjaAtergang();
     assertEquals(expectedValidations, element.validations());
   }
@@ -85,54 +101,44 @@ class QuestionAtgarderSomKanFramjaAtergangTest {
 
     @Test
     void shallReturnTrueIfBooleanIsFalse() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("27"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(false)
-                      .build()
-              )
-              .build()
-      );
-      final var element = QuestionAtgarderSomKanFramjaAtergang.questionAtgarderSomKanFramjaAtergang();
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("27"))
+                  .value(ElementValueBoolean.builder().value(false).build())
+                  .build());
+      final var element =
+          QuestionAtgarderSomKanFramjaAtergang.questionAtgarderSomKanFramjaAtergang();
       final var shouldValidate = element.elementSpecification(ELEMENT_ID).shouldValidate();
       assertTrue(shouldValidate.test(elementData));
     }
 
     @Test
     void shallReturnTrueIfElementMissing() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("8.1"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(true)
-                      .build()
-              )
-              .build()
-      );
-      final var element = QuestionAtgarderSomKanFramjaAtergang.questionAtgarderSomKanFramjaAtergang();
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("8.1"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
+      final var element =
+          QuestionAtgarderSomKanFramjaAtergang.questionAtgarderSomKanFramjaAtergang();
       final var shouldValidate = element.elementSpecification(ELEMENT_ID).shouldValidate();
       assertTrue(shouldValidate.test(elementData));
     }
 
     @Test
     void shallReturnFalseIfElementTrue() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("27"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(true)
-                      .build()
-              )
-              .build()
-      );
-      final var element = QuestionAtgarderSomKanFramjaAtergang.questionAtgarderSomKanFramjaAtergang();
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("27"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
+      final var element =
+          QuestionAtgarderSomKanFramjaAtergang.questionAtgarderSomKanFramjaAtergang();
       final var shouldValidate = element.elementSpecification(ELEMENT_ID).shouldValidate();
       assertFalse(shouldValidate.test(elementData));
     }
   }
-
 }

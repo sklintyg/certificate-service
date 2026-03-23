@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service.converter;
 
 import static se.inera.intyg.certificateservice.application.certificate.dto.value.CertificateDataValueType.VISUAL_ACUITIES;
@@ -27,8 +45,7 @@ public class ElementValueConverterVisualAcuities implements ElementValueConverte
   public ElementValue convert(CertificateDataValue value) {
     if (!(value instanceof CertificateDataValueVisualAcuities visualAcuities)) {
       throw new IllegalStateException(
-          "Invalid value type. Type was '%s'".formatted(value.getType())
-      );
+          "Invalid value type. Type was '%s'".formatted(value.getType()));
     }
 
     return ElementValueVisualAcuities.builder()
@@ -38,50 +55,43 @@ public class ElementValueConverterVisualAcuities implements ElementValueConverte
                     Correction.builder()
                         .id(new FieldId(visualAcuities.getRightEye().getWithCorrection().getId()))
                         .value(getIfPresent(visualAcuities.getRightEye().getWithCorrection()))
-                        .build()
-                )
+                        .build())
                 .withoutCorrection(
                     Correction.builder()
-                        .id(new FieldId(
-                            visualAcuities.getRightEye().getWithoutCorrection().getId()))
+                        .id(
+                            new FieldId(
+                                visualAcuities.getRightEye().getWithoutCorrection().getId()))
                         .value(getIfPresent(visualAcuities.getRightEye().getWithoutCorrection()))
-                        .build()
-                )
-                .build()
-        )
+                        .build())
+                .build())
         .leftEye(
             VisualAcuity.builder()
                 .withCorrection(
                     Correction.builder()
                         .id(new FieldId(visualAcuities.getLeftEye().getWithCorrection().getId()))
                         .value(getIfPresent(visualAcuities.getLeftEye().getWithCorrection()))
-                        .build()
-                )
+                        .build())
                 .withoutCorrection(
                     Correction.builder()
                         .id(new FieldId(visualAcuities.getLeftEye().getWithoutCorrection().getId()))
                         .value(getIfPresent(visualAcuities.getLeftEye().getWithoutCorrection()))
-                        .build()
-                )
-                .build()
-        )
+                        .build())
+                .build())
         .binocular(
             VisualAcuity.builder()
                 .withCorrection(
                     Correction.builder()
                         .id(new FieldId(visualAcuities.getBinocular().getWithCorrection().getId()))
                         .value(getIfPresent(visualAcuities.getBinocular().getWithCorrection()))
-                        .build()
-                )
+                        .build())
                 .withoutCorrection(
                     Correction.builder()
-                        .id(new FieldId(
-                            visualAcuities.getBinocular().getWithoutCorrection().getId()))
+                        .id(
+                            new FieldId(
+                                visualAcuities.getBinocular().getWithoutCorrection().getId()))
                         .value(getIfPresent(visualAcuities.getBinocular().getWithoutCorrection()))
-                        .build()
-                )
-                .build()
-        )
+                        .build())
+                .build())
         .build();
   }
 

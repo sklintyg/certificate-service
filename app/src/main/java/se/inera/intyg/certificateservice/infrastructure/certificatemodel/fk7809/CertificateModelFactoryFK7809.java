@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7809;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.elements.ElementUnitContactInformation.issuingUnitContactInfo;
@@ -59,6 +77,7 @@ import se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.
 public class CertificateModelFactoryFK7809 implements CertificateModelFactory {
 
   private final CertificateActionFactory certificateActionFactory;
+
   @Value("${certificate.model.fk7809.v1_0.active.from}")
   private LocalDateTime activeFrom;
 
@@ -71,22 +90,24 @@ public class CertificateModelFactoryFK7809 implements CertificateModelFactory {
   private static final String VERSION = "1.0";
   private static final CertificateTypeName FK7809_TYPE_NAME = new CertificateTypeName("FK7809");
   private static final String NAME = "Läkarutlåtande för merkostnadsersättning";
-  private static final String DESCRIPTION = """
+  private static final String DESCRIPTION =
+      """
       <b className="iu-fw-heading">Vem kan få merkostnadsersättning?</b>
-      
+
       En person kan ha rätt till merkostnadsersättning för kostnader som beror på att hen fått en varaktig funktionsnedsättning som kan antas finnas i minst ett år. Funktionsnedsättningen ska ha uppstått innan hen fyllde 66 år. Om personen är född 1957 eller tidigare kan hen även få ersättning för kostnader som beror på att hen fått en funktionsnedsättning innan hen fyllde 65 år. För att få merkostnadsersättning ska merkostnaderna uppgå till minst 25 procent av ett prisbasbelopp per år.
-      
+
       Den som anses vara blind eller gravt hörselskadad kan få en garanterad nivå av merkostnadsersättning utan att ha några merkostnader.
       """;
-  private static final String DETAILED_DESCRIPTION = """
+  private static final String DETAILED_DESCRIPTION =
+      """
        <b className="iu-fw-heading">Vem kan få merkostnadsersättning?</b>
-      
+
        En person kan ha rätt till merkostnadsersättning för kostnader som beror på att hen har en funktionsnedsättning. Funktionsnedsättningen ska antas finnas i minst ett år.
-      
+
        Personen måste ha fått sin funktionsnedsättning innan hen fyllde 66 år. Om personen är född 1957 eller tidigare måste hen ha fått sin funktionsnedsättning innan hen fyllde 65 år.
-      
+
        För att ha rätt till merkostnadsersättning ska merkostnaderna uppgå till minst 25 procent av ett prisbasbelopp per år.
-      
+
        Merkostnader delas in sju olika kategorier:
        <ul><li>hälsa, vård och kost</li><li>slitage och rengöring</li><li>resor</li><li>hjälpmedel</li><li>hjälp i den dagliga livsföringen</li><li>boende</li><li>övriga ändamål</li></ul>
        Den som anses vara blind eller gravt hörselskadad kan få en garanterad nivå av merkostnadsersättning utan att ha några merkostnader.
@@ -95,13 +116,14 @@ public class CertificateModelFactoryFK7809 implements CertificateModelFactory {
       "Det här är ditt intyg. Intyget innehåller all information som vården fyllt i. Du kan inte ändra något i ditt intyg. "
           + "Har du frågor kontaktar du den som skrivit ditt intyg.";
 
-  public static final CertificateModelId FK7809_V1_0 = CertificateModelId.builder()
-      .type(new CertificateType(FK_7809))
-      .version(new CertificateVersion(VERSION))
-      .build();
+  public static final CertificateModelId FK7809_V1_0 =
+      CertificateModelId.builder()
+          .type(new CertificateType(FK_7809))
+          .version(new CertificateVersion(VERSION))
+          .build();
 
-  private static final SchematronPath SCHEMATRON_PATH = new SchematronPath(
-      "fk7809/schematron/lumek.v1.sch");
+  private static final SchematronPath SCHEMATRON_PATH =
+      new SchematronPath("fk7809/schematron/lumek.v1.sch");
 
   @Override
   public CertificateModel create() {
@@ -123,9 +145,7 @@ public class CertificateModelFactoryFK7809 implements CertificateModelFactory {
                     .text(PREAMBLE_TEXT)
                     .type(CertificateTextType.PREAMBLE_TEXT)
                     .links(Collections.emptyList())
-                    .build()
-            )
-        )
+                    .build()))
         .recipient(CertificateRecipientFactory.fkassa(fkLogicalAddress))
         .messageTypes(
             List.of(
@@ -140,25 +160,18 @@ public class CertificateModelFactoryFK7809 implements CertificateModelFactory {
                 CertificateMessageType.builder()
                     .type(MessageType.OTHER)
                     .subject(new Subject(MessageType.OTHER.displayName()))
-                    .build()
-            )
-        )
+                    .build()))
         .certificateActionSpecifications(FK7809CertificateActionSpecification.create())
         .messageActionSpecifications(FK7809MessageActionSpecification.create())
         .elementSpecifications(
             List.of(
                 categoryGrundForMedicinsktUnderlag(
                     questionGrundForMedicinsktUnderlag(
-                        questionRelationTillPatienten(),
-                        questionAnnanGrundForMedicinsktUnderlag()
-                    ),
+                        questionRelationTillPatienten(), questionAnnanGrundForMedicinsktUnderlag()),
                     questionBaseratPaAnnatMedicinsktUnderlag(),
-                    questionUtredningEllerUnderlag()
-                ),
+                    questionUtredningEllerUnderlag()),
                 categoryDiagnos(
-                    questionDiagnos(diagnosisCodeRepository),
-                    questionDiagnosHistorik()
-                ),
+                    questionDiagnos(diagnosisCodeRepository), questionDiagnosHistorik()),
                 categoryFunktionsnedsattning(
                     questionFunktionsnedsattning(),
                     questionIntellektuellFunktionMotivering(),
@@ -169,25 +182,13 @@ public class CertificateModelFactoryFK7809 implements CertificateModelFactory {
                     questionSynfunktionMotivering(),
                     questionSinnesfunktionMotivering(),
                     questionKoordinationMotivering(),
-                    questionAnnanKroppsligFunktionMotivering()
-                ),
-                categoryAktivitetsbegransningar(
-                    questionAktivitetsbegransningar()
-                ),
+                    questionAnnanKroppsligFunktionMotivering()),
+                categoryAktivitetsbegransningar(questionAktivitetsbegransningar()),
                 categoryMedicinskBehandling(
-                    questionPagaendeOchPlaneradeBehandlingar(
-                        questionVardenhetOchTidplan()
-                    )
-                ),
-                categoryPrognos(
-                    questionPrognos()
-                ),
-                categoryOvrigt(
-                    questionOvrigt()
-                ),
-                issuingUnitContactInfo()
-            )
-        )
+                    questionPagaendeOchPlaneradeBehandlingar(questionVardenhetOchTidplan())),
+                categoryPrognos(questionPrognos()),
+                categoryOvrigt(questionOvrigt()),
+                issuingUnitContactInfo()))
         .certificateActionFactory(certificateActionFactory)
         .pdfSpecification(FK7809PdfSpecification.create())
         .build();

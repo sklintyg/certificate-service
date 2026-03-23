@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.certificate;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -30,43 +48,47 @@ class XmlGeneratorIcfValueTest {
   private static final List<String> VALUES = List.of("code1", "code2");
   private ElementSpecification ELEMENT_SPECIFICATION;
 
-  @InjectMocks
-  private XmlGeneratorIcfValue xmlGeneratorIcfValue;
+  @InjectMocks private XmlGeneratorIcfValue xmlGeneratorIcfValue;
 
   @BeforeEach
   void setup() {
-    ELEMENT_SPECIFICATION = ElementSpecification.builder()
-        .configuration(
-            ElementConfigurationIcf.builder()
-                .id(new FieldId(QUESTION_ID))
-                .modalLabel("Modal_Label")
-                .collectionsLabel("Collections_Label")
-                .placeholder("Placeholder")
-                .icfCodesPropertyName(IcfCodesPropertyType.FUNKTIONSNEDSATTNINGAR)
-                .build()
-        )
-        .build();
+    ELEMENT_SPECIFICATION =
+        ElementSpecification.builder()
+            .configuration(
+                ElementConfigurationIcf.builder()
+                    .id(new FieldId(QUESTION_ID))
+                    .modalLabel("Modal_Label")
+                    .collectionsLabel("Collections_Label")
+                    .placeholder("Placeholder")
+                    .icfCodesPropertyName(IcfCodesPropertyType.FUNKTIONSNEDSATTNINGAR)
+                    .build())
+            .build();
   }
 
   @Test
   void shouldMapIcfWithCodes() {
-    final var data = ElementData.builder()
-        .id(new ElementId(QUESTION_ID))
-        .value(ElementValueIcf.builder()
-            .id(new FieldId(ANSWER_ID))
-            .text(TEXT)
-            .icfCodes(VALUES)
-            .build())
-        .build();
+    final var data =
+        ElementData.builder()
+            .id(new ElementId(QUESTION_ID))
+            .value(
+                ElementValueIcf.builder()
+                    .id(new FieldId(ANSWER_ID))
+                    .text(TEXT)
+                    .icfCodes(VALUES)
+                    .build())
+            .build();
 
-    var expectedText = """
+    var expectedText =
+        """
         %s %s
-        
+
         %s
-        """.formatted(
-        ((ElementConfigurationIcf) ELEMENT_SPECIFICATION.configuration()).collectionsLabel(),
-        String.join(" - ", VALUES),
-        TEXT);
+        """
+            .formatted(
+                ((ElementConfigurationIcf) ELEMENT_SPECIFICATION.configuration())
+                    .collectionsLabel(),
+                String.join(" - ", VALUES),
+                TEXT);
 
     final var expectedData = new Svar();
     final var subAnswer = new Delsvar();
@@ -79,22 +101,23 @@ class XmlGeneratorIcfValueTest {
 
     assertAll(
         () -> assertEquals(expectedData.getId(), response.getFirst().getId()),
-        () -> assertEquals(expectedData.getDelsvar().getFirst().getId(),
-            response.getFirst().getDelsvar().getFirst().getId()),
-        () -> assertEquals(expectedData.getDelsvar().getFirst().getContent().getFirst(),
-            response.getFirst().getDelsvar().getFirst().getContent().getFirst())
-    );
+        () ->
+            assertEquals(
+                expectedData.getDelsvar().getFirst().getId(),
+                response.getFirst().getDelsvar().getFirst().getId()),
+        () ->
+            assertEquals(
+                expectedData.getDelsvar().getFirst().getContent().getFirst(),
+                response.getFirst().getDelsvar().getFirst().getContent().getFirst()));
   }
 
   @Test
   void shouldMapIcfWithoutCodes() {
-    final var data = ElementData.builder()
-        .id(new ElementId(QUESTION_ID))
-        .value(ElementValueIcf.builder()
-            .id(new FieldId(ANSWER_ID))
-            .text(TEXT)
-            .build())
-        .build();
+    final var data =
+        ElementData.builder()
+            .id(new ElementId(QUESTION_ID))
+            .value(ElementValueIcf.builder().id(new FieldId(ANSWER_ID)).text(TEXT).build())
+            .build();
 
     final var expectedData = new Svar();
     final var subAnswer = new Delsvar();
@@ -107,22 +130,23 @@ class XmlGeneratorIcfValueTest {
 
     assertAll(
         () -> assertEquals(expectedData.getId(), response.getFirst().getId()),
-        () -> assertEquals(expectedData.getDelsvar().getFirst().getId(),
-            response.getFirst().getDelsvar().getFirst().getId()),
-        () -> assertEquals(expectedData.getDelsvar().getFirst().getContent().getFirst(),
-            response.getFirst().getDelsvar().getFirst().getContent().getFirst())
-    );
+        () ->
+            assertEquals(
+                expectedData.getDelsvar().getFirst().getId(),
+                response.getFirst().getDelsvar().getFirst().getId()),
+        () ->
+            assertEquals(
+                expectedData.getDelsvar().getFirst().getContent().getFirst(),
+                response.getFirst().getDelsvar().getFirst().getContent().getFirst()));
   }
 
   @Test
   void shouldMapEmptyIfNullValue() {
-    final var data = ElementData.builder()
-        .value(ElementValueIcf.builder()
-            .id(new FieldId(ANSWER_ID))
-            .build()
-        )
-        .id(new ElementId(QUESTION_ID))
-        .build();
+    final var data =
+        ElementData.builder()
+            .value(ElementValueIcf.builder().id(new FieldId(ANSWER_ID)).build())
+            .id(new ElementId(QUESTION_ID))
+            .build();
 
     final var response = xmlGeneratorIcfValue.generate(data, ELEMENT_SPECIFICATION);
 
@@ -131,18 +155,18 @@ class XmlGeneratorIcfValueTest {
 
   @Test
   void shouldMapEmptyIfValueIsNotIcf() {
-    final var data = ElementData.builder()
-        .value(ElementValueText.builder()
-            .text("not an icf value")
-            .textId(new FieldId(ANSWER_ID))
-            .build()
-        )
-        .id(new ElementId(QUESTION_ID))
-        .build();
+    final var data =
+        ElementData.builder()
+            .value(
+                ElementValueText.builder()
+                    .text("not an icf value")
+                    .textId(new FieldId(ANSWER_ID))
+                    .build())
+            .id(new ElementId(QUESTION_ID))
+            .build();
 
     final var response = xmlGeneratorIcfValue.generate(data, ELEMENT_SPECIFICATION);
 
     assertTrue(response.isEmpty());
   }
-
 }

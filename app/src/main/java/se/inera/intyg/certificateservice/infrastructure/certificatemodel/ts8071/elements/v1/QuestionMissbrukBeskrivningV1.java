@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.v1;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.v1.QuestionMissbrukV1.QUESTION_MISSBRUK_V1_FIELD_ID;
@@ -15,10 +33,8 @@ import se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.
 
 public class QuestionMissbrukBeskrivningV1 {
 
-  public static final ElementId QUESTION_MISSBRUK_BESKRIVNING_V1_ID = new ElementId(
-      "18.2");
-  public static final FieldId QUESTION_MISSBRUK_BESKRIVNING_V1_FIELD_ID = new FieldId(
-      "18.2");
+  public static final ElementId QUESTION_MISSBRUK_BESKRIVNING_V1_ID = new ElementId("18.2");
+  public static final FieldId QUESTION_MISSBRUK_BESKRIVNING_V1_FIELD_ID = new FieldId("18.2");
 
   private QuestionMissbrukBeskrivningV1() {
     throw new IllegalStateException("Utility class");
@@ -32,37 +48,18 @@ public class QuestionMissbrukBeskrivningV1 {
                 .id(QUESTION_MISSBRUK_BESKRIVNING_V1_FIELD_ID)
                 .name(
                     "Ange vilken diagnos, tidpunkt för när diagnosen ställdes och för vilken/vilka substanser")
-                .build()
-        )
+                .build())
         .rules(
             List.of(
                 CertificateElementRuleFactory.show(
-                    QUESTION_MISSBRUK_V1_ID,
-                    QUESTION_MISSBRUK_V1_FIELD_ID
-                ),
+                    QUESTION_MISSBRUK_V1_ID, QUESTION_MISSBRUK_V1_FIELD_ID),
                 CertificateElementRuleFactory.mandatory(
-                    QUESTION_MISSBRUK_BESKRIVNING_V1_ID,
-                    QUESTION_MISSBRUK_BESKRIVNING_V1_FIELD_ID
-                ),
+                    QUESTION_MISSBRUK_BESKRIVNING_V1_ID, QUESTION_MISSBRUK_BESKRIVNING_V1_FIELD_ID),
                 CertificateElementRuleFactory.limit(
-                    QUESTION_MISSBRUK_BESKRIVNING_V1_ID,
-                    (short) 250)
-            )
-        )
-        .shouldValidate(
-            ElementDataPredicateFactory.valueBoolean(QUESTION_MISSBRUK_V1_ID)
-        )
-        .mapping(
-            new ElementMapping(QUESTION_MISSBRUK_V1_ID, null)
-        )
-        .validations(
-            List.of(
-                ElementValidationText.builder()
-                    .mandatory(true)
-                    .limit(250)
-                    .build()
-            )
-        )
+                    QUESTION_MISSBRUK_BESKRIVNING_V1_ID, (short) 250)))
+        .shouldValidate(ElementDataPredicateFactory.valueBoolean(QUESTION_MISSBRUK_V1_ID))
+        .mapping(new ElementMapping(QUESTION_MISSBRUK_V1_ID, null))
+        .validations(List.of(ElementValidationText.builder().mandatory(true).limit(250).build()))
         .build();
   }
 }

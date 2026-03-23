@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.common;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,8 +49,7 @@ class MessagesRequestFactoryTest {
 
   @Test
   void shallCreateDefaultRequest() {
-    final var expectedRequest = MessagesRequest.builder()
-        .build();
+    final var expectedRequest = MessagesRequest.builder().build();
 
     assertEquals(expectedRequest, requestFactory.create());
   }
@@ -46,21 +63,18 @@ class MessagesRequestFactoryTest {
       @Test
       void shallIncludeFrom() {
         final var expectedFrom = LocalDateTime.now(ZoneId.systemDefault());
-        final var queryCriteriaDTO = MessagesQueryCriteriaDTO.builder()
-            .sentDateFrom(expectedFrom)
-            .build();
+        final var queryCriteriaDTO =
+            MessagesQueryCriteriaDTO.builder().sentDateFrom(expectedFrom).build();
 
         assertEquals(expectedFrom, requestFactory.create(queryCriteriaDTO).sentDateFrom());
       }
 
       @Test
       void shallNotIncludeFrom() {
-        final var queryCriteriaDTO = MessagesQueryCriteriaDTO.builder()
-            .build();
+        final var queryCriteriaDTO = MessagesQueryCriteriaDTO.builder().build();
 
         assertNull(requestFactory.create(queryCriteriaDTO).sentDateFrom());
       }
-
     }
 
     @Nested
@@ -69,19 +83,15 @@ class MessagesRequestFactoryTest {
       @Test
       void shallIncludeTo() {
         final var expectedTo = LocalDateTime.now(ZoneId.systemDefault());
-        final var queryCriteriaDTO = MessagesQueryCriteriaDTO.builder()
-            .sentDateTo(expectedTo)
-            .build();
+        final var queryCriteriaDTO =
+            MessagesQueryCriteriaDTO.builder().sentDateTo(expectedTo).build();
 
-        assertEquals(expectedTo,
-            requestFactory.create(queryCriteriaDTO).sentDateTo()
-        );
+        assertEquals(expectedTo, requestFactory.create(queryCriteriaDTO).sentDateTo());
       }
 
       @Test
       void shallNotIncludeTo() {
-        final var queryCriteriaDTO = MessagesQueryCriteriaDTO.builder()
-            .build();
+        final var queryCriteriaDTO = MessagesQueryCriteriaDTO.builder().build();
 
         assertNull(requestFactory.create(queryCriteriaDTO).sentDateTo());
       }
@@ -93,19 +103,18 @@ class MessagesRequestFactoryTest {
       @Test
       void shallIncludeIssuedByStaffId() {
         final var expectedIssuedByStaffId = AJLA_DOKTOR.hsaId();
-        final var queryCriteriaDTO = MessagesQueryCriteriaDTO.builder()
-            .issuedByStaffId(expectedIssuedByStaffId.id())
-            .build();
+        final var queryCriteriaDTO =
+            MessagesQueryCriteriaDTO.builder()
+                .issuedByStaffId(expectedIssuedByStaffId.id())
+                .build();
 
-        assertEquals(expectedIssuedByStaffId,
-            requestFactory.create(queryCriteriaDTO).issuedByStaffId()
-        );
+        assertEquals(
+            expectedIssuedByStaffId, requestFactory.create(queryCriteriaDTO).issuedByStaffId());
       }
 
       @Test
       void shallNotIncludeIssuedByStaffId() {
-        final var queryCriteriaDTO = MessagesQueryCriteriaDTO.builder()
-            .build();
+        final var queryCriteriaDTO = MessagesQueryCriteriaDTO.builder().build();
 
         assertNull(requestFactory.create(queryCriteriaDTO).issuedByStaffId());
       }
@@ -116,20 +125,19 @@ class MessagesRequestFactoryTest {
 
       @Test
       void shallNotIncludeIssuedUnitId() {
-        final var queryCriteriaDTO = MessagesQueryCriteriaDTO.builder()
-            .build();
+        final var queryCriteriaDTO = MessagesQueryCriteriaDTO.builder().build();
 
-        assertEquals(Collections.emptyList(),
-            requestFactory.create(queryCriteriaDTO).issuedOnUnitIds());
+        assertEquals(
+            Collections.emptyList(), requestFactory.create(queryCriteriaDTO).issuedOnUnitIds());
       }
 
       @Test
       void shallIncludeIssuedUnitIds() {
-        final var queryCriteriaDTO = MessagesQueryCriteriaDTO.builder()
-            .issuedOnUnitIds(List.of("HSA1", "HSA2"))
-            .build();
+        final var queryCriteriaDTO =
+            MessagesQueryCriteriaDTO.builder().issuedOnUnitIds(List.of("HSA1", "HSA2")).build();
 
-        assertEquals(List.of(new HsaId("HSA1"), new HsaId("HSA2")),
+        assertEquals(
+            List.of(new HsaId("HSA1"), new HsaId("HSA2")),
             requestFactory.create(queryCriteriaDTO).issuedOnUnitIds());
       }
     }
@@ -139,26 +147,21 @@ class MessagesRequestFactoryTest {
 
       @Test
       void shallNotIncludeForwarded() {
-        final var queryCriteriaDTO = MessagesQueryCriteriaDTO.builder()
-            .build();
+        final var queryCriteriaDTO = MessagesQueryCriteriaDTO.builder().build();
 
         assertNull(requestFactory.create(queryCriteriaDTO).forwarded());
       }
 
       @Test
       void shallIncludeForwardedTrue() {
-        final var queryCriteriaDTO = MessagesQueryCriteriaDTO.builder()
-            .forwarded(true)
-            .build();
+        final var queryCriteriaDTO = MessagesQueryCriteriaDTO.builder().forwarded(true).build();
 
         assertEquals(new Forwarded(true), requestFactory.create(queryCriteriaDTO).forwarded());
       }
 
       @Test
       void shallIncludeForwardedFalse() {
-        final var queryCriteriaDTO = MessagesQueryCriteriaDTO.builder()
-            .forwarded(false)
-            .build();
+        final var queryCriteriaDTO = MessagesQueryCriteriaDTO.builder().forwarded(false).build();
 
         assertEquals(new Forwarded(false), requestFactory.create(queryCriteriaDTO).forwarded());
       }
@@ -170,35 +173,31 @@ class MessagesRequestFactoryTest {
 
     @Test
     void shallNotIncludeAuthor() {
-      final var queryCriteriaDTO = MessagesQueryCriteriaDTO.builder()
-          .build();
+      final var queryCriteriaDTO = MessagesQueryCriteriaDTO.builder().build();
 
       assertNull(requestFactory.create(queryCriteriaDTO).author());
     }
 
     @Test
     void shallNotIncludeAuthorIfShowAllIsChosen() {
-      final var queryCriteriaDTO = MessagesQueryCriteriaDTO.builder()
-          .senderType(QuestionSenderTypeDTO.SHOW_ALL)
-          .build();
+      final var queryCriteriaDTO =
+          MessagesQueryCriteriaDTO.builder().senderType(QuestionSenderTypeDTO.SHOW_ALL).build();
 
       assertNull(requestFactory.create(queryCriteriaDTO).author());
     }
 
     @Test
     void shallIncludeAuthorFK() {
-      final var queryCriteriaDTO = MessagesQueryCriteriaDTO.builder()
-          .senderType(QuestionSenderTypeDTO.FK)
-          .build();
+      final var queryCriteriaDTO =
+          MessagesQueryCriteriaDTO.builder().senderType(QuestionSenderTypeDTO.FK).build();
 
       assertEquals(new Author("FK"), requestFactory.create(queryCriteriaDTO).author());
     }
 
     @Test
     void shallIncludeAuthorWC() {
-      final var queryCriteriaDTO = MessagesQueryCriteriaDTO.builder()
-          .senderType(QuestionSenderTypeDTO.WC)
-          .build();
+      final var queryCriteriaDTO =
+          MessagesQueryCriteriaDTO.builder().senderType(QuestionSenderTypeDTO.WC).build();
 
       assertEquals(new Author("WC"), requestFactory.create(queryCriteriaDTO).author());
     }
@@ -210,24 +209,21 @@ class MessagesRequestFactoryTest {
     @Test
     void shallIncludePersonId() {
       final var expectedPersonId = ATHENA_REACT_ANDERSSON.id();
-      final var queryCriteriaDTO = MessagesQueryCriteriaDTO.builder()
-          .patientId(
-              PersonIdDTO.builder()
-                  .id(expectedPersonId.id())
-                  .type(expectedPersonId.type().name())
-                  .build()
-          )
-          .build();
+      final var queryCriteriaDTO =
+          MessagesQueryCriteriaDTO.builder()
+              .patientId(
+                  PersonIdDTO.builder()
+                      .id(expectedPersonId.id())
+                      .type(expectedPersonId.type().name())
+                      .build())
+              .build();
 
-      assertEquals(expectedPersonId,
-          requestFactory.create(queryCriteriaDTO).personId()
-      );
+      assertEquals(expectedPersonId, requestFactory.create(queryCriteriaDTO).personId());
     }
 
     @Test
     void shallNotIncludePersonId() {
-      final var queryCriteriaDTO = MessagesQueryCriteriaDTO.builder()
-          .build();
+      final var queryCriteriaDTO = MessagesQueryCriteriaDTO.builder().build();
 
       assertNull(requestFactory.create(queryCriteriaDTO).personId());
     }

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7809.elements;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,19 +56,19 @@ class QuestionPsykiskFunktionMotiveringTest {
 
   @Test
   void shallIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationTextArea.builder()
-        .name("Annan psykisk funktion")
-        .label(
-            "Beskriv funktionsnedsättningen, om möjligt med grad. Ange även eventuella undersökningsfynd.")
-        .description(
-            """
+    final var expectedConfiguration =
+        ElementConfigurationTextArea.builder()
+            .name("Annan psykisk funktion")
+            .label(
+                "Beskriv funktionsnedsättningen, om möjligt med grad. Ange även eventuella undersökningsfynd.")
+            .description(
+                """
                 Med annan psykisk funktion menas exempelvis
                 <ul>
                 <li>stämningsläge, depressivitet, ångest och reglering av affekter</li><li>motivation, energinivå, impulskontroll och initiativförmåga</li><li>kognitiv flexibilitet, omdöme och insikt</li><li>minnesfunktioner</li><li>sömnfunktioner</li><li>vanföreställningar och tvångstankar</li><li>psykiska språkfunktioner</li><li>orientering i tid samt till plats, situation och person.</li></ul>
-                """
-        )
-        .id(new FieldId("11.1"))
-        .build();
+                """)
+            .id(new FieldId("11.1"))
+            .build();
 
     final var element = QuestionPsykiskFunktionMotivering.questionPsykiskFunktionMotivering();
 
@@ -59,23 +77,23 @@ class QuestionPsykiskFunktionMotiveringTest {
 
   @Test
   void shallIncludeRules() {
-    final var expectedRules = List.of(
-        ElementRuleLimit.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.TEXT_LIMIT)
-            .limit(new RuleLimit((short) 4000))
-            .build(),
-        ElementRuleExpression.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.MANDATORY)
-            .expression(new RuleExpression("$11.1"))
-            .build(),
-        ElementRuleExpression.builder()
-            .id(new ElementId("funktionsnedsattning"))
-            .type(ElementRuleType.SHOW)
-            .expression(new RuleExpression("$11.2"))
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleLimit.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.TEXT_LIMIT)
+                .limit(new RuleLimit((short) 4000))
+                .build(),
+            ElementRuleExpression.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.MANDATORY)
+                .expression(new RuleExpression("$11.1"))
+                .build(),
+            ElementRuleExpression.builder()
+                .id(new ElementId("funktionsnedsattning"))
+                .type(ElementRuleType.SHOW)
+                .expression(new RuleExpression("$11.2"))
+                .build());
 
     final var element = QuestionPsykiskFunktionMotivering.questionPsykiskFunktionMotivering();
 
@@ -84,12 +102,8 @@ class QuestionPsykiskFunktionMotiveringTest {
 
   @Test
   void shallIncludeValidations() {
-    final var expectedValidations = List.of(
-        ElementValidationText.builder()
-            .mandatory(true)
-            .limit(4000)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationText.builder().mandatory(true).limit(4000).build());
 
     final var element = QuestionPsykiskFunktionMotivering.questionPsykiskFunktionMotivering();
 
@@ -98,11 +112,13 @@ class QuestionPsykiskFunktionMotiveringTest {
 
   @Test
   void shallIncludePdfConfiguration() {
-    final var expected = PdfConfigurationText.builder()
-        .pdfFieldId(new PdfFieldId("form1[0].#subform[1].flt_txtIntellektuellFunktion[3]"))
-        .maxLength(265)
-        .overflowSheetFieldId(new PdfFieldId(("form1[0].#subform[4].flt_txtFortsattningsblad[0]")))
-        .build();
+    final var expected =
+        PdfConfigurationText.builder()
+            .pdfFieldId(new PdfFieldId("form1[0].#subform[1].flt_txtIntellektuellFunktion[3]"))
+            .maxLength(265)
+            .overflowSheetFieldId(
+                new PdfFieldId(("form1[0].#subform[4].flt_txtFortsattningsblad[0]")))
+            .build();
 
     final var element = QuestionPsykiskFunktionMotivering.questionPsykiskFunktionMotivering();
 
@@ -114,22 +130,17 @@ class QuestionPsykiskFunktionMotiveringTest {
 
     @Test
     void shallReturnTrueIfElementPresent() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("funktionsnedsattning"))
-              .value(
-                  ElementValueCodeList.builder()
-                      .list(
-                          List.of(
-                              ElementValueCode.builder()
-                                  .codeId(new FieldId("11.2"))
-                                  .build()
-                          )
-                      )
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("funktionsnedsattning"))
+                  .value(
+                      ElementValueCodeList.builder()
+                          .list(
+                              List.of(
+                                  ElementValueCode.builder().codeId(new FieldId("11.2")).build()))
+                          .build())
+                  .build());
 
       final var element = QuestionPsykiskFunktionMotivering.questionPsykiskFunktionMotivering();
 
@@ -140,22 +151,19 @@ class QuestionPsykiskFunktionMotiveringTest {
 
     @Test
     void shallReturnFalseIfElementPresent() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("funktionsnedsattning"))
-              .value(
-                  ElementValueCodeList.builder()
-                      .list(
-                          List.of(
-                              ElementValueCode.builder()
-                                  .codeId(new FieldId("missing"))
-                                  .build()
-                          )
-                      )
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("funktionsnedsattning"))
+                  .value(
+                      ElementValueCodeList.builder()
+                          .list(
+                              List.of(
+                                  ElementValueCode.builder()
+                                      .codeId(new FieldId("missing"))
+                                      .build()))
+                          .build())
+                  .build());
 
       final var element = QuestionPsykiskFunktionMotivering.questionPsykiskFunktionMotivering();
 
@@ -167,10 +175,11 @@ class QuestionPsykiskFunktionMotiveringTest {
 
   @Test
   void shallIncludeVisibilityConfiguration() {
-    final var expectedVisibilityConfiguration = ElementVisibilityConfigurationsCheckboxMultipleCode.builder()
-        .elementId(FUNKTIONSNEDSATTNING_ID)
-        .fieldId(FUNKTIONSNEDSATTNING_PSYKISK_FUNKTION_ID)
-        .build();
+    final var expectedVisibilityConfiguration =
+        ElementVisibilityConfigurationsCheckboxMultipleCode.builder()
+            .elementId(FUNKTIONSNEDSATTNING_ID)
+            .fieldId(FUNKTIONSNEDSATTNING_PSYKISK_FUNKTION_ID)
+            .build();
 
     final var element = QuestionPsykiskFunktionMotivering.questionPsykiskFunktionMotivering();
 

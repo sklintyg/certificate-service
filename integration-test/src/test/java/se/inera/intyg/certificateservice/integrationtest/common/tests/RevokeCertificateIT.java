@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.integrationtest.common.tests;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -29,122 +47,118 @@ public abstract class RevokeCertificateIT extends BaseIntegrationIT {
   @Test
   @DisplayName("Om intyget är utfärdat på samma mottagning skall det gå att makulera")
   void shallSuccessfullyRevokeIfUnitIsSubUnitAndIssuedOnSameSubUnit() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED)
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED));
 
-    final var response = api().revokeCertificate(
-        defaultRevokeCertificateRequest(),
-        certificateId(testCertificates)
-    );
+    final var response =
+        api().revokeCertificate(defaultRevokeCertificateRequest(), certificateId(testCertificates));
 
     assertAll(
-        () -> assertEquals(CertificateStatusTypeDTO.REVOKED,
-            status(revokeCertificateResponse(response)))
-    );
+        () ->
+            assertEquals(
+                CertificateStatusTypeDTO.REVOKED, status(revokeCertificateResponse(response))));
   }
 
   @Test
-  @DisplayName("Om intyget är utfärdat på mottagning men på samma vårdenhet skall det gå att makulera")
+  @DisplayName(
+      "Om intyget är utfärdat på mottagning men på samma vårdenhet skall det gå att makulera")
   void shallSuccessfullyRevokeIfUnitIsCareUnitAndOnSameCareUnit() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED)
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED));
 
-    final var response = api().revokeCertificate(
-        defaultRevokeCertificateRequest(),
-        certificateId(testCertificates)
-    );
+    final var response =
+        api().revokeCertificate(defaultRevokeCertificateRequest(), certificateId(testCertificates));
 
     assertAll(
-        () -> assertEquals(CertificateStatusTypeDTO.REVOKED,
-            status(revokeCertificateResponse(response)))
-    );
+        () ->
+            assertEquals(
+                CertificateStatusTypeDTO.REVOKED, status(revokeCertificateResponse(response))));
   }
 
   @Test
   @DisplayName("Om intyget är utfärdat på samma vårdenhet skall det gå att makulera")
   void shallSuccessfullyRevokeIfUnitIsCareUnitAndIssuedOnSameCareUnit() {
-    final var testCertificates = testabilityApi().addCertificates(
-        customTestabilityCertificateRequest(type(), typeVersion(), SIGNED)
-            .unit(ALFA_MEDICINCENTRUM_DTO)
-            .build()
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(
+                customTestabilityCertificateRequest(type(), typeVersion(), SIGNED)
+                    .unit(ALFA_MEDICINCENTRUM_DTO)
+                    .build());
 
-    final var response = api().revokeCertificate(
-        customRevokeCertificateRequest()
-            .unit(ALFA_MEDICINCENTRUM_DTO)
-            .build(),
-        certificateId(testCertificates)
-    );
+    final var response =
+        api()
+            .revokeCertificate(
+                customRevokeCertificateRequest().unit(ALFA_MEDICINCENTRUM_DTO).build(),
+                certificateId(testCertificates));
 
     assertAll(
-        () -> assertEquals(CertificateStatusTypeDTO.REVOKED,
-            status(revokeCertificateResponse(response)))
-    );
+        () ->
+            assertEquals(
+                CertificateStatusTypeDTO.REVOKED, status(revokeCertificateResponse(response))));
   }
 
   @Test
   @DisplayName("Om intyget makuleras ska ett meddelande läggas på AMQn")
   void shallSuccessfullyAddMessageToAMQWhenRevokingCertificate() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED)
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED));
 
     final var expectedCertificateId = certificateId(testCertificates);
 
-    api().revokeCertificate(
-        defaultRevokeCertificateRequest(),
-        expectedCertificateId
-    );
+    api().revokeCertificate(defaultRevokeCertificateRequest(), expectedCertificateId);
 
-    final var message = MessageListenerUtil.awaitByCertificateId(Duration.ofSeconds(10),
-        expectedCertificateId);
+    final var message =
+        MessageListenerUtil.awaitByCertificateId(Duration.ofSeconds(10), expectedCertificateId);
 
     assertAll(
-        () -> assertNotNull(message,
-            "Expected to receive a message for certificateId: " + expectedCertificateId),
-        () -> assertEquals(
-            expectedCertificateId, message.getStringProperty("certificateId"),
-            "Expected to receive a message for certificateId: " + expectedCertificateId
-        ),
-        () -> assertEquals(
-            "certificate-revoked", message.getStringProperty("eventType")
-        )
-    );
+        () ->
+            assertNotNull(
+                message,
+                "Expected to receive a message for certificateId: " + expectedCertificateId),
+        () ->
+            assertEquals(
+                expectedCertificateId,
+                message.getStringProperty("certificateId"),
+                "Expected to receive a message for certificateId: " + expectedCertificateId),
+        () -> assertEquals("certificate-revoked", message.getStringProperty("eventType")));
   }
 
   @Test
-  @DisplayName("Om intyget är utfärdat på en annan mottagning skall felkod 403 (FORBIDDEN) returneras")
+  @DisplayName(
+      "Om intyget är utfärdat på en annan mottagning skall felkod 403 (FORBIDDEN) returneras")
   void shallReturn403IfUnitIsSubUnitAndNotOnSameUnit() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED)
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED));
 
-    final var response = api().revokeCertificate(
-        customRevokeCertificateRequest()
-            .unit(ALFA_HUDMOTTAGNINGEN_DTO)
-            .build(),
-        certificateId(testCertificates)
-    );
+    final var response =
+        api()
+            .revokeCertificate(
+                customRevokeCertificateRequest().unit(ALFA_HUDMOTTAGNINGEN_DTO).build(),
+                certificateId(testCertificates));
 
     assertEquals(403, response.getStatusCode().value());
   }
 
   @Test
-  @DisplayName("Om intyget är utfärdat på en annan vårdenhet skall felkod 403 (FORBIDDEN) returneras")
+  @DisplayName(
+      "Om intyget är utfärdat på en annan vårdenhet skall felkod 403 (FORBIDDEN) returneras")
   void shallReturn403IfUnitIsCareUnitAndNotOnCareUnit() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED)
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED));
 
-    final var response = api().revokeCertificate(
-        customRevokeCertificateRequest()
-            .careUnit(ALFA_VARDCENTRAL_DTO)
-            .unit(ALFA_VARDCENTRAL_DTO)
-            .build(),
-        certificateId(testCertificates)
-    );
+    final var response =
+        api()
+            .revokeCertificate(
+                customRevokeCertificateRequest()
+                    .careUnit(ALFA_VARDCENTRAL_DTO)
+                    .unit(ALFA_VARDCENTRAL_DTO)
+                    .build(),
+                certificateId(testCertificates));
 
     assertEquals(403, response.getStatusCode().value());
   }
@@ -152,51 +166,48 @@ public abstract class RevokeCertificateIT extends BaseIntegrationIT {
   @Test
   @DisplayName("Vårdadministratör - Felkod 403 (FORBIDDEN) returneras")
   void shallReturn403UserIsCareAdmin() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED)
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED));
 
-    final var response = api().revokeCertificate(
-        customRevokeCertificateRequest()
-            .user(ALVA_VARDADMINISTRATOR_DTO)
-            .build(),
-        certificateId(testCertificates)
-    );
+    final var response =
+        api()
+            .revokeCertificate(
+                customRevokeCertificateRequest().user(ALVA_VARDADMINISTRATOR_DTO).build(),
+                certificateId(testCertificates));
 
     assertEquals(403, response.getStatusCode().value());
   }
 
   @Test
-  @DisplayName("Läkare - Om intyget är utfärdat på en patient som har skyddade personuppgifter skall det gå att makulera")
+  @DisplayName(
+      "Läkare - Om intyget är utfärdat på en patient som har skyddade personuppgifter skall det gå att makulera")
   void shallSuccessfullyRevokeIfPatientIsProtectedPersonAndUserIsDoctor() {
-    final var testCertificates = testabilityApi().addCertificates(
-        customTestabilityCertificateRequest(type(), typeVersion(), SIGNED)
-            .patient(ANONYMA_REACT_ATTILA_DTO)
-            .build()
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(
+                customTestabilityCertificateRequest(type(), typeVersion(), SIGNED)
+                    .patient(ANONYMA_REACT_ATTILA_DTO)
+                    .build());
 
-    final var response = api().revokeCertificate(
-        defaultRevokeCertificateRequest(),
-        certificateId(testCertificates)
-    );
+    final var response =
+        api().revokeCertificate(defaultRevokeCertificateRequest(), certificateId(testCertificates));
 
     assertAll(
-        () -> assertEquals(CertificateStatusTypeDTO.REVOKED,
-            status(revokeCertificateResponse(response)))
-    );
+        () ->
+            assertEquals(
+                CertificateStatusTypeDTO.REVOKED, status(revokeCertificateResponse(response))));
   }
 
   @Test
   @DisplayName("Om intyget inte är signerat skall felkod 403 (FORBIDDEN) returneras")
   void shallReturn403IfCertificateNotSigned() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion())
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion()));
 
-    final var response = api().revokeCertificate(
-        defaultRevokeCertificateRequest(),
-        certificateId(testCertificates)
-    );
+    final var response =
+        api().revokeCertificate(defaultRevokeCertificateRequest(), certificateId(testCertificates));
 
     assertEquals(403, response.getStatusCode().value());
   }
@@ -204,19 +215,14 @@ public abstract class RevokeCertificateIT extends BaseIntegrationIT {
   @Test
   @DisplayName("Om intyget redan är makulerat skall felkod 403 (FORBIDDEN) returneras")
   void shallReturn403IfCertificateIsAlreadyRevoked() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion())
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion()));
 
-    api().revokeCertificate(
-        defaultRevokeCertificateRequest(),
-        certificateId(testCertificates)
-    );
+    api().revokeCertificate(defaultRevokeCertificateRequest(), certificateId(testCertificates));
 
-    final var response = api().revokeCertificate(
-        defaultRevokeCertificateRequest(),
-        certificateId(testCertificates)
-    );
+    final var response =
+        api().revokeCertificate(defaultRevokeCertificateRequest(), certificateId(testCertificates));
 
     assertEquals(403, response.getStatusCode().value());
   }

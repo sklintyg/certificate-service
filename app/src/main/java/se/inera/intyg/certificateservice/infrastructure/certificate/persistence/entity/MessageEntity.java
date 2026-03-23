@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificate.persistence.entity;
 
 import jakarta.persistence.CascadeType;
@@ -32,42 +50,62 @@ public class MessageEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "`key`")
   private Integer key;
+
   @Column(name = "message_id", unique = true, updatable = false)
   private String id;
+
   @Column(name = "reference")
   private String reference;
+
   @Column(name = "subject")
   private String subject;
+
   @Column(name = "content")
   private String content;
+
   @Column(name = "author")
   private String author;
+
   @Column(name = "created")
   private LocalDateTime created;
+
   @Column(name = "modified")
   private LocalDateTime modified;
+
   @Column(name = "sent")
   private LocalDateTime sent;
+
   @Column(name = "forwarded")
   private boolean forwarded;
+
   @Column(name = "lastDateToReply")
   private LocalDate lastDateToReply;
+
   @ManyToOne
   @JoinColumn(name = "message_status_key")
   private MessageStatusEntity status;
+
   @ManyToOne
   @JoinColumn(name = "message_type_key")
   private MessageTypeEntity messageType;
+
   @ElementCollection(fetch = FetchType.EAGER)
   @CollectionTable(name = "message_contact_info", joinColumns = @JoinColumn(name = "message_key"))
   private List<MessageContactInfoEmbeddable> contactInfo;
+
   @ElementCollection(fetch = FetchType.EAGER)
   @CollectionTable(name = "message_complement", joinColumns = @JoinColumn(name = "message_key"))
   private List<MessageComplementEmbeddable> complements;
-  @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+
+  @ManyToOne(
+      fetch = FetchType.LAZY,
+      cascade = {CascadeType.MERGE, CascadeType.PERSIST})
   @JoinColumn(name = "certificate_key", referencedColumnName = "`key`")
   private CertificateEntity certificate;
-  @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+
+  @ManyToOne(
+      fetch = FetchType.LAZY,
+      cascade = {CascadeType.MERGE, CascadeType.PERSIST})
   @JoinColumn(name = "authored_by_staff_key", referencedColumnName = "`key`")
   private StaffEntity authoredByStaff;
 }

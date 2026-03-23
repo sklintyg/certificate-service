@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -33,88 +51,86 @@ import se.inera.intyg.certificateservice.domain.certificate.service.XmlGenerator
 @ExtendWith(MockitoExtension.class)
 class GetCertificateInternalXmlServiceTest {
 
-  private static final String XML_BASE64_ENCODED = Base64.getEncoder()
-      .encodeToString(XML.xml().getBytes(StandardCharsets.UTF_8));
+  private static final String XML_BASE64_ENCODED =
+      Base64.getEncoder().encodeToString(XML.xml().getBytes(StandardCharsets.UTF_8));
 
-  @Mock
-  private CertificateRepository certificateRepository;
-  @Mock
-  private CertificateUnitConverter certificateUnitConverter;
-  @Mock
-  private XmlGenerator xmlGenerator;
-  @InjectMocks
-  private GetCertificateInternalXmlService getCertificateInternalXmlService;
+  @Mock private CertificateRepository certificateRepository;
+  @Mock private CertificateUnitConverter certificateUnitConverter;
+  @Mock private XmlGenerator xmlGenerator;
+  @InjectMocks private GetCertificateInternalXmlService getCertificateInternalXmlService;
 
   @Test
   void shallReturnResponse() {
-    final var expectedResponse = GetCertificateInternalXmlResponse.builder()
-        .certificateId(CERTIFICATE_ID)
-        .certificateType(FK7210_TYPE.type())
-        .unit(ALFA_ALLERGIMOTTAGNINGEN_DTO)
-        .careProvider(ALFA_REGIONEN_DTO)
-        .xml(XML_BASE64_ENCODED)
-        .revoked(REVOKED_DTO)
-        .recipient(CERTIFICATE_RECIPIENT_DTO)
-        .patientId(ATHENA_REACT_ANDERSSON_PERSON_ID_DTO)
-        .build();
+    final var expectedResponse =
+        GetCertificateInternalXmlResponse.builder()
+            .certificateId(CERTIFICATE_ID)
+            .certificateType(FK7210_TYPE.type())
+            .unit(ALFA_ALLERGIMOTTAGNINGEN_DTO)
+            .careProvider(ALFA_REGIONEN_DTO)
+            .xml(XML_BASE64_ENCODED)
+            .revoked(REVOKED_DTO)
+            .recipient(CERTIFICATE_RECIPIENT_DTO)
+            .patientId(ATHENA_REACT_ANDERSSON_PERSON_ID_DTO)
+            .build();
 
-    doReturn(FK7210_CERTIFICATE).when(certificateRepository)
+    doReturn(FK7210_CERTIFICATE)
+        .when(certificateRepository)
         .getById(new CertificateId(CERTIFICATE_ID));
-    doReturn(ALFA_ALLERGIMOTTAGNINGEN_DTO).when(certificateUnitConverter).convert(
-        eq(FK7210_CERTIFICATE.certificateMetaData().issuingUnit()), any()
-    );
+    doReturn(ALFA_ALLERGIMOTTAGNINGEN_DTO)
+        .when(certificateUnitConverter)
+        .convert(eq(FK7210_CERTIFICATE.certificateMetaData().issuingUnit()), any());
 
     final var actualResponse = getCertificateInternalXmlService.get(CERTIFICATE_ID);
 
     assertAll(
         () -> assertEquals(expectedResponse.getCertificateId(), actualResponse.getCertificateId()),
-        () -> assertEquals(expectedResponse.getCertificateType(),
-            actualResponse.getCertificateType()),
+        () ->
+            assertEquals(
+                expectedResponse.getCertificateType(), actualResponse.getCertificateType()),
         () -> assertEquals(expectedResponse.getUnit(), actualResponse.getUnit()),
         () -> assertEquals(expectedResponse.getXml(), actualResponse.getXml()),
         () -> assertEquals(expectedResponse.getRecipient(), actualResponse.getRecipient()),
         () -> assertEquals(expectedResponse.getPatientId(), actualResponse.getPatientId()),
         () -> assertEquals(expectedResponse.getCareProvider(), actualResponse.getCareProvider()),
-        () -> assertNotNull(actualResponse.getRevoked())
-    );
+        () -> assertNotNull(actualResponse.getRevoked()));
   }
 
   @Test
   void shallReturnResponseWhenXmlMissingFromCertificate() {
-    final var expectedResponse = GetCertificateInternalXmlResponse.builder()
-        .certificateId(CERTIFICATE_ID)
-        .certificateType(FK7210_TYPE.type())
-        .unit(ALFA_ALLERGIMOTTAGNINGEN_DTO)
-        .careProvider(ALFA_REGIONEN_DTO)
-        .xml(XML_BASE64_ENCODED)
-        .revoked(REVOKED_DTO)
-        .recipient(CERTIFICATE_RECIPIENT_DTO)
-        .patientId(ATHENA_REACT_ANDERSSON_PERSON_ID_DTO)
-        .build();
+    final var expectedResponse =
+        GetCertificateInternalXmlResponse.builder()
+            .certificateId(CERTIFICATE_ID)
+            .certificateType(FK7210_TYPE.type())
+            .unit(ALFA_ALLERGIMOTTAGNINGEN_DTO)
+            .careProvider(ALFA_REGIONEN_DTO)
+            .xml(XML_BASE64_ENCODED)
+            .revoked(REVOKED_DTO)
+            .recipient(CERTIFICATE_RECIPIENT_DTO)
+            .patientId(ATHENA_REACT_ANDERSSON_PERSON_ID_DTO)
+            .build();
 
-    final var certificateWithoutXml = fk7210CertificateBuilder()
-        .xml(null)
-        .build();
+    final var certificateWithoutXml = fk7210CertificateBuilder().xml(null).build();
 
-    doReturn(certificateWithoutXml).when(certificateRepository)
+    doReturn(certificateWithoutXml)
+        .when(certificateRepository)
         .getById(new CertificateId(CERTIFICATE_ID));
     doReturn(XML).when(xmlGenerator).generate(certificateWithoutXml, false);
-    doReturn(ALFA_ALLERGIMOTTAGNINGEN_DTO).when(certificateUnitConverter).convert(
-        eq(FK7210_CERTIFICATE.certificateMetaData().issuingUnit()), any()
-    );
+    doReturn(ALFA_ALLERGIMOTTAGNINGEN_DTO)
+        .when(certificateUnitConverter)
+        .convert(eq(FK7210_CERTIFICATE.certificateMetaData().issuingUnit()), any());
 
     final var actualResponse = getCertificateInternalXmlService.get(CERTIFICATE_ID);
 
     assertAll(
         () -> assertEquals(expectedResponse.getCertificateId(), actualResponse.getCertificateId()),
-        () -> assertEquals(expectedResponse.getCertificateType(),
-            actualResponse.getCertificateType()),
+        () ->
+            assertEquals(
+                expectedResponse.getCertificateType(), actualResponse.getCertificateType()),
         () -> assertEquals(expectedResponse.getUnit(), actualResponse.getUnit()),
         () -> assertEquals(expectedResponse.getXml(), actualResponse.getXml()),
         () -> assertEquals(expectedResponse.getRecipient(), actualResponse.getRecipient()),
         () -> assertEquals(expectedResponse.getPatientId(), actualResponse.getPatientId()),
         () -> assertEquals(expectedResponse.getCareProvider(), actualResponse.getCareProvider()),
-        () -> assertNotNull(actualResponse.getRevoked())
-    );
+        () -> assertNotNull(actualResponse.getRevoked()));
   }
 }

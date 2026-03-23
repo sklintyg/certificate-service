@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.integrationtest.common.tests;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -27,128 +45,129 @@ import se.inera.intyg.certificateservice.integrationtest.common.setup.BaseIntegr
 
 public abstract class InternalApiIT extends BaseIntegrationIT {
 
-
   @Test
   @DisplayName("Signerat intyg skall gå att hämta från intern api:et")
   void shallReturnSignedCertificate() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion())
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion()));
 
-    api().signCertificate(
-        defaultSignCertificateRequest(),
-        certificateId(testCertificates),
-        version(testCertificates)
-    );
+    api()
+        .signCertificate(
+            defaultSignCertificateRequest(),
+            certificateId(testCertificates),
+            version(testCertificates));
 
     final var response = internalApi().getCertificateXml(certificateId(testCertificates));
 
     assertAll(
-        () -> assertEquals(certificateId(testCertificates),
-            certificateInternalXmlResponse(response).getCertificateId()),
+        () ->
+            assertEquals(
+                certificateId(testCertificates),
+                certificateInternalXmlResponse(response).getCertificateId()),
         () -> assertEquals(type(), certificateInternalXmlResponse(response).getCertificateType()),
-        () -> assertEquals(ALFA_ALLERGIMOTTAGNINGEN_ID,
-            certificateInternalXmlResponse(response).getUnit().getUnitId()),
+        () ->
+            assertEquals(
+                ALFA_ALLERGIMOTTAGNINGEN_ID,
+                certificateInternalXmlResponse(response).getUnit().getUnitId()),
         () -> assertNull(certificateInternalXmlResponse(response).getRevoked()),
-        () -> assertTrue(decodeXml(certificateInternalXmlResponse(response).getXml()).contains(
-                Objects.requireNonNull(certificateId(testCertificates))),
-            () -> "Expected 'Läkare' to be part of xml: '%s'"
-                .formatted(decodeXml(certificateInternalXmlResponse(response).getXml())))
-    );
+        () ->
+            assertTrue(
+                decodeXml(certificateInternalXmlResponse(response).getXml())
+                    .contains(Objects.requireNonNull(certificateId(testCertificates))),
+                () ->
+                    "Expected 'Läkare' to be part of xml: '%s'"
+                        .formatted(decodeXml(certificateInternalXmlResponse(response).getXml()))));
   }
 
   @Test
   @DisplayName("Makulerat intyg skall gå att hämta från intern api:et")
   void shallReturnRevokedCertificate() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED)
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED));
 
-    api().revokeCertificate(
-        defaultRevokeCertificateRequest(),
-        certificateId(testCertificates)
-    );
+    api().revokeCertificate(defaultRevokeCertificateRequest(), certificateId(testCertificates));
 
     final var response = internalApi().getCertificateXml(certificateId(testCertificates));
 
     assertAll(
-        () -> assertEquals(certificateId(testCertificates),
-            certificateInternalXmlResponse(response).getCertificateId()),
+        () ->
+            assertEquals(
+                certificateId(testCertificates),
+                certificateInternalXmlResponse(response).getCertificateId()),
         () -> assertEquals(type(), certificateInternalXmlResponse(response).getCertificateType()),
-        () -> assertEquals(ALFA_ALLERGIMOTTAGNINGEN_ID,
-            certificateInternalXmlResponse(response).getUnit().getUnitId()),
+        () ->
+            assertEquals(
+                ALFA_ALLERGIMOTTAGNINGEN_ID,
+                certificateInternalXmlResponse(response).getUnit().getUnitId()),
         () -> assertNotNull(certificateInternalXmlResponse(response).getRevoked()),
-        () -> assertTrue(decodeXml(certificateInternalXmlResponse(response).getXml()).contains(
-                Objects.requireNonNull(certificateId(testCertificates))),
-            () -> "Expected 'Läkare' to be part of xml: '%s'"
-                .formatted(decodeXml(certificateInternalXmlResponse(response).getXml())))
-    );
+        () ->
+            assertTrue(
+                decodeXml(certificateInternalXmlResponse(response).getXml())
+                    .contains(Objects.requireNonNull(certificateId(testCertificates))),
+                () ->
+                    "Expected 'Läkare' to be part of xml: '%s'"
+                        .formatted(decodeXml(certificateInternalXmlResponse(response).getXml()))));
   }
 
   @Test
   @DisplayName("Skickat intyg skall gå att hämta från intern api:et")
   void shallReturnSentCertificate() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED)
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED));
 
-    api().sendCertificate(
-        defaultSendCertificateRequest(),
-        certificateId(testCertificates)
-    );
+    api().sendCertificate(defaultSendCertificateRequest(), certificateId(testCertificates));
 
     final var response = internalApi().getCertificateXml(certificateId(testCertificates));
 
     assertAll(
-        () -> assertEquals(certificateId(testCertificates),
-            certificateInternalXmlResponse(response).getCertificateId()),
+        () ->
+            assertEquals(
+                certificateId(testCertificates),
+                certificateInternalXmlResponse(response).getCertificateId()),
         () -> assertEquals(type(), certificateInternalXmlResponse(response).getCertificateType()),
-        () -> assertEquals(ALFA_ALLERGIMOTTAGNINGEN_ID,
-            certificateInternalXmlResponse(response).getUnit().getUnitId()),
+        () ->
+            assertEquals(
+                ALFA_ALLERGIMOTTAGNINGEN_ID,
+                certificateInternalXmlResponse(response).getUnit().getUnitId()),
         () -> assertNotNull(certificateInternalXmlResponse(response).getRecipient()),
         () -> assertNull(certificateInternalXmlResponse(response).getRevoked()),
-        () -> assertTrue(decodeXml(certificateInternalXmlResponse(response).getXml()).contains(
-                Objects.requireNonNull(certificateId(testCertificates))),
-            () -> "Expected 'Läkare' to be part of xml: '%s'"
-                .formatted(decodeXml(certificateInternalXmlResponse(response).getXml())))
-    );
+        () ->
+            assertTrue(
+                decodeXml(certificateInternalXmlResponse(response).getXml())
+                    .contains(Objects.requireNonNull(certificateId(testCertificates))),
+                () ->
+                    "Expected 'Läkare' to be part of xml: '%s'"
+                        .formatted(decodeXml(certificateInternalXmlResponse(response).getXml()))));
   }
 
   @Test
   @DisplayName("Metadata för intyget skall gå att hämta")
   void shallReturnCertificateMetadata() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion())
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion()));
 
-    final var response = internalApi().getCertificateMetadata(
-        certificateId(testCertificates)
-    );
+    final var response = internalApi().getCertificateMetadata(certificateId(testCertificates));
 
     assertAll(
-        () -> assertEquals(certificateId(testCertificates),
-            metadata(response).getId()),
+        () -> assertEquals(certificateId(testCertificates), metadata(response).getId()),
         () -> assertEquals(type(), metadata(response).getType()),
-        () -> assertEquals(ALFA_ALLERGIMOTTAGNINGEN_ID,
-            metadata(response).getUnit().getUnitId())
-    );
+        () -> assertEquals(ALFA_ALLERGIMOTTAGNINGEN_ID, metadata(response).getUnit().getUnitId()));
   }
 
   @Test
   @DisplayName("Om intyget finns så returneras true")
   void shallReturnTrueIfCertificateExists() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion())
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion()));
 
-    final var response = internalApi().certificateExists(
-        certificateId(testCertificates)
-    );
+    final var response = internalApi().certificateExists(certificateId(testCertificates));
 
-    assertTrue(
-        exists(response.getBody()),
-        "Should return true when certificate exists!"
-    );
+    assertTrue(exists(response.getBody()), "Should return true when certificate exists!");
   }
 
   @Test
@@ -156,27 +175,21 @@ public abstract class InternalApiIT extends BaseIntegrationIT {
   void shallReturnFalseIfCertificateDoesnt() {
     final var response = internalApi().certificateExists("certificate-not-exists");
 
-    assertFalse(
-        exists(response.getBody()),
-        "Should return false when certificate doesnt exists!"
-    );
+    assertFalse(exists(response.getBody()), "Should return false when certificate doesnt exists!");
   }
 
   @Test
   @DisplayName("Intyget skall gå att hämta")
   void shallReturnCertificate() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion())
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion()));
 
-    final var response = internalApi().getCertificate(
-        certificateId(testCertificates)
-    );
+    final var response = internalApi().getCertificate(certificateId(testCertificates));
 
     final var certificate = certificate(response.getBody());
     assertAll(
         () -> assertEquals(certificateId(testCertificates), certificate.getMetadata().getId()),
-        () -> assertEquals(type(), certificate.getMetadata().getType())
-    );
+        () -> assertEquals(type(), certificate.getMetadata().getType()));
   }
 }

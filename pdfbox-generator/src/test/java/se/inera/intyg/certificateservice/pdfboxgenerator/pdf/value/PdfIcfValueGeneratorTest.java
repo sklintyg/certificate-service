@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.pdfboxgenerator.pdf.value;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -16,9 +34,10 @@ class PdfIcfValueGeneratorTest {
 
   private static final String FIELD_ID = "form1[0].#subform[0].flt_txtIcf[0]";
   private static final String VALUE = "ICF beskrivning";
-  private static final String VALUE_WITH_CODES = """
+  private static final String VALUE_WITH_CODES =
+      """
       ICF_CODE_1 - ICF_CODE_2
-      
+
       ICF beskrivning""";
   private static final PdfIcfValueGenerator pdfIcfValueGenerator = new PdfIcfValueGenerator();
   private static final String QUESTION_NAME = "ICF fråga";
@@ -31,29 +50,16 @@ class PdfIcfValueGeneratorTest {
 
   @Test
   void shouldSetValueIfElementDataWithIcfText() {
-    final var expected = List.of(
-        PdfField.builder()
-            .id(FIELD_ID)
-            .value(VALUE)
-            .build()
-    );
+    final var expected = List.of(PdfField.builder().id(FIELD_ID).value(VALUE).build());
 
-    final var elementSpecification = ElementSpecification.builder()
-        .configuration(
-            ElementConfigurationIcf.builder()
-                .name(QUESTION_NAME)
-                .build()
-        )
-        .pdfConfiguration(
-            PdfConfigurationText.builder()
-                .pdfFieldId(new PdfFieldId(FIELD_ID))
-                .build()
-        )
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .configuration(ElementConfigurationIcf.builder().name(QUESTION_NAME).build())
+            .pdfConfiguration(
+                PdfConfigurationText.builder().pdfFieldId(new PdfFieldId(FIELD_ID)).build())
+            .build();
 
-    final var elementValue = ElementValueIcf.builder()
-        .text(VALUE)
-        .build();
+    final var elementValue = ElementValueIcf.builder().text(VALUE).build();
 
     final var result = pdfIcfValueGenerator.generate(elementSpecification, elementValue);
 
@@ -62,30 +68,17 @@ class PdfIcfValueGeneratorTest {
 
   @Test
   void shouldSetValueIfElementDataWithIcfTextAndCodes() {
-    final var expected = List.of(
-        PdfField.builder()
-            .id(FIELD_ID)
-            .value(VALUE_WITH_CODES)
-            .build()
-    );
+    final var expected = List.of(PdfField.builder().id(FIELD_ID).value(VALUE_WITH_CODES).build());
 
-    final var elementSpecification = ElementSpecification.builder()
-        .configuration(
-            ElementConfigurationIcf.builder()
-                .name(QUESTION_NAME)
-                .build()
-        )
-        .pdfConfiguration(
-            PdfConfigurationText.builder()
-                .pdfFieldId(new PdfFieldId(FIELD_ID))
-                .build()
-        )
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .configuration(ElementConfigurationIcf.builder().name(QUESTION_NAME).build())
+            .pdfConfiguration(
+                PdfConfigurationText.builder().pdfFieldId(new PdfFieldId(FIELD_ID)).build())
+            .build();
 
-    final var elementValue = ElementValueIcf.builder()
-        .text(VALUE)
-        .icfCodes(List.of("ICF_CODE_1", "ICF_CODE_2"))
-        .build();
+    final var elementValue =
+        ElementValueIcf.builder().text(VALUE).icfCodes(List.of("ICF_CODE_1", "ICF_CODE_2")).build();
 
     final var result = pdfIcfValueGenerator.generate(elementSpecification, elementValue);
 
@@ -94,13 +87,11 @@ class PdfIcfValueGeneratorTest {
 
   @Test
   void shouldReturnEmptyListIfElementDataWithoutIcfTextOrCodes() {
-    final var elementSpecification = ElementSpecification.builder()
-        .pdfConfiguration(
-            PdfConfigurationText.builder()
-                .pdfFieldId(new PdfFieldId(FIELD_ID))
-                .build()
-        )
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .pdfConfiguration(
+                PdfConfigurationText.builder().pdfFieldId(new PdfFieldId(FIELD_ID)).build())
+            .build();
 
     final var elementValue = ElementValueIcf.builder().build();
 
@@ -113,45 +104,31 @@ class PdfIcfValueGeneratorTest {
   void shouldSplitValueIfOverMaxLengthWithOverflowSheet() {
     final var startValue = "ICF ...";
     final var endValue = "... beskrivning";
-    final var expected = List.of(
-        PdfField.builder()
-            .id(FIELD_ID)
-            .value(startValue)
-            .build(),
-        PdfField.builder()
-            .id(OVERFLOW_SHEET_ID.id())
-            .value(QUESTION_NAME)
-            .append(true)
-            .build(),
-        PdfField.builder()
-            .id(OVERFLOW_SHEET_ID.id())
-            .value(endValue + "\n")
-            .append(true)
-            .build()
-    );
+    final var expected =
+        List.of(
+            PdfField.builder().id(FIELD_ID).value(startValue).build(),
+            PdfField.builder().id(OVERFLOW_SHEET_ID.id()).value(QUESTION_NAME).append(true).build(),
+            PdfField.builder()
+                .id(OVERFLOW_SHEET_ID.id())
+                .value(endValue + "\n")
+                .append(true)
+                .build());
 
-    final var elementSpecification = ElementSpecification.builder()
-        .configuration(
-            ElementConfigurationIcf.builder()
-                .name(QUESTION_NAME)
-                .build()
-        )
-        .pdfConfiguration(
-            PdfConfigurationText.builder()
-                .pdfFieldId(new PdfFieldId(FIELD_ID))
-                .maxLength(7)
-                .overflowSheetFieldId(OVERFLOW_SHEET_ID)
-                .build()
-        )
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .configuration(ElementConfigurationIcf.builder().name(QUESTION_NAME).build())
+            .pdfConfiguration(
+                PdfConfigurationText.builder()
+                    .pdfFieldId(new PdfFieldId(FIELD_ID))
+                    .maxLength(7)
+                    .overflowSheetFieldId(OVERFLOW_SHEET_ID)
+                    .build())
+            .build();
 
-    final var elementValue = ElementValueIcf.builder()
-        .text(VALUE)
-        .build();
+    final var elementValue = ElementValueIcf.builder().text(VALUE).build();
 
     final var result = pdfIcfValueGenerator.generate(elementSpecification, elementValue);
 
     assertEquals(expected, result);
   }
 }
-

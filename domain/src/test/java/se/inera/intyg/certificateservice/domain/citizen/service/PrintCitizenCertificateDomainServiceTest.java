@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.citizen.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,36 +52,27 @@ class PrintCitizenCertificateDomainServiceTest {
   private static final String TOLVAN_ID = "191212121212";
   private static final String LILLTOLVAN_ID = "201212121212";
   private static final String ADDITIONAL_INFO_TEXT = "additionalInfoText";
-  private static final PersonId TOLVAN_PERSON_ID = PersonId.builder()
-      .type(PersonIdType.PERSONAL_IDENTITY_NUMBER)
-      .id(TOLVAN_ID)
-      .build();
-  private static final PersonId LILLTOLVAN_PERSON_ID = PersonId.builder()
-      .type(PersonIdType.PERSONAL_IDENTITY_NUMBER)
-      .id(LILLTOLVAN_ID)
-      .build();
+  private static final PersonId TOLVAN_PERSON_ID =
+      PersonId.builder().type(PersonIdType.PERSONAL_IDENTITY_NUMBER).id(TOLVAN_ID).build();
+  private static final PersonId LILLTOLVAN_PERSON_ID =
+      PersonId.builder().type(PersonIdType.PERSONAL_IDENTITY_NUMBER).id(LILLTOLVAN_ID).build();
   private static final CertificateId CERTIFICATE_ID = new CertificateId("CERTIFICATE_ID");
   private static final Certificate CERTIFICATE = getCertificate(TOLVAN_ID, true);
 
   private static final Pdf PDF = new Pdf(null, "fileName");
   private static final ElementId HIDDEN = new ElementId("hiddenElementId");
 
-  @Mock
-  CertificateRepository certificateRepository;
+  @Mock CertificateRepository certificateRepository;
 
-  @Mock
-  PdfGenerator pdfGenerator;
+  @Mock PdfGenerator pdfGenerator;
 
-  @Mock
-  PdfGeneratorProvider pdfGeneratorProvider;
+  @Mock PdfGeneratorProvider pdfGeneratorProvider;
 
-  @InjectMocks
-  PrintCitizenCertificateDomainService printCitizenCertificateDomainService;
+  @InjectMocks PrintCitizenCertificateDomainService printCitizenCertificateDomainService;
 
   @BeforeEach
   void setup() {
-    when(certificateRepository.getById(CERTIFICATE_ID))
-        .thenReturn(CERTIFICATE);
+    when(certificateRepository.getById(CERTIFICATE_ID)).thenReturn(CERTIFICATE);
   }
 
   @Nested
@@ -71,33 +80,34 @@ class PrintCitizenCertificateDomainServiceTest {
 
     @BeforeEach
     void setup() {
-      when(certificateRepository.getById(CERTIFICATE_ID))
-          .thenReturn(CERTIFICATE);
+      when(certificateRepository.getById(CERTIFICATE_ID)).thenReturn(CERTIFICATE);
     }
 
     @Test
     void shouldThrowIfPatientIdDoesNotMatchCitizen() {
-      assertThrows(CitizenCertificateForbidden.class,
-          () -> printCitizenCertificateDomainService.get(CERTIFICATE_ID, LILLTOLVAN_PERSON_ID,
-              ADDITIONAL_INFO_TEXT, List.of(HIDDEN))
-      );
+      assertThrows(
+          CitizenCertificateForbidden.class,
+          () ->
+              printCitizenCertificateDomainService.get(
+                  CERTIFICATE_ID, LILLTOLVAN_PERSON_ID, ADDITIONAL_INFO_TEXT, List.of(HIDDEN)));
     }
 
     @Test
     void shouldReturnPdfIfPatientIdMatchesCitizen() {
-      when(pdfGeneratorProvider.provider(CERTIFICATE))
-          .thenReturn(pdfGenerator);
+      when(pdfGeneratorProvider.provider(CERTIFICATE)).thenReturn(pdfGenerator);
 
-      final var options = PdfGeneratorOptions.builder()
-          .additionalInfoText(ADDITIONAL_INFO_TEXT)
-          .citizenFormat(true)
-          .hiddenElements(List.of(HIDDEN))
-          .build();
+      final var options =
+          PdfGeneratorOptions.builder()
+              .additionalInfoText(ADDITIONAL_INFO_TEXT)
+              .citizenFormat(true)
+              .hiddenElements(List.of(HIDDEN))
+              .build();
 
       when(pdfGenerator.generate(CERTIFICATE, options)).thenReturn(PDF);
 
-      final var response = printCitizenCertificateDomainService.get(CERTIFICATE_ID,
-          TOLVAN_PERSON_ID, ADDITIONAL_INFO_TEXT, List.of(HIDDEN));
+      final var response =
+          printCitizenCertificateDomainService.get(
+              CERTIFICATE_ID, TOLVAN_PERSON_ID, ADDITIONAL_INFO_TEXT, List.of(HIDDEN));
 
       assertEquals(PDF, response);
     }
@@ -108,25 +118,21 @@ class PrintCitizenCertificateDomainServiceTest {
     when(certificateRepository.getById(CERTIFICATE_ID))
         .thenReturn(getCertificate(LILLTOLVAN_ID, false));
 
-    assertThrows(CitizenCertificateForbidden.class,
-        () -> printCitizenCertificateDomainService.get(CERTIFICATE_ID, LILLTOLVAN_PERSON_ID,
-            ADDITIONAL_INFO_TEXT, List.of(HIDDEN))
-    );
+    assertThrows(
+        CitizenCertificateForbidden.class,
+        () ->
+            printCitizenCertificateDomainService.get(
+                CERTIFICATE_ID, LILLTOLVAN_PERSON_ID, ADDITIONAL_INFO_TEXT, List.of(HIDDEN)));
   }
 
   private static Certificate getCertificate(String personId, Boolean availableForCitizen) {
     return MedicalCertificate.builder()
-        .certificateModel(CertificateModel.builder()
-            .availableForCitizen(availableForCitizen)
-            .build())
-        .certificateMetaData(CertificateMetaData.builder()
-            .patient(Patient.builder()
-                .id(PersonId.builder()
-                    .id(personId)
-                    .build())
+        .certificateModel(
+            CertificateModel.builder().availableForCitizen(availableForCitizen).build())
+        .certificateMetaData(
+            CertificateMetaData.builder()
+                .patient(Patient.builder().id(PersonId.builder().id(personId).build()).build())
                 .build())
-            .build())
         .build();
   }
 }
-

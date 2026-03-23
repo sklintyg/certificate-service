@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.unit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -27,21 +45,16 @@ import se.inera.intyg.certificateservice.application.unit.service.GetUnitStatist
 class UnitCertificateControllerTest {
 
   private static final String UNIT = "unit";
-  @Mock
-  private GetUnitStatisticsService getUnitStatisticsService;
-  @Mock
-  private GetUnitCertificatesService getUnitCertificatesService;
-  @Mock
-  private GetUnitCertificatesInfoService getUnitCertificatesInfoService;
-  @InjectMocks
-  private UnitCertificateController unitCertificateController;
+  @Mock private GetUnitStatisticsService getUnitStatisticsService;
+  @Mock private GetUnitCertificatesService getUnitCertificatesService;
+  @Mock private GetUnitCertificatesInfoService getUnitCertificatesInfoService;
+  @InjectMocks private UnitCertificateController unitCertificateController;
 
   @Test
   void shallReturnGetUnitCertificatesResponse() {
     final var certificates = List.of(CertificateDTO.builder().build());
-    final var expectedResult = GetUnitCertificatesResponse.builder()
-        .certificates(certificates)
-        .build();
+    final var expectedResult =
+        GetUnitCertificatesResponse.builder().certificates(certificates).build();
 
     final var request = GetUnitCertificatesRequest.builder().build();
     doReturn(expectedResult).when(getUnitCertificatesService).get(request);
@@ -53,9 +66,7 @@ class UnitCertificateControllerTest {
   @Test
   void shallReturnGetUnitCertificatesInfoResponse() {
     final var staffs = List.of(StaffDTO.builder().build());
-    final var expectedResult = GetUnitCertificatesInfoResponse.builder()
-        .staffs(staffs)
-        .build();
+    final var expectedResult = GetUnitCertificatesInfoResponse.builder().staffs(staffs).build();
 
     final var request = GetUnitCertificatesInfoRequest.builder().build();
     doReturn(expectedResult).when(getUnitCertificatesInfoService).get(request);
@@ -66,9 +77,10 @@ class UnitCertificateControllerTest {
 
   @Test
   void shallReturnUnitStatisticsResponse() {
-    final var expectedResult = UnitStatisticsResponse.builder()
-        .unitStatistics(Map.of(UNIT, UnitStatisticsDTO.builder().build()))
-        .build();
+    final var expectedResult =
+        UnitStatisticsResponse.builder()
+            .unitStatistics(Map.of(UNIT, UnitStatisticsDTO.builder().build()))
+            .build();
 
     final var request = UnitStatisticsRequest.builder().build();
     doReturn(expectedResult).when(getUnitStatisticsService).get(request);

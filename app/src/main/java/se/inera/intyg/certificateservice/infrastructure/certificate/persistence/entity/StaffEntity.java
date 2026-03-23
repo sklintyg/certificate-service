@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificate.persistence.entity;
 
 import jakarta.persistence.CollectionTable;
@@ -32,29 +50,38 @@ public class StaffEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "`key`")
   private int key;
+
   @Column(name = "hsa_id", unique = true)
   private String hsaId;
+
   @Column(name = "first_name")
   private String firstName;
+
   @Column(name = "middle_name")
   private String middleName;
+
   @Column(name = "last_name")
   private String lastName;
+
   @ManyToOne
   @JoinColumn(name = "staff_role_key")
   private StaffRoleEntity role;
+
   @ElementCollection(fetch = FetchType.EAGER)
   @CollectionTable(name = "staff_pa_title", joinColumns = @JoinColumn(name = "staff_key"))
   private List<PaTitleEmbeddable> paTitles;
+
   @ElementCollection(fetch = FetchType.EAGER)
   @CollectionTable(name = "staff_speciality", joinColumns = @JoinColumn(name = "staff_key"))
   private List<SpecialityEmbeddable> specialities;
+
   @ElementCollection(fetch = FetchType.EAGER)
-  @CollectionTable(name = "staff_healthcare_professional_licence", joinColumns = @JoinColumn(name = "staff_key"))
+  @CollectionTable(
+      name = "staff_healthcare_professional_licence",
+      joinColumns = @JoinColumn(name = "staff_key"))
   private List<HealthcareProfessionalLicenceEmbeddable> healthcareProfessionalLicences;
 
-  @Version
-  private Long version;
+  @Version private Long version;
 
   public void updateWith(StaffEntity source) {
     if (source == null) {
@@ -84,9 +111,7 @@ public class StaffEntity {
         && Objects.equals(this.role, other.getRole())
         && CollectionUtils.isEqualCollection(this.paTitles, other.getPaTitles())
         && CollectionUtils.isEqualCollection(this.specialities, other.getSpecialities())
-        && CollectionUtils.isEqualCollection(this.healthcareProfessionalLicences,
-        other.getHealthcareProfessionalLicences())
-    );
+        && CollectionUtils.isEqualCollection(
+            this.healthcareProfessionalLicences, other.getHealthcareProfessionalLicences()));
   }
-
 }

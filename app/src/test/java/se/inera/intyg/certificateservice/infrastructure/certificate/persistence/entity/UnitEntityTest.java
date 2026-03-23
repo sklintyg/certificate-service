@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificate.persistence.entity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,16 +36,17 @@ class UnitEntityTest {
     var originalHsaId = target.getHsaId();
     var originalKey = target.getKey();
 
-    var source = alfaRegionenEntityBuilder()
-        .name("NewName")
-        .address("NewAddress")
-        .zipCode("99999")
-        .city("NewCity")
-        .phoneNumber("010-00 00 00")
-        .email("new@example.com")
-        .workplaceCode("NEWCODE")
-        .type(new UnitTypeEntity())
-        .build();
+    var source =
+        alfaRegionenEntityBuilder()
+            .name("NewName")
+            .address("NewAddress")
+            .zipCode("99999")
+            .city("NewCity")
+            .phoneNumber("010-00 00 00")
+            .email("new@example.com")
+            .workplaceCode("NEWCODE")
+            .type(new UnitTypeEntity())
+            .build();
 
     target.updateWith(source);
 
@@ -40,7 +59,6 @@ class UnitEntityTest {
     assertEquals("NEWCODE", target.getWorkplaceCode());
     assertEquals(originalHsaId, target.getHsaId(), "hsaId must remain unchanged");
     assertEquals(originalKey, target.getKey(), "key must remain unchanged");
-
   }
 
   @Test
@@ -55,38 +73,44 @@ class UnitEntityTest {
 
   @Test
   void shallFindDiffWhenNameDiffers() {
-    assertTrue(ALFA_REGIONEN_ENTITY.hasDiff(alfaRegionenEntityBuilder().name("Diff").build()),
-        "name");
+    assertTrue(
+        ALFA_REGIONEN_ENTITY.hasDiff(alfaRegionenEntityBuilder().name("Diff").build()), "name");
   }
 
   @Test
   void shallFindDiffWhenAddressDiffers() {
-    assertTrue(ALFA_REGIONEN_ENTITY.hasDiff(alfaRegionenEntityBuilder().address("Addr").build()),
+    assertTrue(
+        ALFA_REGIONEN_ENTITY.hasDiff(alfaRegionenEntityBuilder().address("Addr").build()),
         "address");
   }
 
   @Test
   void shallFindDiffWhenZipCodeDiffers() {
-    assertTrue(ALFA_REGIONEN_ENTITY.hasDiff(alfaRegionenEntityBuilder().zipCode("12345").build()),
+    assertTrue(
+        ALFA_REGIONEN_ENTITY.hasDiff(alfaRegionenEntityBuilder().zipCode("12345").build()),
         "zipCode");
   }
 
   @Test
   void shallFindDiffWhenCityDiffers() {
-    assertTrue(ALFA_REGIONEN_ENTITY.hasDiff(alfaRegionenEntityBuilder().city("City").build()),
-        "city");
+    assertTrue(
+        ALFA_REGIONEN_ENTITY.hasDiff(alfaRegionenEntityBuilder().city("City").build()), "city");
   }
 
   @Test
   void shallFindDiffWhenPhoneNumberDiffers() {
-    assertTrue(ALFA_REGIONEN_ENTITY.hasDiff(
-        alfaRegionenEntityBuilder().phoneNumber("020-10 10 10").build()), "phoneNumber");
+    assertTrue(
+        ALFA_REGIONEN_ENTITY.hasDiff(
+            alfaRegionenEntityBuilder().phoneNumber("020-10 10 10").build()),
+        "phoneNumber");
   }
 
   @Test
   void shallFindDiffWhenEmailDiffers() {
-    assertTrue(ALFA_REGIONEN_ENTITY.hasDiff(
-        alfaRegionenEntityBuilder().email("other@example.com").build()), "email");
+    assertTrue(
+        ALFA_REGIONEN_ENTITY.hasDiff(
+            alfaRegionenEntityBuilder().email("other@example.com").build()),
+        "email");
   }
 
   @Test
@@ -98,15 +122,16 @@ class UnitEntityTest {
 
   @Test
   void shallFindDiffWhenAllFieldsDiffer() {
-    var allDiff = alfaRegionenEntityBuilder()
-        .name("N")
-        .address("A")
-        .zipCode("Z")
-        .city("C")
-        .phoneNumber("P")
-        .email("e@x.se")
-        .workplaceCode("W")
-        .build();
+    var allDiff =
+        alfaRegionenEntityBuilder()
+            .name("N")
+            .address("A")
+            .zipCode("Z")
+            .city("C")
+            .phoneNumber("P")
+            .email("e@x.se")
+            .workplaceCode("W")
+            .build();
 
     assertTrue(ALFA_REGIONEN_ENTITY.hasDiff(allDiff), "all fields");
   }
@@ -118,10 +143,8 @@ class UnitEntityTest {
 
   @Test
   void shallThrowExceptionWhenComparingUnitWithDifferentHsaId() {
-    var unitWithDifferentHsaId = alfaRegionenEntityBuilder()
-        .hsaId(BETA_REGIONEN_ID)
-        .build();
-    assertThrows(IllegalArgumentException.class,
-        () -> ALFA_REGIONEN_ENTITY.hasDiff(unitWithDifferentHsaId));
+    var unitWithDifferentHsaId = alfaRegionenEntityBuilder().hsaId(BETA_REGIONEN_ID).build();
+    assertThrows(
+        IllegalArgumentException.class, () -> ALFA_REGIONEN_ENTITY.hasDiff(unitWithDifferentHsaId));
   }
 }

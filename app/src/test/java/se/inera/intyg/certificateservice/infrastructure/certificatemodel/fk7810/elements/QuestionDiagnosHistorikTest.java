@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7810.elements;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -32,10 +50,11 @@ class QuestionDiagnosHistorikTest {
 
   @Test
   void shallIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationTextArea.builder()
-        .name("Beskriv kortfattat historiken för diagnoserna ovan")
-        .id(new FieldId("5.1"))
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationTextArea.builder()
+            .name("Beskriv kortfattat historiken för diagnoserna ovan")
+            .id(new FieldId("5.1"))
+            .build();
 
     final var element = questionDiagnosHistorik();
 
@@ -44,18 +63,18 @@ class QuestionDiagnosHistorikTest {
 
   @Test
   void shallIncludeRules() {
-    final var expectedRules = List.of(
-        ElementRuleExpression.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.MANDATORY)
-            .expression(new RuleExpression("$5.1"))
-            .build(),
-        ElementRuleLimit.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.TEXT_LIMIT)
-            .limit(new RuleLimit((short) 4000))
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleExpression.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.MANDATORY)
+                .expression(new RuleExpression("$5.1"))
+                .build(),
+            ElementRuleLimit.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.TEXT_LIMIT)
+                .limit(new RuleLimit((short) 4000))
+                .build());
 
     final var element = questionDiagnosHistorik();
 
@@ -64,12 +83,8 @@ class QuestionDiagnosHistorikTest {
 
   @Test
   void shallIncludeValidations() {
-    final var expectedValidations = List.of(
-        ElementValidationText.builder()
-            .mandatory(true)
-            .limit(4000)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationText.builder().mandatory(true).limit(4000).build());
 
     final var element = questionDiagnosHistorik();
 
@@ -78,11 +93,13 @@ class QuestionDiagnosHistorikTest {
 
   @Test
   void shallIncludePdfConfiguration() {
-    final var expected = PdfConfigurationText.builder()
-        .pdfFieldId(new PdfFieldId("form1[0].Sida2[0].flt_txtBeskrivRelevantHistorikDiagnos[0]"))
-        .maxLength(PDF_TEXT_FIELD_LENGTH * 4)
-        .overflowSheetFieldId(OVERFLOW_SHEET_FIELD_ID)
-        .build();
+    final var expected =
+        PdfConfigurationText.builder()
+            .pdfFieldId(
+                new PdfFieldId("form1[0].Sida2[0].flt_txtBeskrivRelevantHistorikDiagnos[0]"))
+            .maxLength(PDF_TEXT_FIELD_LENGTH * 4)
+            .overflowSheetFieldId(OVERFLOW_SHEET_FIELD_ID)
+            .build();
 
     final var element = questionDiagnosHistorik();
 

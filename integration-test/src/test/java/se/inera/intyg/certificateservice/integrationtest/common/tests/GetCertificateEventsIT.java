@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.integrationtest.common.tests;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -28,190 +46,193 @@ public abstract class GetCertificateEventsIT extends BaseIntegrationIT {
   @Test
   @DisplayName("Om intyget är utfärdat på samma mottagning skall dess händelser returneras")
   void shallReturnCertificateEventsIfUnitIsSubUnitAndOnSameUnit() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion())
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion()));
 
-    final var response = api().getCertificateEvents(
-        defaultGetCertificateEventsRequest(),
-        certificateId(testCertificates)
-    );
+    final var response =
+        api()
+            .getCertificateEvents(
+                defaultGetCertificateEventsRequest(), certificateId(testCertificates));
 
-    assertNotNull(
-        response.getBody().getEvents(),
-        "Should return certificate events"
-    );
+    assertNotNull(response.getBody().getEvents(), "Should return certificate events");
   }
 
   @Test
   @DisplayName("Om intyget är ett utkast ska ett event returneras")
   void shallReturnCertificateEventsForDraft() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion())
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion()));
 
-    final var response = api().getCertificateEvents(
-        defaultGetCertificateEventsRequest(),
-        certificateId(testCertificates)
-    );
+    final var response =
+        api()
+            .getCertificateEvents(
+                defaultGetCertificateEventsRequest(), certificateId(testCertificates));
 
     assertAll(
         () -> assertEquals(1, response.getBody().getEvents().size()),
-        () -> assertEquals(CertificateEventTypeDTO.CREATED,
-            response.getBody().getEvents().getFirst().getType(),
-            "Should return certificate event created for draft")
-    );
+        () ->
+            assertEquals(
+                CertificateEventTypeDTO.CREATED,
+                response.getBody().getEvents().getFirst().getType(),
+                "Should return certificate event created for draft"));
   }
 
   @Test
   @DisplayName("Om intyget är signerat ska event returneras")
   void shallReturnCertificateEventsForSignedCertificate() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(
-            type(),
-            typeVersion(),
-            CertificateStatusTypeDTO.SIGNED
-        )
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(
+                defaultTestablilityCertificateRequest(
+                    type(), typeVersion(), CertificateStatusTypeDTO.SIGNED));
 
-    final var response = api().getCertificateEvents(
-        defaultGetCertificateEventsRequest(),
-        certificateId(testCertificates)
-    );
+    final var response =
+        api()
+            .getCertificateEvents(
+                defaultGetCertificateEventsRequest(), certificateId(testCertificates));
 
     assertAll(
-        () -> assertEquals(isAvailableForPatient() ? 3 : 2, response.getBody().getEvents().size()
-            , () -> response.getBody().getEvents().stream().map(event -> event.getType().name())
-                .reduce((a, b) -> a + ", " + b).orElse("No events")),
-        () -> assertEquals(CertificateEventTypeDTO.CREATED,
-            response.getBody().getEvents().getFirst().getType(),
-            "Should return certificate event created for signed certificate"),
-        () -> assertEquals(CertificateEventTypeDTO.SIGNED,
-            response.getBody().getEvents().get(1).getType(),
-            "Should return certificate event signed for signed certificate")
-    );
+        () ->
+            assertEquals(
+                isAvailableForPatient() ? 3 : 2,
+                response.getBody().getEvents().size(),
+                () ->
+                    response.getBody().getEvents().stream()
+                        .map(event -> event.getType().name())
+                        .reduce((a, b) -> a + ", " + b)
+                        .orElse("No events")),
+        () ->
+            assertEquals(
+                CertificateEventTypeDTO.CREATED,
+                response.getBody().getEvents().getFirst().getType(),
+                "Should return certificate event created for signed certificate"),
+        () ->
+            assertEquals(
+                CertificateEventTypeDTO.SIGNED,
+                response.getBody().getEvents().get(1).getType(),
+                "Should return certificate event signed for signed certificate"));
 
     if (isAvailableForPatient()) {
-      assertEquals(CertificateEventTypeDTO.AVAILABLE_FOR_PATIENT,
+      assertEquals(
+          CertificateEventTypeDTO.AVAILABLE_FOR_PATIENT,
           response.getBody().getEvents().get(2).getType(),
           "Should return certificate event available for patient for signed certificate");
     }
   }
 
   @Test
-  @DisplayName("Om intyget är utfärdat på mottagning men på samma vårdenhet skall dess händelser returneras")
+  @DisplayName(
+      "Om intyget är utfärdat på mottagning men på samma vårdenhet skall dess händelser returneras")
   void shallReturnCertificateEventsIfUnitIsCareUnitAndOnSameCareUnit() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion())
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion()));
 
-    final var response = api().getCertificateEvents(
-        customGetCertificateEventsRequest()
-            .unit(ALFA_MEDICINCENTRUM_DTO)
-            .build(),
-        certificateId(testCertificates)
-    );
+    final var response =
+        api()
+            .getCertificateEvents(
+                customGetCertificateEventsRequest().unit(ALFA_MEDICINCENTRUM_DTO).build(),
+                certificateId(testCertificates));
 
-    assertNotNull(
-        response.getBody().getEvents(),
-        "Should return certificate events"
-    );
+    assertNotNull(response.getBody().getEvents(), "Should return certificate events");
   }
 
   @Test
   @DisplayName("Om intyget är utfärdat på samma vårdenhet skall dess händelser returneras")
   void shallReturnCertificateEventsIfUnitIsCareUnitAndIssuedOnSameCareUnit() {
-    final var testCertificates = testabilityApi().addCertificates(
-        customTestabilityCertificateRequest(type(), typeVersion())
-            .unit(ALFA_MEDICINCENTRUM_DTO)
-            .build()
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(
+                customTestabilityCertificateRequest(type(), typeVersion())
+                    .unit(ALFA_MEDICINCENTRUM_DTO)
+                    .build());
 
-    final var response = api().getCertificateEvents(
-        customGetCertificateEventsRequest()
-            .unit(ALFA_MEDICINCENTRUM_DTO)
-            .build(),
-        certificateId(testCertificates)
-    );
+    final var response =
+        api()
+            .getCertificateEvents(
+                customGetCertificateEventsRequest().unit(ALFA_MEDICINCENTRUM_DTO).build(),
+                certificateId(testCertificates));
 
-    assertNotNull(
-        response.getBody().getEvents(),
-        "Should return certificate events"
-    );
+    assertNotNull(response.getBody().getEvents(), "Should return certificate events");
   }
 
   @Test
-  @DisplayName("Om intyget är utfärdat på en annan mottagning skall felkod 403 (FORBIDDEN) returneras")
+  @DisplayName(
+      "Om intyget är utfärdat på en annan mottagning skall felkod 403 (FORBIDDEN) returneras")
   void shallReturn403IfUnitIsSubUnitAndNotOnSameUnit() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion())
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion()));
 
-    final var response = api().getCertificateEvents(
-        customGetCertificateEventsRequest().unit(ALFA_HUDMOTTAGNINGEN_DTO).build(),
-        certificateId(testCertificates)
-    );
+    final var response =
+        api()
+            .getCertificateEvents(
+                customGetCertificateEventsRequest().unit(ALFA_HUDMOTTAGNINGEN_DTO).build(),
+                certificateId(testCertificates));
 
     assertEquals(403, response.getStatusCode().value());
   }
 
   @Test
-  @DisplayName("Om intyget är utfärdat på en annan vårdenhet skall felkod 403 (FORBIDDEN) returneras")
+  @DisplayName(
+      "Om intyget är utfärdat på en annan vårdenhet skall felkod 403 (FORBIDDEN) returneras")
   void shallReturn403IfUnitIsCareUnitAndNotOnCareUnit() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion())
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion()));
 
-    final var response = api().getCertificateEvents(
-        customGetCertificateEventsRequest()
-            .careUnit(ALFA_VARDCENTRAL_DTO)
-            .unit(ALFA_VARDCENTRAL_DTO)
-            .build(),
-        certificateId(testCertificates)
-    );
+    final var response =
+        api()
+            .getCertificateEvents(
+                customGetCertificateEventsRequest()
+                    .careUnit(ALFA_VARDCENTRAL_DTO)
+                    .unit(ALFA_VARDCENTRAL_DTO)
+                    .build(),
+                certificateId(testCertificates));
 
     assertEquals(403, response.getStatusCode().value());
   }
 
   @ParameterizedTest
-  @DisplayName("Om intyget är utfärdat på en patient som har skyddade personuppgifter skall felkod 403 (FORBIDDEN) returneras")
+  @DisplayName(
+      "Om intyget är utfärdat på en patient som har skyddade personuppgifter skall felkod 403 (FORBIDDEN) returneras")
   @MethodSource("rolesNoAccessToProtectedPerson")
   void shallReturn403IfPatientIsProtectedPerson(UserDTO userDTO) {
-    final var testCertificates = testabilityApi().addCertificates(
-        customTestabilityCertificateRequest(type(), typeVersion())
-            .patient(ANONYMA_REACT_ATTILA_DTO)
-            .build()
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(
+                customTestabilityCertificateRequest(type(), typeVersion())
+                    .patient(ANONYMA_REACT_ATTILA_DTO)
+                    .build());
 
-    final var response = api().getCertificateEvents(
-        customGetCertificateEventsRequest()
-            .user(userDTO)
-            .build(),
-        certificateId(testCertificates)
-    );
+    final var response =
+        api()
+            .getCertificateEvents(
+                customGetCertificateEventsRequest().user(userDTO).build(),
+                certificateId(testCertificates));
 
     assertEquals(403, response.getStatusCode().value());
   }
 
   @Test
-  @DisplayName("Läkare - Om intyget är utfärdat på en patient som har skyddade personuppgifter skall dess händelser returneras")
+  @DisplayName(
+      "Läkare - Om intyget är utfärdat på en patient som har skyddade personuppgifter skall dess händelser returneras")
   void shallReturnCertificateEventsIfPatientIsProtectedPersonAndUserIsDoctor() {
-    final var testCertificates = testabilityApi().addCertificates(
-        customTestabilityCertificateRequest(type(), typeVersion())
-            .patient(ANONYMA_REACT_ATTILA_DTO)
-            .build()
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(
+                customTestabilityCertificateRequest(type(), typeVersion())
+                    .patient(ANONYMA_REACT_ATTILA_DTO)
+                    .build());
 
-    final var response = api().getCertificateEvents(
-        customGetCertificateEventsRequest()
-            .user(AJLA_DOCTOR_DTO)
-            .build(),
-        certificateId(testCertificates)
-    );
+    final var response =
+        api()
+            .getCertificateEvents(
+                customGetCertificateEventsRequest().user(AJLA_DOCTOR_DTO).build(),
+                certificateId(testCertificates));
 
-    assertNotNull(
-        response.getBody().getEvents(),
-        "Should return certificate events"
-    );
+    assertNotNull(response.getBody().getEvents(), "Should return certificate events");
   }
 }

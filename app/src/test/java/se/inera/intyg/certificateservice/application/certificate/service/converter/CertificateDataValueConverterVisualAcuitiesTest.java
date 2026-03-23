@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service.converter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -19,20 +37,11 @@ class CertificateDataValueConverterVisualAcuitiesTest {
   private static final String ID_1 = "id1";
   private static final String ID_2 = "id2";
   private static final double VALUE = 1.0;
-  private static final VisualAcuity VISUAL_ACUITY = VisualAcuity.builder()
-      .withCorrection(
-          Correction.builder()
-              .id(new FieldId(ID_1))
-              .value(VALUE)
-              .build()
-      )
-      .withoutCorrection(
-          Correction.builder()
-              .id(new FieldId(ID_2))
-              .value(VALUE)
-              .build()
-      )
-      .build();
+  private static final VisualAcuity VISUAL_ACUITY =
+      VisualAcuity.builder()
+          .withCorrection(Correction.builder().id(new FieldId(ID_1)).value(VALUE).build())
+          .withoutCorrection(Correction.builder().id(new FieldId(ID_2)).value(VALUE).build())
+          .build();
 
   private static final ElementValueVisualAcuities VISUALL_ACUITIES =
       ElementValueVisualAcuities.builder()
@@ -51,10 +60,12 @@ class CertificateDataValueConverterVisualAcuitiesTest {
   @Test
   void shallThrowIfInvalidType() {
     final var elementValueDate = ElementValueDate.builder().build();
-    final var illegalStateException = assertThrows(IllegalStateException.class,
-        () -> convertervisualAcuities.convert(null,
-            elementValueDate));
-    assertEquals("Invalid value type. Type was '%s'".formatted(elementValueDate.getClass()),
+    final var illegalStateException =
+        assertThrows(
+            IllegalStateException.class,
+            () -> convertervisualAcuities.convert(null, elementValueDate));
+    assertEquals(
+        "Invalid value type. Type was '%s'".formatted(elementValueDate.getClass()),
         illegalStateException.getMessage());
   }
 
@@ -63,26 +74,22 @@ class CertificateDataValueConverterVisualAcuitiesTest {
 
     @Test
     void shallIncludeWithCorrection() {
-      final var expectedResult = CertificateDataValueDouble.builder()
-          .id(ID_1)
-          .value(VALUE)
-          .build();
+      final var expectedResult = CertificateDataValueDouble.builder().id(ID_1).value(VALUE).build();
 
-      final var certificateDataValue = (CertificateDataValueVisualAcuities)
-          convertervisualAcuities.convert(null, VISUALL_ACUITIES);
+      final var certificateDataValue =
+          (CertificateDataValueVisualAcuities)
+              convertervisualAcuities.convert(null, VISUALL_ACUITIES);
 
       assertEquals(expectedResult, certificateDataValue.getRightEye().getWithCorrection());
     }
 
     @Test
     void shallIncludeWithoutCorrection() {
-      final var expectedResult = CertificateDataValueDouble.builder()
-          .id(ID_2)
-          .value(VALUE)
-          .build();
+      final var expectedResult = CertificateDataValueDouble.builder().id(ID_2).value(VALUE).build();
 
-      final var certificateDataValue = (CertificateDataValueVisualAcuities)
-          convertervisualAcuities.convert(null, VISUALL_ACUITIES);
+      final var certificateDataValue =
+          (CertificateDataValueVisualAcuities)
+              convertervisualAcuities.convert(null, VISUALL_ACUITIES);
 
       assertEquals(expectedResult, certificateDataValue.getRightEye().getWithoutCorrection());
     }
@@ -93,26 +100,22 @@ class CertificateDataValueConverterVisualAcuitiesTest {
 
     @Test
     void shallIncludeWithCorrection() {
-      final var expectedResult = CertificateDataValueDouble.builder()
-          .id(ID_1)
-          .value(VALUE)
-          .build();
+      final var expectedResult = CertificateDataValueDouble.builder().id(ID_1).value(VALUE).build();
 
-      final var certificateDataValue = (CertificateDataValueVisualAcuities)
-          convertervisualAcuities.convert(null, VISUALL_ACUITIES);
+      final var certificateDataValue =
+          (CertificateDataValueVisualAcuities)
+              convertervisualAcuities.convert(null, VISUALL_ACUITIES);
 
       assertEquals(expectedResult, certificateDataValue.getLeftEye().getWithCorrection());
     }
 
     @Test
     void shallIncludeWithoutCorrection() {
-      final var expectedResult = CertificateDataValueDouble.builder()
-          .id(ID_2)
-          .value(VALUE)
-          .build();
+      final var expectedResult = CertificateDataValueDouble.builder().id(ID_2).value(VALUE).build();
 
-      final var certificateDataValue = (CertificateDataValueVisualAcuities)
-          convertervisualAcuities.convert(null, VISUALL_ACUITIES);
+      final var certificateDataValue =
+          (CertificateDataValueVisualAcuities)
+              convertervisualAcuities.convert(null, VISUALL_ACUITIES);
 
       assertEquals(expectedResult, certificateDataValue.getLeftEye().getWithoutCorrection());
     }
@@ -123,26 +126,22 @@ class CertificateDataValueConverterVisualAcuitiesTest {
 
     @Test
     void shallIncludeWithCorrection() {
-      final var expectedResult = CertificateDataValueDouble.builder()
-          .id(ID_1)
-          .value(VALUE)
-          .build();
+      final var expectedResult = CertificateDataValueDouble.builder().id(ID_1).value(VALUE).build();
 
-      final var certificateDataValue = (CertificateDataValueVisualAcuities)
-          convertervisualAcuities.convert(null, VISUALL_ACUITIES);
+      final var certificateDataValue =
+          (CertificateDataValueVisualAcuities)
+              convertervisualAcuities.convert(null, VISUALL_ACUITIES);
 
       assertEquals(expectedResult, certificateDataValue.getBinocular().getWithCorrection());
     }
 
     @Test
     void shallIncludeWithoutCorrection() {
-      final var expectedResult = CertificateDataValueDouble.builder()
-          .id(ID_2)
-          .value(VALUE)
-          .build();
+      final var expectedResult = CertificateDataValueDouble.builder().id(ID_2).value(VALUE).build();
 
-      final var certificateDataValue = (CertificateDataValueVisualAcuities)
-          convertervisualAcuities.convert(null, VISUALL_ACUITIES);
+      final var certificateDataValue =
+          (CertificateDataValueVisualAcuities)
+              convertervisualAcuities.convert(null, VISUALL_ACUITIES);
 
       assertEquals(expectedResult, certificateDataValue.getBinocular().getWithoutCorrection());
     }

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.pdfboxgenerator.pdf.text;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -20,14 +38,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class PdfAdditionalInformationTextGeneratorTest {
 
-  @Mock
-  PdfTextGenerator pdfTextGenerator;
+  @Mock PdfTextGenerator pdfTextGenerator;
 
-  @InjectMocks
-  PdfAdditionalInformationTextGenerator pdfAdditionalInformationTextGenerator;
+  @InjectMocks PdfAdditionalInformationTextGenerator pdfAdditionalInformationTextGenerator;
 
-  @Mock
-  PDDocument document;
+  @Mock PDDocument document;
 
   @Test
   void shouldSetSentText() throws IOException {
@@ -35,19 +50,18 @@ class PdfAdditionalInformationTextGeneratorTest {
     final var certificate = fk7210CertificateBuilder().build();
     pdfAdditionalInformationTextGenerator.addSentText(document, certificate, 100);
 
-    verify(pdfTextGenerator).addTopWatermark(
-        any(PDDocument.class),
-        captor.capture(),
-        any(Matrix.class),
-        anyInt(),
-        anyInt(),
-        anyBoolean()
-    );
+    verify(pdfTextGenerator)
+        .addTopWatermark(
+            any(PDDocument.class),
+            captor.capture(),
+            any(Matrix.class),
+            anyInt(),
+            anyInt(),
+            anyBoolean());
 
     assertEquals(
         "Intyget har skickats digitalt till " + certificate.sent().recipient().name(),
-        captor.getValue()
-    );
+        captor.getValue());
   }
 
   @Test
@@ -55,52 +69,43 @@ class PdfAdditionalInformationTextGeneratorTest {
     final var captor = ArgumentCaptor.forClass(String.class);
     pdfAdditionalInformationTextGenerator.addSentVisibilityText(document, 100);
 
-    verify(pdfTextGenerator).addTopWatermark(
-        any(PDDocument.class),
-        captor.capture(),
-        any(Matrix.class),
-        anyInt(),
-        anyInt(),
-        anyBoolean()
-    );
+    verify(pdfTextGenerator)
+        .addTopWatermark(
+            any(PDDocument.class),
+            captor.capture(),
+            any(Matrix.class),
+            anyInt(),
+            anyInt(),
+            anyBoolean());
 
-    assertEquals(
-        "Du kan se intyget genom att logga in på 1177.se",
-        captor.getValue()
-    );
+    assertEquals("Du kan se intyget genom att logga in på 1177.se", captor.getValue());
   }
 
   @Test
   void shouldSetMarginText() throws IOException {
     final var captor = ArgumentCaptor.forClass(String.class);
-    pdfAdditionalInformationTextGenerator.addMarginAdditionalInfoText(document, "ID",
-        "Additional info.", 100, 1);
+    pdfAdditionalInformationTextGenerator.addMarginAdditionalInfoText(
+        document, "ID", "Additional info.", 100, 1);
 
-    verify(pdfTextGenerator).addMarginText(
-        any(PDDocument.class),
-        captor.capture(),
-        anyInt(),
-        anyInt()
-    );
+    verify(pdfTextGenerator)
+        .addMarginText(any(PDDocument.class), captor.capture(), anyInt(), anyInt());
 
-    assertEquals(
-        "Intygsid: ID. Additional info.",
-        captor.getValue()
-    );
+    assertEquals("Intygsid: ID. Additional info.", captor.getValue());
   }
 
   @Test
   void shouldSetDigitalSignature() throws IOException {
     pdfAdditionalInformationTextGenerator.addDigitalSignatureText(document, 10F, 20F, 100, 34, 0);
 
-    verify(pdfTextGenerator).addDigitalSignatureText(
-        document,
-        "Detta är en utskrift av ett elektroniskt intyg. Intyget har signerats elektroniskt av intygsutfärdaren.",
-        10F,
-        20F,
-        100,
-        34,
-        0);
+    verify(pdfTextGenerator)
+        .addDigitalSignatureText(
+            document,
+            "Detta är en utskrift av ett elektroniskt intyg. Intyget har signerats elektroniskt av intygsutfärdaren.",
+            10F,
+            20F,
+            100,
+            34,
+            0);
   }
 
   @Test
@@ -112,5 +117,4 @@ class PdfAdditionalInformationTextGeneratorTest {
     verify(pdfTextGenerator).addWatermark(any(PDDocument.class), captor.capture(), anyInt());
     assertEquals("UTKAST", captor.getValue());
   }
-
 }

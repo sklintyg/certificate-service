@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.v2;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,58 +44,63 @@ class QuestionSjukdomEllerSynnedsattningBeskrivningV2Test {
 
   @Test
   void shouldIncludeId() {
-    final var element = QuestionSjukdomEllerSynnedsattningBeskrivningV2.questionSjukdomEllerSynnedsattningBeskrivningV2();
+    final var element =
+        QuestionSjukdomEllerSynnedsattningBeskrivningV2
+            .questionSjukdomEllerSynnedsattningBeskrivningV2();
 
     assertEquals(ELEMENT_ID, element.id());
   }
 
   @Test
   void shouldIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationTextArea.builder()
-        .name("Ange vilken sjukdom/synnedsättning")
-        .id(new FieldId("7.2"))
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationTextArea.builder()
+            .name("Ange vilken sjukdom/synnedsättning")
+            .id(new FieldId("7.2"))
+            .build();
 
-    final var element = QuestionSjukdomEllerSynnedsattningBeskrivningV2.questionSjukdomEllerSynnedsattningBeskrivningV2();
+    final var element =
+        QuestionSjukdomEllerSynnedsattningBeskrivningV2
+            .questionSjukdomEllerSynnedsattningBeskrivningV2();
 
     assertEquals(expectedConfiguration, element.configuration());
   }
 
   @Test
   void shouldIncludeRules() {
-    final var expectedRules = List.of(
-        ElementRuleExpression.builder()
-            .id(new ElementId("7"))
-            .type(ElementRuleType.SHOW)
-            .expression(new RuleExpression("$7.1"))
-            .build(),
-        ElementRuleExpression.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.MANDATORY)
-            .expression(new RuleExpression("$7.2"))
-            .build(),
-        ElementRuleLimit.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.TEXT_LIMIT)
-            .limit(new RuleLimit((short) 250))
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleExpression.builder()
+                .id(new ElementId("7"))
+                .type(ElementRuleType.SHOW)
+                .expression(new RuleExpression("$7.1"))
+                .build(),
+            ElementRuleExpression.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.MANDATORY)
+                .expression(new RuleExpression("$7.2"))
+                .build(),
+            ElementRuleLimit.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.TEXT_LIMIT)
+                .limit(new RuleLimit((short) 250))
+                .build());
 
-    final var element = QuestionSjukdomEllerSynnedsattningBeskrivningV2.questionSjukdomEllerSynnedsattningBeskrivningV2();
+    final var element =
+        QuestionSjukdomEllerSynnedsattningBeskrivningV2
+            .questionSjukdomEllerSynnedsattningBeskrivningV2();
 
     assertEquals(expectedRules, element.rules());
   }
 
   @Test
   void shouldIncludeValidations() {
-    final var expectedValidations = List.of(
-        ElementValidationText.builder()
-            .mandatory(true)
-            .limit(250)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationText.builder().mandatory(true).limit(250).build());
 
-    final var element = QuestionSjukdomEllerSynnedsattningBeskrivningV2.questionSjukdomEllerSynnedsattningBeskrivningV2();
+    final var element =
+        QuestionSjukdomEllerSynnedsattningBeskrivningV2
+            .questionSjukdomEllerSynnedsattningBeskrivningV2();
 
     assertEquals(expectedValidations, element.validations());
   }
@@ -87,18 +110,16 @@ class QuestionSjukdomEllerSynnedsattningBeskrivningV2Test {
 
     @Test
     void shouldReturnTrueIfBooleanIsTrue() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("7"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(true)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("7"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
 
-      final var element = QuestionSjukdomEllerSynnedsattningBeskrivningV2.questionSjukdomEllerSynnedsattningBeskrivningV2();
+      final var element =
+          QuestionSjukdomEllerSynnedsattningBeskrivningV2
+              .questionSjukdomEllerSynnedsattningBeskrivningV2();
 
       final var shouldValidate = element.elementSpecification(ELEMENT_ID).shouldValidate();
 
@@ -107,18 +128,16 @@ class QuestionSjukdomEllerSynnedsattningBeskrivningV2Test {
 
     @Test
     void shouldReturnFalseIfElementMissing() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("8.1"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(true)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("8.1"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
 
-      final var element = QuestionSjukdomEllerSynnedsattningBeskrivningV2.questionSjukdomEllerSynnedsattningBeskrivningV2();
+      final var element =
+          QuestionSjukdomEllerSynnedsattningBeskrivningV2
+              .questionSjukdomEllerSynnedsattningBeskrivningV2();
 
       final var shouldValidate = element.elementSpecification(ELEMENT_ID).shouldValidate();
 
@@ -127,18 +146,16 @@ class QuestionSjukdomEllerSynnedsattningBeskrivningV2Test {
 
     @Test
     void shouldReturnFalseIfElementFalse() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("7"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(false)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("7"))
+                  .value(ElementValueBoolean.builder().value(false).build())
+                  .build());
 
-      final var element = QuestionSjukdomEllerSynnedsattningBeskrivningV2.questionSjukdomEllerSynnedsattningBeskrivningV2();
+      final var element =
+          QuestionSjukdomEllerSynnedsattningBeskrivningV2
+              .questionSjukdomEllerSynnedsattningBeskrivningV2();
 
       final var shouldValidate = element.elementSpecification(ELEMENT_ID).shouldValidate();
 
@@ -148,9 +165,10 @@ class QuestionSjukdomEllerSynnedsattningBeskrivningV2Test {
 
   @Test
   void shouldIncludeMapping() {
-    final var element = QuestionSjukdomEllerSynnedsattningBeskrivningV2.questionSjukdomEllerSynnedsattningBeskrivningV2();
+    final var element =
+        QuestionSjukdomEllerSynnedsattningBeskrivningV2
+            .questionSjukdomEllerSynnedsattningBeskrivningV2();
 
     assertEquals(new ElementMapping(new ElementId("7"), null), element.mapping());
   }
 }
-

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7810.elements;
 
 import java.util.List;
@@ -13,11 +31,10 @@ import se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.
 
 public class QuestionSjukvardandeInsatsHSL {
 
-  public static final ElementId QUESTION_SJUKVARDANDE_INSATS_HSL_ID = new ElementId(
-      "70");
+  public static final ElementId QUESTION_SJUKVARDANDE_INSATS_HSL_ID = new ElementId("70");
   public static final FieldId QUESTION_SJUKVARDANDE_INSATS_HSL_FIELD_ID = new FieldId("70.1");
-  private static final PdfFieldId PDF_FIELD_ID = new PdfFieldId(
-      "form1[0].#subform[5].RadioButtonListModul8_1[0]");
+  private static final PdfFieldId PDF_FIELD_ID =
+      new PdfFieldId("form1[0].#subform[5].RadioButtonListModul8_1[0]");
   private static final PdfRadioOption PDF__OPTION_TRUE = new PdfRadioOption("1");
   private static final PdfRadioOption PDF_OPTION_FALSE = new PdfRadioOption("2");
 
@@ -36,29 +53,19 @@ public class QuestionSjukvardandeInsatsHSL {
                 .unselectedText("Nej")
                 .name(
                     "Har patienten behov av hjälp som innefattar sjukvårdande insatser enligt HSL?")
-                .build()
-        )
+                .build())
         .rules(
             List.of(
                 CertificateElementRuleFactory.mandatoryExist(
                     QUESTION_SJUKVARDANDE_INSATS_HSL_ID,
-                    QUESTION_SJUKVARDANDE_INSATS_HSL_FIELD_ID)
-            )
-        )
-        .validations(
-            List.of(
-                ElementValidationBoolean.builder()
-                    .mandatory(true)
-                    .build()
-            )
-        )
+                    QUESTION_SJUKVARDANDE_INSATS_HSL_FIELD_ID)))
+        .validations(List.of(ElementValidationBoolean.builder().mandatory(true).build()))
         .pdfConfiguration(
             PdfConfigurationRadioBoolean.builder()
                 .pdfFieldId(PDF_FIELD_ID)
                 .optionTrue(PDF__OPTION_TRUE)
                 .optionFalse(PDF_OPTION_FALSE)
-                .build()
-        )
+                .build())
         .children(List.of(children))
         .build();
   }

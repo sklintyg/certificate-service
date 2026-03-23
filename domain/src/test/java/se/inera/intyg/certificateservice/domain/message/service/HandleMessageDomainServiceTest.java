@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.message.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -37,11 +55,9 @@ class HandleMessageDomainServiceTest {
   private static Certificate certificate;
   private static final ActionEvaluation ACTION_EVALUATION = ActionEvaluation.builder().build();
 
-  @Mock
-  private MessageRepository messageRepository;
+  @Mock private MessageRepository messageRepository;
 
-  @InjectMocks
-  private HandleMessageDomainService handleMessageDomainService;
+  @InjectMocks private HandleMessageDomainService handleMessageDomainService;
 
   @Nested
   class HandleComplementMessage {
@@ -49,24 +65,21 @@ class HandleMessageDomainServiceTest {
     @BeforeEach
     void setup() {
       message = mock(Message.class);
-      when(message.type())
-          .thenReturn(MessageType.COMPLEMENT);
+      when(message.type()).thenReturn(MessageType.COMPLEMENT);
     }
 
     @Test
     void shouldThrowErrorIfNotAllowedToHandle() {
       certificate = mock(MedicalCertificate.class);
 
-      when(certificate.id())
-          .thenReturn(new CertificateId("ID"));
-      when(certificate.allowTo(CertificateActionType.HANDLE_COMPLEMENT,
-          Optional.of(ACTION_EVALUATION)))
+      when(certificate.id()).thenReturn(new CertificateId("ID"));
+      when(certificate.allowTo(
+              CertificateActionType.HANDLE_COMPLEMENT, Optional.of(ACTION_EVALUATION)))
           .thenReturn(false);
 
       assertThrows(
           CertificateActionForbidden.class,
-          () -> handleMessageDomainService.handle(message, true, certificate, ACTION_EVALUATION)
-      );
+          () -> handleMessageDomainService.handle(message, true, certificate, ACTION_EVALUATION));
     }
 
     @Nested
@@ -76,8 +89,8 @@ class HandleMessageDomainServiceTest {
       void setup() {
         savedMessage = mock(Message.class);
         certificate = mock(MedicalCertificate.class);
-        when(certificate.allowTo(CertificateActionType.HANDLE_COMPLEMENT,
-            Optional.of(ACTION_EVALUATION)))
+        when(certificate.allowTo(
+                CertificateActionType.HANDLE_COMPLEMENT, Optional.of(ACTION_EVALUATION)))
             .thenReturn(true);
       }
 
@@ -87,8 +100,7 @@ class HandleMessageDomainServiceTest {
         @BeforeEach
         void setup() {
 
-          when(messageRepository.save(message))
-              .thenReturn(savedMessage);
+          when(messageRepository.save(message)).thenReturn(savedMessage);
         }
 
         @Test
@@ -99,8 +111,8 @@ class HandleMessageDomainServiceTest {
 
         @Test
         void shouldReturnSavedCertificateIfTrue() {
-          final var response = handleMessageDomainService.handle(message, true, certificate,
-              ACTION_EVALUATION);
+          final var response =
+              handleMessageDomainService.handle(message, true, certificate, ACTION_EVALUATION);
           assertEquals(savedMessage, response);
         }
       }
@@ -117,8 +129,8 @@ class HandleMessageDomainServiceTest {
 
         @Test
         void shouldReturnOriginalCertificateIfFalse() {
-          final var response = handleMessageDomainService.handle(message, false, certificate,
-              ACTION_EVALUATION);
+          final var response =
+              handleMessageDomainService.handle(message, false, certificate, ACTION_EVALUATION);
           assertEquals(message, response);
         }
       }
@@ -130,18 +142,20 @@ class HandleMessageDomainServiceTest {
 
     private final Certificate certificate = mock(MedicalCertificate.class);
     private final Message savedMessage = Message.builder().build();
-    private final Message.MessageBuilder administrativeMessage = Message.builder()
-        .type(MessageType.CONTACT);
+    private final Message.MessageBuilder administrativeMessage =
+        Message.builder().type(MessageType.CONTACT);
 
     @Test
     void shouldThrowExceptionIfNotAllowedToHandle() {
       final var message = administrativeMessage.build();
       when(certificate.id()).thenReturn(new CertificateId("ID"));
-      when(certificate.allowTo(CertificateActionType.HANDLE_MESSAGE,
-          Optional.of(ACTION_EVALUATION))).thenReturn(false);
+      when(certificate.allowTo(
+              CertificateActionType.HANDLE_MESSAGE, Optional.of(ACTION_EVALUATION)))
+          .thenReturn(false);
 
-      assertThrows(CertificateActionForbidden.class, () -> handleMessageDomainService
-          .handle(message, true, certificate, ACTION_EVALUATION));
+      assertThrows(
+          CertificateActionForbidden.class,
+          () -> handleMessageDomainService.handle(message, true, certificate, ACTION_EVALUATION));
     }
 
     @Nested
@@ -150,8 +164,9 @@ class HandleMessageDomainServiceTest {
       @BeforeEach
       void setup() {
         when(messageRepository.save(any(Message.class))).thenReturn(savedMessage);
-        when(certificate.allowTo(CertificateActionType.HANDLE_MESSAGE,
-            Optional.of(ACTION_EVALUATION))).thenReturn(true);
+        when(certificate.allowTo(
+                CertificateActionType.HANDLE_MESSAGE, Optional.of(ACTION_EVALUATION)))
+            .thenReturn(true);
       }
 
       @Nested
@@ -160,8 +175,8 @@ class HandleMessageDomainServiceTest {
         @Test
         void shouldReturnSavedMessageWhenHandle() {
           final var message = administrativeMessage.status(MessageStatus.SENT).build();
-          final var response = handleMessageDomainService
-              .handle(message, true, certificate, ACTION_EVALUATION);
+          final var response =
+              handleMessageDomainService.handle(message, true, certificate, ACTION_EVALUATION);
 
           assertEquals(savedMessage, response);
         }
@@ -184,12 +199,11 @@ class HandleMessageDomainServiceTest {
 
         @Test
         void shouldRemoveDraftAnswerWhenHandle() {
-          final var message = administrativeMessage
-              .status(MessageStatus.SENT)
-              .answer(Answer.builder()
-                  .status(MessageStatus.DRAFT)
-                  .build())
-              .build();
+          final var message =
+              administrativeMessage
+                  .status(MessageStatus.SENT)
+                  .answer(Answer.builder().status(MessageStatus.DRAFT).build())
+                  .build();
           handleMessageDomainService.handle(message, true, certificate, ACTION_EVALUATION);
 
           assertEquals(MessageStatus.DELETED_DRAFT, message.answer().status());
@@ -197,12 +211,11 @@ class HandleMessageDomainServiceTest {
 
         @Test
         void shouldNotRemoveSentAnswerWhenHandle() {
-          final var message = administrativeMessage
-              .status(MessageStatus.SENT)
-              .answer(Answer.builder()
+          final var message =
+              administrativeMessage
                   .status(MessageStatus.SENT)
-                  .build())
-              .build();
+                  .answer(Answer.builder().status(MessageStatus.SENT).build())
+                  .build();
           handleMessageDomainService.handle(message, true, certificate, ACTION_EVALUATION);
 
           assertEquals(MessageStatus.SENT, message.answer().status());
@@ -215,8 +228,8 @@ class HandleMessageDomainServiceTest {
         @Test
         void shouldReturnSavedMessageWhenNotHandle() {
           final var message = administrativeMessage.status(MessageStatus.SENT).build();
-          final var response = handleMessageDomainService
-              .handle(message, false, certificate, ACTION_EVALUATION);
+          final var response =
+              handleMessageDomainService.handle(message, false, certificate, ACTION_EVALUATION);
 
           assertEquals(savedMessage, response);
         }

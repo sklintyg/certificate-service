@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7810.elements;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,33 +47,27 @@ class QuestionKannedomOmPatientenTest {
 
   @Test
   void shallIncludeConfiguration() {
-    final var dropdownItems = List.of(
-        new ElementConfigurationCode(
-            new FieldId(""),
-            "Välj i listan",
-            null
-        ),
-        new ElementConfigurationCode(
-            new FieldId(CodeSystemKvFkmu0010.INGEN_TIDIGARE.code()),
-            CodeSystemKvFkmu0010.INGEN_TIDIGARE.displayName(),
-            CodeSystemKvFkmu0010.INGEN_TIDIGARE
-        ),
-        new ElementConfigurationCode(
-            new FieldId(CodeSystemKvFkmu0010.MINDRE_AN_ETT_AR.code()),
-            CodeSystemKvFkmu0010.MINDRE_AN_ETT_AR.displayName(),
-            CodeSystemKvFkmu0010.MINDRE_AN_ETT_AR
-        ),
-        new ElementConfigurationCode(
-            new FieldId(CodeSystemKvFkmu0010.MER_AN_ETT_AR.code()),
-            CodeSystemKvFkmu0010.MER_AN_ETT_AR.displayName(),
-            CodeSystemKvFkmu0010.MER_AN_ETT_AR
-        )
-    );
-    final var expectedConfiguration = ElementConfigurationDropdownCode.builder()
-        .id(new FieldId("2.2"))
-        .name("Jag har kännedom om patienten sedan")
-        .list(dropdownItems)
-        .build();
+    final var dropdownItems =
+        List.of(
+            new ElementConfigurationCode(new FieldId(""), "Välj i listan", null),
+            new ElementConfigurationCode(
+                new FieldId(CodeSystemKvFkmu0010.INGEN_TIDIGARE.code()),
+                CodeSystemKvFkmu0010.INGEN_TIDIGARE.displayName(),
+                CodeSystemKvFkmu0010.INGEN_TIDIGARE),
+            new ElementConfigurationCode(
+                new FieldId(CodeSystemKvFkmu0010.MINDRE_AN_ETT_AR.code()),
+                CodeSystemKvFkmu0010.MINDRE_AN_ETT_AR.displayName(),
+                CodeSystemKvFkmu0010.MINDRE_AN_ETT_AR),
+            new ElementConfigurationCode(
+                new FieldId(CodeSystemKvFkmu0010.MER_AN_ETT_AR.code()),
+                CodeSystemKvFkmu0010.MER_AN_ETT_AR.displayName(),
+                CodeSystemKvFkmu0010.MER_AN_ETT_AR));
+    final var expectedConfiguration =
+        ElementConfigurationDropdownCode.builder()
+            .id(new FieldId("2.2"))
+            .name("Jag har kännedom om patienten sedan")
+            .list(dropdownItems)
+            .build();
 
     final var element = questionKannedomOmPatienten();
 
@@ -64,19 +76,21 @@ class QuestionKannedomOmPatientenTest {
 
   @Test
   void shallIncludeRules() {
-    final var expectedRules = List.of(
-        ElementRuleExpression.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.MANDATORY)
-            .expression(
-                new RuleExpression(
-                    "exists($" + CodeSystemKvFkmu0010.INGEN_TIDIGARE.code() + ") || exists($"
-                        + CodeSystemKvFkmu0010.MINDRE_AN_ETT_AR.code() + ") || exists($"
-                        + CodeSystemKvFkmu0010.MER_AN_ETT_AR.code() + ")"
-                )
-            )
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleExpression.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.MANDATORY)
+                .expression(
+                    new RuleExpression(
+                        "exists($"
+                            + CodeSystemKvFkmu0010.INGEN_TIDIGARE.code()
+                            + ") || exists($"
+                            + CodeSystemKvFkmu0010.MINDRE_AN_ETT_AR.code()
+                            + ") || exists($"
+                            + CodeSystemKvFkmu0010.MER_AN_ETT_AR.code()
+                            + ")"))
+                .build());
 
     final var element = questionKannedomOmPatienten();
 
@@ -85,11 +99,8 @@ class QuestionKannedomOmPatientenTest {
 
   @Test
   void shallIncludeValidation() {
-    final var expectedValidations = List.of(
-        ElementValidationCode.builder()
-            .mandatory(true)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationCode.builder().mandatory(true).build());
 
     final var element = questionKannedomOmPatienten();
 

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.v2;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.v2.QuestionMissbrukV2.QUESTION_MISSBRUK_V2_FIELD_ID;
@@ -26,13 +44,12 @@ public class QuestionMissbrukRemissionV2 {
     throw new IllegalStateException("Utility class");
   }
 
-  public static ElementSpecification questionMissbrukRemissionV2(
-      ElementSpecification... children) {
-    final var radioMultipleCodes = List.of(
-        CodeFactory.elementConfigurationCode(CodeSystemKvTs001.JA),
-        CodeFactory.elementConfigurationCode(CodeSystemKvTs001.NEJ),
-        CodeFactory.elementConfigurationCode(CodeSystemKvTs001.VET_INTE)
-    );
+  public static ElementSpecification questionMissbrukRemissionV2(ElementSpecification... children) {
+    final var radioMultipleCodes =
+        List.of(
+            CodeFactory.elementConfigurationCode(CodeSystemKvTs001.JA),
+            CodeFactory.elementConfigurationCode(CodeSystemKvTs001.NEJ),
+            CodeFactory.elementConfigurationCode(CodeSystemKvTs001.VET_INTE));
 
     return ElementSpecification.builder()
         .id(QUESTION_MISSBRUK_REMISSION_V2_ID)
@@ -44,29 +61,17 @@ public class QuestionMissbrukRemissionV2 {
                     "Här avses exempelvis beroende eller skadligt mönster av bruk enligt ICD-11, skadligt bruk enligt ICD-10, missbruk enligt DSM-IV eller substansbrukssyndrom enligt DSM-5.")
                 .elementLayout(ElementLayout.ROWS)
                 .list(radioMultipleCodes)
-                .build()
-        )
+                .build())
         .rules(
             List.of(
                 CertificateElementRuleFactory.mandatoryOrExist(
                     QUESTION_MISSBRUK_REMISSION_V2_ID,
-                    radioMultipleCodes.stream().map(ElementConfigurationCode::id).toList()
-                ),
+                    radioMultipleCodes.stream().map(ElementConfigurationCode::id).toList()),
                 CertificateElementRuleFactory.show(
-                    QUESTION_MISSBRUK_V2_ID,
-                    QUESTION_MISSBRUK_V2_FIELD_ID
-                )
-            )
-        )
+                    QUESTION_MISSBRUK_V2_ID, QUESTION_MISSBRUK_V2_FIELD_ID)))
         .shouldValidate(ElementDataPredicateFactory.valueBoolean(QUESTION_MISSBRUK_V2_ID))
         .mapping(new ElementMapping(QUESTION_MISSBRUK_V2_ID, null))
-        .validations(
-            List.of(
-                ElementValidationCode.builder()
-                    .mandatory(true)
-                    .build()
-            )
-        )
+        .validations(List.of(ElementValidationCode.builder().mandatory(true).build()))
         .children(List.of(children))
         .build();
   }

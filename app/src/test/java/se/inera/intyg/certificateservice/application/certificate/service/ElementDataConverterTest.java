@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -24,8 +42,7 @@ import se.inera.intyg.certificateservice.domain.certificate.model.ElementValueDa
 class ElementDataConverterTest {
 
   private static final String EXPECTED_ID = "expectedId";
-  @Mock
-  private ElementValueConverterDate elementValueConverterDate;
+  @Mock private ElementValueConverterDate elementValueConverterDate;
 
   private ElementDataConverter elementDataConverter;
 
@@ -36,52 +53,36 @@ class ElementDataConverterTest {
 
   private final CertificateDataElement.CertificateDataElementBuilder certificateDataElementBuilder =
       CertificateDataElement.builder()
-          .config(
-              CertificateDataConfigDate.builder().build()
-          )
-          .value(
-              CertificateDataValueDate.builder()
-                  .date(LocalDate.now())
-                  .build()
-          );
+          .config(CertificateDataConfigDate.builder().build())
+          .value(CertificateDataValueDate.builder().date(LocalDate.now()).build());
 
   @Test
   void shallConvertQuestionId() {
     final var element = certificateDataElementBuilder.build();
 
     doReturn(CertificateDataValueType.DATE).when(elementValueConverterDate).getType();
-    doReturn(ElementValueDate.builder().build()).when(elementValueConverterDate)
+    doReturn(ElementValueDate.builder().build())
+        .when(elementValueConverterDate)
         .convert(element.getValue());
 
-    final var result = elementDataConverter.convert(
-        EXPECTED_ID,
-        element
-    );
+    final var result = elementDataConverter.convert(EXPECTED_ID, element);
 
     assertEquals(EXPECTED_ID, result.id().id());
   }
 
   @Test
   void shallConvertValue() {
-    final var expectedValue = ElementValueDate.builder()
-        .date(LocalDate.now())
-        .build();
+    final var expectedValue = ElementValueDate.builder().date(LocalDate.now()).build();
 
-    final var element = certificateDataElementBuilder.value(
-            CertificateDataValueDate.builder()
-                .date(LocalDate.now())
-                .build()
-        )
-        .build();
+    final var element =
+        certificateDataElementBuilder
+            .value(CertificateDataValueDate.builder().date(LocalDate.now()).build())
+            .build();
 
     doReturn(CertificateDataValueType.DATE).when(elementValueConverterDate).getType();
-    doReturn(expectedValue).when(elementValueConverterDate)
-        .convert(element.getValue());
+    doReturn(expectedValue).when(elementValueConverterDate).convert(element.getValue());
 
-    final var result = elementDataConverter.convert(
-        EXPECTED_ID,
-        element
-    );
+    final var result = elementDataConverter.convert(EXPECTED_ID, element);
 
     final var actualValue = (ElementValueDate) result.value();
 
@@ -92,12 +93,9 @@ class ElementDataConverterTest {
   void shallThrowIfConverterNotFound() {
     final var element = certificateDataElementBuilder.build();
     doReturn(CertificateDataValueType.DATE).when(elementValueConverterDate).getType();
-    final var illegalStateException = assertThrows(IllegalStateException.class,
-        () -> elementDataConverter.convert(
-            EXPECTED_ID,
-            element
-        )
-    );
+    final var illegalStateException =
+        assertThrows(
+            IllegalStateException.class, () -> elementDataConverter.convert(EXPECTED_ID, element));
     assertTrue(illegalStateException.getMessage().contains("Could not find converter for type"));
   }
 }

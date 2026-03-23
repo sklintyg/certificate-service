@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.integrationtest.common.tests;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -32,125 +50,117 @@ public abstract class SendCertificateIT extends BaseIntegrationIT {
   @Test
   @DisplayName("Om intyget är utfärdat på samma mottagning skall det gå att skicka")
   void shallSuccessfullySendIfUnitIsSubUnitAndIssuedOnSameSubUnit() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED)
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED));
 
-    final var response = api().sendCertificate(
-        defaultSendCertificateRequest(),
-        certificateId(testCertificates)
-    );
+    final var response =
+        api().sendCertificate(defaultSendCertificateRequest(), certificateId(testCertificates));
 
     assertAll(
         () -> assertEquals(recipient(), getRecipient(response).getId()),
-        () -> assertNotNull(getRecipient(response).getSent())
-    );
+        () -> assertNotNull(getRecipient(response).getSent()));
   }
 
   @Test
-  @DisplayName("Om intyget är utfärdat på mottagning men på samma vårdenhet skall det gå att skicka")
+  @DisplayName(
+      "Om intyget är utfärdat på mottagning men på samma vårdenhet skall det gå att skicka")
   void shallSuccessfullySendIfUnitIsCareUnitAndOnSameCareUnit() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED)
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED));
 
-    final var response = api().sendCertificate(
-        defaultSendCertificateRequest(),
-        certificateId(testCertificates)
-    );
+    final var response =
+        api().sendCertificate(defaultSendCertificateRequest(), certificateId(testCertificates));
 
     assertAll(
         () -> assertEquals(recipient(), getRecipient(response).getId()),
-        () -> assertNotNull(getRecipient(response).getSent())
-    );
+        () -> assertNotNull(getRecipient(response).getSent()));
   }
 
   @Test
   @DisplayName("Om intyget är utfärdat på samma vårdenhet skall det gå att skicka")
   void shallSuccessfullySendIfUnitIsCareUnitAndIssuedOnSameCareUnit() {
-    final var testCertificates = testabilityApi().addCertificates(
-        customTestabilityCertificateRequest(type(), typeVersion(), SIGNED)
-            .unit(ALFA_MEDICINCENTRUM_DTO)
-            .build()
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(
+                customTestabilityCertificateRequest(type(), typeVersion(), SIGNED)
+                    .unit(ALFA_MEDICINCENTRUM_DTO)
+                    .build());
 
-    final var response = api().sendCertificate(
-        customSendCertificateRequest()
-            .unit(ALFA_MEDICINCENTRUM_DTO)
-            .build(),
-        certificateId(testCertificates)
-    );
+    final var response =
+        api()
+            .sendCertificate(
+                customSendCertificateRequest().unit(ALFA_MEDICINCENTRUM_DTO).build(),
+                certificateId(testCertificates));
 
     assertAll(
         () -> assertEquals(recipient(), getRecipient(response).getId()),
-        () -> assertNotNull(getRecipient(response).getSent())
-    );
+        () -> assertNotNull(getRecipient(response).getSent()));
   }
 
   @Test
   @DisplayName("Om intyget skickas ska ett meddelande läggas på AMQn")
   void shallSuccessfullyAddMessageToAMQWhenSendingCertificate() {
-    final var testCertificates = testabilityApi().addCertificates(
-        customTestabilityCertificateRequest(type(), typeVersion(), SIGNED)
-            .unit(ALFA_MEDICINCENTRUM_DTO)
-            .build()
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(
+                customTestabilityCertificateRequest(type(), typeVersion(), SIGNED)
+                    .unit(ALFA_MEDICINCENTRUM_DTO)
+                    .build());
 
-    api().sendCertificate(
-        customSendCertificateRequest()
-            .unit(ALFA_MEDICINCENTRUM_DTO)
-            .build(),
-        certificateId(testCertificates)
-    );
+    api()
+        .sendCertificate(
+            customSendCertificateRequest().unit(ALFA_MEDICINCENTRUM_DTO).build(),
+            certificateId(testCertificates));
 
     final var expectedCertificateId = certificateId(testCertificates);
 
-    final var message = MessageListenerUtil.awaitByCertificateId(Duration.ofSeconds(10),
-        expectedCertificateId);
+    final var message =
+        MessageListenerUtil.awaitByCertificateId(Duration.ofSeconds(10), expectedCertificateId);
 
     assertAll(
-        () -> assertNotNull(message,
-            "Expected to receive a message for certificateId: " + expectedCertificateId),
-        () -> assertEquals(
-            expectedCertificateId, message.getStringProperty("certificateId")
-        ),
-        () -> assertEquals(
-            "certificate-sent", message.getStringProperty("eventType")
-        )
-    );
+        () ->
+            assertNotNull(
+                message,
+                "Expected to receive a message for certificateId: " + expectedCertificateId),
+        () -> assertEquals(expectedCertificateId, message.getStringProperty("certificateId")),
+        () -> assertEquals("certificate-sent", message.getStringProperty("eventType")));
   }
 
   @Test
-  @DisplayName("Om intyget är utfärdat på en annan mottagning skall felkod 403 (FORBIDDEN) returneras")
+  @DisplayName(
+      "Om intyget är utfärdat på en annan mottagning skall felkod 403 (FORBIDDEN) returneras")
   void shallReturn403IfUnitIsSubUnitAndNotOnSameUnit() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED)
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED));
 
-    final var response = api().sendCertificate(
-        customSendCertificateRequest()
-            .unit(ALFA_HUDMOTTAGNINGEN_DTO)
-            .build(),
-        certificateId(testCertificates)
-    );
+    final var response =
+        api()
+            .sendCertificate(
+                customSendCertificateRequest().unit(ALFA_HUDMOTTAGNINGEN_DTO).build(),
+                certificateId(testCertificates));
 
     assertEquals(403, response.getStatusCode().value());
   }
 
   @Test
-  @DisplayName("Om intyget är utfärdat på en annan vårdenhet skall felkod 403 (FORBIDDEN) returneras")
+  @DisplayName(
+      "Om intyget är utfärdat på en annan vårdenhet skall felkod 403 (FORBIDDEN) returneras")
   void shallReturn403IfUnitIsCareUnitAndNotOnCareUnit() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED)
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED));
 
-    final var response = api().sendCertificate(
-        customSendCertificateRequest()
-            .careUnit(ALFA_VARDCENTRAL_DTO)
-            .unit(ALFA_VARDCENTRAL_DTO)
-            .build(),
-        certificateId(testCertificates)
-    );
+    final var response =
+        api()
+            .sendCertificate(
+                customSendCertificateRequest()
+                    .careUnit(ALFA_VARDCENTRAL_DTO)
+                    .unit(ALFA_VARDCENTRAL_DTO)
+                    .build(),
+                certificateId(testCertificates));
 
     assertEquals(403, response.getStatusCode().value());
   }
@@ -158,94 +168,85 @@ public abstract class SendCertificateIT extends BaseIntegrationIT {
   @Test
   @DisplayName("Vårdadministratör - Om intyget är signerat ska intyget gå att skicka")
   void shallReturnBeAbleToSendIfUserIsCareAdmin() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED)
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED));
 
-    final var response = api().sendCertificate(
-        customSendCertificateRequest()
-            .user(ALVA_VARDADMINISTRATOR_DTO)
-            .build(),
-        certificateId(testCertificates)
-    );
+    final var response =
+        api()
+            .sendCertificate(
+                customSendCertificateRequest().user(ALVA_VARDADMINISTRATOR_DTO).build(),
+                certificateId(testCertificates));
 
     assertAll(
         () -> assertEquals(recipient(), getRecipient(response).getId()),
-        () -> assertNotNull(getRecipient(response).getSent())
-    );
+        () -> assertNotNull(getRecipient(response).getSent()));
   }
 
   @Test
   @DisplayName("Barnmorska - Om intyget är signerat ska intyget gå att skicka")
   void shallReturnBeAbleToSendIfUserIsMidWife() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED)
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED));
 
-    final var response = api().sendCertificate(
-        customSendCertificateRequest()
-            .user(BERTIL_BARNMORSKA_DTO)
-            .build(),
-        certificateId(testCertificates)
-    );
+    final var response =
+        api()
+            .sendCertificate(
+                customSendCertificateRequest().user(BERTIL_BARNMORSKA_DTO).build(),
+                certificateId(testCertificates));
 
     assertAll(
         () -> assertEquals(recipient(), getRecipient(response).getId()),
-        () -> assertNotNull(getRecipient(response).getSent())
-    );
+        () -> assertNotNull(getRecipient(response).getSent()));
   }
 
   @Test
   @DisplayName("Sjuksköterska - Om intyget är signerat ska intyget gå att skicka")
   void shallReturnBeAbleToSendIfUserIsNurse() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED)
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED));
 
-    final var response = api().sendCertificate(
-        customSendCertificateRequest()
-            .user(ANNA_SJUKSKOTERSKA_DTO)
-            .build(),
-        certificateId(testCertificates)
-    );
+    final var response =
+        api()
+            .sendCertificate(
+                customSendCertificateRequest().user(ANNA_SJUKSKOTERSKA_DTO).build(),
+                certificateId(testCertificates));
 
     assertAll(
         () -> assertEquals(recipient(), getRecipient(response).getId()),
-        () -> assertNotNull(getRecipient(response).getSent())
-    );
+        () -> assertNotNull(getRecipient(response).getSent()));
   }
 
   @Test
-  @DisplayName("Läkare - Om intyget är utfärdat på en patient som har skyddade personuppgifter skall det gå att skicka")
+  @DisplayName(
+      "Läkare - Om intyget är utfärdat på en patient som har skyddade personuppgifter skall det gå att skicka")
   void shallSuccessfullySendIfPatientIsProtectedPersonAndUserIsDoctor() {
-    final var testCertificates = testabilityApi().addCertificates(
-        customTestabilityCertificateRequest(type(), typeVersion(), SIGNED)
-            .patient(ANONYMA_REACT_ATTILA_DTO)
-            .build()
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(
+                customTestabilityCertificateRequest(type(), typeVersion(), SIGNED)
+                    .patient(ANONYMA_REACT_ATTILA_DTO)
+                    .build());
 
-    final var response = api().sendCertificate(
-        defaultSendCertificateRequest(),
-        certificateId(testCertificates)
-    );
+    final var response =
+        api().sendCertificate(defaultSendCertificateRequest(), certificateId(testCertificates));
 
     assertAll(
         () -> assertEquals(recipient(), getRecipient(response).getId()),
-        () -> assertNotNull(getRecipient(response).getSent())
-    );
+        () -> assertNotNull(getRecipient(response).getSent()));
   }
 
   @Test
   @DisplayName("Om intyget inte är signerat skall felkod 403 (FORBIDDEN) returneras")
   void shallReturn403IfCertificateNotSigned() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion())
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion()));
 
-    final var response = api().sendCertificate(
-        defaultSendCertificateRequest(),
-        certificateId(testCertificates)
-    );
+    final var response =
+        api().sendCertificate(defaultSendCertificateRequest(), certificateId(testCertificates));
 
     assertEquals(403, response.getStatusCode().value());
   }
@@ -253,19 +254,14 @@ public abstract class SendCertificateIT extends BaseIntegrationIT {
   @Test
   @DisplayName("Om intyget redan är skickat skall felkod 403 (FORBIDDEN) returneras")
   void shallReturn403IfCertificateIsAlreadySent() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion())
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion()));
 
-    api().sendCertificate(
-        defaultSendCertificateRequest(),
-        certificateId(testCertificates)
-    );
+    api().sendCertificate(defaultSendCertificateRequest(), certificateId(testCertificates));
 
-    final var response = api().sendCertificate(
-        defaultSendCertificateRequest(),
-        certificateId(testCertificates)
-    );
+    final var response =
+        api().sendCertificate(defaultSendCertificateRequest(), certificateId(testCertificates));
 
     assertEquals(403, response.getStatusCode().value());
   }
@@ -273,31 +269,22 @@ public abstract class SendCertificateIT extends BaseIntegrationIT {
   @Test
   @DisplayName("Om intyget är ersatt av ett signerat intyg skall det inte gå att skicka")
   void shallReturn403IfCertificateReplacedIsAlreadySent() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED)
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED));
 
-    final var replaceCertificate = api().replaceCertificate(
-        defaultReplaceCertificateRequest(),
-        certificateId(testCertificates)
-    );
+    final var replaceCertificate =
+        api()
+            .replaceCertificate(
+                defaultReplaceCertificateRequest(), certificateId(testCertificates));
 
-    final var replacedCertificateId = replaceCertificateResponse(
-        replaceCertificate)
-        .getCertificate()
-        .getMetadata()
-        .getId();
+    final var replacedCertificateId =
+        replaceCertificateResponse(replaceCertificate).getCertificate().getMetadata().getId();
 
-    api().signCertificate(
-        defaultSignCertificateRequest(),
-        replacedCertificateId,
-        0L
-    );
+    api().signCertificate(defaultSignCertificateRequest(), replacedCertificateId, 0L);
 
-    final var response = api().sendCertificate(
-        defaultSendCertificateRequest(),
-        certificateId(testCertificates)
-    );
+    final var response =
+        api().sendCertificate(defaultSendCertificateRequest(), certificateId(testCertificates));
 
     assertEquals(403, response.getStatusCode().value());
   }

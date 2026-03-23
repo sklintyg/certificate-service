@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.certificate;
 
 import jakarta.xml.bind.JAXBContext;
@@ -37,29 +55,19 @@ public class XmlGeneratorCertificateV4 implements XmlGenerator {
   }
 
   private Xml generate(Certificate certificate, Signature signature, boolean validate) {
-    final var xml = marshall(
-        registerCertificateType(
-            svarPa(certificate),
-            intyg(
-                certificate,
-                signature
-            )
-        )
-    );
+    final var xml =
+        marshall(registerCertificateType(svarPa(certificate), intyg(certificate, signature)));
 
     if (validate) {
       xmlValidationService.validate(
-          xml,
-          certificate.certificateModel().schematronPath(),
-          certificate.id()
-      );
+          xml, certificate.certificateModel().schematronPath(), certificate.id());
     }
 
     return xml;
   }
 
-  private static RegisterCertificateType registerCertificateType(MeddelandeReferens svarPa,
-      Intyg intyg) {
+  private static RegisterCertificateType registerCertificateType(
+      MeddelandeReferens svarPa, Intyg intyg) {
     final var registerCertificateType = new RegisterCertificateType();
     registerCertificateType.setSvarPa(svarPa);
     registerCertificateType.setIntyg(intyg);
@@ -73,12 +81,11 @@ public class XmlGeneratorCertificateV4 implements XmlGenerator {
   private MeddelandeReferens svarPa(Certificate certificate) {
     if (certificate.hasParent(RelationType.COMPLEMENT)) {
       final var svarPa = new MeddelandeReferens();
-      final var unhandledComplements = certificate.parent().certificate()
-          .messages(MessageType.COMPLEMENT)
-          .stream()
-          .filter(message -> !message.isHandled())
-          .sorted(Comparator.comparing(Message::sent))
-          .toList();
+      final var unhandledComplements =
+          certificate.parent().certificate().messages(MessageType.COMPLEMENT).stream()
+              .filter(message -> !message.isHandled())
+              .sorted(Comparator.comparing(Message::sent))
+              .toList();
 
       if (unhandledComplements.isEmpty()) {
         return null;
@@ -97,10 +104,8 @@ public class XmlGeneratorCertificateV4 implements XmlGenerator {
     final var factory = new ObjectFactory();
     final var element = factory.createRegisterCertificate(registerCertificateType);
     try {
-      final var context = JAXBContext.newInstance(
-          RegisterCertificateType.class,
-          DatePeriodType.class
-      );
+      final var context =
+          JAXBContext.newInstance(RegisterCertificateType.class, DatePeriodType.class);
       final var writer = new StringWriter();
       context.createMarshaller().marshal(element, writer);
       return new Xml(XmlNamespaceTrimmer.trim(writer.toString()));

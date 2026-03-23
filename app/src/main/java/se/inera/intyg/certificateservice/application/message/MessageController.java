@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.message;
 
 import static se.inera.intyg.certificateservice.logging.MdcLogConstants.EVENT_TYPE_ACCESSED;
@@ -72,7 +90,9 @@ public class MessageController {
   }
 
   @PostMapping("/{certificateId}")
-  @PerformanceLogging(eventAction = "retrieve-message-list-for-certificate", eventType = EVENT_TYPE_ACCESSED)
+  @PerformanceLogging(
+      eventAction = "retrieve-message-list-for-certificate",
+      eventType = EVENT_TYPE_ACCESSED)
   GetCertificateMessageResponse getMessagesForCertificate(
       @RequestBody GetCertificateMessageRequest getCertificateMessageRequest,
       @PathVariable("certificateId") String certificateId) {
@@ -81,13 +101,14 @@ public class MessageController {
 
   @GetMapping("/{messageId}/exists")
   @PerformanceLogging(eventAction = "find-existing-message", eventType = EVENT_TYPE_ACCESSED)
-  MessageExistsResponse findExistingMessage(
-      @PathVariable("messageId") String messageId) {
+  MessageExistsResponse findExistingMessage(@PathVariable("messageId") String messageId) {
     return messageExistsService.exist(messageId);
   }
 
   @PostMapping("/{messageId}/certificate")
-  @PerformanceLogging(eventAction = "retrieve-certificate-from-message", eventType = EVENT_TYPE_ACCESSED)
+  @PerformanceLogging(
+      eventAction = "retrieve-certificate-from-message",
+      eventType = EVENT_TYPE_ACCESSED)
   GetCertificateFromMessageResponse getCertificateFromMessage(
       @RequestBody GetCertificateFromMessageRequest getCertificateFromMessageRequest,
       @PathVariable("messageId") String messageId) {
@@ -97,8 +118,7 @@ public class MessageController {
   @PostMapping("/{messageId}/handle")
   @PerformanceLogging(eventAction = "handle-message", eventType = EVENT_TYPE_CHANGE)
   HandleMessageResponse handleMessage(
-      @RequestBody HandleMessageRequest request,
-      @PathVariable("messageId") String messageId) {
+      @RequestBody HandleMessageRequest request, @PathVariable("messageId") String messageId) {
     return handleMessageService.handle(request, messageId);
   }
 
@@ -113,48 +133,42 @@ public class MessageController {
   @PostMapping("/{messageId}/save")
   @PerformanceLogging(eventAction = "update-message", eventType = EVENT_TYPE_CHANGE)
   SaveMessageResponse saveMessage(
-      @RequestBody SaveMessageRequest request,
-      @PathVariable("messageId") String messageId) {
+      @RequestBody SaveMessageRequest request, @PathVariable("messageId") String messageId) {
     return saveMessageService.save(request, messageId);
   }
 
   @DeleteMapping("/{messageId}/delete")
   @PerformanceLogging(eventAction = "delete-message", eventType = EVENT_TYPE_DELETION)
   void deleteMessage(
-      @RequestBody DeleteMessageRequest request,
-      @PathVariable("messageId") String messageId) {
+      @RequestBody DeleteMessageRequest request, @PathVariable("messageId") String messageId) {
     deleteMessageService.delete(request, messageId);
   }
 
   @PostMapping("/{messageId}/send")
   @PerformanceLogging(eventAction = "send-message", eventType = EVENT_TYPE_CHANGE)
   SendMessageResponse sendMessage(
-      @RequestBody SendMessageRequest request,
-      @PathVariable("messageId") String messageId) {
+      @RequestBody SendMessageRequest request, @PathVariable("messageId") String messageId) {
     return sendMessageService.send(request, messageId);
   }
 
   @PostMapping("/{messageId}/saveanswer")
   @PerformanceLogging(eventAction = "save-answer", eventType = EVENT_TYPE_CHANGE)
   SaveAnswerResponse saveAnswer(
-      @RequestBody SaveAnswerRequest request,
-      @PathVariable("messageId") String messageId) {
+      @RequestBody SaveAnswerRequest request, @PathVariable("messageId") String messageId) {
     return saveAnswerService.save(request, messageId);
   }
 
   @DeleteMapping("/{messageId}/deleteanswer")
   @PerformanceLogging(eventAction = "delete-answer", eventType = EVENT_TYPE_DELETION)
   DeleteAnswerResponse deleteAnswer(
-      @RequestBody DeleteAnswerRequest request,
-      @PathVariable("messageId") String messageId) {
+      @RequestBody DeleteAnswerRequest request, @PathVariable("messageId") String messageId) {
     return deleteAnswerService.delete(request, messageId);
   }
 
   @PostMapping("/{messageId}/sendanswer")
   @PerformanceLogging(eventAction = "send-answer", eventType = EVENT_TYPE_CHANGE)
   SendAnswerResponse sendAnswer(
-      @RequestBody SendAnswerRequest request,
-      @PathVariable("messageId") String messageId) {
+      @RequestBody SendAnswerRequest request, @PathVariable("messageId") String messageId) {
     return sendAnswerService.send(request, messageId);
   }
 }

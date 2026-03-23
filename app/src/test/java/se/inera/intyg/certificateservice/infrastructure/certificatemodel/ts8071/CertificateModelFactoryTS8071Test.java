@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -37,20 +55,19 @@ class CertificateModelFactoryTS8071Test {
   private static final String VERSION = "1.0";
   private static final String LOGICAL_ADDRESS = "L-A";
 
-  @Mock
-  private CertificateActionFactory certificateActionFactory;
-  @Mock
-  private CertificateActionConfigurationRepository certificateActionConfigurationRepository;
+  @Mock private CertificateActionFactory certificateActionFactory;
+  @Mock private CertificateActionConfigurationRepository certificateActionConfigurationRepository;
 
   private CertificateModelFactoryTS8071 certificateModelFactoryTS8071;
 
   @BeforeEach
   void setUp() {
-    certificateModelFactoryTS8071 = new CertificateModelFactoryTS8071(
-        certificateActionFactory, certificateActionConfigurationRepository);
+    certificateModelFactoryTS8071 =
+        new CertificateModelFactoryTS8071(
+            certificateActionFactory, certificateActionConfigurationRepository);
 
-    ReflectionTestUtils.setField(certificateModelFactoryTS8071, "tsLogicalAddress",
-        LOGICAL_ADDRESS);
+    ReflectionTestUtils.setField(
+        certificateModelFactoryTS8071, "tsLogicalAddress", LOGICAL_ADDRESS);
   }
 
   @Test
@@ -68,7 +85,8 @@ class CertificateModelFactoryTS8071Test {
 
   @Test
   void shallIncludeName() {
-    final var expectedName = "Läkarintyg för högre körkortsbehörigheter, taxiförarlegitimation och på begäran av Transportstyrelsen";
+    final var expectedName =
+        "Läkarintyg för högre körkortsbehörigheter, taxiförarlegitimation och på begäran av Transportstyrelsen";
 
     final var certificateModel = certificateModelFactoryTS8071.create();
 
@@ -84,18 +102,16 @@ class CertificateModelFactoryTS8071Test {
 
   @Test
   void shallIncludePdfSpecificationWithDescription() {
-    final var expected = """
+    final var expected =
+        """
         Transportstyrelsens läkarintyg ska användas vid förlängd giltighet av högre behörighet från 45 år, ansökan om körkortstillstånd för grupp II och III och vid ansökan om taxiförarlegitimation. Transportstyrelsens läkarintyg kan även användas när Transportstyrelsen i annat fall begärt ett allmänt läkarintyg avseende lämplighet att inneha körkort.
-        
+
         Specialistintyg finns bl.a. för alkohol, läkemedel, synfunktion, Alkolås m.m. Se Transportstyrelsens hemsida.""";
     final var certificateModel = certificateModelFactoryTS8071.create();
 
     final var pdfSpecification = (GeneralPdfSpecification) certificateModel.pdfSpecification();
 
-    assertEquals(
-        expected,
-        pdfSpecification.description()
-    );
+    assertEquals(expected, pdfSpecification.description());
   }
 
   @Test
@@ -108,11 +124,7 @@ class CertificateModelFactoryTS8071Test {
   @Test
   void shallIncludeActiveFrom() {
     final var expectedActiveFrom = LocalDateTime.now(ZoneId.systemDefault());
-    ReflectionTestUtils.setField(
-        certificateModelFactoryTS8071,
-        "activeFrom",
-        expectedActiveFrom
-    );
+    ReflectionTestUtils.setField(certificateModelFactoryTS8071, "activeFrom", expectedActiveFrom);
 
     final var certificateModel = certificateModelFactoryTS8071.create();
 
@@ -130,8 +142,8 @@ class CertificateModelFactoryTS8071Test {
   void shallIncludeCertificateSummaryProvider() {
     final var certificateModel = certificateModelFactoryTS8071.create();
 
-    assertEquals(TS8071CertificateSummaryProvider.class,
-        certificateModel.summaryProvider().getClass());
+    assertEquals(
+        TS8071CertificateSummaryProvider.class, certificateModel.summaryProvider().getClass());
   }
 
   @Test
@@ -143,12 +155,13 @@ class CertificateModelFactoryTS8071Test {
 
   @Test
   void shallIncludeCertificateText() {
-    final var expectedText = CertificateText.builder()
-        .text(
-            "Det här är ditt intyg. Intyget innehåller all information som vården fyllt i. Du kan inte ändra något i ditt intyg. Har du frågor kontaktar du den som skrivit ditt intyg.")
-        .type(CertificateTextType.PREAMBLE_TEXT)
-        .links(Collections.emptyList())
-        .build();
+    final var expectedText =
+        CertificateText.builder()
+            .text(
+                "Det här är ditt intyg. Intyget innehåller all information som vården fyllt i. Du kan inte ändra något i ditt intyg. Har du frågor kontaktar du den som skrivit ditt intyg.")
+            .type(CertificateTextType.PREAMBLE_TEXT)
+            .links(Collections.emptyList())
+            .build();
 
     final var certificateModel = certificateModelFactoryTS8071.create();
 
@@ -157,13 +170,13 @@ class CertificateModelFactoryTS8071Test {
 
   @Test
   void shallIncludeRecipient() {
-    final var expectedRecipient = new Recipient(
-        new RecipientId("TRANSP"),
-        "Transportstyrelsen",
-        LOGICAL_ADDRESS,
-        "ts/transportstyrelsen-logo.png",
-        "Läkarintyg Transportstyrelsen"
-    );
+    final var expectedRecipient =
+        new Recipient(
+            new RecipientId("TRANSP"),
+            "Transportstyrelsen",
+            LOGICAL_ADDRESS,
+            "ts/transportstyrelsen-logo.png",
+            "Läkarintyg Transportstyrelsen");
 
     final var certificateModel = certificateModelFactoryTS8071.create();
 
@@ -176,8 +189,7 @@ class CertificateModelFactoryTS8071Test {
 
     assertAll(
         () -> assertNotNull(certificateModel.certificateActionSpecifications()),
-        () -> assertFalse(certificateModel.certificateActionSpecifications().isEmpty())
-    );
+        () -> assertFalse(certificateModel.certificateActionSpecifications().isEmpty()));
   }
 
   @Test
@@ -191,39 +203,108 @@ class CertificateModelFactoryTS8071Test {
   class CertificateSpecifications {
 
     @ParameterizedTest
-    @ValueSource(strings = {"1", "3", "5", "4", "5", "6", "7", "7.2", "7.3", "7.4", "8", "8.2", "9",
-        "9.2",
-        "9.3", "10", "10.2", "10.3", "11", "11.2", "11.3", "11.4", "11.5", "11.6", "11.7", "11.8",
-        "12", "11.9", "11.10", "14", "14.2", "14.3", "14.4", "14.5", "14.6", "14.7", "14.8",
-        "14.9", "15", "15.2", "15.3", "16", "16.2", "16.3", "17", "17.2", "17.3", "18", "18.2",
-        "18.3", "18.4", "18.5", "18.6", "18.7", "18.8", "18.9", "19", "19.2", "19.3", "20", "20.2",
-        "20.3", "20.4", "20.5", "20.6", "21", "21.2", "22", "23", "23.2", "23.3", "diabetes",
-        "UNIT_CONTACT_INFORMATION",})
+    @ValueSource(
+        strings = {
+          "1",
+          "3",
+          "5",
+          "4",
+          "5",
+          "6",
+          "7",
+          "7.2",
+          "7.3",
+          "7.4",
+          "8",
+          "8.2",
+          "9",
+          "9.2",
+          "9.3",
+          "10",
+          "10.2",
+          "10.3",
+          "11",
+          "11.2",
+          "11.3",
+          "11.4",
+          "11.5",
+          "11.6",
+          "11.7",
+          "11.8",
+          "12",
+          "11.9",
+          "11.10",
+          "14",
+          "14.2",
+          "14.3",
+          "14.4",
+          "14.5",
+          "14.6",
+          "14.7",
+          "14.8",
+          "14.9",
+          "15",
+          "15.2",
+          "15.3",
+          "16",
+          "16.2",
+          "16.3",
+          "17",
+          "17.2",
+          "17.3",
+          "18",
+          "18.2",
+          "18.3",
+          "18.4",
+          "18.5",
+          "18.6",
+          "18.7",
+          "18.8",
+          "18.9",
+          "19",
+          "19.2",
+          "19.3",
+          "20",
+          "20.2",
+          "20.3",
+          "20.4",
+          "20.5",
+          "20.6",
+          "21",
+          "21.2",
+          "22",
+          "23",
+          "23.2",
+          "23.3",
+          "diabetes",
+          "UNIT_CONTACT_INFORMATION",
+        })
     void shallIncludeQuestions(String value) {
       final var certificateModel = certificateModelFactoryTS8071.create();
 
       final var id = new ElementId(value);
-      assertTrue(certificateModel.elementSpecificationExists(id),
-          "Expected elementId: '%s' to exists in elementSpecifications '%s'".formatted(
-              id,
-              certificateModel.elementSpecifications())
-      );
+      assertTrue(
+          certificateModel.elementSpecificationExists(id),
+          "Expected elementId: '%s' to exists in elementSpecifications '%s'"
+              .formatted(id, certificateModel.elementSpecifications()));
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"KAT_0.0", "KAT_0.1", "KAT_0.2", "KAT_1.0", "KAT_1.1", "KAT_1.2",
-        "KAT_2", "KAT_3", "KAT_4", "KAT_5", "KAT_6", "KAT_7", "KAT_8", "KAT_9", "KAT_10", "KAT_11",
-        "KAT_12", "KAT_13", "KAT_14", "KAT_15", "KAT_16", "KAT_17"})
+    @ValueSource(
+        strings = {
+          "KAT_0.0", "KAT_0.1", "KAT_0.2", "KAT_1.0", "KAT_1.1", "KAT_1.2", "KAT_2", "KAT_3",
+          "KAT_4", "KAT_5", "KAT_6", "KAT_7", "KAT_8", "KAT_9", "KAT_10", "KAT_11", "KAT_12",
+          "KAT_13", "KAT_14", "KAT_15", "KAT_16", "KAT_17"
+        })
     void shallIncludeCategories(String id) {
       final var elementId = new ElementId(id);
       CertificateModel certificateModel = certificateModelFactoryTS8071.create();
 
-      assertTrue(certificateModel.elementSpecificationExists(elementId),
-          "Expected elementId: '%s' to exists in elementSpecifications '%s'".formatted(
-              elementId,
-              certificateModel.elementSpecifications()));
+      assertTrue(
+          certificateModel.elementSpecificationExists(elementId),
+          "Expected elementId: '%s' to exists in elementSpecifications '%s'"
+              .formatted(elementId, certificateModel.elementSpecifications()));
     }
-
   }
 
   @Test

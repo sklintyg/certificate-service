@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service.converter;
 
 import java.time.format.DateTimeFormatter;
@@ -24,14 +42,16 @@ public class SickLeaveConverter {
       return null;
     }
 
-    final var workCapacities = sickLeaveCertificate.workCapacities().stream()
-        .map(this::mapDateRangeToItemWorkCapacity)
-        .toList();
+    final var workCapacities =
+        sickLeaveCertificate.workCapacities().stream()
+            .map(this::mapDateRangeToItemWorkCapacity)
+            .toList();
 
-    final var employments = sickLeaveCertificate.employment().stream()
-        .map(ElementValueCode::code)
-        .filter(code -> code != null && !code.isBlank())
-        .collect(Collectors.joining(","));
+    final var employments =
+        sickLeaveCertificate.employment().stream()
+            .map(ElementValueCode::code)
+            .filter(code -> code != null && !code.isBlank())
+            .collect(Collectors.joining(","));
 
     return SickLeaveCertificateItemDTO.builder()
         .certificateId(sickLeaveCertificate.id().id())
@@ -45,16 +65,15 @@ public class SickLeaveConverter {
         .personId(sickLeaveCertificate.civicRegistrationNumber().idWithDash())
         .patientFullName(sickLeaveCertificate.patientName().fullName())
         .diagnoseCode(
-            sickLeaveCertificate.diagnoseCode() != null ? sickLeaveCertificate.diagnoseCode().code()
+            sickLeaveCertificate.diagnoseCode() != null
+                ? sickLeaveCertificate.diagnoseCode().code()
                 : null)
         .secondaryDiagnoseCodes(
             Stream.of(
-                    sickLeaveCertificate.biDiagnoseCode1(),
-                    sickLeaveCertificate.biDiagnoseCode2()
-                ).filter(Objects::nonNull)
+                    sickLeaveCertificate.biDiagnoseCode1(), sickLeaveCertificate.biDiagnoseCode2())
+                .filter(Objects::nonNull)
                 .map(ElementValueDiagnosis::code)
-                .toList()
-        )
+                .toList())
         .occupation(employments)
         .deleted(sickLeaveCertificate.deleted() != null)
         .workCapacityList(workCapacities)
@@ -68,8 +87,7 @@ public class SickLeaveConverter {
     }
 
     final var workCapacities =
-        sickLeaveCertificate.workCapacities()
-            .stream()
+        sickLeaveCertificate.workCapacities().stream()
             .map(this::mapDateRangeToWorkCapacity)
             .toList();
 
@@ -91,18 +109,17 @@ public class SickLeaveConverter {
         .civicRegistrationNumber(sickLeaveCertificate.civicRegistrationNumber().idWithDash())
         .patientName(sickLeaveCertificate.patientName().fullName())
         .diagnoseCode(
-            sickLeaveCertificate.diagnoseCode() != null ? sickLeaveCertificate.diagnoseCode().code()
+            sickLeaveCertificate.diagnoseCode() != null
+                ? sickLeaveCertificate.diagnoseCode().code()
                 : null)
         .biDiagnoseCode1(
             sickLeaveCertificate.biDiagnoseCode1() != null
                 ? sickLeaveCertificate.biDiagnoseCode1().code()
-                : null
-        )
+                : null)
         .biDiagnoseCode2(
             sickLeaveCertificate.biDiagnoseCode2() != null
                 ? sickLeaveCertificate.biDiagnoseCode2().code()
-                : null
-        )
+                : null)
         .employment(employments)
         .deleted(sickLeaveCertificate.deleted() != null)
         .sjukfallCertificateWorkCapacity(workCapacities)
@@ -148,6 +165,9 @@ public class SickLeaveConverter {
   }
 
   enum SickLeaveWorkcapacity {
-    HELT_NEDSATT, TRE_FJARDEDEL, HALFTEN, EN_FJARDEDEL
+    HELT_NEDSATT,
+    TRE_FJARDEDEL,
+    HALFTEN,
+    EN_FJARDEDEL
   }
 }

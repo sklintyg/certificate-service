@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7804.elements;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7804.elements.QuestionPrognos.QUESTION_PROGNOS_ID;
@@ -17,10 +35,8 @@ import se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.
 
 public class QuestionAntalManader {
 
-  public static final ElementId QUESTION_ANTAL_MANADER_ID = new ElementId(
-      "39.4");
-  public static final FieldId QUESTION_ANTAL_MANADER_FIELD_ID = new FieldId(
-      "39.4");
+  public static final ElementId QUESTION_ANTAL_MANADER_ID = new ElementId("39.4");
+  public static final FieldId QUESTION_ANTAL_MANADER_FIELD_ID = new FieldId("39.4");
 
   private QuestionAntalManader() {
     throw new IllegalStateException("Utility class");
@@ -36,48 +52,27 @@ public class QuestionAntalManader {
                 .name("Ange antal månader")
                 .min(1)
                 .max(99)
-                .build()
-        )
+                .build())
         .pdfConfiguration(
             PdfConfigurationText.builder()
                 .pdfFieldId(new PdfFieldId("form1[0].Sida3[0].flt_numManadManader[0]"))
                 .offset(-8)
-                .build()
-        )
+                .build())
         .rules(
             List.of(
                 CertificateElementRuleFactory.mandatory(
-                    QUESTION_ANTAL_MANADER_ID,
-                    QUESTION_ANTAL_MANADER_FIELD_ID
-                ),
+                    QUESTION_ANTAL_MANADER_ID, QUESTION_ANTAL_MANADER_FIELD_ID),
                 CertificateElementRuleFactory.show(
                     QUESTION_PROGNOS_ID,
-                    new FieldId(CodeSystemKvFkmu0006.ATER_X_ANTAL_MANADER.code())
-                )
-            )
-        )
+                    new FieldId(CodeSystemKvFkmu0006.ATER_X_ANTAL_MANADER.code()))))
         .validations(
-            List.of(
-                ElementValidationInteger.builder()
-                    .mandatory(true)
-                    .min(1)
-                    .max(99)
-                    .build()
-            )
-        )
+            List.of(ElementValidationInteger.builder().mandatory(true).min(1).max(99).build()))
         .shouldValidate(
             ElementDataPredicateFactory.codes(
                 QUESTION_PROGNOS_ID,
-                List.of(
-                    new FieldId(CodeSystemKvFkmu0006.ATER_X_ANTAL_MANADER.code())
-                )
-            )
-        )
-        .mapping(
-            new ElementMapping(QUESTION_PROGNOS_ID, CodeSystemKvFkmu0006.ATER_X_ANTAL_MANADER)
-        )
+                List.of(new FieldId(CodeSystemKvFkmu0006.ATER_X_ANTAL_MANADER.code()))))
+        .mapping(new ElementMapping(QUESTION_PROGNOS_ID, CodeSystemKvFkmu0006.ATER_X_ANTAL_MANADER))
         .includeWhenRenewing(false)
         .build();
   }
-
 }

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3221.elements;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,74 +52,57 @@ class QuestionGrundForMedicinsktUnderlagTest {
 
   @Test
   void shallIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationCheckboxMultipleDate.builder()
-        .name("Utlåtandet är baserat på")
-        .id(new FieldId("1.1"))
-        .dates(
-            List.of(
-                CheckboxDate.builder()
-                    .id(new FieldId("fysisktMote"))
-                    .label("min undersökning vid fysiskt vårdmöte")
-                    .code(
-                        new Code(
-                            "FYSISKUNDERSOKNING",
-                            "KV_FKMU_0001",
-                            "min undersökning vid fysiskt vårdmöte"
-                        )
-                    )
-                    .max(Period.ZERO)
-                    .build(),
-                CheckboxDate.builder()
-                    .id(new FieldId("digitaltMote"))
-                    .label("min undersökning vid digitalt vårdmöte")
-                    .code(
-                        new Code(
-                            "DIGITALUNDERSOKNING",
-                            "KV_FKMU_0001",
-                            "min undersökning vid digitalt vårdmöte"
-                        )
-                    )
-                    .max(Period.ZERO)
-                    .build(),
-                CheckboxDate.builder()
-                    .id(new FieldId("journaluppgifter"))
-                    .label("journaluppgifter från den")
-                    .code(
-                        new Code(
-                            "JOURNALUPPGIFTER",
-                            "KV_FKMU_0001",
-                            "journaluppgifter från den"
-                        )
-                    )
-                    .max(Period.ZERO)
-                    .build(),
-                CheckboxDate.builder()
-                    .id(new FieldId("anhorig"))
-                    .label("anhörigs eller annans beskrivning av patienten")
-                    .code(
-                        new Code(
-                            "ANHORIG",
-                            "KV_FKMU_0001",
-                            "anhörigs eller annans beskrivning av patienten"
-                        )
-                    )
-                    .max(Period.ZERO)
-                    .build(),
-                CheckboxDate.builder()
-                    .id(new FieldId("annat"))
-                    .label("annat")
-                    .code(
-                        new Code(
-                            "ANNAT",
-                            "KV_FKMU_0001",
-                            "annat"
-                        )
-                    )
-                    .max(Period.ZERO)
-                    .build()
-            )
-        )
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationCheckboxMultipleDate.builder()
+            .name("Utlåtandet är baserat på")
+            .id(new FieldId("1.1"))
+            .dates(
+                List.of(
+                    CheckboxDate.builder()
+                        .id(new FieldId("fysisktMote"))
+                        .label("min undersökning vid fysiskt vårdmöte")
+                        .code(
+                            new Code(
+                                "FYSISKUNDERSOKNING",
+                                "KV_FKMU_0001",
+                                "min undersökning vid fysiskt vårdmöte"))
+                        .max(Period.ZERO)
+                        .build(),
+                    CheckboxDate.builder()
+                        .id(new FieldId("digitaltMote"))
+                        .label("min undersökning vid digitalt vårdmöte")
+                        .code(
+                            new Code(
+                                "DIGITALUNDERSOKNING",
+                                "KV_FKMU_0001",
+                                "min undersökning vid digitalt vårdmöte"))
+                        .max(Period.ZERO)
+                        .build(),
+                    CheckboxDate.builder()
+                        .id(new FieldId("journaluppgifter"))
+                        .label("journaluppgifter från den")
+                        .code(
+                            new Code(
+                                "JOURNALUPPGIFTER", "KV_FKMU_0001", "journaluppgifter från den"))
+                        .max(Period.ZERO)
+                        .build(),
+                    CheckboxDate.builder()
+                        .id(new FieldId("anhorig"))
+                        .label("anhörigs eller annans beskrivning av patienten")
+                        .code(
+                            new Code(
+                                "ANHORIG",
+                                "KV_FKMU_0001",
+                                "anhörigs eller annans beskrivning av patienten"))
+                        .max(Period.ZERO)
+                        .build(),
+                    CheckboxDate.builder()
+                        .id(new FieldId("annat"))
+                        .label("annat")
+                        .code(new Code("ANNAT", "KV_FKMU_0001", "annat"))
+                        .max(Period.ZERO)
+                        .build()))
+            .build();
 
     final var element = questionGrundForMedicinsktUnderlag();
 
@@ -110,17 +111,15 @@ class QuestionGrundForMedicinsktUnderlagTest {
 
   @Test
   void shallIncludeRules() {
-    final var expectedRules = List.of(
-        ElementRuleExpression.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.MANDATORY)
-            .expression(
-                new RuleExpression(
-                    "$fysisktMote || $digitaltMote || $journaluppgifter || $anhorig || $annat"
-                )
-            )
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleExpression.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.MANDATORY)
+                .expression(
+                    new RuleExpression(
+                        "$fysisktMote || $digitaltMote || $journaluppgifter || $anhorig || $annat"))
+                .build());
 
     final var element = questionGrundForMedicinsktUnderlag();
 
@@ -129,12 +128,8 @@ class QuestionGrundForMedicinsktUnderlagTest {
 
   @Test
   void shallIncludeValidations() {
-    final var expectedValidations = List.of(
-        ElementValidationDateList.builder()
-            .mandatory(true)
-            .max(Period.ofDays(0))
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationDateList.builder().mandatory(true).max(Period.ofDays(0)).build());
 
     final var element = questionGrundForMedicinsktUnderlag();
 
@@ -143,46 +138,42 @@ class QuestionGrundForMedicinsktUnderlagTest {
 
   @Test
   void shallIncludePdfConfiguration() {
-    final var expected = PdfConfigurationDateList.builder()
-        .dateCheckboxes(
-            Map.of(
-                new FieldId("fysisktMote"),
-                PdfConfigurationDateCheckbox.builder()
-                    .checkboxFieldId(
-                        new PdfFieldId("form1[0].#subform[0].ksr_FysisktVardmote[0]")
-                    )
-                    .dateFieldId(
-                        new PdfFieldId("form1[0].#subform[0].flt_datumFysisktVardmote[0]"))
-                    .build(),
-                new FieldId("digitaltMote"),
-                PdfConfigurationDateCheckbox.builder()
-                    .checkboxFieldId(
-                        new PdfFieldId("form1[0].#subform[0].ksr_DigitaltVardmote[0]")
-                    )
-                    .dateFieldId(
-                        new PdfFieldId("form1[0].#subform[0].flt_datumDigitaltVardmote[0]"))
-                    .build(),
-                new FieldId("journaluppgifter"),
-                PdfConfigurationDateCheckbox.builder()
-                    .checkboxFieldId(
-                        new PdfFieldId("form1[0].#subform[0].ksr_Journaluppgifter[0]")
-                    )
-                    .dateFieldId(
-                        new PdfFieldId("form1[0].#subform[0].flt_datumJournaluppgifter[0]"))
-                    .build(),
-                new FieldId("anhorig"),
-                PdfConfigurationDateCheckbox.builder()
-                    .checkboxFieldId(new PdfFieldId("form1[0].#subform[0].ksr_AnhorigAnnan[0]"))
-                    .dateFieldId(new PdfFieldId("form1[0].#subform[0].flt_datumAnhorig[0]"))
-                    .build(),
-                new FieldId("annat"),
-                PdfConfigurationDateCheckbox.builder()
-                    .checkboxFieldId(new PdfFieldId("form1[0].#subform[0].ksr_Annat[0]"))
-                    .dateFieldId(new PdfFieldId("form1[0].#subform[0].flt_datumAnnat[0]"))
-                    .build()
-            )
-        )
-        .build();
+    final var expected =
+        PdfConfigurationDateList.builder()
+            .dateCheckboxes(
+                Map.of(
+                    new FieldId("fysisktMote"),
+                    PdfConfigurationDateCheckbox.builder()
+                        .checkboxFieldId(
+                            new PdfFieldId("form1[0].#subform[0].ksr_FysisktVardmote[0]"))
+                        .dateFieldId(
+                            new PdfFieldId("form1[0].#subform[0].flt_datumFysisktVardmote[0]"))
+                        .build(),
+                    new FieldId("digitaltMote"),
+                    PdfConfigurationDateCheckbox.builder()
+                        .checkboxFieldId(
+                            new PdfFieldId("form1[0].#subform[0].ksr_DigitaltVardmote[0]"))
+                        .dateFieldId(
+                            new PdfFieldId("form1[0].#subform[0].flt_datumDigitaltVardmote[0]"))
+                        .build(),
+                    new FieldId("journaluppgifter"),
+                    PdfConfigurationDateCheckbox.builder()
+                        .checkboxFieldId(
+                            new PdfFieldId("form1[0].#subform[0].ksr_Journaluppgifter[0]"))
+                        .dateFieldId(
+                            new PdfFieldId("form1[0].#subform[0].flt_datumJournaluppgifter[0]"))
+                        .build(),
+                    new FieldId("anhorig"),
+                    PdfConfigurationDateCheckbox.builder()
+                        .checkboxFieldId(new PdfFieldId("form1[0].#subform[0].ksr_AnhorigAnnan[0]"))
+                        .dateFieldId(new PdfFieldId("form1[0].#subform[0].flt_datumAnhorig[0]"))
+                        .build(),
+                    new FieldId("annat"),
+                    PdfConfigurationDateCheckbox.builder()
+                        .checkboxFieldId(new PdfFieldId("form1[0].#subform[0].ksr_Annat[0]"))
+                        .dateFieldId(new PdfFieldId("form1[0].#subform[0].flt_datumAnnat[0]"))
+                        .build()))
+            .build();
 
     final var element = questionGrundForMedicinsktUnderlag();
 

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificate.persistence;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,32 +40,28 @@ import se.inera.intyg.certificateservice.infrastructure.certificate.persistence.
 @ExtendWith(MockitoExtension.class)
 class PatientRepositoryTest {
 
-  @Mock
-  private PatientEntityRepository patientEntityRepository;
-  @Mock
-  MetadataVersionRepository metadataVersionRepository;
-  @InjectMocks
-  private PatientRepository patientRepository;
-
+  @Mock private PatientEntityRepository patientEntityRepository;
+  @Mock MetadataVersionRepository metadataVersionRepository;
+  @InjectMocks private PatientRepository patientRepository;
 
   @Test
   void shallReturnEntityFromRepositoryIfExists() {
     doReturn(Optional.of(ATHENA_REACT_ANDERSSON_ENTITY))
-        .when(patientEntityRepository).findById(ATHENA_REACT_ANDERSSON_ID_WITHOUT_DASH);
-    assertEquals(ATHENA_REACT_ANDERSSON_ENTITY, patientRepository.patient(ATHENA_REACT_ANDERSSON)
-    );
+        .when(patientEntityRepository)
+        .findById(ATHENA_REACT_ANDERSSON_ID_WITHOUT_DASH);
+    assertEquals(ATHENA_REACT_ANDERSSON_ENTITY, patientRepository.patient(ATHENA_REACT_ANDERSSON));
   }
 
   @Test
   void shallReturnMappedEntityIfEntityDontExistInRepository() {
     doReturn(Optional.empty())
-        .when(patientEntityRepository).findById(ATHENA_REACT_ANDERSSON_ID_WITHOUT_DASH);
+        .when(patientEntityRepository)
+        .findById(ATHENA_REACT_ANDERSSON_ID_WITHOUT_DASH);
     doReturn(ATHENA_REACT_ANDERSSON_ENTITY)
-        .when(patientEntityRepository).save(ATHENA_REACT_ANDERSSON_ENTITY);
+        .when(patientEntityRepository)
+        .save(ATHENA_REACT_ANDERSSON_ENTITY);
 
-    assertEquals(ATHENA_REACT_ANDERSSON_ENTITY,
-        patientRepository.patient(ATHENA_REACT_ANDERSSON)
-    );
+    assertEquals(ATHENA_REACT_ANDERSSON_ENTITY, patientRepository.patient(ATHENA_REACT_ANDERSSON));
   }
 
   @Test
@@ -57,7 +71,8 @@ class PatientRepositoryTest {
     final var existingPatientEntity = mock(PatientEntity.class);
 
     doReturn(Optional.of(existingPatientEntity))
-        .when(patientEntityRepository).findById(ATHENA_REACT_ANDERSSON_ID_WITHOUT_DASH);
+        .when(patientEntityRepository)
+        .findById(ATHENA_REACT_ANDERSSON_ID_WITHOUT_DASH);
     when(existingPatientEntity.hasDiff(ATHENA_REACT_ANDERSSON_ENTITY)).thenReturn(true);
     doReturn(updatedPatientEntity)
         .when(metadataVersionRepository)
@@ -65,8 +80,8 @@ class PatientRepositoryTest {
     final var result = patientRepository.patient(ATHENA_REACT_ANDERSSON);
 
     assertEquals(updatedPatientEntity, result);
-    verify(metadataVersionRepository).savePatientVersion(existingPatientEntity,
-        ATHENA_REACT_ANDERSSON_ENTITY);
+    verify(metadataVersionRepository)
+        .savePatientVersion(existingPatientEntity, ATHENA_REACT_ANDERSSON_ENTITY);
   }
 
   @Test
@@ -74,13 +89,14 @@ class PatientRepositoryTest {
     final var existingPatientEntity = mock(PatientEntity.class);
 
     doReturn(Optional.of(existingPatientEntity))
-        .when(patientEntityRepository).findById(ATHENA_REACT_ANDERSSON_ID_WITHOUT_DASH);
+        .when(patientEntityRepository)
+        .findById(ATHENA_REACT_ANDERSSON_ID_WITHOUT_DASH);
     doReturn(false).when(existingPatientEntity).hasDiff(ATHENA_REACT_ANDERSSON_ENTITY);
 
     final var result = patientRepository.patient(ATHENA_REACT_ANDERSSON);
 
     assertEquals(existingPatientEntity, result);
-    verify(metadataVersionRepository, never()).savePatientVersion(existingPatientEntity,
-        ATHENA_REACT_ANDERSSON_ENTITY);
+    verify(metadataVersionRepository, never())
+        .savePatientVersion(existingPatientEntity, ATHENA_REACT_ANDERSSON_ENTITY);
   }
 }

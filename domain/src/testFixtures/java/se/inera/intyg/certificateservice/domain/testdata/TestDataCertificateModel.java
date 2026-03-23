@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.testdata;
 
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataCertificateModelConstants.AG114_TYPE_NAME;
@@ -64,30 +82,37 @@ import se.inera.intyg.certificateservice.domain.message.model.Subject;
 
 public class TestDataCertificateModel {
 
-  public static final CertificateModel FK7210_CERTIFICATE_MODEL = fk7210certificateModelBuilder().build();
-  public static final CertificateModel FK3226_CERTIFICATE_MODEL = fk3226certificateModelBuilder().build();
-  public static final CertificateModel FK7472_CERTIFICATE_MODEL = fk7472certificateModelBuilder().build();
-  public static final CertificateModel FK7809_CERTIFICATE_MODEL = fk7809certificateModelBuilder().build();
-  public static final CertificateModel FK7427_CERTIFICATE_MODEL = fk7427certificateModelBuilder().build();
-  public static final CertificateModel FK7426_CERTIFICATE_MODEL = fk7426certificateModelBuilder().build();
-  public static final CertificateModel FK3221_CERTIFICATE_MODEL = fk3221certificateModelBuilder().build();
-  public static final CertificateModel FK7810_CERTIFICATE_MODEL = fk7810certificateModelBuilder().build();
-  public static final CertificateModel FK7804_CERTIFICATE_MODEL = fk7804certificateModelBuilder().build();
-  public static final CertificateModel AG7804_CERTIFICATE_MODEL = ag7804certificateModelBuilder().build();
-  public static final CertificateModel AG114_CERTIFICATE_MODEL = ag114certificateModelBuilder().build();
-  public static final CertificateModelId FK7804_CERTIFICATE_MODEL_ID = CertificateModelId.builder()
-      .type(TestDataCertificateModelConstants.FK7804_TYPE)
-      .version(FK7804_VERSION)
-      .build();
+  public static final CertificateModel FK7210_CERTIFICATE_MODEL =
+      fk7210certificateModelBuilder().build();
+  public static final CertificateModel FK3226_CERTIFICATE_MODEL =
+      fk3226certificateModelBuilder().build();
+  public static final CertificateModel FK7472_CERTIFICATE_MODEL =
+      fk7472certificateModelBuilder().build();
+  public static final CertificateModel FK7809_CERTIFICATE_MODEL =
+      fk7809certificateModelBuilder().build();
+  public static final CertificateModel FK7427_CERTIFICATE_MODEL =
+      fk7427certificateModelBuilder().build();
+  public static final CertificateModel FK7426_CERTIFICATE_MODEL =
+      fk7426certificateModelBuilder().build();
+  public static final CertificateModel FK3221_CERTIFICATE_MODEL =
+      fk3221certificateModelBuilder().build();
+  public static final CertificateModel FK7810_CERTIFICATE_MODEL =
+      fk7810certificateModelBuilder().build();
+  public static final CertificateModel FK7804_CERTIFICATE_MODEL =
+      fk7804certificateModelBuilder().build();
+  public static final CertificateModel AG7804_CERTIFICATE_MODEL =
+      ag7804certificateModelBuilder().build();
+  public static final CertificateModel AG114_CERTIFICATE_MODEL =
+      ag114certificateModelBuilder().build();
+  public static final CertificateModelId FK7804_CERTIFICATE_MODEL_ID =
+      CertificateModelId.builder()
+          .type(TestDataCertificateModelConstants.FK7804_TYPE)
+          .version(FK7804_VERSION)
+          .build();
 
   public static CertificateModel.CertificateModelBuilder fk7210certificateModelBuilder() {
     return CertificateModel.builder()
-        .id(
-            CertificateModelId.builder()
-                .type(FK7210_TYPE)
-                .version(FK7210_VERSION)
-                .build()
-        )
+        .id(CertificateModelId.builder().type(FK7210_TYPE).version(FK7210_VERSION).build())
         .name(FK7210_NAME)
         .type(FK7210_CODE_TYPE)
         .typeName(FK7210_TYPE_NAME)
@@ -102,12 +127,7 @@ public class TestDataCertificateModel {
 
   public static CertificateModel.CertificateModelBuilder fk3226certificateModelBuilder() {
     return CertificateModel.builder()
-        .id(
-            CertificateModelId.builder()
-                .type(FK3226_TYPE)
-                .version(FK3226_VERSION)
-                .build()
-        )
+        .id(CertificateModelId.builder().type(FK3226_TYPE).version(FK3226_VERSION).build())
         .certificateActionSpecifications(Collections.emptyList())
         .name(FK3226_NAME)
         .type(FK3226_CODE_TYPE)
@@ -120,15 +140,9 @@ public class TestDataCertificateModel {
         .activeFrom(LocalDateTime.now().minusDays(1));
   }
 
-
   public static CertificateModel.CertificateModelBuilder fk7472certificateModelBuilder() {
     return CertificateModel.builder()
-        .id(
-            CertificateModelId.builder()
-                .type(FK7472_TYPE)
-                .version(FK7472_VERSION)
-                .build()
-        )
+        .id(CertificateModelId.builder().type(FK7472_TYPE).version(FK7472_VERSION).build())
         .name(FK7472_NAME)
         .certificateActionSpecifications(Collections.emptyList())
         .type(FK7472_CODE_TYPE)
@@ -143,12 +157,7 @@ public class TestDataCertificateModel {
 
   public static CertificateModel.CertificateModelBuilder fk7809certificateModelBuilder() {
     return CertificateModel.builder()
-        .id(
-            CertificateModelId.builder()
-                .type(FK7809_TYPE)
-                .version(FK7809_VERSION)
-                .build()
-        )
+        .id(CertificateModelId.builder().type(FK7809_TYPE).version(FK7809_VERSION).build())
         .certificateActionSpecifications(Collections.emptyList())
         .name(FK7809_NAME)
         .type(FK7809_CODE_TYPE)
@@ -163,12 +172,7 @@ public class TestDataCertificateModel {
 
   public static CertificateModel.CertificateModelBuilder fk7427certificateModelBuilder() {
     return CertificateModel.builder()
-        .id(
-            CertificateModelId.builder()
-                .type(FK7427_TYPE)
-                .version(FK7427_VERSION)
-                .build()
-        )
+        .id(CertificateModelId.builder().type(FK7427_TYPE).version(FK7427_VERSION).build())
         .certificateActionSpecifications(Collections.emptyList())
         .name(FK7427_NAME)
         .type(FK7427_CODE_TYPE)
@@ -185,8 +189,7 @@ public class TestDataCertificateModel {
             CertificateModelId.builder()
                 .type(TestDataCertificateModelConstants.FK7426_TYPE)
                 .version(FK7426_VERSION)
-                .build()
-        )
+                .build())
         .certificateActionSpecifications(Collections.emptyList())
         .name(TestDataCertificateModelConstants.FK7426_NAME)
         .type(TestDataCertificateModelConstants.FK7426_CODE_TYPE)
@@ -204,8 +207,7 @@ public class TestDataCertificateModel {
             CertificateModelId.builder()
                 .type(TestDataCertificateModelConstants.FK3221_TYPE)
                 .version(FK3221_VERSION)
-                .build()
-        )
+                .build())
         .certificateActionSpecifications(Collections.emptyList())
         .name(TestDataCertificateModelConstants.FK3221_NAME)
         .type(TestDataCertificateModelConstants.FK3221_CODE_TYPE)
@@ -223,8 +225,7 @@ public class TestDataCertificateModel {
             CertificateModelId.builder()
                 .type(TestDataCertificateModelConstants.FK7810_TYPE)
                 .version(FK7810_VERSION)
-                .build()
-        )
+                .build())
         .certificateActionSpecifications(Collections.emptyList())
         .name(TestDataCertificateModelConstants.FK7810_NAME)
         .type(TestDataCertificateModelConstants.FK7810_CODE_TYPE)
@@ -238,9 +239,7 @@ public class TestDataCertificateModel {
                 CertificateMessageType.builder()
                     .type(MessageType.CONTACT)
                     .subject(new Subject(MessageType.CONTACT.displayName()))
-                    .build()
-            )
-        )
+                    .build()))
         .activeFrom(LocalDateTime.now().minusDays(1));
   }
 
@@ -264,8 +263,7 @@ public class TestDataCertificateModel {
             CertificateModelId.builder()
                 .type(TestDataCertificateModelConstants.AG7804_TYPE)
                 .version(TestDataCertificateModelConstants.AG7804_VERSION)
-                .build()
-        )
+                .build())
         .certificateActionSpecifications(Collections.emptyList())
         .name(TestDataCertificateModelConstants.AG7804_NAME)
         .type(TestDataCertificateModelConstants.AG7804_CODE_TYPE)
@@ -281,16 +279,12 @@ public class TestDataCertificateModel {
                         ElementConfigurationCheckboxMultipleCode.builder()
                             .list(
                                 List.of(
-                                    new ElementConfigurationCode(new FieldId("NUVARANDE_ARBETE"),
+                                    new ElementConfigurationCode(
+                                        new FieldId("NUVARANDE_ARBETE"),
                                         "Nuvarande arbete",
-                                        new Code("NUVARANDE_ARBETE", "CS", "Nuvarande arbete"))
-                                )
-                            )
-                            .build()
-                    )
-                    .build()
-            )
-        )
+                                        new Code("NUVARANDE_ARBETE", "CS", "Nuvarande arbete"))))
+                            .build())
+                    .build()))
         .certificateActionFactory(new CertificateActionFactory(null))
         .activeFrom(LocalDateTime.now().minusDays(1));
   }
@@ -301,8 +295,7 @@ public class TestDataCertificateModel {
             CertificateModelId.builder()
                 .type(TestDataCertificateModelConstants.AG114_TYPE)
                 .version(AG114_VERSION)
-                .build()
-        )
+                .build())
         .certificateActionSpecifications(Collections.emptyList())
         .name(TestDataCertificateModelConstants.AG114_NAME)
         .type(TestDataCertificateModelConstants.AG114_CODE_TYPE)

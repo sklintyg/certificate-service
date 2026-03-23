@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.unit.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -32,49 +50,47 @@ import se.inera.intyg.certificateservice.domain.testdata.TestDataUser;
 @ExtendWith(MockitoExtension.class)
 class GetUnitCertificatesInfoDomainServiceTest {
 
-  @Mock
-  private CertificateRepository certificateRepository;
-  @InjectMocks
-  private GetUnitCertificatesInfoDomainService getUnitCertificatesInfoDomainService;
+  @Mock private CertificateRepository certificateRepository;
+  @InjectMocks private GetUnitCertificatesInfoDomainService getUnitCertificatesInfoDomainService;
 
   private ActionEvaluation.ActionEvaluationBuilder actionEvaluationBuilder;
   private CertificatesRequestBuilder certificatesRequestBuilder;
 
   @BeforeEach
   void setUp() {
-    actionEvaluationBuilder = ActionEvaluation.builder()
-        .patient(ATHENA_REACT_ANDERSSON)
-        .user(TestDataUser.AJLA_DOKTOR)
-        .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
-        .careUnit(ALFA_MEDICINCENTRUM)
-        .careProvider(ALFA_REGIONEN);
+    actionEvaluationBuilder =
+        ActionEvaluation.builder()
+            .patient(ATHENA_REACT_ANDERSSON)
+            .user(TestDataUser.AJLA_DOKTOR)
+            .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
+            .careUnit(ALFA_MEDICINCENTRUM)
+            .careProvider(ALFA_REGIONEN);
 
-    certificatesRequestBuilder = CertificatesRequest.builder()
-        .statuses(Status.unsigned())
-        .issuedUnitIds(List.of(ALFA_ALLERGIMOTTAGNINGEN.hsaId()))
-        .personId(ATHENA_REACT_ANDERSSON.id());
+    certificatesRequestBuilder =
+        CertificatesRequest.builder()
+            .statuses(Status.unsigned())
+            .issuedUnitIds(List.of(ALFA_ALLERGIMOTTAGNINGEN.hsaId()))
+            .personId(ATHENA_REACT_ANDERSSON.id());
   }
 
   @Test
   void shallReturnListOfStaff() {
     final var actionEvaluation = actionEvaluationBuilder.build();
     final var certificatesRequest = certificatesRequestBuilder.build();
-    final var certificateMetaData = CertificateMetaData.builder()
-        .issuer(AJLA_DOKTOR)
-        .build();
-    final var certificateMetaDataTwo = CertificateMetaData.builder()
-        .issuer(ALVA_VARDADMINISTRATOR)
-        .build();
+    final var certificateMetaData = CertificateMetaData.builder().issuer(AJLA_DOKTOR).build();
+    final var certificateMetaDataTwo =
+        CertificateMetaData.builder().issuer(ALVA_VARDADMINISTRATOR).build();
 
     final var certificate = mock(MedicalCertificate.class);
     final var certificateTwo = mock(MedicalCertificate.class);
     doReturn(certificateMetaData).when(certificate).certificateMetaData();
     doReturn(certificateMetaDataTwo).when(certificateTwo).certificateMetaData();
-    doReturn(List.of(certificate, certificateTwo)).when(certificateRepository)
+    doReturn(List.of(certificate, certificateTwo))
+        .when(certificateRepository)
         .findByCertificatesRequest(certificatesRequest);
 
-    final var actualResult = getUnitCertificatesInfoDomainService.get(certificatesRequest,
-        actionEvaluation);
+    final var actualResult =
+        getUnitCertificatesInfoDomainService.get(certificatesRequest, actionEvaluation);
 
     assertEquals(List.of(AJLA_DOKTOR, ALVA_VARDADMINISTRATOR), actualResult);
   }
@@ -83,19 +99,18 @@ class GetUnitCertificatesInfoDomainServiceTest {
   void shallReturnListOfUniqueStaff() {
     final var actionEvaluation = actionEvaluationBuilder.build();
     final var certificatesRequest = certificatesRequestBuilder.build();
-    final var certificateMetaData = CertificateMetaData.builder()
-        .issuer(AJLA_DOKTOR)
-        .build();
+    final var certificateMetaData = CertificateMetaData.builder().issuer(AJLA_DOKTOR).build();
 
     final var certificate = mock(MedicalCertificate.class);
     final var certificateTwo = mock(MedicalCertificate.class);
     doReturn(certificateMetaData).when(certificate).certificateMetaData();
     doReturn(certificateMetaData).when(certificateTwo).certificateMetaData();
-    doReturn(List.of(certificate, certificateTwo)).when(certificateRepository)
+    doReturn(List.of(certificate, certificateTwo))
+        .when(certificateRepository)
         .findByCertificatesRequest(certificatesRequest);
 
-    final var actualResult = getUnitCertificatesInfoDomainService.get(certificatesRequest,
-        actionEvaluation);
+    final var actualResult =
+        getUnitCertificatesInfoDomainService.get(certificatesRequest, actionEvaluation);
 
     assertEquals(List.of(AJLA_DOKTOR), actualResult);
   }
@@ -103,9 +118,7 @@ class GetUnitCertificatesInfoDomainServiceTest {
   @Test
   void shallAddIssuedUnitIfNoIssuedUnitProvidedAndIsOnSubUnit() {
     final var actionEvaluation = actionEvaluationBuilder.build();
-    final var certificatesRequest = certificatesRequestBuilder
-        .issuedUnitIds(null)
-        .build();
+    final var certificatesRequest = certificatesRequestBuilder.issuedUnitIds(null).build();
 
     final var certificateRequestCaptor = ArgumentCaptor.forClass(CertificatesRequest.class);
 
@@ -113,20 +126,16 @@ class GetUnitCertificatesInfoDomainServiceTest {
 
     verify(certificateRepository).findByCertificatesRequest(certificateRequestCaptor.capture());
 
-    assertEquals(List.of(ALFA_ALLERGIMOTTAGNINGEN.hsaId()),
-        certificateRequestCaptor.getValue().issuedUnitIds()
-    );
+    assertEquals(
+        List.of(ALFA_ALLERGIMOTTAGNINGEN.hsaId()),
+        certificateRequestCaptor.getValue().issuedUnitIds());
   }
 
   @Test
   void shallAddCareUnitIfNoIssuedUnitProvidedAndIsOnCareUnit() {
-    final var actionEvaluation = actionEvaluationBuilder
-        .subUnit(ALFA_MEDICINSKT_CENTRUM)
-        .build();
+    final var actionEvaluation = actionEvaluationBuilder.subUnit(ALFA_MEDICINSKT_CENTRUM).build();
 
-    final var certificatesRequest = certificatesRequestBuilder
-        .issuedUnitIds(null)
-        .build();
+    final var certificatesRequest = certificatesRequestBuilder.issuedUnitIds(null).build();
 
     final var certificateRequestCaptor = ArgumentCaptor.forClass(CertificatesRequest.class);
 
@@ -134,8 +143,6 @@ class GetUnitCertificatesInfoDomainServiceTest {
 
     verify(certificateRepository).findByCertificatesRequest(certificateRequestCaptor.capture());
 
-    assertEquals(ALFA_MEDICINCENTRUM.hsaId(),
-        certificateRequestCaptor.getValue().careUnitId()
-    );
+    assertEquals(ALFA_MEDICINCENTRUM.hsaId(), certificateRequestCaptor.getValue().careUnitId());
   }
 }

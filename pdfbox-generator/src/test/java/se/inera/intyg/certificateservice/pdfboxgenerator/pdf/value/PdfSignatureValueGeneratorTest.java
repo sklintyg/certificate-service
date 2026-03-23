@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.pdfboxgenerator.pdf.value;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -20,20 +38,18 @@ class PdfSignatureValueGeneratorTest {
 
   private static final LocalDateTime SIGNED = LocalDateTime.now();
 
-  @Mock
-  PdfTextGenerator pdfTextGenerator;
+  @Mock PdfTextGenerator pdfTextGenerator;
 
-  @InjectMocks
-  PdfSignatureValueGenerator pdfSignatureValueGenerator;
-
+  @InjectMocks PdfSignatureValueGenerator pdfSignatureValueGenerator;
 
   @Test
   void shouldAddSignedDate() {
     final var certificate = getCertificate();
-    final var expected = PdfField.builder()
-        .id("form1[0].#subform[0].flt_datUnderskrift[0]")
-        .value(SIGNED.format(DateTimeFormatter.ISO_DATE))
-        .build();
+    final var expected =
+        PdfField.builder()
+            .id("form1[0].#subform[0].flt_datUnderskrift[0]")
+            .value(SIGNED.format(DateTimeFormatter.ISO_DATE))
+            .build();
 
     final var result = pdfSignatureValueGenerator.generate(certificate);
 
@@ -43,10 +59,11 @@ class PdfSignatureValueGeneratorTest {
   @Test
   void shouldAddIssuerName() {
     final var certificate = getCertificate();
-    final var expected = PdfField.builder()
-        .id("form1[0].#subform[0].flt_txtNamnfortydligande[0]")
-        .value(certificate.getMetadataForPrint().issuer().name().fullName())
-        .build();
+    final var expected =
+        PdfField.builder()
+            .id("form1[0].#subform[0].flt_txtNamnfortydligande[0]")
+            .value(certificate.getMetadataForPrint().issuer().name().fullName())
+            .build();
 
     final var result = pdfSignatureValueGenerator.generate(certificate);
     assertTrue(result.contains(expected), "Expected signature to be included in result");
@@ -55,10 +72,11 @@ class PdfSignatureValueGeneratorTest {
   @Test
   void shouldAddIssuerHsaId() {
     final var certificate = getCertificate();
-    final var expected = PdfField.builder()
-        .id("form1[0].#subform[0].flt_txtLakarensHSA-ID[0]")
-        .value(certificate.getMetadataForPrint().issuer().hsaId().id())
-        .build();
+    final var expected =
+        PdfField.builder()
+            .id("form1[0].#subform[0].flt_txtLakarensHSA-ID[0]")
+            .value(certificate.getMetadataForPrint().issuer().hsaId().id())
+            .build();
 
     final var result = pdfSignatureValueGenerator.generate(certificate);
     assertTrue(result.contains(expected), "Expected signature to be included in result");
@@ -67,10 +85,11 @@ class PdfSignatureValueGeneratorTest {
   @Test
   void shouldSetPaTitles() {
     final var certificate = getCertificate();
-    final var expected = PdfField.builder()
-        .id("form1[0].#subform[0].flt_txtBefattning[0]")
-        .value("203090, 601010")
-        .build();
+    final var expected =
+        PdfField.builder()
+            .id("form1[0].#subform[0].flt_txtBefattning[0]")
+            .value("203090, 601010")
+            .build();
 
     final var result = pdfSignatureValueGenerator.generate(certificate);
     assertTrue(result.contains(expected), "Expected PA-titles to be included in result");
@@ -79,10 +98,11 @@ class PdfSignatureValueGeneratorTest {
   @Test
   void shouldSetSpeciality() {
     final var certificate = getCertificate();
-    final var expected = PdfField.builder()
-        .id("form1[0].#subform[0].flt_txtEventuellSpecialistkompetens[0]")
-        .value("Allmänmedicin, Psykiatri")
-        .build();
+    final var expected =
+        PdfField.builder()
+            .id("form1[0].#subform[0].flt_txtEventuellSpecialistkompetens[0]")
+            .value("Allmänmedicin, Psykiatri")
+            .build();
 
     final var result = pdfSignatureValueGenerator.generate(certificate);
     assertTrue(result.contains(expected), "Expected speciality to be included in result");
@@ -91,10 +111,11 @@ class PdfSignatureValueGeneratorTest {
   @Test
   void shouldSetWorkplaceCode() {
     final var certificate = getCertificate();
-    final var expected = PdfField.builder()
-        .id("form1[0].#subform[0].flt_txtArbetsplatskod[0]")
-        .value("1627")
-        .build();
+    final var expected =
+        PdfField.builder()
+            .id("form1[0].#subform[0].flt_txtArbetsplatskod[0]")
+            .value("1627")
+            .build();
 
     final var result = pdfSignatureValueGenerator.generate(certificate);
     assertTrue(result.contains(expected), "Expected speciality to be included in result");
