@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.certificate;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -41,52 +59,41 @@ class XmlGeneratorDateListTest {
   private static ElementData data;
   private ElementSpecification elementSpecification;
 
-  @InjectMocks
-  private XmlGeneratorDateList xmlGenerator;
+  @InjectMocks private XmlGeneratorDateList xmlGenerator;
 
   @Nested
   class TestOneDate {
 
     @BeforeEach
     void setup() {
-      data = ElementData.builder()
-          .id(new ElementId(QUESTION_ID))
-          .value(
-              ElementValueDateList.builder()
-                  .dateListId(new FieldId(VALUE_ID))
-                  .dateList(
-                      List.of(
-                          ElementValueDate.builder()
-                              .dateId(new FieldId(DATE_ID_ONE))
-                              .date(DATE_ONE)
-                              .build()
-                      )
-                  )
-                  .build()
-          )
-          .build();
-      elementSpecification = ElementSpecification.builder()
-          .configuration(
-              ElementConfigurationCheckboxMultipleDate.builder()
-                  .id(new FieldId(VALUE_ID))
-                  .dates(
-                      List.of(
-                          CheckboxDate.builder()
-                              .id(new FieldId(DATE_ID_ONE))
-                              .label("label")
-                              .code(
-                                  new Code(
-                                      "CODE",
-                                      "CODE_SYSTEM",
-                                      "DISPLAY_NAME"
-                                  )
-                              )
-                              .build()
-                      )
-                  )
-                  .build()
-          )
-          .build();
+      data =
+          ElementData.builder()
+              .id(new ElementId(QUESTION_ID))
+              .value(
+                  ElementValueDateList.builder()
+                      .dateListId(new FieldId(VALUE_ID))
+                      .dateList(
+                          List.of(
+                              ElementValueDate.builder()
+                                  .dateId(new FieldId(DATE_ID_ONE))
+                                  .date(DATE_ONE)
+                                  .build()))
+                      .build())
+              .build();
+      elementSpecification =
+          ElementSpecification.builder()
+              .configuration(
+                  ElementConfigurationCheckboxMultipleDate.builder()
+                      .id(new FieldId(VALUE_ID))
+                      .dates(
+                          List.of(
+                              CheckboxDate.builder()
+                                  .id(new FieldId(DATE_ID_ONE))
+                                  .label("label")
+                                  .code(new Code("CODE", "CODE_SYSTEM", "DISPLAY_NAME"))
+                                  .build()))
+                      .build())
+              .build();
     }
 
     @Test
@@ -97,8 +104,7 @@ class XmlGeneratorDateListTest {
       assertAll(
           () -> assertEquals(1, response.size()),
           () -> assertEquals(QUESTION_ID, first.getId()),
-          () -> assertEquals(1, first.getInstans())
-      );
+          () -> assertEquals(1, first.getInstans()));
     }
 
     @Test
@@ -115,8 +121,7 @@ class XmlGeneratorDateListTest {
           () -> assertEquals(QUESTION_ID + ".1", delsvarCode.getId()),
           () -> assertEquals("CODE", cvType.getCode()),
           () -> assertEquals("CODE_SYSTEM", cvType.getCodeSystem()),
-          () -> assertEquals("DISPLAY_NAME", cvType.getDisplayName())
-      );
+          () -> assertEquals("DISPLAY_NAME", cvType.getDisplayName()));
     }
 
     @Test
@@ -130,8 +135,7 @@ class XmlGeneratorDateListTest {
       assertAll(
           () -> assertEquals(2, delsvar.size()),
           () -> assertEquals(QUESTION_ID + ".2", delsvarDate.getId()),
-          () -> assertEquals(DATE_ONE.toString(), delsvarDateAsStr)
-      );
+          () -> assertEquals(DATE_ONE.toString(), delsvarDateAsStr));
     }
   }
 
@@ -140,60 +144,44 @@ class XmlGeneratorDateListTest {
 
     @BeforeEach
     void setup() {
-      data = ElementData.builder()
-          .id(new ElementId(QUESTION_ID))
-          .value(
-              ElementValueDateList.builder()
-                  .dateListId(new FieldId(VALUE_ID))
-                  .dateList(
-                      List.of(
-                          ElementValueDate.builder()
-                              .dateId(new FieldId(DATE_ID_ONE))
-                              .date(DATE_ONE)
-                              .build(),
-                          ElementValueDate.builder()
-                              .dateId(new FieldId(DATE_ID_TWO))
-                              .date(DATE_TWO)
-                              .build()
-                      )
-                  )
-                  .build()
-          )
-          .build();
+      data =
+          ElementData.builder()
+              .id(new ElementId(QUESTION_ID))
+              .value(
+                  ElementValueDateList.builder()
+                      .dateListId(new FieldId(VALUE_ID))
+                      .dateList(
+                          List.of(
+                              ElementValueDate.builder()
+                                  .dateId(new FieldId(DATE_ID_ONE))
+                                  .date(DATE_ONE)
+                                  .build(),
+                              ElementValueDate.builder()
+                                  .dateId(new FieldId(DATE_ID_TWO))
+                                  .date(DATE_TWO)
+                                  .build()))
+                      .build())
+              .build();
 
-      elementSpecification = ElementSpecification.builder()
-          .configuration(
-              ElementConfigurationCheckboxMultipleDate.builder()
-                  .id(new FieldId(VALUE_ID))
-                  .dates(
-                      List.of(
-                          CheckboxDate.builder()
-                              .id(new FieldId(DATE_ID_ONE))
-                              .label("label")
-                              .code(
-                                  new Code(
-                                      "CODE",
-                                      "CODE_SYSTEM",
-                                      "DISPLAY_NAME"
-                                  )
-                              )
-                              .build(),
-                          CheckboxDate.builder()
-                              .id(new FieldId(DATE_ID_TWO))
-                              .label("labelTwo")
-                              .code(
-                                  new Code(
-                                      "CODE_TWO",
-                                      "CODE_SYSTEM",
-                                      "DISPLAY_NAME_TWO"
-                                  )
-                              )
-                              .build()
-                      )
-                  )
-                  .build()
-          )
-          .build();
+      elementSpecification =
+          ElementSpecification.builder()
+              .configuration(
+                  ElementConfigurationCheckboxMultipleDate.builder()
+                      .id(new FieldId(VALUE_ID))
+                      .dates(
+                          List.of(
+                              CheckboxDate.builder()
+                                  .id(new FieldId(DATE_ID_ONE))
+                                  .label("label")
+                                  .code(new Code("CODE", "CODE_SYSTEM", "DISPLAY_NAME"))
+                                  .build(),
+                              CheckboxDate.builder()
+                                  .id(new FieldId(DATE_ID_TWO))
+                                  .label("labelTwo")
+                                  .code(new Code("CODE_TWO", "CODE_SYSTEM", "DISPLAY_NAME_TWO"))
+                                  .build()))
+                      .build())
+              .build();
     }
 
     @Test
@@ -204,8 +192,7 @@ class XmlGeneratorDateListTest {
       assertAll(
           () -> assertEquals(2, response.size()),
           () -> assertEquals(QUESTION_ID, first.getId()),
-          () -> assertEquals(1, first.getInstans())
-      );
+          () -> assertEquals(1, first.getInstans()));
     }
 
     @Test
@@ -216,8 +203,7 @@ class XmlGeneratorDateListTest {
       assertAll(
           () -> assertEquals(2, response.size()),
           () -> assertEquals(QUESTION_ID, first.getId()),
-          () -> assertEquals(2, first.getInstans())
-      );
+          () -> assertEquals(2, first.getInstans()));
     }
 
     @Test
@@ -234,8 +220,7 @@ class XmlGeneratorDateListTest {
           () -> assertEquals(QUESTION_ID + ".1", delsvarCode.getId()),
           () -> assertEquals("CODE", cvType.getCode()),
           () -> assertEquals("CODE_SYSTEM", cvType.getCodeSystem()),
-          () -> assertEquals("DISPLAY_NAME", cvType.getDisplayName())
-      );
+          () -> assertEquals("DISPLAY_NAME", cvType.getDisplayName()));
     }
 
     @Test
@@ -252,8 +237,7 @@ class XmlGeneratorDateListTest {
           () -> assertEquals(QUESTION_ID + ".1", delsvarCode.getId()),
           () -> assertEquals("CODE_TWO", cvType.getCode()),
           () -> assertEquals("CODE_SYSTEM", cvType.getCodeSystem()),
-          () -> assertEquals("DISPLAY_NAME_TWO", cvType.getDisplayName())
-      );
+          () -> assertEquals("DISPLAY_NAME_TWO", cvType.getDisplayName()));
     }
 
     @Test
@@ -267,8 +251,7 @@ class XmlGeneratorDateListTest {
       assertAll(
           () -> assertEquals(2, delsvar.size()),
           () -> assertEquals(QUESTION_ID + ".2", delsvarDate.getId()),
-          () -> assertEquals(DATE_ONE.toString(), delsvarDateAsStr)
-      );
+          () -> assertEquals(DATE_ONE.toString(), delsvarDateAsStr));
     }
 
     @Test
@@ -282,21 +265,17 @@ class XmlGeneratorDateListTest {
       assertAll(
           () -> assertEquals(2, delsvar.size()),
           () -> assertEquals(QUESTION_ID + ".2", delsvarDate.getId()),
-          () -> assertEquals(DATE_TWO.toString(), delsvarDateAsStr)
-      );
+          () -> assertEquals(DATE_TWO.toString(), delsvarDateAsStr));
     }
   }
 
   @Test
   void shallMapEmptyIfNoValue() {
-    final var data = ElementData.builder()
-        .id(new ElementId(QUESTION_ID))
-        .value(
-            ElementValueDateList.builder()
-                .dateListId(new FieldId(VALUE_ID))
-                .build()
-        )
-        .build();
+    final var data =
+        ElementData.builder()
+            .id(new ElementId(QUESTION_ID))
+            .value(ElementValueDateList.builder().dateListId(new FieldId(VALUE_ID)).build())
+            .build();
 
     final var response = xmlGenerator.generate(data, elementSpecification);
 
@@ -305,43 +284,37 @@ class XmlGeneratorDateListTest {
 
   @Test
   void shallThrowIfIncorrectConfiguration() {
-    final var data = ElementData.builder()
-        .id(new ElementId(QUESTION_ID))
-        .value(
-            ElementValueDateList.builder()
-                .dateListId(new FieldId(VALUE_ID))
-                .dateList(
-                    List.of(
-                        ElementValueDate.builder()
-                            .dateId(new FieldId(DATE_ID_ONE))
-                            .date(DATE_ONE)
-                            .build()
-                    )
-                )
-                .build()
-        )
-        .build();
+    final var data =
+        ElementData.builder()
+            .id(new ElementId(QUESTION_ID))
+            .value(
+                ElementValueDateList.builder()
+                    .dateListId(new FieldId(VALUE_ID))
+                    .dateList(
+                        List.of(
+                            ElementValueDate.builder()
+                                .dateId(new FieldId(DATE_ID_ONE))
+                                .date(DATE_ONE)
+                                .build()))
+                    .build())
+            .build();
 
-    elementSpecification = ElementSpecification.builder()
-        .configuration(
-            ElementConfigurationDate.builder().build()
-        )
-        .build();
+    elementSpecification =
+        ElementSpecification.builder()
+            .configuration(ElementConfigurationDate.builder().build())
+            .build();
 
-    assertThrows(IllegalArgumentException.class,
-        () -> xmlGenerator.generate(data, elementSpecification)
-    );
+    assertThrows(
+        IllegalArgumentException.class, () -> xmlGenerator.generate(data, elementSpecification));
   }
 
   @Test
   void shallMapEmptyIfValueIsNotDateRangeList() {
-    final var data = ElementData.builder()
-        .id(new ElementId(QUESTION_ID))
-        .value(
-            ElementValueUnitContactInformation.builder()
-                .build()
-        )
-        .build();
+    final var data =
+        ElementData.builder()
+            .id(new ElementId(QUESTION_ID))
+            .value(ElementValueUnitContactInformation.builder().build())
+            .build();
 
     final var response = xmlGenerator.generate(data, elementSpecification);
 

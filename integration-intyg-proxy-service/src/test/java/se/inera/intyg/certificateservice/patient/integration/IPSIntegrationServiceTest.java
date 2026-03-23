@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.patient.integration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,15 +49,13 @@ class IPSIntegrationServiceTest {
   private static final String ENDPOINT = "/api/v1/persons";
   private static final String TRACE_ID = "traceId";
   private static final String SESSION_ID = "sessionId";
-  private final RestClient.RequestBodyUriSpec requestBodyUriSpec = mock(
-      RestClient.RequestBodyUriSpec.class);
+  private final RestClient.RequestBodyUriSpec requestBodyUriSpec =
+      mock(RestClient.RequestBodyUriSpec.class);
   private final RestClient.RequestBodySpec requestBodySpec = mock(RestClient.RequestBodySpec.class);
   private final RestClient.ResponseSpec responseSpec = mock(RestClient.ResponseSpec.class);
 
-  @Mock
-  private RestClient restClient;
-  @InjectMocks
-  private IPSIntegrationService ipsIntegrationService;
+  @Mock private RestClient restClient;
+  @InjectMocks private IPSIntegrationService ipsIntegrationService;
 
   @BeforeEach
   void setUp() {
@@ -49,9 +65,7 @@ class IPSIntegrationServiceTest {
 
   @Test
   void shallReturnPersonResponse() {
-    final var request = PersonsRequestDTO.builder()
-        .personIds(List.of("personId"))
-        .build();
+    final var request = PersonsRequestDTO.builder().personIds(List.of("personId")).build();
 
     final var expectedResponse =
         PersonsResponseDTO.builder()
@@ -60,9 +74,7 @@ class IPSIntegrationServiceTest {
                     PersonResponseDTO.builder()
                         .status(StatusDTOType.FOUND)
                         .person(mock(PersonDTO.class))
-                        .build()
-                )
-            )
+                        .build()))
             .build();
 
     doReturn(requestBodyUriSpec).when(restClient).post();
@@ -81,9 +93,7 @@ class IPSIntegrationServiceTest {
 
   @Test
   void shallSetHeadersCorrectly() {
-    final var request = PersonsRequestDTO.builder()
-        .personIds(List.of("personId"))
-        .build();
+    final var request = PersonsRequestDTO.builder().personIds(List.of("personId")).build();
 
     doReturn(requestBodyUriSpec).when(restClient).post();
     doReturn(requestBodySpec).when(requestBodyUriSpec).uri(ENDPOINT);
@@ -102,9 +112,7 @@ class IPSIntegrationServiceTest {
 
   @Test
   void shallSetContentTypeAsApplicationJson() {
-    final var request = PersonsRequestDTO.builder()
-        .personIds(List.of("personId"))
-        .build();
+    final var request = PersonsRequestDTO.builder().personIds(List.of("personId")).build();
 
     doReturn(requestBodyUriSpec).when(restClient).post();
     doReturn(requestBodySpec).when(requestBodyUriSpec).uri(ENDPOINT);

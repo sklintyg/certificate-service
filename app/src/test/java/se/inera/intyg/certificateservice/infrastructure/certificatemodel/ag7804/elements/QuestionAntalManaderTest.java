@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ag7804.elements;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,12 +49,13 @@ class QuestionAntalManaderTest {
 
   @Test
   void shouldIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationInteger.builder()
-        .id(QUESTION_ANTAL_MANADER_FIELD_ID)
-        .name("Ange antal månader")
-        .min(1)
-        .max(99)
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationInteger.builder()
+            .id(QUESTION_ANTAL_MANADER_FIELD_ID)
+            .name("Ange antal månader")
+            .min(1)
+            .max(99)
+            .build();
 
     final var element = QuestionAntalManader.questionAntalManader();
 
@@ -46,31 +65,26 @@ class QuestionAntalManaderTest {
   @Test
   void shouldIncludeValidation() {
     final var element = QuestionAntalManader.questionAntalManader();
-    final var expectedValidations = List.of(
-        ElementValidationInteger.builder()
-            .mandatory(true)
-            .min(1)
-            .max(99)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationInteger.builder().mandatory(true).min(1).max(99).build());
     assertEquals(expectedValidations, element.validations());
   }
 
   @Test
   void shouldIncludeRules() {
-    final var expectedRules = List.of(
-        ElementRuleExpression.builder()
-            .type(ElementRuleType.MANDATORY)
-            .id(QUESTION_ANTAL_MANADER_ID)
-            .expression(new RuleExpression("$" + QUESTION_ANTAL_MANADER_ID.id()))
-            .build(),
-        ElementRuleExpression.builder()
-            .type(ElementRuleType.SHOW)
-            .id(new ElementId("39"))
-            .expression(new RuleExpression("$" + CodeSystemKvFkmu0006.ATER_X_ANTAL_MANADER.code()))
-            .build()
-
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleExpression.builder()
+                .type(ElementRuleType.MANDATORY)
+                .id(QUESTION_ANTAL_MANADER_ID)
+                .expression(new RuleExpression("$" + QUESTION_ANTAL_MANADER_ID.id()))
+                .build(),
+            ElementRuleExpression.builder()
+                .type(ElementRuleType.SHOW)
+                .id(new ElementId("39"))
+                .expression(
+                    new RuleExpression("$" + CodeSystemKvFkmu0006.ATER_X_ANTAL_MANADER.code()))
+                .build());
 
     final var element = QuestionAntalManader.questionAntalManader();
 
@@ -82,55 +96,46 @@ class QuestionAntalManaderTest {
 
     @Test
     void shouldReturnTrueIfCodeIsAterXAntalManader() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("39"))
-              .value(
-                  ElementValueCode.builder()
-                      .codeId(new FieldId(CodeSystemKvFkmu0006.ATER_X_ANTAL_MANADER.code()))
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("39"))
+                  .value(
+                      ElementValueCode.builder()
+                          .codeId(new FieldId(CodeSystemKvFkmu0006.ATER_X_ANTAL_MANADER.code()))
+                          .build())
+                  .build());
       final var element = QuestionAntalManader.questionAntalManader();
-      final var shouldValidate = element.elementSpecification(QUESTION_ANTAL_MANADER_ID)
-          .shouldValidate();
+      final var shouldValidate =
+          element.elementSpecification(QUESTION_ANTAL_MANADER_ID).shouldValidate();
       assertTrue(shouldValidate.test(elementData));
     }
 
     @Test
     void shouldReturnFalseIfElementMissing() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("7.1"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(true)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("7.1"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
       final var element = QuestionAntalManader.questionAntalManader();
-      final var shouldValidate = element.elementSpecification(QUESTION_ANTAL_MANADER_ID)
-          .shouldValidate();
+      final var shouldValidate =
+          element.elementSpecification(QUESTION_ANTAL_MANADER_ID).shouldValidate();
       assertFalse(shouldValidate.test(elementData));
     }
 
     @Test
     void shouldReturnFalseIfElementCodeIsNotAterXAntalManader() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("39"))
-              .value(
-                  ElementValueCode.builder()
-                      .codeId(new FieldId("TEST"))
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("39"))
+                  .value(ElementValueCode.builder().codeId(new FieldId("TEST")).build())
+                  .build());
       final var element = QuestionAntalManader.questionAntalManader();
-      final var shouldValidate = element.elementSpecification(QUESTION_ANTAL_MANADER_ID)
-          .shouldValidate();
+      final var shouldValidate =
+          element.elementSpecification(QUESTION_ANTAL_MANADER_ID).shouldValidate();
       assertFalse(shouldValidate.test(elementData));
     }
   }
@@ -140,5 +145,4 @@ class QuestionAntalManaderTest {
     final var element = QuestionAntalManader.questionAntalManader();
     assertFalse(element.includeWhenRenewing());
   }
-
 }

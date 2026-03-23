@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.v2;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -36,31 +54,19 @@ class QuestionStrokePaverkanV2Test {
 
   @Test
   void shouldIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationRadioMultipleCode.builder()
-        .id(new FieldId("11.10"))
-        .name(
-            "Om stroke förekommit, har det inträffat eller påverkat syncentrum (occipitalloben eller synnerven)?")
-        .elementLayout(ElementLayout.ROWS)
-        .list(
-            List.of(
-                new ElementConfigurationCode(
-                    new FieldId(JA.code()),
-                    JA.displayName(),
-                    JA
-                ),
-                new ElementConfigurationCode(
-                    new FieldId(NEJ.code()),
-                    NEJ.displayName(),
-                    NEJ
-                ),
-                new ElementConfigurationCode(
-                    new FieldId(VET_INTE.code()),
-                    VET_INTE.displayName(),
-                    VET_INTE
-                )
-            )
-        )
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationRadioMultipleCode.builder()
+            .id(new FieldId("11.10"))
+            .name(
+                "Om stroke förekommit, har det inträffat eller påverkat syncentrum (occipitalloben eller synnerven)?")
+            .elementLayout(ElementLayout.ROWS)
+            .list(
+                List.of(
+                    new ElementConfigurationCode(new FieldId(JA.code()), JA.displayName(), JA),
+                    new ElementConfigurationCode(new FieldId(NEJ.code()), NEJ.displayName(), NEJ),
+                    new ElementConfigurationCode(
+                        new FieldId(VET_INTE.code()), VET_INTE.displayName(), VET_INTE)))
+            .build();
 
     final var element = QuestionStrokePaverkanV2.questionStrokePaverkanV2();
 
@@ -69,22 +75,18 @@ class QuestionStrokePaverkanV2Test {
 
   @Test
   void shouldIncludeRules() {
-    final var expectedRules = List.of(
-        ElementRuleExpression.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.MANDATORY)
-            .expression(
-                new RuleExpression(
-                    "exists($ja) || exists($nej) || exists($vetinte)"
-                )
-            )
-            .build(),
-        ElementRuleExpression.builder()
-            .id(new ElementId("11.9"))
-            .type(ElementRuleType.SHOW)
-            .expression(new RuleExpression("$11.9"))
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleExpression.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.MANDATORY)
+                .expression(new RuleExpression("exists($ja) || exists($nej) || exists($vetinte)"))
+                .build(),
+            ElementRuleExpression.builder()
+                .id(new ElementId("11.9"))
+                .type(ElementRuleType.SHOW)
+                .expression(new RuleExpression("$11.9"))
+                .build());
 
     final var element = QuestionStrokePaverkanV2.questionStrokePaverkanV2();
 
@@ -93,11 +95,8 @@ class QuestionStrokePaverkanV2Test {
 
   @Test
   void shouldIncludeValidations() {
-    final var expectedValidations = List.of(
-        ElementValidationCode.builder()
-            .mandatory(true)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationCode.builder().mandatory(true).build());
 
     final var element = QuestionStrokePaverkanV2.questionStrokePaverkanV2();
 
@@ -116,16 +115,12 @@ class QuestionStrokePaverkanV2Test {
 
     @Test
     void shouldReturnTrueIfBooleanIsTrue() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("11.9"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(true)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("11.9"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
 
       final var element = QuestionStrokePaverkanV2.questionStrokePaverkanV2();
 
@@ -136,16 +131,12 @@ class QuestionStrokePaverkanV2Test {
 
     @Test
     void shouldReturnFalseIfElementMissing() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("7.1"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(true)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("7.1"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
 
       final var element = QuestionStrokePaverkanV2.questionStrokePaverkanV2();
 
@@ -156,16 +147,12 @@ class QuestionStrokePaverkanV2Test {
 
     @Test
     void shouldReturnFalseIfElementFalse() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("11.9"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(false)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("11.9"))
+                  .value(ElementValueBoolean.builder().value(false).build())
+                  .build());
 
       final var element = QuestionStrokePaverkanV2.questionStrokePaverkanV2();
 
@@ -175,4 +162,3 @@ class QuestionStrokePaverkanV2Test {
     }
   }
 }
-

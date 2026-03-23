@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service;
 
 import java.util.Optional;
@@ -28,47 +46,44 @@ public class UpdateCertificateService {
   private final ResourceLinkConverter resourceLinkConverter;
 
   @Transactional
-  public UpdateCertificateResponse update(UpdateCertificateRequest updateCertificateRequest,
-      String certificateId) {
+  public UpdateCertificateResponse update(
+      UpdateCertificateRequest updateCertificateRequest, String certificateId) {
     updateCertificateRequestValidator.validate(updateCertificateRequest, certificateId);
 
-    final var actionEvaluation = actionEvaluationFactory.create(
-        updateCertificateRequest.getPatient(),
-        updateCertificateRequest.getUser(),
-        updateCertificateRequest.getUnit(),
-        updateCertificateRequest.getCareUnit(),
-        updateCertificateRequest.getCareProvider()
-    );
+    final var actionEvaluation =
+        actionEvaluationFactory.create(
+            updateCertificateRequest.getPatient(),
+            updateCertificateRequest.getUser(),
+            updateCertificateRequest.getUnit(),
+            updateCertificateRequest.getCareUnit(),
+            updateCertificateRequest.getCareProvider());
 
-    final var elementData = elementCertificateConverter.convert(
-        updateCertificateRequest.getCertificate()
-    );
+    final var elementData =
+        elementCertificateConverter.convert(updateCertificateRequest.getCertificate());
 
-    final var updatedCertificate = updateCertificateDomainService.update(
-        new CertificateId(certificateId),
-        elementData,
-        actionEvaluation,
-        new Revision(updateCertificateRequest.getCertificate().getMetadata().getVersion()),
-        updateCertificateRequest.getExternalReference() != null
-            ? new ExternalReference(updateCertificateRequest.getExternalReference())
-            : null
-    );
+    final var updatedCertificate =
+        updateCertificateDomainService.update(
+            new CertificateId(certificateId),
+            elementData,
+            actionEvaluation,
+            new Revision(updateCertificateRequest.getCertificate().getMetadata().getVersion()),
+            updateCertificateRequest.getExternalReference() != null
+                ? new ExternalReference(updateCertificateRequest.getExternalReference())
+                : null);
 
     return UpdateCertificateResponse.builder()
-        .certificate(certificateConverter.convert(
+        .certificate(
+            certificateConverter.convert(
                 updatedCertificate,
                 updatedCertificate.actionsInclude(Optional.of(actionEvaluation)).stream()
-                    .map(certificateAction ->
-                        resourceLinkConverter.convert(
-                            certificateAction,
-                            Optional.of(updatedCertificate),
-                            actionEvaluation
-                        )
-                    )
+                    .map(
+                        certificateAction ->
+                            resourceLinkConverter.convert(
+                                certificateAction,
+                                Optional.of(updatedCertificate),
+                                actionEvaluation))
                     .toList(),
-                actionEvaluation
-            )
-        )
+                actionEvaluation))
         .build();
   }
 }

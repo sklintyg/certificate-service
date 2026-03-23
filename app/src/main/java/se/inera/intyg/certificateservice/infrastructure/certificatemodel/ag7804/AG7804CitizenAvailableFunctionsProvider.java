@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ag7804;
 
 import static se.inera.intyg.certificateservice.domain.certificatemodel.model.DefaultCitizenAvailableFunctionsProvider.AVAILABLE_FUNCTION_PRINT_NAME;
@@ -16,10 +34,10 @@ import se.inera.intyg.certificateservice.domain.certificatemodel.model.CitizenAv
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.CitizenAvailableFunctionsProvider;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementId;
 
-public class AG7804CitizenAvailableFunctionsProvider implements
-    CitizenAvailableFunctionsProvider {
+public class AG7804CitizenAvailableFunctionsProvider implements CitizenAvailableFunctionsProvider {
 
-  private static final String AVSTANGNING_SMITTSKYDD_INFO_TITLE = "Avstängning enligt smittskyddslagen";
+  private static final String AVSTANGNING_SMITTSKYDD_INFO_TITLE =
+      "Avstängning enligt smittskyddslagen";
   private static final String AVSTANGNING_SMITTSKYDD_INFO_NAME = "Presentera informationsruta";
   private static final String AVSTANGNING_SMITTSKYDD_INFO_BODY =
       "I intyg som gäller avstängning enligt smittskyddslagen kan"
@@ -28,7 +46,8 @@ public class AG7804CitizenAvailableFunctionsProvider implements
   private static final String AVAILABLE_FUNCTION_CUSTOMIZE_BODY =
       "När du skriver ut ett läkarintyg du ska lämna till din arbetsgivare kan du "
           + "välja om du vill att din diagnos ska visas eller döljas. Ingen annan information kan döljas. ";
-  private static final String AVAILABLE_FUNCTION_CUSTOMIZE_TITLE = "Vill du visa eller dölja diagnos?";
+  private static final String AVAILABLE_FUNCTION_CUSTOMIZE_TITLE =
+      "Vill du visa eller dölja diagnos?";
   private static final String AVAILABLE_FUNCTION_CUSTOMIZE_DESCRIPTION =
       "Information om diagnos kan vara viktig för din arbetsgivare."
           + " Det kan underlätta anpassning av din arbetssituation. Det kan också göra att du snabbare kommer tillbaka till arbetet.";
@@ -36,7 +55,6 @@ public class AG7804CitizenAvailableFunctionsProvider implements
 
   private static final String HIDE_DIAGNOSIS_TEXT = "Dölj diagnos";
   private static final String SHOW_DIAGNOSIS_TEXT = "Visa diagnos";
-
 
   @Override
   public List<CitizenAvailableFunction> of(Certificate certificate) {
@@ -54,8 +72,7 @@ public class AG7804CitizenAvailableFunctionsProvider implements
               .title(AVSTANGNING_SMITTSKYDD_INFO_TITLE)
               .name(AVSTANGNING_SMITTSKYDD_INFO_NAME)
               .body(AVSTANGNING_SMITTSKYDD_INFO_BODY)
-              .build()
-      );
+              .build());
     }
 
     if (isDiagnosisIncluded(certificate) && !isSmittbararpenning(certificate)) {
@@ -81,25 +98,21 @@ public class AG7804CitizenAvailableFunctionsProvider implements
                           .type(CitizenAvailableFunctionInformationType.OPTIONS)
                           .text(HIDE_DIAGNOSIS_TEXT)
                           .id(QUESTION_DIAGNOS_ID)
-                          .build()
-                  ))
-              .build()
-      );
+                          .build()))
+              .build());
     } else {
-      functions.add(CitizenAvailableFunction.builder()
-          .name(AVAILABLE_FUNCTION_PRINT_NAME)
-          .type(CitizenAvailableFunctionType.PRINT_CERTIFICATE)
-          .information(
-              List.of(
-                  CitizenAvailableFunctionInformation.builder()
-                      .type(CitizenAvailableFunctionInformationType.FILENAME)
-                      .text(certificate.certificateModel().fileName())
-                      .build()
-              )
-          )
-          .enabled(true)
-          .build()
-      );
+      functions.add(
+          CitizenAvailableFunction.builder()
+              .name(AVAILABLE_FUNCTION_PRINT_NAME)
+              .type(CitizenAvailableFunctionType.PRINT_CERTIFICATE)
+              .information(
+                  List.of(
+                      CitizenAvailableFunctionInformation.builder()
+                          .type(CitizenAvailableFunctionInformationType.FILENAME)
+                          .text(certificate.certificateModel().fileName())
+                          .build()))
+              .enabled(true)
+              .build());
     }
 
     return functions;
@@ -113,8 +126,7 @@ public class AG7804CitizenAvailableFunctionsProvider implements
     return getBooleanValue(certificate, QUESTION_FORMEDLA_DIAGNOS_ID);
   }
 
-  private static boolean getBooleanValue(Certificate certificate,
-      ElementId elementId) {
+  private static boolean getBooleanValue(Certificate certificate, ElementId elementId) {
     final var element = certificate.getElementDataById(elementId);
 
     if (element.isEmpty()) {

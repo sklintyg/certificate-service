@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.prefill;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -37,47 +55,40 @@ class PrefillCheckboxMultipleCodeConverterTest {
   private static final String D_2 = "D2";
   private static final FieldId CODE_2_ID = new FieldId(CODE_2);
   private static final FieldId CODE_ID = new FieldId(CODE_1);
-  private static final ElementSpecification SPECIFICATION = ElementSpecification.builder()
-      .id(ELEMENT_ID)
-      .configuration(
-          ElementConfigurationCheckboxMultipleCode.builder()
-              .id(FIELD_ID)
-              .list(
-                  List.of(
-                      new ElementConfigurationCode(
-                          CODE_ID, "Code 1", new Code(CODE_1, "S1", D_1)),
-                      new ElementConfigurationCode(
-                          CODE_2_ID, "Code 2", new Code(CODE_2, "S1", D_2))
-                  )
-              )
-              .build()
-      )
-      .build();
-  private static final ElementData EXPECTED_ELEMENT_DATA = ElementData.builder()
-      .id(ELEMENT_ID)
-      .value(
-          ElementValueCodeList.builder()
-              .id(FIELD_ID)
-              .list(
-                  List.of(
-                      ElementValueCode.builder()
-                          .codeId(CODE_ID)
-                          .code(CODE_1)
-                          .build(),
-                      ElementValueCode.builder()
-                          .codeId(CODE_2_ID)
-                          .code(CODE_2)
-                          .build()
-                  )
-              )
-              .build()
-      ).build();
+  private static final ElementSpecification SPECIFICATION =
+      ElementSpecification.builder()
+          .id(ELEMENT_ID)
+          .configuration(
+              ElementConfigurationCheckboxMultipleCode.builder()
+                  .id(FIELD_ID)
+                  .list(
+                      List.of(
+                          new ElementConfigurationCode(
+                              CODE_ID, "Code 1", new Code(CODE_1, "S1", D_1)),
+                          new ElementConfigurationCode(
+                              CODE_2_ID, "Code 2", new Code(CODE_2, "S1", D_2))))
+                  .build())
+          .build();
+  private static final ElementData EXPECTED_ELEMENT_DATA =
+      ElementData.builder()
+          .id(ELEMENT_ID)
+          .value(
+              ElementValueCodeList.builder()
+                  .id(FIELD_ID)
+                  .list(
+                      List.of(
+                          ElementValueCode.builder().codeId(CODE_ID).code(CODE_1).build(),
+                          ElementValueCode.builder().codeId(CODE_2_ID).code(CODE_2).build()))
+                  .build())
+          .build();
 
-  private final PrefillCheckboxMultipleCodeConverter prefillCheckboxMultipleCodeConverter = new PrefillCheckboxMultipleCodeConverter();
+  private final PrefillCheckboxMultipleCodeConverter prefillCheckboxMultipleCodeConverter =
+      new PrefillCheckboxMultipleCodeConverter();
 
   @Test
   void shouldReturnSupportsCheckboxMultipleCode() {
-    assertEquals(ElementConfigurationCheckboxMultipleCode.class,
+    assertEquals(
+        ElementConfigurationCheckboxMultipleCode.class,
         prefillCheckboxMultipleCodeConverter.supports());
   }
 
@@ -88,8 +99,8 @@ class PrefillCheckboxMultipleCodeConverterTest {
     void shouldReturnNullIfNoAnswerExists() {
       Forifyllnad prefill = new Forifyllnad();
 
-      PrefillAnswer result = prefillCheckboxMultipleCodeConverter.prefillAnswer(SPECIFICATION,
-          prefill);
+      PrefillAnswer result =
+          prefillCheckboxMultipleCodeConverter.prefillAnswer(SPECIFICATION, prefill);
 
       assertNull(result);
     }
@@ -100,9 +111,7 @@ class PrefillCheckboxMultipleCodeConverterTest {
 
       final var result = prefillCheckboxMultipleCodeConverter.prefillAnswer(SPECIFICATION, prefill);
 
-      final var expected = PrefillAnswer.builder()
-          .elementData(EXPECTED_ELEMENT_DATA)
-          .build();
+      final var expected = PrefillAnswer.builder().elementData(EXPECTED_ELEMENT_DATA).build();
 
       assertEquals(expected, result);
     }
@@ -110,17 +119,15 @@ class PrefillCheckboxMultipleCodeConverterTest {
     @Test
     void shouldReturnErrorIfWrongConfigurationType() {
       final var prefill = new Forifyllnad();
-      final var wrongSpec = ElementSpecification.builder()
-          .id(ELEMENT_ID)
-          .configuration(ElementConfigurationCategory.builder().build())
-          .build();
+      final var wrongSpec =
+          ElementSpecification.builder()
+              .id(ELEMENT_ID)
+              .configuration(ElementConfigurationCategory.builder().build())
+              .build();
 
       final var result = prefillCheckboxMultipleCodeConverter.prefillAnswer(wrongSpec, prefill);
 
-      assertEquals(
-          PrefillErrorType.TECHNICAL_ERROR,
-          result.getErrors().getFirst().type()
-      );
+      assertEquals(PrefillErrorType.TECHNICAL_ERROR, result.getErrors().getFirst().type());
     }
 
     @Test
@@ -138,13 +145,9 @@ class PrefillCheckboxMultipleCodeConverterTest {
       answer.getDelsvar().add(subAnswer);
       prefill.getSvar().add(answer);
 
-      final var result = prefillCheckboxMultipleCodeConverter.prefillAnswer(
-          SPECIFICATION, prefill);
+      final var result = prefillCheckboxMultipleCodeConverter.prefillAnswer(SPECIFICATION, prefill);
 
-      assertEquals(
-          PrefillErrorType.INVALID_FORMAT,
-          result.getErrors().getFirst().type()
-      );
+      assertEquals(PrefillErrorType.INVALID_FORMAT, result.getErrors().getFirst().type());
     }
 
     @Test
@@ -164,14 +167,13 @@ class PrefillCheckboxMultipleCodeConverterTest {
       answer.getDelsvar().add(subAnswer);
       prefill.getSvar().add(answer);
 
-      final var result = prefillCheckboxMultipleCodeConverter.prefillAnswer(
-          SPECIFICATION, prefill);
+      final var result = prefillCheckboxMultipleCodeConverter.prefillAnswer(SPECIFICATION, prefill);
 
       assertAll(
           () -> assertEquals(EXPECTED_ELEMENT_DATA, result.getElementData()),
           () -> assertEquals(1, result.getErrors().size()),
-          () -> assertEquals(PrefillErrorType.INVALID_FORMAT, result.getErrors().getFirst().type())
-      );
+          () ->
+              assertEquals(PrefillErrorType.INVALID_FORMAT, result.getErrors().getFirst().type()));
     }
 
     @Test
@@ -193,7 +195,8 @@ class PrefillCheckboxMultipleCodeConverterTest {
       prefill.getSvar().add(svar);
 
       final var result = prefillCheckboxMultipleCodeConverter.prefillAnswer(SPECIFICATION, prefill);
-      assertEquals(CODE_2,
+      assertEquals(
+          CODE_2,
           ((ElementValueCodeList) result.getElementData().value()).list().getFirst().code());
     }
 
@@ -204,54 +207,40 @@ class PrefillCheckboxMultipleCodeConverterTest {
       svar1.setId(SPECIFICATION.id().id());
       prefill.getSvar().add(svar1);
 
-      final var result = prefillCheckboxMultipleCodeConverter.prefillAnswer(SPECIFICATION,
-          prefill);
+      final var result = prefillCheckboxMultipleCodeConverter.prefillAnswer(SPECIFICATION, prefill);
 
-      assertEquals(
-          PrefillErrorType.WRONG_NUMBER_OF_ANSWERS,
-          result.getErrors().getFirst().type()
-      );
+      assertEquals(PrefillErrorType.WRONG_NUMBER_OF_ANSWERS, result.getErrors().getFirst().type());
     }
 
     @Test
     void shouldPrefillFromConfigurationIfNotIncludedInXml() {
-      final var expectedElementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(
-              ElementValueCodeList.builder()
-                  .id(FIELD_ID)
-                  .list(
-                      List.of(
-                          ElementValueCode.builder()
-                              .codeId(CODE_ID)
-                              .code(CODE_1)
-                              .build(),
-                          ElementValueCode.builder()
-                              .codeId(CODE_2_ID)
-                              .code(CODE_2)
-                              .build()
-                      )
-                  )
-                  .build()
-          )
-          .build();
-      final var specification = ElementSpecification.builder()
-          .includeInXml(false)
-          .id(ELEMENT_ID)
-          .configuration(
-              ElementConfigurationCheckboxMultipleCode.builder()
-                  .id(FIELD_ID)
-                  .list(
-                      List.of(
-                          new ElementConfigurationCode(
-                              CODE_ID, "Code 1", new Code(CODE_1, "S1", D_1)),
-                          new ElementConfigurationCode(
-                              CODE_2_ID, "Code 2", new Code(CODE_2, "S1", D_2))
-                      )
-                  )
-                  .build()
-          )
-          .build();
+      final var expectedElementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueCodeList.builder()
+                      .id(FIELD_ID)
+                      .list(
+                          List.of(
+                              ElementValueCode.builder().codeId(CODE_ID).code(CODE_1).build(),
+                              ElementValueCode.builder().codeId(CODE_2_ID).code(CODE_2).build()))
+                      .build())
+              .build();
+      final var specification =
+          ElementSpecification.builder()
+              .includeInXml(false)
+              .id(ELEMENT_ID)
+              .configuration(
+                  ElementConfigurationCheckboxMultipleCode.builder()
+                      .id(FIELD_ID)
+                      .list(
+                          List.of(
+                              new ElementConfigurationCode(
+                                  CODE_ID, "Code 1", new Code(CODE_1, "S1", D_1)),
+                              new ElementConfigurationCode(
+                                  CODE_2_ID, "Code 2", new Code(CODE_2, "S1", D_2))))
+                      .build())
+              .build();
 
       final var prefill = getPrefill();
 
@@ -262,25 +251,19 @@ class PrefillCheckboxMultipleCodeConverterTest {
     @Test
     void shouldUseElementMappingIdWhenMappingExists() {
       final var mappedElementId = new ElementId("9");
-      final var specification = ElementSpecification.builder()
-          .id(ELEMENT_ID)
-          .mapping(
-              new ElementMapping(
-                  mappedElementId,
-                  null
-              ))
-          .configuration(
-              ElementConfigurationCheckboxMultipleCode.builder()
-                  .id(FIELD_ID)
-                  .list(
-                      List.of(
-                          new ElementConfigurationCode(
-                              CODE_ID, "Code 1", new Code(CODE_1, "S1", D_1))
-                      )
-                  )
-                  .build()
-          )
-          .build();
+      final var specification =
+          ElementSpecification.builder()
+              .id(ELEMENT_ID)
+              .mapping(new ElementMapping(mappedElementId, null))
+              .configuration(
+                  ElementConfigurationCheckboxMultipleCode.builder()
+                      .id(FIELD_ID)
+                      .list(
+                          List.of(
+                              new ElementConfigurationCode(
+                                  CODE_ID, "Code 1", new Code(CODE_1, "S1", D_1))))
+                      .build())
+              .build();
 
       final var prefill = new Forifyllnad();
       final var svar = new Svar();
@@ -295,41 +278,34 @@ class PrefillCheckboxMultipleCodeConverterTest {
 
       final var result = prefillCheckboxMultipleCodeConverter.prefillAnswer(specification, prefill);
 
-      final var expectedElementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(
-              ElementValueCodeList.builder()
-                  .id(FIELD_ID)
-                  .list(
-                      List.of(
-                          ElementValueCode.builder()
-                              .codeId(CODE_ID)
-                              .code(CODE_1)
-                              .build()
-                      )
-                  )
-                  .build()
-          ).build();
+      final var expectedElementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueCodeList.builder()
+                      .id(FIELD_ID)
+                      .list(
+                          List.of(ElementValueCode.builder().codeId(CODE_ID).code(CODE_1).build()))
+                      .build())
+              .build();
 
       assertEquals(expectedElementData, result.getElementData());
     }
 
     @Test
     void shouldNotMatchWhenMappingDoesNotExistAndSvarIdDoesNotMatchElementId() {
-      final var specification = ElementSpecification.builder()
-          .id(ELEMENT_ID)
-          .configuration(
-              ElementConfigurationCheckboxMultipleCode.builder()
-                  .id(FIELD_ID)
-                  .list(
-                      List.of(
-                          new ElementConfigurationCode(
-                              CODE_ID, "Code 1", new Code(CODE_1, "S1", D_1))
-                      )
-                  )
-                  .build()
-          )
-          .build();
+      final var specification =
+          ElementSpecification.builder()
+              .id(ELEMENT_ID)
+              .configuration(
+                  ElementConfigurationCheckboxMultipleCode.builder()
+                      .id(FIELD_ID)
+                      .list(
+                          List.of(
+                              new ElementConfigurationCode(
+                                  CODE_ID, "Code 1", new Code(CODE_1, "S1", D_1))))
+                      .build())
+              .build();
 
       final var prefill = new Forifyllnad();
       final var svar = new Svar();

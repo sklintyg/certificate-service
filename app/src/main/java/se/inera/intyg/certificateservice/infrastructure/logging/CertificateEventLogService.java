@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.logging;
 
 import static se.inera.intyg.certificateservice.logging.MdcLogConstants.EVENT_ACTION;
@@ -40,35 +58,37 @@ public class CertificateEventLogService implements CertificateEventSubscriber {
   @Override
   public void event(CertificateEvent event) {
     final var actionEvaluation = Optional.ofNullable(event.actionEvaluation());
-    try (MdcCloseableMap mdc = MdcCloseableMap.builder()
-        .put(EVENT_ACTION, eventAction(event))
-        .put(EVENT_CATEGORY, eventCategory())
-        .put(EVENT_TYPE, eventType(event))
-        .put(EVENT_START, eventStart(event))
-        .put(EVENT_END, eventEnd(event))
-        .put(EVENT_DURATION, eventDuration(event))
-        .put(EVENT_CERTIFICATE_ID, eventCertificateId(event))
-        .put(EVENT_CERTIFICATE_TYPE, eventCertificateType(event))
-        .put(EVENT_CERTIFICATE_VERSION, eventCertificateVersion(event))
-        .put(EVENT_CERTIFICATE_UNIT_ID, eventCertificateUnitId(event))
-        .put(EVENT_CERTIFICATE_CARE_UNIT_ID, eventCertificateCareUnitId(event))
-        .put(EVENT_CERTIFICATE_CARE_PROVIDER_ID, eventCertificateCareProviderId(event))
-        .put(EVENT_CERTIFICATE_PATIENT_ID, eventCertificatePatientId(event))
-        .put(USER_ID,
-            actionEvaluation.isPresent() ? userId(event) : eventCertificatePatientId(event)
-        )
-        .put(USER_ROLE, actionEvaluation.isPresent() ? userRoles(event) : "-")
-        .put(ORGANIZATION_ID, actionEvaluation.isPresent() ? organizationId(event) : "-")
-        .put(ORGANIZATION_CARE_UNIT_ID,
-            actionEvaluation.isPresent() ? organizationCareUnitId(event) : "-"
-        )
-        .put(ORGANIZATION_CARE_PROVIDER_ID,
-            actionEvaluation.isPresent() ? organizationCareProviderId(event) : "-"
-        )
-        .build()) {
-      log.info("CertificateEvent '{}' occurred on certificate '{}'.",
-          event.type().name(), event.certificate().id().id()
-      );
+    try (MdcCloseableMap mdc =
+        MdcCloseableMap.builder()
+            .put(EVENT_ACTION, eventAction(event))
+            .put(EVENT_CATEGORY, eventCategory())
+            .put(EVENT_TYPE, eventType(event))
+            .put(EVENT_START, eventStart(event))
+            .put(EVENT_END, eventEnd(event))
+            .put(EVENT_DURATION, eventDuration(event))
+            .put(EVENT_CERTIFICATE_ID, eventCertificateId(event))
+            .put(EVENT_CERTIFICATE_TYPE, eventCertificateType(event))
+            .put(EVENT_CERTIFICATE_VERSION, eventCertificateVersion(event))
+            .put(EVENT_CERTIFICATE_UNIT_ID, eventCertificateUnitId(event))
+            .put(EVENT_CERTIFICATE_CARE_UNIT_ID, eventCertificateCareUnitId(event))
+            .put(EVENT_CERTIFICATE_CARE_PROVIDER_ID, eventCertificateCareProviderId(event))
+            .put(EVENT_CERTIFICATE_PATIENT_ID, eventCertificatePatientId(event))
+            .put(
+                USER_ID,
+                actionEvaluation.isPresent() ? userId(event) : eventCertificatePatientId(event))
+            .put(USER_ROLE, actionEvaluation.isPresent() ? userRoles(event) : "-")
+            .put(ORGANIZATION_ID, actionEvaluation.isPresent() ? organizationId(event) : "-")
+            .put(
+                ORGANIZATION_CARE_UNIT_ID,
+                actionEvaluation.isPresent() ? organizationCareUnitId(event) : "-")
+            .put(
+                ORGANIZATION_CARE_PROVIDER_ID,
+                actionEvaluation.isPresent() ? organizationCareProviderId(event) : "-")
+            .build()) {
+      log.info(
+          "CertificateEvent '{}' occurred on certificate '{}'.",
+          event.type().name(),
+          event.certificate().id().id());
     }
   }
 
@@ -81,7 +101,7 @@ public class CertificateEventLogService implements CertificateEventSubscriber {
   }
 
   private static String eventType(CertificateEvent event) {
-    return Arrays.toString(new String[]{event.type().actionType()});
+    return Arrays.toString(new String[] {event.type().actionType()});
   }
 
   private static String eventStart(CertificateEvent event) {
@@ -129,7 +149,7 @@ public class CertificateEventLogService implements CertificateEventSubscriber {
   }
 
   private static String userRoles(CertificateEvent event) {
-    return Arrays.toString(new String[]{event.actionEvaluation().user().role().name()});
+    return Arrays.toString(new String[] {event.actionEvaluation().user().role().name()});
   }
 
   private static String organizationId(CertificateEvent event) {

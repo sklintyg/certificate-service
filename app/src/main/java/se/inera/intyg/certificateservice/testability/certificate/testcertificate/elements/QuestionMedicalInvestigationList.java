@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.testability.certificate.testcertificate.elements;
 
 import java.time.Period;
@@ -15,13 +33,12 @@ public class QuestionMedicalInvestigationList {
   public static final ElementId QUESTION_MEDICAL_INVESTIGATION_LIST_ID = new ElementId("9");
   private static final FieldId QUESTION_MEDICAL_INVESTIGATION_LIST_FIELD_ID = new FieldId("9.1");
 
-  public static final FieldId MEDICAL_INVESTIGATION_FIELD_ID_1 = new FieldId(
-      "medicalInvestigation1");
-  public static final FieldId MEDICAL_INVESTIGATION_FIELD_ID_2 = new FieldId(
-      "medicalInvestigation2");
-  public static final FieldId MEDICAL_INVESTIGATION_FIELD_ID_3 = new FieldId(
-      "medicalInvestigation3");
-
+  public static final FieldId MEDICAL_INVESTIGATION_FIELD_ID_1 =
+      new FieldId("medicalInvestigation1");
+  public static final FieldId MEDICAL_INVESTIGATION_FIELD_ID_2 =
+      new FieldId("medicalInvestigation2");
+  public static final FieldId MEDICAL_INVESTIGATION_FIELD_ID_3 =
+      new FieldId("medicalInvestigation3");
 
   public static final int LIMIT = 53;
 
@@ -31,11 +48,11 @@ public class QuestionMedicalInvestigationList {
 
   public static ElementSpecification questionMedicalInvestigationList(
       ElementSpecification... children) {
-    final var medicalInvestigations = List.of(
-        getMedicalInvestigationConfig(MEDICAL_INVESTIGATION_FIELD_ID_1),
-        getMedicalInvestigationConfig(MEDICAL_INVESTIGATION_FIELD_ID_2),
-        getMedicalInvestigationConfig(MEDICAL_INVESTIGATION_FIELD_ID_3)
-    );
+    final var medicalInvestigations =
+        List.of(
+            getMedicalInvestigationConfig(MEDICAL_INVESTIGATION_FIELD_ID_1),
+            getMedicalInvestigationConfig(MEDICAL_INVESTIGATION_FIELD_ID_2),
+            getMedicalInvestigationConfig(MEDICAL_INVESTIGATION_FIELD_ID_3));
 
     return ElementSpecification.builder()
         .id(QUESTION_MEDICAL_INVESTIGATION_LIST_ID)
@@ -48,17 +65,14 @@ public class QuestionMedicalInvestigationList {
                 .typeText("Typ")
                 .informationSourceText("Från")
                 .list(medicalInvestigations)
-                .build()
-        )
+                .build())
         .validations(
             List.of(
                 ElementValidationMedicalInvestigationList.builder()
                     .mandatory(false)
                     .max(Period.ofDays(0))
                     .limit(LIMIT)
-                    .build()
-            )
-        )
+                    .build()))
         .children(List.of(children))
         .build();
   }
@@ -77,9 +91,7 @@ public class QuestionMedicalInvestigationList {
                 new Code("KOD_4", "TEST", "TESTKOD 4"),
                 new Code("KOD_5", "TEST", "TESTKOD 5"),
                 new Code("KOD_6", "TEST", "TESTKOD 6"),
-                new Code("KOD_7", "TEST", "TESTKOD 7")
-            )
-        )
+                new Code("KOD_7", "TEST", "TESTKOD 7")))
         .min(null)
         .max(Period.ofDays(0))
         .build();

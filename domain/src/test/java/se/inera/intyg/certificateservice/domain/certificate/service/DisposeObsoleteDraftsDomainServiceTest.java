@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.certificate.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,10 +44,8 @@ import se.inera.intyg.certificateservice.domain.common.model.CertificatesRequest
 @ExtendWith(MockitoExtension.class)
 class DisposeObsoleteDraftsDomainServiceTest {
 
-  @Mock
-  private CertificateRepository certificateRepository;
-  @InjectMocks
-  private DisposeObsoleteDraftsDomainService service;
+  @Mock private CertificateRepository certificateRepository;
+  @InjectMocks private DisposeObsoleteDraftsDomainService service;
 
   @Nested
   class ListTests {
@@ -39,12 +55,14 @@ class DisposeObsoleteDraftsDomainServiceTest {
     @Test
     void shouldFindUnsignedDraftsBeforeCutoffDate() {
       final var certificateId = new CertificateId("cert-123");
-      final var expectedRequest = CertificatesRequest.builder()
-          .createdTo(cutoffDate)
-          .statuses(List.of(Status.DRAFT, Status.LOCKED_DRAFT))
-          .build();
+      final var expectedRequest =
+          CertificatesRequest.builder()
+              .createdTo(cutoffDate)
+              .statuses(List.of(Status.DRAFT, Status.LOCKED_DRAFT))
+              .build();
 
-      doReturn(List.of(certificateId)).when(certificateRepository)
+      doReturn(List.of(certificateId))
+          .when(certificateRepository)
           .findIdsByCreatedBeforeAndStatusIn(expectedRequest);
 
       final var result = service.list(cutoffDate);
@@ -55,12 +73,14 @@ class DisposeObsoleteDraftsDomainServiceTest {
 
     @Test
     void shouldReturnEmptyListWhenNoDraftsFound() {
-      final var expectedRequest = CertificatesRequest.builder()
-          .createdTo(cutoffDate)
-          .statuses(List.of(Status.DRAFT, Status.LOCKED_DRAFT))
-          .build();
+      final var expectedRequest =
+          CertificatesRequest.builder()
+              .createdTo(cutoffDate)
+              .statuses(List.of(Status.DRAFT, Status.LOCKED_DRAFT))
+              .build();
 
-      doReturn(Collections.emptyList()).when(certificateRepository)
+      doReturn(Collections.emptyList())
+          .when(certificateRepository)
           .findIdsByCreatedBeforeAndStatusIn(expectedRequest);
 
       final var result = service.list(cutoffDate);
@@ -106,10 +126,11 @@ class DisposeObsoleteDraftsDomainServiceTest {
 
       doReturn(certificate).when(certificateRepository).getById(CERT_ID_1);
 
-      final var exception = assertThrows(IllegalStateException.class,
-          () -> service.delete(CERT_ID_1));
+      final var exception =
+          assertThrows(IllegalStateException.class, () -> service.delete(CERT_ID_1));
 
-      assertEquals("Cannot delete certificate with id " + CERT_ID_1.id() + " wrong status SIGNED",
+      assertEquals(
+          "Cannot delete certificate with id " + CERT_ID_1.id() + " wrong status SIGNED",
           exception.getMessage());
     }
 
@@ -170,4 +191,3 @@ class DisposeObsoleteDraftsDomainServiceTest {
     }
   }
 }
-

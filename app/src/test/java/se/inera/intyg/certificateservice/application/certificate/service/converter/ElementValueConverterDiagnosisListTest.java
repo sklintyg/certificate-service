@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service.converter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -27,11 +45,11 @@ class ElementValueConverterDiagnosisListTest {
     elementValueConverterDiagnosisList = new ElementValueConverterDiagnosisList();
   }
 
-
   @Test
   void shallThrowIfCertificateDataValueTypeIsNotDiagnosisList() {
     final var certificateDataValueCode = CertificateDataValueCode.builder().build();
-    assertThrows(IllegalStateException.class,
+    assertThrows(
+        IllegalStateException.class,
         () -> elementValueConverterDiagnosisList.convert(certificateDataValueCode));
   }
 
@@ -42,28 +60,29 @@ class ElementValueConverterDiagnosisListTest {
 
   @Test
   void shallConvertToElementValueDiagnosis() {
-    final var expectedValue = ElementValueDiagnosis.builder()
-        .id(new FieldId(EXPECTED_ID))
-        .code(EXPECTED_CODE)
-        .description(EXPECTED_DESCRIPTION)
-        .terminology(EXPECTED_TERMINOLOGY)
-        .build();
+    final var expectedValue =
+        ElementValueDiagnosis.builder()
+            .id(new FieldId(EXPECTED_ID))
+            .code(EXPECTED_CODE)
+            .description(EXPECTED_DESCRIPTION)
+            .terminology(EXPECTED_TERMINOLOGY)
+            .build();
 
-    final var certificateDataValueDiagnosisList = CertificateDataValueDiagnosisList.builder()
-        .list(
-            List.of(
-                CertificateDataValueDiagnosis.builder()
-                    .id(EXPECTED_ID)
-                    .code(EXPECTED_CODE)
-                    .description(EXPECTED_DESCRIPTION)
-                    .terminology(EXPECTED_TERMINOLOGY)
-                    .build()
-            )
-        )
-        .build();
+    final var certificateDataValueDiagnosisList =
+        CertificateDataValueDiagnosisList.builder()
+            .list(
+                List.of(
+                    CertificateDataValueDiagnosis.builder()
+                        .id(EXPECTED_ID)
+                        .code(EXPECTED_CODE)
+                        .description(EXPECTED_DESCRIPTION)
+                        .terminology(EXPECTED_TERMINOLOGY)
+                        .build()))
+            .build();
 
-    final var actualValue = (ElementValueDiagnosisList) elementValueConverterDiagnosisList.convert(
-        certificateDataValueDiagnosisList);
+    final var actualValue =
+        (ElementValueDiagnosisList)
+            elementValueConverterDiagnosisList.convert(certificateDataValueDiagnosisList);
     assertEquals(expectedValue, actualValue.diagnoses().get(0));
   }
 
@@ -82,30 +101,29 @@ class ElementValueConverterDiagnosisListTest {
                 .code(EXPECTED_CODE)
                 .description(EXPECTED_DESCRIPTION)
                 .terminology(EXPECTED_TERMINOLOGY)
-                .build()
-        );
+                .build());
 
-    final var certificateDataValueDiagnosisList = CertificateDataValueDiagnosisList.builder()
-        .list(
-            List.of(
-                CertificateDataValueDiagnosis.builder()
-                    .id(EXPECTED_ID)
-                    .code(EXPECTED_CODE)
-                    .description(EXPECTED_DESCRIPTION)
-                    .terminology(EXPECTED_TERMINOLOGY)
-                    .build(),
-                CertificateDataValueDiagnosis.builder()
-                    .id(EXPECTED_ID)
-                    .code(EXPECTED_CODE)
-                    .description(EXPECTED_DESCRIPTION)
-                    .terminology(EXPECTED_TERMINOLOGY)
-                    .build()
-            )
-        )
-        .build();
+    final var certificateDataValueDiagnosisList =
+        CertificateDataValueDiagnosisList.builder()
+            .list(
+                List.of(
+                    CertificateDataValueDiagnosis.builder()
+                        .id(EXPECTED_ID)
+                        .code(EXPECTED_CODE)
+                        .description(EXPECTED_DESCRIPTION)
+                        .terminology(EXPECTED_TERMINOLOGY)
+                        .build(),
+                    CertificateDataValueDiagnosis.builder()
+                        .id(EXPECTED_ID)
+                        .code(EXPECTED_CODE)
+                        .description(EXPECTED_DESCRIPTION)
+                        .terminology(EXPECTED_TERMINOLOGY)
+                        .build()))
+            .build();
 
-    final var actualValue = (ElementValueDiagnosisList) elementValueConverterDiagnosisList.convert(
-        certificateDataValueDiagnosisList);
+    final var actualValue =
+        (ElementValueDiagnosisList)
+            elementValueConverterDiagnosisList.convert(certificateDataValueDiagnosisList);
     assertEquals(expectedValue, actualValue.diagnoses());
   }
 }

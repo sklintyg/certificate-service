@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -37,80 +55,77 @@ import se.inera.intyg.certificateservice.domain.common.model.ExternalReference;
 @ExtendWith(MockitoExtension.class)
 class RenewCertificateServiceTest {
 
-  @Mock
-  private RenewCertificateRequestValidator renewCertificateRequestValidator;
-  @Mock
-  private ActionEvaluationFactory actionEvaluationFactory;
-  @Mock
-  private RenewCertificateDomainService renewCertificateDomainService;
-  @Mock
-  private CertificateConverter certificateConverter;
-  @Mock
-  private ResourceLinkConverter resourceLinkConverter;
-  @InjectMocks
-  private RenewCertificateService renewCertificateService;
+  @Mock private RenewCertificateRequestValidator renewCertificateRequestValidator;
+  @Mock private ActionEvaluationFactory actionEvaluationFactory;
+  @Mock private RenewCertificateDomainService renewCertificateDomainService;
+  @Mock private CertificateConverter certificateConverter;
+  @Mock private ResourceLinkConverter resourceLinkConverter;
+  @InjectMocks private RenewCertificateService renewCertificateService;
 
   private static final String CERTIFICATE_ID = "certificateId";
-  private static final RenewCertificateRequest RENEW_CERTIFICATE_REQUEST = RenewCertificateRequest.builder()
-      .user(AJLA_DOCTOR_DTO)
-      .careProvider(ALFA_REGIONEN_DTO)
-      .careUnit(ALFA_MEDICINCENTRUM_DTO)
-      .unit(ALFA_ALLERGIMOTTAGNINGEN_DTO)
-      .patient(ATHENA_REACT_ANDERSSON_DTO)
-      .externalReference(EXTERNAL_REF)
-      .build();
+  private static final RenewCertificateRequest RENEW_CERTIFICATE_REQUEST =
+      RenewCertificateRequest.builder()
+          .user(AJLA_DOCTOR_DTO)
+          .careProvider(ALFA_REGIONEN_DTO)
+          .careUnit(ALFA_MEDICINCENTRUM_DTO)
+          .unit(ALFA_ALLERGIMOTTAGNINGEN_DTO)
+          .patient(ATHENA_REACT_ANDERSSON_DTO)
+          .externalReference(EXTERNAL_REF)
+          .build();
 
   @Test
   void shallThrowIfRequestIsInvalid() {
     final var request = RenewCertificateRequest.builder().build();
 
-    doThrow(IllegalArgumentException.class).when(renewCertificateRequestValidator)
+    doThrow(IllegalArgumentException.class)
+        .when(renewCertificateRequestValidator)
         .validate(request, CERTIFICATE_ID);
 
-    assertThrows(IllegalArgumentException.class,
-        () -> renewCertificateService.renew(request, CERTIFICATE_ID)
-    );
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> renewCertificateService.renew(request, CERTIFICATE_ID));
   }
 
   @Test
   void shallReturnResponseWithNewCertificate() {
     final var resourceLinkDTO = ResourceLinkDTO.builder().build();
-    final var expectedResponse = RenewCertificateResponse.builder()
-        .certificate(
-            CertificateDTO.builder()
-                .links(List.of(resourceLinkDTO))
-                .build()
-        )
-        .build();
+    final var expectedResponse =
+        RenewCertificateResponse.builder()
+            .certificate(CertificateDTO.builder().links(List.of(resourceLinkDTO)).build())
+            .build();
 
     final var actionEvaluation = ActionEvaluation.builder().build();
-    doReturn(actionEvaluation).when(actionEvaluationFactory).create(
-        RENEW_CERTIFICATE_REQUEST.getPatient(),
-        RENEW_CERTIFICATE_REQUEST.getUser(),
-        RENEW_CERTIFICATE_REQUEST.getUnit(),
-        RENEW_CERTIFICATE_REQUEST.getCareUnit(),
-        RENEW_CERTIFICATE_REQUEST.getCareProvider()
-    );
+    doReturn(actionEvaluation)
+        .when(actionEvaluationFactory)
+        .create(
+            RENEW_CERTIFICATE_REQUEST.getPatient(),
+            RENEW_CERTIFICATE_REQUEST.getUser(),
+            RENEW_CERTIFICATE_REQUEST.getUnit(),
+            RENEW_CERTIFICATE_REQUEST.getCareUnit(),
+            RENEW_CERTIFICATE_REQUEST.getCareProvider());
 
     final var certificate = mock(MedicalCertificate.class);
-    doReturn(certificate).when(renewCertificateDomainService).renew(
-        new CertificateId(CERTIFICATE_ID),
-        actionEvaluation,
-        new ExternalReference(EXTERNAL_REF)
-    );
+    doReturn(certificate)
+        .when(renewCertificateDomainService)
+        .renew(
+            new CertificateId(CERTIFICATE_ID),
+            actionEvaluation,
+            new ExternalReference(EXTERNAL_REF));
 
     final var certificateAction = mock(CertificateAction.class);
     final List<CertificateAction> certificateActions = List.of(certificateAction);
     doReturn(certificateActions).when(certificate).actionsInclude(Optional.of(actionEvaluation));
 
-    doReturn(resourceLinkDTO).when(resourceLinkConverter).convert(certificateAction,
-        Optional.of(certificate), actionEvaluation);
+    doReturn(resourceLinkDTO)
+        .when(resourceLinkConverter)
+        .convert(certificateAction, Optional.of(certificate), actionEvaluation);
 
-    doReturn(expectedResponse.getCertificate()).when(certificateConverter)
+    doReturn(expectedResponse.getCertificate())
+        .when(certificateConverter)
         .convert(certificate, List.of(resourceLinkDTO), actionEvaluation);
 
-    final var actualResponse = renewCertificateService.renew(RENEW_CERTIFICATE_REQUEST,
-        CERTIFICATE_ID);
+    final var actualResponse =
+        renewCertificateService.renew(RENEW_CERTIFICATE_REQUEST, CERTIFICATE_ID);
     assertEquals(expectedResponse, actualResponse);
   }
 }

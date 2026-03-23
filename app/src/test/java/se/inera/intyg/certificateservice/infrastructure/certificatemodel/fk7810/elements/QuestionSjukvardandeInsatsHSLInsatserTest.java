@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7810.elements;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,10 +56,11 @@ class QuestionSjukvardandeInsatsHSLInsatserTest {
 
   @Test
   void shallIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationTextArea.builder()
-        .id(new FieldId("70.2"))
-        .name("Ange vilka insatser och i vilken omfattning")
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationTextArea.builder()
+            .id(new FieldId("70.2"))
+            .name("Ange vilka insatser och i vilken omfattning")
+            .build();
 
     final var element = questionSjukvardandeInsatsHSLInsatser();
 
@@ -50,23 +69,23 @@ class QuestionSjukvardandeInsatsHSLInsatserTest {
 
   @Test
   void shallIncludeRules() {
-    final var expectedRules = List.of(
-        ElementRuleExpression.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.MANDATORY)
-            .expression(new RuleExpression("$70.2"))
-            .build(),
-        ElementRuleLimit.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.TEXT_LIMIT)
-            .limit(new RuleLimit((short) 4000))
-            .build(),
-        ElementRuleExpression.builder()
-            .id(new ElementId("70"))
-            .type(ElementRuleType.SHOW)
-            .expression(new RuleExpression("$70.1"))
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleExpression.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.MANDATORY)
+                .expression(new RuleExpression("$70.2"))
+                .build(),
+            ElementRuleLimit.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.TEXT_LIMIT)
+                .limit(new RuleLimit((short) 4000))
+                .build(),
+            ElementRuleExpression.builder()
+                .id(new ElementId("70"))
+                .type(ElementRuleType.SHOW)
+                .expression(new RuleExpression("$70.1"))
+                .build());
 
     final var element = questionSjukvardandeInsatsHSLInsatser();
 
@@ -75,12 +94,8 @@ class QuestionSjukvardandeInsatsHSLInsatserTest {
 
   @Test
   void shallIncludeValidations() {
-    final var expectedValidations = List.of(
-        ElementValidationText.builder()
-            .mandatory(true)
-            .limit(4000)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationText.builder().mandatory(true).limit(4000).build());
 
     final var element = questionSjukvardandeInsatsHSLInsatser();
 
@@ -92,42 +107,32 @@ class QuestionSjukvardandeInsatsHSLInsatserTest {
 
     @Test
     void shallReturnTrueIfElementPresent() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("70"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(true)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("70"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
 
       final var element = questionSjukvardandeInsatsHSLInsatser();
 
-      final var shouldValidate = element.elementSpecification(ELEMENT_ID)
-          .shouldValidate();
+      final var shouldValidate = element.elementSpecification(ELEMENT_ID).shouldValidate();
 
       assertTrue(shouldValidate.test(elementData));
     }
 
     @Test
     void shallReturnFalseIfElementMissing() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("5"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(true)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("5"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
 
       final var element = questionSjukvardandeInsatsHSLInsatser();
 
-      final var shouldValidate = element.elementSpecification(ELEMENT_ID)
-          .shouldValidate();
+      final var shouldValidate = element.elementSpecification(ELEMENT_ID).shouldValidate();
 
       assertFalse(shouldValidate.test(elementData));
     }
@@ -135,9 +140,7 @@ class QuestionSjukvardandeInsatsHSLInsatserTest {
 
   @Test
   void shallIncludeCustomMapping() {
-    final var expectedConfiguration = new ElementMapping(
-        new ElementId("70"), null
-    );
+    final var expectedConfiguration = new ElementMapping(new ElementId("70"), null);
 
     final var element = questionSjukvardandeInsatsHSLInsatser();
 
@@ -146,11 +149,12 @@ class QuestionSjukvardandeInsatsHSLInsatserTest {
 
   @Test
   void shallIncludePdfConfiguration() {
-    final var expected = PdfConfigurationText.builder()
-        .pdfFieldId(new PdfFieldId("form1[0].#subform[5].flt_txtVilkaInsatserOmfattning[0]"))
-        .maxLength(PDF_TEXT_FIELD_LENGTH * 3)
-        .overflowSheetFieldId(OVERFLOW_SHEET_FIELD_ID)
-        .build();
+    final var expected =
+        PdfConfigurationText.builder()
+            .pdfFieldId(new PdfFieldId("form1[0].#subform[5].flt_txtVilkaInsatserOmfattning[0]"))
+            .maxLength(PDF_TEXT_FIELD_LENGTH * 3)
+            .overflowSheetFieldId(OVERFLOW_SHEET_FIELD_ID)
+            .build();
 
     final var element = questionSjukvardandeInsatsHSLInsatser();
 

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7804.elements;
 
 import java.util.List;
@@ -40,57 +58,62 @@ public class QuestionDiagnos {
                 .description(
                     "Ange vilken eller vilka sjukdomar som orsakar nedsatt arbetsförmåga. Den sjukdom som påverkar arbetsförmågan mest anges först. Diagnoskoden anges alltid med så många positioner som möjligt.")
                 .terminology(List.of(CodeSystemIcd10Se.terminology()))
-                .list(List.of(
-                    new ElementDiagnosisListItem(DIAGNOS_1),
-                    new ElementDiagnosisListItem(DIAGNOS_2),
-                    new ElementDiagnosisListItem(DIAGNOS_3)
-                ))
-                .build()
-        )
-        .rules(List.of(
-            CertificateElementRuleFactory.mandatoryExist(QUESTION_DIAGNOS_ID, DIAGNOS_1)
-        ))
-        .validations(List.of(
-            ElementValidationDiagnosis.builder()
-                .mandatoryField(DIAGNOS_1)
-                .order(List.of(DIAGNOS_1, DIAGNOS_2, DIAGNOS_3))
-                .diagnosisCodeRepository(diagnosisCodeRepository)
-                .build()
-        ))
-        .pdfConfiguration(PdfConfigurationDiagnoses.builder()
-            .diagnoses(Map.of(
-                DIAGNOS_1, PdfConfigurationDiagnosis.builder()
-                    .pdfNameFieldId(new PdfFieldId("form1[0].#subform[0].flt_txtDiagnoser[0]"))
-                    .pdfCodeFieldIds(List.of(
-                        new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod1[0]"),
-                        new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod2[0]"),
-                        new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod3[0]"),
-                        new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod4[0]"),
-                        new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod5[0]")
-                    ))
-                    .build(),
-                DIAGNOS_2, PdfConfigurationDiagnosis.builder()
-                    .pdfNameFieldId(new PdfFieldId("form1[0].#subform[0].flt_txtDiagnoser2[0]"))
-                    .pdfCodeFieldIds(List.of(
-                        new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod6[0]"),
-                        new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod7[0]"),
-                        new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod8[0]"),
-                        new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod9[0]"),
-                        new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod10[0]")
-                    ))
-                    .build(),
-                DIAGNOS_3, PdfConfigurationDiagnosis.builder()
-                    .pdfNameFieldId(new PdfFieldId("form1[0].#subform[0].flt_txtDiagnoser3[0]"))
-                    .pdfCodeFieldIds(List.of(
-                        new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod11[0]"),
-                        new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod12[0]"),
-                        new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod13[0]"),
-                        new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod14[0]"),
-                        new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod15[0]")
-                    ))
-                    .build()
-            ))
-            .build())
+                .list(
+                    List.of(
+                        new ElementDiagnosisListItem(DIAGNOS_1),
+                        new ElementDiagnosisListItem(DIAGNOS_2),
+                        new ElementDiagnosisListItem(DIAGNOS_3)))
+                .build())
+        .rules(
+            List.of(CertificateElementRuleFactory.mandatoryExist(QUESTION_DIAGNOS_ID, DIAGNOS_1)))
+        .validations(
+            List.of(
+                ElementValidationDiagnosis.builder()
+                    .mandatoryField(DIAGNOS_1)
+                    .order(List.of(DIAGNOS_1, DIAGNOS_2, DIAGNOS_3))
+                    .diagnosisCodeRepository(diagnosisCodeRepository)
+                    .build()))
+        .pdfConfiguration(
+            PdfConfigurationDiagnoses.builder()
+                .diagnoses(
+                    Map.of(
+                        DIAGNOS_1,
+                            PdfConfigurationDiagnosis.builder()
+                                .pdfNameFieldId(
+                                    new PdfFieldId("form1[0].#subform[0].flt_txtDiagnoser[0]"))
+                                .pdfCodeFieldIds(
+                                    List.of(
+                                        new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod1[0]"),
+                                        new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod2[0]"),
+                                        new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod3[0]"),
+                                        new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod4[0]"),
+                                        new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod5[0]")))
+                                .build(),
+                        DIAGNOS_2,
+                            PdfConfigurationDiagnosis.builder()
+                                .pdfNameFieldId(
+                                    new PdfFieldId("form1[0].#subform[0].flt_txtDiagnoser2[0]"))
+                                .pdfCodeFieldIds(
+                                    List.of(
+                                        new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod6[0]"),
+                                        new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod7[0]"),
+                                        new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod8[0]"),
+                                        new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod9[0]"),
+                                        new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod10[0]")))
+                                .build(),
+                        DIAGNOS_3,
+                            PdfConfigurationDiagnosis.builder()
+                                .pdfNameFieldId(
+                                    new PdfFieldId("form1[0].#subform[0].flt_txtDiagnoser3[0]"))
+                                .pdfCodeFieldIds(
+                                    List.of(
+                                        new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod11[0]"),
+                                        new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod12[0]"),
+                                        new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod13[0]"),
+                                        new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod14[0]"),
+                                        new PdfFieldId("form1[0].#subform[0].flt_txtDiaKod15[0]")))
+                                .build()))
+                .build())
         .mapping(new ElementMapping(CustomMapperId.UNIFIED_DIAGNOSIS_LIST))
         .build();
   }

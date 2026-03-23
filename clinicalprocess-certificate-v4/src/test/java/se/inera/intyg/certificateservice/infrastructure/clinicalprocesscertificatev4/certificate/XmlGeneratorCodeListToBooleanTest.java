@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.certificate;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -40,288 +58,238 @@ class XmlGeneratorCodeListToBooleanTest {
 
   @Test
   void shallReturnEmptyIfValueIsWrongType() {
-    final var elementData = ElementData.builder()
-        .id(new ElementId(QUESTION_ID))
-        .value(
-            ElementValueText.builder()
-                .build()
-        )
-        .build();
+    final var elementData =
+        ElementData.builder()
+            .id(new ElementId(QUESTION_ID))
+            .value(ElementValueText.builder().build())
+            .build();
 
-    final var elementSpecification = ElementSpecification.builder()
-        .configuration(
-            ElementConfigurationCheckboxMultipleCode.builder()
-                .id(new FieldId(VALUE_ID))
-                .list(
-                    List.of(
-                        new ElementConfigurationCode(
-                            new FieldId(CODE_ID_ONE),
-                            "label",
-                            new Code(
-                                CODE_ONE,
-                                "CODE_SYSTEM",
-                                "DISPLAY_NAME"
-                            )
-                        ))
-                )
-                .build()
-        )
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .configuration(
+                ElementConfigurationCheckboxMultipleCode.builder()
+                    .id(new FieldId(VALUE_ID))
+                    .list(
+                        List.of(
+                            new ElementConfigurationCode(
+                                new FieldId(CODE_ID_ONE),
+                                "label",
+                                new Code(CODE_ONE, "CODE_SYSTEM", "DISPLAY_NAME"))))
+                    .build())
+            .build();
 
-    final var actualResult = xmlGeneratorCodeListToBoolean.generate(elementData,
-        elementSpecification);
+    final var actualResult =
+        xmlGeneratorCodeListToBoolean.generate(elementData, elementSpecification);
 
     assertTrue(actualResult.isEmpty());
   }
 
   @Test
   void shallThrowIllegalArgumentExceptionIfConfigIsWrongType() {
-    final var elementData = ElementData.builder()
-        .id(new ElementId(QUESTION_ID))
-        .value(
-            ElementValueCodeList.builder()
-                .id(new FieldId(VALUE_ID))
-                .list(Collections.emptyList())
-                .build()
-        )
-        .build();
+    final var elementData =
+        ElementData.builder()
+            .id(new ElementId(QUESTION_ID))
+            .value(
+                ElementValueCodeList.builder()
+                    .id(new FieldId(VALUE_ID))
+                    .list(Collections.emptyList())
+                    .build())
+            .build();
 
-    final var elementSpecification = ElementSpecification.builder()
-        .configuration(
-            ElementConfigurationDate.builder()
-                .build()
-        )
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .configuration(ElementConfigurationDate.builder().build())
+            .build();
 
-    assertThrows(IllegalArgumentException.class, () ->
-        xmlGeneratorCodeListToBoolean.generate(elementData,
-            elementSpecification));
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> xmlGeneratorCodeListToBoolean.generate(elementData, elementSpecification));
   }
 
   @Test
   void shallReturnAnswerWithFalseValuesIfEmpty() {
-    final var elementData = ElementData.builder()
-        .id(new ElementId(QUESTION_ID))
-        .value(
-            ElementValueCodeList.builder()
-                .id(new FieldId(VALUE_ID))
-                .list(Collections.emptyList())
-                .build()
-        )
-        .build();
+    final var elementData =
+        ElementData.builder()
+            .id(new ElementId(QUESTION_ID))
+            .value(
+                ElementValueCodeList.builder()
+                    .id(new FieldId(VALUE_ID))
+                    .list(Collections.emptyList())
+                    .build())
+            .build();
 
-    final var elementSpecification = ElementSpecification.builder()
-        .configuration(
-            ElementConfigurationCheckboxMultipleCode.builder()
-                .id(new FieldId(VALUE_ID))
-                .list(
-                    List.of(
-                        new ElementConfigurationCode(
-                            new FieldId(CODE_ID_ONE),
-                            "label",
-                            new Code(
-                                CODE_ONE,
-                                "CODE_SYSTEM",
-                                "DISPLAY_NAME"
-                            )
-                        ))
-                )
-                .build()
-        )
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .configuration(
+                ElementConfigurationCheckboxMultipleCode.builder()
+                    .id(new FieldId(VALUE_ID))
+                    .list(
+                        List.of(
+                            new ElementConfigurationCode(
+                                new FieldId(CODE_ID_ONE),
+                                "label",
+                                new Code(CODE_ONE, "CODE_SYSTEM", "DISPLAY_NAME"))))
+                    .build())
+            .build();
 
-    final var actualResult = xmlGeneratorCodeListToBoolean.generate(elementData,
-        elementSpecification);
+    final var actualResult =
+        xmlGeneratorCodeListToBoolean.generate(elementData, elementSpecification);
 
     assertAll(
         () -> assertEquals(QUESTION_ID, actualResult.getFirst().getId()),
         () -> assertEquals(CODE_ID_ONE, actualResult.getFirst().getDelsvar().getFirst().getId()),
-        () -> assertEquals("false",
-            actualResult.getFirst().getDelsvar().getFirst().getContent().getFirst())
-    );
+        () ->
+            assertEquals(
+                "false", actualResult.getFirst().getDelsvar().getFirst().getContent().getFirst()));
   }
 
   @Test
   void shallReturnAnswerWithOneDelsvar() {
-    final var elementData = ElementData.builder()
-        .id(new ElementId(QUESTION_ID))
-        .value(
-            ElementValueCodeList.builder()
-                .id(new FieldId(VALUE_ID))
-                .list(
-                    List.of(
-                        ElementValueCode.builder()
-                            .codeId(new FieldId(CODE_ID_ONE))
-                            .code(CODE_ONE)
-                            .build()
-                    )
-                )
-                .build()
-        )
-        .build();
+    final var elementData =
+        ElementData.builder()
+            .id(new ElementId(QUESTION_ID))
+            .value(
+                ElementValueCodeList.builder()
+                    .id(new FieldId(VALUE_ID))
+                    .list(
+                        List.of(
+                            ElementValueCode.builder()
+                                .codeId(new FieldId(CODE_ID_ONE))
+                                .code(CODE_ONE)
+                                .build()))
+                    .build())
+            .build();
 
-    final var elementSpecification = ElementSpecification.builder()
-        .configuration(
-            ElementConfigurationCheckboxMultipleCode.builder()
-                .id(new FieldId(VALUE_ID))
-                .list(
-                    List.of(
-                        new ElementConfigurationCode(
-                            new FieldId(CODE_ID_ONE),
-                            "label",
-                            new Code(
-                                CODE_ONE,
-                                "CODE_SYSTEM",
-                                "DISPLAY_NAME"
-                            )
-                        ))
-                )
-                .build()
-        )
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .configuration(
+                ElementConfigurationCheckboxMultipleCode.builder()
+                    .id(new FieldId(VALUE_ID))
+                    .list(
+                        List.of(
+                            new ElementConfigurationCode(
+                                new FieldId(CODE_ID_ONE),
+                                "label",
+                                new Code(CODE_ONE, "CODE_SYSTEM", "DISPLAY_NAME"))))
+                    .build())
+            .build();
 
-    final var actualResult = xmlGeneratorCodeListToBoolean.generate(elementData,
-        elementSpecification);
+    final var actualResult =
+        xmlGeneratorCodeListToBoolean.generate(elementData, elementSpecification);
 
     assertAll(
         () -> assertEquals(QUESTION_ID, actualResult.getFirst().getId()),
         () -> assertEquals(CODE_ID_ONE, actualResult.getFirst().getDelsvar().getFirst().getId()),
-        () -> assertEquals("true",
-            actualResult.getFirst().getDelsvar().getFirst().getContent().getFirst())
-    );
+        () ->
+            assertEquals(
+                "true", actualResult.getFirst().getDelsvar().getFirst().getContent().getFirst()));
   }
 
   @Test
   void shallReturnAnswerWithMultipleDelsvar() {
-    final var elementData = ElementData.builder()
-        .id(new ElementId(QUESTION_ID))
-        .value(
-            ElementValueCodeList.builder()
-                .id(new FieldId(VALUE_ID))
-                .list(
-                    List.of(
-                        ElementValueCode.builder()
-                            .codeId(new FieldId(CODE_ID_ONE))
-                            .code(CODE_ONE)
-                            .build(),
-                        ElementValueCode.builder()
-                            .codeId(new FieldId(CODE_ID_TWO))
-                            .code(CODE_TWO)
-                            .build()
-                    )
-                )
-                .build()
-        )
-        .build();
+    final var elementData =
+        ElementData.builder()
+            .id(new ElementId(QUESTION_ID))
+            .value(
+                ElementValueCodeList.builder()
+                    .id(new FieldId(VALUE_ID))
+                    .list(
+                        List.of(
+                            ElementValueCode.builder()
+                                .codeId(new FieldId(CODE_ID_ONE))
+                                .code(CODE_ONE)
+                                .build(),
+                            ElementValueCode.builder()
+                                .codeId(new FieldId(CODE_ID_TWO))
+                                .code(CODE_TWO)
+                                .build()))
+                    .build())
+            .build();
 
-    final var elementSpecification = ElementSpecification.builder()
-        .configuration(
-            ElementConfigurationCheckboxMultipleCode.builder()
-                .id(new FieldId(VALUE_ID))
-                .list(
-                    List.of(
-                        new ElementConfigurationCode(
-                            new FieldId(CODE_ID_ONE),
-                            "label",
-                            new Code(
-                                CODE_ONE,
-                                "CODE_SYSTEM",
-                                "DISPLAY_NAME"
-                            )
-                        ),
-                        new ElementConfigurationCode(
-                            new FieldId(CODE_ID_TWO),
-                            "label",
-                            new Code(
-                                CODE_TWO,
-                                "CODE_SYSTEM",
-                                "DISPLAY_NAME"
-                            )
-                        )
-                    )
-                )
-                .build()
-        )
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .configuration(
+                ElementConfigurationCheckboxMultipleCode.builder()
+                    .id(new FieldId(VALUE_ID))
+                    .list(
+                        List.of(
+                            new ElementConfigurationCode(
+                                new FieldId(CODE_ID_ONE),
+                                "label",
+                                new Code(CODE_ONE, "CODE_SYSTEM", "DISPLAY_NAME")),
+                            new ElementConfigurationCode(
+                                new FieldId(CODE_ID_TWO),
+                                "label",
+                                new Code(CODE_TWO, "CODE_SYSTEM", "DISPLAY_NAME"))))
+                    .build())
+            .build();
 
-    final var actualResult = xmlGeneratorCodeListToBoolean.generate(elementData,
-        elementSpecification);
+    final var actualResult =
+        xmlGeneratorCodeListToBoolean.generate(elementData, elementSpecification);
 
     assertAll(
         () -> assertEquals(QUESTION_ID, actualResult.getFirst().getId()),
         () -> assertEquals(CODE_ID_ONE, actualResult.getFirst().getDelsvar().getFirst().getId()),
         () -> assertEquals(CODE_ID_TWO, actualResult.getFirst().getDelsvar().getLast().getId()),
-        () -> assertEquals("true",
-            actualResult.getFirst().getDelsvar().getFirst().getContent().getFirst()),
-        () -> assertEquals("true",
-            actualResult.getFirst().getDelsvar().getFirst().getContent().getLast())
-    );
+        () ->
+            assertEquals(
+                "true", actualResult.getFirst().getDelsvar().getFirst().getContent().getFirst()),
+        () ->
+            assertEquals(
+                "true", actualResult.getFirst().getDelsvar().getFirst().getContent().getLast()));
   }
 
   @Test
   void shallReturnAnswerWithMultipleDelsvarAndValueFalseIfValueIsMissing() {
-    final var elementData = ElementData.builder()
-        .id(new ElementId(QUESTION_ID))
-        .value(
-            ElementValueCodeList.builder()
-                .id(new FieldId(VALUE_ID))
-                .list(
-                    List.of(
-                        ElementValueCode.builder()
-                            .codeId(new FieldId(CODE_ID_ONE))
-                            .code(CODE_ONE)
-                            .build(),
-                        ElementValueCode.builder()
-                            .codeId(new FieldId(CODE_ID_TWO))
-                            .code(CODE_TWO)
-                            .build()
-                    )
-                )
-                .build()
-        )
-        .build();
+    final var elementData =
+        ElementData.builder()
+            .id(new ElementId(QUESTION_ID))
+            .value(
+                ElementValueCodeList.builder()
+                    .id(new FieldId(VALUE_ID))
+                    .list(
+                        List.of(
+                            ElementValueCode.builder()
+                                .codeId(new FieldId(CODE_ID_ONE))
+                                .code(CODE_ONE)
+                                .build(),
+                            ElementValueCode.builder()
+                                .codeId(new FieldId(CODE_ID_TWO))
+                                .code(CODE_TWO)
+                                .build()))
+                    .build())
+            .build();
 
-    final var elementSpecification = ElementSpecification.builder()
-        .configuration(
-            ElementConfigurationCheckboxMultipleCode.builder()
-                .id(new FieldId(VALUE_ID))
-                .list(
-                    List.of(
-                        new ElementConfigurationCode(
-                            new FieldId(CODE_ID_ONE),
-                            "label",
-                            new Code(
-                                "anotherValue1",
-                                "CODE_SYSTEM",
-                                "DISPLAY_NAME"
-                            )
-                        ),
-                        new ElementConfigurationCode(
-                            new FieldId(CODE_ID_TWO),
-                            "label",
-                            new Code(
-                                "anotherValue2",
-                                "CODE_SYSTEM",
-                                "DISPLAY_NAME"
-                            )
-                        )
-                    )
-                )
-                .build()
-        )
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .configuration(
+                ElementConfigurationCheckboxMultipleCode.builder()
+                    .id(new FieldId(VALUE_ID))
+                    .list(
+                        List.of(
+                            new ElementConfigurationCode(
+                                new FieldId(CODE_ID_ONE),
+                                "label",
+                                new Code("anotherValue1", "CODE_SYSTEM", "DISPLAY_NAME")),
+                            new ElementConfigurationCode(
+                                new FieldId(CODE_ID_TWO),
+                                "label",
+                                new Code("anotherValue2", "CODE_SYSTEM", "DISPLAY_NAME"))))
+                    .build())
+            .build();
 
-    final var actualResult = xmlGeneratorCodeListToBoolean.generate(elementData,
-        elementSpecification);
+    final var actualResult =
+        xmlGeneratorCodeListToBoolean.generate(elementData, elementSpecification);
 
     assertAll(
         () -> assertEquals(QUESTION_ID, actualResult.getFirst().getId()),
         () -> assertEquals(CODE_ID_ONE, actualResult.getFirst().getDelsvar().getFirst().getId()),
         () -> assertEquals(CODE_ID_TWO, actualResult.getFirst().getDelsvar().getLast().getId()),
-        () -> assertEquals("false",
-            actualResult.getFirst().getDelsvar().getFirst().getContent().getFirst()),
-        () -> assertEquals("false",
-            actualResult.getFirst().getDelsvar().getFirst().getContent().getLast())
-    );
+        () ->
+            assertEquals(
+                "false", actualResult.getFirst().getDelsvar().getFirst().getContent().getFirst()),
+        () ->
+            assertEquals(
+                "false", actualResult.getFirst().getDelsvar().getFirst().getContent().getLast()));
   }
 }

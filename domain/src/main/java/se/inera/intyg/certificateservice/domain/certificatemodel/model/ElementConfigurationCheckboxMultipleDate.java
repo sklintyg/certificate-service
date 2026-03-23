@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.certificatemodel.model;
 
 import java.util.Collections;
@@ -22,29 +40,30 @@ public class ElementConfigurationCheckboxMultipleDate implements ElementConfigur
 
   @Getter(onMethod = @__(@Override))
   String name;
+
   @Getter(onMethod = @__(@Override))
   ElementType type = ElementType.CHECKBOX_MULTIPLE_DATE;
+
   @Getter(onMethod = @__(@Override))
   ElementMessage message;
+
   List<CheckboxDate> dates;
   FieldId id;
 
   @Override
   public ElementValue emptyValue() {
-    return ElementValueDateList.builder()
-        .dateListId(id)
-        .dateList(Collections.emptyList())
-        .build();
+    return ElementValueDateList.builder().dateListId(id).dateList(Collections.emptyList()).build();
   }
 
   public Code code(ElementValueDate elementValueDate) {
     return dates.stream()
         .filter(checkboxDate -> checkboxDate.id().equals(elementValueDate.dateId()))
         .findFirst()
-        .orElseThrow(() -> new IllegalArgumentException(
-                "Cannot find matching code for dateId '%s'".formatted(elementValueDate.dateId())
-            )
-        )
+        .orElseThrow(
+            () ->
+                new IllegalArgumentException(
+                    "Cannot find matching code for dateId '%s'"
+                        .formatted(elementValueDate.dateId())))
         .code();
   }
 
@@ -54,44 +73,42 @@ public class ElementConfigurationCheckboxMultipleDate implements ElementConfigur
       throw new IllegalStateException("Wrong value type");
     }
     if (elementValue.isEmpty()) {
-      return Optional.of(ElementSimplifiedValueText.builder()
-          .text("Ej angivet")
-          .build());
+      return Optional.of(ElementSimplifiedValueText.builder().text("Ej angivet").build());
     }
 
-    final var matchedDates = elementValue.dateList().stream()
-        .map(date -> createLabeledText(
-            date.date() != null ? date.date().toString() : null,
-            findLabelById(date.dateId())
-        ))
-        .toList();
+    final var matchedDates =
+        elementValue.dateList().stream()
+            .map(
+                date ->
+                    createLabeledText(
+                        date.date() != null ? date.date().toString() : null,
+                        findLabelById(date.dateId())))
+            .toList();
 
-    final var unmatchedDates = dates.stream()
-        .filter(date -> elementValue.dateList().stream()
-            .noneMatch(d -> date.id().value().equals(d.dateId().value()))
-        )
-        .map(checkboxDate -> createLabeledText("Ej angivet", checkboxDate.label()))
-        .toList();
+    final var unmatchedDates =
+        dates.stream()
+            .filter(
+                date ->
+                    elementValue.dateList().stream()
+                        .noneMatch(d -> date.id().value().equals(d.dateId().value())))
+            .map(checkboxDate -> createLabeledText("Ej angivet", checkboxDate.label()))
+            .toList();
 
-    return Optional.of(ElementSimplifiedValueLabeledList.builder()
-        .list(Stream.concat(matchedDates.stream(), unmatchedDates.stream()).toList())
-        .build());
+    return Optional.of(
+        ElementSimplifiedValueLabeledList.builder()
+            .list(Stream.concat(matchedDates.stream(), unmatchedDates.stream()).toList())
+            .build());
   }
 
   private String findLabelById(FieldId dateId) {
     return dates.stream()
         .filter(config -> config.id().value().equals(dateId.value()))
         .findFirst()
-        .orElseThrow(() -> new IllegalStateException(
-            "No matching label found for id: " + dateId
-        ))
+        .orElseThrow(() -> new IllegalStateException("No matching label found for id: " + dateId))
         .label();
   }
 
   private ElementSimplifiedValueLabeledText createLabeledText(String text, String label) {
-    return ElementSimplifiedValueLabeledText.builder()
-        .label(label)
-        .text(text)
-        .build();
+    return ElementSimplifiedValueLabeledText.builder().label(label).text(text).build();
   }
 }

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.action.certificate.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -35,112 +53,103 @@ class CertificateActionQuestionsNotAvailableTest {
           .certificateActionType(CertificateActionType.QUESTIONS_NOT_AVAILABLE)
           .build();
 
-  @InjectMocks
-  CertificateActionFactory certificateActionFactory;
+  @InjectMocks CertificateActionFactory certificateActionFactory;
 
   @BeforeEach
   void setUp() {
-    certificateActionQuestionsNotAvailable = (CertificateActionQuestionsNotAvailable) certificateActionFactory.create(
-        CERTIFICATE_ACTION_SPECIFICATION
-    );
+    certificateActionQuestionsNotAvailable =
+        (CertificateActionQuestionsNotAvailable)
+            certificateActionFactory.create(CERTIFICATE_ACTION_SPECIFICATION);
 
-    certificateBuilder = MedicalCertificate.builder()
-        .status(Status.SIGNED)
-        .certificateMetaData(
-            CertificateMetaData.builder()
-                .issuingUnit(ALFA_ALLERGIMOTTAGNINGEN)
-                .careUnit(ALFA_MEDICINCENTRUM)
-                .careProvider(ALFA_REGIONEN)
-                .patient(ATHENA_REACT_ANDERSSON)
-                .build()
-        );
+    certificateBuilder =
+        MedicalCertificate.builder()
+            .status(Status.SIGNED)
+            .certificateMetaData(
+                CertificateMetaData.builder()
+                    .issuingUnit(ALFA_ALLERGIMOTTAGNINGEN)
+                    .careUnit(ALFA_MEDICINCENTRUM)
+                    .careProvider(ALFA_REGIONEN)
+                    .patient(ATHENA_REACT_ANDERSSON)
+                    .build());
 
-    actionEvaluationBuilder = ActionEvaluation.builder()
-        .user(AJLA_DOKTOR)
-        .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
-        .patient(ATHENA_REACT_ANDERSSON)
-        .careProvider(ALFA_REGIONEN)
-        .careUnit(ALFA_MEDICINCENTRUM);
+    actionEvaluationBuilder =
+        ActionEvaluation.builder()
+            .user(AJLA_DOKTOR)
+            .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
+            .patient(ATHENA_REACT_ANDERSSON)
+            .careProvider(ALFA_REGIONEN)
+            .careUnit(ALFA_MEDICINCENTRUM);
   }
 
   @Test
   void shallReturnName() {
-    assertEquals("Ärendekommunikation",
-        certificateActionQuestionsNotAvailable.getName(Optional.empty()));
+    assertEquals(
+        "Ärendekommunikation", certificateActionQuestionsNotAvailable.getName(Optional.empty()));
   }
 
   @Test
   void shallReturnType() {
-    assertEquals(CertificateActionType.QUESTIONS_NOT_AVAILABLE,
+    assertEquals(
+        CertificateActionType.QUESTIONS_NOT_AVAILABLE,
         certificateActionQuestionsNotAvailable.getType());
   }
 
   @Test
   void shallReturnDescription() {
-    assertEquals("Hantera kompletteringsbegäran, frågor och svar",
+    assertEquals(
+        "Hantera kompletteringsbegäran, frågor och svar",
         certificateActionQuestionsNotAvailable.getDescription(Optional.empty()));
   }
 
   @Test
   void shallReturnFalseIfSent() {
-    final var certificate = certificateBuilder
-        .sent(TestDataCertificate.SENT)
-        .build();
+    final var certificate = certificateBuilder.sent(TestDataCertificate.SENT).build();
     final var actionEvaluation = actionEvaluationBuilder.build();
 
-    assertFalse(certificateActionQuestionsNotAvailable.evaluate(Optional.of(certificate),
-            Optional.of(actionEvaluation)),
-        () -> "Expected false when passing %s and %s".formatted(certificate, actionEvaluation)
-    );
+    assertFalse(
+        certificateActionQuestionsNotAvailable.evaluate(
+            Optional.of(certificate), Optional.of(actionEvaluation)),
+        () -> "Expected false when passing %s and %s".formatted(certificate, actionEvaluation));
   }
 
   @Test
   void shallReturnTrueIfNotSent() {
     final var actionEvaluation = actionEvaluationBuilder().build();
 
-    final var certificate = certificateBuilder
-        .sent(null)
-        .build();
+    final var certificate = certificateBuilder.sent(null).build();
 
     assertTrue(
-        certificateActionQuestionsNotAvailable.evaluate(Optional.of(certificate),
-            Optional.of(actionEvaluation)),
-        () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate)
-    );
+        certificateActionQuestionsNotAvailable.evaluate(
+            Optional.of(certificate), Optional.of(actionEvaluation)),
+        () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate));
   }
 
   @Test
   void shallReturnTrueIfSigned() {
-    final var actionEvaluation = actionEvaluationBuilder
-        .user(alvaVardadministratorBuilder()
-            .accessScope(AccessScope.ALL_CARE_PROVIDERS)
-            .build())
-        .build();
+    final var actionEvaluation =
+        actionEvaluationBuilder
+            .user(
+                alvaVardadministratorBuilder().accessScope(AccessScope.ALL_CARE_PROVIDERS).build())
+            .build();
 
-    final var certificate = certificateBuilder
-        .status(Status.SIGNED)
-        .build();
+    final var certificate = certificateBuilder.status(Status.SIGNED).build();
 
     assertTrue(
-        certificateActionQuestionsNotAvailable.evaluate(Optional.of(certificate),
-            Optional.of(actionEvaluation)),
-        () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate)
-    );
+        certificateActionQuestionsNotAvailable.evaluate(
+            Optional.of(certificate), Optional.of(actionEvaluation)),
+        () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate));
   }
 
   @Test
   void shallReturnFalseIfNotSigned() {
     final var actionEvaluation = actionEvaluationBuilder.build();
 
-    final var certificate = certificateBuilder
-        .status(Status.DRAFT)
-        .build();
+    final var certificate = certificateBuilder.status(Status.DRAFT).build();
 
     assertFalse(
-        certificateActionQuestionsNotAvailable.evaluate(Optional.of(certificate),
-            Optional.of(actionEvaluation)),
-        () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate)
-    );
+        certificateActionQuestionsNotAvailable.evaluate(
+            Optional.of(certificate), Optional.of(actionEvaluation)),
+        () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate));
   }
 
   @Test
@@ -149,23 +158,22 @@ class CertificateActionQuestionsNotAvailableTest {
 
     final var actionEvaluation = actionEvaluationBuilder.build();
 
-    final var actualResult = certificateActionQuestionsNotAvailable.reasonNotAllowed(
-        Optional.of(certificate),
-        Optional.of(actionEvaluation));
+    final var actualResult =
+        certificateActionQuestionsNotAvailable.reasonNotAllowed(
+            Optional.of(certificate), Optional.of(actionEvaluation));
 
     assertTrue(actualResult.isEmpty());
   }
 
   @Test
   void shallReturnEnabledTrue() {
-    final var certificate = certificateBuilder
-        .status(Status.SIGNED)
-        .build();
+    final var certificate = certificateBuilder.status(Status.SIGNED).build();
 
     final var actionEvaluation = actionEvaluationBuilder.build();
 
-    final var enabled = certificateActionQuestionsNotAvailable.isEnabled(Optional.of(certificate),
-        Optional.of(actionEvaluation));
+    final var enabled =
+        certificateActionQuestionsNotAvailable.isEnabled(
+            Optional.of(certificate), Optional.of(actionEvaluation));
 
     assertTrue(enabled);
   }

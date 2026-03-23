@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ag114.elements;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,15 +44,15 @@ class MessageArbetsformagaAlertTest {
 
   @Test
   void shouldIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationMessage.builder()
-        .message(
-            ElementMessage.builder()
-                .content(
-                    "Om patienten bedöms vara arbetsoförmögen i mer än 14 dagar ska Läkarintyg om arbetsförmåga – arbetsgivaren (AG7804) användas. Intyget skapas från Försäkringskassans läkarintyg för sjukpenning (FK7804) och innehåller motsvarande information.")
-                .level(MessageLevel.INFO)
-                .build()
-        )
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationMessage.builder()
+            .message(
+                ElementMessage.builder()
+                    .content(
+                        "Om patienten bedöms vara arbetsoförmögen i mer än 14 dagar ska Läkarintyg om arbetsförmåga – arbetsgivaren (AG7804) användas. Intyget skapas från Försäkringskassans läkarintyg för sjukpenning (FK7804) och innehåller motsvarande information.")
+                    .level(MessageLevel.INFO)
+                    .build())
+            .build();
     final var element = messageArbetsformagaAlert();
     assertEquals(expectedConfiguration, element.configuration());
   }
@@ -42,13 +60,13 @@ class MessageArbetsformagaAlertTest {
   @Test
   void shouldIncludeShowRuleWithCorrectExpression() {
     final var element = messageArbetsformagaAlert();
-    final var expectedRules = List.of(
-        ElementRuleExpression.builder()
-            .type(ElementRuleType.SHOW)
-            .id(QUESTION_PERIOD_BEDOMNING_ID)
-            .expression(new RuleExpression("($7.2.to - $7.2.from) >= 14"))
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleExpression.builder()
+                .type(ElementRuleType.SHOW)
+                .id(QUESTION_PERIOD_BEDOMNING_ID)
+                .expression(new RuleExpression("($7.2.to - $7.2.from) >= 14"))
+                .build());
     assertEquals(expectedRules, element.rules());
   }
 }

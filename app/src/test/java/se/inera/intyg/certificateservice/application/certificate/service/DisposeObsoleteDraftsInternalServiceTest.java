@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,33 +44,27 @@ import se.inera.intyg.certificateservice.domain.certificate.service.DisposeObsol
 @ExtendWith(MockitoExtension.class)
 class DisposeObsoleteDraftsInternalServiceTest {
 
-  @Mock
-  DisposeObsoleteDraftsDomainService disposeObsoleteDraftsDomainService;
-  @Mock
-  CertificateConverter converter;
-  @InjectMocks
-  DisposeObsoleteDraftsInternalService disposeObsoleteDraftsInternalService;
+  @Mock DisposeObsoleteDraftsDomainService disposeObsoleteDraftsDomainService;
+  @Mock CertificateConverter converter;
+  @InjectMocks DisposeObsoleteDraftsInternalService disposeObsoleteDraftsInternalService;
 
   @Test
   void shouldThrowIfCutoffDateIsNullForList() {
-    final var request = ListObsoleteDraftsRequest.builder()
-        .build();
-    assertThrows(IllegalArgumentException.class,
-        () -> disposeObsoleteDraftsInternalService.list(request));
+    final var request = ListObsoleteDraftsRequest.builder().build();
+    assertThrows(
+        IllegalArgumentException.class, () -> disposeObsoleteDraftsInternalService.list(request));
   }
 
   @Test
   void shouldReturnListObsoleteDraftsResponse() {
     final var certificateId = "cert-123";
-    final var expectedResponse = ListObsoleteDraftsResponse.builder()
-        .certificateIds(List.of(certificateId))
-        .build();
+    final var expectedResponse =
+        ListObsoleteDraftsResponse.builder().certificateIds(List.of(certificateId)).build();
     final var cutoffDate = LocalDateTime.now();
-    final var request = ListObsoleteDraftsRequest.builder()
-        .cutoffDate(cutoffDate)
-        .build();
+    final var request = ListObsoleteDraftsRequest.builder().cutoffDate(cutoffDate).build();
 
-    doReturn(List.of(new CertificateId(certificateId))).when(disposeObsoleteDraftsDomainService)
+    doReturn(List.of(new CertificateId(certificateId)))
+        .when(disposeObsoleteDraftsDomainService)
         .list(cutoffDate);
 
     final var actualResponse = disposeObsoleteDraftsInternalService.list(request);
@@ -61,13 +73,10 @@ class DisposeObsoleteDraftsInternalServiceTest {
 
   @Test
   void shouldReturnEmptyListWhenNoObsoleterafts() {
-    final var expectedResponse = ListObsoleteDraftsResponse.builder()
-        .certificateIds(Collections.emptyList())
-        .build();
+    final var expectedResponse =
+        ListObsoleteDraftsResponse.builder().certificateIds(Collections.emptyList()).build();
     final var cutoffDate = LocalDateTime.now();
-    final var request = ListObsoleteDraftsRequest.builder()
-        .cutoffDate(cutoffDate)
-        .build();
+    final var request = ListObsoleteDraftsRequest.builder().cutoffDate(cutoffDate).build();
 
     doReturn(Collections.emptyList()).when(disposeObsoleteDraftsDomainService).list(cutoffDate);
 
@@ -77,30 +86,26 @@ class DisposeObsoleteDraftsInternalServiceTest {
 
   @Test
   void shouldThrowIfCertificateIdIsNullForDelete() {
-    final var request = DisposeObsoleteDraftsRequest.builder()
-        .build();
-    assertThrows(IllegalArgumentException.class,
-        () -> disposeObsoleteDraftsInternalService.delete(request));
+    final var request = DisposeObsoleteDraftsRequest.builder().build();
+    assertThrows(
+        IllegalArgumentException.class, () -> disposeObsoleteDraftsInternalService.delete(request));
   }
 
   @Test
   void shouldReturnDisposeObsoleteDraftsResponse() {
     final var expectedCertificate = CertificateDTO.builder().build();
-    final var expectedResponse = DisposeObsoleteDraftsResponse.builder()
-        .certificate(expectedCertificate)
-        .build();
+    final var expectedResponse =
+        DisposeObsoleteDraftsResponse.builder().certificate(expectedCertificate).build();
     final var certificateId = new CertificateId("cert-123");
-    final var request = DisposeObsoleteDraftsRequest.builder()
-        .certificateId("cert-123")
-        .build();
+    final var request = DisposeObsoleteDraftsRequest.builder().certificateId("cert-123").build();
 
     final var certificate = mock(MedicalCertificate.class);
     doReturn(certificate).when(disposeObsoleteDraftsDomainService).delete(certificateId);
-    doReturn(expectedCertificate).when(converter)
+    doReturn(expectedCertificate)
+        .when(converter)
         .convert(certificate, Collections.emptyList(), null);
 
     final var actualResponse = disposeObsoleteDraftsInternalService.delete(request);
     assertEquals(expectedResponse, actualResponse);
   }
 }
-

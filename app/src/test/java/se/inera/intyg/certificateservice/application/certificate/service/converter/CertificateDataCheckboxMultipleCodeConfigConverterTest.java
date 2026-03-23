@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service.converter;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -24,69 +42,73 @@ import se.inera.intyg.certificateservice.domain.common.model.Code;
 
 class CertificateDataCheckboxMultipleCodeConfigConverterTest {
 
-  private CertificateDataCheckboxMultipleCodeConfigConverter certificateDataCheckboxMultipleCodeConfigConverter;
+  private CertificateDataCheckboxMultipleCodeConfigConverter
+      certificateDataCheckboxMultipleCodeConfigConverter;
 
   @BeforeEach
   void setUp() {
-    certificateDataCheckboxMultipleCodeConfigConverter = new CertificateDataCheckboxMultipleCodeConfigConverter();
+    certificateDataCheckboxMultipleCodeConfigConverter =
+        new CertificateDataCheckboxMultipleCodeConfigConverter();
   }
 
   @Test
   void shouldThrowExceptionIfWrongClass() {
-    final var elementSpecification = ElementSpecification.builder()
-        .configuration(
-            ElementConfigurationTextArea.builder().build()
-        )
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .configuration(ElementConfigurationTextArea.builder().build())
+            .build();
 
-    assertThrows(IllegalStateException.class,
-        () -> certificateDataCheckboxMultipleCodeConfigConverter.convert(elementSpecification,
-            FK3226_CERTIFICATE)
-    );
+    assertThrows(
+        IllegalStateException.class,
+        () ->
+            certificateDataCheckboxMultipleCodeConfigConverter.convert(
+                elementSpecification, FK3226_CERTIFICATE));
   }
 
   @Test
   void shallSetCorrectTextForCode() {
-    final var elementSpecification = ElementSpecification.builder()
-        .configuration(
-            ElementConfigurationCheckboxMultipleCode.builder()
-                .name("NAME")
-                .list(Collections.emptyList())
-                .elementLayout(ElementLayout.ROWS)
-                .build())
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .configuration(
+                ElementConfigurationCheckboxMultipleCode.builder()
+                    .name("NAME")
+                    .list(Collections.emptyList())
+                    .elementLayout(ElementLayout.ROWS)
+                    .build())
+            .build();
 
-    final var result = certificateDataCheckboxMultipleCodeConfigConverter.convert(
-        elementSpecification, FK3226_CERTIFICATE);
+    final var result =
+        certificateDataCheckboxMultipleCodeConfigConverter.convert(
+            elementSpecification, FK3226_CERTIFICATE);
 
     assertEquals("NAME", result.getText());
   }
 
   @Test
   void shallSetCorrectValuesForList() {
-    final var elementSpecification = ElementSpecification.builder()
-        .configuration(
-            ElementConfigurationCheckboxMultipleCode.builder()
-                .name("NAME")
-                .list(
-                    List.of(
-                        new ElementConfigurationCode(
-                            new FieldId("ID_ONE"),
-                            "LABEL_ONE",
-                            new Code("CODE", "CODE_SYSTEM", "DISPLAY_NAME")),
-                        new ElementConfigurationCode(
-                            new FieldId("ID_TWO"),
-                            "LABEL_TWO",
-                            new Code("CODE", "CODE_SYSTEM", "DISPLAY_NAME"))
-                    )
-                )
-                .elementLayout(ElementLayout.COLUMNS)
-                .build()
-        )
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .configuration(
+                ElementConfigurationCheckboxMultipleCode.builder()
+                    .name("NAME")
+                    .list(
+                        List.of(
+                            new ElementConfigurationCode(
+                                new FieldId("ID_ONE"),
+                                "LABEL_ONE",
+                                new Code("CODE", "CODE_SYSTEM", "DISPLAY_NAME")),
+                            new ElementConfigurationCode(
+                                new FieldId("ID_TWO"),
+                                "LABEL_TWO",
+                                new Code("CODE", "CODE_SYSTEM", "DISPLAY_NAME"))))
+                    .elementLayout(ElementLayout.COLUMNS)
+                    .build())
+            .build();
 
-    final CertificateDataConfigCheckboxMultipleCode result = (CertificateDataConfigCheckboxMultipleCode) certificateDataCheckboxMultipleCodeConfigConverter.convert(
-        elementSpecification, FK3226_CERTIFICATE);
+    final CertificateDataConfigCheckboxMultipleCode result =
+        (CertificateDataConfigCheckboxMultipleCode)
+            certificateDataCheckboxMultipleCodeConfigConverter.convert(
+                elementSpecification, FK3226_CERTIFICATE);
 
     assertAll(
         () -> assertEquals("NAME", result.getText()),
@@ -94,42 +116,40 @@ class CertificateDataCheckboxMultipleCodeConfigConverterTest {
         () -> assertEquals("LABEL_ONE", result.getList().getFirst().getLabel()),
         () -> assertEquals("ID_TWO", result.getList().get(1).getId()),
         () -> assertEquals("LABEL_TWO", result.getList().get(1).getLabel()),
-        () -> assertEquals(Layout.COLUMNS, result.getLayout())
-    );
+        () -> assertEquals(Layout.COLUMNS, result.getLayout()));
   }
 
   @Test
   void shallSetCorrectValuesForListWithMessage() {
-    final var elementSpecification = ElementSpecification.builder()
-        .configuration(
-            ElementConfigurationCheckboxMultipleCode.builder()
-                .name("NAME")
-                .list(
-                    List.of(
-                        new ElementConfigurationCode(
-                            new FieldId("ID_ONE"),
-                            "LABEL_ONE",
-                            new Code("CODE", "CODE_SYSTEM", "DISPLAY_NAME")),
-                        new ElementConfigurationCode(
-                            new FieldId("ID_TWO"),
-                            "LABEL_TWO",
-                            new Code("CODE", "CODE_SYSTEM", "DISPLAY_NAME"))
-                    )
-                )
-                .message(
-                    ElementMessage.builder()
-                        .content("Message")
-                        .level(MessageLevel.INFO)
-                        .includedForStatuses(List.of(Status.DRAFT))
-                        .build()
-                )
-                .elementLayout(ElementLayout.COLUMNS)
-                .build()
-        )
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .configuration(
+                ElementConfigurationCheckboxMultipleCode.builder()
+                    .name("NAME")
+                    .list(
+                        List.of(
+                            new ElementConfigurationCode(
+                                new FieldId("ID_ONE"),
+                                "LABEL_ONE",
+                                new Code("CODE", "CODE_SYSTEM", "DISPLAY_NAME")),
+                            new ElementConfigurationCode(
+                                new FieldId("ID_TWO"),
+                                "LABEL_TWO",
+                                new Code("CODE", "CODE_SYSTEM", "DISPLAY_NAME"))))
+                    .message(
+                        ElementMessage.builder()
+                            .content("Message")
+                            .level(MessageLevel.INFO)
+                            .includedForStatuses(List.of(Status.DRAFT))
+                            .build())
+                    .elementLayout(ElementLayout.COLUMNS)
+                    .build())
+            .build();
 
-    final CertificateDataConfigCheckboxMultipleCode result = (CertificateDataConfigCheckboxMultipleCode) certificateDataCheckboxMultipleCodeConfigConverter.convert(
-        elementSpecification, FK3226_CERTIFICATE);
+    final CertificateDataConfigCheckboxMultipleCode result =
+        (CertificateDataConfigCheckboxMultipleCode)
+            certificateDataCheckboxMultipleCodeConfigConverter.convert(
+                elementSpecification, FK3226_CERTIFICATE);
 
     assertAll(
         () -> assertEquals("NAME", result.getText()),
@@ -139,9 +159,10 @@ class CertificateDataCheckboxMultipleCodeConfigConverterTest {
         () -> assertEquals("LABEL_TWO", result.getList().get(1).getLabel()),
         () -> assertEquals(Layout.COLUMNS, result.getLayout()),
         () -> assertEquals("Message", result.getMessage().getContent()),
-        () -> assertEquals(
-            se.inera.intyg.certificateservice.application.certificate.dto.config.MessageLevel.INFO,
-            result.getMessage().getLevel())
-    );
+        () ->
+            assertEquals(
+                se.inera.intyg.certificateservice.application.certificate.dto.config.MessageLevel
+                    .INFO,
+                result.getMessage().getLevel()));
   }
 }

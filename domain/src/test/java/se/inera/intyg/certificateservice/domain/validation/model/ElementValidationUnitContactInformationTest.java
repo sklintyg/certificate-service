@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.validation.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,283 +47,258 @@ class ElementValidationUnitContactInformationTest {
   @BeforeEach
   void setUp() {
     elementValidation = ElementValidationUnitContactInformation.builder().build();
-    elementValueUnitContactInformationBuilder = ElementValueUnitContactInformation.builder()
-        .address(ADDRESS)
-        .zipCode(ZIP_CODE)
-        .city(CITY)
-        .phoneNumber(PHONE_NUMBER);
+    elementValueUnitContactInformationBuilder =
+        ElementValueUnitContactInformation.builder()
+            .address(ADDRESS)
+            .zipCode(ZIP_CODE)
+            .city(CITY)
+            .phoneNumber(PHONE_NUMBER);
   }
 
   @Test
   void shallThrowIfDataIsNull() {
-    assertThrows(IllegalArgumentException.class,
-        () -> elementValidation.validate(null, EMPTY_CATEGORY, Collections.emptyList())
-    );
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> elementValidation.validate(null, EMPTY_CATEGORY, Collections.emptyList()));
   }
 
   @Test
   void shallThrowIllegalArgumentExceptionIfValueIsNull() {
     final Optional<ElementId> categoryId = Optional.empty();
-    final var elementData = ElementData.builder()
-        .id(UNIT_CONTACT_INFORMATION)
-        .build();
+    final var elementData = ElementData.builder().id(UNIT_CONTACT_INFORMATION).build();
 
-    assertThrows(IllegalArgumentException.class,
-        () -> elementValidation.validate(elementData, categoryId, Collections.emptyList())
-    );
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> elementValidation.validate(elementData, categoryId, Collections.emptyList()));
   }
 
   @Test
   void shallThrowIllegalArgumentExceptionIfValueIsWrongType() {
     final Optional<ElementId> categoryId = Optional.empty();
-    final var elementData = ElementData.builder()
-        .id(UNIT_CONTACT_INFORMATION)
-        .value(ElementValueDate.builder().build())
-        .build();
+    final var elementData =
+        ElementData.builder()
+            .id(UNIT_CONTACT_INFORMATION)
+            .value(ElementValueDate.builder().build())
+            .build();
 
-    assertThrows(IllegalArgumentException.class,
-        () -> elementValidation.validate(elementData, categoryId, Collections.emptyList())
-    );
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> elementValidation.validate(elementData, categoryId, Collections.emptyList()));
   }
 
   @Test
   void shallReturnValidationErrorIfAddressIsNull() {
-    final var expectedValidationError = List.of(
-        ValidationError.builder()
-            .elementId(UNIT_CONTACT_INFORMATION)
-            .fieldId(new FieldId("grunddata.skapadAv.vardenhet.postadress"))
-            .categoryId(new ElementId("vardenhet"))
-            .message(new ErrorMessage("Ange postadress."))
-            .build()
-    );
+    final var expectedValidationError =
+        List.of(
+            ValidationError.builder()
+                .elementId(UNIT_CONTACT_INFORMATION)
+                .fieldId(new FieldId("grunddata.skapadAv.vardenhet.postadress"))
+                .categoryId(new ElementId("vardenhet"))
+                .message(new ErrorMessage("Ange postadress."))
+                .build());
 
-    final var elementData = ElementData.builder()
-        .id(UNIT_CONTACT_INFORMATION)
-        .value(
-            elementValueUnitContactInformationBuilder
-                .address(null)
-                .build()
-        )
-        .build();
+    final var elementData =
+        ElementData.builder()
+            .id(UNIT_CONTACT_INFORMATION)
+            .value(elementValueUnitContactInformationBuilder.address(null).build())
+            .build();
 
-    final var actualResult = elementValidation.validate(elementData, Optional.empty(),
-        Collections.emptyList());
+    final var actualResult =
+        elementValidation.validate(elementData, Optional.empty(), Collections.emptyList());
     assertEquals(expectedValidationError, actualResult);
   }
 
   @Test
   void shallReturnValidationErrorIfAddressIsEmpty() {
-    final var expectedValidationError = List.of(
-        ValidationError.builder()
-            .elementId(UNIT_CONTACT_INFORMATION)
-            .fieldId(new FieldId("grunddata.skapadAv.vardenhet.postadress"))
-            .categoryId(new ElementId("vardenhet"))
-            .message(new ErrorMessage("Ange postadress."))
-            .build()
-    );
+    final var expectedValidationError =
+        List.of(
+            ValidationError.builder()
+                .elementId(UNIT_CONTACT_INFORMATION)
+                .fieldId(new FieldId("grunddata.skapadAv.vardenhet.postadress"))
+                .categoryId(new ElementId("vardenhet"))
+                .message(new ErrorMessage("Ange postadress."))
+                .build());
 
-    final var elementData = ElementData.builder()
-        .id(UNIT_CONTACT_INFORMATION)
-        .value(
-            elementValueUnitContactInformationBuilder
-                .address("")
-                .build()
-        )
-        .build();
+    final var elementData =
+        ElementData.builder()
+            .id(UNIT_CONTACT_INFORMATION)
+            .value(elementValueUnitContactInformationBuilder.address("").build())
+            .build();
 
-    final var actualResult = elementValidation.validate(elementData, Optional.empty(),
-        Collections.emptyList());
+    final var actualResult =
+        elementValidation.validate(elementData, Optional.empty(), Collections.emptyList());
     assertEquals(expectedValidationError, actualResult);
   }
 
   @Test
   void shallReturnValidationErrorIfZipCodeIsNull() {
-    final var expectedValidationError = List.of(
-        ValidationError.builder()
-            .elementId(UNIT_CONTACT_INFORMATION)
-            .fieldId(new FieldId("grunddata.skapadAv.vardenhet.postnummer"))
-            .categoryId(new ElementId("vardenhet"))
-            .message(new ErrorMessage("Ange postnummer."))
-            .build()
-    );
+    final var expectedValidationError =
+        List.of(
+            ValidationError.builder()
+                .elementId(UNIT_CONTACT_INFORMATION)
+                .fieldId(new FieldId("grunddata.skapadAv.vardenhet.postnummer"))
+                .categoryId(new ElementId("vardenhet"))
+                .message(new ErrorMessage("Ange postnummer."))
+                .build());
 
-    final var elementData = ElementData.builder()
-        .id(UNIT_CONTACT_INFORMATION)
-        .value(
-            elementValueUnitContactInformationBuilder
-                .zipCode(null)
-                .build()
-        )
-        .build();
+    final var elementData =
+        ElementData.builder()
+            .id(UNIT_CONTACT_INFORMATION)
+            .value(elementValueUnitContactInformationBuilder.zipCode(null).build())
+            .build();
 
-    final var actualResult = elementValidation.validate(elementData, Optional.empty(),
-        Collections.emptyList());
+    final var actualResult =
+        elementValidation.validate(elementData, Optional.empty(), Collections.emptyList());
     assertEquals(expectedValidationError, actualResult);
   }
 
   @Test
   void shallReturnValidationErrorIfZipCodeIsEmpty() {
-    final var expectedValidationError = List.of(
-        ValidationError.builder()
-            .elementId(UNIT_CONTACT_INFORMATION)
-            .fieldId(new FieldId("grunddata.skapadAv.vardenhet.postnummer"))
-            .categoryId(new ElementId("vardenhet"))
-            .message(new ErrorMessage("Ange postnummer."))
-            .build()
-    );
+    final var expectedValidationError =
+        List.of(
+            ValidationError.builder()
+                .elementId(UNIT_CONTACT_INFORMATION)
+                .fieldId(new FieldId("grunddata.skapadAv.vardenhet.postnummer"))
+                .categoryId(new ElementId("vardenhet"))
+                .message(new ErrorMessage("Ange postnummer."))
+                .build());
 
-    final var elementData = ElementData.builder()
-        .id(UNIT_CONTACT_INFORMATION)
-        .value(
-            elementValueUnitContactInformationBuilder
-                .zipCode("")
-                .build()
-        )
-        .build();
+    final var elementData =
+        ElementData.builder()
+            .id(UNIT_CONTACT_INFORMATION)
+            .value(elementValueUnitContactInformationBuilder.zipCode("").build())
+            .build();
 
-    final var actualResult = elementValidation.validate(elementData, Optional.empty(),
-        Collections.emptyList());
+    final var actualResult =
+        elementValidation.validate(elementData, Optional.empty(), Collections.emptyList());
     assertEquals(expectedValidationError, actualResult);
   }
 
   @Test
   void shallReturnValidationErrorIfCityIsNull() {
-    final var expectedValidationError = List.of(
-        ValidationError.builder()
-            .elementId(UNIT_CONTACT_INFORMATION)
-            .fieldId(new FieldId("grunddata.skapadAv.vardenhet.postort"))
-            .categoryId(new ElementId("vardenhet"))
-            .message(new ErrorMessage("Ange postort."))
-            .build()
-    );
+    final var expectedValidationError =
+        List.of(
+            ValidationError.builder()
+                .elementId(UNIT_CONTACT_INFORMATION)
+                .fieldId(new FieldId("grunddata.skapadAv.vardenhet.postort"))
+                .categoryId(new ElementId("vardenhet"))
+                .message(new ErrorMessage("Ange postort."))
+                .build());
 
-    final var elementData = ElementData.builder()
-        .id(UNIT_CONTACT_INFORMATION)
-        .value(
-            elementValueUnitContactInformationBuilder
-                .city(null)
-                .build()
-        )
-        .build();
+    final var elementData =
+        ElementData.builder()
+            .id(UNIT_CONTACT_INFORMATION)
+            .value(elementValueUnitContactInformationBuilder.city(null).build())
+            .build();
 
-    final var actualResult = elementValidation.validate(elementData, Optional.empty(),
-        Collections.emptyList());
+    final var actualResult =
+        elementValidation.validate(elementData, Optional.empty(), Collections.emptyList());
     assertEquals(expectedValidationError, actualResult);
   }
 
   @Test
   void shallReturnValidationErrorIfCityIsEmpty() {
-    final var expectedValidationError = List.of(
-        ValidationError.builder()
-            .elementId(UNIT_CONTACT_INFORMATION)
-            .fieldId(new FieldId("grunddata.skapadAv.vardenhet.postort"))
-            .categoryId(new ElementId("vardenhet"))
-            .message(new ErrorMessage("Ange postort."))
-            .build()
-    );
+    final var expectedValidationError =
+        List.of(
+            ValidationError.builder()
+                .elementId(UNIT_CONTACT_INFORMATION)
+                .fieldId(new FieldId("grunddata.skapadAv.vardenhet.postort"))
+                .categoryId(new ElementId("vardenhet"))
+                .message(new ErrorMessage("Ange postort."))
+                .build());
 
-    final var elementData = ElementData.builder()
-        .id(UNIT_CONTACT_INFORMATION)
-        .value(
-            elementValueUnitContactInformationBuilder
-                .city("")
-                .build()
-        )
-        .build();
+    final var elementData =
+        ElementData.builder()
+            .id(UNIT_CONTACT_INFORMATION)
+            .value(elementValueUnitContactInformationBuilder.city("").build())
+            .build();
 
-    final var actualResult = elementValidation.validate(elementData, Optional.empty(),
-        Collections.emptyList());
+    final var actualResult =
+        elementValidation.validate(elementData, Optional.empty(), Collections.emptyList());
     assertEquals(expectedValidationError, actualResult);
   }
 
   @Test
   void shallReturnValidationErrorIfPhoneNumberIsNull() {
-    final var expectedValidationError = List.of(
-        ValidationError.builder()
-            .elementId(UNIT_CONTACT_INFORMATION)
-            .fieldId(new FieldId("grunddata.skapadAv.vardenhet.telefonnummer"))
-            .categoryId(new ElementId("vardenhet"))
-            .message(new ErrorMessage("Ange telefonnummer."))
-            .build()
-    );
+    final var expectedValidationError =
+        List.of(
+            ValidationError.builder()
+                .elementId(UNIT_CONTACT_INFORMATION)
+                .fieldId(new FieldId("grunddata.skapadAv.vardenhet.telefonnummer"))
+                .categoryId(new ElementId("vardenhet"))
+                .message(new ErrorMessage("Ange telefonnummer."))
+                .build());
 
-    final var elementData = ElementData.builder()
-        .id(UNIT_CONTACT_INFORMATION)
-        .value(
-            elementValueUnitContactInformationBuilder
-                .phoneNumber(null)
-                .build()
-        )
-        .build();
+    final var elementData =
+        ElementData.builder()
+            .id(UNIT_CONTACT_INFORMATION)
+            .value(elementValueUnitContactInformationBuilder.phoneNumber(null).build())
+            .build();
 
-    final var actualResult = elementValidation.validate(elementData, Optional.empty(),
-        Collections.emptyList());
+    final var actualResult =
+        elementValidation.validate(elementData, Optional.empty(), Collections.emptyList());
     assertEquals(expectedValidationError, actualResult);
   }
 
   @Test
   void shallReturnValidationErrorIfPhoneNumberIsEmpty() {
-    final var expectedValidationError = List.of(
-        ValidationError.builder()
-            .elementId(UNIT_CONTACT_INFORMATION)
-            .fieldId(new FieldId("grunddata.skapadAv.vardenhet.telefonnummer"))
-            .categoryId(new ElementId("vardenhet"))
-            .message(new ErrorMessage("Ange telefonnummer."))
-            .build()
-    );
+    final var expectedValidationError =
+        List.of(
+            ValidationError.builder()
+                .elementId(UNIT_CONTACT_INFORMATION)
+                .fieldId(new FieldId("grunddata.skapadAv.vardenhet.telefonnummer"))
+                .categoryId(new ElementId("vardenhet"))
+                .message(new ErrorMessage("Ange telefonnummer."))
+                .build());
 
-    final var elementData = ElementData.builder()
-        .id(UNIT_CONTACT_INFORMATION)
-        .value(
-            elementValueUnitContactInformationBuilder
-                .phoneNumber("")
-                .build()
-        )
-        .build();
+    final var elementData =
+        ElementData.builder()
+            .id(UNIT_CONTACT_INFORMATION)
+            .value(elementValueUnitContactInformationBuilder.phoneNumber("").build())
+            .build();
 
-    final var actualResult = elementValidation.validate(elementData, Optional.empty(),
-        Collections.emptyList());
+    final var actualResult =
+        elementValidation.validate(elementData, Optional.empty(), Collections.emptyList());
     assertEquals(expectedValidationError, actualResult);
   }
 
   @Test
   void shallReturnAllValidationErrorWhenMissing() {
-    final var expectedValidationError = List.of(
-        ValidationError.builder()
-            .elementId(UNIT_CONTACT_INFORMATION)
-            .fieldId(new FieldId("grunddata.skapadAv.vardenhet.postadress"))
-            .categoryId(new ElementId("vardenhet"))
-            .message(new ErrorMessage("Ange postadress."))
-            .build(),
-        ValidationError.builder()
-            .elementId(UNIT_CONTACT_INFORMATION)
-            .fieldId(new FieldId("grunddata.skapadAv.vardenhet.postnummer"))
-            .categoryId(new ElementId("vardenhet"))
-            .message(new ErrorMessage("Ange postnummer."))
-            .build(),
-        ValidationError.builder()
-            .elementId(UNIT_CONTACT_INFORMATION)
-            .fieldId(new FieldId("grunddata.skapadAv.vardenhet.postort"))
-            .categoryId(new ElementId("vardenhet"))
-            .message(new ErrorMessage("Ange postort."))
-            .build(),
-        ValidationError.builder()
-            .elementId(UNIT_CONTACT_INFORMATION)
-            .fieldId(new FieldId("grunddata.skapadAv.vardenhet.telefonnummer"))
-            .categoryId(new ElementId("vardenhet"))
-            .message(new ErrorMessage("Ange telefonnummer."))
-            .build()
-    );
+    final var expectedValidationError =
+        List.of(
+            ValidationError.builder()
+                .elementId(UNIT_CONTACT_INFORMATION)
+                .fieldId(new FieldId("grunddata.skapadAv.vardenhet.postadress"))
+                .categoryId(new ElementId("vardenhet"))
+                .message(new ErrorMessage("Ange postadress."))
+                .build(),
+            ValidationError.builder()
+                .elementId(UNIT_CONTACT_INFORMATION)
+                .fieldId(new FieldId("grunddata.skapadAv.vardenhet.postnummer"))
+                .categoryId(new ElementId("vardenhet"))
+                .message(new ErrorMessage("Ange postnummer."))
+                .build(),
+            ValidationError.builder()
+                .elementId(UNIT_CONTACT_INFORMATION)
+                .fieldId(new FieldId("grunddata.skapadAv.vardenhet.postort"))
+                .categoryId(new ElementId("vardenhet"))
+                .message(new ErrorMessage("Ange postort."))
+                .build(),
+            ValidationError.builder()
+                .elementId(UNIT_CONTACT_INFORMATION)
+                .fieldId(new FieldId("grunddata.skapadAv.vardenhet.telefonnummer"))
+                .categoryId(new ElementId("vardenhet"))
+                .message(new ErrorMessage("Ange telefonnummer."))
+                .build());
 
-    final var elementData = ElementData.builder()
-        .id(UNIT_CONTACT_INFORMATION)
-        .value(
-            ElementValueUnitContactInformation.builder().build()
-        )
-        .build();
+    final var elementData =
+        ElementData.builder()
+            .id(UNIT_CONTACT_INFORMATION)
+            .value(ElementValueUnitContactInformation.builder().build())
+            .build();
 
-    final var actualResult = elementValidation.validate(elementData, Optional.empty(),
-        Collections.emptyList());
+    final var actualResult =
+        elementValidation.validate(elementData, Optional.empty(), Collections.emptyList());
     assertEquals(expectedValidationError, actualResult);
   }
 
@@ -313,15 +306,14 @@ class ElementValidationUnitContactInformationTest {
   void shallReturnEmptyValidationErrors() {
     final var expectedValidationError = Collections.emptyList();
 
-    final var elementData = ElementData.builder()
-        .id(UNIT_CONTACT_INFORMATION)
-        .value(
-            elementValueUnitContactInformationBuilder.build()
-        )
-        .build();
+    final var elementData =
+        ElementData.builder()
+            .id(UNIT_CONTACT_INFORMATION)
+            .value(elementValueUnitContactInformationBuilder.build())
+            .build();
 
-    final var actualResult = elementValidation.validate(elementData, Optional.empty(),
-        Collections.emptyList());
+    final var actualResult =
+        elementValidation.validate(elementData, Optional.empty(), Collections.emptyList());
     assertEquals(expectedValidationError, actualResult);
   }
 }

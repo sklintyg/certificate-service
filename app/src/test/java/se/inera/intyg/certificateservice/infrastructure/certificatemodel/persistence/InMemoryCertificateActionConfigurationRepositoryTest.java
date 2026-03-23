@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.persistence;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,23 +47,26 @@ class InMemoryCertificateActionConfigurationRepositoryTest {
 
   private static final String TYPE = "type";
   private static final String VERSION = "1.0";
+
   @Mock
   GetLimitedCertificateFunctionalityConfiguration getLimitedCertificateFunctionalityConfiguration;
-  @Mock
-  UnitAccessConfiguration unitAccessConfiguration;
+
+  @Mock UnitAccessConfiguration unitAccessConfiguration;
+
   @InjectMocks
   InMemoryCertificateActionConfigurationRepository inMemoryCertificateActionConfigurationRepository;
+
   private CertificateModel.CertificateModelBuilder certificateModelBuilder;
 
   @BeforeEach
   void setUp() {
-    this.certificateModelBuilder = CertificateModel.builder()
-        .id(
-            CertificateModelId.builder()
-                .type(new CertificateType(TYPE))
-                .version(new CertificateVersion(VERSION))
-                .build()
-        );
+    this.certificateModelBuilder =
+        CertificateModel.builder()
+            .id(
+                CertificateModelId.builder()
+                    .type(new CertificateType(TYPE))
+                    .version(new CertificateVersion(VERSION))
+                    .build());
   }
 
   @Nested
@@ -57,56 +78,48 @@ class InMemoryCertificateActionConfigurationRepositoryTest {
 
       doReturn(Collections.emptyList()).when(unitAccessConfiguration).get();
 
-      final var result = inMemoryCertificateActionConfigurationRepository.findAccessConfiguration(
-          certificateModel.id().type()
-      );
+      final var result =
+          inMemoryCertificateActionConfigurationRepository.findAccessConfiguration(
+              certificateModel.id().type());
 
       assertTrue(result.isEmpty());
     }
 
     @Test
     void shallReturnConfigurationOfMatchingType() {
-      final var certificateModel = certificateModelBuilder
-          .id(
-              CertificateModelId.builder()
-                  .type(new CertificateType(TYPE))
-                  .build()
-          )
-          .build();
+      final var certificateModel =
+          certificateModelBuilder
+              .id(CertificateModelId.builder().type(new CertificateType(TYPE)).build())
+              .build();
 
-      final var expectedConfiguration = CertificateAccessConfiguration.builder()
-          .certificateType(TYPE)
-          .build();
+      final var expectedConfiguration =
+          CertificateAccessConfiguration.builder().certificateType(TYPE).build();
 
-      final var certificateUnitAccessConfigurations = List.of(
-          expectedConfiguration
-      );
+      final var certificateUnitAccessConfigurations = List.of(expectedConfiguration);
 
       doReturn(certificateUnitAccessConfigurations).when(unitAccessConfiguration).get();
 
-      final var result = inMemoryCertificateActionConfigurationRepository.findAccessConfiguration(
-          certificateModel.id().type());
+      final var result =
+          inMemoryCertificateActionConfigurationRepository.findAccessConfiguration(
+              certificateModel.id().type());
 
       assertEquals(List.of(expectedConfiguration), result);
     }
 
     @Test
     void shallReturnEmptyListIfNoConfigurationIsFoundForType() {
-      final var certificateModel = certificateModelBuilder
-          .id(
-              CertificateModelId.builder()
-                  .type(new CertificateType("wrongType"))
-                  .build()
-          )
-          .build();
-      final var certificateUnitAccessConfigurations = List.of(
-          CertificateAccessConfiguration.builder().certificateType(TYPE).build());
+      final var certificateModel =
+          certificateModelBuilder
+              .id(CertificateModelId.builder().type(new CertificateType("wrongType")).build())
+              .build();
+      final var certificateUnitAccessConfigurations =
+          List.of(CertificateAccessConfiguration.builder().certificateType(TYPE).build());
 
       doReturn(certificateUnitAccessConfigurations).when(unitAccessConfiguration).get();
 
-      final var result = inMemoryCertificateActionConfigurationRepository.findAccessConfiguration(
-          certificateModel.id().type()
-      );
+      final var result =
+          inMemoryCertificateActionConfigurationRepository.findAccessConfiguration(
+              certificateModel.id().type());
 
       assertTrue(result.isEmpty());
     }
@@ -121,67 +134,68 @@ class InMemoryCertificateActionConfigurationRepositoryTest {
 
       doReturn(Collections.emptyList()).when(getLimitedCertificateFunctionalityConfiguration).get();
 
-      final var result = inMemoryCertificateActionConfigurationRepository.findLimitedCertificateFunctionalityConfiguration(
-          certificateModel.id()
-      );
+      final var result =
+          inMemoryCertificateActionConfigurationRepository
+              .findLimitedCertificateFunctionalityConfiguration(certificateModel.id());
 
       assertNull(result);
     }
 
     @Test
     void shallReturnConfigurationOfMatchingTypeAndVersion() {
-      final var certificateModel = certificateModelBuilder
-          .id(
-              CertificateModelId.builder()
-                  .type(new CertificateType(TYPE))
-                  .version(new CertificateVersion(VERSION))
-                  .build()
-          )
-          .build();
+      final var certificateModel =
+          certificateModelBuilder
+              .id(
+                  CertificateModelId.builder()
+                      .type(new CertificateType(TYPE))
+                      .version(new CertificateVersion(VERSION))
+                      .build())
+              .build();
 
-      final var expectedConfiguration = LimitedCertificateFunctionalityConfiguration.builder()
-          .certificateType(TYPE)
-          .version(List.of(VERSION))
-          .build();
+      final var expectedConfiguration =
+          LimitedCertificateFunctionalityConfiguration.builder()
+              .certificateType(TYPE)
+              .version(List.of(VERSION))
+              .build();
 
-      final var certificateInactiveConfigurations = List.of(
-          expectedConfiguration
-      );
+      final var certificateInactiveConfigurations = List.of(expectedConfiguration);
 
-      doReturn(certificateInactiveConfigurations).when(
-          getLimitedCertificateFunctionalityConfiguration).get();
+      doReturn(certificateInactiveConfigurations)
+          .when(getLimitedCertificateFunctionalityConfiguration)
+          .get();
 
-      final var result = inMemoryCertificateActionConfigurationRepository.findLimitedCertificateFunctionalityConfiguration(
-          certificateModel.id()
-      );
+      final var result =
+          inMemoryCertificateActionConfigurationRepository
+              .findLimitedCertificateFunctionalityConfiguration(certificateModel.id());
 
       assertEquals(expectedConfiguration, result);
     }
 
     @Test
     void shallReturnEmptyListIfNoConfigurationIsFoundForTypeWithOtherVersion() {
-      final var certificateModel = certificateModelBuilder
-          .id(
-              CertificateModelId.builder()
-                  .type(new CertificateType(TYPE))
-                  .version(new CertificateVersion("2.0"))
-                  .build()
-          )
-          .build();
+      final var certificateModel =
+          certificateModelBuilder
+              .id(
+                  CertificateModelId.builder()
+                      .type(new CertificateType(TYPE))
+                      .version(new CertificateVersion("2.0"))
+                      .build())
+              .build();
 
-      final var certificateInactiveConfigurations = List.of(
-          LimitedCertificateFunctionalityConfiguration.builder()
-              .certificateType(TYPE)
-              .version(List.of(VERSION))
-              .build()
-      );
+      final var certificateInactiveConfigurations =
+          List.of(
+              LimitedCertificateFunctionalityConfiguration.builder()
+                  .certificateType(TYPE)
+                  .version(List.of(VERSION))
+                  .build());
 
-      doReturn(certificateInactiveConfigurations).when(
-          getLimitedCertificateFunctionalityConfiguration).get();
+      doReturn(certificateInactiveConfigurations)
+          .when(getLimitedCertificateFunctionalityConfiguration)
+          .get();
 
-      final var result = inMemoryCertificateActionConfigurationRepository.findLimitedCertificateFunctionalityConfiguration(
-          certificateModel.id()
-      );
+      final var result =
+          inMemoryCertificateActionConfigurationRepository
+              .findLimitedCertificateFunctionalityConfiguration(certificateModel.id());
 
       assertNull(result);
     }

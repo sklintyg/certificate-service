@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.integrationtest.common.tests;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -25,146 +43,147 @@ public abstract class GetCertificateTypeInfoIT extends BaseIntegrationIT {
   @Test
   @DisplayName("Om aktiverad ska intygstypen returneras i listan av tillgängliga intygstyper")
   void shallReturnCertificateWhenActive() {
-    final var response = api().certificateTypeInfo(
-        defaultCertificateTypeInfoRequest()
-    );
+    final var response = api().certificateTypeInfo(defaultCertificateTypeInfoRequest());
 
     assertNotNull(
         certificateTypeInfo(response.getBody(), type()),
-        "Should contain %s as it is active!".formatted(type())
-    );
+        "Should contain %s as it is active!".formatted(type()));
   }
 
   @Test
-  @DisplayName("Om användaren har rollen tandläkare och inte får signera intyget ska intygstypen inte returneras i listan av tillgängliga intygstyper")
+  @DisplayName(
+      "Om användaren har rollen tandläkare och inte får signera intyget ska intygstypen inte returneras i listan av tillgängliga intygstyper")
   void shallRespectRulesIfDentistCanSignCertificateTypeWhenReturningCertificateTypeInList() {
-    final var response = api().certificateTypeInfo(
-        customCertificateTypeInfoRequest()
-            .user(DAN_DENTIST_DTO)
-            .build()
-    );
+    final var response =
+        api().certificateTypeInfo(customCertificateTypeInfoRequest().user(DAN_DENTIST_DTO).build());
 
     if (canDentistsUseType()) {
       assertNotNull(
           certificateTypeInfo(response.getBody(), type()),
-          "Should contain %s as user is dentist and can use type!".formatted(type())
-      );
+          "Should contain %s as user is dentist and can use type!".formatted(type()));
     } else {
       assertNull(
           certificateTypeInfo(response.getBody(), type()),
-          "Should not contain %s as user is dentist!".formatted(type())
-      );
+          "Should not contain %s as user is dentist!".formatted(type()));
     }
   }
 
   @Test
   @DisplayName("Om aktiverad ska 'Skapa utkast' vara tillgänglig")
   void shallReturnResourceLinkCreateCertificate() {
-    final var response = api().certificateTypeInfo(
-        defaultCertificateTypeInfoRequest()
-    );
+    final var response = api().certificateTypeInfo(defaultCertificateTypeInfoRequest());
 
-    final var resourceLink = resourceLink(certificateTypeInfo(response.getBody(), type()),
-        ResourceLinkTypeDTO.CREATE_CERTIFICATE);
+    final var resourceLink =
+        resourceLink(
+            certificateTypeInfo(response.getBody(), type()),
+            ResourceLinkTypeDTO.CREATE_CERTIFICATE);
 
-    assertNotNull(resourceLink,
-        "Should contain %s!".formatted(ResourceLinkTypeDTO.CREATE_CERTIFICATE));
+    assertNotNull(
+        resourceLink, "Should contain %s!".formatted(ResourceLinkTypeDTO.CREATE_CERTIFICATE));
     assertTrue(resourceLink.isEnabled(), "Should be enabled");
   }
 
   @Test
   @DisplayName("Om patienten är avliden ska inte 'Skapa utkast' vara tillgänglig")
   void shallNotReturnResourceLinkCreateCertificateIfPatientIsDeceased() {
-    final var response = api().certificateTypeInfo(
-        customCertificateTypeInfoRequest()
-            .patient(ATLAS_REACT_ABRAHAMSSON_DTO)
-            .build()
-    );
+    final var response =
+        api()
+            .certificateTypeInfo(
+                customCertificateTypeInfoRequest().patient(ATLAS_REACT_ABRAHAMSSON_DTO).build());
 
-    final var resourceLink = resourceLink(certificateTypeInfo(response.getBody(), type()),
-        ResourceLinkTypeDTO.CREATE_CERTIFICATE);
+    final var resourceLink =
+        resourceLink(
+            certificateTypeInfo(response.getBody(), type()),
+            ResourceLinkTypeDTO.CREATE_CERTIFICATE);
 
-    assertNotNull(resourceLink,
-        "Should contain %s!".formatted(ResourceLinkTypeDTO.CREATE_CERTIFICATE));
+    assertNotNull(
+        resourceLink, "Should contain %s!".formatted(ResourceLinkTypeDTO.CREATE_CERTIFICATE));
     assertFalse(resourceLink.isEnabled(), "Should be disabled");
   }
 
   @Test
   @DisplayName("Om användaren är blockerad ska inte 'Skapa utkast' vara tillgänglig")
   void shallNotReturnResourceLinkCreateCertificateIfUserIsBlocked() {
-    final var response = api().certificateTypeInfo(
-        customCertificateTypeInfoRequest()
-            .user(
-                ajlaDoktorDtoBuilder()
-                    .blocked(Boolean.TRUE)
-                    .build()
-            )
-            .build()
-    );
+    final var response =
+        api()
+            .certificateTypeInfo(
+                customCertificateTypeInfoRequest()
+                    .user(ajlaDoktorDtoBuilder().blocked(Boolean.TRUE).build())
+                    .build());
 
-    final var resourceLink = resourceLink(certificateTypeInfo(response.getBody(), type()),
-        ResourceLinkTypeDTO.CREATE_CERTIFICATE);
+    final var resourceLink =
+        resourceLink(
+            certificateTypeInfo(response.getBody(), type()),
+            ResourceLinkTypeDTO.CREATE_CERTIFICATE);
 
-    assertNotNull(resourceLink,
-        "Should contain %s!".formatted(ResourceLinkTypeDTO.CREATE_CERTIFICATE));
+    assertNotNull(
+        resourceLink, "Should contain %s!".formatted(ResourceLinkTypeDTO.CREATE_CERTIFICATE));
     assertFalse(resourceLink.isEnabled(), "Should be disabled");
   }
 
   @Test
-  @DisplayName("Om användaren är blockerad och patienten avliden ska inte 'Skapa utkast' vara tillgänglig")
+  @DisplayName(
+      "Om användaren är blockerad och patienten avliden ska inte 'Skapa utkast' vara tillgänglig")
   void shallNotReturnResourceLinkCreateCertificateIfUserIsBlockedAndPatientIsDeceased() {
-    final var response = api().certificateTypeInfo(
-        customCertificateTypeInfoRequest()
-            .user(
-                ajlaDoktorDtoBuilder()
-                    .blocked(Boolean.TRUE)
-                    .build()
-            )
-            .patient(ATLAS_REACT_ABRAHAMSSON_DTO)
-            .build()
-    );
+    final var response =
+        api()
+            .certificateTypeInfo(
+                customCertificateTypeInfoRequest()
+                    .user(ajlaDoktorDtoBuilder().blocked(Boolean.TRUE).build())
+                    .patient(ATLAS_REACT_ABRAHAMSSON_DTO)
+                    .build());
 
-    final var resourceLink = resourceLink(certificateTypeInfo(response.getBody(), type()),
-        ResourceLinkTypeDTO.CREATE_CERTIFICATE);
+    final var resourceLink =
+        resourceLink(
+            certificateTypeInfo(response.getBody(), type()),
+            ResourceLinkTypeDTO.CREATE_CERTIFICATE);
 
-    assertNotNull(resourceLink,
-        "Should contain %s!".formatted(ResourceLinkTypeDTO.CREATE_CERTIFICATE));
+    assertNotNull(
+        resourceLink, "Should contain %s!".formatted(ResourceLinkTypeDTO.CREATE_CERTIFICATE));
     assertFalse(resourceLink.isEnabled(), "Should be disabled");
   }
 
   @Test
-  @DisplayName("Vårdadmininstratör - Om patienten har skyddade personuppgifter ska inte 'Skapa utkast' vara tillgänglig")
+  @DisplayName(
+      "Vårdadmininstratör - Om patienten har skyddade personuppgifter ska inte 'Skapa utkast' vara tillgänglig")
   void shallNotReturnResourceLinkCreateCertificateIfUserIsCareAdminAndPatientIsProtected() {
-    final var response = api().certificateTypeInfo(
-        customCertificateTypeInfoRequest()
-            .user(ALVA_VARDADMINISTRATOR_DTO)
-            .patient(ANONYMA_REACT_ATTILA_DTO)
-            .build()
-    );
+    final var response =
+        api()
+            .certificateTypeInfo(
+                customCertificateTypeInfoRequest()
+                    .user(ALVA_VARDADMINISTRATOR_DTO)
+                    .patient(ANONYMA_REACT_ATTILA_DTO)
+                    .build());
 
-    final var resourceLink = resourceLink(certificateTypeInfo(response.getBody(), type()),
-        ResourceLinkTypeDTO.CREATE_CERTIFICATE);
+    final var resourceLink =
+        resourceLink(
+            certificateTypeInfo(response.getBody(), type()),
+            ResourceLinkTypeDTO.CREATE_CERTIFICATE);
 
-    assertNotNull(resourceLink,
-        "Should contain %s!".formatted(ResourceLinkTypeDTO.CREATE_CERTIFICATE));
+    assertNotNull(
+        resourceLink, "Should contain %s!".formatted(ResourceLinkTypeDTO.CREATE_CERTIFICATE));
     assertFalse(resourceLink.isEnabled(), "Should be disabled");
   }
 
   @Test
-  @DisplayName("Läkare - Om patienten har skyddade personuppgifter ska 'Skapa utkast' vara tillgänglig")
+  @DisplayName(
+      "Läkare - Om patienten har skyddade personuppgifter ska 'Skapa utkast' vara tillgänglig")
   void shallReturnResourceLinkCreateCertificateIfUserIsDoctorAndPatientIsProtected() {
-    final var response = api().certificateTypeInfo(
-        customCertificateTypeInfoRequest()
-            .user(AJLA_DOCTOR_DTO)
-            .patient(ANONYMA_REACT_ATTILA_DTO)
-            .build()
-    );
+    final var response =
+        api()
+            .certificateTypeInfo(
+                customCertificateTypeInfoRequest()
+                    .user(AJLA_DOCTOR_DTO)
+                    .patient(ANONYMA_REACT_ATTILA_DTO)
+                    .build());
 
-    final var resourceLink = resourceLink(certificateTypeInfo(response.getBody(), type()),
-        ResourceLinkTypeDTO.CREATE_CERTIFICATE);
+    final var resourceLink =
+        resourceLink(
+            certificateTypeInfo(response.getBody(), type()),
+            ResourceLinkTypeDTO.CREATE_CERTIFICATE);
 
-    assertNotNull(resourceLink,
-        "Should contain %s!".formatted(ResourceLinkTypeDTO.CREATE_CERTIFICATE));
+    assertNotNull(
+        resourceLink, "Should contain %s!".formatted(ResourceLinkTypeDTO.CREATE_CERTIFICATE));
     assertTrue(resourceLink.isEnabled(), "Should be enabled");
   }
 }

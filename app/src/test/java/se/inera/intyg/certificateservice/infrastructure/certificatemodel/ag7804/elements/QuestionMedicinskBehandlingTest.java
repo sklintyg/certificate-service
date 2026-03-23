@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ag7804.elements;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,12 +49,13 @@ class QuestionMedicinskBehandlingTest {
 
   @Test
   void shouldIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationTextArea.builder()
-        .name(
-            "Beskriv pågående och planerade medicinska behandlingar/åtgärder som kan påverka arbetsförmågan")
-        .label("Ange vad syftet är och om möjligt tidsplan samt ansvarig vårdenhet.")
-        .id(new FieldId("19.1"))
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationTextArea.builder()
+            .name(
+                "Beskriv pågående och planerade medicinska behandlingar/åtgärder som kan påverka arbetsförmågan")
+            .label("Ange vad syftet är och om möjligt tidsplan samt ansvarig vårdenhet.")
+            .id(new FieldId("19.1"))
+            .build();
 
     final var element = QuestionMedicinskBehandling.questionMedicinskBehandling();
 
@@ -45,18 +64,18 @@ class QuestionMedicinskBehandlingTest {
 
   @Test
   void shouldIncludeRules() {
-    final var expectedRules = List.of(
-        ElementRuleLimit.builder()
-            .id(new ElementId("19"))
-            .type(ElementRuleType.TEXT_LIMIT)
-            .limit(new RuleLimit((short) 4000))
-            .build(),
-        ElementRuleExpression.builder()
-            .id(new ElementId(("27")))
-            .type(ElementRuleType.HIDE)
-            .expression(new RuleExpression("$27.1"))
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleLimit.builder()
+                .id(new ElementId("19"))
+                .type(ElementRuleType.TEXT_LIMIT)
+                .limit(new RuleLimit((short) 4000))
+                .build(),
+            ElementRuleExpression.builder()
+                .id(new ElementId(("27")))
+                .type(ElementRuleType.HIDE)
+                .expression(new RuleExpression("$27.1"))
+                .build());
 
     final var element = QuestionMedicinskBehandling.questionMedicinskBehandling();
 
@@ -65,12 +84,8 @@ class QuestionMedicinskBehandlingTest {
 
   @Test
   void shouldIncludeValidations() {
-    final var expectedValidations = List.of(
-        ElementValidationText.builder()
-            .mandatory(false)
-            .limit(4000)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationText.builder().mandatory(false).limit(4000).build());
 
     final var element = QuestionMedicinskBehandling.questionMedicinskBehandling();
 
@@ -82,16 +97,12 @@ class QuestionMedicinskBehandlingTest {
 
     @Test
     void shallReturnTrueIfBooleanIsFalse() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("27"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(false)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("27"))
+                  .value(ElementValueBoolean.builder().value(false).build())
+                  .build());
 
       final var element = QuestionMedicinskBehandling.questionMedicinskBehandling();
 
@@ -102,16 +113,12 @@ class QuestionMedicinskBehandlingTest {
 
     @Test
     void shallReturnTrueIfElementMissing() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("8.1"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(true)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("8.1"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
 
       final var element = QuestionMedicinskBehandling.questionMedicinskBehandling();
 
@@ -122,16 +129,12 @@ class QuestionMedicinskBehandlingTest {
 
     @Test
     void shallReturnFalseIfElementTrue() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("27"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(true)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("27"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
 
       final var element = QuestionMedicinskBehandling.questionMedicinskBehandling();
 
@@ -140,5 +143,4 @@ class QuestionMedicinskBehandlingTest {
       assertFalse(shouldValidate.test(elementData));
     }
   }
-
 }

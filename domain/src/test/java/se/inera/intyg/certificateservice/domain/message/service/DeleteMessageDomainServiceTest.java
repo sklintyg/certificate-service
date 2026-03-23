@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.message.service;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -26,12 +44,9 @@ class DeleteMessageDomainServiceTest {
 
   private static final CertificateId CERTIFICATE_ID = new CertificateId("certificateId");
   private static final MessageId MESSAGE_ID = new MessageId("messageId");
-  @Mock
-  MessageRepository messageRepository;
-  @Mock
-  CertificateRepository certificateRepository;
-  @InjectMocks
-  DeleteMessageDomainService deleteMessageDomainService;
+  @Mock MessageRepository messageRepository;
+  @Mock CertificateRepository certificateRepository;
+  @InjectMocks DeleteMessageDomainService deleteMessageDomainService;
 
   @Test
   void shallThrowIfNotAllowedToDeleteMessage() {
@@ -41,12 +56,13 @@ class DeleteMessageDomainServiceTest {
     doReturn(CERTIFICATE_ID).when(message).certificateId();
     doReturn(CERTIFICATE_ID).when(certificate).id();
     doReturn(certificate).when(certificateRepository).getById(CERTIFICATE_ID);
-    doReturn(false).when(certificate)
+    doReturn(false)
+        .when(certificate)
         .allowTo(CertificateActionType.DELETE_MESSAGE, Optional.of(ACTION_EVALUATION));
 
-    assertThrows(CertificateActionForbidden.class, () -> deleteMessageDomainService.delete(
-        MESSAGE_ID, ACTION_EVALUATION
-    ));
+    assertThrows(
+        CertificateActionForbidden.class,
+        () -> deleteMessageDomainService.delete(MESSAGE_ID, ACTION_EVALUATION));
   }
 
   @Test
@@ -56,7 +72,8 @@ class DeleteMessageDomainServiceTest {
     doReturn(message).when(messageRepository).getById(MESSAGE_ID);
     doReturn(CERTIFICATE_ID).when(message).certificateId();
     doReturn(certificate).when(certificateRepository).getById(CERTIFICATE_ID);
-    doReturn(true).when(certificate)
+    doReturn(true)
+        .when(certificate)
         .allowTo(CertificateActionType.DELETE_MESSAGE, Optional.of(ACTION_EVALUATION));
 
     deleteMessageDomainService.delete(MESSAGE_ID, ACTION_EVALUATION);
@@ -71,7 +88,8 @@ class DeleteMessageDomainServiceTest {
     doReturn(message).when(messageRepository).getById(MESSAGE_ID);
     doReturn(CERTIFICATE_ID).when(message).certificateId();
     doReturn(certificate).when(certificateRepository).getById(CERTIFICATE_ID);
-    doReturn(true).when(certificate)
+    doReturn(true)
+        .when(certificate)
         .allowTo(CertificateActionType.DELETE_MESSAGE, Optional.of(ACTION_EVALUATION));
 
     deleteMessageDomainService.delete(MESSAGE_ID, ACTION_EVALUATION);

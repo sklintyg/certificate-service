@@ -1,5 +1,22 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service.converter;
-
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -27,14 +44,14 @@ class CertificateDataIcfConfigConverterTest {
 
   @Test
   void shouldThrowExceptionIfWrongClass() {
-    final var elementSpecification = ElementSpecification.builder()
-        .configuration(ElementConfigurationDate.builder().build())
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .configuration(ElementConfigurationDate.builder().build())
+            .build();
 
-    assertThrows(IllegalStateException.class,
-        () -> certificateDataIcfConfigConverter.convert(elementSpecification,
-            FK7804_CERTIFICATE)
-    );
+    assertThrows(
+        IllegalStateException.class,
+        () -> certificateDataIcfConfigConverter.convert(elementSpecification, FK7804_CERTIFICATE));
   }
 
   @Test
@@ -44,31 +61,31 @@ class CertificateDataIcfConfigConverterTest {
 
   @Test
   void shouldReturnConvertedConfig() {
-    final var expected = CertificateDataConfigIcf.builder()
-        .id("ID")
-        .description("DESCRIPTION")
-        .modalLabel("MODAL_LABEL")
-        .collectionsLabel("COLLECTIONS_LABEL")
-        .placeholder("PLACEHOLDER")
-        .icfCodesPropertyName(IcfCodesPropertyTypeDTO.FUNKTIONSNEDSATTNINGAR)
-        .build();
+    final var expected =
+        CertificateDataConfigIcf.builder()
+            .id("ID")
+            .description("DESCRIPTION")
+            .modalLabel("MODAL_LABEL")
+            .collectionsLabel("COLLECTIONS_LABEL")
+            .placeholder("PLACEHOLDER")
+            .icfCodesPropertyName(IcfCodesPropertyTypeDTO.FUNKTIONSNEDSATTNINGAR)
+            .build();
 
-    final var response = certificateDataIcfConfigConverter.convert(
-        ElementSpecification.builder()
-            .configuration(
-                ElementConfigurationIcf.builder()
-                    .id(new FieldId("ID"))
-                    .description("DESCRIPTION")
-                    .modalLabel("MODAL_LABEL")
-                    .collectionsLabel("COLLECTIONS_LABEL")
-                    .placeholder("PLACEHOLDER")
-                    .icfCodesPropertyName(IcfCodesPropertyType.FUNKTIONSNEDSATTNINGAR)
-                    .build()
-            ).build(),
-        FK7804_CERTIFICATE
-    );
+    final var response =
+        certificateDataIcfConfigConverter.convert(
+            ElementSpecification.builder()
+                .configuration(
+                    ElementConfigurationIcf.builder()
+                        .id(new FieldId("ID"))
+                        .description("DESCRIPTION")
+                        .modalLabel("MODAL_LABEL")
+                        .collectionsLabel("COLLECTIONS_LABEL")
+                        .placeholder("PLACEHOLDER")
+                        .icfCodesPropertyName(IcfCodesPropertyType.FUNKTIONSNEDSATTNINGAR)
+                        .build())
+                .build(),
+            FK7804_CERTIFICATE);
 
     assertEquals(expected, response);
   }
-
 }

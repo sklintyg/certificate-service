@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.message.service.converter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,8 +36,8 @@ import se.inera.intyg.certificateservice.domain.message.model.Content;
 class ComplementConverterTest {
 
   private static final ElementId ELEMENT_SPECIFICATION_ID = new ElementId("elementSpecificationId");
-  private static final ElementId MISSING_ELEMENT_SPECIFICATION_ID = new ElementId(
-      "missingElementSpecificationId");
+  private static final ElementId MISSING_ELEMENT_SPECIFICATION_ID =
+      new ElementId("missingElementSpecificationId");
   private static final String QUESTION_TEXT = "questionText";
   private static final Content CONTENT = new Content("content");
   private ComplementConverter complementConverter;
@@ -29,47 +47,40 @@ class ComplementConverterTest {
   @BeforeEach
   void setUp() {
     complementConverter = new ComplementConverter();
-    certificate = MedicalCertificate.builder()
-        .certificateModel(
-            CertificateModel.builder()
-                .elementSpecifications(
-                    List.of(
-                        ElementSpecification.builder()
-                            .id(ELEMENT_SPECIFICATION_ID)
-                            .configuration(
-                                ElementConfigurationDate.builder()
-                                    .name(QUESTION_TEXT)
-                                    .build()
-                            )
-                            .build()
-                    )
-                )
-                .build()
-        )
-        .build();
+    certificate =
+        MedicalCertificate.builder()
+            .certificateModel(
+                CertificateModel.builder()
+                    .elementSpecifications(
+                        List.of(
+                            ElementSpecification.builder()
+                                .id(ELEMENT_SPECIFICATION_ID)
+                                .configuration(
+                                    ElementConfigurationDate.builder().name(QUESTION_TEXT).build())
+                                .build()))
+                    .build())
+            .build();
 
-    complement = Complement.builder()
-        .elementId(ELEMENT_SPECIFICATION_ID)
-        .content(CONTENT)
-        .build();
+    complement = Complement.builder().elementId(ELEMENT_SPECIFICATION_ID).content(CONTENT).build();
   }
 
   @Test
   void shallIncludeQuestionId() {
-    assertEquals(ELEMENT_SPECIFICATION_ID.id(),
+    assertEquals(
+        ELEMENT_SPECIFICATION_ID.id(),
         complementConverter.convert(complement, certificate).getQuestionId());
   }
 
   @Test
   void shallIncludeQuestionText() {
-    assertEquals(QUESTION_TEXT,
-        complementConverter.convert(complement, certificate).getQuestionText());
+    assertEquals(
+        QUESTION_TEXT, complementConverter.convert(complement, certificate).getQuestionText());
   }
 
   @Test
   void shallIncludeMessage() {
-    assertEquals(CONTENT.content(),
-        complementConverter.convert(complement, certificate).getMessage());
+    assertEquals(
+        CONTENT.content(), complementConverter.convert(complement, certificate).getMessage());
   }
 
   @Nested
@@ -77,28 +88,28 @@ class ComplementConverterTest {
 
     @BeforeEach
     void setUp() {
-      complement = Complement.builder()
-          .elementId(MISSING_ELEMENT_SPECIFICATION_ID)
-          .content(CONTENT)
-          .build();
+      complement =
+          Complement.builder().elementId(MISSING_ELEMENT_SPECIFICATION_ID).content(CONTENT).build();
     }
 
     @Test
     void shallIncludeQuestionId() {
-      assertEquals(MISSING_ELEMENT_SPECIFICATION_ID.id(),
+      assertEquals(
+          MISSING_ELEMENT_SPECIFICATION_ID.id(),
           complementConverter.convert(complement, certificate).getQuestionId());
     }
 
     @Test
     void shallIncludeQuestionText() {
-      assertEquals(MISSING_ELEMENT_SPECIFICATION_ID.id(),
+      assertEquals(
+          MISSING_ELEMENT_SPECIFICATION_ID.id(),
           complementConverter.convert(complement, certificate).getQuestionText());
     }
 
     @Test
     void shallIncludeMessage() {
-      assertEquals(CONTENT.content(),
-          complementConverter.convert(complement, certificate).getMessage());
+      assertEquals(
+          CONTENT.content(), complementConverter.convert(complement, certificate).getMessage());
     }
   }
 }

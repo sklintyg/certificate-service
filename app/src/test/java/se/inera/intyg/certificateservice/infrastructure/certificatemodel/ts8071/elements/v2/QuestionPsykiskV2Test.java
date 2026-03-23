@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.v2;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,15 +43,16 @@ class QuestionPsykiskV2Test {
 
   @Test
   void shouldIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationRadioBoolean.builder()
-        .name("Har personen eller har personen haft psykisk sjukdom eller störning?")
-        .description(
-            "Här avses sjukdomar och störningar som kan påverka beteendet, så att det kan utgöra en trafiksäkerhetsrisk. Med sjukdomar avses exempelvis schizofreni, annan psykos eller affektiva syndrom såsom bipolär sjukdom. Med störningar avses exempelvis olika personlighetsstörningar såsom paranoid, antisocial, narcissistisk eller emotionellt instabil personlighetsstörning och schizotyp personlighetsstörning.\n\n"
-                + "I normalfallet medför paniksyndrom, utmattningssyndrom, ångest (PTSD), generaliserat ångestsyndrom (GAD), årstidsbundna depressioner inte en trafiksäkerhetsrisk och behöver i sådant fall inte anges.")
-        .id(new FieldId("19.1"))
-        .selectedText("Ja")
-        .unselectedText("Nej")
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationRadioBoolean.builder()
+            .name("Har personen eller har personen haft psykisk sjukdom eller störning?")
+            .description(
+                "Här avses sjukdomar och störningar som kan påverka beteendet, så att det kan utgöra en trafiksäkerhetsrisk. Med sjukdomar avses exempelvis schizofreni, annan psykos eller affektiva syndrom såsom bipolär sjukdom. Med störningar avses exempelvis olika personlighetsstörningar såsom paranoid, antisocial, narcissistisk eller emotionellt instabil personlighetsstörning och schizotyp personlighetsstörning.\n\n"
+                    + "I normalfallet medför paniksyndrom, utmattningssyndrom, ångest (PTSD), generaliserat ångestsyndrom (GAD), årstidsbundna depressioner inte en trafiksäkerhetsrisk och behöver i sådant fall inte anges.")
+            .id(new FieldId("19.1"))
+            .selectedText("Ja")
+            .unselectedText("Nej")
+            .build();
 
     final var element = QuestionPsykiskV2.questionPsykiskV2();
 
@@ -42,17 +61,13 @@ class QuestionPsykiskV2Test {
 
   @Test
   void shouldIncludeRules() {
-    final var expectedRules = List.of(
-        ElementRuleExpression.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.MANDATORY)
-            .expression(
-                new RuleExpression(
-                    "exists($19.1)"
-                )
-            )
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleExpression.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.MANDATORY)
+                .expression(new RuleExpression("exists($19.1)"))
+                .build());
 
     final var element = QuestionPsykiskV2.questionPsykiskV2();
 
@@ -61,16 +76,11 @@ class QuestionPsykiskV2Test {
 
   @Test
   void shouldIncludeValidation() {
-    final var expectedValidations = List.of(
-        ElementValidationBoolean.builder()
-            .mandatory(true)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationBoolean.builder().mandatory(true).build());
 
     final var element = QuestionPsykiskV2.questionPsykiskV2();
 
     assertEquals(expectedValidations, element.validations());
   }
 }
-
-

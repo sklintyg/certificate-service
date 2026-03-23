@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.v2;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.codesystems.CodeSystemKvIntygetGallerFor.FORLANG_GR_II_III;
@@ -36,48 +54,27 @@ public class QuestionHorselhjalpmedelV2 {
                 .unselectedText("Nej")
                 .name(
                     "Behöver personen använda hörapparat för att kunna uppfatta vanlig samtalsstämma på fyra meters avstånd?")
-                .build()
-        )
-        .validations(
-            List.of(
-                ElementValidationBoolean.builder()
-                    .mandatory(true)
-                    .build()
-            )
-        )
+                .build())
+        .validations(List.of(ElementValidationBoolean.builder().mandatory(true).build()))
         .rules(
             List.of(
                 CertificateElementRuleFactory.mandatoryExist(
-                    QUESTION_HORSELHJALPMEDEL_V2_ID,
-                    QUESTION_HORSELHJALPMEDEL_V2_FIELD_ID
-                ),
+                    QUESTION_HORSELHJALPMEDEL_V2_ID, QUESTION_HORSELHJALPMEDEL_V2_FIELD_ID),
                 CertificateElementRuleFactory.show(
                     QUESTION_INTYGET_AVSER_ID,
                     new RuleExpression(
                         String.format(
                             "exists(%s) || exists(%s) || exists(%s)",
-                            GR_II_III.code(), FORLANG_GR_II_III.code(), TAXI.code()
-                        )
-                    )
-                )
-            )
-        )
-        .mapping(
-            new ElementMapping(QUESTION_HORSEL_V2_ID, null)
-        )
-        .shouldValidate(ElementDataPredicateFactory.codeList(
+                            GR_II_III.code(), FORLANG_GR_II_III.code(), TAXI.code())))))
+        .mapping(new ElementMapping(QUESTION_HORSEL_V2_ID, null))
+        .shouldValidate(
+            ElementDataPredicateFactory.codeList(
                 QUESTION_INTYGET_AVSER_ID,
                 List.of(
                     new FieldId(GR_II_III.code()),
                     new FieldId(FORLANG_GR_II_III.code()),
-                    new FieldId(TAXI.code())
-                )
-            )
-        )
-        .children(
-            List.of(children)
-        )
+                    new FieldId(TAXI.code()))))
+        .children(List.of(children))
         .build();
   }
 }
-

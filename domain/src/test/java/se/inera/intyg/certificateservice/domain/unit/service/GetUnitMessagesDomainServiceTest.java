@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.unit.service;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -27,71 +45,60 @@ class GetUnitMessagesDomainServiceTest {
 
   private static final CertificateId C1 = new CertificateId("C1");
   private static final CertificateId C2 = new CertificateId("C2");
-  @Mock
-  private static Certificate certificateWithReadPermission;
-  @Mock
-  private static Certificate certificateWithoutReadPermission;
+  @Mock private static Certificate certificateWithReadPermission;
+  @Mock private static Certificate certificateWithoutReadPermission;
   private static final ActionEvaluation ACTION_EVALUATION = ActionEvaluation.builder().build();
 
   private static final MessagesRequest MESSAGES_REQUEST = MessagesRequest.builder().build();
 
-  @Mock
-  MessageRepository messageRepository;
+  @Mock MessageRepository messageRepository;
 
-  @Mock
-  CertificateRepository certificateRepository;
+  @Mock CertificateRepository certificateRepository;
 
-  @InjectMocks
-  GetUnitMessagesDomainService getUnitMessagesDomainService;
+  @InjectMocks GetUnitMessagesDomainService getUnitMessagesDomainService;
 
   @Test
   void shouldReturnMessagesBelongingToCertificateWithReadPermission() {
-    final var expectedMessage = Message.builder()
-        .certificateId(C1)
-        .build();
-    final var messageWithoutReadPermission = Message.builder()
-        .certificateId(C2)
-        .build();
+    final var expectedMessage = Message.builder().certificateId(C1).build();
+    final var messageWithoutReadPermission = Message.builder().certificateId(C2).build();
 
     when(messageRepository.findByMessagesRequest(MESSAGES_REQUEST))
         .thenReturn(List.of(expectedMessage, messageWithoutReadPermission));
     when(certificateRepository.getByIds(List.of(C1, C2)))
         .thenReturn(List.of(certificateWithReadPermission, certificateWithoutReadPermission));
-    when(certificateWithReadPermission.allowTo(CertificateActionType.READ,
-        Optional.of(ACTION_EVALUATION))).thenReturn(true);
-    when(certificateWithoutReadPermission.allowTo(CertificateActionType.READ,
-        Optional.of(ACTION_EVALUATION))).thenReturn(false);
+    when(certificateWithReadPermission.allowTo(
+            CertificateActionType.READ, Optional.of(ACTION_EVALUATION)))
+        .thenReturn(true);
+    when(certificateWithoutReadPermission.allowTo(
+            CertificateActionType.READ, Optional.of(ACTION_EVALUATION)))
+        .thenReturn(false);
     when(certificateWithReadPermission.id()).thenReturn(C1);
 
     final var result = getUnitMessagesDomainService.get(MESSAGES_REQUEST, ACTION_EVALUATION);
 
-    assertEquals(List.of(expectedMessage),
-        result.messages());
+    assertEquals(List.of(expectedMessage), result.messages());
   }
 
   @Test
   void shouldReturnCertificatesWithReadPermission() {
-    final var expectedMessage = Message.builder()
-        .certificateId(C1)
-        .build();
-    final var messageWithoutReadPermission = Message.builder()
-        .certificateId(C2)
-        .build();
+    final var expectedMessage = Message.builder().certificateId(C1).build();
+    final var messageWithoutReadPermission = Message.builder().certificateId(C2).build();
 
     when(messageRepository.findByMessagesRequest(MESSAGES_REQUEST))
         .thenReturn(List.of(expectedMessage, messageWithoutReadPermission));
     when(certificateRepository.getByIds(List.of(C1, C2)))
         .thenReturn(List.of(certificateWithReadPermission, certificateWithoutReadPermission));
-    when(certificateWithReadPermission.allowTo(CertificateActionType.READ,
-        Optional.of(ACTION_EVALUATION))).thenReturn(true);
-    when(certificateWithoutReadPermission.allowTo(CertificateActionType.READ,
-        Optional.of(ACTION_EVALUATION))).thenReturn(false);
+    when(certificateWithReadPermission.allowTo(
+            CertificateActionType.READ, Optional.of(ACTION_EVALUATION)))
+        .thenReturn(true);
+    when(certificateWithoutReadPermission.allowTo(
+            CertificateActionType.READ, Optional.of(ACTION_EVALUATION)))
+        .thenReturn(false);
     when(certificateWithReadPermission.id()).thenReturn(C1);
 
     final var result = getUnitMessagesDomainService.get(MESSAGES_REQUEST, ACTION_EVALUATION);
 
-    assertEquals(List.of(certificateWithReadPermission),
-        result.certificates());
+    assertEquals(List.of(certificateWithReadPermission), result.certificates());
   }
 
   @Test
@@ -102,7 +109,6 @@ class GetUnitMessagesDomainServiceTest {
     final var result = getUnitMessagesDomainService.get(MESSAGES_REQUEST, ACTION_EVALUATION);
     assertAll(
         () -> assertTrue(result.messages().isEmpty()),
-        () -> assertTrue(result.certificates().isEmpty())
-    );
+        () -> assertTrue(result.certificates().isEmpty()));
   }
 }

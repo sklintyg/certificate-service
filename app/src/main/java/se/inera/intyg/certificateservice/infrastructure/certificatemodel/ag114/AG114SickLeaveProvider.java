@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ag114;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.ag114.elements.QuestionDiagnos.QUESTION_DIAGNOS_ID;
@@ -21,10 +39,11 @@ import se.inera.intyg.certificateservice.domain.certificatemodel.model.SickLeave
 
 public class AG114SickLeaveProvider implements SickLeaveProvider {
 
-  private static final ElementValueDiagnosis DEFAULT_DIAGNOSIS = ElementValueDiagnosis.builder()
-      .code("X")
-      .description("Diagnoskod X är okänd och har ingen beskrivning")
-      .build();
+  private static final ElementValueDiagnosis DEFAULT_DIAGNOSIS =
+      ElementValueDiagnosis.builder()
+          .code("X")
+          .description("Diagnoskod X är okänd och har ingen beskrivning")
+          .build();
 
   @Override
   public Optional<SickLeaveCertificate> build(Certificate certificate) {
@@ -46,23 +65,15 @@ public class AG114SickLeaveProvider implements SickLeaveProvider {
             .signingDoctorName(metadata.issuer().name())
             .patientName(metadata.patient().name())
             .diagnoseCode(!diagnoses.isEmpty() ? diagnoses.getFirst() : DEFAULT_DIAGNOSIS)
-            .biDiagnoseCode1(
-                diagnoses.size() > 1 ? diagnoses.get(1) : null
-            )
-            .biDiagnoseCode2(
-                diagnoses.size() > 2 ? diagnoses.get(2) : null
-            )
+            .biDiagnoseCode1(diagnoses.size() > 1 ? diagnoses.get(1) : null)
+            .biDiagnoseCode2(diagnoses.size() > 2 ? diagnoses.get(2) : null)
             .signingDoctorId(metadata.issuer().hsaId())
             .signingDateTime(certificate.signed())
             .deleted(certificate.revoked())
             .workCapacities(List.of(workCapacityDateRange))
-            .employment(List.of(
-                ElementValueCode.builder()
-                    .code(NUVARANDE_ARBETE.displayName())
-                    .build()
-            ))
-            .build()
-    );
+            .employment(
+                List.of(ElementValueCode.builder().code(NUVARANDE_ARBETE.displayName()).build()))
+            .build());
   }
 
   private static List<ElementValueDiagnosis> getElementValueDiagnoses(Certificate certificate) {
@@ -85,14 +96,15 @@ public class AG114SickLeaveProvider implements SickLeaveProvider {
         .orElseThrow();
   }
 
-  private static DateRange getWorkCapacityDateRange(Certificate certificate,
-      Integer workCapacityPercentage) {
-    final var elementValueDateRange = certificate.elementData().stream()
-        .filter(elementData -> elementData.id().equals(QUESTION_PERIOD_BEDOMNING_ID))
-        .findFirst()
-        .map(ElementData::value)
-        .map(ElementValueDateRange.class::cast)
-        .orElseThrow();
+  private static DateRange getWorkCapacityDateRange(
+      Certificate certificate, Integer workCapacityPercentage) {
+    final var elementValueDateRange =
+        certificate.elementData().stream()
+            .filter(elementData -> elementData.id().equals(QUESTION_PERIOD_BEDOMNING_ID))
+            .findFirst()
+            .map(ElementData::value)
+            .map(ElementValueDateRange.class::cast)
+            .orElseThrow();
 
     return DateRange.builder()
         .dateRangeId(new FieldId(workCapacityPercentage.toString()))

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7426;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -14,9 +32,11 @@ class FK7426MessageActionSpecificationTest {
 
     final var actionSpecifications = FK7809MessageActionSpecification.create();
 
-    assertTrue(actionSpecifications.stream().anyMatch(
-            actionSpecification -> expectedType.equals(actionSpecification.messageActionType())
-        ),
+    assertTrue(
+        actionSpecifications.stream()
+            .anyMatch(
+                actionSpecification ->
+                    expectedType.equals(actionSpecification.messageActionType())),
         "Expected type: %s".formatted(expectedType));
   }
 
@@ -26,9 +46,11 @@ class FK7426MessageActionSpecificationTest {
 
     final var actions = FK7426MessageActionSpecification.create();
 
-    assertTrue(actions.stream().anyMatch(
-            actionSpecification -> expectedType.equals(actionSpecification.messageActionType())
-        ),
+    assertTrue(
+        actions.stream()
+            .anyMatch(
+                actionSpecification ->
+                    expectedType.equals(actionSpecification.messageActionType())),
         "Expected type: %s".formatted(expectedType));
   }
 
@@ -38,9 +60,11 @@ class FK7426MessageActionSpecificationTest {
 
     final var actions = FK7426MessageActionSpecification.create();
 
-    assertTrue(actions.stream().anyMatch(
-            actionSpecification -> expectedType.equals(actionSpecification.messageActionType())
-        ),
+    assertTrue(
+        actions.stream()
+            .anyMatch(
+                actionSpecification ->
+                    expectedType.equals(actionSpecification.messageActionType())),
         "Expected type: %s".formatted(expectedType));
   }
 
@@ -50,9 +74,11 @@ class FK7426MessageActionSpecificationTest {
 
     final var actions = FK7426MessageActionSpecification.create();
 
-    assertTrue(actions.stream().anyMatch(
-            actionSpecification -> expectedType.equals(actionSpecification.messageActionType())
-        ),
+    assertTrue(
+        actions.stream()
+            .anyMatch(
+                actionSpecification ->
+                    expectedType.equals(actionSpecification.messageActionType())),
         "Expected type: %s".formatted(expectedType));
   }
 
@@ -62,9 +88,11 @@ class FK7426MessageActionSpecificationTest {
 
     final var actions = FK7426MessageActionSpecification.create();
 
-    assertTrue(actions.stream().anyMatch(
-            actionSpecification -> expectedType.equals(actionSpecification.messageActionType())
-        ),
+    assertTrue(
+        actions.stream()
+            .anyMatch(
+                actionSpecification ->
+                    expectedType.equals(actionSpecification.messageActionType())),
         "Expected type: %s".formatted(expectedType));
   }
 
@@ -74,9 +102,11 @@ class FK7426MessageActionSpecificationTest {
 
     final var actionSpecifications = FK7809MessageActionSpecification.create();
 
-    assertTrue(actionSpecifications.stream().anyMatch(
-            actionSpecification -> expectedType.equals(actionSpecification.messageActionType())
-        ),
+    assertTrue(
+        actionSpecifications.stream()
+            .anyMatch(
+                actionSpecification ->
+                    expectedType.equals(actionSpecification.messageActionType())),
         "Expected type: %s".formatted(expectedType));
   }
 }

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.prefill;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,14 +40,11 @@ class PrefillIntegerConverterTest {
   private static final ElementId ELEMENT_ID = new ElementId("1");
   private static final FieldId INTEGER_ID = new FieldId("2");
   private static final int VALUE = 42;
-  private static final ElementSpecification SPECIFICATION = ElementSpecification.builder()
-      .id(ELEMENT_ID)
-      .configuration(
-          ElementConfigurationInteger.builder()
-              .id(INTEGER_ID)
-              .build()
-      )
-      .build();
+  private static final ElementSpecification SPECIFICATION =
+      ElementSpecification.builder()
+          .id(ELEMENT_ID)
+          .configuration(ElementConfigurationInteger.builder().id(INTEGER_ID).build())
+          .build();
 
   private final PrefillIntegerConverter converter = new PrefillIntegerConverter();
 
@@ -53,10 +68,11 @@ class PrefillIntegerConverterTest {
     @Test
     void shouldReturnErrorIfWrongConfigurationType() {
       final var prefill = new Forifyllnad();
-      final var wrongSpec = ElementSpecification.builder()
-          .id(ELEMENT_ID)
-          .configuration(ElementConfigurationCategory.builder().build())
-          .build();
+      final var wrongSpec =
+          ElementSpecification.builder()
+              .id(ELEMENT_ID)
+              .configuration(ElementConfigurationCategory.builder().build())
+              .build();
 
       final var result = converter.prefillAnswer(wrongSpec, prefill);
 
@@ -85,18 +101,15 @@ class PrefillIntegerConverterTest {
 
       final var result = converter.prefillAnswer(SPECIFICATION, prefill);
 
-      final var expected = PrefillAnswer.builder()
-          .elementData(
-              ElementData.builder()
-                  .id(new ElementId(ELEMENT_ID.id()))
-                  .value(
-                      ElementValueInteger.builder()
-                          .integerId(INTEGER_ID)
-                          .value(VALUE)
-                          .build()
-                  ).build()
-          )
-          .build();
+      final var expected =
+          PrefillAnswer.builder()
+              .elementData(
+                  ElementData.builder()
+                      .id(new ElementId(ELEMENT_ID.id()))
+                      .value(
+                          ElementValueInteger.builder().integerId(INTEGER_ID).value(VALUE).build())
+                      .build())
+              .build();
 
       assertEquals(expected, result);
     }

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.elements.ElementUnitContactInformation.issuingUnitContactInfo;
@@ -140,21 +158,25 @@ public class CertificateModelFactoryTS8071V2 implements CertificateModelFactory 
   private static final String TS_8071 = "ts8071";
   private static final String VERSION = "2.0";
   private static final CertificateTypeName TS8071_TYPE_NAME = new CertificateTypeName("TS8071");
-  private static final String NAME = "Läkarintyg för högre körkortsbehörigheter, taxiförarlegitimation och på begäran av Transportstyrelsen";
-  private static final String DESCRIPTION = """
+  private static final String NAME =
+      "Läkarintyg för högre körkortsbehörigheter, taxiförarlegitimation och på begäran av Transportstyrelsen";
+  private static final String DESCRIPTION =
+      """
       Transportstyrelsens läkarintyg ska användas vid förlängd giltighet av högre behörighet från 45 år, ansökan om körkortstillstånd för grupp II och III och vid ansökan om taxiförarlegitimation. Transportstyrelsens läkarintyg kan även användas när Transportstyrelsen i annat fall begärt ett allmänt läkarintyg avseende lämplighet att inneha körkort.
-      
+
       Specialistintyg finns bl.a. för alkohol, läkemedel, synfunktion, Alkolås m.m. Se <LINK:transportstyrelsenHemsidaLink>.
       """;
-  private static final String PDF_DESCRIPTION = """
+  private static final String PDF_DESCRIPTION =
+      """
       Transportstyrelsens läkarintyg ska användas vid förlängd giltighet av högre behörighet från 45 år, ansökan om körkortstillstånd för grupp II och III och vid ansökan om taxiförarlegitimation. Transportstyrelsens läkarintyg kan även användas när Transportstyrelsen i annat fall begärt ett allmänt läkarintyg avseende lämplighet att inneha körkort.
-      
+
       Specialistintyg finns bl.a. för alkohol, läkemedel, synfunktion, Alkolås m.m. Se Transportstyrelsens hemsida.""";
-  private static final String DETAILED_DESCRIPTION = """      
+  private static final String DETAILED_DESCRIPTION =
+      """
        Intyg för körkort och taxiförarlegitimation ska avges med beaktande av vad som anges i Transportstyrelsens föreskrifter och allmänna råd (TSFS 2010:125) om medicinska krav för innehav av körkort m.m. (medicinföreskrifterna). Föreskrifterna finns på <LINK:transportstyrelsenHemsidaLink> och där finns också kompletterande upplysningar till vissa av kapitlen. För närvarande finns kompletterande upplysningar till kapitel 1 om bland annat läkares anmälan, kapitel 2 om synfunktionerna, kapitel 6 om diabetes och kapitel 17 om medicinska intyg.
-      
+
        På <LINK:transportstyrelsenHemsidaLink> finns också blanketter för olika specialistläkarintyg, exempelvis för intyg om hjärt- och kärlsjukdomar, om diabetes och om alkohol, narkotika och läkemedel. Om en person ska lämna något specialistläkarintyg har denne fått ett brev om saken från Transporstyrelsen. Det är därför ofta klokt att  be att få se brevet, så att intyget kommer att svara mot de frågeställningar som kan finnas hos myndigheten.
-      
+
        <b className="iu-fw-heading">Har du frågor?</b>
        Kontakta avdelning Körkort på Transportstyrelsen, telefon 0771-81 81 81.
       """;
@@ -162,10 +184,11 @@ public class CertificateModelFactoryTS8071V2 implements CertificateModelFactory 
       "Det här är ditt intyg. Intyget innehåller all information som vården fyllt i. Du kan inte ändra något i ditt intyg. "
           + "Har du frågor kontaktar du den som skrivit ditt intyg.";
 
-  public static final CertificateModelId TS8071_V2_0 = CertificateModelId.builder()
-      .type(new CertificateType(TS_8071))
-      .version(new CertificateVersion(VERSION))
-      .build();
+  public static final CertificateModelId TS8071_V2_0 =
+      CertificateModelId.builder()
+          .type(new CertificateType(TS_8071))
+          .version(new CertificateVersion(VERSION))
+          .build();
 
   @Override
   public CertificateModel create() {
@@ -185,174 +208,81 @@ public class CertificateModelFactoryTS8071V2 implements CertificateModelFactory 
                     .text(PREAMBLE_TEXT)
                     .type(CertificateTextType.PREAMBLE_TEXT)
                     .links(Collections.emptyList())
-                    .build()
-            )
-        )
-        .pdfSpecification(
-            GeneralPdfSpecification.builder()
-                .description(PDF_DESCRIPTION)
-                .build()
-        )
+                    .build()))
+        .pdfSpecification(GeneralPdfSpecification.builder().description(PDF_DESCRIPTION).build())
         .elementSpecifications(
             List.of(
-                categoryIntygetAvser(
-                    questionIntygetAvser()
-                ),
-                categoryIntygetBaseratPa(
-                    questionBaseratPa(
-                        questionBaseratPaDatum()
-                    )
-                ),
-                categoryIdentitet(
-                    questionIdentitet()
-                ),
-                categorySynfunktion(
-                    questionSynfunktioner()
-                ),
+                categoryIntygetAvser(questionIntygetAvser()),
+                categoryIntygetBaseratPa(questionBaseratPa(questionBaseratPaDatum())),
+                categoryIdentitet(questionIdentitet()),
+                categorySynfunktion(questionSynfunktioner()),
                 categorySynskarpa(
-                    questionSynskarpa(),
-                    questionToleransKorrektionV2(
-                        questionGlasogonStyrkaV2()
-                    )
-                ),
+                    questionSynskarpa(), questionToleransKorrektionV2(questionGlasogonStyrkaV2())),
                 categoryAnamnes(
                     questionSjukdomEllerSynnedsattning(
-                        questionSjukdomEllerSynnedsattningBeskrivningV2()
-                    ),
-                    questionSjukdomshistorik(
-                        questionSjukdomshistorikBeskrivningV2()
-                    )
-                ),
-                categoryBalanssinne(
-                    questionBalanssinne(
-                        questionBalanssinneBeskrivningV2()
-                    )
-                ),
+                        questionSjukdomEllerSynnedsattningBeskrivningV2()),
+                    questionSjukdomshistorik(questionSjukdomshistorikBeskrivningV2())),
+                categoryBalanssinne(questionBalanssinne(questionBalanssinneBeskrivningV2())),
                 categoryHorselV2(
                     questionHorselV2(),
-                    questionHorselhjalpmedelV2(
-                        questionHorselhjalpmedelPositionV2()
-                    )
-                ),
+                    questionHorselhjalpmedelV2(questionHorselhjalpmedelPositionV2())),
                 categoryRorelseorganensFunktioner(
-                    questionRorlighet(
-                        questionRorlighetBeskrivning()
-                    ),
-                    questionRorlighetHjalpaPassagerare()
-                ),
+                    questionRorlighet(questionRorlighetBeskrivning()),
+                    questionRorlighetHjalpaPassagerare()),
                 categoryHjartOchKarlsjukdomar(
-                    questionHjartsjukdom(
-                        questionHjartsjukdomBeskrivningV2()
-                    ),
-                    questionHjartsjukdomBehandlad(
-                        questionHjartsjukdomBehandladBeskrivningV2()
-                    ),
-                    questionArytmi(
-                        questionArytmiBeskrivning()
-                    ),
+                    questionHjartsjukdom(questionHjartsjukdomBeskrivningV2()),
+                    questionHjartsjukdomBehandlad(questionHjartsjukdomBehandladBeskrivningV2()),
+                    questionArytmi(questionArytmiBeskrivning()),
                     questionSynkopeV2(
-                        questionSynkopeBeskrivning(QUESTION_SYNKOPE_V2_ID,
-                            QUESTION_SYNKOPE_V2_FIELD_ID)
-                    ),
-                    questionStrokeV2(
-                        questionStrokePaverkanV2()
-                    )
-                ),
-                categoryDiabetes(
-                    questionDiabetesV2(),
-                    messageDiabetesV2()
-                ),
+                        questionSynkopeBeskrivning(
+                            QUESTION_SYNKOPE_V2_ID, QUESTION_SYNKOPE_V2_FIELD_ID)),
+                    questionStrokeV2(questionStrokePaverkanV2())),
+                categoryDiabetes(questionDiabetesV2(), messageDiabetesV2()),
                 categoryNeurologiskaSjukdomar(
-                    questionNeurologiskSjukdomV2(
-                        questionNeurologiskSjukdomBeskrivningV2()
-                    )
-                ),
+                    questionNeurologiskSjukdomV2(questionNeurologiskSjukdomBeskrivningV2())),
                 categoryEpilepsi(
-                    questionEpilepsi(
-                        questionEpilepsiBeskrivning()
-                    ),
-                    questionEpilepsiAnfall(
-                        questionEpilepsiAnfallBeskrivning()
-                    ),
+                    questionEpilepsi(questionEpilepsiBeskrivning()),
+                    questionEpilepsiAnfall(questionEpilepsiAnfallBeskrivning()),
                     questionEpilepsiMedicin(
-                        questionEpilepsiMedicinBeskrivning(),
-                        questionEpilepsiMedicinTidpunktV2()
-                    ),
-                    questionMedvetandestorning(
-                        questionMedvetandestorningTidpunkt()
-                    )
-                ),
+                        questionEpilepsiMedicinBeskrivning(), questionEpilepsiMedicinTidpunktV2()),
+                    questionMedvetandestorning(questionMedvetandestorningTidpunkt())),
                 categoryNjursjukdomar(
                     questionNjurfunktion(),
-                    questionNjurtransplatation(
-                        questionNjurtransplatationTidpunkt()
-                    )
-                ),
+                    questionNjurtransplatation(questionNjurtransplatationTidpunkt())),
                 categoryDemensOchAndraKognitivaStorningar(
-                    questionKognitivStorningV2(),
-                    questionDemensV2(
-                        questionDemensBeskrivningV2()
-                    )
-                ),
+                    questionKognitivStorningV2(), questionDemensV2(questionDemensBeskrivningV2())),
                 categorySomnOchVakenhetsstorningar(
                     questionSomnV2(
-                        questionSomnBeskrivning(QUESTION_SOMN_V2_ID, QUESTION_SOMN_V2_FIELD_ID)
-                    ),
-                    questionSomnBehandling(QUESTION_SOMN_V2_ID)
-                ),
+                        questionSomnBeskrivning(QUESTION_SOMN_V2_ID, QUESTION_SOMN_V2_FIELD_ID)),
+                    questionSomnBehandling(QUESTION_SOMN_V2_ID)),
                 categoryAlkoholOchLakemedelV2(
                     questionMissbrukV2(
-                        questionMissbrukBeskrivningV2(),
-                        questionMissbrukRemissionV2()
-                    ),
+                        questionMissbrukBeskrivningV2(), questionMissbrukRemissionV2()),
                     questionMissbrukJournaluppgifterV2(
                         questionMissbrukJournaluppgifterBeskrivningV2(),
-                        questionMissbrukProvtagning(QUESTION_MISSBRUK_JOURNALUPPGIFTER_V2_ID,
+                        questionMissbrukProvtagning(
+                            QUESTION_MISSBRUK_JOURNALUPPGIFTER_V2_ID,
                             QUESTION_MISSBRUK_JOURNALUPPGIFTER_V2_FIELD_ID,
-                            QUESTION_MISSBRUK_V2_ID)
-                    ),
-                    questionMissbrukVardV2(
-                        questionMissbrukVardBeskrivningV2()
-                    ),
-                    questionLakemedelV2(
-                        questionLakemedelBeskrivningV2()
-                    )
-                ),
+                            QUESTION_MISSBRUK_V2_ID)),
+                    questionMissbrukVardV2(questionMissbrukVardBeskrivningV2()),
+                    questionLakemedelV2(questionLakemedelBeskrivningV2())),
                 categoryPsykiskaSjukdomarOchStorningar(
                     questionPsykiskV2(
                         questionPsykiskBeskrivning(
-                            QUESTION_PSYKISK_V2_ID,
-                            QUESTION_PSYKISK_V2_FIELD_ID
-                        ),
-                        questionPsykiskTidpunktV2()
-                    )
-                ),
+                            QUESTION_PSYKISK_V2_ID, QUESTION_PSYKISK_V2_FIELD_ID),
+                        questionPsykiskTidpunktV2())),
                 categoryIntellektuellFunktionsnedsattningV2(
                     questionIntellektuellFunktionsnedsattningV2(
-                        questionIntellektuellFunktionsnedsattningBeskrivningV2()
-                    )
-                ),
+                        questionIntellektuellFunktionsnedsattningBeskrivningV2())),
                 categoryOvrigMedicinering(
-                    questionMedicinering(
-                        questionMedicineringBeskrivningV2()
-                    )
-                ),
-                categoryOvrigKommentarV2(
-                    questionOvrigBeskrivning()
-                ),
+                    questionMedicinering(questionMedicineringBeskrivningV2())),
+                categoryOvrigKommentarV2(questionOvrigBeskrivning()),
                 categoryBedomning(
-                    questionBedomning(
-                        questionBedomningRiskV2(),
-                        questionBedomningOkand()
-                    )
-                ),
-                issuingUnitContactInfo()
-            )
-        )
+                    questionBedomning(questionBedomningRiskV2(), questionBedomningOkand())),
+                issuingUnitContactInfo()))
         .recipient(CertificateRecipientFactory.transp(tsLogicalAddress))
         .certificateActionSpecifications(TS8071CertificateActionSpecification.create())
         .certificateActionFactory(certificateActionFactory)
         .build();
   }
 }
-

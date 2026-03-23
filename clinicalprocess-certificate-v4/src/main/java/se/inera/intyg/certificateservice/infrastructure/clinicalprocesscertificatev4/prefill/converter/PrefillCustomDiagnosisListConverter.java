@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.prefill.converter;
 
 import java.util.ArrayList;
@@ -38,58 +56,56 @@ public class PrefillCustomDiagnosisListConverter implements PrefillCustomConvert
   }
 
   @Override
-  public PrefillAnswer prefillAnswer(final ElementSpecification specification,
-      final Forifyllnad prefill) {
-    if (!(specification.configuration() instanceof ElementConfigurationDiagnosis elementConfigurationDiagnosis)) {
-      return PrefillAnswer.builder()
-          .errors(List.of(PrefillError.wrongConfigurationType()))
-          .build();
+  public PrefillAnswer prefillAnswer(
+      final ElementSpecification specification, final Forifyllnad prefill) {
+    if (!(specification.configuration()
+        instanceof ElementConfigurationDiagnosis elementConfigurationDiagnosis)) {
+      return PrefillAnswer.builder().errors(List.of(PrefillError.wrongConfigurationType())).build();
     }
 
-    final var answerOptional = prefill.getSvar().stream()
-        .filter(svar -> svar.getId().equals(specification.id().id()))
-        .findFirst();
+    final var answerOptional =
+        prefill.getSvar().stream()
+            .filter(svar -> svar.getId().equals(specification.id().id()))
+            .findFirst();
 
     if (answerOptional.isEmpty()) {
       return null;
     }
 
     final var answer = answerOptional.get();
-    final var prefillErrors = new ArrayList<>(
-        PrefillValidator.validateMinimumNumberOfDelsvar(
-            answer,
-            MINIMUM_SUB_ANSWERS,
-            specification
-        ));
+    final var prefillErrors =
+        new ArrayList<>(
+            PrefillValidator.validateMinimumNumberOfDelsvar(
+                answer, MINIMUM_SUB_ANSWERS, specification));
 
     final var delsvarList = answer.getDelsvar();
-    final var diagnoses = getDiagnosisIndexStream(delsvarList, answer.getId())
-        .mapToObj(diagnosisIndex -> {
-          try {
-            return extractAndValidateDiagnosis(
-                delsvarList,
-                diagnosisIndex,
-                elementConfigurationDiagnosis,
-                specification,
-                prefillErrors
-            );
-          } catch (Exception e) {
-            prefillErrors.add(PrefillError.invalidFormat(specification.id().id(), e.getMessage()));
-            return null;
-          }
-        })
-        .filter(Objects::nonNull)
-        .toList();
+    final var diagnoses =
+        getDiagnosisIndexStream(delsvarList, answer.getId())
+            .mapToObj(
+                diagnosisIndex -> {
+                  try {
+                    return extractAndValidateDiagnosis(
+                        delsvarList,
+                        diagnosisIndex,
+                        elementConfigurationDiagnosis,
+                        specification,
+                        prefillErrors);
+                  } catch (Exception e) {
+                    prefillErrors.add(
+                        PrefillError.invalidFormat(specification.id().id(), e.getMessage()));
+                    return null;
+                  }
+                })
+            .filter(Objects::nonNull)
+            .toList();
 
-    final var data = ElementData.builder()
-        .id(specification.id())
-        .value(ElementValueDiagnosisList.builder().diagnoses(diagnoses).build())
-        .build();
+    final var data =
+        ElementData.builder()
+            .id(specification.id())
+            .value(ElementValueDiagnosisList.builder().diagnoses(diagnoses).build())
+            .build();
 
-    return PrefillAnswer.builder()
-        .elementData(data)
-        .errors(prefillErrors)
-        .build();
+    return PrefillAnswer.builder().elementData(data).errors(prefillErrors).build();
   }
 
   private ElementValueDiagnosis extractAndValidateDiagnosis(
@@ -97,18 +113,17 @@ public class PrefillCustomDiagnosisListConverter implements PrefillCustomConvert
       final int diagnosisIndex,
       final ElementConfigurationDiagnosis elementConfigurationDiagnosis,
       final ElementSpecification specification,
-      final List<PrefillError> prefillErrors
-  ) {
-    final var descriptionDelsvar = getDescriptionDelsvar(specification, delsvarList,
-        diagnosisIndex);
+      final List<PrefillError> prefillErrors) {
+    final var descriptionDelsvar =
+        getDescriptionDelsvar(specification, delsvarList, diagnosisIndex);
     final var codeDelsvar = getCodeDelsvar(specification, delsvarList, diagnosisIndex);
 
     final var optionalCvType = PrefillUnmarshaller.cvType(codeDelsvar.getContent());
-    final var validationErrors = new ArrayList<>(
-        PrefillValidator.validateDiagnosisCode(
-            optionalCvType.map(List::of).orElse(Collections.emptyList()),
-            diagnosisCodeRepository
-        ));
+    final var validationErrors =
+        new ArrayList<>(
+            PrefillValidator.validateDiagnosisCode(
+                optionalCvType.map(List::of).orElse(Collections.emptyList()),
+                diagnosisCodeRepository));
 
     if (!validationErrors.isEmpty()) {
       prefillErrors.addAll(validationErrors);
@@ -133,8 +148,8 @@ public class PrefillCustomDiagnosisListConverter implements PrefillCustomConvert
     }
   }
 
-  private static FieldId getDiagnosisId(int diagnosisIndex,
-      ElementConfigurationDiagnosis elementConfigurationDiagnosis) {
+  private static FieldId getDiagnosisId(
+      int diagnosisIndex, ElementConfigurationDiagnosis elementConfigurationDiagnosis) {
     if (elementConfigurationDiagnosis.list().size() <= diagnosisIndex) {
       throw new IllegalStateException("Too many diagnoses in prefill answer");
     }
@@ -147,8 +162,8 @@ public class PrefillCustomDiagnosisListConverter implements PrefillCustomConvert
         : (String) descriptionDelsvar.get().getContent().getFirst();
   }
 
-  private static String getTerminology(ElementConfigurationDiagnosis elementConfigurationDiagnosis,
-      CVType cvType) {
+  private static String getTerminology(
+      ElementConfigurationDiagnosis elementConfigurationDiagnosis, CVType cvType) {
     return elementConfigurationDiagnosis.terminology().stream()
         .filter(terminology -> terminology.isValidCodeSystem(cvType.getCodeSystem()))
         .findFirst()
@@ -156,35 +171,44 @@ public class PrefillCustomDiagnosisListConverter implements PrefillCustomConvert
         .id();
   }
 
-  private Optional<Delsvar> getDelsvarByOffset(final ElementSpecification elementSpecification,
+  private Optional<Delsvar> getDelsvarByOffset(
+      final ElementSpecification elementSpecification,
       final List<Delsvar> delsvarList,
       final int diagnosisIndex,
       final int offset) {
     return delsvarList.stream()
-        .filter(delsvar -> delsvar.getId()
-            .equals(String.format("%s.%s", elementSpecification.id().id(),
-                offset + diagnosisIndex * 2)))
+        .filter(
+            delsvar ->
+                delsvar
+                    .getId()
+                    .equals(
+                        String.format(
+                            "%s.%s", elementSpecification.id().id(), offset + diagnosisIndex * 2)))
         .findFirst();
   }
 
-  private Optional<Delsvar> getDescriptionDelsvar(final ElementSpecification elementSpecification,
+  private Optional<Delsvar> getDescriptionDelsvar(
+      final ElementSpecification elementSpecification,
       final List<Delsvar> delsvarList,
       final int diagnosisIndex) {
     return getDelsvarByOffset(elementSpecification, delsvarList, diagnosisIndex, 1);
   }
 
-  private Delsvar getCodeDelsvar(final ElementSpecification elementSpecification,
+  private Delsvar getCodeDelsvar(
+      final ElementSpecification elementSpecification,
       final List<Delsvar> delsvarList,
       final int diagnosisIndex) {
     return getDelsvarByOffset(elementSpecification, delsvarList, diagnosisIndex, 2).orElseThrow();
   }
 
   private static IntStream getDiagnosisIndexStream(List<Delsvar> delsvarList, String answerId) {
-    final var diagnosisCount = (int) delsvarList.stream()
-        .filter(delsvar -> delsvar.getId()
-            .matches(String.format("%s\\.(\\d*[02468])$", answerId)))
-        .count();
+    final var diagnosisCount =
+        (int)
+            delsvarList.stream()
+                .filter(
+                    delsvar ->
+                        delsvar.getId().matches(String.format("%s\\.(\\d*[02468])$", answerId)))
+                .count();
     return IntStream.range(0, diagnosisCount);
-
   }
 }

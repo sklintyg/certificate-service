@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.v2;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,10 +51,11 @@ class QuestionDemensBeskrivningV2Test {
 
   @Test
   void shouldIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationTextArea.builder()
-        .name("Ange vilka tecken, eventuell diagnos och grad")
-        .id(new FieldId("16.3"))
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationTextArea.builder()
+            .name("Ange vilka tecken, eventuell diagnos och grad")
+            .id(new FieldId("16.3"))
+            .build();
 
     final var element = QuestionDemensBeskrivningV2.questionDemensBeskrivningV2();
 
@@ -45,23 +64,23 @@ class QuestionDemensBeskrivningV2Test {
 
   @Test
   void shouldIncludeRules() {
-    final var expectedRules = List.of(
-        ElementRuleExpression.builder()
-            .id(new ElementId("16.2"))
-            .type(ElementRuleType.SHOW)
-            .expression(new RuleExpression("$16.2"))
-            .build(),
-        ElementRuleExpression.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.MANDATORY)
-            .expression(new RuleExpression("$16.3"))
-            .build(),
-        ElementRuleLimit.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.TEXT_LIMIT)
-            .limit(new RuleLimit((short) 250))
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleExpression.builder()
+                .id(new ElementId("16.2"))
+                .type(ElementRuleType.SHOW)
+                .expression(new RuleExpression("$16.2"))
+                .build(),
+            ElementRuleExpression.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.MANDATORY)
+                .expression(new RuleExpression("$16.3"))
+                .build(),
+            ElementRuleLimit.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.TEXT_LIMIT)
+                .limit(new RuleLimit((short) 250))
+                .build());
     final var element = QuestionDemensBeskrivningV2.questionDemensBeskrivningV2();
 
     assertEquals(expectedRules, element.rules());
@@ -69,12 +88,8 @@ class QuestionDemensBeskrivningV2Test {
 
   @Test
   void shouldIncludeValidations() {
-    final var expectedValidations = List.of(
-        ElementValidationText.builder()
-            .mandatory(true)
-            .limit(250)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationText.builder().mandatory(true).limit(250).build());
 
     final var element = QuestionDemensBeskrivningV2.questionDemensBeskrivningV2();
 
@@ -95,16 +110,12 @@ class QuestionDemensBeskrivningV2Test {
 
     @Test
     void shouldReturnTrueIfBooleanIsTrue() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("16.2"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(true)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("16.2"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
 
       final var element = QuestionDemensBeskrivningV2.questionDemensBeskrivningV2();
 
@@ -115,16 +126,12 @@ class QuestionDemensBeskrivningV2Test {
 
     @Test
     void shouldReturnFalseIfElementMissing() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("16.1"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(true)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("16.1"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
 
       final var element = QuestionDemensBeskrivningV2.questionDemensBeskrivningV2();
 
@@ -135,16 +142,12 @@ class QuestionDemensBeskrivningV2Test {
 
     @Test
     void shouldReturnFalseIfElementFalse() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("16.2"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(false)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("16.2"))
+                  .value(ElementValueBoolean.builder().value(false).build())
+                  .build());
 
       final var element = QuestionDemensBeskrivningV2.questionDemensBeskrivningV2();
 
@@ -154,4 +157,3 @@ class QuestionDemensBeskrivningV2Test {
     }
   }
 }
-

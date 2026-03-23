@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,71 +46,62 @@ class QuestionPatagligtHotMotPatientensLivAnnatTest {
 
   @Test
   void shallIncludeId() {
-    final var element = QuestionPatagligtHotMotPatientensLivAnnat.questionPatagligtHotMotPatientensLivAnnat();
+    final var element =
+        QuestionPatagligtHotMotPatientensLivAnnat.questionPatagligtHotMotPatientensLivAnnat();
 
     assertEquals(ELEMENT_ID, element.id());
   }
 
   @Test
   void shallIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationTextArea.builder()
-        .id(new FieldId("52.7"))
-        .name(
-            "Beskriv på vilket sätt sjukdomstillståndet utgör ett påtagligt hot mot patientens liv"
-        )
-        .label(
-            "Ange när tillståndet blev livshotande, och om det är möjligt hur länge hotet mot livet kvarstår när patienten får vård enligt den vårdplan som gäller."
-        )
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationTextArea.builder()
+            .id(new FieldId("52.7"))
+            .name(
+                "Beskriv på vilket sätt sjukdomstillståndet utgör ett påtagligt hot mot patientens liv")
+            .label(
+                "Ange när tillståndet blev livshotande, och om det är möjligt hur länge hotet mot livet kvarstår när patienten får vård enligt den vårdplan som gäller.")
+            .build();
 
-    final var element = QuestionPatagligtHotMotPatientensLivAnnat.questionPatagligtHotMotPatientensLivAnnat();
+    final var element =
+        QuestionPatagligtHotMotPatientensLivAnnat.questionPatagligtHotMotPatientensLivAnnat();
 
     assertEquals(expectedConfiguration, element.configuration());
   }
 
   @Test
   void shallIncludeRules() {
-    final var expectedRules = List.of(
-        ElementRuleExpression.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.MANDATORY)
-            .expression(
-                new RuleExpression(
-                    "$52.7"
-                )
-            )
-            .build(),
-        ElementRuleExpression.builder()
-            .id(new ElementId("52"))
-            .type(ElementRuleType.SHOW)
-            .expression(
-                new RuleExpression(
-                    "$ANNAT"
-                )
-            )
-            .build(),
-        ElementRuleLimit.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.TEXT_LIMIT)
-            .limit(new RuleLimit((short) 265))
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleExpression.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.MANDATORY)
+                .expression(new RuleExpression("$52.7"))
+                .build(),
+            ElementRuleExpression.builder()
+                .id(new ElementId("52"))
+                .type(ElementRuleType.SHOW)
+                .expression(new RuleExpression("$ANNAT"))
+                .build(),
+            ElementRuleLimit.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.TEXT_LIMIT)
+                .limit(new RuleLimit((short) 265))
+                .build());
 
-    final var element = QuestionPatagligtHotMotPatientensLivAnnat.questionPatagligtHotMotPatientensLivAnnat();
+    final var element =
+        QuestionPatagligtHotMotPatientensLivAnnat.questionPatagligtHotMotPatientensLivAnnat();
 
     assertEquals(expectedRules, element.rules());
   }
 
   @Test
   void shallIncludeValidations() {
-    final var expectedValidations = List.of(
-        ElementValidationText.builder()
-            .mandatory(true)
-            .limit(265)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationText.builder().mandatory(true).limit(265).build());
 
-    final var element = QuestionPatagligtHotMotPatientensLivAnnat.questionPatagligtHotMotPatientensLivAnnat();
+    final var element =
+        QuestionPatagligtHotMotPatientensLivAnnat.questionPatagligtHotMotPatientensLivAnnat();
 
     assertEquals(expectedValidations, element.validations());
   }
@@ -102,42 +111,34 @@ class QuestionPatagligtHotMotPatientensLivAnnatTest {
 
     @Test
     void shallReturnTrueIfElementPresent() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("52"))
-              .value(
-                  ElementValueCode.builder()
-                      .codeId(new FieldId("ANNAT"))
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("52"))
+                  .value(ElementValueCode.builder().codeId(new FieldId("ANNAT")).build())
+                  .build());
 
-      final var element = QuestionPatagligtHotMotPatientensLivAnnat.questionPatagligtHotMotPatientensLivAnnat();
+      final var element =
+          QuestionPatagligtHotMotPatientensLivAnnat.questionPatagligtHotMotPatientensLivAnnat();
 
-      final var shouldValidate = element.elementSpecification(ELEMENT_ID)
-          .shouldValidate();
+      final var shouldValidate = element.elementSpecification(ELEMENT_ID).shouldValidate();
 
       assertTrue(shouldValidate.test(elementData));
     }
 
     @Test
     void shallReturnFalseIfElementMissing() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("5"))
-              .value(
-                  ElementValueCode.builder()
-                      .codeId(new FieldId("annat"))
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("5"))
+                  .value(ElementValueCode.builder().codeId(new FieldId("annat")).build())
+                  .build());
 
-      final var element = QuestionPatagligtHotMotPatientensLivAnnat.questionPatagligtHotMotPatientensLivAnnat();
+      final var element =
+          QuestionPatagligtHotMotPatientensLivAnnat.questionPatagligtHotMotPatientensLivAnnat();
 
-      final var shouldValidate = element.elementSpecification(ELEMENT_ID)
-          .shouldValidate();
+      final var shouldValidate = element.elementSpecification(ELEMENT_ID).shouldValidate();
 
       assertFalse(shouldValidate.test(elementData));
     }
@@ -145,23 +146,24 @@ class QuestionPatagligtHotMotPatientensLivAnnatTest {
 
   @Test
   void shallIncludeCustomMapping() {
-    final var expectedConfiguration = new ElementMapping(
-        new ElementId("52"), null
-    );
+    final var expectedConfiguration = new ElementMapping(new ElementId("52"), null);
 
-    final var element = QuestionPatagligtHotMotPatientensLivAnnat.questionPatagligtHotMotPatientensLivAnnat();
+    final var element =
+        QuestionPatagligtHotMotPatientensLivAnnat.questionPatagligtHotMotPatientensLivAnnat();
 
     assertEquals(expectedConfiguration, element.mapping());
   }
 
   @Test
   void shallIncludePdfConfiguration() {
-    final var expected = PdfConfigurationText.builder()
-        .pdfFieldId(new PdfFieldId("form1[0].#subform[1].flt_txtBeskrivSjukdomstillstandet[0]"))
-        .maxLength(265)
-        .build();
+    final var expected =
+        PdfConfigurationText.builder()
+            .pdfFieldId(new PdfFieldId("form1[0].#subform[1].flt_txtBeskrivSjukdomstillstandet[0]"))
+            .maxLength(265)
+            .build();
 
-    final var element = QuestionPatagligtHotMotPatientensLivAnnat.questionPatagligtHotMotPatientensLivAnnat();
+    final var element =
+        QuestionPatagligtHotMotPatientensLivAnnat.questionPatagligtHotMotPatientensLivAnnat();
 
     assertEquals(expected, element.pdfConfiguration());
   }

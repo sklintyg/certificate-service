@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ag114.elements;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -27,14 +45,16 @@ class QuestionFormedlaDiagnosTest {
 
   @Test
   void shouldHaveCorrectConfiguration() {
-    final var expectedConfiguration = ElementConfigurationRadioBoolean.builder()
-        .id(QUESTION_FORMEDLA_DIAGNOS_FIELD_ID)
-        .name("Önskar patienten förmedla information om diagnos/diagnoser till sin arbetsgivare?")
-        .description(
-            "Information om diagnos kan vara viktig för patientens arbetsgivare. Det kan underlätta anpassning av patientens arbetssituation. Det kan också göra att patienten snabbare kommer tillbaka till arbetet.")
-        .selectedText("Ja")
-        .unselectedText("Nej")
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationRadioBoolean.builder()
+            .id(QUESTION_FORMEDLA_DIAGNOS_FIELD_ID)
+            .name(
+                "Önskar patienten förmedla information om diagnos/diagnoser till sin arbetsgivare?")
+            .description(
+                "Information om diagnos kan vara viktig för patientens arbetsgivare. Det kan underlätta anpassning av patientens arbetssituation. Det kan också göra att patienten snabbare kommer tillbaka till arbetet.")
+            .selectedText("Ja")
+            .unselectedText("Nej")
+            .build();
 
     final var element = QuestionFormedlaDiagnos.questionFormedlaDiagnos();
     assertEquals(expectedConfiguration, element.configuration());
@@ -43,24 +63,21 @@ class QuestionFormedlaDiagnosTest {
   @Test
   void shouldIncludeRules() {
     final var element = QuestionFormedlaDiagnos.questionFormedlaDiagnos();
-    final var expectedRules = List.of(
-        ElementRuleExpression.builder()
-            .id(QUESTION_FORMEDLA_DIAGNOS_ID)
-            .type(ElementRuleType.MANDATORY)
-            .expression(new RuleExpression("exists($3.1)"))
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleExpression.builder()
+                .id(QUESTION_FORMEDLA_DIAGNOS_ID)
+                .type(ElementRuleType.MANDATORY)
+                .expression(new RuleExpression("exists($3.1)"))
+                .build());
     assertEquals(expectedRules, element.rules());
   }
 
   @Test
   void shouldIncludeValidation() {
     final var element = QuestionFormedlaDiagnos.questionFormedlaDiagnos();
-    final var expectedValidations = List.of(
-        ElementValidationBoolean.builder()
-            .mandatory(true)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationBoolean.builder().mandatory(true).build());
     assertEquals(expectedValidations, element.validations());
   }
 
@@ -73,11 +90,11 @@ class QuestionFormedlaDiagnosTest {
     assertAll(
         () -> assertEquals(QUESTION_DIAGNOS_ID, pdfConfig.hiddenBy()),
         () -> assertNotNull(pdfConfig.shouldHide()),
-        () -> assertEquals(
-            ElementSimplifiedValueText.builder()
-                .text("På patientens begäran uppges inte diagnos")
-                .build(), pdfConfig.replacementValue()
-        )
-    );
+        () ->
+            assertEquals(
+                ElementSimplifiedValueText.builder()
+                    .text("På patientens begäran uppges inte diagnos")
+                    .build(),
+                pdfConfig.replacementValue()));
   }
 }

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ag114;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,49 +46,55 @@ class AG114SickLeaveProviderTest {
   @Test
   void shouldMapCareGiverId() {
     final var sickLeaveCertificate = provider.build(AG114_CERTIFICATE, false);
-    assertEquals(AG114_CERTIFICATE.certificateMetaData().careProvider().hsaId(),
+    assertEquals(
+        AG114_CERTIFICATE.certificateMetaData().careProvider().hsaId(),
         sickLeaveCertificate.orElseThrow().careGiverId());
   }
 
   @Test
   void shouldMapCareUnitId() {
     final var sickLeaveCertificate = provider.build(AG114_CERTIFICATE, false);
-    assertEquals(AG114_CERTIFICATE.certificateMetaData().issuingUnit().hsaId(),
+    assertEquals(
+        AG114_CERTIFICATE.certificateMetaData().issuingUnit().hsaId(),
         sickLeaveCertificate.orElseThrow().issuingUnitId());
   }
 
   @Test
   void shouldMapCareUnitName() {
     final var sickLeaveCertificate = provider.build(AG114_CERTIFICATE, false);
-    assertEquals(AG114_CERTIFICATE.certificateMetaData().issuingUnit().name(),
+    assertEquals(
+        AG114_CERTIFICATE.certificateMetaData().issuingUnit().name(),
         sickLeaveCertificate.orElseThrow().issuingUnitName());
   }
 
   @Test
   void shouldMapType() {
     final var sickLeaveCertificate = provider.build(AG114_CERTIFICATE, false);
-    assertEquals(AG114_CERTIFICATE.certificateModel().type(),
-        sickLeaveCertificate.orElseThrow().type());
+    assertEquals(
+        AG114_CERTIFICATE.certificateModel().type(), sickLeaveCertificate.orElseThrow().type());
   }
 
   @Test
   void shouldMapCivicRegistrationNumber() {
     final var sickLeaveCertificate = provider.build(AG114_CERTIFICATE, false);
-    assertEquals(AG114_CERTIFICATE.certificateMetaData().patient().id(),
+    assertEquals(
+        AG114_CERTIFICATE.certificateMetaData().patient().id(),
         sickLeaveCertificate.orElseThrow().civicRegistrationNumber());
   }
 
   @Test
   void shouldMapSigningDoctorName() {
     final var sickLeaveCertificate = provider.build(AG114_CERTIFICATE, false);
-    assertEquals(AG114_CERTIFICATE.certificateMetaData().issuer().name(),
+    assertEquals(
+        AG114_CERTIFICATE.certificateMetaData().issuer().name(),
         sickLeaveCertificate.orElseThrow().signingDoctorName());
   }
 
   @Test
   void shouldMapPatientName() {
     final var sickLeaveCertificate = provider.build(AG114_CERTIFICATE, false);
-    assertEquals(AG114_CERTIFICATE.certificateMetaData().patient().name(),
+    assertEquals(
+        AG114_CERTIFICATE.certificateMetaData().patient().name(),
         sickLeaveCertificate.orElseThrow().patientName());
   }
 
@@ -82,18 +106,19 @@ class AG114SickLeaveProviderTest {
 
   @Test
   void shouldUseDefaultDiagnosisWhenNoDiagnosisPresent() {
-    final var certificate = ag114CertificateBuilder()
-        .elementData(
-            AG114_CERTIFICATE.elementData().stream()
-                .filter(elementData -> !elementData.id().id().equals("4"))
-                .toList()
-        )
-        .build();
+    final var certificate =
+        ag114CertificateBuilder()
+            .elementData(
+                AG114_CERTIFICATE.elementData().stream()
+                    .filter(elementData -> !elementData.id().id().equals("4"))
+                    .toList())
+            .build();
 
     final var sickLeaveCertificate = provider.build(certificate, false);
 
     assertEquals("X", sickLeaveCertificate.orElseThrow().diagnoseCode().code());
-    assertEquals("Diagnoskod X är okänd och har ingen beskrivning",
+    assertEquals(
+        "Diagnoskod X är okänd och har ingen beskrivning",
         sickLeaveCertificate.orElseThrow().diagnoseCode().description());
   }
 
@@ -109,11 +134,11 @@ class AG114SickLeaveProviderTest {
     assertNull(sickLeaveCertificate.orElseThrow().biDiagnoseCode2());
   }
 
-
   @Test
   void shouldMapSigningDoctorId() {
     final var sickLeaveCertificate = provider.build(AG114_CERTIFICATE, false);
-    assertEquals(AG114_CERTIFICATE.certificateMetaData().issuer().hsaId(),
+    assertEquals(
+        AG114_CERTIFICATE.certificateMetaData().issuer().hsaId(),
         sickLeaveCertificate.orElseThrow().signingDoctorId());
   }
 
@@ -131,11 +156,12 @@ class AG114SickLeaveProviderTest {
 
   @Test
   void shouldMapWorkCapacities() {
-    final var expectedDateRange = DateRange.builder()
-        .dateRangeId(new FieldId(("70")))
-        .from(LocalDate.now())
-        .to(LocalDate.now().plusDays(30))
-        .build();
+    final var expectedDateRange =
+        DateRange.builder()
+            .dateRangeId(new FieldId(("70")))
+            .from(LocalDate.now())
+            .to(LocalDate.now().plusDays(30))
+            .build();
 
     final var sickLeaveCertificate = provider.build(AG114_CERTIFICATE, false);
     assertEquals(List.of(expectedDateRange), sickLeaveCertificate.orElseThrow().workCapacities());
@@ -143,11 +169,8 @@ class AG114SickLeaveProviderTest {
 
   @Test
   void shouldMapEmployment() {
-    final var expectedEmployment = List.of(
-        ElementValueCode.builder()
-            .code("Nuvarande arbete")
-            .build()
-    );
+    final var expectedEmployment =
+        List.of(ElementValueCode.builder().code("Nuvarande arbete").build());
 
     final var sickLeaveCertificate = provider.build(AG114_CERTIFICATE, false);
     assertEquals(expectedEmployment, sickLeaveCertificate.orElseThrow().employment());

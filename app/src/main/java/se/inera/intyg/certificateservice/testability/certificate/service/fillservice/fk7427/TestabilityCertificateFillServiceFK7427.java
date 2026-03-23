@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.testability.certificate.service.fillservice.fk7427;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7427.CertificateModelFactoryFK7427.FK7427_V1_0;
@@ -47,8 +65,7 @@ import se.inera.intyg.certificateservice.testability.certificate.dto.Testability
 import se.inera.intyg.certificateservice.testability.certificate.service.fillservice.TestabilityCertificateFillService;
 
 @Component
-public class TestabilityCertificateFillServiceFK7427 implements
-    TestabilityCertificateFillService {
+public class TestabilityCertificateFillServiceFK7427 implements TestabilityCertificateFillService {
 
   @Override
   public List<CertificateModelId> certificateModelIds() {
@@ -56,33 +73,31 @@ public class TestabilityCertificateFillServiceFK7427 implements
   }
 
   @Override
-  public List<ElementData> fill(CertificateModel certificateModel,
-      TestabilityFillTypeDTO fillType) {
+  public List<ElementData> fill(
+      CertificateModel certificateModel, TestabilityFillTypeDTO fillType) {
 
-    return fillType == EMPTY
-        ? Collections.emptyList()
-        : fillWithValues(certificateModel, fillType);
+    return fillType == EMPTY ? Collections.emptyList() : fillWithValues(certificateModel, fillType);
   }
 
-  private static List<ElementData> fillWithValues(CertificateModel certificateModel,
-      TestabilityFillTypeDTO fillType) {
+  private static List<ElementData> fillWithValues(
+      CertificateModel certificateModel, TestabilityFillTypeDTO fillType) {
     final var elementData = new ArrayList<ElementData>();
-    final var specGrundForMedicinsktUnderlag = spec(QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID,
-        certificateModel);
-    final var specAnnanGrundForMedicinskitUnderlag = spec(
-        QUESTION_ANNAN_GRUND_FOR_MEDICINSKT_UNDERLAG_ID, certificateModel);
+    final var specGrundForMedicinsktUnderlag =
+        spec(QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID, certificateModel);
+    final var specAnnanGrundForMedicinskitUnderlag =
+        spec(QUESTION_ANNAN_GRUND_FOR_MEDICINSKT_UNDERLAG_ID, certificateModel);
     final var specDiagnos = spec(DIAGNOSIS_ID, certificateModel);
     final var specSymtom = spec(QUESTION_SYMTOM_ID, certificateModel);
     final var specHalsotillstand = spec(QUESTION_HALSOTILLSTAND_ID, certificateModel);
     final var specVardEllerTillsyn = spec(QUESTION_VARD_ELLER_TILLSYN_ID, certificateModel);
-    final var specVardasBarnetInneliggandePaSjukhus = spec(
-        QUESTION_VARDAS_BARNET_INNELIGGANDE_PA_SJUKHUS_ID, certificateModel);
-    final var specPagaendeOchPlaneradBehandling = spec(QUESTION_PAGAENDE_OCH_PLANERAD_BEHANDLING_ID,
-        certificateModel);
-    final var specPeriodVardEllerTillsyn = spec(QUESTION_PERIOD_VARD_ELLER_TILLSYN_ID,
-        certificateModel);
-    final var specPeriodInneliggandePaSjukhus = spec(QUESTION_PERIOD_INNELIGGANDE_ID,
-        certificateModel);
+    final var specVardasBarnetInneliggandePaSjukhus =
+        spec(QUESTION_VARDAS_BARNET_INNELIGGANDE_PA_SJUKHUS_ID, certificateModel);
+    final var specPagaendeOchPlaneradBehandling =
+        spec(QUESTION_PAGAENDE_OCH_PLANERAD_BEHANDLING_ID, certificateModel);
+    final var specPeriodVardEllerTillsyn =
+        spec(QUESTION_PERIOD_VARD_ELLER_TILLSYN_ID, certificateModel);
+    final var specPeriodInneliggandePaSjukhus =
+        spec(QUESTION_PERIOD_INNELIGGANDE_ID, certificateModel);
 
     grundForMedicinsktUnderlag(specGrundForMedicinsktUnderlag, elementData, fillType);
     baseratPaAnnat(specAnnanGrundForMedicinskitUnderlag, elementData, fillType);
@@ -98,47 +113,50 @@ public class TestabilityCertificateFillServiceFK7427 implements
     return elementData;
   }
 
-  private static void grundForMedicinsktUnderlag(ElementSpecification spec, List<ElementData> list,
-      TestabilityFillTypeDTO fillType) {
+  private static void grundForMedicinsktUnderlag(
+      ElementSpecification spec, List<ElementData> list, TestabilityFillTypeDTO fillType) {
     if (emptyValue(spec) instanceof ElementValueDateList elementValueDateList) {
-      final var dateList = List.of(
-          valueDate(UTLATANDE_BASERAT_PA_FYSISKT_MOTE_FIELD_ID, now()),
-          valueDate(UTLATANDE_BASERAT_PA_DIGITALT_VARDMOTE_FIELD_ID, now()),
-          valueDate(UTLATANDE_BASERAT_PA_JOURNALUPPGIFTER_FIELD_ID, now()),
-          valueDate(UTLATANDE_BASERAT_PA_FORALDERS_BESKRIVNING_FIELD_ID, now()),
-          valueDate(UTLATANDE_BASERAT_PA_ANNAT_FIELD_ID, now())
-      );
+      final var dateList =
+          List.of(
+              valueDate(UTLATANDE_BASERAT_PA_FYSISKT_MOTE_FIELD_ID, now()),
+              valueDate(UTLATANDE_BASERAT_PA_DIGITALT_VARDMOTE_FIELD_ID, now()),
+              valueDate(UTLATANDE_BASERAT_PA_JOURNALUPPGIFTER_FIELD_ID, now()),
+              valueDate(UTLATANDE_BASERAT_PA_FORALDERS_BESKRIVNING_FIELD_ID, now()),
+              valueDate(UTLATANDE_BASERAT_PA_ANNAT_FIELD_ID, now()));
 
-      final var valueDateList = elementValueDateList
-          .withDateList(fillType == MAXIMAL ? dateList : dateList.subList(0, 1));
+      final var valueDateList =
+          elementValueDateList.withDateList(
+              fillType == MAXIMAL ? dateList : dateList.subList(0, 1));
       list.add(elementData(spec.id(), valueDateList));
     }
   }
 
-  private static void baseratPaAnnat(ElementSpecification spec, List<ElementData> list,
-      TestabilityFillTypeDTO fillType) {
+  private static void baseratPaAnnat(
+      ElementSpecification spec, List<ElementData> list, TestabilityFillTypeDTO fillType) {
     if (fillType == MAXIMAL && emptyValue(spec) instanceof ElementValueText elementValueText) {
       final var text = elementValueText.withText("Anger vad annat är");
       list.add(elementData(spec.id(), text));
     }
   }
 
-  private static void diagnos(ElementSpecification spec, List<ElementData> list,
-      TestabilityFillTypeDTO fillType) {
+  private static void diagnos(
+      ElementSpecification spec, List<ElementData> list, TestabilityFillTypeDTO fillType) {
     if (emptyValue(spec) instanceof ElementValueDiagnosisList) {
-      final var diagnoses = List.of(
-          valueDiagnosis(DIAGNOS_1, "A78", "Q-feber", CodeSystemIcd10Se.DIAGNOS_ICD_10_ID),
-          valueDiagnosis(DIAGNOS_2, "A25", "Råttbettsfeber", CodeSystemIcd10Se.DIAGNOS_ICD_10_ID),
-          valueDiagnosis(DIAGNOS_3, "A23", "Undulantfeber", CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
-      );
+      final var diagnoses =
+          List.of(
+              valueDiagnosis(DIAGNOS_1, "A78", "Q-feber", CodeSystemIcd10Se.DIAGNOS_ICD_10_ID),
+              valueDiagnosis(
+                  DIAGNOS_2, "A25", "Råttbettsfeber", CodeSystemIcd10Se.DIAGNOS_ICD_10_ID),
+              valueDiagnosis(
+                  DIAGNOS_3, "A23", "Undulantfeber", CodeSystemIcd10Se.DIAGNOS_ICD_10_ID));
 
       final var diagnosisList = fillType == MAXIMAL ? diagnoses : diagnoses.subList(0, 1);
       list.add(elementData(spec.id(), diagnosisList(diagnosisList)));
     }
   }
 
-  private static void symtom(ElementSpecification spec, List<ElementData> list,
-      TestabilityFillTypeDTO fillType) {
+  private static void symtom(
+      ElementSpecification spec, List<ElementData> list, TestabilityFillTypeDTO fillType) {
     if (fillType == MAXIMAL && emptyValue(spec) instanceof ElementValueText elementValueText) {
       final var text = elementValueText.withText("Barnet har haft den här symtomen");
       list.add(elementData(spec.id(), text));
@@ -159,38 +177,40 @@ public class TestabilityCertificateFillServiceFK7427 implements
     }
   }
 
-  private static void vardasBarnetInneliggandePaSjukhus(ElementSpecification spec,
-      List<ElementData> list, TestabilityFillTypeDTO fillType) {
+  private static void vardasBarnetInneliggandePaSjukhus(
+      ElementSpecification spec, List<ElementData> list, TestabilityFillTypeDTO fillType) {
     if (emptyValue(spec) instanceof ElementValueBoolean elementValueBoolean) {
       final var text = elementValueBoolean.withValue(fillType == MAXIMAL);
       list.add(elementData(spec.id(), text));
     }
   }
 
-  private static void behandling(ElementSpecification spec, List<ElementData> list,
-      TestabilityFillTypeDTO fillType) {
+  private static void behandling(
+      ElementSpecification spec, List<ElementData> list, TestabilityFillTypeDTO fillType) {
     if (fillType == MAXIMAL && emptyValue(spec) instanceof ElementValueText elementValueText) {
       final var text = elementValueText.withText("Det finns behov av behandling");
       list.add(elementData(spec.id(), text));
     }
   }
 
-  private static void periodVardEllerTillsyn(ElementSpecification spec, List<ElementData> list,
-      TestabilityFillTypeDTO fillType) {
+  private static void periodVardEllerTillsyn(
+      ElementSpecification spec, List<ElementData> list, TestabilityFillTypeDTO fillType) {
     if (emptyValue(spec) instanceof ElementValueDateRange elementValueDateRange) {
-      final var valueDateRange = elementValueDateRange
-          .withFromDate(now())
-          .withToDate(fillType == MAXIMAL ? now().plusDays(7) : now());
+      final var valueDateRange =
+          elementValueDateRange
+              .withFromDate(now())
+              .withToDate(fillType == MAXIMAL ? now().plusDays(7) : now());
       list.add(elementData(spec.id(), valueDateRange));
     }
   }
 
-  private static void periodInneliggandePaSjukhus(ElementSpecification spec, List<ElementData> list,
-      TestabilityFillTypeDTO fillType) {
+  private static void periodInneliggandePaSjukhus(
+      ElementSpecification spec, List<ElementData> list, TestabilityFillTypeDTO fillType) {
     if (emptyValue(spec) instanceof ElementValueDateRange elementValueDateRange) {
-      final var valueDateRange = elementValueDateRange
-          .withFromDate(now())
-          .withToDate(fillType == MAXIMAL ? now().plusDays(5) : now());
+      final var valueDateRange =
+          elementValueDateRange
+              .withFromDate(now())
+              .withToDate(fillType == MAXIMAL ? now().plusDays(5) : now());
       list.add(elementData(spec.id(), valueDateRange));
     }
   }

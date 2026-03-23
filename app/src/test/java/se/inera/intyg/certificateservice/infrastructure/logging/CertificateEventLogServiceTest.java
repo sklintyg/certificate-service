@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.logging;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -57,14 +75,10 @@ import se.inera.intyg.certificateservice.logging.HashUtility;
 @ExtendWith(MockitoExtension.class)
 class CertificateEventLogServiceTest {
 
-  @Spy
-  private HashUtility hashUtility;
-  @Mock
-  private Appender<ILoggingEvent> mockAppender;
-  @Captor
-  private ArgumentCaptor<LoggingEvent> captorLoggingEvent;
-  @InjectMocks
-  private CertificateEventLogService certificateEventLogService;
+  @Spy private HashUtility hashUtility;
+  @Mock private Appender<ILoggingEvent> mockAppender;
+  @Captor private ArgumentCaptor<LoggingEvent> captorLoggingEvent;
+  @InjectMocks private CertificateEventLogService certificateEventLogService;
   private CertificateEvent certificateEvent;
 
   @BeforeEach
@@ -73,8 +87,7 @@ class CertificateEventLogServiceTest {
     logger.addAppender(mockAppender);
 
     final var now = LocalDateTime.now(ZoneId.systemDefault());
-    certificateEvent = getCertificateEventBuilder(now)
-        .build();
+    certificateEvent = getCertificateEventBuilder(now).build();
   }
 
   private static CertificateEventBuilder getCertificateEventBuilder(LocalDateTime now) {
@@ -98,8 +111,7 @@ class CertificateEventLogServiceTest {
     assertEquals(
         "CertificateEvent '%s' occurred on certificate '%s'."
             .formatted(CertificateEventType.READ.name(), CERTIFICATE_ID.id()),
-        getFormattedMessage()
-    );
+        getFormattedMessage());
   }
 
   @Test
@@ -178,9 +190,7 @@ class CertificateEventLogServiceTest {
   void shallIncludeCertificatePatientIdAsHashInMDC() {
     certificateEventLogService.event(certificateEvent);
     assertEquals(
-        hashUtility.hash(ATHENA_REACT_ANDERSSON_ID),
-        getValueFromMDC(EVENT_CERTIFICATE_PATIENT_ID)
-    );
+        hashUtility.hash(ATHENA_REACT_ANDERSSON_ID), getValueFromMDC(EVENT_CERTIFICATE_PATIENT_ID));
   }
 
   @Test
@@ -216,21 +226,15 @@ class CertificateEventLogServiceTest {
   @Test
   void shallIncludeUserIdInMDCWithPatientId() {
     final var now = LocalDateTime.now(ZoneId.systemDefault());
-    final var event = getCertificateEventBuilder(now)
-        .actionEvaluation(null)
-        .build();
+    final var event = getCertificateEventBuilder(now).actionEvaluation(null).build();
     certificateEventLogService.event(event);
-    assertEquals(
-        hashUtility.hash(ATHENA_REACT_ANDERSSON_ID),
-        getValueFromMDC(USER_ID));
+    assertEquals(hashUtility.hash(ATHENA_REACT_ANDERSSON_ID), getValueFromMDC(USER_ID));
   }
 
   @Test
   void shallExcludeUserRoleInMDC() {
     final var now = LocalDateTime.now(ZoneId.systemDefault());
-    final var event = getCertificateEventBuilder(now)
-        .actionEvaluation(null)
-        .build();
+    final var event = getCertificateEventBuilder(now).actionEvaluation(null).build();
     certificateEventLogService.event(event);
     assertEquals("-", getValueFromMDC(USER_ROLE));
   }
@@ -238,9 +242,7 @@ class CertificateEventLogServiceTest {
   @Test
   void shallExcludeOrganizationUnitIdInMDC() {
     final var now = LocalDateTime.now(ZoneId.systemDefault());
-    final var event = getCertificateEventBuilder(now)
-        .actionEvaluation(null)
-        .build();
+    final var event = getCertificateEventBuilder(now).actionEvaluation(null).build();
     certificateEventLogService.event(event);
     assertEquals("-", getValueFromMDC(ORGANIZATION_ID));
   }
@@ -248,9 +250,7 @@ class CertificateEventLogServiceTest {
   @Test
   void shallExcludeOrganizationCareUnitIdInMDC() {
     final var now = LocalDateTime.now(ZoneId.systemDefault());
-    final var event = getCertificateEventBuilder(now)
-        .actionEvaluation(null)
-        .build();
+    final var event = getCertificateEventBuilder(now).actionEvaluation(null).build();
     certificateEventLogService.event(event);
     assertEquals("-", getValueFromMDC(ORGANIZATION_CARE_UNIT_ID));
   }
@@ -258,9 +258,7 @@ class CertificateEventLogServiceTest {
   @Test
   void shallExcludeOrganizationCareProviderIdInMDC() {
     final var now = LocalDateTime.now(ZoneId.systemDefault());
-    final var event = getCertificateEventBuilder(now)
-        .actionEvaluation(null)
-        .build();
+    final var event = getCertificateEventBuilder(now).actionEvaluation(null).build();
     certificateEventLogService.event(event);
     assertEquals("-", getValueFromMDC(ORGANIZATION_CARE_PROVIDER_ID));
   }

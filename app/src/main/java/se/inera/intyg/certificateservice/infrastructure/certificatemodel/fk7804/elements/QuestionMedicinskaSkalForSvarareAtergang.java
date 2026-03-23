@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7804.elements;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7804.FK7804PdfSpecification.PDF_TEXT_FIELD_ROW_LENGTH;
@@ -33,44 +51,26 @@ public class QuestionMedicinskaSkalForSvarareAtergang {
                 .name(
                     "Beskriv de medicinska skälen till att möjligheterna till återgång i arbete försämras")
                 .id(QUESTION_MEDICINSKA_SKAL_FIELD_ID)
-                .build()
-        )
+                .build())
         .rules(
             List.of(
                 CertificateElementRuleFactory.mandatory(
-                    QUESTION_MEDICINSKA_SKAL_ID,
-                    QUESTION_MEDICINSKA_SKAL_FIELD_ID
-                ),
-                CertificateElementRuleFactory.limit(
-                    QUESTION_MEDICINSKA_SKAL_ID,
-                    (short) 4000
-                ),
+                    QUESTION_MEDICINSKA_SKAL_ID, QUESTION_MEDICINSKA_SKAL_FIELD_ID),
+                CertificateElementRuleFactory.limit(QUESTION_MEDICINSKA_SKAL_ID, (short) 4000),
                 CertificateElementRuleFactory.show(
                     QUESTION_SVARARE_ATERGANG_VID_OJAMN_ARBETSTID_ID,
-                    QUESTION_SVARARE_ATERGANG_VID_OJAMN_ARBETSTID_FIELD_ID
-                )
-            )
-        )
-        .validations(
-            List.of(
-                ElementValidationText.builder()
-                    .mandatory(true)
-                    .limit(4000)
-                    .build()
-            )
-        )
+                    QUESTION_SVARARE_ATERGANG_VID_OJAMN_ARBETSTID_FIELD_ID)))
+        .validations(List.of(ElementValidationText.builder().mandatory(true).limit(4000).build()))
         .pdfConfiguration(
             PdfConfigurationText.builder()
                 .pdfFieldId(new PdfFieldId("form1[0].Sida3[0].flt_txtBeskrivMedicinskaSkal[0]"))
                 .overflowSheetFieldId(
                     new PdfFieldId("form1[0].#subform[4].flt_txtFortsattningsblad[0]"))
                 .maxLength(3 * PDF_TEXT_FIELD_ROW_LENGTH)
-                .build()
-        )
+                .build())
         .shouldValidate(
             ElementDataPredicateFactory.valueBoolean(
-                QUESTION_SVARARE_ATERGANG_VID_OJAMN_ARBETSTID_ID,
-                true))
+                QUESTION_SVARARE_ATERGANG_VID_OJAMN_ARBETSTID_ID, true))
         .mapping(new ElementMapping(QUESTION_SVARARE_ATERGANG_VID_OJAMN_ARBETSTID_ID, null))
         .build();
   }

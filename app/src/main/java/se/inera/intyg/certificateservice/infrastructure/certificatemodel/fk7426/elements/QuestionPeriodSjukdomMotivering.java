@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7426.elements;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7426.CertificateModelFactoryFK7426.TEXT_FIELD_LIMIT;
@@ -20,8 +38,8 @@ public class QuestionPeriodSjukdomMotivering {
 
   public static final ElementId QUESTION_PERIOD_SJUKDOM_MOTIVERING_ID = new ElementId("61.2");
   private static final FieldId QUESTION_PERIOD_SJUKDOM_MOTIVERING_FIELD_ID = new FieldId("61.2");
-  private static final PdfFieldId PDF_FIELD_ID = new PdfFieldId(
-      "form1[0].#subform[3].flt_txtMotiveraBedömn[0]");
+  private static final PdfFieldId PDF_FIELD_ID =
+      new PdfFieldId("form1[0].#subform[3].flt_txtMotiveraBedömn[0]");
 
   private QuestionPeriodSjukdomMotivering() {
     throw new IllegalStateException("Utility class");
@@ -35,32 +53,27 @@ public class QuestionPeriodSjukdomMotivering {
                 .name(
                     "Motivera bedömningen av perioden som du anser att det finns ett påtagligt hot mot barnets liv")
                 .id(QUESTION_PERIOD_SJUKDOM_MOTIVERING_FIELD_ID)
-                .build()
-        )
+                .build())
         .rules(
             List.of(
-                CertificateElementRuleFactory.mandatory(QUESTION_PERIOD_SJUKDOM_MOTIVERING_ID,
+                CertificateElementRuleFactory.mandatory(
+                    QUESTION_PERIOD_SJUKDOM_MOTIVERING_ID,
                     QUESTION_PERIOD_SJUKDOM_MOTIVERING_FIELD_ID),
-                CertificateElementRuleFactory.limit(QUESTION_PERIOD_SJUKDOM_MOTIVERING_ID,
-                    TEXT_FIELD_LIMIT)
-            )
-        )
+                CertificateElementRuleFactory.limit(
+                    QUESTION_PERIOD_SJUKDOM_MOTIVERING_ID, TEXT_FIELD_LIMIT)))
         .validations(
             List.of(
                 ElementValidationText.builder()
                     .mandatory(true)
                     .limit((int) TEXT_FIELD_LIMIT)
-                    .build()
-            )
-        )
+                    .build()))
         .mapping(new ElementMapping(QUESTION_PERIOD_SJUKDOM_ID, null))
         .pdfConfiguration(
             PdfConfigurationText.builder()
                 .pdfFieldId(PDF_FIELD_ID)
                 .maxLength(ROW_MAX_LENGTH * 6)
                 .overflowSheetFieldId(FORTSATTNINGSBLAD_ID)
-                .build()
-        )
+                .build())
         .includeWhenRenewing(false)
         .build();
   }

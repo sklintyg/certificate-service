@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.message.service.converter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -43,99 +61,92 @@ import se.inera.intyg.certificateservice.domain.message.model.Subject;
 @ExtendWith(MockitoExtension.class)
 class MessageConverterTest {
 
-  @InjectMocks
-  private MessageConverter messageConverter;
+  @InjectMocks private MessageConverter messageConverter;
 
   @Nested
   class TestIncomingComplementRequest {
 
     @Test
     void shallIncludeMessageId() {
-      assertEquals(new MessageId(MESSAGE_ID),
-          messageConverter.convert(INCOMING_COMPLEMENT_MESSAGE).id()
-      );
+      assertEquals(
+          new MessageId(MESSAGE_ID), messageConverter.convert(INCOMING_COMPLEMENT_MESSAGE).id());
     }
 
     @Test
     void shallIncludeReferenceId() {
-      assertEquals(new SenderReference(REFERENCE_ID),
-          messageConverter.convert(INCOMING_COMPLEMENT_MESSAGE).reference()
-      );
+      assertEquals(
+          new SenderReference(REFERENCE_ID),
+          messageConverter.convert(INCOMING_COMPLEMENT_MESSAGE).reference());
     }
 
     @Test
     void shallIncludePersonId() {
-      final var expectedId = PersonId.builder()
-          .id(ATHENA_REACT_ANDERSSON_ID)
-          .type(PersonIdType.PERSONAL_IDENTITY_NUMBER)
-          .build();
+      final var expectedId =
+          PersonId.builder()
+              .id(ATHENA_REACT_ANDERSSON_ID)
+              .type(PersonIdType.PERSONAL_IDENTITY_NUMBER)
+              .build();
 
-      assertEquals(expectedId,
-          messageConverter.convert(INCOMING_COMPLEMENT_MESSAGE).personId()
-      );
+      assertEquals(expectedId, messageConverter.convert(INCOMING_COMPLEMENT_MESSAGE).personId());
     }
 
     @Test
     void shallIncludeMessageType() {
-      assertEquals(MessageType.COMPLEMENT,
-          messageConverter.convert(INCOMING_COMPLEMENT_MESSAGE).type()
-      );
+      assertEquals(
+          MessageType.COMPLEMENT, messageConverter.convert(INCOMING_COMPLEMENT_MESSAGE).type());
     }
 
     @Test
     void shallIncludeCertificateId() {
-      assertEquals(new CertificateId(CERTIFICATE_ID),
-          messageConverter.convert(INCOMING_COMPLEMENT_MESSAGE).certificateId()
-      );
+      assertEquals(
+          new CertificateId(CERTIFICATE_ID),
+          messageConverter.convert(INCOMING_COMPLEMENT_MESSAGE).certificateId());
     }
 
     @Test
     void shallIncludeAuthor() {
-      assertEquals(new Author(AUTHOR_INCOMING_MESSAGE),
-          messageConverter.convert(INCOMING_COMPLEMENT_MESSAGE).author()
-      );
+      assertEquals(
+          new Author(AUTHOR_INCOMING_MESSAGE),
+          messageConverter.convert(INCOMING_COMPLEMENT_MESSAGE).author());
     }
 
     @Test
     void shallIncludeContactInfo() {
-      assertEquals(new MessageContactInfo(CONTACT_INFO),
-          messageConverter.convert(INCOMING_COMPLEMENT_MESSAGE).contactInfo()
-      );
+      assertEquals(
+          new MessageContactInfo(CONTACT_INFO),
+          messageConverter.convert(INCOMING_COMPLEMENT_MESSAGE).contactInfo());
     }
 
     @Test
     void shallIncludeContent() {
-      assertEquals(new Content(CONTENT),
-          messageConverter.convert(INCOMING_COMPLEMENT_MESSAGE).content()
-      );
+      assertEquals(
+          new Content(CONTENT), messageConverter.convert(INCOMING_COMPLEMENT_MESSAGE).content());
     }
 
     @Test
     void shallIncludeLastDateToReply() {
-      assertEquals(LAST_DATE_TO_REPLY,
-          messageConverter.convert(INCOMING_COMPLEMENT_MESSAGE).lastDateToReply()
-      );
+      assertEquals(
+          LAST_DATE_TO_REPLY,
+          messageConverter.convert(INCOMING_COMPLEMENT_MESSAGE).lastDateToReply());
     }
 
     @Test
     void shallIncludeSubject() {
-      assertEquals(new Subject(SUBJECT),
-          messageConverter.convert(INCOMING_COMPLEMENT_MESSAGE).subject()
-      );
+      assertEquals(
+          new Subject(SUBJECT), messageConverter.convert(INCOMING_COMPLEMENT_MESSAGE).subject());
     }
 
     @Test
     void shallIncludeComplement() {
-      final var expectedComplement = List.of(
-          Complement.builder()
-              .elementId(new ElementId(COMPLEMENT_QUESTION_ID_ONE))
-              .content(new Content(COMPLEMENT_TEXT_ONE))
-              .build()
-      );
+      final var expectedComplement =
+          List.of(
+              Complement.builder()
+                  .elementId(new ElementId(COMPLEMENT_QUESTION_ID_ONE))
+                  .content(new Content(COMPLEMENT_TEXT_ONE))
+                  .build());
 
-      assertEquals(expectedComplement,
-          messageConverter.convert(INCOMING_COMPLEMENT_MESSAGE).complements()
-      );
+      assertEquals(
+          expectedComplement, messageConverter.convert(INCOMING_COMPLEMENT_MESSAGE).complements());
     }
 
     @Test
@@ -145,9 +156,8 @@ class MessageConverterTest {
 
     @Test
     void shallIncludeStatusSENT() {
-      assertEquals(MessageStatus.SENT,
-          messageConverter.convert(INCOMING_COMPLEMENT_MESSAGE).status()
-      );
+      assertEquals(
+          MessageStatus.SENT, messageConverter.convert(INCOMING_COMPLEMENT_MESSAGE).status());
     }
   }
 
@@ -156,44 +166,44 @@ class MessageConverterTest {
 
     @Test
     void shallIncludeMessageId() {
-      assertEquals(new MessageId(REMINDER_MESSAGE_ID),
-          messageConverter.convertReminder(INCOMING_REMINDER_MESSAGE).id()
-      );
+      assertEquals(
+          new MessageId(REMINDER_MESSAGE_ID),
+          messageConverter.convertReminder(INCOMING_REMINDER_MESSAGE).id());
     }
 
     @Test
     void shallIncludeReferenceId() {
-      assertEquals(new SenderReference(REFERENCE_ID),
-          messageConverter.convertReminder(INCOMING_REMINDER_MESSAGE).reference()
-      );
+      assertEquals(
+          new SenderReference(REFERENCE_ID),
+          messageConverter.convertReminder(INCOMING_REMINDER_MESSAGE).reference());
     }
 
     @Test
     void shallIncludeAuthor() {
-      assertEquals(new Author(AUTHOR_INCOMING_MESSAGE),
-          messageConverter.convertReminder(INCOMING_REMINDER_MESSAGE).author()
-      );
+      assertEquals(
+          new Author(AUTHOR_INCOMING_MESSAGE),
+          messageConverter.convertReminder(INCOMING_REMINDER_MESSAGE).author());
     }
 
     @Test
     void shallIncludeContactInfo() {
-      assertEquals(new MessageContactInfo(CONTACT_INFO),
-          messageConverter.convertReminder(INCOMING_REMINDER_MESSAGE).contactInfo()
-      );
+      assertEquals(
+          new MessageContactInfo(CONTACT_INFO),
+          messageConverter.convertReminder(INCOMING_REMINDER_MESSAGE).contactInfo());
     }
 
     @Test
     void shallIncludeContent() {
-      assertEquals(new Content(REMINDER_CONTENT),
-          messageConverter.convertReminder(INCOMING_REMINDER_MESSAGE).content()
-      );
+      assertEquals(
+          new Content(REMINDER_CONTENT),
+          messageConverter.convertReminder(INCOMING_REMINDER_MESSAGE).content());
     }
 
     @Test
     void shallIncludeSubject() {
-      assertEquals(new Subject(SUBJECT),
-          messageConverter.convertReminder(INCOMING_REMINDER_MESSAGE).subject()
-      );
+      assertEquals(
+          new Subject(SUBJECT),
+          messageConverter.convertReminder(INCOMING_REMINDER_MESSAGE).subject());
     }
   }
 
@@ -202,51 +212,48 @@ class MessageConverterTest {
 
     @Test
     void shallIncludeMessageId() {
-      assertEquals(new MessageId(ANSWER_MESSAGE_ID),
-          messageConverter.convertAnswer(INCOMING_ANSWER_MESSAGE).id()
-      );
+      assertEquals(
+          new MessageId(ANSWER_MESSAGE_ID),
+          messageConverter.convertAnswer(INCOMING_ANSWER_MESSAGE).id());
     }
 
     @Test
     void shallIncludeReferenceId() {
-      assertEquals(new SenderReference(REFERENCE_ID),
-          messageConverter.convertAnswer(INCOMING_ANSWER_MESSAGE).reference()
-      );
+      assertEquals(
+          new SenderReference(REFERENCE_ID),
+          messageConverter.convertAnswer(INCOMING_ANSWER_MESSAGE).reference());
     }
 
     @Test
     void shallIncludeAuthor() {
-      assertEquals(new Author(AUTHOR_INCOMING_MESSAGE),
-          messageConverter.convertAnswer(INCOMING_ANSWER_MESSAGE).author()
-      );
+      assertEquals(
+          new Author(AUTHOR_INCOMING_MESSAGE),
+          messageConverter.convertAnswer(INCOMING_ANSWER_MESSAGE).author());
     }
 
     @Test
     void shallIncludeContactInfo() {
-      assertEquals(new MessageContactInfo(CONTACT_INFO),
-          messageConverter.convertAnswer(INCOMING_ANSWER_MESSAGE).contactInfo()
-      );
+      assertEquals(
+          new MessageContactInfo(CONTACT_INFO),
+          messageConverter.convertAnswer(INCOMING_ANSWER_MESSAGE).contactInfo());
     }
 
     @Test
     void shallIncludeContent() {
-      assertEquals(new Content(CONTENT),
-          messageConverter.convertAnswer(INCOMING_ANSWER_MESSAGE).content()
-      );
+      assertEquals(
+          new Content(CONTENT), messageConverter.convertAnswer(INCOMING_ANSWER_MESSAGE).content());
     }
 
     @Test
     void shallIncludeSubject() {
-      assertEquals(new Subject(SUBJECT),
-          messageConverter.convertAnswer(INCOMING_ANSWER_MESSAGE).subject()
-      );
+      assertEquals(
+          new Subject(SUBJECT), messageConverter.convertAnswer(INCOMING_ANSWER_MESSAGE).subject());
     }
 
     @Test
     void shallIncludeStatus() {
-      assertEquals(MessageStatus.SENT,
-          messageConverter.convertAnswer(INCOMING_ANSWER_MESSAGE).status()
-      );
+      assertEquals(
+          MessageStatus.SENT, messageConverter.convertAnswer(INCOMING_ANSWER_MESSAGE).status());
     }
   }
 }

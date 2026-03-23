@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.integrationtest.common.util;
 
 import se.inera.intyg.certificateservice.application.certificate.dto.AnswerComplementRequest;
@@ -52,26 +70,16 @@ public class ApiRequestUtil {
     return CertificateTypeInfoRequestBuilder.create().build();
   }
 
-  public static CreateCertificateRequestBuilder customCreateCertificateRequest(String type,
-      String version) {
+  public static CreateCertificateRequestBuilder customCreateCertificateRequest(
+      String type, String version) {
     return CreateCertificateRequestBuilder.create()
-        .certificateModelId(
-            CertificateModelIdDTO.builder()
-                .type(type)
-                .version(version)
-                .build()
-        );
+        .certificateModelId(CertificateModelIdDTO.builder().type(type).version(version).build());
   }
 
-  public static CreateCertificateRequest defaultCreateCertificateRequest(String type,
-      String version) {
+  public static CreateCertificateRequest defaultCreateCertificateRequest(
+      String type, String version) {
     return CreateCertificateRequestBuilder.create()
-        .certificateModelId(
-            CertificateModelIdDTO.builder()
-                .type(type)
-                .version(version)
-                .build()
-        )
+        .certificateModelId(CertificateModelIdDTO.builder().type(type).version(version).build())
         .build();
   }
 
@@ -279,7 +287,8 @@ public class ApiRequestUtil {
     return GetCertificateCandidateRequestBuilder.create().build();
   }
 
-  public static UpdateWithCertificateCandidateRequest defaultUpdateWithCertificateCandidateRequest() {
+  public static UpdateWithCertificateCandidateRequest
+      defaultUpdateWithCertificateCandidateRequest() {
     return UpdateWithCertificateCandidateRequestBuilder.create().build();
   }
 
@@ -308,22 +317,14 @@ public class ApiRequestUtil {
   }
 
   public static TestabilityCertificateRequestBuilder customTestabilityCertificateRequest(
-      String type,
-      String version) {
+      String type, String version) {
     return customTestabilityCertificateRequest(type, version, CertificateStatusTypeDTO.UNSIGNED);
   }
 
   public static TestabilityCertificateRequestBuilder customTestabilityCertificateRequest(
-      String type,
-      String version,
-      CertificateStatusTypeDTO status) {
+      String type, String version, CertificateStatusTypeDTO status) {
     return TestabilityCertificateRequestBuilder.create()
-        .certificateModelId(
-            CertificateModelIdDTO.builder()
-                .type(type)
-                .version(version)
-                .build()
-        )
+        .certificateModelId(CertificateModelIdDTO.builder().type(type).version(version).build())
         .status(status);
   }
 
@@ -335,12 +336,7 @@ public class ApiRequestUtil {
   public static TestabilityCertificateRequest defaultTestablilityCertificateRequest(
       String type, String version, CertificateStatusTypeDTO status) {
     return TestabilityCertificateRequestBuilder.create()
-        .certificateModelId(
-            CertificateModelIdDTO.builder()
-                .type(type)
-                .version(version)
-                .build()
-        )
+        .certificateModelId(CertificateModelIdDTO.builder().type(type).version(version).build())
         .status(status)
         .build();
   }
@@ -365,7 +361,8 @@ public class ApiRequestUtil {
     return GetCertificatesInternalWithQARequestBuilder.create().build();
   }
 
-  public static GetCertificatesInternalWithQARequestBuilder customGetCertificatesInternalWithQARequest() {
+  public static GetCertificatesInternalWithQARequestBuilder
+      customGetCertificatesInternalWithQARequest() {
     return GetCertificatesInternalWithQARequestBuilder.create();
   }
 
@@ -377,7 +374,8 @@ public class ApiRequestUtil {
     return UnitStatisticsRequestBuilder.create();
   }
 
-  public static GetSickLeaveCertificatesInternalRequest defaultGetSickLeaveCertificatesInternalRequest() {
+  public static GetSickLeaveCertificatesInternalRequest
+      defaultGetSickLeaveCertificatesInternalRequest() {
     return GetSickLeaveCertificatesInternalRequestBuilder.create().build();
   }
 }

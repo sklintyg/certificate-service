@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.certificate.service;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -47,27 +65,19 @@ class SignCertificateWithoutSignatureDomainServiceTest {
   private static final Revision REVISION = new Revision(1);
   public static final Xml XML = new Xml("XML");
 
-  @Mock
-  private CertificateRepository certificateRepository;
-  @Mock
-  private CertificateEventDomainService certificateEventDomainService;
-  @Mock
-  private XmlGenerator xmlGenerator;
-  @Mock
-  private SetMessagesToHandleDomainService setMessagesToHandleDomainService;
-  @InjectMocks
-  private SignCertificateWithoutSignatureDomainService signCertificateDomainService;
+  @Mock private CertificateRepository certificateRepository;
+  @Mock private CertificateEventDomainService certificateEventDomainService;
+  @Mock private XmlGenerator xmlGenerator;
+  @Mock private SetMessagesToHandleDomainService setMessagesToHandleDomainService;
+  @InjectMocks private SignCertificateWithoutSignatureDomainService signCertificateDomainService;
   private ActionEvaluation actionEvaluation;
 
   @BeforeEach
   void setUp() {
-    actionEvaluation = actionEvaluationBuilder()
-        .user(
-            ajlaDoctorBuilder()
-                .role(Role.PRIVATE_DOCTOR)
-                .build()
-        )
-        .build();
+    actionEvaluation =
+        actionEvaluationBuilder()
+            .user(ajlaDoctorBuilder().role(Role.PRIVATE_DOCTOR).build())
+            .build();
   }
 
   @Test
@@ -76,9 +86,9 @@ class SignCertificateWithoutSignatureDomainServiceTest {
     doReturn(certificate).when(certificateRepository).getById(CERTIFICATE_ID);
     doReturn(false).when(certificate).allowTo(SIGN, Optional.of(actionEvaluation));
 
-    assertThrows(CertificateActionForbidden.class,
-        () -> signCertificateDomainService.sign(CERTIFICATE_ID, REVISION, actionEvaluation)
-    );
+    assertThrows(
+        CertificateActionForbidden.class,
+        () -> signCertificateDomainService.sign(CERTIFICATE_ID, REVISION, actionEvaluation));
   }
 
   @Test
@@ -92,8 +102,7 @@ class SignCertificateWithoutSignatureDomainServiceTest {
 
     signCertificateDomainService.sign(CERTIFICATE_ID, REVISION, actionEvaluation);
 
-    verify(certificate).sign(xmlGenerator, REVISION, actionEvaluation
-    );
+    verify(certificate).sign(xmlGenerator, REVISION, actionEvaluation);
   }
 
   @Test
@@ -119,8 +128,8 @@ class SignCertificateWithoutSignatureDomainServiceTest {
     doReturn(true).when(certificate).allowTo(SIGN, Optional.of(actionEvaluation));
     doReturn(expectedCertificate).when(certificateRepository).save(certificate);
 
-    final var actualCertificate = signCertificateDomainService.sign(CERTIFICATE_ID, REVISION,
-        actionEvaluation);
+    final var actualCertificate =
+        signCertificateDomainService.sign(CERTIFICATE_ID, REVISION, actionEvaluation);
 
     assertEquals(expectedCertificate, actualCertificate);
   }
@@ -143,8 +152,7 @@ class SignCertificateWithoutSignatureDomainServiceTest {
         () -> assertEquals(CertificateEventType.SIGNED, certificateEventCaptor.getValue().type()),
         () -> assertEquals(expectedCertificate, certificateEventCaptor.getValue().certificate()),
         () -> assertEquals(actionEvaluation, certificateEventCaptor.getValue().actionEvaluation()),
-        () -> assertTrue(certificateEventCaptor.getValue().duration() >= 0)
-    );
+        () -> assertTrue(certificateEventCaptor.getValue().duration() >= 0));
   }
 
   @Test
@@ -153,11 +161,10 @@ class SignCertificateWithoutSignatureDomainServiceTest {
     doReturn(certificate).when(certificateRepository).getById(CERTIFICATE_ID);
     doReturn(true).when(certificate).allowTo(SIGN, Optional.of(ACTION_EVALUATION));
 
-    assertThrows(CertificateActionForbidden.class,
-        () -> signCertificateDomainService.sign(CERTIFICATE_ID, REVISION, ACTION_EVALUATION)
-    );
+    assertThrows(
+        CertificateActionForbidden.class,
+        () -> signCertificateDomainService.sign(CERTIFICATE_ID, REVISION, ACTION_EVALUATION));
   }
-
 
   @Test
   void shallIncludeReasonNotAllowedToException() {
@@ -165,12 +172,14 @@ class SignCertificateWithoutSignatureDomainServiceTest {
     final var expectedReason = List.of("expectedReason");
     doReturn(certificate).when(certificateRepository).getById(CERTIFICATE_ID);
     doReturn(false).when(certificate).allowTo(SIGN, Optional.of(ACTION_EVALUATION));
-    doReturn(expectedReason).when(certificate)
+    doReturn(expectedReason)
+        .when(certificate)
         .reasonNotAllowed(SIGN, Optional.of(ACTION_EVALUATION));
 
-    final var certificateActionForbidden = assertThrows(CertificateActionForbidden.class,
-        () -> signCertificateDomainService.sign(CERTIFICATE_ID, REVISION, ACTION_EVALUATION)
-    );
+    final var certificateActionForbidden =
+        assertThrows(
+            CertificateActionForbidden.class,
+            () -> signCertificateDomainService.sign(CERTIFICATE_ID, REVISION, ACTION_EVALUATION));
 
     assertEquals(expectedReason, certificateActionForbidden.reason());
   }
@@ -182,10 +191,8 @@ class SignCertificateWithoutSignatureDomainServiceTest {
     final var certificate = mock(MedicalCertificate.class);
     final var savedCertificate = mock(MedicalCertificate.class);
     final var parentCertificate = mock(MedicalCertificate.class);
-    final var parentRelation = Relation.builder()
-        .certificate(parentCertificate)
-        .type(RelationType.COMPLEMENT)
-        .build();
+    final var parentRelation =
+        Relation.builder().certificate(parentCertificate).type(RelationType.COMPLEMENT).build();
     doReturn(certificate).when(certificateRepository).getById(CERTIFICATE_ID);
     doReturn(true).when(certificate).allowTo(SIGN, Optional.of(actionEvaluation));
     doReturn(savedCertificate).when(certificateRepository).save(certificate);

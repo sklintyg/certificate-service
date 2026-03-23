@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.integrationtest.common.util;
 
 import java.nio.charset.StandardCharsets;
@@ -253,7 +271,6 @@ public class CertificateUtil {
     return response.getCertificate();
   }
 
-
   public static CertificateDTO certificate(ComplementCertificateResponse response) {
     if (response == null || response.getCertificate() == null) {
       return null;
@@ -323,9 +340,9 @@ public class CertificateUtil {
       return false;
     }
     return certificates.stream()
-        .anyMatch(certificateDTO -> certificateDTO.getMetadata().getId()
-            .equals(certificate.getMetadata().getId())
-        );
+        .anyMatch(
+            certificateDTO ->
+                certificateDTO.getMetadata().getId().equals(certificate.getMetadata().getId()));
   }
 
   public static boolean exists(CertificateExistsResponse response) {
@@ -360,8 +377,8 @@ public class CertificateUtil {
     return response.getCertificate().getMetadata().isForwarded();
   }
 
-  public static CertificateDataElement updateDateValue(CertificateDTO certificateDTO,
-      String questionId, LocalDate newDate) {
+  public static CertificateDataElement updateDateValue(
+      CertificateDTO certificateDTO, String questionId, LocalDate newDate) {
     final var certificate = Objects.requireNonNull(certificateDTO.getData().get(questionId));
     return CertificateDataElement.builder()
         .id(certificate.getId())
@@ -372,13 +389,12 @@ public class CertificateUtil {
             CertificateDataValueDate.builder()
                 .id(((CertificateDataValueDate) certificate.getValue()).getId())
                 .date(newDate)
-                .build()
-        )
+                .build())
         .build();
   }
 
-  public static CertificateDataElement updateBooleanValue(CertificateDTO certificateDTO,
-      String questionId, Boolean value) {
+  public static CertificateDataElement updateBooleanValue(
+      CertificateDTO certificateDTO, String questionId, Boolean value) {
     final var certificate = Objects.requireNonNull(certificateDTO.getData().get(questionId));
     return CertificateDataElement.builder()
         .id(certificate.getId())
@@ -389,13 +405,12 @@ public class CertificateUtil {
             CertificateDataValueBoolean.builder()
                 .id(((CertificateDataValueBoolean) certificate.getValue()).getId())
                 .selected(value)
-                .build()
-        )
+                .build())
         .build();
   }
 
-  public static CertificateDataElement updateTextValue(CertificateDTO certificateDTO,
-      String questionId, String newText) {
+  public static CertificateDataElement updateTextValue(
+      CertificateDTO certificateDTO, String questionId, String newText) {
     final var certificate = Objects.requireNonNull(certificateDTO.getData().get(questionId));
     return CertificateDataElement.builder()
         .id(certificate.getId())
@@ -406,94 +421,86 @@ public class CertificateUtil {
             CertificateDataValueText.builder()
                 .id(((CertificateDataValueText) certificate.getValue()).getId())
                 .text(newText)
-                .build()
-        )
+                .build())
         .build();
   }
 
-  public static CertificateDataElement updateDateRangeListValue(CertificateDTO certificateDTO,
-      String questionId, List<CertificateDataValueDateRange> newList) {
+  public static CertificateDataElement updateDateRangeListValue(
+      CertificateDTO certificateDTO,
+      String questionId,
+      List<CertificateDataValueDateRange> newList) {
     final var certificate = Objects.requireNonNull(certificateDTO.getData().get(questionId));
     return CertificateDataElement.builder()
         .id(certificate.getId())
         .parent(certificate.getParent())
         .config(certificate.getConfig())
         .validation(certificate.getValidation())
-        .value(
-            CertificateDataValueDateRangeList.builder()
-                .list(newList)
-                .build()
-        )
+        .value(CertificateDataValueDateRangeList.builder().list(newList).build())
         .build();
   }
 
-  public static CertificateDataElement updateDateRangeValue(CertificateDTO certificateDTO,
-      String questionId, CertificateDataValueDateRange newValue) {
+  public static CertificateDataElement updateDateRangeValue(
+      CertificateDTO certificateDTO, String questionId, CertificateDataValueDateRange newValue) {
     final var certificate = Objects.requireNonNull(certificateDTO.getData().get(questionId));
     return CertificateDataElement.builder()
         .id(certificate.getId())
         .parent(certificate.getParent())
         .config(certificate.getConfig())
         .validation(certificate.getValidation())
-        .value(
-            newValue
-        )
+        .value(newValue)
         .build();
   }
 
-  public static CertificateDataElement updateDateListValue(CertificateDTO certificateDTO,
-      String questionId, List<CertificateDataValueDate> newList) {
+  public static CertificateDataElement updateDateListValue(
+      CertificateDTO certificateDTO, String questionId, List<CertificateDataValueDate> newList) {
     final var certificate = Objects.requireNonNull(certificateDTO.getData().get(questionId));
     return CertificateDataElement.builder()
         .id(certificate.getId())
         .parent(certificate.getParent())
         .config(certificate.getConfig())
         .validation(certificate.getValidation())
-        .value(
-            CertificateDataValueDateList.builder()
-                .list(newList)
-                .build()
-        )
+        .value(CertificateDataValueDateList.builder().list(newList).build())
         .build();
   }
 
-  public static LocalDate getValueDate(ResponseEntity<UpdateCertificateResponse> response,
-      String questionId) {
+  public static LocalDate getValueDate(
+      ResponseEntity<UpdateCertificateResponse> response, String questionId) {
     if (response == null || response.getBody() == null) {
       return null;
     }
-    return ((CertificateDataValueDate) response.getBody().getCertificate().getData().get(questionId)
-        .getValue()).getDate();
+    return ((CertificateDataValueDate)
+            response.getBody().getCertificate().getData().get(questionId).getValue())
+        .getDate();
   }
 
-  public static String getValueText(ResponseEntity<UpdateCertificateResponse> response,
-      String questionId) {
+  public static String getValueText(
+      ResponseEntity<UpdateCertificateResponse> response, String questionId) {
     if (response == null || response.getBody() == null) {
       return null;
     }
-    return ((CertificateDataValueText) response.getBody().getCertificate().getData().get(questionId)
-        .getValue()).getText();
+    return ((CertificateDataValueText)
+            response.getBody().getCertificate().getData().get(questionId).getValue())
+        .getText();
   }
 
-  public static Boolean getBooleanValue(ResponseEntity<UpdateCertificateResponse> response,
-      String questionId) {
+  public static Boolean getBooleanValue(
+      ResponseEntity<UpdateCertificateResponse> response, String questionId) {
     if (response == null || response.getBody() == null) {
       return null;
     }
-    return ((CertificateDataValueBoolean) response.getBody().getCertificate().getData()
-        .get(questionId)
-        .getValue()).getSelected();
+    return ((CertificateDataValueBoolean)
+            response.getBody().getCertificate().getData().get(questionId).getValue())
+        .getSelected();
   }
 
   public static List<CertificateDataValueDateRange> getValueDateRangeList(
-      ResponseEntity<UpdateCertificateResponse> response,
-      String questionId) {
+      ResponseEntity<UpdateCertificateResponse> response, String questionId) {
     if (response == null || response.getBody() == null) {
       return null;
     }
-    return ((CertificateDataValueDateRangeList) response.getBody().getCertificate().getData()
-        .get(questionId)
-        .getValue()).getList();
+    return ((CertificateDataValueDateRangeList)
+            response.getBody().getCertificate().getData().get(questionId).getValue())
+        .getList();
   }
 
   public static List<ValidationErrorDTO> validationErrors(
@@ -528,8 +535,7 @@ public class CertificateUtil {
     return response.getBody().getCertificateMetadata();
   }
 
-  public static CertificateMetadataDTO metadata(
-      CertificateDTO certificateDTO) {
+  public static CertificateMetadataDTO metadata(CertificateDTO certificateDTO) {
     if (certificateDTO == null || certificateDTO.getMetadata() == null) {
       throw new IllegalArgumentException("Missing response!");
     }
@@ -568,10 +574,7 @@ public class CertificateUtil {
   }
 
   public static String decodeXml(String xml) {
-    return new String(
-        Base64.getDecoder().decode(xml),
-        StandardCharsets.UTF_8
-    );
+    return new String(Base64.getDecoder().decode(xml), StandardCharsets.UTF_8);
   }
 
   public static GetCertificateXmlResponse certificateXmlReponse(
@@ -582,32 +585,26 @@ public class CertificateUtil {
     return response.getBody();
   }
 
-  public static CertificateDTO updateUnit(List<CreateCertificateResponse> responses,
-      UnitDTO unitDTO) {
+  public static CertificateDTO updateUnit(
+      List<CreateCertificateResponse> responses, UnitDTO unitDTO) {
     final var certificate = certificate(responses);
     return CertificateDTO.builder()
         .data(certificate.getData())
-        .metadata(
-            certificate.getMetadata().withUnit(
-                unitDTO
-            )
-        )
+        .metadata(certificate.getMetadata().withUnit(unitDTO))
         .build();
   }
 
   public static CertificateDataValueDateList getValueDateList(
-      ResponseEntity<UpdateCertificateResponse> response,
-      String questionId) {
+      ResponseEntity<UpdateCertificateResponse> response, String questionId) {
     if (response == null || response.getBody() == null) {
       return null;
     }
-    return ((CertificateDataValueDateList) response.getBody().getCertificate().getData()
-        .get(questionId)
-        .getValue());
+    return ((CertificateDataValueDateList)
+        response.getBody().getCertificate().getData().get(questionId).getValue());
   }
 
-  public static CertificateDataElement updateValue(CertificateDTO certificateDTO,
-      String questionId, CertificateDataValue newValue) {
+  public static CertificateDataElement updateValue(
+      CertificateDTO certificateDTO, String questionId, CertificateDataValue newValue) {
     final var certificate = Objects.requireNonNull(certificateDTO.getData().get(questionId));
     return CertificateDataElement.builder()
         .id(certificate.getId())
@@ -619,47 +616,39 @@ public class CertificateUtil {
   }
 
   public static CertificateDataValueDiagnosisList getValueDiagnosisList(
-      ResponseEntity<UpdateCertificateResponse> response,
-      String questionId) {
+      ResponseEntity<UpdateCertificateResponse> response, String questionId) {
     if (response == null || response.getBody() == null) {
       return null;
     }
-    return ((CertificateDataValueDiagnosisList) response.getBody().getCertificate().getData()
-        .get(questionId)
-        .getValue());
+    return ((CertificateDataValueDiagnosisList)
+        response.getBody().getCertificate().getData().get(questionId).getValue());
   }
 
   public static CertificateDataValueCode getValueCode(
-      ResponseEntity<UpdateCertificateResponse> response,
-      String questionId) {
+      ResponseEntity<UpdateCertificateResponse> response, String questionId) {
     if (response == null || response.getBody() == null) {
       return null;
     }
-    return ((CertificateDataValueCode) response.getBody().getCertificate().getData()
-        .get(questionId)
-        .getValue());
+    return ((CertificateDataValueCode)
+        response.getBody().getCertificate().getData().get(questionId).getValue());
   }
 
   public static CertificateDataValueBoolean getValueBoolean(
-      ResponseEntity<UpdateCertificateResponse> response,
-      String questionId) {
+      ResponseEntity<UpdateCertificateResponse> response, String questionId) {
     if (response == null || response.getBody() == null) {
       return null;
     }
-    return ((CertificateDataValueBoolean) response.getBody().getCertificate().getData()
-        .get(questionId)
-        .getValue());
+    return ((CertificateDataValueBoolean)
+        response.getBody().getCertificate().getData().get(questionId).getValue());
   }
 
   public static CertificateDataValueCodeList getValueCodeList(
-      ResponseEntity<UpdateCertificateResponse> response,
-      String questionId) {
+      ResponseEntity<UpdateCertificateResponse> response, String questionId) {
     if (response == null || response.getBody() == null) {
       return null;
     }
-    return ((CertificateDataValueCodeList) response.getBody().getCertificate().getData()
-        .get(questionId)
-        .getValue());
+    return ((CertificateDataValueCodeList)
+        response.getBody().getCertificate().getData().get(questionId).getValue());
   }
 
   public static CertificateDTO getCitizenCertificate(

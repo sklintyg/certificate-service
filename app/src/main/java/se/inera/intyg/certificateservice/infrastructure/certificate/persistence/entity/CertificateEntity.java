@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificate.persistence.entity;
 
 import jakarta.persistence.CascadeType;
@@ -30,72 +48,119 @@ public class CertificateEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "`key`")
   private Long key;
+
   @Column(name = "certificate_id", unique = true)
   private String certificateId;
+
   @ManyToOne
   @JoinColumn(name = "certificate_status_key")
   private CertificateStatusEntity status;
+
   @Column(name = "created")
   private LocalDateTime created;
+
   @Column(name = "modified")
   private LocalDateTime modified;
+
   @Column(name = "signed")
   private LocalDateTime signed;
+
   @Column(name = "ready_for_sign")
   private LocalDateTime readyForSign;
+
   @Column(name = "sent")
   private LocalDateTime sent;
+
   @Column(name = "revoked")
   private LocalDateTime revoked;
+
   @Column(name = "locked")
   private LocalDateTime locked;
+
   @Column(name = "revision")
   private Long revision;
-  @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+
+  @OneToOne(
+      fetch = FetchType.LAZY,
+      cascade = {CascadeType.MERGE, CascadeType.PERSIST})
   private CertificateModelEntity certificateModel;
-  @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+
+  @ManyToOne(
+      fetch = FetchType.LAZY,
+      cascade = {CascadeType.MERGE, CascadeType.PERSIST})
   @JoinColumn(name = "patient_key", referencedColumnName = "`key`", nullable = false)
   private PatientEntity patient;
-  @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+
+  @ManyToOne(
+      fetch = FetchType.LAZY,
+      cascade = {CascadeType.MERGE, CascadeType.PERSIST})
   @JoinColumn(name = "created_by_staff_key", referencedColumnName = "`key`", nullable = false)
   private StaffEntity createdBy;
-  @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+
+  @ManyToOne(
+      fetch = FetchType.LAZY,
+      cascade = {CascadeType.MERGE, CascadeType.PERSIST})
   @JoinColumn(name = "issued_by_staff_key", referencedColumnName = "`key`", nullable = false)
   private StaffEntity issuedBy;
-  @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+
+  @ManyToOne(
+      fetch = FetchType.LAZY,
+      cascade = {CascadeType.MERGE, CascadeType.PERSIST})
   @JoinColumn(name = "sent_by_staff_key", referencedColumnName = "`key`")
   private StaffEntity sentBy;
-  @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+
+  @ManyToOne(
+      fetch = FetchType.LAZY,
+      cascade = {CascadeType.MERGE, CascadeType.PERSIST})
   @JoinColumn(name = "ready_for_sign_by_staff_key", referencedColumnName = "`key`")
   private StaffEntity readyForSignBy;
-  @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+
+  @ManyToOne(
+      fetch = FetchType.LAZY,
+      cascade = {CascadeType.MERGE, CascadeType.PERSIST})
   @JoinColumn(name = "issued_on_unit_key", referencedColumnName = "`key`", nullable = false)
   private UnitEntity issuedOnUnit;
-  @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+
+  @ManyToOne(
+      fetch = FetchType.LAZY,
+      cascade = {CascadeType.MERGE, CascadeType.PERSIST})
   @JoinColumn(name = "care_provider_unit_key", referencedColumnName = "`key`", nullable = false)
   private UnitEntity careProvider;
-  @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+
+  @ManyToOne(
+      fetch = FetchType.LAZY,
+      cascade = {CascadeType.MERGE, CascadeType.PERSIST})
   @JoinColumn(name = "care_unit_unit_key", referencedColumnName = "`key`", nullable = false)
   private UnitEntity careUnit;
+
   @OneToOne(mappedBy = "certificate", cascade = CascadeType.ALL)
   @PrimaryKeyJoinColumn
   private CertificateDataEntity data;
+
   @OneToOne(mappedBy = "certificate", cascade = CascadeType.ALL)
   @PrimaryKeyJoinColumn
   private CertificateXmlEntity xml;
-  @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+
+  @ManyToOne(
+      fetch = FetchType.LAZY,
+      cascade = {CascadeType.MERGE, CascadeType.PERSIST})
   @JoinColumn(name = "revoked_by_staff_key", referencedColumnName = "`key`")
   private StaffEntity revokedBy;
+
   @ManyToOne
   @JoinColumn(name = "revoked_reason_key")
   private RevokedReasonEntity revokedReason;
+
   @Column(name = "revoked_message")
   private String revokedMessage;
+
   @OneToOne(mappedBy = "certificate", cascade = CascadeType.ALL)
   @PrimaryKeyJoinColumn
   private ExternalReferenceEntity externalReference;
+
   @Column(name = "forwarded")
   private Boolean forwarded;
+
   @Column(name = "placeholder")
   private Boolean placeholder;
 

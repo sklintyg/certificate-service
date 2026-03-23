@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.pdfboxgenerator.pdf.service;
 
 import static se.inera.intyg.certificateservice.pdfboxgenerator.pdf.PdfConstants.X_MARGIN_APPENDIX_PAGE;
@@ -30,9 +48,7 @@ public class PdfOverflowPageFillService {
   private final TextUtil textUtil;
   private final TextFieldAppearanceFactory textFieldAppearanceFactory;
 
-
-  public void setFieldValuesAppendix(CertificatePdfContext context,
-      List<PdfField> appendedFields) {
+  public void setFieldValuesAppendix(CertificatePdfContext context, List<PdfField> appendedFields) {
 
     if (context.getTemplatePdfSpecification().overFlowPageIndex() == null
         || appendedFields.isEmpty()) {
@@ -47,18 +63,15 @@ public class PdfOverflowPageFillService {
 
     pages.stream()
         .skip(1)
-        .forEach(fields -> {
-          try {
-            addAndFillOverflowPage(
-                context,
-                fields,
-                overFlowPageField,
-                pdfOverflowPageFactory.create(context)
-            );
-          } catch (IOException e) {
-            throw new IllegalStateException("Unable to add and fill overflow page", e);
-          }
-        });
+        .forEach(
+            fields -> {
+              try {
+                addAndFillOverflowPage(
+                    context, fields, overFlowPageField, pdfOverflowPageFactory.create(context));
+              } catch (IOException e) {
+                throw new IllegalStateException("Unable to add and fill overflow page", e);
+              }
+            });
   }
 
   private static void fillOverflowPage(List<PdfField> fields, CertificatePdfContext context) {
@@ -66,33 +79,38 @@ public class PdfOverflowPageFillService {
     try {
       field.setValue(
           fields.stream()
-              .map(pdfField -> pdfField.normalizedValue(
-                  context.getFontResolver().resolveFont(pdfField)))
-              .collect(Collectors.joining("\n"))
-      );
+              .map(
+                  pdfField ->
+                      pdfField.normalizedValue(context.getFontResolver().resolveFont(pdfField)))
+              .collect(Collectors.joining("\n")));
     } catch (IOException e) {
       throw new IllegalStateException("Unable to set value for overflow field", e);
     }
   }
 
-  private void addAndFillOverflowPage(CertificatePdfContext context, List<PdfField> fields,
-      PDField pdField, PDPage newPage)
+  private void addAndFillOverflowPage(
+      CertificatePdfContext context, List<PdfField> fields, PDField pdField, PDPage newPage)
       throws IOException {
     final var rectangle = pdField.getWidgets().getFirst().getRectangle();
 
-    final var textFieldAppearance = textFieldAppearanceFactory.create(pdField)
-        .orElseThrow(() -> new IllegalStateException(
-            "Overflow field is not a variable text field: "
-                + pdField.getFullyQualifiedName()));
+    final var textFieldAppearance =
+        textFieldAppearanceFactory
+            .create(pdField)
+            .orElseThrow(
+                () ->
+                    new IllegalStateException(
+                        "Overflow field is not a variable text field: "
+                            + pdField.getFullyQualifiedName()));
 
     final var fontSize = textFieldAppearance.getFontSize();
     final var font = textFieldAppearance.getFont(context.getAcroForm().getDefaultResources());
 
     final var document = context.getDocument();
 
-    String allText = fields.stream()
-        .map(pdfField -> pdfField.normalizedValue(font))
-        .collect(Collectors.joining("\n"));
+    String allText =
+        fields.stream()
+            .map(pdfField -> pdfField.normalizedValue(font))
+            .collect(Collectors.joining("\n"));
 
     List<String> lines = new ArrayList<>();
     for (String line : allText.split("\n")) {
@@ -100,13 +118,19 @@ public class PdfOverflowPageFillService {
     }
 
     document.addPage(newPage);
-    PdfAccessibilityUtil.createNewOverflowPageTag(document, newPage,
-        context.getTemplatePdfSpecification());
+    PdfAccessibilityUtil.createNewOverflowPageTag(
+        document, newPage, context.getTemplatePdfSpecification());
 
     float startX = rectangle.getLowerLeftX() + X_MARGIN_APPENDIX_PAGE;
     float startY = rectangle.getUpperRightY() - Y_MARGIN_APPENDIX_PAGE;
-    pdfAdditionalInformationTextGenerator.addOverFlowPageText(document,
-        document.getNumberOfPages() - 1, lines, startX, startY, fontSize, font,
+    pdfAdditionalInformationTextGenerator.addOverFlowPageText(
+        document,
+        document.getNumberOfPages() - 1,
+        lines,
+        startX,
+        startY,
+        fontSize,
+        font,
         context.nextMcid());
 
     addPatientId(context, context.getPdfFields(PdfField::isPatientField).getFirst(), fontSize);
@@ -117,9 +141,13 @@ public class PdfOverflowPageFillService {
     final var patientIdRect = context.getPatientIdRectangleForOverflow();
     final var document = context.getDocument();
     final var marginY = 6;
-    pdfAdditionalInformationTextGenerator.addPatientId(document, document.getNumberOfPages() - 1,
-        patientIdRect.getLowerLeftX(), patientIdRect.getLowerLeftY() + marginY,
-        patientIdField.getValue(), fontSize, context.nextMcid());
-
+    pdfAdditionalInformationTextGenerator.addPatientId(
+        document,
+        document.getNumberOfPages() - 1,
+        patientIdRect.getLowerLeftX(),
+        patientIdRect.getLowerLeftY() + marginY,
+        patientIdField.getValue(),
+        fontSize,
+        context.nextMcid());
   }
 }

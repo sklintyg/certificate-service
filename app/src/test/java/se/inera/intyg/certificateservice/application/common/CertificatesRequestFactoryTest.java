@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.common;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,13 +44,10 @@ class CertificatesRequestFactoryTest {
 
   @Test
   void shallCreateDefaultCertificatesRequest() {
-    final var expectedCertificateRequest = CertificatesRequest.builder()
-        .statuses(Status.unsigned())
-        .build();
+    final var expectedCertificateRequest =
+        CertificatesRequest.builder().statuses(Status.unsigned()).build();
 
-    assertEquals(expectedCertificateRequest,
-        CertificatesRequestFactory.create()
-    );
+    assertEquals(expectedCertificateRequest, CertificatesRequestFactory.create());
   }
 
   @Nested
@@ -41,51 +56,42 @@ class CertificatesRequestFactoryTest {
     @Test
     void shallIncludeFrom() {
       final var expectedFrom = LocalDateTime.now(ZoneId.systemDefault());
-      final var queryCriteriaDTO = CertificatesQueryCriteriaDTO.builder()
-          .from(expectedFrom)
-          .build();
+      final var queryCriteriaDTO =
+          CertificatesQueryCriteriaDTO.builder().from(expectedFrom).build();
 
-      assertEquals(expectedFrom,
-          CertificatesRequestFactory.create(queryCriteriaDTO).modifiedFrom()
-      );
+      assertEquals(
+          expectedFrom, CertificatesRequestFactory.create(queryCriteriaDTO).modifiedFrom());
     }
 
     @Test
     void shallIncludeTo() {
       final var expectedTo = LocalDateTime.now(ZoneId.systemDefault());
-      final var queryCriteriaDTO = CertificatesQueryCriteriaDTO.builder()
-          .to(expectedTo)
-          .build();
+      final var queryCriteriaDTO = CertificatesQueryCriteriaDTO.builder().to(expectedTo).build();
 
-      assertEquals(expectedTo,
-          CertificatesRequestFactory.create(queryCriteriaDTO).modifiedTo()
-      );
+      assertEquals(expectedTo, CertificatesRequestFactory.create(queryCriteriaDTO).modifiedTo());
     }
 
     @Test
     void shallIncludeIssuedByStaffIds() {
       final var expectedIssuedByStaffId = List.of(AJLA_DOKTOR.hsaId());
-      final var queryCriteriaDTO = CertificatesQueryCriteriaDTO.builder()
-          .issuedByStaffId(AJLA_DOKTOR.hsaId().id())
-          .build();
+      final var queryCriteriaDTO =
+          CertificatesQueryCriteriaDTO.builder().issuedByStaffId(AJLA_DOKTOR.hsaId().id()).build();
 
-      assertEquals(expectedIssuedByStaffId,
-          CertificatesRequestFactory.create(queryCriteriaDTO).issuedByStaffIds()
-      );
+      assertEquals(
+          expectedIssuedByStaffId,
+          CertificatesRequestFactory.create(queryCriteriaDTO).issuedByStaffIds());
     }
 
     @Test
     void shallNotIncludeIssuedByStaffIds() {
-      final var queryCriteriaDTO = CertificatesQueryCriteriaDTO.builder()
-          .build();
+      final var queryCriteriaDTO = CertificatesQueryCriteriaDTO.builder().build();
 
       assertNull(CertificatesRequestFactory.create(queryCriteriaDTO).issuedByStaffIds());
     }
 
     @Test
     void shallNotIncludeIssuedUnitId() {
-      final var queryCriteriaDTO = CertificatesQueryCriteriaDTO.builder()
-          .build();
+      final var queryCriteriaDTO = CertificatesQueryCriteriaDTO.builder().build();
 
       assertNull(CertificatesRequestFactory.create(queryCriteriaDTO).issuedUnitIds());
     }
@@ -93,83 +99,77 @@ class CertificatesRequestFactoryTest {
     @Test
     void shallIncludePersonId() {
       final var expectedPersonId = ATHENA_REACT_ANDERSSON.id();
-      final var queryCriteriaDTO = CertificatesQueryCriteriaDTO.builder()
-          .personId(
-              PersonIdDTO.builder()
-                  .id(expectedPersonId.id())
-                  .type(expectedPersonId.type().name())
-                  .build()
-          )
-          .build();
+      final var queryCriteriaDTO =
+          CertificatesQueryCriteriaDTO.builder()
+              .personId(
+                  PersonIdDTO.builder()
+                      .id(expectedPersonId.id())
+                      .type(expectedPersonId.type().name())
+                      .build())
+              .build();
 
-      assertEquals(expectedPersonId,
-          CertificatesRequestFactory.create(queryCriteriaDTO).personId()
-      );
+      assertEquals(
+          expectedPersonId, CertificatesRequestFactory.create(queryCriteriaDTO).personId());
     }
 
     @Test
     void shallNotIncludePersonId() {
-      final var queryCriteriaDTO = CertificatesQueryCriteriaDTO.builder()
-          .build();
+      final var queryCriteriaDTO = CertificatesQueryCriteriaDTO.builder().build();
 
       assertNull(CertificatesRequestFactory.create(queryCriteriaDTO).personId());
     }
 
     @Test
     void shallIncludeEmptyListIfStatusesEmpty() {
-      final var queryCriteriaDTO = CertificatesQueryCriteriaDTO.builder()
-          .statuses(Collections.emptyList())
-          .build();
+      final var queryCriteriaDTO =
+          CertificatesQueryCriteriaDTO.builder().statuses(Collections.emptyList()).build();
 
-      assertEquals(Collections.emptyList(),
-          CertificatesRequestFactory.create(queryCriteriaDTO).statuses()
-      );
+      assertEquals(
+          Collections.emptyList(), CertificatesRequestFactory.create(queryCriteriaDTO).statuses());
     }
 
     @Test
     void shallIncludeEmptyListIfStatusesNull() {
-      final var queryCriteriaDTO = CertificatesQueryCriteriaDTO.builder()
-          .build();
+      final var queryCriteriaDTO = CertificatesQueryCriteriaDTO.builder().build();
 
-      assertEquals(Collections.emptyList(),
-          CertificatesRequestFactory.create(queryCriteriaDTO).statuses()
-      );
+      assertEquals(
+          Collections.emptyList(), CertificatesRequestFactory.create(queryCriteriaDTO).statuses());
     }
 
     @Test
     void shallIncludeStatusDRAFTIfStatusesContainsUNSIGNED() {
       final var expectedStatuses = List.of(Status.DRAFT);
-      final var queryCriteriaDTO = CertificatesQueryCriteriaDTO.builder()
-          .statuses(List.of(CertificateStatusTypeDTO.UNSIGNED))
-          .build();
+      final var queryCriteriaDTO =
+          CertificatesQueryCriteriaDTO.builder()
+              .statuses(List.of(CertificateStatusTypeDTO.UNSIGNED))
+              .build();
 
-      assertEquals(expectedStatuses,
-          CertificatesRequestFactory.create(queryCriteriaDTO).statuses()
-      );
+      assertEquals(
+          expectedStatuses, CertificatesRequestFactory.create(queryCriteriaDTO).statuses());
     }
 
     @Test
     void shallIncludeStatusSIGNEDTIfStatusesContainsSIGNED() {
       final var expectedStatuses = List.of(Status.SIGNED);
-      final var queryCriteriaDTO = CertificatesQueryCriteriaDTO.builder()
-          .statuses(List.of(CertificateStatusTypeDTO.SIGNED))
-          .build();
+      final var queryCriteriaDTO =
+          CertificatesQueryCriteriaDTO.builder()
+              .statuses(List.of(CertificateStatusTypeDTO.SIGNED))
+              .build();
 
-      assertEquals(expectedStatuses,
-          CertificatesRequestFactory.create(queryCriteriaDTO).statuses()
-      );
+      assertEquals(
+          expectedStatuses, CertificatesRequestFactory.create(queryCriteriaDTO).statuses());
     }
 
     @Test
     void shallIncludeStatusLOCKED_DRAFTTIfStatusesContainsLOCKED() {
       final var expectedStatuses = List.of(Status.LOCKED_DRAFT);
-      final var queryCriteriaDTO = CertificatesQueryCriteriaDTO.builder()
-          .statuses(List.of(CertificateStatusTypeDTO.LOCKED))
-          .build();
+      final var queryCriteriaDTO =
+          CertificatesQueryCriteriaDTO.builder()
+              .statuses(List.of(CertificateStatusTypeDTO.LOCKED))
+              .build();
 
-      assertEquals(expectedStatuses,
-          CertificatesRequestFactory.create(queryCriteriaDTO).statuses()
-      );
+      assertEquals(
+          expectedStatuses, CertificatesRequestFactory.create(queryCriteriaDTO).statuses());
     }
 
     @Test
@@ -181,9 +181,8 @@ class CertificatesRequestFactoryTest {
 
     @Test
     void shallIncludeValidCertificateTrueIfValidForSignIsTrue() {
-      final var queryCriteriaDTO = CertificatesQueryCriteriaDTO.builder()
-          .validForSign(Boolean.TRUE)
-          .build();
+      final var queryCriteriaDTO =
+          CertificatesQueryCriteriaDTO.builder().validForSign(Boolean.TRUE).build();
 
       Assertions.assertTrue(
           CertificatesRequestFactory.create(queryCriteriaDTO).validCertificates());
@@ -191,9 +190,8 @@ class CertificatesRequestFactoryTest {
 
     @Test
     void shallIncludeValidCertificateFalseIfValidForSignIsFalse() {
-      final var queryCriteriaDTO = CertificatesQueryCriteriaDTO.builder()
-          .validForSign(Boolean.FALSE)
-          .build();
+      final var queryCriteriaDTO =
+          CertificatesQueryCriteriaDTO.builder().validForSign(Boolean.FALSE).build();
 
       Assertions.assertFalse(
           CertificatesRequestFactory.create(queryCriteriaDTO).validCertificates());
@@ -204,30 +202,29 @@ class CertificatesRequestFactoryTest {
   class ConvertFromGetSickLeaveCertificatesInternalRequest {
 
     private static final String TYPE = "type";
-    private static final PersonIdDTO PERSON_ID = PersonIdDTO.builder()
-        .id(TestDataPatient.ATHENA_REACT_ANDERSSON.id().id())
-        .type(TestDataPatient.ATHENA_REACT_ANDERSSON.id().type().name())
-        .build();
+    private static final PersonIdDTO PERSON_ID =
+        PersonIdDTO.builder()
+            .id(TestDataPatient.ATHENA_REACT_ANDERSSON.id().id())
+            .type(TestDataPatient.ATHENA_REACT_ANDERSSON.id().type().name())
+            .build();
 
     @Test
     void shouldIncludePersonId() {
-      final var request = GetSickLeaveCertificatesInternalRequest.builder()
-          .personId(
-              PERSON_ID
-          )
-          .build();
+      final var request =
+          GetSickLeaveCertificatesInternalRequest.builder().personId(PERSON_ID).build();
 
-      assertEquals(ATHENA_REACT_ANDERSSON.id(),
-          CertificatesRequestFactory.convert(request).personId());
+      assertEquals(
+          ATHENA_REACT_ANDERSSON.id(), CertificatesRequestFactory.convert(request).personId());
     }
 
     @Test
     void shouldIncludeSignedFrom() {
       final var expected = LocalDateTime.now().toLocalDate();
-      final var request = GetSickLeaveCertificatesInternalRequest.builder()
-          .personId(PERSON_ID)
-          .signedFrom(expected)
-          .build();
+      final var request =
+          GetSickLeaveCertificatesInternalRequest.builder()
+              .personId(PERSON_ID)
+              .signedFrom(expected)
+              .build();
 
       assertEquals(expected, CertificatesRequestFactory.convert(request).signedFrom());
     }
@@ -235,10 +232,11 @@ class CertificatesRequestFactoryTest {
     @Test
     void shouldIncludeSignedTo() {
       final var expected = LocalDateTime.now().toLocalDate();
-      final var request = GetSickLeaveCertificatesInternalRequest.builder()
-          .personId(PERSON_ID)
-          .signedTo(expected)
-          .build();
+      final var request =
+          GetSickLeaveCertificatesInternalRequest.builder()
+              .personId(PERSON_ID)
+              .signedTo(expected)
+              .build();
 
       assertEquals(expected, CertificatesRequestFactory.convert(request).signedTo());
     }
@@ -246,10 +244,11 @@ class CertificatesRequestFactoryTest {
     @Test
     void shouldIncludeCertificateTypes() {
       final var expected = List.of(new CertificateType(TYPE));
-      final var request = GetSickLeaveCertificatesInternalRequest.builder()
-          .personId(PERSON_ID)
-          .certificateTypes(List.of(TYPE))
-          .build();
+      final var request =
+          GetSickLeaveCertificatesInternalRequest.builder()
+              .personId(PERSON_ID)
+              .certificateTypes(List.of(TYPE))
+              .build();
 
       assertEquals(expected, CertificatesRequestFactory.convert(request).types());
     }
@@ -257,10 +256,11 @@ class CertificatesRequestFactoryTest {
     @Test
     void shouldIncludeIssuedByUnitIds() {
       final var expected = List.of(ALFA_MEDICINSKT_CENTRUM.hsaId());
-      final var request = GetSickLeaveCertificatesInternalRequest.builder()
-          .personId(PERSON_ID)
-          .issuedByUnitIds(List.of(ALFA_MEDICINSKT_CENTRUM.hsaId().id()))
-          .build();
+      final var request =
+          GetSickLeaveCertificatesInternalRequest.builder()
+              .personId(PERSON_ID)
+              .issuedByUnitIds(List.of(ALFA_MEDICINSKT_CENTRUM.hsaId().id()))
+              .build();
 
       assertEquals(expected, CertificatesRequestFactory.convert(request).issuedUnitIds());
     }
@@ -268,13 +268,13 @@ class CertificatesRequestFactoryTest {
     @Test
     void shouldIncludeIssuedByStaffIds() {
       final var expected = List.of(AJLA_DOKTOR.hsaId());
-      final var request = GetSickLeaveCertificatesInternalRequest.builder()
-          .personId(PERSON_ID)
-          .issuedByStaffIds(List.of(AJLA_DOKTOR.hsaId().id()))
-          .build();
+      final var request =
+          GetSickLeaveCertificatesInternalRequest.builder()
+              .personId(PERSON_ID)
+              .issuedByStaffIds(List.of(AJLA_DOKTOR.hsaId().id()))
+              .build();
 
       assertEquals(expected, CertificatesRequestFactory.convert(request).issuedByStaffIds());
     }
   }
 }
-

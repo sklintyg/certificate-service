@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service.converter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,7 +36,6 @@ class ElementValueConverterVisualAcuitiesTest {
 
   private ElementValueConverterVisualAcuities converter;
 
-
   @BeforeEach
   void setUp() {
     converter = new ElementValueConverterVisualAcuities();
@@ -28,64 +45,36 @@ class ElementValueConverterVisualAcuitiesTest {
   void shouldThrowExceptionIfInvalidValueType() {
     final var invalidType = CertificateDataValueText.builder().build();
 
-    assertThrows(IllegalStateException.class,
-        () -> converter.convert(invalidType)
-    );
+    assertThrows(IllegalStateException.class, () -> converter.convert(invalidType));
   }
 
   @Nested
   class ConverterTest {
 
-    private final CertificateDataValueVisualAcuities visualAcuities = CertificateDataValueVisualAcuities.builder()
-        .rightEye(
-            CertificateDataValueVisualAcuity.builder()
-                .withCorrection(
-                    CertificateDataValueDouble.builder()
-                        .id("id1")
-                        .value(1.0)
-                        .build()
-                )
-                .withoutCorrection(
-                    CertificateDataValueDouble.builder()
-                        .id("id2")
-                        .value(2.0)
-                        .build()
-                )
-                .build()
-        )
-        .leftEye(
-            CertificateDataValueVisualAcuity.builder()
-                .withCorrection(
-                    CertificateDataValueDouble.builder()
-                        .id("id1")
-                        .value(1.0)
-                        .build()
-                )
-                .withoutCorrection(
-                    CertificateDataValueDouble.builder()
-                        .id("id2")
-                        .value(2.0)
-                        .build()
-                )
-                .build()
-        )
-        .binocular(
-            CertificateDataValueVisualAcuity.builder()
-                .withCorrection(
-                    CertificateDataValueDouble.builder()
-                        .id("id1")
-                        .value(1.0)
-                        .build()
-                )
-                .withoutCorrection(
-                    CertificateDataValueDouble.builder()
-                        .id("id2")
-                        .value(2.0)
-                        .build()
-                )
-                .build()
-        )
-        .build();
+    private final CertificateDataValueVisualAcuities visualAcuities =
+        CertificateDataValueVisualAcuities.builder()
+            .rightEye(
+                CertificateDataValueVisualAcuity.builder()
+                    .withCorrection(
+                        CertificateDataValueDouble.builder().id("id1").value(1.0).build())
+                    .withoutCorrection(
+                        CertificateDataValueDouble.builder().id("id2").value(2.0).build())
+                    .build())
+            .leftEye(
+                CertificateDataValueVisualAcuity.builder()
+                    .withCorrection(
+                        CertificateDataValueDouble.builder().id("id1").value(1.0).build())
+                    .withoutCorrection(
+                        CertificateDataValueDouble.builder().id("id2").value(2.0).build())
+                    .build())
+            .binocular(
+                CertificateDataValueVisualAcuity.builder()
+                    .withCorrection(
+                        CertificateDataValueDouble.builder().id("id1").value(1.0).build())
+                    .withoutCorrection(
+                        CertificateDataValueDouble.builder().id("id2").value(2.0).build())
+                    .build())
+            .build();
 
     @Nested
     class RightEyeTest {
@@ -94,8 +83,8 @@ class ElementValueConverterVisualAcuitiesTest {
       void shouldConvertIdForWithCorrection() {
         final var expectedResult = new FieldId("id1");
 
-        final var actualResult = ((ElementValueVisualAcuities)
-            converter.convert(visualAcuities)).rightEye();
+        final var actualResult =
+            ((ElementValueVisualAcuities) converter.convert(visualAcuities)).rightEye();
 
         assertEquals(expectedResult, actualResult.withCorrection().id());
       }
@@ -104,8 +93,8 @@ class ElementValueConverterVisualAcuitiesTest {
       void shouldConvertValueForWithCorrection() {
         final var expectedResult = 1.0;
 
-        final var actualResult = ((ElementValueVisualAcuities)
-            converter.convert(visualAcuities)).rightEye();
+        final var actualResult =
+            ((ElementValueVisualAcuities) converter.convert(visualAcuities)).rightEye();
 
         assertEquals(expectedResult, actualResult.withCorrection().value());
       }
@@ -114,8 +103,8 @@ class ElementValueConverterVisualAcuitiesTest {
       void shouldConvertIdForWithoutCorrection() {
         final var expectedResult = new FieldId("id2");
 
-        final var actualResult = ((ElementValueVisualAcuities)
-            converter.convert(visualAcuities)).rightEye();
+        final var actualResult =
+            ((ElementValueVisualAcuities) converter.convert(visualAcuities)).rightEye();
 
         assertEquals(expectedResult, actualResult.withoutCorrection().id());
       }
@@ -124,8 +113,8 @@ class ElementValueConverterVisualAcuitiesTest {
       void shouldConvertValueForWithoutCorrection() {
         final var expectedResult = 2.0;
 
-        final var actualResult = ((ElementValueVisualAcuities)
-            converter.convert(visualAcuities)).rightEye();
+        final var actualResult =
+            ((ElementValueVisualAcuities) converter.convert(visualAcuities)).rightEye();
 
         assertEquals(expectedResult, actualResult.withoutCorrection().value());
       }
@@ -138,8 +127,8 @@ class ElementValueConverterVisualAcuitiesTest {
       void shouldConvertIdForWithCorrection() {
         final var expectedResult = new FieldId("id1");
 
-        final var actualResult = ((ElementValueVisualAcuities)
-            converter.convert(visualAcuities)).leftEye();
+        final var actualResult =
+            ((ElementValueVisualAcuities) converter.convert(visualAcuities)).leftEye();
 
         assertEquals(expectedResult, actualResult.withCorrection().id());
       }
@@ -148,8 +137,8 @@ class ElementValueConverterVisualAcuitiesTest {
       void shouldConvertValueForWithCorrection() {
         final var expectedResult = 1.0;
 
-        final var actualResult = ((ElementValueVisualAcuities)
-            converter.convert(visualAcuities)).leftEye();
+        final var actualResult =
+            ((ElementValueVisualAcuities) converter.convert(visualAcuities)).leftEye();
 
         assertEquals(expectedResult, actualResult.withCorrection().value());
       }
@@ -158,8 +147,8 @@ class ElementValueConverterVisualAcuitiesTest {
       void shouldConvertIdForWithoutCorrection() {
         final var expectedResult = new FieldId("id2");
 
-        final var actualResult = ((ElementValueVisualAcuities)
-            converter.convert(visualAcuities)).leftEye();
+        final var actualResult =
+            ((ElementValueVisualAcuities) converter.convert(visualAcuities)).leftEye();
 
         assertEquals(expectedResult, actualResult.withoutCorrection().id());
       }
@@ -168,8 +157,8 @@ class ElementValueConverterVisualAcuitiesTest {
       void shouldConvertValueForWithoutCorrection() {
         final var expectedResult = 2.0;
 
-        final var actualResult = ((ElementValueVisualAcuities)
-            converter.convert(visualAcuities)).leftEye();
+        final var actualResult =
+            ((ElementValueVisualAcuities) converter.convert(visualAcuities)).leftEye();
 
         assertEquals(expectedResult, actualResult.withoutCorrection().value());
       }
@@ -182,8 +171,8 @@ class ElementValueConverterVisualAcuitiesTest {
       void shouldConvertIdForWithCorrection() {
         final var expectedResult = new FieldId("id1");
 
-        final var actualResult = ((ElementValueVisualAcuities)
-            converter.convert(visualAcuities)).binocular();
+        final var actualResult =
+            ((ElementValueVisualAcuities) converter.convert(visualAcuities)).binocular();
 
         assertEquals(expectedResult, actualResult.withCorrection().id());
       }
@@ -192,8 +181,8 @@ class ElementValueConverterVisualAcuitiesTest {
       void shouldConvertValueForWithCorrection() {
         final var expectedResult = 1.0;
 
-        final var actualResult = ((ElementValueVisualAcuities)
-            converter.convert(visualAcuities)).binocular();
+        final var actualResult =
+            ((ElementValueVisualAcuities) converter.convert(visualAcuities)).binocular();
 
         assertEquals(expectedResult, actualResult.withCorrection().value());
       }
@@ -202,8 +191,8 @@ class ElementValueConverterVisualAcuitiesTest {
       void shouldConvertIdForWithoutCorrection() {
         final var expectedResult = new FieldId("id2");
 
-        final var actualResult = ((ElementValueVisualAcuities)
-            converter.convert(visualAcuities)).binocular();
+        final var actualResult =
+            ((ElementValueVisualAcuities) converter.convert(visualAcuities)).binocular();
 
         assertEquals(expectedResult, actualResult.withoutCorrection().id());
       }
@@ -212,8 +201,8 @@ class ElementValueConverterVisualAcuitiesTest {
       void shouldConvertValueForWithoutCorrection() {
         final var expectedResult = 2.0;
 
-        final var actualResult = ((ElementValueVisualAcuities)
-            converter.convert(visualAcuities)).binocular();
+        final var actualResult =
+            ((ElementValueVisualAcuities) converter.convert(visualAcuities)).binocular();
 
         assertEquals(expectedResult, actualResult.withoutCorrection().value());
       }
@@ -223,50 +212,24 @@ class ElementValueConverterVisualAcuitiesTest {
   @Nested
   class NullOrEmptyTests {
 
-    private final CertificateDataValueVisualAcuities visualAcuities = CertificateDataValueVisualAcuities.builder()
-        .rightEye(
-            CertificateDataValueVisualAcuity.builder()
-                .withCorrection(
-                    CertificateDataValueDouble.builder()
-                        .id("id1")
-                        .build()
-                )
-                .withoutCorrection(
-                    CertificateDataValueDouble.builder()
-                        .id("id2")
-                        .build()
-                )
-                .build()
-        )
-        .leftEye(
-            CertificateDataValueVisualAcuity.builder()
-                .withCorrection(
-                    CertificateDataValueDouble.builder()
-                        .id("id1")
-                        .build()
-                )
-                .withoutCorrection(
-                    CertificateDataValueDouble.builder()
-                        .id("id2")
-                        .build()
-                )
-                .build()
-        )
-        .binocular(
-            CertificateDataValueVisualAcuity.builder()
-                .withCorrection(
-                    CertificateDataValueDouble.builder()
-                        .id("id1")
-                        .build()
-                )
-                .withoutCorrection(
-                    CertificateDataValueDouble.builder()
-                        .id("id2")
-                        .build()
-                )
-                .build()
-        )
-        .build();
+    private final CertificateDataValueVisualAcuities visualAcuities =
+        CertificateDataValueVisualAcuities.builder()
+            .rightEye(
+                CertificateDataValueVisualAcuity.builder()
+                    .withCorrection(CertificateDataValueDouble.builder().id("id1").build())
+                    .withoutCorrection(CertificateDataValueDouble.builder().id("id2").build())
+                    .build())
+            .leftEye(
+                CertificateDataValueVisualAcuity.builder()
+                    .withCorrection(CertificateDataValueDouble.builder().id("id1").build())
+                    .withoutCorrection(CertificateDataValueDouble.builder().id("id2").build())
+                    .build())
+            .binocular(
+                CertificateDataValueVisualAcuity.builder()
+                    .withCorrection(CertificateDataValueDouble.builder().id("id1").build())
+                    .withoutCorrection(CertificateDataValueDouble.builder().id("id2").build())
+                    .build())
+            .build();
 
     @Nested
     class RightEyeTest {
@@ -275,16 +238,16 @@ class ElementValueConverterVisualAcuitiesTest {
       void shouldConvertIdForWithCorrection() {
         final var expectedResult = new FieldId("id1");
 
-        final var actualResult = ((ElementValueVisualAcuities)
-            converter.convert(visualAcuities)).rightEye();
+        final var actualResult =
+            ((ElementValueVisualAcuities) converter.convert(visualAcuities)).rightEye();
 
         assertEquals(expectedResult, actualResult.withCorrection().id());
       }
 
       @Test
       void shouldConvertValueForWithCorrectionIfNull() {
-        final var actualResult = ((ElementValueVisualAcuities)
-            converter.convert(visualAcuities)).rightEye();
+        final var actualResult =
+            ((ElementValueVisualAcuities) converter.convert(visualAcuities)).rightEye();
 
         assertNull(actualResult.withCorrection().value());
       }
@@ -293,16 +256,16 @@ class ElementValueConverterVisualAcuitiesTest {
       void shouldConvertIdForWithoutCorrection() {
         final var expectedResult = new FieldId("id2");
 
-        final var actualResult = ((ElementValueVisualAcuities)
-            converter.convert(visualAcuities)).rightEye();
+        final var actualResult =
+            ((ElementValueVisualAcuities) converter.convert(visualAcuities)).rightEye();
 
         assertEquals(expectedResult, actualResult.withoutCorrection().id());
       }
 
       @Test
       void shouldConvertValueForWithoutCorrectionIfNull() {
-        final var actualResult = ((ElementValueVisualAcuities)
-            converter.convert(visualAcuities)).rightEye();
+        final var actualResult =
+            ((ElementValueVisualAcuities) converter.convert(visualAcuities)).rightEye();
 
         assertNull(actualResult.withoutCorrection().value());
       }
@@ -315,16 +278,16 @@ class ElementValueConverterVisualAcuitiesTest {
       void shouldConvertIdForWithCorrection() {
         final var expectedResult = new FieldId("id1");
 
-        final var actualResult = ((ElementValueVisualAcuities)
-            converter.convert(visualAcuities)).leftEye();
+        final var actualResult =
+            ((ElementValueVisualAcuities) converter.convert(visualAcuities)).leftEye();
 
         assertEquals(expectedResult, actualResult.withCorrection().id());
       }
 
       @Test
       void shouldConvertValueForWithCorrectionIfNull() {
-        final var actualResult = ((ElementValueVisualAcuities)
-            converter.convert(visualAcuities)).leftEye();
+        final var actualResult =
+            ((ElementValueVisualAcuities) converter.convert(visualAcuities)).leftEye();
 
         assertNull(actualResult.withCorrection().value());
       }
@@ -333,16 +296,16 @@ class ElementValueConverterVisualAcuitiesTest {
       void shouldConvertIdForWithoutCorrection() {
         final var expectedResult = new FieldId("id2");
 
-        final var actualResult = ((ElementValueVisualAcuities)
-            converter.convert(visualAcuities)).leftEye();
+        final var actualResult =
+            ((ElementValueVisualAcuities) converter.convert(visualAcuities)).leftEye();
 
         assertEquals(expectedResult, actualResult.withoutCorrection().id());
       }
 
       @Test
       void shouldConvertValueForWithoutCorrectionIfNull() {
-        final var actualResult = ((ElementValueVisualAcuities)
-            converter.convert(visualAcuities)).leftEye();
+        final var actualResult =
+            ((ElementValueVisualAcuities) converter.convert(visualAcuities)).leftEye();
 
         assertNull(actualResult.withoutCorrection().value());
       }
@@ -355,16 +318,16 @@ class ElementValueConverterVisualAcuitiesTest {
       void shouldConvertIdForWithCorrection() {
         final var expectedResult = new FieldId("id1");
 
-        final var actualResult = ((ElementValueVisualAcuities)
-            converter.convert(visualAcuities)).binocular();
+        final var actualResult =
+            ((ElementValueVisualAcuities) converter.convert(visualAcuities)).binocular();
 
         assertEquals(expectedResult, actualResult.withCorrection().id());
       }
 
       @Test
       void shouldConvertValueForWithCorrectionIfNull() {
-        final var actualResult = ((ElementValueVisualAcuities)
-            converter.convert(visualAcuities)).binocular();
+        final var actualResult =
+            ((ElementValueVisualAcuities) converter.convert(visualAcuities)).binocular();
 
         assertNull(actualResult.withCorrection().value());
       }
@@ -373,16 +336,16 @@ class ElementValueConverterVisualAcuitiesTest {
       void shouldConvertIdForWithoutCorrection() {
         final var expectedResult = new FieldId("id2");
 
-        final var actualResult = ((ElementValueVisualAcuities)
-            converter.convert(visualAcuities)).binocular();
+        final var actualResult =
+            ((ElementValueVisualAcuities) converter.convert(visualAcuities)).binocular();
 
         assertEquals(expectedResult, actualResult.withoutCorrection().id());
       }
 
       @Test
       void shouldConvertValueForWithoutCorrectionIfNull() {
-        final var actualResult = ((ElementValueVisualAcuities)
-            converter.convert(visualAcuities)).binocular();
+        final var actualResult =
+            ((ElementValueVisualAcuities) converter.convert(visualAcuities)).binocular();
 
         assertNull(actualResult.withoutCorrection().value());
       }

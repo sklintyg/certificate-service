@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.v2;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.v2.QuestionKognitivStorningV2.QUESTION_KOGNITIV_STORNING_V2_ID;
@@ -32,26 +50,14 @@ public class QuestionDemensV2 {
                     "Har personen diagnos demens eller annan kognitiv störning eller finns tecken på demens eller andra kognitiva störningar?")
                 .description(
                     "Med demens avses diagnos ställd utifrån vedertagen praxis eller utifrån de kriterier som anges i DSM-IV, DSM-V eller ICD-10. Med kognitiv störning avses kognitiv störning/svikt som inte är demens. Med grader avses lindrig, måttlig/medelsvår eller grav/allvarlig.")
-                .build()
-        )
-        .validations(
-            List.of(
-                ElementValidationBoolean.builder()
-                    .mandatory(true)
-                    .build()
-            )
-        )
+                .build())
+        .validations(List.of(ElementValidationBoolean.builder().mandatory(true).build()))
         .rules(
             List.of(
                 CertificateElementRuleFactory.mandatoryExist(
-                    QUESTION_DEMENS_V2_ID,
-                    QUESTION_DEMENS_V2_FIELD_ID
-                )
-            )
-        )
+                    QUESTION_DEMENS_V2_ID, QUESTION_DEMENS_V2_FIELD_ID)))
         .mapping(new ElementMapping(QUESTION_KOGNITIV_STORNING_V2_ID, null))
         .children(List.of(children))
         .build();
   }
 }
-

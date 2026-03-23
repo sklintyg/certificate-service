@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.common.dto;
 
 import se.inera.intyg.certificateservice.domain.action.certificate.model.CertificateActionType;
@@ -90,9 +108,17 @@ public enum ResourceLinkTypeDTO {
       case CREATE_DRAFT_FROM_CERTIFICATE -> CREATE_CERTIFICATE_FROM_TEMPLATE;
       case UPDATE_DRAFT_FROM_CERTIFICATE -> CREATE_CERTIFICATE_FROM_CANDIDATE;
       case INACTIVE_CERTIFICATE_MODEL -> INACTIVE_CERTIFICATE;
-      case RECEIVE_COMPLEMENT, RECEIVE_ANSWER, RECEIVE_QUESTION, RECEIVE_REMINDER, SAVE_MESSAGE,
-           DELETE_MESSAGE, SEND_MESSAGE, SAVE_ANSWER, DELETE_ANSWER, SEND_ANSWER,
-           LIST_CERTIFICATE_TYPE ->
+      case RECEIVE_COMPLEMENT,
+          RECEIVE_ANSWER,
+          RECEIVE_QUESTION,
+          RECEIVE_REMINDER,
+          SAVE_MESSAGE,
+          DELETE_MESSAGE,
+          SEND_MESSAGE,
+          SAVE_ANSWER,
+          DELETE_ANSWER,
+          SEND_ANSWER,
+          LIST_CERTIFICATE_TYPE ->
           throw new IllegalArgumentException("%s is not a valid type!".formatted(type));
     };
   }

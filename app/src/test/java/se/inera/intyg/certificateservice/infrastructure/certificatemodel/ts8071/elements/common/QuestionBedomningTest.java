@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.common;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,31 +48,19 @@ class QuestionBedomningTest {
 
   @Test
   void shallIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationRadioMultipleCode.builder()
-        .id(new FieldId("23.1"))
-        .name(
-            "Bedöms personen utifrån Transportstyrelsens föreskrifter och allmänna råd (TSFS 2010:125) om medicinska krav för innehav av körkort m.m. ha en sjukdom eller medicinskt tillstånd som innebär en trafiksäkerhetsrisk?")
-        .elementLayout(ElementLayout.ROWS)
-        .list(
-            List.of(
-                new ElementConfigurationCode(
-                    new FieldId(YES.code()),
-                    YES.displayName(),
-                    YES
-                ),
-                new ElementConfigurationCode(
-                    new FieldId(NO.code()),
-                    NO.displayName(),
-                    NO
-                ),
-                new ElementConfigurationCode(
-                    new FieldId(NO_DECISION.code()),
-                    NO_DECISION.displayName(),
-                    NO_DECISION
-                )
-            )
-        )
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationRadioMultipleCode.builder()
+            .id(new FieldId("23.1"))
+            .name(
+                "Bedöms personen utifrån Transportstyrelsens föreskrifter och allmänna råd (TSFS 2010:125) om medicinska krav för innehav av körkort m.m. ha en sjukdom eller medicinskt tillstånd som innebär en trafiksäkerhetsrisk?")
+            .elementLayout(ElementLayout.ROWS)
+            .list(
+                List.of(
+                    new ElementConfigurationCode(new FieldId(YES.code()), YES.displayName(), YES),
+                    new ElementConfigurationCode(new FieldId(NO.code()), NO.displayName(), NO),
+                    new ElementConfigurationCode(
+                        new FieldId(NO_DECISION.code()), NO_DECISION.displayName(), NO_DECISION)))
+            .build();
 
     final var element = QuestionBedomning.questionBedomning();
 
@@ -63,17 +69,13 @@ class QuestionBedomningTest {
 
   @Test
   void shallIncludeRules() {
-    final var expectedRules = List.of(
-        ElementRuleExpression.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.MANDATORY)
-            .expression(
-                new RuleExpression(
-                    "exists($ja) || exists($nej) || exists($ejstalln)"
-                )
-            )
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleExpression.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.MANDATORY)
+                .expression(new RuleExpression("exists($ja) || exists($nej) || exists($ejstalln)"))
+                .build());
 
     final var element = QuestionBedomning.questionBedomning();
 
@@ -82,11 +84,8 @@ class QuestionBedomningTest {
 
   @Test
   void shallIncludeValidations() {
-    final var expectedValidations = List.of(
-        ElementValidationCode.builder()
-            .mandatory(true)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationCode.builder().mandatory(true).build());
 
     final var element = QuestionBedomning.questionBedomning();
 

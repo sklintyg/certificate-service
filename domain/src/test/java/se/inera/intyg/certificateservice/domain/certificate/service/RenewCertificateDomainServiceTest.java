@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.certificate.service;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -30,12 +48,9 @@ import se.inera.intyg.certificateservice.domain.event.service.CertificateEventDo
 @ExtendWith(MockitoExtension.class)
 class RenewCertificateDomainServiceTest {
 
-  @Mock
-  private CertificateRepository certificateRepository;
-  @Mock
-  private CertificateEventDomainService certificateEventDomainService;
-  @InjectMocks
-  private RenewCertificateDomainService renewCertificateDomainService;
+  @Mock private CertificateRepository certificateRepository;
+  @Mock private CertificateEventDomainService certificateEventDomainService;
+  @InjectMocks private RenewCertificateDomainService renewCertificateDomainService;
 
   @Test
   void shallThrowExceptionIfUserHasNoAccessToRenew() {
@@ -43,10 +58,11 @@ class RenewCertificateDomainServiceTest {
     doReturn(certificate).when(certificateRepository).getById(CERTIFICATE_ID);
     doReturn(false).when(certificate).allowTo(RENEW, Optional.of(ACTION_EVALUATION));
 
-    assertThrows(CertificateActionForbidden.class,
-        () -> renewCertificateDomainService.renew(CERTIFICATE_ID, ACTION_EVALUATION,
-            EXTERNAL_REFERENCE)
-    );
+    assertThrows(
+        CertificateActionForbidden.class,
+        () ->
+            renewCertificateDomainService.renew(
+                CERTIFICATE_ID, ACTION_EVALUATION, EXTERNAL_REFERENCE));
   }
 
   @Test
@@ -86,8 +102,8 @@ class RenewCertificateDomainServiceTest {
     doReturn(newCertificate).when(certificate).renew(ACTION_EVALUATION);
     doReturn(expectedCertificate).when(certificateRepository).save(newCertificate);
 
-    final var actualCertificate = renewCertificateDomainService.renew(CERTIFICATE_ID,
-        ACTION_EVALUATION, EXTERNAL_REFERENCE);
+    final var actualCertificate =
+        renewCertificateDomainService.renew(CERTIFICATE_ID, ACTION_EVALUATION, EXTERNAL_REFERENCE);
 
     assertEquals(expectedCertificate, actualCertificate);
   }
@@ -112,8 +128,7 @@ class RenewCertificateDomainServiceTest {
         () -> assertEquals(CertificateEventType.RENEW, certificateEventCaptor.getValue().type()),
         () -> assertEquals(expectedCertificate, certificateEventCaptor.getValue().certificate()),
         () -> assertEquals(ACTION_EVALUATION, certificateEventCaptor.getValue().actionEvaluation()),
-        () -> assertTrue(certificateEventCaptor.getValue().duration() >= 0)
-    );
+        () -> assertTrue(certificateEventCaptor.getValue().duration() >= 0));
   }
 
   @Test
@@ -122,13 +137,16 @@ class RenewCertificateDomainServiceTest {
     final var expectedReason = List.of("expectedReason");
     doReturn(certificate).when(certificateRepository).getById(CERTIFICATE_ID);
     doReturn(false).when(certificate).allowTo(RENEW, Optional.of(ACTION_EVALUATION));
-    doReturn(expectedReason).when(certificate)
+    doReturn(expectedReason)
+        .when(certificate)
         .reasonNotAllowed(RENEW, Optional.of(ACTION_EVALUATION));
 
-    final var certificateActionForbidden = assertThrows(CertificateActionForbidden.class,
-        () -> renewCertificateDomainService.renew(CERTIFICATE_ID, ACTION_EVALUATION,
-            EXTERNAL_REFERENCE)
-    );
+    final var certificateActionForbidden =
+        assertThrows(
+            CertificateActionForbidden.class,
+            () ->
+                renewCertificateDomainService.renew(
+                    CERTIFICATE_ID, ACTION_EVALUATION, EXTERNAL_REFERENCE));
 
     assertEquals(expectedReason, certificateActionForbidden.reason());
   }

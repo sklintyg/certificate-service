@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service.converter;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -34,43 +52,40 @@ class CertificateDataValidationCategoryMandatoryConverterTest {
 
   @Test
   void shallThrowIfWrongTypeOfRule() {
-    final var elementRuleExpression = ElementRuleExpression.builder()
-        .type(ElementRuleType.SHOW)
-        .build();
+    final var elementRuleExpression =
+        ElementRuleExpression.builder().type(ElementRuleType.SHOW).build();
 
     assertThrows(IllegalArgumentException.class, () -> converter.convert(elementRuleExpression));
   }
 
   @Test
   void shallReturnCertificateDataValidationCategoryMandatoryWithExpressionType() {
-    final var elementRuleMandatoryCategory = ElementRuleMandatoryCategory.builder()
-        .operandType(ExpressionOperandType.OR)
-        .build();
-    final var result = (CertificateDataValidationCategoryMandatory) converter.convert(
-        elementRuleMandatoryCategory);
+    final var elementRuleMandatoryCategory =
+        ElementRuleMandatoryCategory.builder().operandType(ExpressionOperandType.OR).build();
+    final var result =
+        (CertificateDataValidationCategoryMandatory)
+            converter.convert(elementRuleMandatoryCategory);
     assertEquals(ExpressionTypeEnum.OR, result.getExpressionType());
   }
 
   @Test
   void shallReturnCertificateDataValidationCategoryMandatoryWithExpression() {
-    final var elementRuleMandatoryCategory = ElementRuleMandatoryCategory.builder()
-        .operandType(ExpressionOperandType.OR)
-        .elementRuleExpressions(
-            List.of(
-                ElementRuleExpression.builder()
-                    .id(new ElementId(EXPECTED_ID))
-                    .expression(new RuleExpression(EXPECTED_EXPRESSION))
-                    .build()
-            )
-
-        )
-        .build();
-    final var result = (CertificateDataValidationCategoryMandatory) converter.convert(
-        elementRuleMandatoryCategory);
+    final var elementRuleMandatoryCategory =
+        ElementRuleMandatoryCategory.builder()
+            .operandType(ExpressionOperandType.OR)
+            .elementRuleExpressions(
+                List.of(
+                    ElementRuleExpression.builder()
+                        .id(new ElementId(EXPECTED_ID))
+                        .expression(new RuleExpression(EXPECTED_EXPRESSION))
+                        .build()))
+            .build();
+    final var result =
+        (CertificateDataValidationCategoryMandatory)
+            converter.convert(elementRuleMandatoryCategory);
 
     assertAll(
         () -> assertEquals(EXPECTED_ID, result.getQuestions().getFirst().getQuestionId()),
-        () -> assertEquals(EXPECTED_EXPRESSION, result.getQuestions().getFirst().getExpression())
-    );
+        () -> assertEquals(EXPECTED_EXPRESSION, result.getQuestions().getFirst().getExpression()));
   }
 }

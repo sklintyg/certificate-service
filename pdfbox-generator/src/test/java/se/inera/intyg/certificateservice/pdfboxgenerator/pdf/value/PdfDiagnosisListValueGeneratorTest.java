@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.pdfboxgenerator.pdf.value;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,7 +43,8 @@ class PdfDiagnosisListValueGeneratorTest {
   private static final String CODE_FIELD_ID_3 = "form1[0].#subform[0].flt_txtDiaKod3[0]";
   private static final String DESCRIPTION_FIELD_ID = "form1[0].#subform[0].flt_txtDiagnoser[0]";
 
-  private final PdfDiagnosisListValueGenerator pdfDiagnosisListValueGenerator = new PdfDiagnosisListValueGenerator();
+  private final PdfDiagnosisListValueGenerator pdfDiagnosisListValueGenerator =
+      new PdfDiagnosisListValueGenerator();
 
   @Test
   void shouldReturnType() {
@@ -37,141 +56,111 @@ class PdfDiagnosisListValueGeneratorTest {
 
     @Test
     void shouldSetValueIfElementDataWithDiagnoseListValue() {
-      final var expected = List.of(
-          PdfField.builder()
-              .id(DESCRIPTION_FIELD_ID)
-              .value("description")
-              .build(),
-          PdfField.builder()
-              .id(CODE_FIELD_ID_1)
-              .value("A")
-              .build(),
-          PdfField.builder()
-              .id(CODE_FIELD_ID_2)
-              .value("B")
-              .build(),
-          PdfField.builder()
-              .id(CODE_FIELD_ID_3)
-              .value("C")
-              .build()
-      );
+      final var expected =
+          List.of(
+              PdfField.builder().id(DESCRIPTION_FIELD_ID).value("description").build(),
+              PdfField.builder().id(CODE_FIELD_ID_1).value("A").build(),
+              PdfField.builder().id(CODE_FIELD_ID_2).value("B").build(),
+              PdfField.builder().id(CODE_FIELD_ID_3).value("C").build());
 
-      final var elementSpecification = ElementSpecification.builder()
-          .pdfConfiguration(
-              PdfConfigurationDiagnoses.builder()
-                  .diagnoses(
-                      Map.of(
-                          new FieldId("huvuddiagnos"),
-                          PdfConfigurationDiagnosis.builder()
-                              .pdfNameFieldId(new PdfFieldId(DESCRIPTION_FIELD_ID))
-                              .pdfCodeFieldIds(
-                                  List.of(
-                                      new PdfFieldId(CODE_FIELD_ID_1),
-                                      new PdfFieldId(CODE_FIELD_ID_2),
-                                      new PdfFieldId(CODE_FIELD_ID_3)
-                                  )
-                              )
-                              .build()
-                      )
-                  )
-                  .build()
-          )
-          .build();
+      final var elementSpecification =
+          ElementSpecification.builder()
+              .pdfConfiguration(
+                  PdfConfigurationDiagnoses.builder()
+                      .diagnoses(
+                          Map.of(
+                              new FieldId("huvuddiagnos"),
+                              PdfConfigurationDiagnosis.builder()
+                                  .pdfNameFieldId(new PdfFieldId(DESCRIPTION_FIELD_ID))
+                                  .pdfCodeFieldIds(
+                                      List.of(
+                                          new PdfFieldId(CODE_FIELD_ID_1),
+                                          new PdfFieldId(CODE_FIELD_ID_2),
+                                          new PdfFieldId(CODE_FIELD_ID_3)))
+                                  .build()))
+                      .build())
+              .build();
 
-      final var elementValue = ElementValueDiagnosisList.builder()
-          .diagnoses(
-              List.of(
-                  ElementValueDiagnosis.builder()
-                      .id(new FieldId("huvuddiagnos"))
-                      .description("description")
-                      .terminology("terminology")
-                      .code("ABC")
-                      .build()
-              )
-          )
-          .build();
+      final var elementValue =
+          ElementValueDiagnosisList.builder()
+              .diagnoses(
+                  List.of(
+                      ElementValueDiagnosis.builder()
+                          .id(new FieldId("huvuddiagnos"))
+                          .description("description")
+                          .terminology("terminology")
+                          .code("ABC")
+                          .build()))
+              .build();
 
-      final var result = pdfDiagnosisListValueGenerator.generate(elementSpecification,
-          elementValue);
+      final var result =
+          pdfDiagnosisListValueGenerator.generate(elementSpecification, elementValue);
 
       assertEquals(expected, result);
     }
 
     @Test
     void shouldThrowExceptionIfDiagnosIdIsMissingFromPdfConfiguration() {
-      final var elementSpecification = ElementSpecification.builder()
-          .pdfConfiguration(
-              PdfConfigurationDiagnoses.builder()
-                  .diagnoses(
-                      Map.of(
-                          new FieldId("huvuddiagnos"),
-                          PdfConfigurationDiagnosis.builder()
-                              .pdfNameFieldId(new PdfFieldId(DESCRIPTION_FIELD_ID))
-                              .pdfCodeFieldIds(
-                                  List.of(
-                                      new PdfFieldId(CODE_FIELD_ID_1),
-                                      new PdfFieldId(CODE_FIELD_ID_2),
-                                      new PdfFieldId(CODE_FIELD_ID_3)
-                                  )
-                              )
-                              .build()
-                      )
-                  )
-                  .build()
-          )
-          .build();
+      final var elementSpecification =
+          ElementSpecification.builder()
+              .pdfConfiguration(
+                  PdfConfigurationDiagnoses.builder()
+                      .diagnoses(
+                          Map.of(
+                              new FieldId("huvuddiagnos"),
+                              PdfConfigurationDiagnosis.builder()
+                                  .pdfNameFieldId(new PdfFieldId(DESCRIPTION_FIELD_ID))
+                                  .pdfCodeFieldIds(
+                                      List.of(
+                                          new PdfFieldId(CODE_FIELD_ID_1),
+                                          new PdfFieldId(CODE_FIELD_ID_2),
+                                          new PdfFieldId(CODE_FIELD_ID_3)))
+                                  .build()))
+                      .build())
+              .build();
 
-      final var elementValue = ElementValueDiagnosisList.builder()
-          .diagnoses(
-              List.of(
-                  ElementValueDiagnosis.builder()
-                      .id(new FieldId("missing field id"))
-                      .description("description")
-                      .terminology("terminology")
-                      .code("ABC")
-                      .build()
-              )
-          )
-          .build();
+      final var elementValue =
+          ElementValueDiagnosisList.builder()
+              .diagnoses(
+                  List.of(
+                      ElementValueDiagnosis.builder()
+                          .id(new FieldId("missing field id"))
+                          .description("description")
+                          .terminology("terminology")
+                          .code("ABC")
+                          .build()))
+              .build();
 
-      assertThrows(IllegalArgumentException.class,
-          () -> pdfDiagnosisListValueGenerator.generate(elementSpecification, elementValue)
-      );
+      assertThrows(
+          IllegalArgumentException.class,
+          () -> pdfDiagnosisListValueGenerator.generate(elementSpecification, elementValue));
     }
 
     @Test
     void shallReturnEmptyListIfNoDiagnosis() {
-      final var elementSpecification = ElementSpecification.builder()
-          .pdfConfiguration(
-              PdfConfigurationDiagnoses.builder()
-                  .diagnoses(
-                      Map.of(
-                          new FieldId("huvuddiagnos"),
-                          PdfConfigurationDiagnosis.builder()
-                              .pdfNameFieldId(new PdfFieldId(DESCRIPTION_FIELD_ID))
-                              .pdfCodeFieldIds(
-                                  List.of(
-                                      new PdfFieldId(CODE_FIELD_ID_1),
-                                      new PdfFieldId(CODE_FIELD_ID_2),
-                                      new PdfFieldId(CODE_FIELD_ID_3)
-                                  )
-                              )
-                              .build()
-                      )
-                  )
-                  .build()
-          )
-          .build();
+      final var elementSpecification =
+          ElementSpecification.builder()
+              .pdfConfiguration(
+                  PdfConfigurationDiagnoses.builder()
+                      .diagnoses(
+                          Map.of(
+                              new FieldId("huvuddiagnos"),
+                              PdfConfigurationDiagnosis.builder()
+                                  .pdfNameFieldId(new PdfFieldId(DESCRIPTION_FIELD_ID))
+                                  .pdfCodeFieldIds(
+                                      List.of(
+                                          new PdfFieldId(CODE_FIELD_ID_1),
+                                          new PdfFieldId(CODE_FIELD_ID_2),
+                                          new PdfFieldId(CODE_FIELD_ID_3)))
+                                  .build()))
+                      .build())
+              .build();
 
-      final var elementValue = ElementValueDiagnosisList.builder()
-          .diagnoses(
-              List.of()
-          )
-          .build();
+      final var elementValue = ElementValueDiagnosisList.builder().diagnoses(List.of()).build();
 
-      assertEquals(Collections.emptyList(),
-          pdfDiagnosisListValueGenerator.generate(elementSpecification, elementValue)
-      );
+      assertEquals(
+          Collections.emptyList(),
+          pdfDiagnosisListValueGenerator.generate(elementSpecification, elementValue));
     }
   }
 
@@ -180,157 +169,122 @@ class PdfDiagnosisListValueGeneratorTest {
 
     @Test
     void shouldSplitValueIfOverMaxLength() {
-      final var expected = List.of(
-          PdfField.builder()
-              .id("OVER_FLOW_SHEET_ID")
-              .value("Diagnoser frågenamn")
-              .append(true)
-              .build(),
-          PdfField.builder()
-              .id(DESCRIPTION_FIELD_ID)
-              .value("description is over max length since ...")
-              .build(),
-          PdfField.builder()
-              .id("OVER_FLOW_SHEET_ID")
-              .value("Diagnosbeskrivning för diagnoskod ABC")
-              .append(true)
-              .build(),
-          PdfField.builder()
-              .id("OVER_FLOW_SHEET_ID")
-              .value(
-                  "... max length is only 30 characters and this message is longer.\n")
-              .append(true)
-              .build(),
-          PdfField.builder()
-              .id(CODE_FIELD_ID_1)
-              .value("A")
-              .build(),
-          PdfField.builder()
-              .id(CODE_FIELD_ID_2)
-              .value("B")
-              .build(),
-          PdfField.builder()
-              .id(CODE_FIELD_ID_3)
-              .value("C")
-              .build()
-      );
+      final var expected =
+          List.of(
+              PdfField.builder()
+                  .id("OVER_FLOW_SHEET_ID")
+                  .value("Diagnoser frågenamn")
+                  .append(true)
+                  .build(),
+              PdfField.builder()
+                  .id(DESCRIPTION_FIELD_ID)
+                  .value("description is over max length since ...")
+                  .build(),
+              PdfField.builder()
+                  .id("OVER_FLOW_SHEET_ID")
+                  .value("Diagnosbeskrivning för diagnoskod ABC")
+                  .append(true)
+                  .build(),
+              PdfField.builder()
+                  .id("OVER_FLOW_SHEET_ID")
+                  .value("... max length is only 30 characters and this message is longer.\n")
+                  .append(true)
+                  .build(),
+              PdfField.builder().id(CODE_FIELD_ID_1).value("A").build(),
+              PdfField.builder().id(CODE_FIELD_ID_2).value("B").build(),
+              PdfField.builder().id(CODE_FIELD_ID_3).value("C").build());
 
-      final var elementSpecification = ElementSpecification.builder()
-          .configuration(
-              ElementConfigurationDiagnosis.builder()
-                  .name("Diagnoser frågenamn")
-                  .build()
-          )
-          .pdfConfiguration(
-              PdfConfigurationDiagnoses.builder()
-                  .maxLength(40)
-                  .overflowSheetFieldId(new PdfFieldId("OVER_FLOW_SHEET_ID"))
-                  .diagnoses(
-                      Map.of(
-                          new FieldId("huvuddiagnos"),
-                          PdfConfigurationDiagnosis.builder()
-                              .pdfNameFieldId(new PdfFieldId(DESCRIPTION_FIELD_ID))
-                              .pdfCodeFieldIds(
-                                  List.of(
-                                      new PdfFieldId(CODE_FIELD_ID_1),
-                                      new PdfFieldId(CODE_FIELD_ID_2),
-                                      new PdfFieldId(CODE_FIELD_ID_3)
-                                  )
-                              )
-                              .build()
-                      )
-                  )
-                  .build()
-          )
-          .build();
+      final var elementSpecification =
+          ElementSpecification.builder()
+              .configuration(
+                  ElementConfigurationDiagnosis.builder().name("Diagnoser frågenamn").build())
+              .pdfConfiguration(
+                  PdfConfigurationDiagnoses.builder()
+                      .maxLength(40)
+                      .overflowSheetFieldId(new PdfFieldId("OVER_FLOW_SHEET_ID"))
+                      .diagnoses(
+                          Map.of(
+                              new FieldId("huvuddiagnos"),
+                              PdfConfigurationDiagnosis.builder()
+                                  .pdfNameFieldId(new PdfFieldId(DESCRIPTION_FIELD_ID))
+                                  .pdfCodeFieldIds(
+                                      List.of(
+                                          new PdfFieldId(CODE_FIELD_ID_1),
+                                          new PdfFieldId(CODE_FIELD_ID_2),
+                                          new PdfFieldId(CODE_FIELD_ID_3)))
+                                  .build()))
+                      .build())
+              .build();
 
-      final var elementValue = ElementValueDiagnosisList.builder()
-          .diagnoses(
-              List.of(
-                  ElementValueDiagnosis.builder()
-                      .id(new FieldId("huvuddiagnos"))
-                      .description(
-                          "description is over max length since max length is only 30 characters and this message is longer.\n")
-                      .terminology("terminology")
-                      .code("ABC")
-                      .build()
-              )
-          )
-          .build();
+      final var elementValue =
+          ElementValueDiagnosisList.builder()
+              .diagnoses(
+                  List.of(
+                      ElementValueDiagnosis.builder()
+                          .id(new FieldId("huvuddiagnos"))
+                          .description(
+                              "description is over max length since max length is only 30 characters and this message is longer.\n")
+                          .terminology("terminology")
+                          .code("ABC")
+                          .build()))
+              .build();
 
-      final var result = pdfDiagnosisListValueGenerator.generate(elementSpecification,
-          elementValue);
+      final var result =
+          pdfDiagnosisListValueGenerator.generate(elementSpecification, elementValue);
 
       assertEquals(expected, result);
     }
 
     @Test
     void shouldNotReturnFieldsForOverflowSheetIfNoOverFlowSheetIsProvided() {
-      final var expected = List.of(
-          PdfField.builder()
-              .id(DESCRIPTION_FIELD_ID)
-              .appearance("/ArialMT 9.00 Tf 0 g")
-              .value("description is over max length since ...")
-              .build(),
-          PdfField.builder()
-              .id(CODE_FIELD_ID_1)
-              .value("A")
-              .build(),
-          PdfField.builder()
-              .id(CODE_FIELD_ID_2)
-              .value("B")
-              .build(),
-          PdfField.builder()
-              .id(CODE_FIELD_ID_3)
-              .value("C")
-              .build()
-      );
-
-      final var elementSpecification = ElementSpecification.builder()
-          .configuration(
-              ElementConfigurationDiagnosis.builder()
-                  .name("Diagnoser frågenamn")
-                  .build()
-          )
-          .pdfConfiguration(
-              PdfConfigurationDiagnoses.builder()
-                  .maxLength(40)
+      final var expected =
+          List.of(
+              PdfField.builder()
+                  .id(DESCRIPTION_FIELD_ID)
                   .appearance("/ArialMT 9.00 Tf 0 g")
-                  .diagnoses(
-                      Map.of(
-                          new FieldId("huvuddiagnos"),
-                          PdfConfigurationDiagnosis.builder()
-                              .pdfNameFieldId(new PdfFieldId(DESCRIPTION_FIELD_ID))
-                              .pdfCodeFieldIds(
-                                  List.of(
-                                      new PdfFieldId(CODE_FIELD_ID_1),
-                                      new PdfFieldId(CODE_FIELD_ID_2),
-                                      new PdfFieldId(CODE_FIELD_ID_3)
-                                  )
-                              )
-                              .build()
-                      )
-                  )
-                  .build()
-          )
-          .build();
+                  .value("description is over max length since ...")
+                  .build(),
+              PdfField.builder().id(CODE_FIELD_ID_1).value("A").build(),
+              PdfField.builder().id(CODE_FIELD_ID_2).value("B").build(),
+              PdfField.builder().id(CODE_FIELD_ID_3).value("C").build());
 
-      final var elementValue = ElementValueDiagnosisList.builder()
-          .diagnoses(
-              List.of(
-                  ElementValueDiagnosis.builder()
-                      .id(new FieldId("huvuddiagnos"))
-                      .description(
-                          "description is over max length since max length is only 30 characters and this message is longer.\n")
-                      .terminology("terminology")
-                      .code("ABC")
-                      .build()
-              )
-          )
-          .build();
+      final var elementSpecification =
+          ElementSpecification.builder()
+              .configuration(
+                  ElementConfigurationDiagnosis.builder().name("Diagnoser frågenamn").build())
+              .pdfConfiguration(
+                  PdfConfigurationDiagnoses.builder()
+                      .maxLength(40)
+                      .appearance("/ArialMT 9.00 Tf 0 g")
+                      .diagnoses(
+                          Map.of(
+                              new FieldId("huvuddiagnos"),
+                              PdfConfigurationDiagnosis.builder()
+                                  .pdfNameFieldId(new PdfFieldId(DESCRIPTION_FIELD_ID))
+                                  .pdfCodeFieldIds(
+                                      List.of(
+                                          new PdfFieldId(CODE_FIELD_ID_1),
+                                          new PdfFieldId(CODE_FIELD_ID_2),
+                                          new PdfFieldId(CODE_FIELD_ID_3)))
+                                  .build()))
+                      .build())
+              .build();
 
-      final var result = pdfDiagnosisListValueGenerator.generate(elementSpecification,
-          elementValue);
+      final var elementValue =
+          ElementValueDiagnosisList.builder()
+              .diagnoses(
+                  List.of(
+                      ElementValueDiagnosis.builder()
+                          .id(new FieldId("huvuddiagnos"))
+                          .description(
+                              "description is over max length since max length is only 30 characters and this message is longer.\n")
+                          .terminology("terminology")
+                          .code("ABC")
+                          .build()))
+              .build();
+
+      final var result =
+          pdfDiagnosisListValueGenerator.generate(elementSpecification, elementValue);
 
       assertEquals(expected, result);
     }

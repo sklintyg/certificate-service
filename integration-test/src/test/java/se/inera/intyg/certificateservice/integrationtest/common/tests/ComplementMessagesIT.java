@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.integrationtest.common.tests;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -51,785 +69,686 @@ public abstract class ComplementMessagesIT extends BaseIntegrationIT {
   @Test
   @DisplayName("Skall returnera lista av frågor som finns på intyget")
   void shallReturnListOfQuestionsForCertificate() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED)
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED));
 
-    api().sendCertificate(
-        defaultSendCertificateRequest(),
-        certificateId(testCertificates)
-    );
+    api().sendCertificate(defaultSendCertificateRequest(), certificateId(testCertificates));
 
-    api().receiveMessage(
-        incomingComplementMessageBuilder()
-            .certificateId(certificateId(testCertificates))
-            .complements(List.of(incomingComplementDTOBuilder()
-                .questionId(questionId())
-                .build()))
-            .build()
-    );
+    api()
+        .receiveMessage(
+            incomingComplementMessageBuilder()
+                .certificateId(certificateId(testCertificates))
+                .complements(
+                    List.of(incomingComplementDTOBuilder().questionId(questionId()).build()))
+                .build());
 
-    final var messagesForCertificate = api().getMessagesForCertificate(
-        defaultGetCertificateMessageRequest(),
-        certificateId(testCertificates)
-    );
+    final var messagesForCertificate =
+        api()
+            .getMessagesForCertificate(
+                defaultGetCertificateMessageRequest(), certificateId(testCertificates));
 
-    assertTrue(
-        hasQuestions(messagesForCertificate.getBody())
-    );
+    assertTrue(hasQuestions(messagesForCertificate.getBody()));
   }
 
   @Test
   @DisplayName("Ska returnera lista av frågor för enheten när ärenden filtreras fram")
   void shallReturnListOfQuestionsForUnitWhenApplyingMatchingFilters() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED)
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED));
 
-    api().sendCertificate(
-        defaultSendCertificateRequest(),
-        certificateId(testCertificates)
-    );
+    api().sendCertificate(defaultSendCertificateRequest(), certificateId(testCertificates));
 
-    api().receiveMessage(
-        incomingComplementMessageBuilder()
-            .certificateId(certificateId(testCertificates))
-            .complements(List.of(incomingComplementDTOBuilder()
-                .questionId(questionId())
-                .build()))
-            .build()
-    );
+    api()
+        .receiveMessage(
+            incomingComplementMessageBuilder()
+                .certificateId(certificateId(testCertificates))
+                .complements(
+                    List.of(incomingComplementDTOBuilder().questionId(questionId()).build()))
+                .build());
 
-    final var response = api().getMessagesForUnit(
-        customGetUnitMessagesRequest()
-            .messagesQueryCriteria(
-                MessagesQueryCriteriaDTO.builder()
-                    .senderType(QuestionSenderTypeDTO.FK)
-                    .forwarded(false)
-                    .sentDateFrom(LocalDateTime.now().minusDays(1).toLocalDate().atStartOfDay())
-                    .sentDateTo(LocalDateTime.now().plusDays(1).toLocalDate().atStartOfDay())
-                    .issuedByStaffId(AJLA_DOCTOR_DTO.getId())
-                    .patientId(
-                        PersonIdDTO.builder()
-                            .id(ATHENA_REACT_ANDERSSON_DTO.getId().getId())
-                            .type(PersonIdTypeDTO.PERSONAL_IDENTITY_NUMBER.name())
-                            .build()
-                    )
-                    .issuedOnUnitIds(List.of(ALFA_ALLERGIMOTTAGNINGEN_DTO.getId()))
-                    .build()
-            )
-            .build()
-    );
+    final var response =
+        api()
+            .getMessagesForUnit(
+                customGetUnitMessagesRequest()
+                    .messagesQueryCriteria(
+                        MessagesQueryCriteriaDTO.builder()
+                            .senderType(QuestionSenderTypeDTO.FK)
+                            .forwarded(false)
+                            .sentDateFrom(
+                                LocalDateTime.now().minusDays(1).toLocalDate().atStartOfDay())
+                            .sentDateTo(
+                                LocalDateTime.now().plusDays(1).toLocalDate().atStartOfDay())
+                            .issuedByStaffId(AJLA_DOCTOR_DTO.getId())
+                            .patientId(
+                                PersonIdDTO.builder()
+                                    .id(ATHENA_REACT_ANDERSSON_DTO.getId().getId())
+                                    .type(PersonIdTypeDTO.PERSONAL_IDENTITY_NUMBER.name())
+                                    .build())
+                            .issuedOnUnitIds(List.of(ALFA_ALLERGIMOTTAGNINGEN_DTO.getId()))
+                            .build())
+                    .build());
 
     assertAll(
         () -> assertEquals(1, Objects.requireNonNull(response.getBody()).getQuestions().size()),
-        () -> assertEquals(1, Objects.requireNonNull(response.getBody()).getCertificates().size())
-    );
+        () -> assertEquals(1, Objects.requireNonNull(response.getBody()).getCertificates().size()));
   }
 
   @Test
-  @DisplayName("Ska returnera ärende om filter för skickat är satt till samma dag som meddelandet skickats")
+  @DisplayName(
+      "Ska returnera ärende om filter för skickat är satt till samma dag som meddelandet skickats")
   void shallReturnListOfQuestionsForUnitWhenApplyingFilterSetToSameDayAsSent() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED)
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED));
 
-    api().sendCertificate(
-        defaultSendCertificateRequest(),
-        certificateId(testCertificates)
-    );
+    api().sendCertificate(defaultSendCertificateRequest(), certificateId(testCertificates));
 
-    api().receiveMessage(
-        incomingComplementMessageBuilder()
-            .certificateId(certificateId(testCertificates))
-            .complements(List.of(incomingComplementDTOBuilder()
-                .questionId(questionId())
-                .build()))
-            .build()
-    );
+    api()
+        .receiveMessage(
+            incomingComplementMessageBuilder()
+                .certificateId(certificateId(testCertificates))
+                .complements(
+                    List.of(incomingComplementDTOBuilder().questionId(questionId()).build()))
+                .build());
 
-    final var response = api().getMessagesForUnit(
-        customGetUnitMessagesRequest()
-            .messagesQueryCriteria(
-                MessagesQueryCriteriaDTO.builder()
-                    .senderType(QuestionSenderTypeDTO.FK)
-                    .forwarded(false)
-                    .sentDateFrom(LocalDateTime.now().toLocalDate().atStartOfDay())
-                    .sentDateTo(LocalDateTime.now().toLocalDate().atStartOfDay())
-                    .issuedByStaffId(AJLA_DOCTOR_DTO.getId())
-                    .patientId(
-                        PersonIdDTO.builder()
-                            .id(ATHENA_REACT_ANDERSSON_DTO.getId().getId())
-                            .type(PersonIdTypeDTO.PERSONAL_IDENTITY_NUMBER.name())
-                            .build()
-                    )
-                    .issuedOnUnitIds(List.of(ALFA_ALLERGIMOTTAGNINGEN_DTO.getId()))
-                    .build()
-            )
-            .build()
-    );
+    final var response =
+        api()
+            .getMessagesForUnit(
+                customGetUnitMessagesRequest()
+                    .messagesQueryCriteria(
+                        MessagesQueryCriteriaDTO.builder()
+                            .senderType(QuestionSenderTypeDTO.FK)
+                            .forwarded(false)
+                            .sentDateFrom(LocalDateTime.now().toLocalDate().atStartOfDay())
+                            .sentDateTo(LocalDateTime.now().toLocalDate().atStartOfDay())
+                            .issuedByStaffId(AJLA_DOCTOR_DTO.getId())
+                            .patientId(
+                                PersonIdDTO.builder()
+                                    .id(ATHENA_REACT_ANDERSSON_DTO.getId().getId())
+                                    .type(PersonIdTypeDTO.PERSONAL_IDENTITY_NUMBER.name())
+                                    .build())
+                            .issuedOnUnitIds(List.of(ALFA_ALLERGIMOTTAGNINGEN_DTO.getId()))
+                            .build())
+                    .build());
 
     assertAll(
         () -> assertEquals(1, Objects.requireNonNull(response.getBody()).getQuestions().size()),
-        () -> assertEquals(1, Objects.requireNonNull(response.getBody()).getCertificates().size())
-    );
+        () -> assertEquals(1, Objects.requireNonNull(response.getBody()).getCertificates().size()));
   }
 
   @Test
   @DisplayName("Ska filtrera ärenden om avsändare inte matchar filtreringen")
   void shallFilterQuestionIfAuthorDoesNotMatch() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED)
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED));
 
-    api().sendCertificate(
-        defaultSendCertificateRequest(),
-        certificateId(testCertificates)
-    );
+    api().sendCertificate(defaultSendCertificateRequest(), certificateId(testCertificates));
 
-    api().receiveMessage(
-        incomingComplementMessageBuilder()
-            .certificateId(certificateId(testCertificates))
-            .complements(List.of(incomingComplementDTOBuilder()
-                .questionId(questionId())
-                .build()))
-            .build()
-    );
+    api()
+        .receiveMessage(
+            incomingComplementMessageBuilder()
+                .certificateId(certificateId(testCertificates))
+                .complements(
+                    List.of(incomingComplementDTOBuilder().questionId(questionId()).build()))
+                .build());
 
-    final var response = api().getMessagesForUnit(
-        customGetUnitMessagesRequest()
-            .messagesQueryCriteria(
-                MessagesQueryCriteriaDTO.builder()
-                    .senderType(QuestionSenderTypeDTO.WC)
-                    .forwarded(false)
-                    .sentDateFrom(LocalDateTime.now().minusDays(1))
-                    .sentDateTo(LocalDateTime.now().plusDays(1))
-                    .issuedByStaffId(AJLA_DOCTOR_DTO.getId())
-                    .patientId(
-                        PersonIdDTO.builder()
-                            .id(ATHENA_REACT_ANDERSSON_DTO.getId().getId())
-                            .type(PersonIdTypeDTO.PERSONAL_IDENTITY_NUMBER.name())
-                            .build()
-                    )
-                    .issuedOnUnitIds(List.of(ALFA_ALLERGIMOTTAGNINGEN_DTO.getId()))
-                    .build()
-            )
-            .build()
-    );
+    final var response =
+        api()
+            .getMessagesForUnit(
+                customGetUnitMessagesRequest()
+                    .messagesQueryCriteria(
+                        MessagesQueryCriteriaDTO.builder()
+                            .senderType(QuestionSenderTypeDTO.WC)
+                            .forwarded(false)
+                            .sentDateFrom(LocalDateTime.now().minusDays(1))
+                            .sentDateTo(LocalDateTime.now().plusDays(1))
+                            .issuedByStaffId(AJLA_DOCTOR_DTO.getId())
+                            .patientId(
+                                PersonIdDTO.builder()
+                                    .id(ATHENA_REACT_ANDERSSON_DTO.getId().getId())
+                                    .type(PersonIdTypeDTO.PERSONAL_IDENTITY_NUMBER.name())
+                                    .build())
+                            .issuedOnUnitIds(List.of(ALFA_ALLERGIMOTTAGNINGEN_DTO.getId()))
+                            .build())
+                    .build());
 
     assertAll(
         () -> assertEquals(0, Objects.requireNonNull(response.getBody()).getQuestions().size()),
-        () -> assertEquals(0, Objects.requireNonNull(response.getBody()).getCertificates().size())
-    );
+        () -> assertEquals(0, Objects.requireNonNull(response.getBody()).getCertificates().size()));
   }
 
   @Test
   @DisplayName("Ska filtrera ärenden om vidarebefordrat inte matchar filtreringen")
   void shallFilterQuestionIfForwardedDoesNotMatch() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED)
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED));
 
-    api().sendCertificate(
-        defaultSendCertificateRequest(),
-        certificateId(testCertificates)
-    );
+    api().sendCertificate(defaultSendCertificateRequest(), certificateId(testCertificates));
 
-    api().receiveMessage(
-        incomingComplementMessageBuilder()
-            .certificateId(certificateId(testCertificates))
-            .complements(List.of(incomingComplementDTOBuilder()
-                .questionId(questionId())
-                .build()))
-            .build()
-    );
+    api()
+        .receiveMessage(
+            incomingComplementMessageBuilder()
+                .certificateId(certificateId(testCertificates))
+                .complements(
+                    List.of(incomingComplementDTOBuilder().questionId(questionId()).build()))
+                .build());
 
-    final var response = api().getMessagesForUnit(
-        customGetUnitMessagesRequest()
-            .messagesQueryCriteria(
-                MessagesQueryCriteriaDTO.builder()
-                    .senderType(QuestionSenderTypeDTO.FK)
-                    .forwarded(true)
-                    .sentDateFrom(LocalDateTime.now().minusDays(1))
-                    .sentDateTo(LocalDateTime.now().plusDays(1))
-                    .issuedByStaffId(AJLA_DOCTOR_DTO.getId())
-                    .patientId(
-                        PersonIdDTO.builder()
-                            .id(ATHENA_REACT_ANDERSSON_DTO.getId().getId())
-                            .type(PersonIdTypeDTO.PERSONAL_IDENTITY_NUMBER.name())
-                            .build()
-                    )
-                    .issuedOnUnitIds(List.of(ALFA_ALLERGIMOTTAGNINGEN_DTO.getId()))
-                    .build()
-            )
-            .build()
-    );
+    final var response =
+        api()
+            .getMessagesForUnit(
+                customGetUnitMessagesRequest()
+                    .messagesQueryCriteria(
+                        MessagesQueryCriteriaDTO.builder()
+                            .senderType(QuestionSenderTypeDTO.FK)
+                            .forwarded(true)
+                            .sentDateFrom(LocalDateTime.now().minusDays(1))
+                            .sentDateTo(LocalDateTime.now().plusDays(1))
+                            .issuedByStaffId(AJLA_DOCTOR_DTO.getId())
+                            .patientId(
+                                PersonIdDTO.builder()
+                                    .id(ATHENA_REACT_ANDERSSON_DTO.getId().getId())
+                                    .type(PersonIdTypeDTO.PERSONAL_IDENTITY_NUMBER.name())
+                                    .build())
+                            .issuedOnUnitIds(List.of(ALFA_ALLERGIMOTTAGNINGEN_DTO.getId()))
+                            .build())
+                    .build());
 
     assertAll(
         () -> assertEquals(0, Objects.requireNonNull(response.getBody()).getQuestions().size()),
-        () -> assertEquals(0, Objects.requireNonNull(response.getBody()).getCertificates().size())
-    );
+        () -> assertEquals(0, Objects.requireNonNull(response.getBody()).getCertificates().size()));
   }
 
   @Test
   @DisplayName("Ska filtrera ärenden om skickat från inte matchar filtreringen")
   void shallFilterQuestionIfSentFromDoesNotMatch() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED)
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED));
 
-    api().sendCertificate(
-        defaultSendCertificateRequest(),
-        certificateId(testCertificates)
-    );
+    api().sendCertificate(defaultSendCertificateRequest(), certificateId(testCertificates));
 
-    api().receiveMessage(
-        incomingComplementMessageBuilder()
-            .certificateId(certificateId(testCertificates))
-            .complements(List.of(incomingComplementDTOBuilder()
-                .questionId(questionId())
-                .build()))
-            .build()
-    );
+    api()
+        .receiveMessage(
+            incomingComplementMessageBuilder()
+                .certificateId(certificateId(testCertificates))
+                .complements(
+                    List.of(incomingComplementDTOBuilder().questionId(questionId()).build()))
+                .build());
 
-    final var response = api().getMessagesForUnit(
-        customGetUnitMessagesRequest()
-            .messagesQueryCriteria(
-                MessagesQueryCriteriaDTO.builder()
-                    .senderType(QuestionSenderTypeDTO.FK)
-                    .forwarded(false)
-                    .sentDateFrom(LocalDateTime.now().plusDays(1))
-                    .sentDateTo(LocalDateTime.now().plusDays(1))
-                    .issuedByStaffId(AJLA_DOCTOR_DTO.getId())
-                    .patientId(
-                        PersonIdDTO.builder()
-                            .id(ATHENA_REACT_ANDERSSON_DTO.getId().getId())
-                            .type(PersonIdTypeDTO.PERSONAL_IDENTITY_NUMBER.name())
-                            .build()
-                    )
-                    .issuedOnUnitIds(List.of(ALFA_ALLERGIMOTTAGNINGEN_DTO.getId()))
-                    .build()
-            )
-            .build()
-    );
+    final var response =
+        api()
+            .getMessagesForUnit(
+                customGetUnitMessagesRequest()
+                    .messagesQueryCriteria(
+                        MessagesQueryCriteriaDTO.builder()
+                            .senderType(QuestionSenderTypeDTO.FK)
+                            .forwarded(false)
+                            .sentDateFrom(LocalDateTime.now().plusDays(1))
+                            .sentDateTo(LocalDateTime.now().plusDays(1))
+                            .issuedByStaffId(AJLA_DOCTOR_DTO.getId())
+                            .patientId(
+                                PersonIdDTO.builder()
+                                    .id(ATHENA_REACT_ANDERSSON_DTO.getId().getId())
+                                    .type(PersonIdTypeDTO.PERSONAL_IDENTITY_NUMBER.name())
+                                    .build())
+                            .issuedOnUnitIds(List.of(ALFA_ALLERGIMOTTAGNINGEN_DTO.getId()))
+                            .build())
+                    .build());
 
     assertAll(
         () -> assertEquals(0, Objects.requireNonNull(response.getBody()).getQuestions().size()),
-        () -> assertEquals(0, Objects.requireNonNull(response.getBody()).getCertificates().size())
-    );
+        () -> assertEquals(0, Objects.requireNonNull(response.getBody()).getCertificates().size()));
   }
 
   @Test
   @DisplayName("Ska filtrera ärenden om skickat till inte matchar filtreringen")
   void shallFilterQuestionIfSentToDoesNotMatch() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED)
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED));
 
-    api().sendCertificate(
-        defaultSendCertificateRequest(),
-        certificateId(testCertificates)
-    );
+    api().sendCertificate(defaultSendCertificateRequest(), certificateId(testCertificates));
 
-    api().receiveMessage(
-        incomingComplementMessageBuilder()
-            .certificateId(certificateId(testCertificates))
-            .complements(List.of(incomingComplementDTOBuilder()
-                .questionId(questionId())
-                .build()))
-            .build()
-    );
+    api()
+        .receiveMessage(
+            incomingComplementMessageBuilder()
+                .certificateId(certificateId(testCertificates))
+                .complements(
+                    List.of(incomingComplementDTOBuilder().questionId(questionId()).build()))
+                .build());
 
-    final var response = api().getMessagesForUnit(
-        customGetUnitMessagesRequest()
-            .messagesQueryCriteria(
-                MessagesQueryCriteriaDTO.builder()
-                    .senderType(QuestionSenderTypeDTO.FK)
-                    .forwarded(false)
-                    .sentDateFrom(LocalDateTime.now().minusDays(1))
-                    .sentDateTo(LocalDateTime.now().minusDays(1))
-                    .issuedByStaffId(AJLA_DOCTOR_DTO.getId())
-                    .patientId(
-                        PersonIdDTO.builder()
-                            .id(ATHENA_REACT_ANDERSSON_DTO.getId().getId())
-                            .type(PersonIdTypeDTO.PERSONAL_IDENTITY_NUMBER.name())
-                            .build()
-                    )
-                    .issuedOnUnitIds(List.of(ALFA_ALLERGIMOTTAGNINGEN_DTO.getId()))
-                    .build()
-            )
-            .build()
-    );
+    final var response =
+        api()
+            .getMessagesForUnit(
+                customGetUnitMessagesRequest()
+                    .messagesQueryCriteria(
+                        MessagesQueryCriteriaDTO.builder()
+                            .senderType(QuestionSenderTypeDTO.FK)
+                            .forwarded(false)
+                            .sentDateFrom(LocalDateTime.now().minusDays(1))
+                            .sentDateTo(LocalDateTime.now().minusDays(1))
+                            .issuedByStaffId(AJLA_DOCTOR_DTO.getId())
+                            .patientId(
+                                PersonIdDTO.builder()
+                                    .id(ATHENA_REACT_ANDERSSON_DTO.getId().getId())
+                                    .type(PersonIdTypeDTO.PERSONAL_IDENTITY_NUMBER.name())
+                                    .build())
+                            .issuedOnUnitIds(List.of(ALFA_ALLERGIMOTTAGNINGEN_DTO.getId()))
+                            .build())
+                    .build());
 
     assertAll(
         () -> assertEquals(0, Objects.requireNonNull(response.getBody()).getQuestions().size()),
-        () -> assertEquals(0, Objects.requireNonNull(response.getBody()).getCertificates().size())
-    );
+        () -> assertEquals(0, Objects.requireNonNull(response.getBody()).getCertificates().size()));
   }
 
   @Test
   @DisplayName("Ska filtrera ärenden om intygsutfärdare inte matchar filtreringen")
   void shallFilterQuestionIfIssuerDoesNotMatch() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED)
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED));
 
-    api().sendCertificate(
-        defaultSendCertificateRequest(),
-        certificateId(testCertificates)
-    );
+    api().sendCertificate(defaultSendCertificateRequest(), certificateId(testCertificates));
 
-    api().receiveMessage(
-        incomingComplementMessageBuilder()
-            .certificateId(certificateId(testCertificates))
-            .complements(List.of(incomingComplementDTOBuilder()
-                .questionId(questionId())
-                .build()))
-            .build()
-    );
+    api()
+        .receiveMessage(
+            incomingComplementMessageBuilder()
+                .certificateId(certificateId(testCertificates))
+                .complements(
+                    List.of(incomingComplementDTOBuilder().questionId(questionId()).build()))
+                .build());
 
-    final var response = api().getMessagesForUnit(
-        customGetUnitMessagesRequest()
-            .messagesQueryCriteria(
-                MessagesQueryCriteriaDTO.builder()
-                    .senderType(QuestionSenderTypeDTO.FK)
-                    .forwarded(false)
-                    .sentDateFrom(LocalDateTime.now().minusDays(1))
-                    .sentDateTo(LocalDateTime.now().plusDays(1))
-                    .issuedByStaffId(BERTIL_BARNMORSKA_DTO.getId())
-                    .patientId(
-                        PersonIdDTO.builder()
-                            .id(ATHENA_REACT_ANDERSSON_DTO.getId().getId())
-                            .type(PersonIdTypeDTO.PERSONAL_IDENTITY_NUMBER.name())
-                            .build()
-                    )
-                    .issuedOnUnitIds(List.of(ALFA_ALLERGIMOTTAGNINGEN_DTO.getId()))
-                    .build()
-            )
-            .build()
-    );
+    final var response =
+        api()
+            .getMessagesForUnit(
+                customGetUnitMessagesRequest()
+                    .messagesQueryCriteria(
+                        MessagesQueryCriteriaDTO.builder()
+                            .senderType(QuestionSenderTypeDTO.FK)
+                            .forwarded(false)
+                            .sentDateFrom(LocalDateTime.now().minusDays(1))
+                            .sentDateTo(LocalDateTime.now().plusDays(1))
+                            .issuedByStaffId(BERTIL_BARNMORSKA_DTO.getId())
+                            .patientId(
+                                PersonIdDTO.builder()
+                                    .id(ATHENA_REACT_ANDERSSON_DTO.getId().getId())
+                                    .type(PersonIdTypeDTO.PERSONAL_IDENTITY_NUMBER.name())
+                                    .build())
+                            .issuedOnUnitIds(List.of(ALFA_ALLERGIMOTTAGNINGEN_DTO.getId()))
+                            .build())
+                    .build());
 
     assertAll(
         () -> assertEquals(0, Objects.requireNonNull(response.getBody()).getQuestions().size()),
-        () -> assertEquals(0, Objects.requireNonNull(response.getBody()).getCertificates().size())
-    );
+        () -> assertEquals(0, Objects.requireNonNull(response.getBody()).getCertificates().size()));
   }
 
   @Test
   @DisplayName("Ska filtrera ärenden om enhet inte matchar filtreringen")
   void shallFilterQuestionIfUnitDoesNotMatch() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED)
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED));
 
-    api().sendCertificate(
-        defaultSendCertificateRequest(),
-        certificateId(testCertificates)
-    );
+    api().sendCertificate(defaultSendCertificateRequest(), certificateId(testCertificates));
 
-    api().receiveMessage(
-        incomingComplementMessageBuilder()
-            .certificateId(certificateId(testCertificates))
-            .complements(List.of(incomingComplementDTOBuilder()
-                .questionId(questionId())
-                .build()))
-            .build()
-    );
+    api()
+        .receiveMessage(
+            incomingComplementMessageBuilder()
+                .certificateId(certificateId(testCertificates))
+                .complements(
+                    List.of(incomingComplementDTOBuilder().questionId(questionId()).build()))
+                .build());
 
-    final var response = api().getMessagesForUnit(
-        customGetUnitMessagesRequest()
-            .messagesQueryCriteria(
-                MessagesQueryCriteriaDTO.builder()
-                    .senderType(QuestionSenderTypeDTO.FK)
-                    .forwarded(false)
-                    .sentDateFrom(LocalDateTime.now().minusDays(1))
-                    .sentDateTo(LocalDateTime.now().plusDays(1))
-                    .issuedByStaffId(AJLA_DOCTOR_DTO.getId())
-                    .patientId(
-                        PersonIdDTO.builder()
-                            .id(ATHENA_REACT_ANDERSSON_DTO.getId().getId())
-                            .type(PersonIdTypeDTO.PERSONAL_IDENTITY_NUMBER.name())
-                            .build()
-                    )
-                    .issuedOnUnitIds(List.of(ALFA_MEDICINCENTRUM_DTO.getId()))
-                    .build()
-            )
-            .build()
-    );
+    final var response =
+        api()
+            .getMessagesForUnit(
+                customGetUnitMessagesRequest()
+                    .messagesQueryCriteria(
+                        MessagesQueryCriteriaDTO.builder()
+                            .senderType(QuestionSenderTypeDTO.FK)
+                            .forwarded(false)
+                            .sentDateFrom(LocalDateTime.now().minusDays(1))
+                            .sentDateTo(LocalDateTime.now().plusDays(1))
+                            .issuedByStaffId(AJLA_DOCTOR_DTO.getId())
+                            .patientId(
+                                PersonIdDTO.builder()
+                                    .id(ATHENA_REACT_ANDERSSON_DTO.getId().getId())
+                                    .type(PersonIdTypeDTO.PERSONAL_IDENTITY_NUMBER.name())
+                                    .build())
+                            .issuedOnUnitIds(List.of(ALFA_MEDICINCENTRUM_DTO.getId()))
+                            .build())
+                    .build());
 
     assertAll(
         () -> assertEquals(0, Objects.requireNonNull(response.getBody()).getQuestions().size()),
-        () -> assertEquals(0, Objects.requireNonNull(response.getBody()).getCertificates().size())
-    );
+        () -> assertEquals(0, Objects.requireNonNull(response.getBody()).getCertificates().size()));
   }
 
   @Test
   @DisplayName("Ska filtrera ärenden om patient id inte matchar filtreringen")
   void shallFilterQuestionIfPatientIdDoesNotMatch() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED)
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED));
 
-    api().sendCertificate(
-        defaultSendCertificateRequest(),
-        certificateId(testCertificates)
-    );
+    api().sendCertificate(defaultSendCertificateRequest(), certificateId(testCertificates));
 
-    api().receiveMessage(
-        incomingComplementMessageBuilder()
-            .certificateId(certificateId(testCertificates))
-            .complements(List.of(incomingComplementDTOBuilder()
-                .questionId(questionId())
-                .build()))
-            .build()
-    );
+    api()
+        .receiveMessage(
+            incomingComplementMessageBuilder()
+                .certificateId(certificateId(testCertificates))
+                .complements(
+                    List.of(incomingComplementDTOBuilder().questionId(questionId()).build()))
+                .build());
 
-    final var response = api().getMessagesForUnit(
-        customGetUnitMessagesRequest()
-            .messagesQueryCriteria(
-                MessagesQueryCriteriaDTO.builder()
-                    .senderType(QuestionSenderTypeDTO.FK)
-                    .forwarded(false)
-                    .sentDateFrom(LocalDateTime.now().minusDays(1))
-                    .sentDateTo(LocalDateTime.now().plusDays(1))
-                    .issuedByStaffId(AJLA_DOCTOR_DTO.getId())
-                    .patientId(
-                        PersonIdDTO.builder()
-                            .id(ALVE_REACT_ALFREDSSON_DTO.getId().getId())
-                            .type(PersonIdTypeDTO.PERSONAL_IDENTITY_NUMBER.name())
-                            .build()
-                    )
-                    .issuedOnUnitIds(List.of(ALFA_ALLERGIMOTTAGNINGEN_DTO.getId()))
-                    .build()
-            )
-            .build()
-    );
+    final var response =
+        api()
+            .getMessagesForUnit(
+                customGetUnitMessagesRequest()
+                    .messagesQueryCriteria(
+                        MessagesQueryCriteriaDTO.builder()
+                            .senderType(QuestionSenderTypeDTO.FK)
+                            .forwarded(false)
+                            .sentDateFrom(LocalDateTime.now().minusDays(1))
+                            .sentDateTo(LocalDateTime.now().plusDays(1))
+                            .issuedByStaffId(AJLA_DOCTOR_DTO.getId())
+                            .patientId(
+                                PersonIdDTO.builder()
+                                    .id(ALVE_REACT_ALFREDSSON_DTO.getId().getId())
+                                    .type(PersonIdTypeDTO.PERSONAL_IDENTITY_NUMBER.name())
+                                    .build())
+                            .issuedOnUnitIds(List.of(ALFA_ALLERGIMOTTAGNINGEN_DTO.getId()))
+                            .build())
+                    .build());
 
     assertAll(
         () -> assertEquals(0, Objects.requireNonNull(response.getBody()).getQuestions().size()),
-        () -> assertEquals(0, Objects.requireNonNull(response.getBody()).getCertificates().size())
-    );
+        () -> assertEquals(0, Objects.requireNonNull(response.getBody()).getCertificates().size()));
   }
 
   @Test
-  @DisplayName("Om intyget är utfärdat på samma mottagning ska hantering av frågor vara tillgänglig")
+  @DisplayName(
+      "Om intyget är utfärdat på samma mottagning ska hantering av frågor vara tillgänglig")
   void shallReturnListOfQuestionsForCertificateOnSameUnit() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED)
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED));
 
-    api().sendCertificate(
-        defaultSendCertificateRequest(),
-        certificateId(testCertificates)
-    );
+    api().sendCertificate(defaultSendCertificateRequest(), certificateId(testCertificates));
 
-    api().receiveMessage(
-        incomingComplementMessageBuilder()
-            .certificateId(certificateId(testCertificates))
-            .complements(List.of(incomingComplementDTOBuilder()
-                .questionId(questionId())
-                .build()))
-            .build()
-    );
+    api()
+        .receiveMessage(
+            incomingComplementMessageBuilder()
+                .certificateId(certificateId(testCertificates))
+                .complements(
+                    List.of(incomingComplementDTOBuilder().questionId(questionId()).build()))
+                .build());
 
-    final var messagesForCertificate = api().getMessagesForCertificate(
-        defaultGetCertificateMessageRequest(),
-        certificateId(testCertificates)
-    );
+    final var messagesForCertificate =
+        api()
+            .getMessagesForCertificate(
+                defaultGetCertificateMessageRequest(), certificateId(testCertificates));
 
     assertTrue(
-        CertificateUtil.resourceLink(messagesForCertificate.getBody())
-            .stream()
+        CertificateUtil.resourceLink(messagesForCertificate.getBody()).stream()
             .anyMatch(link -> link.getType().equals(ResourceLinkTypeDTO.COMPLEMENT_CERTIFICATE)),
-        "Should return link!"
-    );
+        "Should return link!");
   }
 
   @Test
-  @DisplayName("Om intyget är utfärdat på mottagning men på samma vårdenhet ska hantering av frågor vara tillgänglig")
+  @DisplayName(
+      "Om intyget är utfärdat på mottagning men på samma vårdenhet ska hantering av frågor vara tillgänglig")
   void shallReturnQuestionWithComplementCertificateIfIssuedOnSameCareUnitDifferentSubUnit() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED)
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED));
 
-    api().sendCertificate(
-        defaultSendCertificateRequest(),
-        certificateId(testCertificates)
-    );
+    api().sendCertificate(defaultSendCertificateRequest(), certificateId(testCertificates));
 
-    api().receiveMessage(
-        incomingComplementMessageBuilder()
-            .certificateId(certificateId(testCertificates))
-            .complements(List.of(incomingComplementDTOBuilder()
-                .questionId(questionId())
-                .build()))
-            .build()
-    );
+    api()
+        .receiveMessage(
+            incomingComplementMessageBuilder()
+                .certificateId(certificateId(testCertificates))
+                .complements(
+                    List.of(incomingComplementDTOBuilder().questionId(questionId()).build()))
+                .build());
 
-    final var messagesForCertificate = api().getMessagesForCertificate(
-        customGetCertificateMessageRequest()
-            .unit(ALFA_MEDICINCENTRUM_DTO)
-            .build(),
-        certificateId(testCertificates)
-    );
+    final var messagesForCertificate =
+        api()
+            .getMessagesForCertificate(
+                customGetCertificateMessageRequest().unit(ALFA_MEDICINCENTRUM_DTO).build(),
+                certificateId(testCertificates));
 
     assertTrue(
-        CertificateUtil.resourceLink(messagesForCertificate.getBody())
-            .stream()
+        CertificateUtil.resourceLink(messagesForCertificate.getBody()).stream()
             .anyMatch(link -> link.getType().equals(ResourceLinkTypeDTO.COMPLEMENT_CERTIFICATE)),
-        "Should return link!"
-    );
+        "Should return link!");
   }
 
   @Test
   @DisplayName("Om intyget är utfärdat på samma vårdenhet ska hantering av frågor vara tillgänglig")
   void shallReturnQuestionWithComplementCertificateIfIssuedOnSameCareUnit() {
-    final var testCertificates = testabilityApi().addCertificates(
-        customTestabilityCertificateRequest(type(), typeVersion(), SIGNED)
-            .unit(ALFA_MEDICINCENTRUM_DTO)
-            .build()
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(
+                customTestabilityCertificateRequest(type(), typeVersion(), SIGNED)
+                    .unit(ALFA_MEDICINCENTRUM_DTO)
+                    .build());
 
-    api().sendCertificate(
-        customSendCertificateRequest()
-            .unit(ALFA_MEDICINCENTRUM_DTO)
-            .build(),
-        certificateId(testCertificates)
-    );
+    api()
+        .sendCertificate(
+            customSendCertificateRequest().unit(ALFA_MEDICINCENTRUM_DTO).build(),
+            certificateId(testCertificates));
 
-    api().receiveMessage(
-        incomingComplementMessageBuilder()
-            .certificateId(certificateId(testCertificates))
-            .complements(List.of(incomingComplementDTOBuilder()
-                .questionId(questionId())
-                .build()))
-            .build()
-    );
+    api()
+        .receiveMessage(
+            incomingComplementMessageBuilder()
+                .certificateId(certificateId(testCertificates))
+                .complements(
+                    List.of(incomingComplementDTOBuilder().questionId(questionId()).build()))
+                .build());
 
-    final var messagesForCertificate = api().getMessagesForCertificate(
-        customGetCertificateMessageRequest()
-            .unit(ALFA_MEDICINCENTRUM_DTO)
-            .build(),
-        certificateId(testCertificates)
-    );
+    final var messagesForCertificate =
+        api()
+            .getMessagesForCertificate(
+                customGetCertificateMessageRequest().unit(ALFA_MEDICINCENTRUM_DTO).build(),
+                certificateId(testCertificates));
 
     assertTrue(
-        CertificateUtil.resourceLink(messagesForCertificate.getBody())
-            .stream()
+        CertificateUtil.resourceLink(messagesForCertificate.getBody()).stream()
             .anyMatch(link -> link.getType().equals(ResourceLinkTypeDTO.COMPLEMENT_CERTIFICATE)),
-        "Should return link!"
-    );
+        "Should return link!");
   }
 
   @Test
-  @DisplayName("Om intyget är utfärdat på en annan mottagning ska hantering av frågor inte vara tillgänglig")
+  @DisplayName(
+      "Om intyget är utfärdat på en annan mottagning ska hantering av frågor inte vara tillgänglig")
   void shallReturn403IfUnitIsSubUnitAndNotOnSameUnit() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED)
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED));
 
-    api().sendCertificate(
-        defaultSendCertificateRequest(),
-        certificateId(testCertificates)
-    );
+    api().sendCertificate(defaultSendCertificateRequest(), certificateId(testCertificates));
 
-    api().receiveMessage(
-        incomingComplementMessageBuilder()
-            .certificateId(certificateId(testCertificates))
-            .complements(List.of(incomingComplementDTOBuilder()
-                .questionId(questionId())
-                .build()))
-            .build()
-    );
+    api()
+        .receiveMessage(
+            incomingComplementMessageBuilder()
+                .certificateId(certificateId(testCertificates))
+                .complements(
+                    List.of(incomingComplementDTOBuilder().questionId(questionId()).build()))
+                .build());
 
-    final var messagesForCertificate = api().getMessagesForCertificate(
-        customGetCertificateMessageRequest()
-            .unit(ALFA_HUDMOTTAGNINGEN_DTO).build(),
-        certificateId(testCertificates)
-    );
+    final var messagesForCertificate =
+        api()
+            .getMessagesForCertificate(
+                customGetCertificateMessageRequest().unit(ALFA_HUDMOTTAGNINGEN_DTO).build(),
+                certificateId(testCertificates));
 
     assertEquals(403, messagesForCertificate.getStatusCode().value());
   }
-
 
   @ParameterizedTest
-  @DisplayName("Om intyget är utfärdat på en patient som har skyddade personuppgifter skall felkod 403 (FORBIDDEN) returneras")
+  @DisplayName(
+      "Om intyget är utfärdat på en patient som har skyddade personuppgifter skall felkod 403 (FORBIDDEN) returneras")
   @MethodSource("rolesNoAccessToProtectedPerson")
   void shallReturn403IfPatientIsProtectedPerson(UserDTO userDTO) {
-    final var testCertificates = testabilityApi().addCertificates(
-        customTestabilityCertificateRequest(type(), typeVersion(), SIGNED)
-            .patient(ANONYMA_REACT_ATTILA_DTO)
-            .build()
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(
+                customTestabilityCertificateRequest(type(), typeVersion(), SIGNED)
+                    .patient(ANONYMA_REACT_ATTILA_DTO)
+                    .build());
 
-    api().sendCertificate(
-        defaultSendCertificateRequest(),
-        certificateId(testCertificates)
-    );
+    api().sendCertificate(defaultSendCertificateRequest(), certificateId(testCertificates));
 
-    api().receiveMessage(
-        incomingComplementMessageBuilder()
-            .personId(ANONYMA_REACT_ATTILA_DTO.getId())
-            .certificateId(certificateId(testCertificates))
-            .complements(List.of(incomingComplementDTOBuilder()
-                .questionId(questionId())
-                .build()))
-            .build()
-    );
+    api()
+        .receiveMessage(
+            incomingComplementMessageBuilder()
+                .personId(ANONYMA_REACT_ATTILA_DTO.getId())
+                .certificateId(certificateId(testCertificates))
+                .complements(
+                    List.of(incomingComplementDTOBuilder().questionId(questionId()).build()))
+                .build());
 
-    final var messagesForCertificate = api().getMessagesForCertificate(
-        customGetCertificateMessageRequest()
-            .user(userDTO)
-            .build(),
-        certificateId(testCertificates)
-    );
+    final var messagesForCertificate =
+        api()
+            .getMessagesForCertificate(
+                customGetCertificateMessageRequest().user(userDTO).build(),
+                certificateId(testCertificates));
 
     assertEquals(403, messagesForCertificate.getStatusCode().value());
   }
 
   @Test
-  @DisplayName("Läkare - Om intyget är utfärdat på en patient som har skyddade personuppgifter ska inte hantering av frågor vara tillgänglig")
+  @DisplayName(
+      "Läkare - Om intyget är utfärdat på en patient som har skyddade personuppgifter ska inte hantering av frågor vara tillgänglig")
   void shallReturnComplementCertificateLinkIfPatientIsProtectedPersonAndUserIsDoctor() {
-    final var testCertificates = testabilityApi().addCertificates(
-        customTestabilityCertificateRequest(type(), typeVersion(), SIGNED)
-            .patient(ANONYMA_REACT_ATTILA_DTO)
-            .build()
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(
+                customTestabilityCertificateRequest(type(), typeVersion(), SIGNED)
+                    .patient(ANONYMA_REACT_ATTILA_DTO)
+                    .build());
 
-    api().sendCertificate(
-        defaultSendCertificateRequest(),
-        certificateId(testCertificates)
-    );
+    api().sendCertificate(defaultSendCertificateRequest(), certificateId(testCertificates));
 
-    api().receiveMessage(
-        incomingComplementMessageBuilder()
-            .personId(ANONYMA_REACT_ATTILA_DTO.getId())
-            .certificateId(certificateId(testCertificates))
-            .complements(List.of(incomingComplementDTOBuilder()
-                .questionId(questionId())
-                .build()))
-            .build()
-    );
+    api()
+        .receiveMessage(
+            incomingComplementMessageBuilder()
+                .personId(ANONYMA_REACT_ATTILA_DTO.getId())
+                .certificateId(certificateId(testCertificates))
+                .complements(
+                    List.of(incomingComplementDTOBuilder().questionId(questionId()).build()))
+                .build());
 
-    final var messagesForCertificate = api().getMessagesForCertificate(
-        customGetCertificateMessageRequest()
-            .user(AJLA_DOCTOR_DTO)
-            .build(),
-        certificateId(testCertificates)
-    );
+    final var messagesForCertificate =
+        api()
+            .getMessagesForCertificate(
+                customGetCertificateMessageRequest().user(AJLA_DOCTOR_DTO).build(),
+                certificateId(testCertificates));
 
     assertTrue(
-        CertificateUtil.resourceLink(messagesForCertificate.getBody())
-            .stream()
+        CertificateUtil.resourceLink(messagesForCertificate.getBody()).stream()
             .anyMatch(link -> link.getType().equals(ResourceLinkTypeDTO.COMPLEMENT_CERTIFICATE)),
-        "Should return link!"
-    );
+        "Should return link!");
   }
 
   @Test
   @DisplayName("Om användaren är blockerad ska inte hantering av frågor vara tillgänglig")
   void shallNotReturnComplementCertificateIfUserIsBlocked() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED)
-    );
-
-    api().sendCertificate(
-        defaultSendCertificateRequest(),
-        certificateId(testCertificates)
-    );
-
-    api().receiveMessage(
-        incomingComplementMessageBuilder()
-            .certificateId(certificateId(testCertificates))
-            .complements(List.of(incomingComplementDTOBuilder()
-                .questionId(questionId())
-                .build()))
-            .build()
-    );
-
-    final var messagesForCertificate = api().getMessagesForCertificate(
-        customGetCertificateMessageRequest()
-            .user(
-                ajlaDoktorDtoBuilder()
-                    .blocked(Boolean.TRUE)
-                    .build()
-            )
-            .build(),
-        certificateId(testCertificates)
-    );
-
-    assertTrue(
-        questions(messagesForCertificate.getBody()).getFirst().getLinks()
-            .isEmpty(),
-        "Should not return link!"
-    );
-  }
-
-  @Test
-  @DisplayName("Om intyget inte är skickat skall information om att meddelanden ej är tillgängliga visas")
-  void shallDisplayMessagesNotAvailableIfCertificateIsNotSent() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED)
-    );
-
-    final var response = api().getCertificate(
-        defaultGetCertificateRequest(),
-        certificateId(testCertificates)
-    );
-    final var resourceLinkTypes = Objects.requireNonNull(response.getBody()).getCertificate()
-        .getLinks()
-        .stream()
-        .map(ResourceLinkDTO::getType)
-        .toList();
-
-    assertTrue(resourceLinkTypes.contains(ResourceLinkTypeDTO.QUESTIONS_NOT_AVAILABLE),
-        "Should return true if resource link questions not available is included"
-    );
-  }
-
-  @Test
-  @DisplayName("Om intyget är skickat skall information om att meddelanden ej är tillgängliga inte visas")
-  void shallNotDisplayMessagesNotAvailableIfCertificateIsSent() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED)
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED));
 
     api().sendCertificate(defaultSendCertificateRequest(), certificateId(testCertificates));
 
-    final var response = api().getCertificate(
-        defaultGetCertificateRequest(),
-        certificateId(testCertificates)
-    );
-    final var resourceLinkTypes = Objects.requireNonNull(response.getBody()).getCertificate()
-        .getLinks()
-        .stream()
-        .map(ResourceLinkDTO::getType)
-        .toList();
+    api()
+        .receiveMessage(
+            incomingComplementMessageBuilder()
+                .certificateId(certificateId(testCertificates))
+                .complements(
+                    List.of(incomingComplementDTOBuilder().questionId(questionId()).build()))
+                .build());
 
-    assertFalse(resourceLinkTypes.contains(ResourceLinkTypeDTO.QUESTIONS_NOT_AVAILABLE),
-        "Should return false if resource link questions not available is included"
-    );
+    final var messagesForCertificate =
+        api()
+            .getMessagesForCertificate(
+                customGetCertificateMessageRequest()
+                    .user(ajlaDoktorDtoBuilder().blocked(Boolean.TRUE).build())
+                    .build(),
+                certificateId(testCertificates));
+
+    assertTrue(
+        questions(messagesForCertificate.getBody()).getFirst().getLinks().isEmpty(),
+        "Should not return link!");
   }
 
   @Test
-  @DisplayName("Om intyget är osignerat skall information om att meddelanden ej är tillgängliga inte visas")
+  @DisplayName(
+      "Om intyget inte är skickat skall information om att meddelanden ej är tillgängliga visas")
+  void shallDisplayMessagesNotAvailableIfCertificateIsNotSent() {
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED));
+
+    final var response =
+        api().getCertificate(defaultGetCertificateRequest(), certificateId(testCertificates));
+    final var resourceLinkTypes =
+        Objects.requireNonNull(response.getBody()).getCertificate().getLinks().stream()
+            .map(ResourceLinkDTO::getType)
+            .toList();
+
+    assertTrue(
+        resourceLinkTypes.contains(ResourceLinkTypeDTO.QUESTIONS_NOT_AVAILABLE),
+        "Should return true if resource link questions not available is included");
+  }
+
+  @Test
+  @DisplayName(
+      "Om intyget är skickat skall information om att meddelanden ej är tillgängliga inte visas")
+  void shallNotDisplayMessagesNotAvailableIfCertificateIsSent() {
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED));
+
+    api().sendCertificate(defaultSendCertificateRequest(), certificateId(testCertificates));
+
+    final var response =
+        api().getCertificate(defaultGetCertificateRequest(), certificateId(testCertificates));
+    final var resourceLinkTypes =
+        Objects.requireNonNull(response.getBody()).getCertificate().getLinks().stream()
+            .map(ResourceLinkDTO::getType)
+            .toList();
+
+    assertFalse(
+        resourceLinkTypes.contains(ResourceLinkTypeDTO.QUESTIONS_NOT_AVAILABLE),
+        "Should return false if resource link questions not available is included");
+  }
+
+  @Test
+  @DisplayName(
+      "Om intyget är osignerat skall information om att meddelanden ej är tillgängliga inte visas")
   void shallNotDisplayMessagesNotAvailableIfCertificateIsUnsigned() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(), UNSIGNED)
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(
+                defaultTestablilityCertificateRequest(type(), typeVersion(), UNSIGNED));
 
-    final var response = api().getCertificate(
-        defaultGetCertificateRequest(),
-        certificateId(testCertificates)
-    );
-    final var resourceLinkTypes = Objects.requireNonNull(response.getBody()).getCertificate()
-        .getLinks()
-        .stream()
-        .map(ResourceLinkDTO::getType)
-        .toList();
+    final var response =
+        api().getCertificate(defaultGetCertificateRequest(), certificateId(testCertificates));
+    final var resourceLinkTypes =
+        Objects.requireNonNull(response.getBody()).getCertificate().getLinks().stream()
+            .map(ResourceLinkDTO::getType)
+            .toList();
 
-    assertFalse(resourceLinkTypes.contains(ResourceLinkTypeDTO.QUESTIONS_NOT_AVAILABLE),
-        "Should return false if resource link questions not available is included"
-    );
+    assertFalse(
+        resourceLinkTypes.contains(ResourceLinkTypeDTO.QUESTIONS_NOT_AVAILABLE),
+        "Should return false if resource link questions not available is included");
   }
 }

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.message.service.converter;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -51,20 +69,14 @@ import se.inera.intyg.certificateservice.domain.message.model.MessageType;
 @ExtendWith(MockitoExtension.class)
 class QuestionConverterTest {
 
-  private static final List<MessageActionLink> MESSAGE_ACTIONS = List.of(
-      MessageActionLink.builder().build());
-  @Mock
-  MessageActionLinkConverter messageActionLinkConverter;
-  @Mock
-  CertificateRepository certificateRepository;
-  @Mock
-  CertificateRelationConverter certificateRelationConverter;
-  @Mock
-  ReminderConverter reminderConverter;
-  @Mock
-  ComplementConverter complementConverter;
-  @InjectMocks
-  QuestionConverter questionConverter;
+  private static final List<MessageActionLink> MESSAGE_ACTIONS =
+      List.of(MessageActionLink.builder().build());
+  @Mock MessageActionLinkConverter messageActionLinkConverter;
+  @Mock CertificateRepository certificateRepository;
+  @Mock CertificateRelationConverter certificateRelationConverter;
+  @Mock ReminderConverter reminderConverter;
+  @Mock ComplementConverter complementConverter;
+  @InjectMocks QuestionConverter questionConverter;
 
   private static final Certificate CERTIFICATE = MedicalCertificate.builder().build();
 
@@ -115,10 +127,8 @@ class QuestionConverterTest {
   void shallIncludeSubjectPrefixedWithTypeWhenQuestionToCare() {
     final var expected = MessageType.OTHER.displayName() + " - " + SUBJECT;
 
-    final var otherMessage = contactMessageBuilder()
-        .type(MessageType.OTHER)
-        .authoredStaff(null)
-        .build();
+    final var otherMessage =
+        contactMessageBuilder().type(MessageType.OTHER).authoredStaff(null).build();
 
     final var convert = questionConverter.convert(otherMessage, MESSAGE_ACTIONS);
 
@@ -167,16 +177,14 @@ class QuestionConverterTest {
     assertAll(
         () -> assertEquals(CONTACT_INFO.get(0), convert.getContactInfo().get(0)),
         () -> assertEquals(CONTACT_INFO.get(1), convert.getContactInfo().get(1)),
-        () -> assertEquals(CONTACT_INFO.get(2), convert.getContactInfo().get(2))
-    );
+        () -> assertEquals(CONTACT_INFO.get(2), convert.getContactInfo().get(2)));
   }
 
   @Test
   void shallIncludeAnsweredByCertificate() {
     final var expectedRelation = CertificateRelationDTO.builder().build();
 
-    doReturn(expectedRelation).when(certificateRelationConverter)
-        .convert(Optional.empty());
+    doReturn(expectedRelation).when(certificateRelationConverter).convert(Optional.empty());
 
     final var convert = questionConverter.convert(COMPLEMENT_MESSAGE, MESSAGE_ACTIONS);
     assertEquals(expectedRelation, convert.getAnsweredByCertificate());
@@ -184,11 +192,10 @@ class QuestionConverterTest {
 
   @Test
   void shallExcludeAnsweredByCertificate() {
-    final var messageWithoutAnsweredByCertificate = complementMessageBuilder()
-        .type(MessageType.CONTACT)
-        .build();
-    final var convert = questionConverter.convert(messageWithoutAnsweredByCertificate,
-        MESSAGE_ACTIONS);
+    final var messageWithoutAnsweredByCertificate =
+        complementMessageBuilder().type(MessageType.CONTACT).build();
+    final var convert =
+        questionConverter.convert(messageWithoutAnsweredByCertificate, MESSAGE_ACTIONS);
     assertNull(convert.getAnsweredByCertificate());
   }
 
@@ -202,7 +209,8 @@ class QuestionConverterTest {
   void shallIncludeComplements() {
     final var expectedComplement = ComplementDTO.builder().build();
 
-    doReturn(expectedComplement).when(complementConverter)
+    doReturn(expectedComplement)
+        .when(complementConverter)
         .convert(COMPLEMENT_MESSAGE.complements().get(0), CERTIFICATE);
 
     final var convert = questionConverter.convert(COMPLEMENT_MESSAGE, MESSAGE_ACTIONS);
@@ -212,9 +220,9 @@ class QuestionConverterTest {
   @Test
   void shallIncludeLinks() {
     final var messageAction = MessageActionLink.builder().build();
-    final var message = complementMessageBuilder()
-        .build();
-    doReturn(ResourceLinkDTO.builder().build()).when(messageActionLinkConverter)
+    final var message = complementMessageBuilder().build();
+    doReturn(ResourceLinkDTO.builder().build())
+        .when(messageActionLinkConverter)
         .convert(messageAction);
     final var convert = questionConverter.convert(message, List.of(messageAction));
     assertFalse(convert.getLinks().isEmpty());
@@ -223,18 +231,17 @@ class QuestionConverterTest {
   @Nested
   class AnswerTests {
 
-    private final Message message = complementMessageBuilder()
-        .answer(
-            Answer.builder()
-                .id(new MessageId("id"))
-                .authoredStaff(AJLA_DOKTOR)
-                .sent(LocalDateTime.now())
-                .content(new Content("content"))
-                .contactInfo(new MessageContactInfo(List.of("info")))
-
-                .build()
-        )
-        .build();
+    private final Message message =
+        complementMessageBuilder()
+            .answer(
+                Answer.builder()
+                    .id(new MessageId("id"))
+                    .authoredStaff(AJLA_DOKTOR)
+                    .sent(LocalDateTime.now())
+                    .content(new Content("content"))
+                    .contactInfo(new MessageContactInfo(List.of("info")))
+                    .build())
+            .build();
 
     @Test
     void shallIncludeId() {
@@ -243,13 +250,11 @@ class QuestionConverterTest {
       assertEquals(expectedId, convert.getAnswer().getId());
     }
 
-
     @Test
     void shallIncludeAuthor() {
       final var convert = questionConverter.convert(message, MESSAGE_ACTIONS);
       assertEquals(AJLA_DOKTOR.name().fullName(), convert.getAnswer().getAuthor());
     }
-
 
     @Test
     void shallIncludeSent() {
@@ -273,36 +278,36 @@ class QuestionConverterTest {
 
     @Test
     void shallExcludeContactInfoIfNull() {
-      final var messageWithAnswerWithoutContactInfo = complementMessageBuilder()
-          .answer(
-              Answer.builder()
-                  .id(new MessageId("id"))
-                  .authoredStaff(AJLA_DOKTOR)
-                  .sent(LocalDateTime.now())
-                  .content(new Content("content"))
-                  .build()
-          )
-          .build();
-      final var convert = questionConverter.convert(messageWithAnswerWithoutContactInfo,
-          MESSAGE_ACTIONS);
+      final var messageWithAnswerWithoutContactInfo =
+          complementMessageBuilder()
+              .answer(
+                  Answer.builder()
+                      .id(new MessageId("id"))
+                      .authoredStaff(AJLA_DOKTOR)
+                      .sent(LocalDateTime.now())
+                      .content(new Content("content"))
+                      .build())
+              .build();
+      final var convert =
+          questionConverter.convert(messageWithAnswerWithoutContactInfo, MESSAGE_ACTIONS);
       assertNull(convert.getAnswer().getContactInfo());
     }
 
     @Test
     void shallExcludeContactInfoIfEmpty() {
-      final var messageWithAnswerWithoutContactInfo = complementMessageBuilder()
-          .answer(
-              Answer.builder()
-                  .id(new MessageId("id"))
-                  .authoredStaff(AJLA_DOKTOR)
-                  .sent(LocalDateTime.now())
-                  .content(new Content("content"))
-                  .contactInfo(new MessageContactInfo(Collections.emptyList()))
-                  .build()
-          )
-          .build();
-      final var convert = questionConverter.convert(messageWithAnswerWithoutContactInfo,
-          MESSAGE_ACTIONS);
+      final var messageWithAnswerWithoutContactInfo =
+          complementMessageBuilder()
+              .answer(
+                  Answer.builder()
+                      .id(new MessageId("id"))
+                      .authoredStaff(AJLA_DOKTOR)
+                      .sent(LocalDateTime.now())
+                      .content(new Content("content"))
+                      .contactInfo(new MessageContactInfo(Collections.emptyList()))
+                      .build())
+              .build();
+      final var convert =
+          questionConverter.convert(messageWithAnswerWithoutContactInfo, MESSAGE_ACTIONS);
       assertNull(convert.getAnswer().getContactInfo());
     }
 
@@ -315,17 +320,17 @@ class QuestionConverterTest {
 
     @Test
     void shallSetAuthorToAuthorIfAuthoredByStaffIsNull() {
-      final var messageWithoutAuthoredStaff = complementMessageBuilder()
-          .answer(
-              Answer.builder()
-                  .id(new MessageId("id"))
-                  .author(new Author("Försäkringskassan"))
-                  .sent(LocalDateTime.now())
-                  .content(new Content("content"))
-                  .contactInfo(new MessageContactInfo(List.of("info")))
-                  .build()
-          )
-          .build();
+      final var messageWithoutAuthoredStaff =
+          complementMessageBuilder()
+              .answer(
+                  Answer.builder()
+                      .id(new MessageId("id"))
+                      .author(new Author("Försäkringskassan"))
+                      .sent(LocalDateTime.now())
+                      .content(new Content("content"))
+                      .contactInfo(new MessageContactInfo(List.of("info")))
+                      .build())
+              .build();
       final var convert = questionConverter.convert(messageWithoutAuthoredStaff, MESSAGE_ACTIONS);
       assertEquals("Försäkringskassan", convert.getAnswer().getAuthor());
     }

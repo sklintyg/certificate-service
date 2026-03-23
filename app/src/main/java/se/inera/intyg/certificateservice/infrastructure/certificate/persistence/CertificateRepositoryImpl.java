@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificate.persistence;
 
 import java.time.LocalDateTime;
@@ -33,8 +51,8 @@ public class CertificateRepositoryImpl implements TestabilityCertificateReposito
   }
 
   @Override
-  public Certificate createFromPlaceholder(PlaceholderCertificateRequest request,
-      CertificateModel model) {
+  public Certificate createFromPlaceholder(
+      PlaceholderCertificateRequest request, CertificateModel model) {
     return jpaCertificateRepository.createFromPlaceholder(request, model, this);
   }
 
@@ -109,8 +127,8 @@ public class CertificateRepositoryImpl implements TestabilityCertificateReposito
   }
 
   @Override
-  public CertificateMetaData getMetadataFromSignInstance(CertificateMetaData certificateMetaData,
-      LocalDateTime signed) {
+  public CertificateMetaData getMetadataFromSignInstance(
+      CertificateMetaData certificateMetaData, LocalDateTime signed) {
     return jpaCertificateRepository.getMetadataFromSignInstance(certificateMetaData, signed);
   }
 
@@ -136,32 +154,29 @@ public class CertificateRepositoryImpl implements TestabilityCertificateReposito
   }
 
   private void updatePatient(List<Certificate> certificates) {
-    final var patients = patientInformationProvider.findPatients(
-            certificates.stream()
-                .map(Certificate::certificateMetaData)
-                .map(CertificateMetaData::patient)
-                .map(Patient::id)
-                .toList()
-        )
-        .stream()
-        .collect(Collectors.toMap(
-            Patient::id,
-            Function.identity()
-        ));
+    final var patients =
+        patientInformationProvider
+            .findPatients(
+                certificates.stream()
+                    .map(Certificate::certificateMetaData)
+                    .map(CertificateMetaData::patient)
+                    .map(Patient::id)
+                    .toList())
+            .stream()
+            .collect(Collectors.toMap(Patient::id, Function.identity()));
 
-    certificates.forEach(certificate -> {
+    certificates.forEach(
+        certificate -> {
           if (patients.containsKey(certificate.certificateMetaData().patient().id())) {
             final var patient = patients.get(certificate.certificateMetaData().patient().id());
             certificate.updateMetadata(patient);
           }
-        }
-    );
+        });
   }
 
   private void updatePatient(Certificate certificate) {
-    final var patient = patientInformationProvider.findPatient(
-        certificate.certificateMetaData().patient().id()
-    );
+    final var patient =
+        patientInformationProvider.findPatient(certificate.certificateMetaData().patient().id());
 
     if (patient.isEmpty()) {
       return;

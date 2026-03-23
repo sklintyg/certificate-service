@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ag7804;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,30 +36,25 @@ import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
 @ExtendWith(MockitoExtension.class)
 class AG7804UpdateDraftFromCertificateContentProviderTest {
 
-  @Mock
-  private Certificate certificate;
+  @Mock private Certificate certificate;
 
-  @InjectMocks
-  private AG7804UpdateDraftFromCertificateContentProvider provider;
+  @InjectMocks private AG7804UpdateDraftFromCertificateContentProvider provider;
 
   @Test
   void shallReturnBodyBasedOnCandidateCertificate() {
     final var expected = LocalDate.now();
-    when(certificate.candidateForUpdate()).thenReturn(
-        Optional.of(
-            fk7804CertificateBuilder()
-                .signed(expected.atTime(LocalTime.now()))
-                .build()
-        )
-    );
+    when(certificate.candidateForUpdate())
+        .thenReturn(
+            Optional.of(
+                fk7804CertificateBuilder().signed(expected.atTime(LocalTime.now())).build()));
 
     final var actual = provider.body(certificate);
     assertEquals(
         """
             <p>Det finns ett Läkarintyg för sjukpenning för denna patient som är utfärdat <span class='iu-fw-bold'>%s</span> på en enhet som du har åtkomst till. Vill du kopiera de svar som givits i det intyget till detta intygsutkast?</p>
-            """.formatted(expected),
-        actual
-    );
+            """
+            .formatted(expected),
+        actual);
   }
 
   @Test

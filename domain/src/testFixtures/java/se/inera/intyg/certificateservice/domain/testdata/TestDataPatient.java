@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.testdata;
 
 import se.inera.intyg.certificateservice.domain.common.model.PersonId;
@@ -19,22 +37,19 @@ public class TestDataPatient {
             PersonId.builder()
                 .id(TestDataPatientConstants.ATHENA_REACT_ANDERSSON_ID)
                 .type(PersonIdType.PERSONAL_IDENTITY_NUMBER)
-                .build()
-        )
+                .build())
         .name(
             Name.builder()
                 .firstName(TestDataPatientConstants.ATHENA_REACT_ANDERSSON_FIRST_NAME)
                 .middleName(TestDataPatientConstants.ATHENA_REACT_ANDERSSON_MIDDLE_NAME)
                 .lastName(TestDataPatientConstants.ATHENA_REACT_ANDERSSON_LAST_NAME)
-                .build()
-        )
+                .build())
         .address(
             PersonAddress.builder()
                 .street(TestDataPatientConstants.ATHENA_REACT_ANDERSSON_STREET)
                 .city(TestDataPatientConstants.ATHENA_REACT_ANDERSSON_CITY)
                 .zipCode(TestDataPatientConstants.ATHENA_REACT_ANDERSSON_ZIP_CODE)
-                .build()
-        )
+                .build())
         .testIndicated(TestDataPatientConstants.ATHENA_REACT_ANDERSSON_TEST_INDICATED)
         .deceased(TestDataPatientConstants.ATHENA_REACT_ANDERSSON_DECEASED)
         .protectedPerson(TestDataPatientConstants.ATHENA_REACT_ANDERSSON_PROTECTED_PERSON);
@@ -46,22 +61,19 @@ public class TestDataPatient {
             PersonId.builder()
                 .id(TestDataPatientConstants.ALVE_REACT_ALFREDSSON_ID)
                 .type(PersonIdType.PERSONAL_IDENTITY_NUMBER)
-                .build()
-        )
+                .build())
         .name(
             Name.builder()
                 .firstName(TestDataPatientConstants.ALVE_REACT_ALFREDSSON_FIRST_NAME)
                 .middleName(TestDataPatientConstants.ALVE_REACT_ALFREDSSON_MIDDLE_NAME)
                 .lastName(TestDataPatientConstants.ALVE_REACT_ALFREDSSON_LAST_NAME)
-                .build()
-        )
+                .build())
         .address(
             PersonAddress.builder()
                 .street(TestDataPatientConstants.ALVE_REACT_ALFREDSSON_STREET)
                 .city(TestDataPatientConstants.ALVE_REACT_ALFREDSSON_CITY)
                 .zipCode(TestDataPatientConstants.ALVE_REACT_ALFREDSSON_ZIP_CODE)
-                .build()
-        )
+                .build())
         .testIndicated(TestDataPatientConstants.ALVE_REACT_ALFREDSSON_TEST_INDICATED)
         .deceased(TestDataPatientConstants.ALVE_REACT_ALFREDSSON_DECEASED)
         .protectedPerson(TestDataPatientConstants.ALVE_REACT_ALFREDSSON_PROTECTED_PERSON);
@@ -73,22 +85,19 @@ public class TestDataPatient {
             PersonId.builder()
                 .id(TestDataPatientConstants.ATLAS_REACT_ABRAHAMSSON_ID)
                 .type(PersonIdType.PERSONAL_IDENTITY_NUMBER)
-                .build()
-        )
+                .build())
         .name(
             Name.builder()
                 .firstName(TestDataPatientConstants.ATLAS_REACT_ABRAHAMSSON_FIRST_NAME)
                 .middleName(TestDataPatientConstants.ATLAS_REACT_ABRAHAMSSON_MIDDLE_NAME)
                 .lastName(TestDataPatientConstants.ATLAS_REACT_ABRAHAMSSON_LAST_NAME)
-                .build()
-        )
+                .build())
         .address(
             PersonAddress.builder()
                 .street(TestDataPatientConstants.ATLAS_REACT_ABRAHAMSSON_STREET)
                 .city(TestDataPatientConstants.ATLAS_REACT_ABRAHAMSSON_CITY)
                 .zipCode(TestDataPatientConstants.ATLAS_REACT_ABRAHAMSSON_ZIP_CODE)
-                .build()
-        )
+                .build())
         .testIndicated(TestDataPatientConstants.ATLAS_REACT_ABRAHAMSSON_TEST_INDICATED)
         .deceased(TestDataPatientConstants.ATLAS_REACT_ABRAHAMSSON_DECEASED)
         .protectedPerson(TestDataPatientConstants.ATLAS_REACT_ABRAHAMSSON_PROTECTED_PERSON);
@@ -100,22 +109,19 @@ public class TestDataPatient {
             PersonId.builder()
                 .id(TestDataPatientConstants.ANONYMA_REACT_ATTILA_ID)
                 .type(PersonIdType.PERSONAL_IDENTITY_NUMBER)
-                .build()
-        )
+                .build())
         .name(
             Name.builder()
                 .firstName(TestDataPatientConstants.ANONYMA_REACT_ATTILA_FIRST_NAME)
                 .middleName(TestDataPatientConstants.ANONYMA_REACT_ATTILA_MIDDLE_NAME)
                 .lastName(TestDataPatientConstants.ANONYMA_REACT_ATTILA_LAST_NAME)
-                .build()
-        )
+                .build())
         .address(
             PersonAddress.builder()
                 .street(TestDataPatientConstants.ANONYMA_REACT_ATTILA_STREET)
                 .city(TestDataPatientConstants.ANONYMA_REACT_ATTILA_CITY)
                 .zipCode(TestDataPatientConstants.ANONYMA_REACT_ATTILA_ZIP_CODE)
-                .build()
-        )
+                .build())
         .testIndicated(TestDataPatientConstants.ANONYMA_REACT_ATTILA_TEST_INDICATED)
         .deceased(TestDataPatientConstants.ANONYMA_REACT_ATTILA_DECEASED)
         .protectedPerson(TestDataPatientConstants.ANONYMA_REACT_ATTILA_PROTECTED_PERSON);

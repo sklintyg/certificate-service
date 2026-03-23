@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service.converter;
 
 import java.util.List;
@@ -18,7 +36,9 @@ public class CertificateConverter {
   private final CertificateMetadataConverter certificateMetadataConverter;
   private final HandleComplementElementVisibilityService handleComplementElementVisibilityService;
 
-  public CertificateDTO convert(Certificate certificate, List<ResourceLinkDTO> resourceLinks,
+  public CertificateDTO convert(
+      Certificate certificate,
+      List<ResourceLinkDTO> resourceLinks,
       ActionEvaluation actionEvaluation) {
     var certificateDataElementMap = certificateDataConverter.convert(certificate, false);
 
@@ -26,17 +46,19 @@ public class CertificateConverter {
       certificate.parent().certificate().messages().stream()
           .map(Message::complements)
           .flatMap(List::stream)
-          .forEach(complement ->
-              certificate.certificateModel()
-                  .elementSpecification(complement.elementId())
-                  .getVisibilityConfiguration()
-                  .ifPresent(
-                      config -> handleComplementElementVisibilityService.handle(
-                          complement.elementId(),
-                          certificateDataElementMap,
-                          certificate,
-                          config
-                      )));
+          .forEach(
+              complement ->
+                  certificate
+                      .certificateModel()
+                      .elementSpecification(complement.elementId())
+                      .getVisibilityConfiguration()
+                      .ifPresent(
+                          config ->
+                              handleComplementElementVisibilityService.handle(
+                                  complement.elementId(),
+                                  certificateDataElementMap,
+                                  certificate,
+                                  config)));
     }
 
     return CertificateDTO.builder()
@@ -46,8 +68,8 @@ public class CertificateConverter {
         .build();
   }
 
-  public CertificateDTO convertForCitizen(Certificate certificate,
-      List<ResourceLinkDTO> resourceLinks) {
+  public CertificateDTO convertForCitizen(
+      Certificate certificate, List<ResourceLinkDTO> resourceLinks) {
     return CertificateDTO.builder()
         .metadata(certificateMetadataConverter.convert(certificate, null))
         .data(certificateDataConverter.convert(certificate, true))
@@ -56,7 +78,8 @@ public class CertificateConverter {
   }
 
   private static boolean draftWithComplementRequestOnParent(Certificate certificate) {
-    return certificate.isDraft() && certificate.parent() != null && certificate.parent().type()
-        .equals(RelationType.COMPLEMENT);
+    return certificate.isDraft()
+        && certificate.parent() != null
+        && certificate.parent().type().equals(RelationType.COMPLEMENT);
   }
 }

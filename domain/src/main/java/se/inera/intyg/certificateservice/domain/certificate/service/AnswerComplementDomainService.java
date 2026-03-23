@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.certificate.service;
 
 import java.time.LocalDateTime;
@@ -26,28 +44,30 @@ public class AnswerComplementDomainService {
   private final SetMessagesToHandleDomainService setMessagesToHandleDomainService;
   private final MessageEventDomainService messageEventDomainService;
 
-  public Certificate answer(CertificateId certificateId, ActionEvaluation actionEvaluation,
-      Content content) {
+  public Certificate answer(
+      CertificateId certificateId, ActionEvaluation actionEvaluation, Content content) {
     final var start = LocalDateTime.now(ZoneId.systemDefault());
     final var certificate = certificateRepository.getById(certificateId);
-    if (!certificate.allowTo(CertificateActionType.CANNOT_COMPLEMENT,
-        Optional.of(actionEvaluation))) {
+    if (!certificate.allowTo(
+        CertificateActionType.CANNOT_COMPLEMENT, Optional.of(actionEvaluation))) {
       throw new CertificateActionForbidden(
           "Not allowed to answer complement for certificate %s".formatted(certificateId),
-          certificate.reasonNotAllowed(CertificateActionType.CANNOT_COMPLEMENT,
-              Optional.of(actionEvaluation))
-      );
+          certificate.reasonNotAllowed(
+              CertificateActionType.CANNOT_COMPLEMENT, Optional.of(actionEvaluation)));
     }
 
     certificate.answerComplement(actionEvaluation, content);
 
     setMessagesToHandleDomainService.handle(certificate.messages(MessageType.COMPLEMENT));
 
-    final var latestAnswer = certificate.messages(MessageType.COMPLEMENT).stream()
-        .max(Comparator.comparing(Message::created))
-        .map(Message::answer)
-        .orElseThrow(() -> new IllegalStateException(
-            "No answer found for certificate %s".formatted(certificateId)));
+    final var latestAnswer =
+        certificate.messages(MessageType.COMPLEMENT).stream()
+            .max(Comparator.comparing(Message::created))
+            .map(Message::answer)
+            .orElseThrow(
+                () ->
+                    new IllegalStateException(
+                        "No answer found for certificate %s".formatted(certificateId)));
 
     messageEventDomainService.publish(
         MessageEvent.builder()
@@ -57,8 +77,7 @@ public class AnswerComplementDomainService {
             .messageId(latestAnswer.id())
             .certificateId(certificate.id())
             .actionEvaluation(actionEvaluation)
-            .build()
-    );
+            .build());
 
     return certificate;
   }

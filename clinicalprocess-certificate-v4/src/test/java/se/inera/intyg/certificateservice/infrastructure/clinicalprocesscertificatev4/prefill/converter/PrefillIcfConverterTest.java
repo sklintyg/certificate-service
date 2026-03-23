@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.prefill.converter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -23,35 +41,26 @@ class PrefillIcfConverterTest {
   private static final ElementId ELEMENT_ID = new ElementId("1");
   private static final FieldId TEXT_AREA_ID = new FieldId("2");
   private static final String TEXT = "Text";
-  private static final ElementSpecification SPECIFICATION = ElementSpecification.builder()
-      .id(ELEMENT_ID)
-      .configuration(
-          ElementConfigurationIcf.builder()
-              .id(TEXT_AREA_ID)
-              .build()
-      )
-      .build();
-  private static final ElementData EXPECTED_ELEMENT_DATA = ElementData.builder()
-      .id(ELEMENT_ID)
-      .value(
-          ElementValueIcf.builder()
-              .id(TEXT_AREA_ID)
-              .text(TEXT)
-              .build()
-      ).build();
+  private static final ElementSpecification SPECIFICATION =
+      ElementSpecification.builder()
+          .id(ELEMENT_ID)
+          .configuration(ElementConfigurationIcf.builder().id(TEXT_AREA_ID).build())
+          .build();
+  private static final ElementData EXPECTED_ELEMENT_DATA =
+      ElementData.builder()
+          .id(ELEMENT_ID)
+          .value(ElementValueIcf.builder().id(TEXT_AREA_ID).text(TEXT).build())
+          .build();
 
   private final PrefillIcfConverter prefillIcfConverter = new PrefillIcfConverter();
-
 
   @Test
   void shouldReturnSupportsTextArea() {
     assertEquals(ElementConfigurationIcf.class, prefillIcfConverter.supports());
   }
 
-
   @Nested
   class PrefillAnswerWithForifyllnad {
-
 
     @Test
     void shouldReturnNullIfNoAnswersOrSubAnswers() {
@@ -75,10 +84,7 @@ class PrefillIcfConverterTest {
 
       final var result = prefillIcfConverter.prefillAnswer(SPECIFICATION, prefill);
 
-      assertEquals(
-          PrefillErrorType.INVALID_SUB_ANSWER_ID,
-          result.getErrors().getFirst().type()
-      );
+      assertEquals(PrefillErrorType.INVALID_SUB_ANSWER_ID, result.getErrors().getFirst().type());
     }
 
     @Test
@@ -92,29 +98,22 @@ class PrefillIcfConverterTest {
       svar.getDelsvar().add(delsvar);
       prefill.getSvar().add(svar);
 
-      final var specification = ElementSpecification.builder()
-          .id(new ElementId(TEXT_AREA_ID.value()))
-          .configuration(
-              ElementConfigurationIcf.builder()
-                  .id(TEXT_AREA_ID)
-                  .build()
-          )
-          .build();
+      final var specification =
+          ElementSpecification.builder()
+              .id(new ElementId(TEXT_AREA_ID.value()))
+              .configuration(ElementConfigurationIcf.builder().id(TEXT_AREA_ID).build())
+              .build();
 
       final var result = prefillIcfConverter.prefillAnswer(specification, prefill);
 
-      final var expected = PrefillAnswer.builder()
-          .elementData(
-              ElementData.builder()
-                  .id(new ElementId(TEXT_AREA_ID.value()))
-                  .value(
-                      ElementValueIcf.builder()
-                          .id(TEXT_AREA_ID)
-                          .text(TEXT)
-                          .build()
-                  ).build()
-          )
-          .build();
+      final var expected =
+          PrefillAnswer.builder()
+              .elementData(
+                  ElementData.builder()
+                      .id(new ElementId(TEXT_AREA_ID.value()))
+                      .value(ElementValueIcf.builder().id(TEXT_AREA_ID).text(TEXT).build())
+                      .build())
+              .build();
 
       assertEquals(expected, result);
     }
@@ -132,9 +131,7 @@ class PrefillIcfConverterTest {
 
       final var result = prefillIcfConverter.prefillAnswer(SPECIFICATION, prefill);
 
-      final var expected = PrefillAnswer.builder()
-          .elementData(EXPECTED_ELEMENT_DATA)
-          .build();
+      final var expected = PrefillAnswer.builder().elementData(EXPECTED_ELEMENT_DATA).build();
 
       assertEquals(expected, result);
     }
@@ -142,17 +139,15 @@ class PrefillIcfConverterTest {
     @Test
     void shouldReturnErrorIfWrongConfigurationType() {
       final var prefill = new Forifyllnad();
-      final var wrongSpec = ElementSpecification.builder()
-          .id(ELEMENT_ID)
-          .configuration(ElementConfigurationCategory.builder().build())
-          .build();
+      final var wrongSpec =
+          ElementSpecification.builder()
+              .id(ELEMENT_ID)
+              .configuration(ElementConfigurationCategory.builder().build())
+              .build();
 
       final var result = prefillIcfConverter.prefillAnswer(wrongSpec, prefill);
 
-      assertEquals(
-          PrefillErrorType.TECHNICAL_ERROR,
-          result.getErrors().getFirst().type()
-      );
+      assertEquals(PrefillErrorType.TECHNICAL_ERROR, result.getErrors().getFirst().type());
     }
 
     @Test
@@ -169,10 +164,7 @@ class PrefillIcfConverterTest {
 
       final var result = prefillIcfConverter.prefillAnswer(SPECIFICATION, prefill);
 
-      assertEquals(
-          PrefillErrorType.WRONG_NUMBER_OF_ANSWERS,
-          result.getErrors().getFirst().type()
-      );
+      assertEquals(PrefillErrorType.WRONG_NUMBER_OF_ANSWERS, result.getErrors().getFirst().type());
     }
 
     @Test
@@ -194,10 +186,7 @@ class PrefillIcfConverterTest {
 
       final var result = prefillIcfConverter.prefillAnswer(SPECIFICATION, prefill);
 
-      assertEquals(
-          PrefillErrorType.WRONG_NUMBER_OF_ANSWERS,
-          result.getErrors().getFirst().type()
-      );
+      assertEquals(PrefillErrorType.WRONG_NUMBER_OF_ANSWERS, result.getErrors().getFirst().type());
     }
 
     @Test
@@ -214,11 +203,7 @@ class PrefillIcfConverterTest {
 
       final var result = prefillIcfConverter.prefillAnswer(SPECIFICATION, prefill);
 
-      assertEquals(
-          PrefillErrorType.WRONG_NUMBER_OF_ANSWERS,
-          result.getErrors().getFirst().type()
-      );
+      assertEquals(PrefillErrorType.WRONG_NUMBER_OF_ANSWERS, result.getErrors().getFirst().type());
     }
   }
-
 }

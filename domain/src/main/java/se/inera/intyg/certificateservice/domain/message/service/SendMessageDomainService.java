@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.message.service;
 
 import java.time.LocalDateTime;
@@ -20,16 +38,12 @@ public class SendMessageDomainService {
   private final MessageRepository messageRepository;
   private final MessageEventDomainService messageEventDomainService;
 
-  public Message send(Message message, Certificate certificate,
-      ActionEvaluation actionEvaluation) {
+  public Message send(Message message, Certificate certificate, ActionEvaluation actionEvaluation) {
     final var start = LocalDateTime.now(ZoneId.systemDefault());
-    if (!certificate.allowTo(CertificateActionType.SEND_MESSAGE,
-        Optional.of(actionEvaluation))) {
+    if (!certificate.allowTo(CertificateActionType.SEND_MESSAGE, Optional.of(actionEvaluation))) {
       throw new CertificateActionForbidden(
-          "Not allowed to send messages on certificate for %s"
-              .formatted(certificate.id().id()),
-          certificate.reasonNotAllowed(CertificateActionType.SEND_MESSAGE, Optional.empty())
-      );
+          "Not allowed to send messages on certificate for %s".formatted(certificate.id().id()),
+          certificate.reasonNotAllowed(CertificateActionType.SEND_MESSAGE, Optional.empty()));
     }
 
     message.send();
@@ -44,8 +58,7 @@ public class SendMessageDomainService {
             .messageId(message.id())
             .certificateId(certificate.id())
             .actionEvaluation(actionEvaluation)
-            .build()
-    );
+            .build());
 
     return sentMessage;
   }

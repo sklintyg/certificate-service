@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ag7804.elements;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -32,109 +50,94 @@ import se.inera.intyg.certificateservice.domain.validation.model.ElementValidati
 
 class QuestionDiagnosTest {
 
-  @Mock
-  private DiagnosisCodeRepository diagnosisCodeRepository;
+  @Mock private DiagnosisCodeRepository diagnosisCodeRepository;
 
   private static final ElementId ELEMENT_ID = new ElementId("6");
 
   @Test
   void shallIncludeId() {
-    final var element = questionDiagnos(
-        diagnosisCodeRepository);
+    final var element = questionDiagnos(diagnosisCodeRepository);
 
     assertEquals(ELEMENT_ID, element.id());
   }
 
   @Test
   void shallIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationDiagnosis.builder()
-        .id(new FieldId("6.1"))
-        .name("Diagnos/diagnoser för sjukdom som orsakar nedsatt arbetsförmåga")
-        .description(
-            "Ange vilken eller vilka sjukdomar som orsakar nedsatt arbetsförmåga. Den sjukdom som påverkar arbetsförmågan mest anges först. Diagnoskoden anges alltid med så många positioner som möjligt.")
-        .terminology(
-            List.of(
-                new ElementDiagnosisTerminology("ICD_10_SE", "ICD-10-SE", "1.2.752.116.1.1.1",
-                    List.of("1.2.752.116.1.1.1.1.8", "1.2.752.116.1.1.1.1.3"))
-            )
-        )
-        .list(
-            List.of(
-                new ElementDiagnosisListItem(new FieldId("huvuddiagnos")),
-                new ElementDiagnosisListItem(new FieldId("diagnos2")),
-                new ElementDiagnosisListItem(new FieldId("diagnos3"))
-            )
-        )
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationDiagnosis.builder()
+            .id(new FieldId("6.1"))
+            .name("Diagnos/diagnoser för sjukdom som orsakar nedsatt arbetsförmåga")
+            .description(
+                "Ange vilken eller vilka sjukdomar som orsakar nedsatt arbetsförmåga. Den sjukdom som påverkar arbetsförmågan mest anges först. Diagnoskoden anges alltid med så många positioner som möjligt.")
+            .terminology(
+                List.of(
+                    new ElementDiagnosisTerminology(
+                        "ICD_10_SE",
+                        "ICD-10-SE",
+                        "1.2.752.116.1.1.1",
+                        List.of("1.2.752.116.1.1.1.1.8", "1.2.752.116.1.1.1.1.3"))))
+            .list(
+                List.of(
+                    new ElementDiagnosisListItem(new FieldId("huvuddiagnos")),
+                    new ElementDiagnosisListItem(new FieldId("diagnos2")),
+                    new ElementDiagnosisListItem(new FieldId("diagnos3"))))
+            .build();
 
-    final var element = questionDiagnos(
-        diagnosisCodeRepository);
+    final var element = questionDiagnos(diagnosisCodeRepository);
 
     assertEquals(expectedConfiguration, element.configuration());
   }
 
   @Test
   void shallIncludeRules() {
-    final var expectedRules = List.of(
-        ElementRuleExpression.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.MANDATORY)
-            .expression(
-                new RuleExpression(
-                    "exists($huvuddiagnos)"
-                )
-            )
-            .build(),
-        ElementRuleExpression.builder()
-            .type(ElementRuleType.SHOW)
-            .id(QUESTION_FORMEDLA_DIAGNOS_ID)
-            .expression(new RuleExpression("$%s".formatted(FORMEDLA_DIAGNOSIS_FIELD_ID.value())))
-            .build(),
-        ElementRuleExpression.builder()
-            .type(ElementRuleType.SHOW)
-            .id(QUESTION_FORMEDLA_DIAGNOS_ID)
-            .expression(
-                new RuleExpression(
-                    empty(singleExpression(FORMEDLA_DIAGNOSIS_FIELD_ID.value())
-                    )
-                )
-            )
-            .build(),
-        ElementRuleExpression.builder()
-            .id(QUESTION_FORMEDLA_DIAGNOS_ID)
-            .type(ElementRuleType.DISABLE)
-            .expression(
-                new RuleExpression(
-                    empty(singleExpression(FORMEDLA_DIAGNOSIS_FIELD_ID.value()))
-                )
-            )
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleExpression.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.MANDATORY)
+                .expression(new RuleExpression("exists($huvuddiagnos)"))
+                .build(),
+            ElementRuleExpression.builder()
+                .type(ElementRuleType.SHOW)
+                .id(QUESTION_FORMEDLA_DIAGNOS_ID)
+                .expression(
+                    new RuleExpression("$%s".formatted(FORMEDLA_DIAGNOSIS_FIELD_ID.value())))
+                .build(),
+            ElementRuleExpression.builder()
+                .type(ElementRuleType.SHOW)
+                .id(QUESTION_FORMEDLA_DIAGNOS_ID)
+                .expression(
+                    new RuleExpression(
+                        empty(singleExpression(FORMEDLA_DIAGNOSIS_FIELD_ID.value()))))
+                .build(),
+            ElementRuleExpression.builder()
+                .id(QUESTION_FORMEDLA_DIAGNOS_ID)
+                .type(ElementRuleType.DISABLE)
+                .expression(
+                    new RuleExpression(
+                        empty(singleExpression(FORMEDLA_DIAGNOSIS_FIELD_ID.value()))))
+                .build());
 
-    final var element = questionDiagnos(
-        diagnosisCodeRepository);
+    final var element = questionDiagnos(diagnosisCodeRepository);
 
     assertEquals(expectedRules, element.rules());
   }
 
   @Test
   void shallIncludeValidations() {
-    final var expectedValidations = List.of(
-        ElementValidationDiagnosis.builder()
-            .mandatoryField(new FieldId("huvuddiagnos"))
-            .order(
-                List.of(
-                    new FieldId("huvuddiagnos"),
-                    new FieldId("diagnos2"),
-                    new FieldId("diagnos3")
-                )
-            )
-            .diagnosisCodeRepository(diagnosisCodeRepository)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(
+            ElementValidationDiagnosis.builder()
+                .mandatoryField(new FieldId("huvuddiagnos"))
+                .order(
+                    List.of(
+                        new FieldId("huvuddiagnos"),
+                        new FieldId("diagnos2"),
+                        new FieldId("diagnos3")))
+                .diagnosisCodeRepository(diagnosisCodeRepository)
+                .build());
 
-    final var element = questionDiagnos(
-        diagnosisCodeRepository);
+    final var element = questionDiagnos(diagnosisCodeRepository);
 
     assertEquals(expectedValidations, element.validations());
   }
@@ -144,42 +147,39 @@ class QuestionDiagnosTest {
 
     @Test
     void shouldReturnTrueIfBooleanIsTrue() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId(QUESTION_FORMEDLA_DIAGNOS_ID.id()))
-              .value(ElementValueBoolean.builder().value(true).build())
-              .build()
-      );
-      final var element = questionDiagnos(
-          diagnosisCodeRepository);
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId(QUESTION_FORMEDLA_DIAGNOS_ID.id()))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
+      final var element = questionDiagnos(diagnosisCodeRepository);
       final var shouldValidate = element.shouldValidate();
       assertTrue(shouldValidate.test(elementData));
     }
 
     @Test
     void shouldReturnFalseIfBooleanIsFalse() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId(QUESTION_FORMEDLA_DIAGNOS_ID.id()))
-              .value(ElementValueBoolean.builder().value(false).build())
-              .build()
-      );
-      final var element = questionDiagnos(
-          diagnosisCodeRepository);
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId(QUESTION_FORMEDLA_DIAGNOS_ID.id()))
+                  .value(ElementValueBoolean.builder().value(false).build())
+                  .build());
+      final var element = questionDiagnos(diagnosisCodeRepository);
       final var shouldValidate = element.shouldValidate();
       assertFalse(shouldValidate.test(elementData));
     }
 
     @Test
     void shouldReturnFalseIfElementIsMissing() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("999999"))
-              .value(ElementValueBoolean.builder().value(true).build())
-              .build()
-      );
-      final var element = questionDiagnos(
-          diagnosisCodeRepository);
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("999999"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
+      final var element = questionDiagnos(diagnosisCodeRepository);
       final var shouldValidate = element.shouldValidate();
       assertFalse(shouldValidate.test(elementData));
     }
@@ -194,11 +194,11 @@ class QuestionDiagnosTest {
     assertAll(
         () -> assertEquals(ELEMENT_ID, pdfConfig.hiddenBy()),
         () -> assertNotNull(pdfConfig.shouldHide()),
-        () -> assertEquals(
-            ElementSimplifiedValueText.builder()
-                .text("På patientens begäran uppges inte diagnos")
-                .build(), pdfConfig.replacementValue()
-        )
-    );
+        () ->
+            assertEquals(
+                ElementSimplifiedValueText.builder()
+                    .text("På patientens begäran uppges inte diagnos")
+                    .build(),
+                pdfConfig.replacementValue()));
   }
 }

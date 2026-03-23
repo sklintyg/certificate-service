@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ag114.elements;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,42 +48,43 @@ class QuestionGrundForMedicinsktUnderlagTest {
 
   @Test
   void shouldHaveCorrectConfiguration() {
-    final var expectedConfiguration = ElementConfigurationCheckboxMultipleDate.builder()
-        .id(QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_FIELD_ID)
-        .name("Intyget är baserat på")
-        .dates(List.of(
-            CheckboxDate.builder()
-                .id(new FieldId(FYSISKUNDERSOKNING.code()))
-                .label("min undersökning vid fysiskt vårdmöte")
-                .code(FYSISKUNDERSOKNING)
-                .max(Period.ofDays(0))
-                .build(),
-            CheckboxDate.builder()
-                .id(new FieldId(DIGITALUNDERSOKNING.code()))
-                .label("min undersökning vid digitalt vårdmöte")
-                .code(DIGITALUNDERSOKNING)
-                .max(Period.ofDays(0))
-                .build(),
-            CheckboxDate.builder()
-                .id(new FieldId(TELEFONKONTAKT.code()))
-                .label("min telefonkontakt med patienten")
-                .code(TELEFONKONTAKT)
-                .max(Period.ofDays(0))
-                .build(),
-            CheckboxDate.builder()
-                .id(new FieldId(JOURNALUPPGIFTER.code()))
-                .label("journaluppgifter från den")
-                .code(JOURNALUPPGIFTER)
-                .max(Period.ofDays(0))
-                .build(),
-            CheckboxDate.builder()
-                .id(new FieldId(ANNAT.code()))
-                .label("annat")
-                .code(ANNAT)
-                .max(Period.ofDays(0))
-                .build()
-        ))
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationCheckboxMultipleDate.builder()
+            .id(QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_FIELD_ID)
+            .name("Intyget är baserat på")
+            .dates(
+                List.of(
+                    CheckboxDate.builder()
+                        .id(new FieldId(FYSISKUNDERSOKNING.code()))
+                        .label("min undersökning vid fysiskt vårdmöte")
+                        .code(FYSISKUNDERSOKNING)
+                        .max(Period.ofDays(0))
+                        .build(),
+                    CheckboxDate.builder()
+                        .id(new FieldId(DIGITALUNDERSOKNING.code()))
+                        .label("min undersökning vid digitalt vårdmöte")
+                        .code(DIGITALUNDERSOKNING)
+                        .max(Period.ofDays(0))
+                        .build(),
+                    CheckboxDate.builder()
+                        .id(new FieldId(TELEFONKONTAKT.code()))
+                        .label("min telefonkontakt med patienten")
+                        .code(TELEFONKONTAKT)
+                        .max(Period.ofDays(0))
+                        .build(),
+                    CheckboxDate.builder()
+                        .id(new FieldId(JOURNALUPPGIFTER.code()))
+                        .label("journaluppgifter från den")
+                        .code(JOURNALUPPGIFTER)
+                        .max(Period.ofDays(0))
+                        .build(),
+                    CheckboxDate.builder()
+                        .id(new FieldId(ANNAT.code()))
+                        .label("annat")
+                        .code(ANNAT)
+                        .max(Period.ofDays(0))
+                        .build()))
+            .build();
 
     final var element = QuestionGrundForMedicinsktUnderlag.questionGrundForMedicinsktUnderlag();
     assertEquals(expectedConfiguration, element.configuration());
@@ -74,26 +93,23 @@ class QuestionGrundForMedicinsktUnderlagTest {
   @Test
   void shouldIncludeRules() {
     final var element = QuestionGrundForMedicinsktUnderlag.questionGrundForMedicinsktUnderlag();
-    final var expectedRules = List.of(
-        ElementRuleExpression.builder()
-            .id(QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID)
-            .type(ElementRuleType.MANDATORY)
-            .expression(new RuleExpression(
-                "$FYSISKUNDERSOKNING || $DIGITALUNDERSOKNING || $TELEFONKONTAKT || $JOURNALUPPGIFTER || $ANNAT"))
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleExpression.builder()
+                .id(QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID)
+                .type(ElementRuleType.MANDATORY)
+                .expression(
+                    new RuleExpression(
+                        "$FYSISKUNDERSOKNING || $DIGITALUNDERSOKNING || $TELEFONKONTAKT || $JOURNALUPPGIFTER || $ANNAT"))
+                .build());
     assertEquals(expectedRules, element.rules());
   }
 
   @Test
   void shouldIncludeValidation() {
     final var element = QuestionGrundForMedicinsktUnderlag.questionGrundForMedicinsktUnderlag();
-    final var expectedValidations = List.of(
-        ElementValidationDateList.builder()
-            .mandatory(true)
-            .max(Period.ofDays(0))
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationDateList.builder().mandatory(true).max(Period.ofDays(0)).build());
     assertEquals(expectedValidations, element.validations());
   }
 }

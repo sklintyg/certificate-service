@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements;
 
 import java.time.Period;
@@ -19,50 +37,51 @@ public class QuestionUtlatandeBaseratPa {
 
   public static final ElementId QUESTION_UTLATANDE_BASERAT_PA_ID = new ElementId("1");
   public static final FieldId QUESTION_UTLATANDE_BASERAT_PA_FIELD_ID = new FieldId("1.1");
-  public static final String UTLATANDE_BASERAT_PA_UNDERSOKNING_AV_PATIENTEN_FIELD_ID = "undersokningAvPatienten";
+  public static final String UTLATANDE_BASERAT_PA_UNDERSOKNING_AV_PATIENTEN_FIELD_ID =
+      "undersokningAvPatienten";
   public static final String UTLATANDE_BASERAT_PA_JOURNALUPPGIFTER_FIELD_ID = "journaluppgifter";
   public static final FieldId UTLATANDE_BASERAT_PA_ANNAT_FIELD_ID = new FieldId("annat");
-  private static final PdfFieldId PDF_STATEMENT_BASED_ON_INVESTIGATION_CHECKBOX_FIELD_ID = new PdfFieldId(
-      "form1[0].#subform[0].ksr_UndersokningPatient[0]");
-  private static final PdfFieldId PDF_STATEMENT_BASED_ON_JOURNAL_CHECKBOX_FIELD_ID = new PdfFieldId(
-      "form1[0].#subform[0].ksr_Journaluppgifter[0]");
-  private static final PdfFieldId PDF_STATEMENT_BASED_ON_OTHER_CHECKBOX_FIELD_ID = new PdfFieldId(
-      "form1[0].#subform[0].ksr_Annat[0]");
-  private static final PdfFieldId PDF_STATEMENT_BASED_ON_INVESTIGATION_DATE_FIELD_ID = new PdfFieldId(
-      "form1[0].#subform[0].flt_datUl_1[0]");
-  private static final PdfFieldId PDF_STATEMENT_BASED_ON_JOURNAL_DATE_FIELD_ID = new PdfFieldId(
-      "form1[0].#subform[0].flt_datUl_2[0]");
-  private static final PdfFieldId PDF_STATEMENT_BASED_ON_OTHER_DATE_FIELD_ID = new PdfFieldId(
-      "form1[0].#subform[0].flt_datUl_3[0]");
+  private static final PdfFieldId PDF_STATEMENT_BASED_ON_INVESTIGATION_CHECKBOX_FIELD_ID =
+      new PdfFieldId("form1[0].#subform[0].ksr_UndersokningPatient[0]");
+  private static final PdfFieldId PDF_STATEMENT_BASED_ON_JOURNAL_CHECKBOX_FIELD_ID =
+      new PdfFieldId("form1[0].#subform[0].ksr_Journaluppgifter[0]");
+  private static final PdfFieldId PDF_STATEMENT_BASED_ON_OTHER_CHECKBOX_FIELD_ID =
+      new PdfFieldId("form1[0].#subform[0].ksr_Annat[0]");
+  private static final PdfFieldId PDF_STATEMENT_BASED_ON_INVESTIGATION_DATE_FIELD_ID =
+      new PdfFieldId("form1[0].#subform[0].flt_datUl_1[0]");
+  private static final PdfFieldId PDF_STATEMENT_BASED_ON_JOURNAL_DATE_FIELD_ID =
+      new PdfFieldId("form1[0].#subform[0].flt_datUl_2[0]");
+  private static final PdfFieldId PDF_STATEMENT_BASED_ON_OTHER_DATE_FIELD_ID =
+      new PdfFieldId("form1[0].#subform[0].flt_datUl_3[0]");
 
   private QuestionUtlatandeBaseratPa() {
     throw new IllegalStateException("Utility class");
   }
 
   public static ElementSpecification questionUtlatandeBaseratPa(ElementSpecification... children) {
-    final var checkboxDates = List.of(
-        CheckboxDate.builder()
-            .id(new FieldId(UTLATANDE_BASERAT_PA_UNDERSOKNING_AV_PATIENTEN_FIELD_ID))
-            .label(CodeSystemKvFkmu0001.UNDERSOKNING.displayName())
-            .code(CodeSystemKvFkmu0001.UNDERSOKNING)
-            .min(null)
-            .max(Period.ofDays(0))
-            .build(),
-        CheckboxDate.builder()
-            .id(new FieldId(UTLATANDE_BASERAT_PA_JOURNALUPPGIFTER_FIELD_ID))
-            .label(CodeSystemKvFkmu0001.JOURNALUPPGIFTER.displayName())
-            .code(CodeSystemKvFkmu0001.JOURNALUPPGIFTER)
-            .min(null)
-            .max(Period.ofDays(0))
-            .build(),
-        CheckboxDate.builder()
-            .id(UTLATANDE_BASERAT_PA_ANNAT_FIELD_ID)
-            .label(CodeSystemKvFkmu0001.ANNAT.displayName())
-            .code(CodeSystemKvFkmu0001.ANNAT)
-            .min(null)
-            .max(Period.ofDays(0))
-            .build()
-    );
+    final var checkboxDates =
+        List.of(
+            CheckboxDate.builder()
+                .id(new FieldId(UTLATANDE_BASERAT_PA_UNDERSOKNING_AV_PATIENTEN_FIELD_ID))
+                .label(CodeSystemKvFkmu0001.UNDERSOKNING.displayName())
+                .code(CodeSystemKvFkmu0001.UNDERSOKNING)
+                .min(null)
+                .max(Period.ofDays(0))
+                .build(),
+            CheckboxDate.builder()
+                .id(new FieldId(UTLATANDE_BASERAT_PA_JOURNALUPPGIFTER_FIELD_ID))
+                .label(CodeSystemKvFkmu0001.JOURNALUPPGIFTER.displayName())
+                .code(CodeSystemKvFkmu0001.JOURNALUPPGIFTER)
+                .min(null)
+                .max(Period.ofDays(0))
+                .build(),
+            CheckboxDate.builder()
+                .id(UTLATANDE_BASERAT_PA_ANNAT_FIELD_ID)
+                .label(CodeSystemKvFkmu0001.ANNAT.displayName())
+                .code(CodeSystemKvFkmu0001.ANNAT)
+                .min(null)
+                .max(Period.ofDays(0))
+                .build());
 
     return ElementSpecification.builder()
         .id(QUESTION_UTLATANDE_BASERAT_PA_ID)
@@ -71,51 +90,36 @@ public class QuestionUtlatandeBaseratPa {
                 .id(QUESTION_UTLATANDE_BASERAT_PA_FIELD_ID)
                 .name("Utlåtandet är baserat på")
                 .dates(checkboxDates)
-                .build()
-        )
+                .build())
         .rules(
             List.of(
                 CertificateElementRuleFactory.mandatory(
                     QUESTION_UTLATANDE_BASERAT_PA_ID,
-                    checkboxDates.stream().map(CheckboxDate::id).toList()
-                )
-            )
-        )
+                    checkboxDates.stream().map(CheckboxDate::id).toList())))
         .validations(
             List.of(
-                ElementValidationDateList.builder()
-                    .mandatory(true)
-                    .max(Period.ofDays(0))
-                    .build()
-            )
-        )
+                ElementValidationDateList.builder().mandatory(true).max(Period.ofDays(0)).build()))
         .children(List.of(children))
         .pdfConfiguration(
             PdfConfigurationDateList.builder()
                 .dateCheckboxes(
                     Map.of(
-                        new FieldId(
-                            UTLATANDE_BASERAT_PA_UNDERSOKNING_AV_PATIENTEN_FIELD_ID),
+                        new FieldId(UTLATANDE_BASERAT_PA_UNDERSOKNING_AV_PATIENTEN_FIELD_ID),
                         PdfConfigurationDateCheckbox.builder()
-                            .checkboxFieldId(
-                                PDF_STATEMENT_BASED_ON_INVESTIGATION_CHECKBOX_FIELD_ID)
+                            .checkboxFieldId(PDF_STATEMENT_BASED_ON_INVESTIGATION_CHECKBOX_FIELD_ID)
                             .dateFieldId(PDF_STATEMENT_BASED_ON_INVESTIGATION_DATE_FIELD_ID)
                             .build(),
                         new FieldId(UTLATANDE_BASERAT_PA_JOURNALUPPGIFTER_FIELD_ID),
                         PdfConfigurationDateCheckbox.builder()
-                            .checkboxFieldId(
-                                PDF_STATEMENT_BASED_ON_JOURNAL_CHECKBOX_FIELD_ID)
+                            .checkboxFieldId(PDF_STATEMENT_BASED_ON_JOURNAL_CHECKBOX_FIELD_ID)
                             .dateFieldId(PDF_STATEMENT_BASED_ON_JOURNAL_DATE_FIELD_ID)
                             .build(),
                         UTLATANDE_BASERAT_PA_ANNAT_FIELD_ID,
                         PdfConfigurationDateCheckbox.builder()
                             .checkboxFieldId(PDF_STATEMENT_BASED_ON_OTHER_CHECKBOX_FIELD_ID)
                             .dateFieldId(PDF_STATEMENT_BASED_ON_OTHER_DATE_FIELD_ID)
-                            .build()
-                    )
-                )
-                .build()
-        )
+                            .build()))
+                .build())
         .includeWhenRenewing(false)
         .build();
   }

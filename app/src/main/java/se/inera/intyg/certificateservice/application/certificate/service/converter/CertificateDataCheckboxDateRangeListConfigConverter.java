@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service.converter;
 
 import java.time.LocalDate;
@@ -17,21 +35,21 @@ import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementSp
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementType;
 
 @Component
-public class CertificateDataCheckboxDateRangeListConfigConverter implements
-    CertificateDataConfigConverter {
+public class CertificateDataCheckboxDateRangeListConfigConverter
+    implements CertificateDataConfigConverter {
 
   @Override
   public ElementType getType() {
     return ElementType.CHECKBOX_DATE_RANGE_LIST;
   }
 
-  public CertificateDataConfig convert(ElementSpecification elementSpecification,
-      Certificate certificate) {
-    if (!(elementSpecification.configuration() instanceof ElementConfigurationCheckboxDateRangeList configuration)) {
+  public CertificateDataConfig convert(
+      ElementSpecification elementSpecification, Certificate certificate) {
+    if (!(elementSpecification.configuration()
+        instanceof ElementConfigurationCheckboxDateRangeList configuration)) {
       throw new IllegalStateException(
-          "Invalid config type. Type was '%s'".formatted(
-              elementSpecification.configuration().type())
-      );
+          "Invalid config type. Type was '%s'"
+              .formatted(elementSpecification.configuration().type()));
     }
     return CertificateDataConfigCheckboxDateRangeList.builder()
         .text(configuration.name())
@@ -42,17 +60,15 @@ public class CertificateDataCheckboxDateRangeListConfigConverter implements
         .max(date(configuration.max()))
         .list(
             configuration.dateRanges().stream()
-                .map(dateRange ->
-                    CheckboxDateRange.builder()
-                        .id(dateRange.id().value())
-                        .label(dateRange.label())
-                        .build()
-                )
-                .toList()
-        )
+                .map(
+                    dateRange ->
+                        CheckboxDateRange.builder()
+                            .id(dateRange.id().value())
+                            .label(dateRange.label())
+                            .build())
+                .toList())
         .previousDateRangeText(
-            previousDateRangeText(elementSpecification, configuration, certificate)
-        )
+            previousDateRangeText(elementSpecification, configuration, certificate))
         .build();
   }
 
@@ -60,8 +76,10 @@ public class CertificateDataCheckboxDateRangeListConfigConverter implements
     return period == null ? null : LocalDate.now(ZoneId.systemDefault()).plus(period);
   }
 
-  private String previousDateRangeText(ElementSpecification elementSpecification,
-      ElementConfigurationCheckboxDateRangeList configuration, Certificate certificate) {
+  private String previousDateRangeText(
+      ElementSpecification elementSpecification,
+      ElementConfigurationCheckboxDateRangeList configuration,
+      Certificate certificate) {
     if (isNotRenewingCertificate(certificate)) {
       return null;
     }
@@ -70,11 +88,14 @@ public class CertificateDataCheckboxDateRangeListConfigConverter implements
       return null;
     }
 
-    final var previousValue = certificate.parent().certificate()
-        .getElementDataById(elementSpecification.id())
-        .filter(elementData -> elementData.value() instanceof ElementValueDateRangeList)
-        .map(elementData -> (ElementValueDateRangeList) elementData.value())
-        .orElse(null);
+    final var previousValue =
+        certificate
+            .parent()
+            .certificate()
+            .getElementDataById(elementSpecification.id())
+            .filter(elementData -> elementData.value() instanceof ElementValueDateRangeList)
+            .map(elementData -> (ElementValueDateRangeList) elementData.value())
+            .orElse(null);
 
     if (previousValue == null) {
       return null;
@@ -88,10 +109,10 @@ public class CertificateDataCheckboxDateRangeListConfigConverter implements
     return "På det ursprungliga intyget var slutdatumet för den sista perioden %s och omfattningen var %s."
         .formatted(
             previousLastDateRange.to(),
-            configuration.checkboxDateRange(previousLastDateRange.dateRangeId())
+            configuration
+                .checkboxDateRange(previousLastDateRange.dateRangeId())
                 .map(ElementConfigurationCode::label)
-                .orElse("<saknas>")
-        );
+                .orElse("<saknas>"));
   }
 
   private boolean isNotRenewingCertificate(Certificate certificate) {

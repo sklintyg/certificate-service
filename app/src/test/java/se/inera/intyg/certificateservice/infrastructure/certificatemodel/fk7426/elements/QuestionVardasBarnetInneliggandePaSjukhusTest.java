@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7426.elements;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -27,12 +45,13 @@ class QuestionVardasBarnetInneliggandePaSjukhusTest {
 
   @Test
   void shallIncludeConfiguration() {
-    final var configurationRadioBoolean = ElementConfigurationRadioBoolean.builder()
-        .id(FIELD_ID)
-        .selectedText("Ja")
-        .unselectedText("Nej")
-        .name("Vårdas barnet inneliggande på sjukhus?")
-        .build();
+    final var configurationRadioBoolean =
+        ElementConfigurationRadioBoolean.builder()
+            .id(FIELD_ID)
+            .selectedText("Ja")
+            .unselectedText("Nej")
+            .name("Vårdas barnet inneliggande på sjukhus?")
+            .build();
 
     final var elementSpecification = questionVardasBarnetInneliggandePaSjukhus();
     assertEquals(configurationRadioBoolean, elementSpecification.configuration());
@@ -40,11 +59,8 @@ class QuestionVardasBarnetInneliggandePaSjukhusTest {
 
   @Test
   void shallIncludeValidation() {
-    final var expectedValidation = List.of(
-        ElementValidationBoolean.builder()
-            .mandatory(true)
-            .build()
-    );
+    final var expectedValidation =
+        List.of(ElementValidationBoolean.builder().mandatory(true).build());
 
     final var elementSpecification = questionVardasBarnetInneliggandePaSjukhus();
     assertEquals(expectedValidation, elementSpecification.validations());
@@ -52,12 +68,8 @@ class QuestionVardasBarnetInneliggandePaSjukhusTest {
 
   @Test
   void shallIncludeRules() {
-    final var expectedRules = List.of(
-        CertificateElementRuleFactory.mandatoryExist(
-            ELEMENT_ID,
-            FIELD_ID
-        )
-    );
+    final var expectedRules =
+        List.of(CertificateElementRuleFactory.mandatoryExist(ELEMENT_ID, FIELD_ID));
 
     final var elementSpecification = questionVardasBarnetInneliggandePaSjukhus();
     assertEquals(expectedRules, elementSpecification.rules());
@@ -66,17 +78,17 @@ class QuestionVardasBarnetInneliggandePaSjukhusTest {
   @Test
   void shallIncludeChildren() {
     final var expectedChild = questionVardasBarnetInneliggandePaSjukhus();
-    final var elementSpecification = questionVardasBarnetInneliggandePaSjukhus(
-        expectedChild);
+    final var elementSpecification = questionVardasBarnetInneliggandePaSjukhus(expectedChild);
     assertEquals(List.of(expectedChild), elementSpecification.children());
   }
 
   @Test
   void shallIncludePdfConfiguration() {
-    final var expectedPdfConfiguration = PdfConfigurationBoolean.builder()
-        .checkboxFalse(new PdfFieldId("form1[0].#subform[3].ksr_Nej_1[0]"))
-        .checkboxTrue(new PdfFieldId("form1[0].#subform[3].ksr_Ja_1[0]"))
-        .build();
+    final var expectedPdfConfiguration =
+        PdfConfigurationBoolean.builder()
+            .checkboxFalse(new PdfFieldId("form1[0].#subform[3].ksr_Nej_1[0]"))
+            .checkboxTrue(new PdfFieldId("form1[0].#subform[3].ksr_Ja_1[0]"))
+            .build();
 
     final var elementSpecification = questionVardasBarnetInneliggandePaSjukhus();
     assertEquals(expectedPdfConfiguration, elementSpecification.pdfConfiguration());

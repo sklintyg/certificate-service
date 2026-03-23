@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.message.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,48 +48,45 @@ import se.inera.intyg.certificateservice.domain.staff.model.Staff;
 @ExtendWith(MockitoExtension.class)
 class CreateMessageDomainServiceTest {
 
-
   private static final CertificateId CERTIFICATE_ID = new CertificateId("certificateId");
   private static final Content CONTENT = new Content("content");
-  @Mock
-  MessageRepository messageRepository;
-  @InjectMocks
-  CreateMessageDomainService createMessageDomainService;
+  @Mock MessageRepository messageRepository;
+  @InjectMocks CreateMessageDomainService createMessageDomainService;
 
   @Test
   void shallThrowIfNotAllowedToCreateMessage() {
     final var certificate = mock(MedicalCertificate.class);
     doReturn(CERTIFICATE_ID).when(certificate).id();
-    doReturn(false).when(certificate)
+    doReturn(false)
+        .when(certificate)
         .allowTo(CertificateActionType.CREATE_MESSAGE, Optional.of(ACTION_EVALUATION));
 
-    assertThrows(CertificateActionForbidden.class, () -> createMessageDomainService.create(
-        certificate, ACTION_EVALUATION, MessageType.CONTACT, CONTENT
-    ));
+    assertThrows(
+        CertificateActionForbidden.class,
+        () ->
+            createMessageDomainService.create(
+                certificate, ACTION_EVALUATION, MessageType.CONTACT, CONTENT));
   }
 
   @Test
   void shallPersistCreatedMessage() {
     final var expectedMessage = Message.builder().build();
     final var certificate = mock(MedicalCertificate.class);
-    doReturn(true).when(certificate)
+    doReturn(true)
+        .when(certificate)
         .allowTo(CertificateActionType.CREATE_MESSAGE, Optional.of(ACTION_EVALUATION));
     doReturn(CERTIFICATE_ID).when(certificate).id();
 
     try (MockedStatic<Message> messageMockedStatic = Mockito.mockStatic(Message.class)) {
-      messageMockedStatic.when(() ->
-              Message.create(
-                  eq(MessageType.CONTACT),
-                  eq(CONTENT),
-                  eq(CERTIFICATE_ID),
-                  any(Staff.class)
-              )
-          )
+      messageMockedStatic
+          .when(
+              () ->
+                  Message.create(
+                      eq(MessageType.CONTACT), eq(CONTENT), eq(CERTIFICATE_ID), any(Staff.class)))
           .thenReturn(expectedMessage);
 
       createMessageDomainService.create(
-          certificate, ACTION_EVALUATION, MessageType.CONTACT, CONTENT
-      );
+          certificate, ACTION_EVALUATION, MessageType.CONTACT, CONTENT);
 
       verify(messageRepository).save(expectedMessage);
     }
@@ -81,25 +96,23 @@ class CreateMessageDomainServiceTest {
   void shallReturnCreatedMessage() {
     final var expectedMessage = Message.builder().build();
     final var certificate = mock(MedicalCertificate.class);
-    doReturn(true).when(certificate)
+    doReturn(true)
+        .when(certificate)
         .allowTo(CertificateActionType.CREATE_MESSAGE, Optional.of(ACTION_EVALUATION));
     doReturn(expectedMessage).when(messageRepository).save(expectedMessage);
     doReturn(CERTIFICATE_ID).when(certificate).id();
 
     try (MockedStatic<Message> messageMockedStatic = Mockito.mockStatic(Message.class)) {
-      messageMockedStatic.when(() ->
-              Message.create(
-                  eq(MessageType.CONTACT),
-                  eq(CONTENT),
-                  eq(CERTIFICATE_ID),
-                  any(Staff.class)
-              )
-          )
+      messageMockedStatic
+          .when(
+              () ->
+                  Message.create(
+                      eq(MessageType.CONTACT), eq(CONTENT), eq(CERTIFICATE_ID), any(Staff.class)))
           .thenReturn(expectedMessage);
 
-      final var actualMessage = createMessageDomainService.create(
-          certificate, ACTION_EVALUATION, MessageType.CONTACT, CONTENT
-      );
+      final var actualMessage =
+          createMessageDomainService.create(
+              certificate, ACTION_EVALUATION, MessageType.CONTACT, CONTENT);
       assertEquals(expectedMessage, actualMessage);
     }
   }

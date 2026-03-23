@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7804.elements;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -38,74 +56,57 @@ class QuestionGrundForMedicinsktUnderlagTest {
 
   @Test
   void shallIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationCheckboxMultipleDate.builder()
-        .name("Intyget är baserat på")
-        .id(new FieldId("1.1"))
-        .dates(
-            List.of(
-                CheckboxDate.builder()
-                    .id(new FieldId("FYSISKUNDERSOKNING"))
-                    .label("min undersökning vid fysiskt vårdmöte")
-                    .code(
-                        new Code(
-                            "FYSISKUNDERSOKNING",
-                            "KV_FKMU_0001",
-                            "min undersökning vid fysiskt vårdmöte"
-                        )
-                    )
-                    .max(Period.ZERO)
-                    .build(),
-                CheckboxDate.builder()
-                    .id(new FieldId("DIGITALUNDERSOKNING"))
-                    .label("min undersökning vid digitalt vårdmöte")
-                    .code(
-                        new Code(
-                            "DIGITALUNDERSOKNING",
-                            "KV_FKMU_0001",
-                            "min undersökning vid digitalt vårdmöte"
-                        )
-                    )
-                    .max(Period.ZERO)
-                    .build(),
-                CheckboxDate.builder()
-                    .id(new FieldId("TELEFONKONTAKT"))
-                    .label("min telefonkontakt med patienten")
-                    .code(
-                        new Code(
-                            "TELEFONKONTAKT",
-                            "KV_FKMU_0001",
-                            "min telefonkontakt med patienten"
-                        )
-                    )
-                    .max(Period.ZERO)
-                    .build(),
-                CheckboxDate.builder()
-                    .id(new FieldId("JOURNALUPPGIFTER"))
-                    .label("journaluppgifter från den")
-                    .code(
-                        new Code(
-                            "JOURNALUPPGIFTER",
-                            "KV_FKMU_0001",
-                            "journaluppgifter från den"
-                        )
-                    )
-                    .max(Period.ZERO)
-                    .build(),
-                CheckboxDate.builder()
-                    .id(new FieldId("ANNAT"))
-                    .label("annat")
-                    .code(
-                        new Code(
-                            "ANNAT",
-                            "KV_FKMU_0001",
-                            "annat"
-                        )
-                    )
-                    .max(Period.ZERO)
-                    .build()
-            )
-        )
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationCheckboxMultipleDate.builder()
+            .name("Intyget är baserat på")
+            .id(new FieldId("1.1"))
+            .dates(
+                List.of(
+                    CheckboxDate.builder()
+                        .id(new FieldId("FYSISKUNDERSOKNING"))
+                        .label("min undersökning vid fysiskt vårdmöte")
+                        .code(
+                            new Code(
+                                "FYSISKUNDERSOKNING",
+                                "KV_FKMU_0001",
+                                "min undersökning vid fysiskt vårdmöte"))
+                        .max(Period.ZERO)
+                        .build(),
+                    CheckboxDate.builder()
+                        .id(new FieldId("DIGITALUNDERSOKNING"))
+                        .label("min undersökning vid digitalt vårdmöte")
+                        .code(
+                            new Code(
+                                "DIGITALUNDERSOKNING",
+                                "KV_FKMU_0001",
+                                "min undersökning vid digitalt vårdmöte"))
+                        .max(Period.ZERO)
+                        .build(),
+                    CheckboxDate.builder()
+                        .id(new FieldId("TELEFONKONTAKT"))
+                        .label("min telefonkontakt med patienten")
+                        .code(
+                            new Code(
+                                "TELEFONKONTAKT",
+                                "KV_FKMU_0001",
+                                "min telefonkontakt med patienten"))
+                        .max(Period.ZERO)
+                        .build(),
+                    CheckboxDate.builder()
+                        .id(new FieldId("JOURNALUPPGIFTER"))
+                        .label("journaluppgifter från den")
+                        .code(
+                            new Code(
+                                "JOURNALUPPGIFTER", "KV_FKMU_0001", "journaluppgifter från den"))
+                        .max(Period.ZERO)
+                        .build(),
+                    CheckboxDate.builder()
+                        .id(new FieldId("ANNAT"))
+                        .label("annat")
+                        .code(new Code("ANNAT", "KV_FKMU_0001", "annat"))
+                        .max(Period.ZERO)
+                        .build()))
+            .build();
 
     final var element = questionGrundForMedicinsktUnderlag();
 
@@ -117,20 +118,17 @@ class QuestionGrundForMedicinsktUnderlagTest {
     final var element = questionGrundForMedicinsktUnderlag();
     final var rules = element.rules();
 
-    final var mandatoryRule = rules.stream()
-        .filter(r -> r.type() == ElementRuleType.MANDATORY)
-        .findFirst()
-        .orElseThrow();
+    final var mandatoryRule =
+        rules.stream().filter(r -> r.type() == ElementRuleType.MANDATORY).findFirst().orElseThrow();
 
-    final var expectedExpression = new RuleExpression(
-        "$FYSISKUNDERSOKNING || $DIGITALUNDERSOKNING || $TELEFONKONTAKT || $JOURNALUPPGIFTER || $ANNAT"
-    );
+    final var expectedExpression =
+        new RuleExpression(
+            "$FYSISKUNDERSOKNING || $DIGITALUNDERSOKNING || $TELEFONKONTAKT || $JOURNALUPPGIFTER || $ANNAT");
 
     assertAll(
-        () -> assertEquals(expectedExpression,
-            ((ElementRuleExpression) mandatoryRule).expression()),
-        () -> assertEquals(ELEMENT_ID, ((ElementRuleExpression) mandatoryRule).id())
-    );
+        () ->
+            assertEquals(expectedExpression, ((ElementRuleExpression) mandatoryRule).expression()),
+        () -> assertEquals(ELEMENT_ID, ((ElementRuleExpression) mandatoryRule).id()));
   }
 
   @Test
@@ -138,26 +136,18 @@ class QuestionGrundForMedicinsktUnderlagTest {
     final var element = questionGrundForMedicinsktUnderlag();
     final var rules = element.rules();
 
-    final var hideRule = rules.stream()
-        .filter(r -> r.type() == ElementRuleType.HIDE)
-        .findFirst()
-        .orElseThrow();
+    final var hideRule =
+        rules.stream().filter(r -> r.type() == ElementRuleType.HIDE).findFirst().orElseThrow();
 
     assertAll(
-        () -> assertEquals("$27.1",
-            ((ElementRuleExpression) hideRule).expression().value()),
-        () -> assertEquals("27", ((ElementRuleExpression) hideRule).id().id())
-    );
+        () -> assertEquals("$27.1", ((ElementRuleExpression) hideRule).expression().value()),
+        () -> assertEquals("27", ((ElementRuleExpression) hideRule).id().id()));
   }
 
   @Test
   void shallIncludeValidations() {
-    final var expectedValidations = List.of(
-        ElementValidationDateList.builder()
-            .mandatory(true)
-            .max(Period.ZERO)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationDateList.builder().mandatory(true).max(Period.ZERO).build());
 
     final var element = questionGrundForMedicinsktUnderlag();
 
@@ -167,36 +157,43 @@ class QuestionGrundForMedicinsktUnderlagTest {
   @Test
   void shouldHaveCorrectPdfConfiguration() {
     final var element = questionGrundForMedicinsktUnderlag();
-    final var expected = PdfConfigurationDateList.builder()
-        .dateCheckboxes(Map.of(
-            new FieldId("FYSISKUNDERSOKNING"),
-            PdfConfigurationDateCheckbox.builder()
-                .checkboxFieldId(new PdfFieldId("form1[0].#subform[0].ksr_FysisktVardmote[0]"))
-                .dateFieldId(new PdfFieldId("form1[0].#subform[0].flt_datumPatient[0]"))
-                .build(),
-            new FieldId("DIGITALUNDERSOKNING"),
-            PdfConfigurationDateCheckbox.builder()
-                .checkboxFieldId(new PdfFieldId("form1[0].#subform[0].ksr_DigitalVardmote[0]"))
-                .dateFieldId(new PdfFieldId("form1[0].#subform[0].flt_datumDigitaltVardmöte[0]"))
-                .build(),
-            new FieldId("TELEFONKONTAKT"),
-            PdfConfigurationDateCheckbox.builder()
-                .checkboxFieldId(
-                    new PdfFieldId("form1[0].#subform[0].ksr_TelefonkontaktPatienten[0]"))
-                .dateFieldId(new PdfFieldId("form1[0].#subform[0].flt_datumTelefonkontakt[0]"))
-                .build(),
-            new FieldId("JOURNALUPPGIFTER"),
-            PdfConfigurationDateCheckbox.builder()
-                .checkboxFieldId(new PdfFieldId("form1[0].#subform[0].ksr_Journaluppgifter[0]"))
-                .dateFieldId(new PdfFieldId("form1[0].#subform[0].flt_datumJournaluppgifter[0]"))
-                .build(),
-            new FieldId("ANNAT"),
-            PdfConfigurationDateCheckbox.builder()
-                .checkboxFieldId(new PdfFieldId("form1[0].#subform[0].ksr_Annat[0]"))
-                .dateFieldId(new PdfFieldId("form1[0].#subform[0].flt_datumAnnat[0]"))
-                .build()
-        ))
-        .build();
+    final var expected =
+        PdfConfigurationDateList.builder()
+            .dateCheckboxes(
+                Map.of(
+                    new FieldId("FYSISKUNDERSOKNING"),
+                    PdfConfigurationDateCheckbox.builder()
+                        .checkboxFieldId(
+                            new PdfFieldId("form1[0].#subform[0].ksr_FysisktVardmote[0]"))
+                        .dateFieldId(new PdfFieldId("form1[0].#subform[0].flt_datumPatient[0]"))
+                        .build(),
+                    new FieldId("DIGITALUNDERSOKNING"),
+                    PdfConfigurationDateCheckbox.builder()
+                        .checkboxFieldId(
+                            new PdfFieldId("form1[0].#subform[0].ksr_DigitalVardmote[0]"))
+                        .dateFieldId(
+                            new PdfFieldId("form1[0].#subform[0].flt_datumDigitaltVardmöte[0]"))
+                        .build(),
+                    new FieldId("TELEFONKONTAKT"),
+                    PdfConfigurationDateCheckbox.builder()
+                        .checkboxFieldId(
+                            new PdfFieldId("form1[0].#subform[0].ksr_TelefonkontaktPatienten[0]"))
+                        .dateFieldId(
+                            new PdfFieldId("form1[0].#subform[0].flt_datumTelefonkontakt[0]"))
+                        .build(),
+                    new FieldId("JOURNALUPPGIFTER"),
+                    PdfConfigurationDateCheckbox.builder()
+                        .checkboxFieldId(
+                            new PdfFieldId("form1[0].#subform[0].ksr_Journaluppgifter[0]"))
+                        .dateFieldId(
+                            new PdfFieldId("form1[0].#subform[0].flt_datumJournaluppgifter[0]"))
+                        .build(),
+                    new FieldId("ANNAT"),
+                    PdfConfigurationDateCheckbox.builder()
+                        .checkboxFieldId(new PdfFieldId("form1[0].#subform[0].ksr_Annat[0]"))
+                        .dateFieldId(new PdfFieldId("form1[0].#subform[0].flt_datumAnnat[0]"))
+                        .build()))
+            .build();
     assertEquals(expected, element.pdfConfiguration());
   }
 
@@ -211,16 +208,12 @@ class QuestionGrundForMedicinsktUnderlagTest {
 
     @Test
     void shallReturnTrueIfBooleanIsFalse() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("27"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(false)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("27"))
+                  .value(ElementValueBoolean.builder().value(false).build())
+                  .build());
 
       final var element = questionGrundForMedicinsktUnderlag();
 
@@ -231,16 +224,12 @@ class QuestionGrundForMedicinsktUnderlagTest {
 
     @Test
     void shallReturnTrueIfElementMissing() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("8.1"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(true)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("8.1"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
 
       final var element = questionGrundForMedicinsktUnderlag();
 
@@ -251,16 +240,12 @@ class QuestionGrundForMedicinsktUnderlagTest {
 
     @Test
     void shallReturnFalseIfElementTrue() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("27"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(true)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("27"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
 
       final var element = questionGrundForMedicinsktUnderlag();
 

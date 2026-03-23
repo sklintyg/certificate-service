@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.integrationtest.common.util;
 
 import static se.inera.intyg.certificateservice.integrationtest.common.util.CertificateUtil.certificateId;
@@ -112,7 +130,6 @@ public class ApiUtil {
   private final List<String> certificateIds = new ArrayList<>();
   private final List<String> messageIds = new ArrayList<>();
 
-
   public ResponseEntity<GetCertificateTypeInfoResponse> certificateTypeInfo(
       GetCertificateTypeInfoRequest request) {
     final var requestUrl = "http://localhost:%s/api/certificatetypeinfo".formatted(port);
@@ -135,30 +152,23 @@ public class ApiUtil {
 
   public ResponseEntity<GetCertificateResponse> getCertificate(
       GetCertificateRequest request, String certificateId) {
-    final var requestUrl = "http://localhost:%s/api/certificate/%s".formatted(
-        port,
-        certificateId
-    );
+    final var requestUrl = "http://localhost:%s/api/certificate/%s".formatted(port, certificateId);
 
     return sendRequest(request, requestUrl, GetCertificateResponse.class);
   }
 
   public ResponseEntity<GetCertificateEventsResponse> getCertificateEvents(
       GetCertificateEventsRequest request, String certificateId) {
-    final var requestUrl = "http://localhost:%s/api/certificate/%s/events".formatted(
-        port,
-        certificateId
-    );
+    final var requestUrl =
+        "http://localhost:%s/api/certificate/%s/events".formatted(port, certificateId);
 
     return sendRequest(request, requestUrl, GetCertificateEventsResponse.class);
   }
 
   public ResponseEntity<GetCitizenCertificateResponse> getCitizenCertificate(
       GetCitizenCertificateRequest request, String certificateId) {
-    final var requestUrl = "http://localhost:%s/api/citizen/certificate/%s".formatted(
-        port,
-        certificateId
-    );
+    final var requestUrl =
+        "http://localhost:%s/api/citizen/certificate/%s".formatted(port, certificateId);
 
     return sendRequest(request, requestUrl, GetCitizenCertificateResponse.class);
   }
@@ -168,59 +178,50 @@ public class ApiUtil {
     final var requestUrl = "http://localhost:%s/api/citizen/certificate".formatted(port);
 
     return sendRequest(request, requestUrl, GetCitizenCertificateListResponse.class);
-
   }
 
   public ResponseEntity<PrintCitizenCertificateResponse> printCitizenCertificate(
       PrintCitizenCertificateRequest request, String certificateId) {
-    final var requestUrl = "http://localhost:%s/api/citizen/certificate/%s/print".formatted(port,
-        certificateId);
+    final var requestUrl =
+        "http://localhost:%s/api/citizen/certificate/%s/print".formatted(port, certificateId);
 
     return sendRequest(request, requestUrl, PrintCitizenCertificateResponse.class);
   }
 
   public ResponseEntity<SendCitizenCertificateResponse> sendCitizenCertificate(
       SendCitizenCertificateRequest request, String certificateId) {
-    final var requestUrl = "http://localhost:%s/api/citizen/certificate/%s/send".formatted(port,
-        certificateId);
+    final var requestUrl =
+        "http://localhost:%s/api/citizen/certificate/%s/send".formatted(port, certificateId);
 
     return sendRequest(request, requestUrl, SendCitizenCertificateResponse.class);
   }
 
   public ResponseEntity<GetPatientCertificatesResponse> getPatientCertificates(
       GetPatientCertificatesRequest request) {
-    final var requestUrl = "http://localhost:%s/api/patient/certificates".formatted(
-        port
-    );
+    final var requestUrl = "http://localhost:%s/api/patient/certificates".formatted(port);
 
     return sendRequest(request, requestUrl, GetPatientCertificatesResponse.class);
   }
 
   public ResponseEntity<GetUnitCertificatesInfoResponse> getUnitCertificatesInfo(
       GetUnitCertificatesInfoRequest request) {
-    final var requestUrl = "http://localhost:%s/api/unit/certificates/info".formatted(
-        port
-    );
+    final var requestUrl = "http://localhost:%s/api/unit/certificates/info".formatted(port);
 
     return sendRequest(request, requestUrl, GetUnitCertificatesInfoResponse.class);
   }
 
   public ResponseEntity<GetUnitCertificatesResponse> getUnitCertificates(
       GetUnitCertificatesRequest request) {
-    final var requestUrl = "http://localhost:%s/api/unit/certificates".formatted(
-        port
-    );
+    final var requestUrl = "http://localhost:%s/api/unit/certificates".formatted(port);
 
     return sendRequest(request, requestUrl, GetUnitCertificatesResponse.class);
   }
 
   public ResponseEntity<GetCertificateResponse> deleteCertificate(
       DeleteCertificateRequest request, String certificateId, long version) {
-    final var requestUrl = "http://localhost:%s/api/certificate/%s/%s".formatted(
-        port,
-        certificateId,
-        Long.toString(version)
-    );
+    final var requestUrl =
+        "http://localhost:%s/api/certificate/%s/%s"
+            .formatted(port, certificateId, Long.toString(version));
 
     final var headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
@@ -229,131 +230,110 @@ public class ApiUtil {
         requestUrl,
         HttpMethod.DELETE,
         new HttpEntity<>(request, headers),
-        new ParameterizedTypeReference<>() {
-        },
-        Collections.emptyMap()
-    );
+        new ParameterizedTypeReference<>() {},
+        Collections.emptyMap());
   }
 
   public ResponseEntity<GetLatestCertificateTypeVersionResponse> findLatestCertificateTypeVersion(
       String type) {
-    final var requestUrl = "http://localhost:%s/api/certificatetypeinfo/%s/exists"
-        .formatted(port, type);
+    final var requestUrl =
+        "http://localhost:%s/api/certificatetypeinfo/%s/exists".formatted(port, type);
     final var headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
     return this.restTemplate.exchange(
         requestUrl,
         HttpMethod.GET,
         new HttpEntity<>(headers),
-        new ParameterizedTypeReference<>() {
-        },
-        Collections.emptyMap()
-    );
+        new ParameterizedTypeReference<>() {},
+        Collections.emptyMap());
   }
 
-  public ResponseEntity<GetLatestCertificateExternalTypeVersionResponse> findLatestCertificateExternalTypeVersion(
-      String codeSystem, String code) {
-    final var requestUrl = "http://localhost:%s/api/certificatetypeinfo/%s/%s/exists"
-        .formatted(port, codeSystem, code);
+  public ResponseEntity<GetLatestCertificateExternalTypeVersionResponse>
+      findLatestCertificateExternalTypeVersion(String codeSystem, String code) {
+    final var requestUrl =
+        "http://localhost:%s/api/certificatetypeinfo/%s/%s/exists"
+            .formatted(port, codeSystem, code);
     final var headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
     return this.restTemplate.exchange(
         requestUrl,
         HttpMethod.GET,
         new HttpEntity<>(headers),
-        new ParameterizedTypeReference<>() {
-        },
-        Collections.emptyMap()
-    );
+        new ParameterizedTypeReference<>() {},
+        Collections.emptyMap());
   }
 
   public ResponseEntity<CitizenCertificateExistsResponse> findExistingCitizenCertificate(
       String certificateId) {
-    final var requestUrl = "http://localhost:%s/api/citizen/certificate/%s/exists"
-        .formatted(port, certificateId);
+    final var requestUrl =
+        "http://localhost:%s/api/citizen/certificate/%s/exists".formatted(port, certificateId);
     final var headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
     return this.restTemplate.exchange(
         requestUrl,
         HttpMethod.GET,
         new HttpEntity<>(headers),
-        new ParameterizedTypeReference<>() {
-        },
-        Collections.emptyMap()
-    );
+        new ParameterizedTypeReference<>() {},
+        Collections.emptyMap());
   }
 
-  public ResponseEntity<CertificateExistsResponse> certificateExists(
-      String certificateId) {
-    final var requestUrl = "http://localhost:%s/api/certificate/%s/exists"
-        .formatted(port, certificateId);
+  public ResponseEntity<CertificateExistsResponse> certificateExists(String certificateId) {
+    final var requestUrl =
+        "http://localhost:%s/api/certificate/%s/exists".formatted(port, certificateId);
     final var headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
     return this.restTemplate.exchange(
         requestUrl,
         HttpMethod.GET,
         new HttpEntity<>(headers),
-        new ParameterizedTypeReference<>() {
-        },
-        Collections.emptyMap()
-    );
+        new ParameterizedTypeReference<>() {},
+        Collections.emptyMap());
   }
 
   public ResponseEntity<ForwardCertificateResponse> forwardCertificate(
       String certificateId, ForwardCertificateRequest request) {
-    final var requestUrl = "http://localhost:%s/api/certificate/%s/forward"
-        .formatted(port, certificateId);
+    final var requestUrl =
+        "http://localhost:%s/api/certificate/%s/forward".formatted(port, certificateId);
     final var headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
     return this.restTemplate.exchange(
         requestUrl,
         HttpMethod.POST,
         new HttpEntity<>(request, headers),
-        new ParameterizedTypeReference<>() {
-        },
-        Collections.emptyMap()
-    );
+        new ParameterizedTypeReference<>() {},
+        Collections.emptyMap());
   }
 
-  public ResponseEntity<MessageExistsResponse> messageExists(
-      String messageId) {
-    final var requestUrl = "http://localhost:%s/api/message/%s/exists"
-        .formatted(port, messageId);
+  public ResponseEntity<MessageExistsResponse> messageExists(String messageId) {
+    final var requestUrl = "http://localhost:%s/api/message/%s/exists".formatted(port, messageId);
     final var headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
     return this.restTemplate.exchange(
         requestUrl,
         HttpMethod.GET,
         new HttpEntity<>(headers),
-        new ParameterizedTypeReference<>() {
-        },
-        Collections.emptyMap()
-    );
+        new ParameterizedTypeReference<>() {},
+        Collections.emptyMap());
   }
 
   public ResponseEntity<GetCertificateFromMessageResponse> certificateFromMessage(
-      GetCertificateFromMessageRequest request,
-      String messageId) {
-    final var requestUrl = "http://localhost:%s/api/message/%s/certificate"
-        .formatted(port, messageId);
+      GetCertificateFromMessageRequest request, String messageId) {
+    final var requestUrl =
+        "http://localhost:%s/api/message/%s/certificate".formatted(port, messageId);
 
     return sendRequest(request, requestUrl, GetCertificateFromMessageResponse.class);
   }
 
   public ResponseEntity<HandleMessageResponse> handleMessage(
       HandleMessageRequest request, String messageId) {
-    final var requestUrl = "http://localhost:%s/api/message/%s/handle"
-        .formatted(port, messageId);
+    final var requestUrl = "http://localhost:%s/api/message/%s/handle".formatted(port, messageId);
 
     return sendRequest(request, requestUrl, HandleMessageResponse.class);
   }
 
   public ResponseEntity<UpdateCertificateResponse> updateCertificate(
       UpdateCertificateRequest request, String certificateId) {
-    final var requestUrl = "http://localhost:%s/api/certificate/%s".formatted(
-        port,
-        certificateId
-    );
+    final var requestUrl = "http://localhost:%s/api/certificate/%s".formatted(port, certificateId);
 
     final var headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
@@ -362,18 +342,13 @@ public class ApiUtil {
         requestUrl,
         HttpMethod.PUT,
         new HttpEntity<>(request, headers),
-        new ParameterizedTypeReference<>() {
-        },
-        Collections.emptyMap()
-    );
+        new ParameterizedTypeReference<>() {},
+        Collections.emptyMap());
   }
 
   public ResponseEntity<String> updateCertificateWithConcurrentError(
       UpdateCertificateRequest request, String certificateId) {
-    final var requestUrl = "http://localhost:%s/api/certificate/%s".formatted(
-        port,
-        certificateId
-    );
+    final var requestUrl = "http://localhost:%s/api/certificate/%s".formatted(port, certificateId);
 
     final var headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
@@ -382,139 +357,106 @@ public class ApiUtil {
         requestUrl,
         HttpMethod.PUT,
         new HttpEntity<>(request, headers),
-        new ParameterizedTypeReference<>() {
-        },
-        Collections.emptyMap()
-    );
+        new ParameterizedTypeReference<>() {},
+        Collections.emptyMap());
   }
 
   public ResponseEntity<ValidateCertificateResponse> validateCertificate(
       ValidateCertificateRequest request, String certificateId) {
-    final var requestUrl = "http://localhost:%s/api/certificate/%s/validate".formatted(
-        port,
-        certificateId
-    );
+    final var requestUrl =
+        "http://localhost:%s/api/certificate/%s/validate".formatted(port, certificateId);
 
     return sendRequest(request, requestUrl, ValidateCertificateResponse.class);
   }
 
   public ResponseEntity<GetCertificateXmlResponse> getCertificateXml(
       GetCertificateXmlRequest request, String certificateId) {
-    final var requestUrl = "http://localhost:%s/api/certificate/%s/xml".formatted(
-        port,
-        certificateId
-    );
+    final var requestUrl =
+        "http://localhost:%s/api/certificate/%s/xml".formatted(port, certificateId);
 
     return sendRequest(request, requestUrl, GetCertificateXmlResponse.class);
   }
 
   public ResponseEntity<AnswerComplementResponse> answerComplement(
       AnswerComplementRequest request, String certificateId) {
-    final var requestUrl = "http://localhost:%s/api/certificate/%s/answerComplement".formatted(
-        port,
-        certificateId
-    );
+    final var requestUrl =
+        "http://localhost:%s/api/certificate/%s/answerComplement".formatted(port, certificateId);
 
     return sendRequest(request, requestUrl, AnswerComplementResponse.class);
   }
 
-  public ResponseEntity<CreateMessageResponse> createMessage(CreateMessageRequest request,
-      String certificateId) {
-    final var requestUrl = "http://localhost:%s/api/message/%s/create".formatted(
-        port,
-        certificateId
-    );
+  public ResponseEntity<CreateMessageResponse> createMessage(
+      CreateMessageRequest request, String certificateId) {
+    final var requestUrl =
+        "http://localhost:%s/api/message/%s/create".formatted(port, certificateId);
 
     return sendRequest(request, requestUrl, CreateMessageResponse.class);
   }
 
-  public ResponseEntity<SaveMessageResponse> saveMessage(SaveMessageRequest request,
-      String messageId) {
-    final var requestUrl = "http://localhost:%s/api/message/%s/save".formatted(
-        port,
-        messageId
-    );
+  public ResponseEntity<SaveMessageResponse> saveMessage(
+      SaveMessageRequest request, String messageId) {
+    final var requestUrl = "http://localhost:%s/api/message/%s/save".formatted(port, messageId);
 
     return sendRequest(request, requestUrl, SaveMessageResponse.class);
   }
 
-  public ResponseEntity<SendMessageResponse> sendMessage(SendMessageRequest request,
-      String messageId) {
-    final var requestUrl = "http://localhost:%s/api/message/%s/send".formatted(
-        port,
-        messageId
-    );
+  public ResponseEntity<SendMessageResponse> sendMessage(
+      SendMessageRequest request, String messageId) {
+    final var requestUrl = "http://localhost:%s/api/message/%s/send".formatted(port, messageId);
 
     return sendRequest(request, requestUrl, SendMessageResponse.class);
   }
 
   public ResponseEntity<Void> deleteMessage(DeleteMessageRequest request, String messageId) {
-    final var requestUrl = "http://localhost:%s/api/message/%s/send".formatted(
-        port,
-        messageId
-    );
+    final var requestUrl = "http://localhost:%s/api/message/%s/send".formatted(port, messageId);
 
     return sendRequest(request, requestUrl, Void.class);
   }
 
   public ResponseEntity<SaveAnswerResponse> saveAnswer(
       SaveAnswerRequest request, String messageId) {
-    final var requestUrl = "http://localhost:%s/api/message/%s/saveanswer".formatted(
-        port,
-        messageId
-    );
+    final var requestUrl =
+        "http://localhost:%s/api/message/%s/saveanswer".formatted(port, messageId);
 
     return sendRequest(request, requestUrl, SaveAnswerResponse.class);
   }
 
   public ResponseEntity<SendAnswerResponse> sendAnswer(
       SendAnswerRequest request, String messageId) {
-    final var requestUrl = "http://localhost:%s/api/message/%s/sendanswer".formatted(
-        port,
-        messageId
-    );
+    final var requestUrl =
+        "http://localhost:%s/api/message/%s/sendanswer".formatted(port, messageId);
 
     return sendRequest(request, requestUrl, SendAnswerResponse.class);
   }
 
   public ResponseEntity<DeleteAnswerResponse> deleteAnswer(
       DeleteAnswerRequest request, String messageId) {
-    final var requestUrl = "http://localhost:%s/api/message/%s/deleteanswer".formatted(
-        port,
-        messageId
-    );
+    final var requestUrl =
+        "http://localhost:%s/api/message/%s/deleteanswer".formatted(port, messageId);
 
     return sendRequest(request, requestUrl, DeleteAnswerResponse.class);
   }
 
-  public ResponseEntity<SignCertificateResponse> signCertificate(SignCertificateRequest request,
-      String certificateId, Long version) {
-    final var requestUrl = "http://localhost:%s/api/certificate/%s/sign/%s".formatted(
-        port,
-        certificateId,
-        version
-    );
+  public ResponseEntity<SignCertificateResponse> signCertificate(
+      SignCertificateRequest request, String certificateId, Long version) {
+    final var requestUrl =
+        "http://localhost:%s/api/certificate/%s/sign/%s".formatted(port, certificateId, version);
 
     return sendRequest(request, requestUrl, SignCertificateResponse.class);
   }
 
-  public ResponseEntity<SendCertificateResponse> sendCertificate(SendCertificateRequest request,
-      String certificateId) {
-    final var requestUrl = "http://localhost:%s/api/certificate/%s/send".formatted(
-        port,
-        certificateId
-    );
+  public ResponseEntity<SendCertificateResponse> sendCertificate(
+      SendCertificateRequest request, String certificateId) {
+    final var requestUrl =
+        "http://localhost:%s/api/certificate/%s/send".formatted(port, certificateId);
 
     return sendRequest(request, requestUrl, SendCertificateResponse.class);
   }
 
   public ResponseEntity<CertificateReadyForSignResponse> readyForSignCertificate(
-      CertificateReadyForSignRequest request,
-      String certificateId) {
-    final var requestUrl = "http://localhost:%s/api/certificate/%s/readyForSign".formatted(
-        port,
-        certificateId
-    );
+      CertificateReadyForSignRequest request, String certificateId) {
+    final var requestUrl =
+        "http://localhost:%s/api/certificate/%s/readyForSign".formatted(port, certificateId);
 
     return sendRequest(request, requestUrl, CertificateReadyForSignResponse.class);
   }
@@ -528,43 +470,31 @@ public class ApiUtil {
   }
 
   public ResponseEntity<GetCertificateMessageResponse> getMessagesForCertificate(
-      GetCertificateMessageRequest request,
-      String certificateId) {
-    final var requestUrl = "http://localhost:%s/api/message/%s".formatted(
-        port,
-        certificateId
-    );
+      GetCertificateMessageRequest request, String certificateId) {
+    final var requestUrl = "http://localhost:%s/api/message/%s".formatted(port, certificateId);
 
     return sendRequest(request, requestUrl, GetCertificateMessageResponse.class);
   }
 
   public ResponseEntity<GetUnitMessagesResponse> getMessagesForUnit(
       GetUnitMessagesRequest request) {
-    final var requestUrl = "http://localhost:%s/api/unit/messages".formatted(
-        port
-    );
+    final var requestUrl = "http://localhost:%s/api/unit/messages".formatted(port);
 
     return sendRequest(request, requestUrl, GetUnitMessagesResponse.class);
   }
 
   public ResponseEntity<RevokeCertificateResponse> revokeCertificate(
-      RevokeCertificateRequest request,
-      String certificateId) {
-    final var requestUrl = "http://localhost:%s/api/certificate/%s/revoke".formatted(
-        port,
-        certificateId
-    );
+      RevokeCertificateRequest request, String certificateId) {
+    final var requestUrl =
+        "http://localhost:%s/api/certificate/%s/revoke".formatted(port, certificateId);
 
     return sendRequest(request, requestUrl, RevokeCertificateResponse.class);
   }
 
   public ResponseEntity<ComplementCertificateResponse> complementCertificate(
-      ComplementCertificateRequest request,
-      String certificateId) {
-    final var requestUrl = "http://localhost:%s/api/certificate/%s/complement".formatted(
-        port,
-        certificateId
-    );
+      ComplementCertificateRequest request, String certificateId) {
+    final var requestUrl =
+        "http://localhost:%s/api/certificate/%s/complement".formatted(port, certificateId);
 
     final var response = sendRequest(request, requestUrl, ComplementCertificateResponse.class);
 
@@ -576,12 +506,9 @@ public class ApiUtil {
   }
 
   public ResponseEntity<ReplaceCertificateResponse> replaceCertificate(
-      ReplaceCertificateRequest request,
-      String certificateId) {
-    final var requestUrl = "http://localhost:%s/api/certificate/%s/replace".formatted(
-        port,
-        certificateId
-    );
+      ReplaceCertificateRequest request, String certificateId) {
+    final var requestUrl =
+        "http://localhost:%s/api/certificate/%s/replace".formatted(port, certificateId);
 
     final var response = sendRequest(request, requestUrl, ReplaceCertificateResponse.class);
 
@@ -593,12 +520,9 @@ public class ApiUtil {
   }
 
   public ResponseEntity<RenewCertificateResponse> renewCertificate(
-      RenewCertificateRequest request,
-      String certificateId) {
-    final var requestUrl = "http://localhost:%s/api/certificate/%s/renew".formatted(
-        port,
-        certificateId
-    );
+      RenewCertificateRequest request, String certificateId) {
+    final var requestUrl =
+        "http://localhost:%s/api/certificate/%s/renew".formatted(port, certificateId);
 
     final var response = sendRequest(request, requestUrl, RenewCertificateResponse.class);
 
@@ -610,12 +534,9 @@ public class ApiUtil {
   }
 
   public ResponseEntity<RenewCertificateResponse> renewExternalCertificate(
-      RenewExternalCertificateRequest request,
-      String certificateId) {
-    final var requestUrl = "http://localhost:%s/api/certificate/%s/renew/external".formatted(
-        port,
-        certificateId
-    );
+      RenewExternalCertificateRequest request, String certificateId) {
+    final var requestUrl =
+        "http://localhost:%s/api/certificate/%s/renew/external".formatted(port, certificateId);
 
     final var response = sendRequest(request, requestUrl, RenewCertificateResponse.class);
 
@@ -628,15 +549,11 @@ public class ApiUtil {
   }
 
   public ResponseEntity<CreateDraftFromCertificateResponse> createDraftFromCertificate(
-      CreateDraftFromCertificateRequest request,
-      String certificateId) {
-    final var requestUrl = "http://localhost:%s/api/certificate/%s/draft".formatted(
-        port,
-        certificateId
-    );
+      CreateDraftFromCertificateRequest request, String certificateId) {
+    final var requestUrl =
+        "http://localhost:%s/api/certificate/%s/draft".formatted(port, certificateId);
 
-    final var response = sendRequest(request, requestUrl,
-        CreateDraftFromCertificateResponse.class);
+    final var response = sendRequest(request, requestUrl, CreateDraftFromCertificateResponse.class);
 
     if (certificateId(response.getBody()) != null) {
       certificateIds.add(certificateId);
@@ -648,37 +565,31 @@ public class ApiUtil {
 
   public ResponseEntity<GetCertificateCandidateResponse> getCertificateCandidate(
       GetCertificateCandidateRequest request, String certificateId) {
-    final var requestUrl = "http://localhost:%s/api/certificate/%s/candidate".formatted(
-        port,
-        certificateId
-    );
+    final var requestUrl =
+        "http://localhost:%s/api/certificate/%s/candidate".formatted(port, certificateId);
 
     return sendRequest(request, requestUrl, GetCertificateCandidateResponse.class);
   }
 
   public ResponseEntity<UpdateWithCertificateCandidateResponse> updateWithCertificateCandidate(
       UpdateWithCertificateCandidateRequest request, String certificateId, String candidateId) {
-    final var requestUrl = "http://localhost:%s/api/certificate/%s/candidate/%s"
-        .formatted(port, certificateId, candidateId);
+    final var requestUrl =
+        "http://localhost:%s/api/certificate/%s/candidate/%s"
+            .formatted(port, certificateId, candidateId);
 
     return sendRequest(request, requestUrl, UpdateWithCertificateCandidateResponse.class);
   }
 
   public ResponseEntity<GetCertificatePdfResponse> getCertificatePdf(
       GetCertificatePdfRequest request, String certificateId) {
-    final var requestUrl = "http://localhost:%s/api/certificate/%s/pdf".formatted(
-        port,
-        certificateId
-    );
+    final var requestUrl =
+        "http://localhost:%s/api/certificate/%s/pdf".formatted(port, certificateId);
 
     return sendRequest(request, requestUrl, GetCertificatePdfResponse.class);
   }
 
-  public ResponseEntity<UnitStatisticsResponse> getUnitStatistics(
-      UnitStatisticsRequest request) {
-    final var requestUrl = "http://localhost:%s/api/unit/certificates/statistics".formatted(
-        port
-    );
+  public ResponseEntity<UnitStatisticsResponse> getUnitStatistics(UnitStatisticsRequest request) {
+    final var requestUrl = "http://localhost:%s/api/unit/certificates/statistics".formatted(port);
 
     return sendRequest(request, requestUrl, UnitStatisticsResponse.class);
   }
@@ -692,8 +603,7 @@ public class ApiUtil {
         HttpMethod.POST,
         new HttpEntity<>(request, headers),
         clazz,
-        Collections.emptyMap()
-    );
+        Collections.emptyMap());
   }
 
   public void reset() {
@@ -704,25 +614,22 @@ public class ApiUtil {
     final var requestUrl = "http://localhost:%s/testability/certificate".formatted(port);
     final var headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
-    final var request = TestabilityResetCertificateRequest.builder()
-        .certificateIds(certificateIds)
-        .messageIds(messageIds)
-        .build();
-    final var response = this.restTemplate.<Void>exchange(
-        requestUrl,
-        HttpMethod.DELETE,
-        new HttpEntity<>(request, headers),
-        new ParameterizedTypeReference<>() {
-        },
-        Collections.emptyMap()
-    );
+    final var request =
+        TestabilityResetCertificateRequest.builder()
+            .certificateIds(certificateIds)
+            .messageIds(messageIds)
+            .build();
+    final var response =
+        this.restTemplate.<Void>exchange(
+            requestUrl,
+            HttpMethod.DELETE,
+            new HttpEntity<>(request, headers),
+            new ParameterizedTypeReference<>() {},
+            Collections.emptyMap());
     if (response.getStatusCode() != HttpStatus.OK) {
       log.error(
-          "Could not reset testability with request '%s'! StatusCode: '%s'".formatted(
-              request,
-              response.getStatusCode()
-          )
-      );
+          "Could not reset testability with request '%s'! StatusCode: '%s'"
+              .formatted(request, response.getStatusCode()));
     }
   }
 }

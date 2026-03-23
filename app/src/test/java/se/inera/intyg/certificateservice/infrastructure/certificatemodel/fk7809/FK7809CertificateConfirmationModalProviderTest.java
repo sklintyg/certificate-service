@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7809;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,7 +47,8 @@ class FK7809CertificateConfirmationModalProviderTest {
   private static Certificate certificate;
   private static ActionEvaluation actionEvaluation;
   private static AccessScope accessScope;
-  private static final FK7809CertificateConfirmationModalProvider provider = new FK7809CertificateConfirmationModalProvider();
+  private static final FK7809CertificateConfirmationModalProvider provider =
+      new FK7809CertificateConfirmationModalProvider();
 
   private static final String PATIENT_NAME = "First";
   private static final String PATIENT_MIDDLE_NAME = "Middle";
@@ -55,37 +74,28 @@ class FK7809CertificateConfirmationModalProviderTest {
 
       @BeforeEach
       void setup() {
-        certificate = fk7809CertificateBuilder()
-            .certificateMetaData(
-                CertificateMetaData.builder()
-                    .patient(
-                        Patient.builder()
-                            .name(
-                                Name.builder()
-                                    .firstName(PATIENT_NAME)
-                                    .middleName(PATIENT_MIDDLE_NAME)
-                                    .lastName(PATIENT_LAST_NAME)
-                                    .build()
-                            )
-                            .id(
-                                PersonId.builder()
-                                    .id(PATIENT_ID)
-                                    .build()
-                            )
-                            .build()
-                    )
-                    .issuingUnit(ALFA_MEDICINCENTRUM)
-                    .build()
-            )
-            .build();
-        actionEvaluation = ActionEvaluation.builder()
-            .user(
-                ajlaDoctorBuilder()
-                    .accessScope(accessScope)
-                    .build()
-            )
-            .careUnit(ALFA_MEDICINCENTRUM)
-            .build();
+        certificate =
+            fk7809CertificateBuilder()
+                .certificateMetaData(
+                    CertificateMetaData.builder()
+                        .patient(
+                            Patient.builder()
+                                .name(
+                                    Name.builder()
+                                        .firstName(PATIENT_NAME)
+                                        .middleName(PATIENT_MIDDLE_NAME)
+                                        .lastName(PATIENT_LAST_NAME)
+                                        .build())
+                                .id(PersonId.builder().id(PATIENT_ID).build())
+                                .build())
+                        .issuingUnit(ALFA_MEDICINCENTRUM)
+                        .build())
+                .build();
+        actionEvaluation =
+            ActionEvaluation.builder()
+                .user(ajlaDoctorBuilder().accessScope(accessScope).build())
+                .careUnit(ALFA_MEDICINCENTRUM)
+                .build();
       }
 
       @Test
@@ -100,30 +110,21 @@ class FK7809CertificateConfirmationModalProviderTest {
       @BeforeEach
       void setup() {
         certificate = null;
-        actionEvaluation = ActionEvaluation.builder()
-            .patient(
-                Patient.builder()
-                    .name(
-                        Name.builder()
-                            .firstName(PATIENT_NAME)
-                            .middleName(PATIENT_MIDDLE_NAME)
-                            .lastName(PATIENT_LAST_NAME)
-                            .build()
-                    )
-                    .id(
-                        PersonId.builder()
-                            .id(PATIENT_ID)
-                            .build()
-                    )
-                    .build()
-            )
-            .user(
-                ajlaDoctorBuilder()
-                    .accessScope(accessScope)
-                    .build()
-            )
-            .careUnit(ALFA_MEDICINCENTRUM)
-            .build();
+        actionEvaluation =
+            ActionEvaluation.builder()
+                .patient(
+                    Patient.builder()
+                        .name(
+                            Name.builder()
+                                .firstName(PATIENT_NAME)
+                                .middleName(PATIENT_MIDDLE_NAME)
+                                .lastName(PATIENT_LAST_NAME)
+                                .build())
+                        .id(PersonId.builder().id(PATIENT_ID).build())
+                        .build())
+                .user(ajlaDoctorBuilder().accessScope(accessScope).build())
+                .careUnit(ALFA_MEDICINCENTRUM)
+                .build();
       }
 
       @Test
@@ -148,8 +149,7 @@ class FK7809CertificateConfirmationModalProviderTest {
 
         assertEquals(
             "Läkarutlåtande för merkostnadsersättning är till för personer över 18 år som inte har en underhållsskyldig förälder. Om det gäller ett barn ska du istället använda Läkarutlåtande för omvårdnadsbidrag eller merkostnadsersättning.",
-            result.text()
-        );
+            result.text());
       }
 
       @Test
@@ -158,28 +158,21 @@ class FK7809CertificateConfirmationModalProviderTest {
 
         assertEquals(
             "Jag är säker på att jag vill utfärda Läkarutlåtande för merkostnadsersättning.",
-            result.checkboxText()
-        );
+            result.checkboxText());
       }
 
       @Test
       void shouldReturnPrimaryAction() {
         final var result = provider.of(certificate, actionEvaluation);
 
-        assertEquals(
-            CertificateModalActionType.READ,
-            result.primaryAction()
-        );
+        assertEquals(CertificateModalActionType.READ, result.primaryAction());
       }
 
       @Test
       void shouldReturnSecondaryAction() {
         final var result = provider.of(certificate, actionEvaluation);
 
-        assertEquals(
-            CertificateModalActionType.CANCEL,
-            result.secondaryAction()
-        );
+        assertEquals(CertificateModalActionType.CANCEL, result.secondaryAction());
       }
     }
 
@@ -188,65 +181,49 @@ class FK7809CertificateConfirmationModalProviderTest {
 
       @Test
       void shouldReturnNullIfCertificateExists() {
-        certificate = fk7809CertificateBuilder()
-            .certificateMetaData(
-                CertificateMetaData.builder()
-                    .patient(
-                        Patient.builder()
-                            .name(
-                                Name.builder()
-                                    .firstName(PATIENT_NAME)
-                                    .middleName(PATIENT_MIDDLE_NAME)
-                                    .lastName(PATIENT_LAST_NAME)
-                                    .build()
-                            )
-                            .id(
-                                PersonId.builder()
-                                    .id(OLD_PATIENT_ID)
-                                    .build()
-                            )
-                            .build()
-                    )
-                    .issuingUnit(ALFA_MEDICINCENTRUM)
-                    .build()
-            )
-            .build();
-        actionEvaluation = ActionEvaluation.builder()
-            .careUnit(ALFA_MEDICINCENTRUM)
-            .user(
-                ajlaDoctorBuilder()
-                    .accessScope(accessScope)
-                    .build()
-            ).build();
+        certificate =
+            fk7809CertificateBuilder()
+                .certificateMetaData(
+                    CertificateMetaData.builder()
+                        .patient(
+                            Patient.builder()
+                                .name(
+                                    Name.builder()
+                                        .firstName(PATIENT_NAME)
+                                        .middleName(PATIENT_MIDDLE_NAME)
+                                        .lastName(PATIENT_LAST_NAME)
+                                        .build())
+                                .id(PersonId.builder().id(OLD_PATIENT_ID).build())
+                                .build())
+                        .issuingUnit(ALFA_MEDICINCENTRUM)
+                        .build())
+                .build();
+        actionEvaluation =
+            ActionEvaluation.builder()
+                .careUnit(ALFA_MEDICINCENTRUM)
+                .user(ajlaDoctorBuilder().accessScope(accessScope).build())
+                .build();
 
         assertNull(provider.of(certificate, actionEvaluation));
       }
 
       @Test
       void shouldReturnNullIfCertificateDoesNotExists() {
-        actionEvaluation = ActionEvaluation.builder()
-            .patient(
-                Patient.builder()
-                    .name(
-                        Name.builder()
-                            .firstName(PATIENT_NAME)
-                            .middleName(PATIENT_MIDDLE_NAME)
-                            .lastName(PATIENT_LAST_NAME)
-                            .build()
-                    )
-                    .id(
-                        PersonId.builder()
-                            .id(OLD_PATIENT_ID)
-                            .build()
-                    )
-                    .build()
-            )
-            .careUnit(ALFA_MEDICINCENTRUM)
-            .user(
-                ajlaDoctorBuilder()
-                    .accessScope(accessScope)
-                    .build()
-            ).build();
+        actionEvaluation =
+            ActionEvaluation.builder()
+                .patient(
+                    Patient.builder()
+                        .name(
+                            Name.builder()
+                                .firstName(PATIENT_NAME)
+                                .middleName(PATIENT_MIDDLE_NAME)
+                                .lastName(PATIENT_LAST_NAME)
+                                .build())
+                        .id(PersonId.builder().id(OLD_PATIENT_ID).build())
+                        .build())
+                .careUnit(ALFA_MEDICINCENTRUM)
+                .user(ajlaDoctorBuilder().accessScope(accessScope).build())
+                .build();
 
         assertNull(provider.of(certificate, actionEvaluation));
       }
@@ -254,37 +231,29 @@ class FK7809CertificateConfirmationModalProviderTest {
 
     @Test
     void shouldReturnNullIfCertificateIsLocked() {
-      certificate = fk7809CertificateBuilder()
-          .status(Status.LOCKED_DRAFT)
-          .certificateMetaData(
-              CertificateMetaData.builder()
-                  .patient(
-                      Patient.builder()
-                          .name(
-                              Name.builder()
-                                  .firstName(PATIENT_NAME)
-                                  .middleName(PATIENT_MIDDLE_NAME)
-                                  .lastName(PATIENT_LAST_NAME)
-                                  .build()
-                          )
-                          .id(
-                              PersonId.builder()
-                                  .id(OLD_PATIENT_ID)
-                                  .build()
-                          )
-                          .build()
-                  )
-                  .issuingUnit(ALFA_MEDICINCENTRUM)
-                  .build()
-          )
-          .build();
-      actionEvaluation = ActionEvaluation.builder()
-          .careUnit(ALFA_MEDICINCENTRUM)
-          .user(
-              ajlaDoctorBuilder()
-                  .accessScope(accessScope)
-                  .build()
-          ).build();
+      certificate =
+          fk7809CertificateBuilder()
+              .status(Status.LOCKED_DRAFT)
+              .certificateMetaData(
+                  CertificateMetaData.builder()
+                      .patient(
+                          Patient.builder()
+                              .name(
+                                  Name.builder()
+                                      .firstName(PATIENT_NAME)
+                                      .middleName(PATIENT_MIDDLE_NAME)
+                                      .lastName(PATIENT_LAST_NAME)
+                                      .build())
+                              .id(PersonId.builder().id(OLD_PATIENT_ID).build())
+                              .build())
+                      .issuingUnit(ALFA_MEDICINCENTRUM)
+                      .build())
+              .build();
+      actionEvaluation =
+          ActionEvaluation.builder()
+              .careUnit(ALFA_MEDICINCENTRUM)
+              .user(ajlaDoctorBuilder().accessScope(accessScope).build())
+              .build();
 
       assertNull(provider.of(certificate, actionEvaluation));
     }
@@ -303,44 +272,31 @@ class FK7809CertificateConfirmationModalProviderTest {
 
       @BeforeEach
       void setup() {
-        certificate = fk7809CertificateBuilder()
-            .revision(new Revision(10))
-            .certificateMetaData(
-                CertificateMetaData.builder()
-                    .issuingUnit(ALFA_MEDICINCENTRUM)
-                    .patient(
-                        Patient.builder()
-                            .name(
-                                Name.builder()
-                                    .firstName(PATIENT_NAME)
-                                    .middleName(PATIENT_MIDDLE_NAME)
-                                    .lastName(PATIENT_LAST_NAME)
-                                    .build()
-                            )
-                            .id(
-                                PersonId.builder()
-                                    .id(PATIENT_ID)
-                                    .build()
-                            )
-                            .build()
-                    )
-                    .careUnit(ALFA_MEDICINCENTRUM)
-                    .build()
-            )
-            .build();
-        actionEvaluation = ActionEvaluation.builder()
-            .careUnit(ALFA_MEDICINCENTRUM)
-            .subUnit(
-                SubUnit.builder()
-                    .hsaId(ALFA_MEDICINCENTRUM.hsaId())
-                    .build()
-            )
-            .user(
-                ajlaDoctorBuilder()
-                    .accessScope(accessScope)
-                    .build()
-            )
-            .build();
+        certificate =
+            fk7809CertificateBuilder()
+                .revision(new Revision(10))
+                .certificateMetaData(
+                    CertificateMetaData.builder()
+                        .issuingUnit(ALFA_MEDICINCENTRUM)
+                        .patient(
+                            Patient.builder()
+                                .name(
+                                    Name.builder()
+                                        .firstName(PATIENT_NAME)
+                                        .middleName(PATIENT_MIDDLE_NAME)
+                                        .lastName(PATIENT_LAST_NAME)
+                                        .build())
+                                .id(PersonId.builder().id(PATIENT_ID).build())
+                                .build())
+                        .careUnit(ALFA_MEDICINCENTRUM)
+                        .build())
+                .build();
+        actionEvaluation =
+            ActionEvaluation.builder()
+                .careUnit(ALFA_MEDICINCENTRUM)
+                .subUnit(SubUnit.builder().hsaId(ALFA_MEDICINCENTRUM.hsaId()).build())
+                .user(ajlaDoctorBuilder().accessScope(accessScope).build())
+                .build();
       }
 
       @Test
@@ -354,43 +310,30 @@ class FK7809CertificateConfirmationModalProviderTest {
 
       @BeforeEach
       void setup() {
-        certificate = fk7809CertificateBuilder()
-            .certificateMetaData(
-                CertificateMetaData.builder()
-                    .patient(
-                        Patient.builder()
-                            .name(
-                                Name.builder()
-                                    .firstName(PATIENT_NAME)
-                                    .middleName(PATIENT_MIDDLE_NAME)
-                                    .lastName(PATIENT_LAST_NAME)
-                                    .build()
-                            )
-                            .id(
-                                PersonId.builder()
-                                    .id(PATIENT_ID)
-                                    .build()
-                            )
-                            .build()
-                    )
-                    .issuingUnit(ALFA_MEDICINCENTRUM)
-                    .careUnit(ALFA_MEDICINCENTRUM)
-                    .build()
-            )
-            .build();
-        actionEvaluation = ActionEvaluation.builder()
-            .user(
-                ajlaDoctorBuilder()
-                    .accessScope(accessScope)
-                    .build()
-            )
-            .subUnit(
-                SubUnit.builder()
-                    .hsaId(ALFA_MEDICINCENTRUM.hsaId())
-                    .build()
-            )
-            .careUnit(ALFA_MEDICINCENTRUM)
-            .build();
+        certificate =
+            fk7809CertificateBuilder()
+                .certificateMetaData(
+                    CertificateMetaData.builder()
+                        .patient(
+                            Patient.builder()
+                                .name(
+                                    Name.builder()
+                                        .firstName(PATIENT_NAME)
+                                        .middleName(PATIENT_MIDDLE_NAME)
+                                        .lastName(PATIENT_LAST_NAME)
+                                        .build())
+                                .id(PersonId.builder().id(PATIENT_ID).build())
+                                .build())
+                        .issuingUnit(ALFA_MEDICINCENTRUM)
+                        .careUnit(ALFA_MEDICINCENTRUM)
+                        .build())
+                .build();
+        actionEvaluation =
+            ActionEvaluation.builder()
+                .user(ajlaDoctorBuilder().accessScope(accessScope).build())
+                .subUnit(SubUnit.builder().hsaId(ALFA_MEDICINCENTRUM.hsaId()).build())
+                .careUnit(ALFA_MEDICINCENTRUM)
+                .build();
       }
 
       @Test
@@ -415,8 +358,7 @@ class FK7809CertificateConfirmationModalProviderTest {
 
         assertEquals(
             "Läkarutlåtande för merkostnadsersättning är till för personer över 18 år som inte har en underhållsskyldig förälder. Om det gäller ett barn ska du istället använda Läkarutlåtande för omvårdnadsbidrag eller merkostnadsersättning.",
-            result.text()
-        );
+            result.text());
       }
 
       @Test
@@ -425,28 +367,21 @@ class FK7809CertificateConfirmationModalProviderTest {
 
         assertEquals(
             "Jag är säker på att jag vill utfärda Läkarutlåtande för merkostnadsersättning.",
-            result.checkboxText()
-        );
+            result.checkboxText());
       }
 
       @Test
       void shouldReturnPrimaryAction() {
         final var result = provider.of(certificate, actionEvaluation);
 
-        assertEquals(
-            CertificateModalActionType.READ,
-            result.primaryAction()
-        );
+        assertEquals(CertificateModalActionType.READ, result.primaryAction());
       }
 
       @Test
       void shouldReturnSecondaryAction() {
         final var result = provider.of(certificate, actionEvaluation);
 
-        assertEquals(
-            CertificateModalActionType.DELETE,
-            result.secondaryAction()
-        );
+        assertEquals(CertificateModalActionType.DELETE, result.secondaryAction());
       }
     }
 
@@ -456,29 +391,21 @@ class FK7809CertificateConfirmationModalProviderTest {
       @BeforeEach
       void setup() {
         certificate = null;
-        actionEvaluation = ActionEvaluation.builder()
-            .careUnit(ALFA_MEDICINCENTRUM)
-            .patient(
-                Patient.builder()
-                    .name(
-                        Name.builder()
-                            .firstName(PATIENT_NAME)
-                            .middleName(PATIENT_MIDDLE_NAME)
-                            .lastName(PATIENT_LAST_NAME)
-                            .build()
-                    )
-                    .id(
-                        PersonId.builder()
-                            .id(PATIENT_ID)
-                            .build()
-                    )
-                    .build()
-            )
-            .user(
-                ajlaDoctorBuilder()
-                    .accessScope(accessScope)
-                    .build()
-            ).build();
+        actionEvaluation =
+            ActionEvaluation.builder()
+                .careUnit(ALFA_MEDICINCENTRUM)
+                .patient(
+                    Patient.builder()
+                        .name(
+                            Name.builder()
+                                .firstName(PATIENT_NAME)
+                                .middleName(PATIENT_MIDDLE_NAME)
+                                .lastName(PATIENT_LAST_NAME)
+                                .build())
+                        .id(PersonId.builder().id(PATIENT_ID).build())
+                        .build())
+                .user(ajlaDoctorBuilder().accessScope(accessScope).build())
+                .build();
       }
 
       @Test
@@ -503,8 +430,7 @@ class FK7809CertificateConfirmationModalProviderTest {
 
         assertEquals(
             "Läkarutlåtande för merkostnadsersättning är till för personer över 18 år som inte har en underhållsskyldig förälder. Om det gäller ett barn ska du istället använda Läkarutlåtande för omvårdnadsbidrag eller merkostnadsersättning.",
-            result.text()
-        );
+            result.text());
       }
 
       @Test
@@ -513,28 +439,21 @@ class FK7809CertificateConfirmationModalProviderTest {
 
         assertEquals(
             "Jag är säker på att jag vill utfärda Läkarutlåtande för merkostnadsersättning.",
-            result.checkboxText()
-        );
+            result.checkboxText());
       }
 
       @Test
       void shouldReturnPrimaryAction() {
         final var result = provider.of(certificate, actionEvaluation);
 
-        assertEquals(
-            CertificateModalActionType.READ,
-            result.primaryAction()
-        );
+        assertEquals(CertificateModalActionType.READ, result.primaryAction());
       }
 
       @Test
       void shouldReturnSecondaryAction() {
         final var result = provider.of(certificate, actionEvaluation);
 
-        assertEquals(
-            CertificateModalActionType.DELETE,
-            result.secondaryAction()
-        );
+        assertEquals(CertificateModalActionType.DELETE, result.secondaryAction());
       }
     }
 
@@ -543,64 +462,48 @@ class FK7809CertificateConfirmationModalProviderTest {
 
       @Test
       void shouldReturnNullIfCertificateExists() {
-        certificate = fk7809CertificateBuilder()
-            .certificateMetaData(
-                CertificateMetaData.builder()
-                    .issuingUnit(ALFA_MEDICINCENTRUM)
-                    .patient(
-                        Patient.builder()
-                            .name(
-                                Name.builder()
-                                    .firstName(PATIENT_NAME)
-                                    .middleName(PATIENT_MIDDLE_NAME)
-                                    .lastName(PATIENT_LAST_NAME)
-                                    .build()
-                            )
-                            .id(
-                                PersonId.builder()
-                                    .id(OLD_PATIENT_ID)
-                                    .build()
-                            )
-                            .build()
-                    )
-                    .build()
-            )
-            .build();
-        actionEvaluation = ActionEvaluation.builder()
-            .careUnit(ALFA_MEDICINCENTRUM)
-            .user(
-                ajlaDoctorBuilder()
-                    .accessScope(accessScope)
-                    .build()
-            ).build();
+        certificate =
+            fk7809CertificateBuilder()
+                .certificateMetaData(
+                    CertificateMetaData.builder()
+                        .issuingUnit(ALFA_MEDICINCENTRUM)
+                        .patient(
+                            Patient.builder()
+                                .name(
+                                    Name.builder()
+                                        .firstName(PATIENT_NAME)
+                                        .middleName(PATIENT_MIDDLE_NAME)
+                                        .lastName(PATIENT_LAST_NAME)
+                                        .build())
+                                .id(PersonId.builder().id(OLD_PATIENT_ID).build())
+                                .build())
+                        .build())
+                .build();
+        actionEvaluation =
+            ActionEvaluation.builder()
+                .careUnit(ALFA_MEDICINCENTRUM)
+                .user(ajlaDoctorBuilder().accessScope(accessScope).build())
+                .build();
 
         assertNull(provider.of(certificate, actionEvaluation));
       }
 
       @Test
       void shouldReturnNullIfCertificateDoesNotExists() {
-        actionEvaluation = ActionEvaluation.builder()
-            .patient(
-                Patient.builder()
-                    .name(
-                        Name.builder()
-                            .firstName(PATIENT_NAME)
-                            .middleName(PATIENT_MIDDLE_NAME)
-                            .lastName(PATIENT_LAST_NAME)
-                            .build()
-                    )
-                    .id(
-                        PersonId.builder()
-                            .id(OLD_PATIENT_ID)
-                            .build()
-                    )
-                    .build()
-            )
-            .user(
-                ajlaDoctorBuilder()
-                    .accessScope(accessScope)
-                    .build()
-            ).build();
+        actionEvaluation =
+            ActionEvaluation.builder()
+                .patient(
+                    Patient.builder()
+                        .name(
+                            Name.builder()
+                                .firstName(PATIENT_NAME)
+                                .middleName(PATIENT_MIDDLE_NAME)
+                                .lastName(PATIENT_LAST_NAME)
+                                .build())
+                        .id(PersonId.builder().id(OLD_PATIENT_ID).build())
+                        .build())
+                .user(ajlaDoctorBuilder().accessScope(accessScope).build())
+                .build();
 
         assertNull(provider.of(certificate, actionEvaluation));
       }
@@ -611,50 +514,30 @@ class FK7809CertificateConfirmationModalProviderTest {
 
       @Test
       void shouldReturnNullIfIssuedOnAnotherCareUnit() {
-        certificate = fk7809CertificateBuilder()
-            .certificateMetaData(
-                CertificateMetaData.builder()
-                    .issuingUnit(
-                        CareUnit.builder()
-                            .hsaId(new HsaId(HSA_ID))
-                            .build()
-                    )
-                    .careUnit(
-                        CareUnit.builder()
-                            .hsaId(new HsaId(HSA_ID))
-                            .build()
-                    )
-                    .patient(
-                        Patient.builder()
-                            .name(
-                                Name.builder()
-                                    .firstName(PATIENT_NAME)
-                                    .middleName(PATIENT_MIDDLE_NAME)
-                                    .lastName(PATIENT_LAST_NAME)
-                                    .build()
-                            )
-                            .id(
-                                PersonId.builder()
-                                    .id(PATIENT_ID)
-                                    .build()
-                            )
-                            .build()
-                    )
-                    .build()
-            )
-            .build();
-        actionEvaluation = ActionEvaluation.builder()
-            .careUnit(ALFA_MEDICINCENTRUM)
-            .subUnit(
-                SubUnit.builder()
-                    .hsaId(ALFA_MEDICINCENTRUM.hsaId())
-                    .build()
-            )
-            .user(
-                ajlaDoctorBuilder()
-                    .accessScope(accessScope)
-                    .build()
-            ).build();
+        certificate =
+            fk7809CertificateBuilder()
+                .certificateMetaData(
+                    CertificateMetaData.builder()
+                        .issuingUnit(CareUnit.builder().hsaId(new HsaId(HSA_ID)).build())
+                        .careUnit(CareUnit.builder().hsaId(new HsaId(HSA_ID)).build())
+                        .patient(
+                            Patient.builder()
+                                .name(
+                                    Name.builder()
+                                        .firstName(PATIENT_NAME)
+                                        .middleName(PATIENT_MIDDLE_NAME)
+                                        .lastName(PATIENT_LAST_NAME)
+                                        .build())
+                                .id(PersonId.builder().id(PATIENT_ID).build())
+                                .build())
+                        .build())
+                .build();
+        actionEvaluation =
+            ActionEvaluation.builder()
+                .careUnit(ALFA_MEDICINCENTRUM)
+                .subUnit(SubUnit.builder().hsaId(ALFA_MEDICINCENTRUM.hsaId()).build())
+                .user(ajlaDoctorBuilder().accessScope(accessScope).build())
+                .build();
 
         assertNull(provider.of(certificate, actionEvaluation));
       }
@@ -662,37 +545,29 @@ class FK7809CertificateConfirmationModalProviderTest {
 
     @Test
     void shouldReturnNullIfCertificateIsLocked() {
-      certificate = fk7809CertificateBuilder()
-          .status(Status.LOCKED_DRAFT)
-          .certificateMetaData(
-              CertificateMetaData.builder()
-                  .patient(
-                      Patient.builder()
-                          .name(
-                              Name.builder()
-                                  .firstName(PATIENT_NAME)
-                                  .middleName(PATIENT_MIDDLE_NAME)
-                                  .lastName(PATIENT_LAST_NAME)
-                                  .build()
-                          )
-                          .id(
-                              PersonId.builder()
-                                  .id(OLD_PATIENT_ID)
-                                  .build()
-                          )
-                          .build()
-                  )
-                  .issuingUnit(ALFA_MEDICINCENTRUM)
-                  .build()
-          )
-          .build();
-      actionEvaluation = ActionEvaluation.builder()
-          .careUnit(ALFA_MEDICINCENTRUM)
-          .user(
-              ajlaDoctorBuilder()
-                  .accessScope(accessScope)
-                  .build()
-          ).build();
+      certificate =
+          fk7809CertificateBuilder()
+              .status(Status.LOCKED_DRAFT)
+              .certificateMetaData(
+                  CertificateMetaData.builder()
+                      .patient(
+                          Patient.builder()
+                              .name(
+                                  Name.builder()
+                                      .firstName(PATIENT_NAME)
+                                      .middleName(PATIENT_MIDDLE_NAME)
+                                      .lastName(PATIENT_LAST_NAME)
+                                      .build())
+                              .id(PersonId.builder().id(OLD_PATIENT_ID).build())
+                              .build())
+                      .issuingUnit(ALFA_MEDICINCENTRUM)
+                      .build())
+              .build();
+      actionEvaluation =
+          ActionEvaluation.builder()
+              .careUnit(ALFA_MEDICINCENTRUM)
+              .user(ajlaDoctorBuilder().accessScope(accessScope).build())
+              .build();
 
       assertNull(provider.of(certificate, actionEvaluation));
     }
@@ -711,44 +586,31 @@ class FK7809CertificateConfirmationModalProviderTest {
 
       @BeforeEach
       void setup() {
-        certificate = fk7809CertificateBuilder()
-            .revision(new Revision(10))
-            .certificateMetaData(
-                CertificateMetaData.builder()
-                    .issuingUnit(ALFA_MEDICINCENTRUM)
-                    .patient(
-                        Patient.builder()
-                            .name(
-                                Name.builder()
-                                    .firstName(PATIENT_NAME)
-                                    .middleName(PATIENT_MIDDLE_NAME)
-                                    .lastName(PATIENT_LAST_NAME)
-                                    .build()
-                            )
-                            .id(
-                                PersonId.builder()
-                                    .id(PATIENT_ID)
-                                    .build()
-                            )
-                            .build()
-                    )
-                    .careUnit(ALFA_MEDICINCENTRUM)
-                    .build()
-            )
-            .build();
-        actionEvaluation = ActionEvaluation.builder()
-            .careUnit(ALFA_MEDICINCENTRUM)
-            .subUnit(
-                SubUnit.builder()
-                    .hsaId(ALFA_MEDICINCENTRUM.hsaId())
-                    .build()
-            )
-            .user(
-                ajlaDoctorBuilder()
-                    .accessScope(accessScope)
-                    .build()
-            )
-            .build();
+        certificate =
+            fk7809CertificateBuilder()
+                .revision(new Revision(10))
+                .certificateMetaData(
+                    CertificateMetaData.builder()
+                        .issuingUnit(ALFA_MEDICINCENTRUM)
+                        .patient(
+                            Patient.builder()
+                                .name(
+                                    Name.builder()
+                                        .firstName(PATIENT_NAME)
+                                        .middleName(PATIENT_MIDDLE_NAME)
+                                        .lastName(PATIENT_LAST_NAME)
+                                        .build())
+                                .id(PersonId.builder().id(PATIENT_ID).build())
+                                .build())
+                        .careUnit(ALFA_MEDICINCENTRUM)
+                        .build())
+                .build();
+        actionEvaluation =
+            ActionEvaluation.builder()
+                .careUnit(ALFA_MEDICINCENTRUM)
+                .subUnit(SubUnit.builder().hsaId(ALFA_MEDICINCENTRUM.hsaId()).build())
+                .user(ajlaDoctorBuilder().accessScope(accessScope).build())
+                .build();
       }
 
       @Test
@@ -762,43 +624,30 @@ class FK7809CertificateConfirmationModalProviderTest {
 
       @BeforeEach
       void setup() {
-        certificate = fk7809CertificateBuilder()
-            .certificateMetaData(
-                CertificateMetaData.builder()
-                    .issuingUnit(ALFA_MEDICINCENTRUM)
-                    .patient(
-                        Patient.builder()
-                            .name(
-                                Name.builder()
-                                    .firstName(PATIENT_NAME)
-                                    .middleName(PATIENT_MIDDLE_NAME)
-                                    .lastName(PATIENT_LAST_NAME)
-                                    .build()
-                            )
-                            .id(
-                                PersonId.builder()
-                                    .id(PATIENT_ID)
-                                    .build()
-                            )
-                            .build()
-                    )
-                    .careUnit(ALFA_MEDICINCENTRUM)
-                    .build()
-            )
-            .build();
-        actionEvaluation = ActionEvaluation.builder()
-            .careUnit(ALFA_MEDICINCENTRUM)
-            .subUnit(
-                SubUnit.builder()
-                    .hsaId(ALFA_MEDICINCENTRUM.hsaId())
-                    .build()
-            )
-            .user(
-                ajlaDoctorBuilder()
-                    .accessScope(accessScope)
-                    .build()
-            )
-            .build();
+        certificate =
+            fk7809CertificateBuilder()
+                .certificateMetaData(
+                    CertificateMetaData.builder()
+                        .issuingUnit(ALFA_MEDICINCENTRUM)
+                        .patient(
+                            Patient.builder()
+                                .name(
+                                    Name.builder()
+                                        .firstName(PATIENT_NAME)
+                                        .middleName(PATIENT_MIDDLE_NAME)
+                                        .lastName(PATIENT_LAST_NAME)
+                                        .build())
+                                .id(PersonId.builder().id(PATIENT_ID).build())
+                                .build())
+                        .careUnit(ALFA_MEDICINCENTRUM)
+                        .build())
+                .build();
+        actionEvaluation =
+            ActionEvaluation.builder()
+                .careUnit(ALFA_MEDICINCENTRUM)
+                .subUnit(SubUnit.builder().hsaId(ALFA_MEDICINCENTRUM.hsaId()).build())
+                .user(ajlaDoctorBuilder().accessScope(accessScope).build())
+                .build();
       }
 
       @Test
@@ -823,8 +672,7 @@ class FK7809CertificateConfirmationModalProviderTest {
 
         assertEquals(
             "Läkarutlåtande för merkostnadsersättning är till för personer över 18 år som inte har en underhållsskyldig förälder. Om det gäller ett barn ska du istället använda Läkarutlåtande för omvårdnadsbidrag eller merkostnadsersättning.",
-            result.text()
-        );
+            result.text());
       }
 
       @Test
@@ -833,28 +681,21 @@ class FK7809CertificateConfirmationModalProviderTest {
 
         assertEquals(
             "Jag är säker på att jag vill utfärda Läkarutlåtande för merkostnadsersättning.",
-            result.checkboxText()
-        );
+            result.checkboxText());
       }
 
       @Test
       void shouldReturnPrimaryAction() {
         final var result = provider.of(certificate, actionEvaluation);
 
-        assertEquals(
-            CertificateModalActionType.READ,
-            result.primaryAction()
-        );
+        assertEquals(CertificateModalActionType.READ, result.primaryAction());
       }
 
       @Test
       void shouldReturnSecondaryAction() {
         final var result = provider.of(certificate, actionEvaluation);
 
-        assertEquals(
-            CertificateModalActionType.DELETE,
-            result.secondaryAction()
-        );
+        assertEquals(CertificateModalActionType.DELETE, result.secondaryAction());
       }
     }
 
@@ -864,29 +705,21 @@ class FK7809CertificateConfirmationModalProviderTest {
       @BeforeEach
       void setup() {
         certificate = null;
-        actionEvaluation = ActionEvaluation.builder()
-            .careUnit(ALFA_MEDICINCENTRUM)
-            .patient(
-                Patient.builder()
-                    .name(
-                        Name.builder()
-                            .firstName(PATIENT_NAME)
-                            .middleName(PATIENT_MIDDLE_NAME)
-                            .lastName(PATIENT_LAST_NAME)
-                            .build()
-                    )
-                    .id(
-                        PersonId.builder()
-                            .id(PATIENT_ID)
-                            .build()
-                    )
-                    .build()
-            )
-            .user(
-                ajlaDoctorBuilder()
-                    .accessScope(accessScope)
-                    .build()
-            ).build();
+        actionEvaluation =
+            ActionEvaluation.builder()
+                .careUnit(ALFA_MEDICINCENTRUM)
+                .patient(
+                    Patient.builder()
+                        .name(
+                            Name.builder()
+                                .firstName(PATIENT_NAME)
+                                .middleName(PATIENT_MIDDLE_NAME)
+                                .lastName(PATIENT_LAST_NAME)
+                                .build())
+                        .id(PersonId.builder().id(PATIENT_ID).build())
+                        .build())
+                .user(ajlaDoctorBuilder().accessScope(accessScope).build())
+                .build();
       }
 
       @Test
@@ -911,8 +744,7 @@ class FK7809CertificateConfirmationModalProviderTest {
 
         assertEquals(
             "Läkarutlåtande för merkostnadsersättning är till för personer över 18 år som inte har en underhållsskyldig förälder. Om det gäller ett barn ska du istället använda Läkarutlåtande för omvårdnadsbidrag eller merkostnadsersättning.",
-            result.text()
-        );
+            result.text());
       }
 
       @Test
@@ -921,28 +753,21 @@ class FK7809CertificateConfirmationModalProviderTest {
 
         assertEquals(
             "Jag är säker på att jag vill utfärda Läkarutlåtande för merkostnadsersättning.",
-            result.checkboxText()
-        );
+            result.checkboxText());
       }
 
       @Test
       void shouldReturnPrimaryAction() {
         final var result = provider.of(certificate, actionEvaluation);
 
-        assertEquals(
-            CertificateModalActionType.READ,
-            result.primaryAction()
-        );
+        assertEquals(CertificateModalActionType.READ, result.primaryAction());
       }
 
       @Test
       void shouldReturnSecondaryAction() {
         final var result = provider.of(certificate, actionEvaluation);
 
-        assertEquals(
-            CertificateModalActionType.DELETE,
-            result.secondaryAction()
-        );
+        assertEquals(CertificateModalActionType.DELETE, result.secondaryAction());
       }
     }
 
@@ -951,64 +776,48 @@ class FK7809CertificateConfirmationModalProviderTest {
 
       @Test
       void shouldReturnNullIfCertificateExists() {
-        certificate = fk7809CertificateBuilder()
-            .certificateMetaData(
-                CertificateMetaData.builder()
-                    .issuingUnit(ALFA_MEDICINCENTRUM)
-                    .patient(
-                        Patient.builder()
-                            .name(
-                                Name.builder()
-                                    .firstName(PATIENT_NAME)
-                                    .middleName(PATIENT_MIDDLE_NAME)
-                                    .lastName(PATIENT_LAST_NAME)
-                                    .build()
-                            )
-                            .id(
-                                PersonId.builder()
-                                    .id(OLD_PATIENT_ID)
-                                    .build()
-                            )
-                            .build()
-                    )
-                    .build()
-            )
-            .build();
-        actionEvaluation = ActionEvaluation.builder()
-            .careUnit(ALFA_MEDICINCENTRUM)
-            .user(
-                ajlaDoctorBuilder()
-                    .accessScope(accessScope)
-                    .build()
-            ).build();
+        certificate =
+            fk7809CertificateBuilder()
+                .certificateMetaData(
+                    CertificateMetaData.builder()
+                        .issuingUnit(ALFA_MEDICINCENTRUM)
+                        .patient(
+                            Patient.builder()
+                                .name(
+                                    Name.builder()
+                                        .firstName(PATIENT_NAME)
+                                        .middleName(PATIENT_MIDDLE_NAME)
+                                        .lastName(PATIENT_LAST_NAME)
+                                        .build())
+                                .id(PersonId.builder().id(OLD_PATIENT_ID).build())
+                                .build())
+                        .build())
+                .build();
+        actionEvaluation =
+            ActionEvaluation.builder()
+                .careUnit(ALFA_MEDICINCENTRUM)
+                .user(ajlaDoctorBuilder().accessScope(accessScope).build())
+                .build();
 
         assertNull(provider.of(certificate, actionEvaluation));
       }
 
       @Test
       void shouldReturnNullIfCertificateDoesNotExists() {
-        actionEvaluation = ActionEvaluation.builder()
-            .patient(
-                Patient.builder()
-                    .name(
-                        Name.builder()
-                            .firstName(PATIENT_NAME)
-                            .middleName(PATIENT_MIDDLE_NAME)
-                            .lastName(PATIENT_LAST_NAME)
-                            .build()
-                    )
-                    .id(
-                        PersonId.builder()
-                            .id(OLD_PATIENT_ID)
-                            .build()
-                    )
-                    .build()
-            )
-            .user(
-                ajlaDoctorBuilder()
-                    .accessScope(accessScope)
-                    .build()
-            ).build();
+        actionEvaluation =
+            ActionEvaluation.builder()
+                .patient(
+                    Patient.builder()
+                        .name(
+                            Name.builder()
+                                .firstName(PATIENT_NAME)
+                                .middleName(PATIENT_MIDDLE_NAME)
+                                .lastName(PATIENT_LAST_NAME)
+                                .build())
+                        .id(PersonId.builder().id(OLD_PATIENT_ID).build())
+                        .build())
+                .user(ajlaDoctorBuilder().accessScope(accessScope).build())
+                .build();
 
         assertNull(provider.of(certificate, actionEvaluation));
       }
@@ -1019,50 +828,30 @@ class FK7809CertificateConfirmationModalProviderTest {
 
       @Test
       void shouldReturnNullIfIssuedOnAnotherCareUnit() {
-        certificate = fk7809CertificateBuilder()
-            .certificateMetaData(
-                CertificateMetaData.builder()
-                    .issuingUnit(
-                        CareUnit.builder()
-                            .hsaId(new HsaId(HSA_ID))
-                            .build()
-                    )
-                    .careUnit(
-                        CareUnit.builder()
-                            .hsaId(new HsaId(HSA_ID))
-                            .build()
-                    )
-                    .patient(
-                        Patient.builder()
-                            .name(
-                                Name.builder()
-                                    .firstName(PATIENT_NAME)
-                                    .middleName(PATIENT_MIDDLE_NAME)
-                                    .lastName(PATIENT_LAST_NAME)
-                                    .build()
-                            )
-                            .id(
-                                PersonId.builder()
-                                    .id(PATIENT_ID)
-                                    .build()
-                            )
-                            .build()
-                    )
-                    .build()
-            )
-            .build();
-        actionEvaluation = ActionEvaluation.builder()
-            .careUnit(ALFA_MEDICINCENTRUM)
-            .subUnit(
-                SubUnit.builder()
-                    .hsaId(ALFA_MEDICINCENTRUM.hsaId())
-                    .build()
-            )
-            .user(
-                ajlaDoctorBuilder()
-                    .accessScope(accessScope)
-                    .build()
-            ).build();
+        certificate =
+            fk7809CertificateBuilder()
+                .certificateMetaData(
+                    CertificateMetaData.builder()
+                        .issuingUnit(CareUnit.builder().hsaId(new HsaId(HSA_ID)).build())
+                        .careUnit(CareUnit.builder().hsaId(new HsaId(HSA_ID)).build())
+                        .patient(
+                            Patient.builder()
+                                .name(
+                                    Name.builder()
+                                        .firstName(PATIENT_NAME)
+                                        .middleName(PATIENT_MIDDLE_NAME)
+                                        .lastName(PATIENT_LAST_NAME)
+                                        .build())
+                                .id(PersonId.builder().id(PATIENT_ID).build())
+                                .build())
+                        .build())
+                .build();
+        actionEvaluation =
+            ActionEvaluation.builder()
+                .careUnit(ALFA_MEDICINCENTRUM)
+                .subUnit(SubUnit.builder().hsaId(ALFA_MEDICINCENTRUM.hsaId()).build())
+                .user(ajlaDoctorBuilder().accessScope(accessScope).build())
+                .build();
 
         assertNull(provider.of(certificate, actionEvaluation));
       }
@@ -1070,37 +859,29 @@ class FK7809CertificateConfirmationModalProviderTest {
 
     @Test
     void shouldReturnNullIfCertificateIsLocked() {
-      certificate = fk7809CertificateBuilder()
-          .status(Status.LOCKED_DRAFT)
-          .certificateMetaData(
-              CertificateMetaData.builder()
-                  .patient(
-                      Patient.builder()
-                          .name(
-                              Name.builder()
-                                  .firstName(PATIENT_NAME)
-                                  .middleName(PATIENT_MIDDLE_NAME)
-                                  .lastName(PATIENT_LAST_NAME)
-                                  .build()
-                          )
-                          .id(
-                              PersonId.builder()
-                                  .id(OLD_PATIENT_ID)
-                                  .build()
-                          )
-                          .build()
-                  )
-                  .issuingUnit(ALFA_MEDICINCENTRUM)
-                  .build()
-          )
-          .build();
-      actionEvaluation = ActionEvaluation.builder()
-          .careUnit(ALFA_MEDICINCENTRUM)
-          .user(
-              ajlaDoctorBuilder()
-                  .accessScope(accessScope)
-                  .build()
-          ).build();
+      certificate =
+          fk7809CertificateBuilder()
+              .status(Status.LOCKED_DRAFT)
+              .certificateMetaData(
+                  CertificateMetaData.builder()
+                      .patient(
+                          Patient.builder()
+                              .name(
+                                  Name.builder()
+                                      .firstName(PATIENT_NAME)
+                                      .middleName(PATIENT_MIDDLE_NAME)
+                                      .lastName(PATIENT_LAST_NAME)
+                                      .build())
+                              .id(PersonId.builder().id(OLD_PATIENT_ID).build())
+                              .build())
+                      .issuingUnit(ALFA_MEDICINCENTRUM)
+                      .build())
+              .build();
+      actionEvaluation =
+          ActionEvaluation.builder()
+              .careUnit(ALFA_MEDICINCENTRUM)
+              .user(ajlaDoctorBuilder().accessScope(accessScope).build())
+              .build();
 
       assertNull(provider.of(certificate, actionEvaluation));
     }

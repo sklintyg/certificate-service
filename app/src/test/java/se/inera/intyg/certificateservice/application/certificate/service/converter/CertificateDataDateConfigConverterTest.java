@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service.converter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,76 +47,73 @@ class CertificateDataDateConfigConverterTest {
 
   @Test
   void shouldThrowExceptionIfWrongClass() {
-    final var elementSpecification = ElementSpecification.builder()
-        .configuration(
-            ElementConfigurationTextArea.builder().build()
-        )
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .configuration(ElementConfigurationTextArea.builder().build())
+            .build();
 
-    assertThrows(IllegalStateException.class,
-        () -> certificateDataDateConfigConverter.convert(elementSpecification, FK7210_CERTIFICATE)
-    );
+    assertThrows(
+        IllegalStateException.class,
+        () -> certificateDataDateConfigConverter.convert(elementSpecification, FK7210_CERTIFICATE));
   }
 
   @Test
   void shallSetCorrectIdForDate() {
-    final var elementSpecification = ElementSpecification.builder()
-        .configuration(
-            ElementConfigurationDate.builder()
-                .id(new FieldId("ID"))
-                .build())
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .configuration(ElementConfigurationDate.builder().id(new FieldId("ID")).build())
+            .build();
 
-    final var result = certificateDataDateConfigConverter.convert(elementSpecification,
-        FK7210_CERTIFICATE);
+    final var result =
+        certificateDataDateConfigConverter.convert(elementSpecification, FK7210_CERTIFICATE);
 
     assertEquals("ID", ((CertificateDataConfigDate) result).getId());
   }
 
   @Test
   void shallSetCorrectTextForDate() {
-    final var elementSpecification = ElementSpecification.builder()
-        .configuration(
-            ElementConfigurationDate.builder()
-                .id(new FieldId("ID"))
-                .name("NAME")
-                .build())
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .configuration(
+                ElementConfigurationDate.builder().id(new FieldId("ID")).name("NAME").build())
+            .build();
 
-    final var result = certificateDataDateConfigConverter.convert(elementSpecification,
-        FK7210_CERTIFICATE);
+    final var result =
+        certificateDataDateConfigConverter.convert(elementSpecification, FK7210_CERTIFICATE);
 
     assertEquals("NAME", result.getText());
   }
 
   @Test
   void shallSetCorrectMinDateForDate() {
-    final var elementSpecification = ElementSpecification.builder()
-        .configuration(
-            ElementConfigurationDate.builder()
-                .id(new FieldId("ID"))
-                .min(Period.ofDays(-1))
-                .build())
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .configuration(
+                ElementConfigurationDate.builder()
+                    .id(new FieldId("ID"))
+                    .min(Period.ofDays(-1))
+                    .build())
+            .build();
 
-    final var result = certificateDataDateConfigConverter.convert(elementSpecification,
-        FK7210_CERTIFICATE);
+    final var result =
+        certificateDataDateConfigConverter.convert(elementSpecification, FK7210_CERTIFICATE);
 
     assertEquals(MIN_DATE, ((CertificateDataConfigDate) result).getMinDate());
   }
 
   @Test
   void shallSetCorrectMaxDateForDate() {
-    final var elementSpecification = ElementSpecification.builder()
-        .configuration(
-            ElementConfigurationDate.builder()
-                .id(new FieldId("ID"))
-                .max(Period.ofDays(5))
-                .build())
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .configuration(
+                ElementConfigurationDate.builder()
+                    .id(new FieldId("ID"))
+                    .max(Period.ofDays(5))
+                    .build())
+            .build();
 
-    final var result = certificateDataDateConfigConverter.convert(elementSpecification,
-        FK7210_CERTIFICATE);
+    final var result =
+        certificateDataDateConfigConverter.convert(elementSpecification, FK7210_CERTIFICATE);
 
     assertEquals(MAX_DATE, ((CertificateDataConfigDate) result).getMaxDate());
   }

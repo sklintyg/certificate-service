@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,78 +56,68 @@ import se.inera.intyg.certificateservice.domain.user.model.User;
 class GetCertificateCandidateServiceTest {
 
   private static final String CERTIFICATE_ID = "certificateId";
-  @Mock
-  private ActionEvaluationFactory actionEvaluationFactory;
-  @Mock
-  private GetCertificateCandidateRequestValidator getCertificateCandidateRequestValidator;
-  @Mock
-  private GetCertificateCandidateDomainService getCertificateCandidateDomainService;
-  @Mock
-  private CertificateConverter certificateConverter;
-  @Mock
-  private ResourceLinkConverter resourceLinkConverter;
-  @InjectMocks
-  private GetCertificateCandidateService getCertificateCandidateService;
+  @Mock private ActionEvaluationFactory actionEvaluationFactory;
+  @Mock private GetCertificateCandidateRequestValidator getCertificateCandidateRequestValidator;
+  @Mock private GetCertificateCandidateDomainService getCertificateCandidateDomainService;
+  @Mock private CertificateConverter certificateConverter;
+  @Mock private ResourceLinkConverter resourceLinkConverter;
+  @InjectMocks private GetCertificateCandidateService getCertificateCandidateService;
 
   @Test
   void shallThrowIfRequestIsInvalid() {
     final var request = GetCertificateCandidateRequest.builder().build();
-    doThrow(IllegalArgumentException.class).when(getCertificateCandidateRequestValidator)
+    doThrow(IllegalArgumentException.class)
+        .when(getCertificateCandidateRequestValidator)
         .validate(request, CERTIFICATE_ID);
-    assertThrows(IllegalArgumentException.class,
-        () -> getCertificateCandidateService.get(request, CERTIFICATE_ID)
-    );
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> getCertificateCandidateService.get(request, CERTIFICATE_ID));
   }
 
   @Test
   void shallReturnResponseWithCertificate() {
-    final var resourceLinkDTO = ResourceLinkDTO.builder()
-        .type(ResourceLinkTypeDTO.CREATE_CERTIFICATE)
-        .build();
+    final var resourceLinkDTO =
+        ResourceLinkDTO.builder().type(ResourceLinkTypeDTO.CREATE_CERTIFICATE).build();
 
-    final var certificateDTO = CertificateDTO.builder()
-        .links(List.of(resourceLinkDTO))
-        .build();
-    final var expectedResponse = GetCertificateCandidateResponse.builder()
-        .certificate(
-            certificateDTO
-        )
-        .build();
+    final var certificateDTO = CertificateDTO.builder().links(List.of(resourceLinkDTO)).build();
+    final var expectedResponse =
+        GetCertificateCandidateResponse.builder().certificate(certificateDTO).build();
 
-    final var actionEvaluation = ActionEvaluation.builder()
-        .user(User.builder().role(Role.DOCTOR).build())
-        .build();
-    doReturn(actionEvaluation).when(actionEvaluationFactory).create(
-        AJLA_DOCTOR_DTO,
-        ALFA_ALLERGIMOTTAGNINGEN_DTO,
-        ALFA_MEDICINCENTRUM_DTO,
-        ALFA_REGIONEN_DTO
-    );
+    final var actionEvaluation =
+        ActionEvaluation.builder().user(User.builder().role(Role.DOCTOR).build()).build();
+    doReturn(actionEvaluation)
+        .when(actionEvaluationFactory)
+        .create(
+            AJLA_DOCTOR_DTO,
+            ALFA_ALLERGIMOTTAGNINGEN_DTO,
+            ALFA_MEDICINCENTRUM_DTO,
+            ALFA_REGIONEN_DTO);
 
     final var certificate = mock(MedicalCertificate.class);
-    doReturn(Optional.of(certificate)).when(getCertificateCandidateDomainService).get(
-        new CertificateId(CERTIFICATE_ID),
-        actionEvaluation
-    );
+    doReturn(Optional.of(certificate))
+        .when(getCertificateCandidateDomainService)
+        .get(new CertificateId(CERTIFICATE_ID), actionEvaluation);
 
     final var certificateAction = mock(CertificateAction.class);
     final List<CertificateAction> certificateActions = List.of(certificateAction);
     doReturn(certificateActions).when(certificate).actionsInclude(Optional.of(actionEvaluation));
 
-    doReturn(resourceLinkDTO).when(resourceLinkConverter).convert(certificateAction,
-        Optional.of(certificate), actionEvaluation);
-    doReturn(certificateDTO).when(certificateConverter)
+    doReturn(resourceLinkDTO)
+        .when(resourceLinkConverter)
+        .convert(certificateAction, Optional.of(certificate), actionEvaluation);
+    doReturn(certificateDTO)
+        .when(certificateConverter)
         .convert(certificate, List.of(resourceLinkDTO), actionEvaluation);
 
-    final var actualResult = getCertificateCandidateService.get(
-        GetCertificateCandidateRequest.builder()
-            .user(AJLA_DOCTOR_DTO)
-            .unit(ALFA_ALLERGIMOTTAGNINGEN_DTO)
-            .careUnit(ALFA_MEDICINCENTRUM_DTO)
-            .careProvider(ALFA_REGIONEN_DTO)
-            .build(),
-        CERTIFICATE_ID
-    );
+    final var actualResult =
+        getCertificateCandidateService.get(
+            GetCertificateCandidateRequest.builder()
+                .user(AJLA_DOCTOR_DTO)
+                .unit(ALFA_ALLERGIMOTTAGNINGEN_DTO)
+                .careUnit(ALFA_MEDICINCENTRUM_DTO)
+                .careProvider(ALFA_REGIONEN_DTO)
+                .build(),
+            CERTIFICATE_ID);
 
     assertEquals(expectedResponse, actualResult);
   }
@@ -118,30 +126,29 @@ class GetCertificateCandidateServiceTest {
   void shallReturnResponseWithoutCertificateWhenNoCandidate() {
     final var expectedResponse = GetCertificateCandidateResponse.builder().build();
 
-    final var actionEvaluation = ActionEvaluation.builder()
-        .user(User.builder().role(Role.DOCTOR).build())
-        .build();
-    doReturn(actionEvaluation).when(actionEvaluationFactory).create(
-        AJLA_DOCTOR_DTO,
-        ALFA_ALLERGIMOTTAGNINGEN_DTO,
-        ALFA_MEDICINCENTRUM_DTO,
-        ALFA_REGIONEN_DTO
-    );
+    final var actionEvaluation =
+        ActionEvaluation.builder().user(User.builder().role(Role.DOCTOR).build()).build();
+    doReturn(actionEvaluation)
+        .when(actionEvaluationFactory)
+        .create(
+            AJLA_DOCTOR_DTO,
+            ALFA_ALLERGIMOTTAGNINGEN_DTO,
+            ALFA_MEDICINCENTRUM_DTO,
+            ALFA_REGIONEN_DTO);
 
-    doReturn(Optional.empty()).when(getCertificateCandidateDomainService).get(
-        new CertificateId(CERTIFICATE_ID),
-        actionEvaluation
-    );
+    doReturn(Optional.empty())
+        .when(getCertificateCandidateDomainService)
+        .get(new CertificateId(CERTIFICATE_ID), actionEvaluation);
 
-    final var actualResult = getCertificateCandidateService.get(
-        GetCertificateCandidateRequest.builder()
-            .user(AJLA_DOCTOR_DTO)
-            .unit(ALFA_ALLERGIMOTTAGNINGEN_DTO)
-            .careUnit(ALFA_MEDICINCENTRUM_DTO)
-            .careProvider(ALFA_REGIONEN_DTO)
-            .build(),
-        CERTIFICATE_ID
-    );
+    final var actualResult =
+        getCertificateCandidateService.get(
+            GetCertificateCandidateRequest.builder()
+                .user(AJLA_DOCTOR_DTO)
+                .unit(ALFA_ALLERGIMOTTAGNINGEN_DTO)
+                .careUnit(ALFA_MEDICINCENTRUM_DTO)
+                .careProvider(ALFA_REGIONEN_DTO)
+                .build(),
+            CERTIFICATE_ID);
 
     assertEquals(expectedResponse, actualResult);
   }

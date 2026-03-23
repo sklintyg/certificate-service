@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.integrationtest.common.tests;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -24,61 +42,52 @@ public abstract class InternalApiMessagesIT extends BaseIntegrationIT {
   @Test
   @DisplayName("Ärendekommunikation för intyget skall gå att hämta")
   void shallReturnQuestionsAndAnswers() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED)
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED));
 
-    api().sendCertificate(
-        defaultSendCertificateRequest(),
-        certificateId(testCertificates)
-    );
+    api().sendCertificate(defaultSendCertificateRequest(), certificateId(testCertificates));
 
-    api().receiveMessage(
-        incomingComplementMessageBuilder()
-            .certificateId(certificateId(testCertificates))
-            .complements(List.of(incomingComplementDTOBuilder()
-                .questionId(questionId())
-                .build()))
-            .build()
-    );
+    api()
+        .receiveMessage(
+            incomingComplementMessageBuilder()
+                .certificateId(certificateId(testCertificates))
+                .complements(
+                    List.of(incomingComplementDTOBuilder().questionId(questionId()).build()))
+                .build());
 
-    final var response = internalApi().getMessages(
-        certificateId(testCertificates)
-    );
+    final var response = internalApi().getMessages(certificateId(testCertificates));
 
     final var messages = messages(response.getBody());
 
     assertAll(
         () -> assertEquals(1, messages.size()),
-        () -> assertEquals(certificateId(testCertificates), messages.getFirst().getCertificateId())
-    );
+        () ->
+            assertEquals(certificateId(testCertificates), messages.getFirst().getCertificateId()));
   }
 
   @Test
   @DisplayName("Obesvarade kompletteringar skall gå att hämta för patient")
   void shallReturnUnansweredCommunicationMessagesForPatient() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED)
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED));
 
-    api().sendCertificate(
-        defaultSendCertificateRequest(),
-        certificateId(testCertificates)
-    );
+    api().sendCertificate(defaultSendCertificateRequest(), certificateId(testCertificates));
 
-    api().receiveMessage(
-        incomingComplementMessageBuilder()
-            .certificateId(certificateId(testCertificates))
-            .complements(List.of(incomingComplementDTOBuilder()
-                .questionId(questionId())
-                .build()))
-            .build()
-    );
+    api()
+        .receiveMessage(
+            incomingComplementMessageBuilder()
+                .certificateId(certificateId(testCertificates))
+                .complements(
+                    List.of(incomingComplementDTOBuilder().questionId(questionId()).build()))
+                .build());
 
-    final var request = GetSentInternalRequest.builder()
-        .patientIdList(List.of(ATHENA_REACT_ANDERSSON_DTO.getId().getId()))
-        .maxDays(7)
-        .build();
+    final var request =
+        GetSentInternalRequest.builder()
+            .patientIdList(List.of(ATHENA_REACT_ANDERSSON_DTO.getId().getId()))
+            .maxDays(7)
+            .build();
 
     final var response = internalApi().getUnansweredCommunicationMessages(request);
 
@@ -86,12 +95,11 @@ public abstract class InternalApiMessagesIT extends BaseIntegrationIT {
         () -> assertNotNull(response.getBody()),
         () -> assertNotNull(response.getBody().messages()),
         () -> assertEquals(1, response.getBody().messages().size()),
-        () -> assertTrue(
-            response.getBody().messages().containsKey(certificateId(testCertificates))),
-        () -> assertEquals(1,
-            response.getBody().messages().get(certificateId(testCertificates)).complement())
-    );
+        () ->
+            assertTrue(response.getBody().messages().containsKey(certificateId(testCertificates))),
+        () ->
+            assertEquals(
+                1,
+                response.getBody().messages().get(certificateId(testCertificates)).complement()));
   }
-
-
 }

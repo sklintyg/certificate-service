@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.v2;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.common.QuestionBalanssinne.QUESTION_BALANSSINNE_FIELD_ID;
@@ -15,10 +33,8 @@ import se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.
 
 public class QuestionBalanssinneBeskrivningV2 {
 
-  public static final ElementId QUESTION_BALANSSINNE_BESKRIVNING_V2_ID = new ElementId(
-      "8.2");
-  public static final FieldId QUESTION_BALANSSINNE_BESKRIVNING_V2_FIELD_ID = new FieldId(
-      "8.2");
+  public static final ElementId QUESTION_BALANSSINNE_BESKRIVNING_V2_ID = new ElementId("8.2");
+  public static final FieldId QUESTION_BALANSSINNE_BESKRIVNING_V2_FIELD_ID = new FieldId("8.2");
   private static final int TEXT_LIMIT = 250;
 
   private QuestionBalanssinneBeskrivningV2() {
@@ -32,38 +48,20 @@ public class QuestionBalanssinneBeskrivningV2 {
             ElementConfigurationTextArea.builder()
                 .id(QUESTION_BALANSSINNE_BESKRIVNING_V2_FIELD_ID)
                 .name("Ange vilken typ av anfall och tidpunkt för senaste anfall")
-                .build()
-        )
+                .build())
         .rules(
             List.of(
                 CertificateElementRuleFactory.show(
-                    QUESTION_BALANSSINNE_ID,
-                    QUESTION_BALANSSINNE_FIELD_ID
-                ),
+                    QUESTION_BALANSSINNE_ID, QUESTION_BALANSSINNE_FIELD_ID),
                 CertificateElementRuleFactory.mandatory(
                     QUESTION_BALANSSINNE_BESKRIVNING_V2_ID,
-                    QUESTION_BALANSSINNE_BESKRIVNING_V2_FIELD_ID
-                ),
+                    QUESTION_BALANSSINNE_BESKRIVNING_V2_FIELD_ID),
                 CertificateElementRuleFactory.limit(
-                    QUESTION_BALANSSINNE_BESKRIVNING_V2_ID, (short) TEXT_LIMIT
-                )
-            )
-        )
-        .shouldValidate(
-            ElementDataPredicateFactory.valueBoolean(QUESTION_BALANSSINNE_ID)
-        )
-        .mapping(
-            new ElementMapping(QUESTION_BALANSSINNE_ID, null)
-        )
+                    QUESTION_BALANSSINNE_BESKRIVNING_V2_ID, (short) TEXT_LIMIT)))
+        .shouldValidate(ElementDataPredicateFactory.valueBoolean(QUESTION_BALANSSINNE_ID))
+        .mapping(new ElementMapping(QUESTION_BALANSSINNE_ID, null))
         .validations(
-            List.of(
-                ElementValidationText.builder()
-                    .mandatory(true)
-                    .limit(TEXT_LIMIT)
-                    .build()
-            )
-        )
+            List.of(ElementValidationText.builder().mandatory(true).limit(TEXT_LIMIT).build()))
         .build();
   }
 }
-

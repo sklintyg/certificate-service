@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7210.schematron;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -31,19 +49,15 @@ import se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertifica
 @ExtendWith(MockitoExtension.class)
 class SchematronValidationFK7210Test {
 
-  @Mock
-  private CertificateActionFactory certificateActionFactory;
+  @Mock private CertificateActionFactory certificateActionFactory;
   private SchematronValidator schematronValidator;
-  private final XmlGeneratorCertificateV4 generator = new XmlGeneratorCertificateV4(
-      new XmlGeneratorValue(
-          List.of(new XmlGeneratorDate(), new XmlGeneratorDateRangeList(), new XmlGeneratorText()),
-          Collections.emptyList()
-      ),
-      new XmlValidationService(
-          new SchematronValidator(),
-          new SchemaValidatorV4()
-      )
-  );
+  private final XmlGeneratorCertificateV4 generator =
+      new XmlGeneratorCertificateV4(
+          new XmlGeneratorValue(
+              List.of(
+                  new XmlGeneratorDate(), new XmlGeneratorDateRangeList(), new XmlGeneratorText()),
+              Collections.emptyList()),
+          new XmlValidationService(new SchematronValidator(), new SchemaValidatorV4()));
   private CertificateModelFactoryFK7210 certificateModelFactoryFK7210;
 
   @BeforeEach
@@ -54,24 +68,27 @@ class SchematronValidationFK7210Test {
 
   @Test
   void shallReturnTrueForValidCertificate() {
-    final var element = ElementData.builder()
-        .id(new ElementId("54"))
-        .value(
-            ElementValueDate.builder()
-                .dateId(new FieldId("54.1"))
-                .date(LocalDate.now())
-                .build()
-        ).build();
+    final var element =
+        ElementData.builder()
+            .id(new ElementId("54"))
+            .value(
+                ElementValueDate.builder()
+                    .dateId(new FieldId("54.1"))
+                    .date(LocalDate.now())
+                    .build())
+            .build();
 
-    final var certificate = TestDataCertificate.fk7210CertificateBuilder()
-        .certificateModel(certificateModelFactoryFK7210.create())
-        .elementData(List.of(element))
-        .build();
+    final var certificate =
+        TestDataCertificate.fk7210CertificateBuilder()
+            .certificateModel(certificateModelFactoryFK7210.create())
+            .elementData(List.of(element))
+            .build();
 
     final var xml = generator.generate(certificate, true);
 
-    assertTrue(schematronValidator.validate(certificate.id(), xml,
-        CertificateModelFactoryFK7210.SCHEMATRON_PATH));
+    assertTrue(
+        schematronValidator.validate(
+            certificate.id(), xml, CertificateModelFactoryFK7210.SCHEMATRON_PATH));
   }
 
   @Nested
@@ -79,72 +96,76 @@ class SchematronValidationFK7210Test {
 
     @Test
     void shallReturnFalseIfValueIsNull() {
-      final var element = ElementData.builder()
-          .id(new ElementId("54"))
-          .value(
-              ElementValueDate.builder()
-                  .dateId(new FieldId("54.1"))
-                  .build()
-          ).build();
+      final var element =
+          ElementData.builder()
+              .id(new ElementId("54"))
+              .value(ElementValueDate.builder().dateId(new FieldId("54.1")).build())
+              .build();
 
-      final var certificate = TestDataCertificate.fk7210CertificateBuilder()
-          .certificateModel(certificateModelFactoryFK7210.create())
-          .elementData(List.of(element))
-          .build();
+      final var certificate =
+          TestDataCertificate.fk7210CertificateBuilder()
+              .certificateModel(certificateModelFactoryFK7210.create())
+              .elementData(List.of(element))
+              .build();
 
       assertThrows(IllegalStateException.class, () -> generator.generate(certificate, true));
     }
 
     @Test
     void shallReturnFalseIfValueIsBeforeToday() {
-      final var element = ElementData.builder()
-          .id(new ElementId("54"))
-          .value(
-              ElementValueDate.builder()
-                  .dateId(new FieldId("54.1"))
-                  .date(LocalDate.now().minusDays(1))
-                  .build()
-          ).build();
+      final var element =
+          ElementData.builder()
+              .id(new ElementId("54"))
+              .value(
+                  ElementValueDate.builder()
+                      .dateId(new FieldId("54.1"))
+                      .date(LocalDate.now().minusDays(1))
+                      .build())
+              .build();
 
-      final var certificate = TestDataCertificate.fk7210CertificateBuilder()
-          .certificateModel(certificateModelFactoryFK7210.create())
-          .elementData(List.of(element))
-          .build();
+      final var certificate =
+          TestDataCertificate.fk7210CertificateBuilder()
+              .certificateModel(certificateModelFactoryFK7210.create())
+              .elementData(List.of(element))
+              .build();
 
       assertThrows(IllegalStateException.class, () -> generator.generate(certificate, true));
     }
 
     @Test
     void shallReturnFalseIfValueIsMoreThanOneYearInTheFuture() {
-      final var element = ElementData.builder()
-          .id(new ElementId("54"))
-          .value(
-              ElementValueDate.builder()
-                  .dateId(new FieldId("54.1"))
-                  .date(LocalDate.now().plusYears(1).plusDays(2))
-                  .build()
-          ).build();
+      final var element =
+          ElementData.builder()
+              .id(new ElementId("54"))
+              .value(
+                  ElementValueDate.builder()
+                      .dateId(new FieldId("54.1"))
+                      .date(LocalDate.now().plusYears(1).plusDays(2))
+                      .build())
+              .build();
 
-      final var certificate = TestDataCertificate.fk7210CertificateBuilder()
-          .certificateModel(certificateModelFactoryFK7210.create())
-          .elementData(List.of(element))
-          .build();
+      final var certificate =
+          TestDataCertificate.fk7210CertificateBuilder()
+              .certificateModel(certificateModelFactoryFK7210.create())
+              .elementData(List.of(element))
+              .build();
 
       assertThrows(IllegalStateException.class, () -> generator.generate(certificate, true));
     }
 
     @Test
     void shallReturnFalseIfQuestionMissing() {
-      final var element = ElementData.builder()
-          .id(new ElementId("54"))
-          .value(
-              ElementValueDate.builder().build()
-          ).build();
+      final var element =
+          ElementData.builder()
+              .id(new ElementId("54"))
+              .value(ElementValueDate.builder().build())
+              .build();
 
-      final var certificate = TestDataCertificate.fk7210CertificateBuilder()
-          .certificateModel(certificateModelFactoryFK7210.create())
-          .elementData(List.of(element))
-          .build();
+      final var certificate =
+          TestDataCertificate.fk7210CertificateBuilder()
+              .certificateModel(certificateModelFactoryFK7210.create())
+              .elementData(List.of(element))
+              .build();
 
       assertThrows(IllegalStateException.class, () -> generator.generate(certificate, true));
     }

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.message.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -37,72 +55,70 @@ class SaveMessageServiceTest {
   private static final String MESSAGE_ID = "messageId";
   private static final String CERTIFICATE_ID = "certificateId";
   private static final String MESSAGE = "message";
-  private static final QuestionDTO QUESTION_DTO = QuestionDTO.builder()
-      .certificateId(CERTIFICATE_ID)
-      .type(QuestionTypeDTO.CONTACT)
-      .message(MESSAGE)
-      .build();
-  @Mock
-  CertificateRepository certificateRepository;
-  @Mock
-  SaveMessageRequestValidator saveMessageRequestValidator;
-  @Mock
-  ActionEvaluationFactory actionEvaluationFactory;
-  @Mock
-  SaveMessageDomainService saveMessageDomainService;
-  @Mock
-  QuestionConverter questionConverter;
-  @InjectMocks
-  SaveMessageService saveMessageService;
+  private static final QuestionDTO QUESTION_DTO =
+      QuestionDTO.builder()
+          .certificateId(CERTIFICATE_ID)
+          .type(QuestionTypeDTO.CONTACT)
+          .message(MESSAGE)
+          .build();
+  @Mock CertificateRepository certificateRepository;
+  @Mock SaveMessageRequestValidator saveMessageRequestValidator;
+  @Mock ActionEvaluationFactory actionEvaluationFactory;
+  @Mock SaveMessageDomainService saveMessageDomainService;
+  @Mock QuestionConverter questionConverter;
+  @InjectMocks SaveMessageService saveMessageService;
 
   @Test
   void shallThrowIfRequestIsInvalid() {
     final var request = SaveMessageRequest.builder().build();
-    doThrow(IllegalArgumentException.class).when(saveMessageRequestValidator).validate(
-        request, MESSAGE_ID);
+    doThrow(IllegalArgumentException.class)
+        .when(saveMessageRequestValidator)
+        .validate(request, MESSAGE_ID);
 
-    assertThrows(IllegalArgumentException.class,
-        () -> saveMessageService.save(request, MESSAGE_ID));
+    assertThrows(
+        IllegalArgumentException.class, () -> saveMessageService.save(request, MESSAGE_ID));
   }
 
   @Test
   void shallReturnSaveMessageResponseWithQuestion() {
-    final var request = SaveMessageRequest.builder()
-        .user(AJLA_DOCTOR_DTO)
-        .unit(ALFA_ALLERGIMOTTAGNINGEN_DTO)
-        .careUnit(ALFA_MEDICINCENTRUM_DTO)
-        .careProvider(ALFA_REGIONEN_DTO)
-        .question(QUESTION_DTO)
-        .build();
+    final var request =
+        SaveMessageRequest.builder()
+            .user(AJLA_DOCTOR_DTO)
+            .unit(ALFA_ALLERGIMOTTAGNINGEN_DTO)
+            .careUnit(ALFA_MEDICINCENTRUM_DTO)
+            .careProvider(ALFA_REGIONEN_DTO)
+            .question(QUESTION_DTO)
+            .build();
 
     final var actionEvaluation = ActionEvaluation.builder().build();
 
-    doReturn(actionEvaluation).when(actionEvaluationFactory).create(
-        AJLA_DOCTOR_DTO,
-        ALFA_ALLERGIMOTTAGNINGEN_DTO,
-        ALFA_MEDICINCENTRUM_DTO,
-        ALFA_REGIONEN_DTO
-    );
+    doReturn(actionEvaluation)
+        .when(actionEvaluationFactory)
+        .create(
+            AJLA_DOCTOR_DTO,
+            ALFA_ALLERGIMOTTAGNINGEN_DTO,
+            ALFA_MEDICINCENTRUM_DTO,
+            ALFA_REGIONEN_DTO);
 
-    doReturn(FK3226_CERTIFICATE).when(certificateRepository).getById(
-        new CertificateId(CERTIFICATE_ID)
-    );
+    doReturn(FK3226_CERTIFICATE)
+        .when(certificateRepository)
+        .getById(new CertificateId(CERTIFICATE_ID));
 
-    doReturn(CONTACT_MESSAGE).when(saveMessageDomainService).save(
-        FK3226_CERTIFICATE,
-        new MessageId(MESSAGE_ID),
-        new Content(MESSAGE),
-        actionEvaluation,
-        MessageType.CONTACT
-    );
+    doReturn(CONTACT_MESSAGE)
+        .when(saveMessageDomainService)
+        .save(
+            FK3226_CERTIFICATE,
+            new MessageId(MESSAGE_ID),
+            new Content(MESSAGE),
+            actionEvaluation,
+            MessageType.CONTACT);
 
     final var expectedQuestion = QuestionDTO.builder().build();
-    doReturn(expectedQuestion).when(questionConverter)
+    doReturn(expectedQuestion)
+        .when(questionConverter)
         .convert(CONTACT_MESSAGE, CONTACT_MESSAGE.actions(actionEvaluation, FK3226_CERTIFICATE));
 
-    final var expectedResponse = SaveMessageResponse.builder()
-        .question(expectedQuestion)
-        .build();
+    final var expectedResponse = SaveMessageResponse.builder().question(expectedQuestion).build();
 
     final var actualResponse = saveMessageService.save(request, MESSAGE_ID);
     assertEquals(expectedResponse, actualResponse);

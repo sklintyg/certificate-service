@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.action.certificate.model;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -36,71 +54,60 @@ class ActionRuleWithinAccessScopeTest {
 
   @BeforeEach
   void setUp() {
-    actionEvaluationBuilder = ActionEvaluation.builder()
-        .patient(ATHENA_REACT_ANDERSSON)
-        .user(AJLA_DOKTOR)
-        .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
-        .careUnit(ALFA_MEDICINCENTRUM)
-        .careProvider(ALFA_REGIONEN);
+    actionEvaluationBuilder =
+        ActionEvaluation.builder()
+            .patient(ATHENA_REACT_ANDERSSON)
+            .user(AJLA_DOKTOR)
+            .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
+            .careUnit(ALFA_MEDICINCENTRUM)
+            .careProvider(ALFA_REGIONEN);
 
-    certificateBuilder = MedicalCertificate.builder()
-        .certificateMetaData(
-            CertificateMetaData.builder()
-                .issuingUnit(ALFA_ALLERGIMOTTAGNINGEN)
-                .careUnit(ALFA_MEDICINCENTRUM)
-                .careProvider(ALFA_REGIONEN)
-                .patient(ATHENA_REACT_ANDERSSON)
-                .build()
-        );
+    certificateBuilder =
+        MedicalCertificate.builder()
+            .certificateMetaData(
+                CertificateMetaData.builder()
+                    .issuingUnit(ALFA_ALLERGIMOTTAGNINGEN)
+                    .careUnit(ALFA_MEDICINCENTRUM)
+                    .careProvider(ALFA_REGIONEN)
+                    .patient(ATHENA_REACT_ANDERSSON)
+                    .build());
   }
 
   @Test
   void shallValidateAsWithinCareUnitIfUserMissingAccessScopeAndEvaluateToTrue() {
-    actionRuleWithinAccessScope = new ActionRuleWithinAccessScope(
-        AccessScope.WITHIN_CARE_PROVIDER);
+    actionRuleWithinAccessScope = new ActionRuleWithinAccessScope(AccessScope.WITHIN_CARE_PROVIDER);
 
-    final var actionEvaluation = actionEvaluationBuilder
-        .subUnit(SubUnit.builder()
-            .hsaId(new HsaId(ALFA_ALLERGIMOTTAGNINGEN_ID))
-            .build())
-        .user(ajlaDoctorBuilder()
-            .accessScope(null)
-            .build())
-        .build();
+    final var actionEvaluation =
+        actionEvaluationBuilder
+            .subUnit(SubUnit.builder().hsaId(new HsaId(ALFA_ALLERGIMOTTAGNINGEN_ID)).build())
+            .user(ajlaDoctorBuilder().accessScope(null).build())
+            .build();
 
     final var certificate = certificateBuilder.build();
 
     assertTrue(
-        actionRuleWithinAccessScope.evaluate(Optional.of(certificate),
-            Optional.of(actionEvaluation)),
-        () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate)
-    );
+        actionRuleWithinAccessScope.evaluate(
+            Optional.of(certificate), Optional.of(actionEvaluation)),
+        () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate));
   }
 
   @Test
   void shallValidateAsWithinCareUnitIfUserMissingAccessScopeAndEvaluateToFalse() {
-    actionRuleWithinAccessScope = new ActionRuleWithinAccessScope(
-        AccessScope.WITHIN_CARE_PROVIDER);
+    actionRuleWithinAccessScope = new ActionRuleWithinAccessScope(AccessScope.WITHIN_CARE_PROVIDER);
 
-    final var actionEvaluation = actionEvaluationBuilder
-        .careUnit(ALFA_VARDCENTRAL)
-        .subUnit(
-            SubUnit.builder()
-                .hsaId(new HsaId(ALFA_VARDCENTRAL_ID))
-                .build()
-        )
-        .user(ajlaDoctorBuilder()
-            .accessScope(userAccessScope)
-            .build())
-        .build();
+    final var actionEvaluation =
+        actionEvaluationBuilder
+            .careUnit(ALFA_VARDCENTRAL)
+            .subUnit(SubUnit.builder().hsaId(new HsaId(ALFA_VARDCENTRAL_ID)).build())
+            .user(ajlaDoctorBuilder().accessScope(userAccessScope).build())
+            .build();
 
     final var certificate = certificateBuilder.build();
 
     assertFalse(
-        actionRuleWithinAccessScope.evaluate(Optional.of(certificate),
-            Optional.of(actionEvaluation)),
-        () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate)
-    );
+        actionRuleWithinAccessScope.evaluate(
+            Optional.of(certificate), Optional.of(actionEvaluation)),
+        () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate));
   }
 
   @Nested
@@ -108,9 +115,7 @@ class ActionRuleWithinAccessScopeTest {
 
     @BeforeEach
     void setUp() {
-      actionRuleWithinAccessScope = new ActionRuleWithinAccessScope(
-          AccessScope.WITHIN_CARE_UNIT);
-
+      actionRuleWithinAccessScope = new ActionRuleWithinAccessScope(AccessScope.WITHIN_CARE_UNIT);
     }
 
     @Nested
@@ -123,88 +128,66 @@ class ActionRuleWithinAccessScopeTest {
 
       @Test
       void shallReturnTrueIfIssuedUnitMatchesSubUnit() {
-        final var actionEvaluation = actionEvaluationBuilder
-            .subUnit(SubUnit.builder()
-                .hsaId(new HsaId(ALFA_ALLERGIMOTTAGNINGEN_ID))
-                .build())
-            .user(ajlaDoctorBuilder()
-                .accessScope(userAccessScope)
-                .build())
-            .build();
+        final var actionEvaluation =
+            actionEvaluationBuilder
+                .subUnit(SubUnit.builder().hsaId(new HsaId(ALFA_ALLERGIMOTTAGNINGEN_ID)).build())
+                .user(ajlaDoctorBuilder().accessScope(userAccessScope).build())
+                .build();
 
         final var certificate = certificateBuilder.build();
 
         assertTrue(
-            actionRuleWithinAccessScope.evaluate(Optional.of(certificate),
-                Optional.of(actionEvaluation)),
-            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate)
-        );
+            actionRuleWithinAccessScope.evaluate(
+                Optional.of(certificate), Optional.of(actionEvaluation)),
+            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate));
       }
 
       @Test
       void shallReturnTrueIfCareUnitMatchesSubUnit() {
-        final var actionEvaluation = actionEvaluationBuilder
-            .subUnit(
-                SubUnit.builder()
-                    .hsaId(new HsaId(ALFA_MEDICINCENTRUM_ID))
-                    .build()
-            )
-            .user(ajlaDoctorBuilder()
-                .accessScope(userAccessScope)
-                .build())
-            .build();
+        final var actionEvaluation =
+            actionEvaluationBuilder
+                .subUnit(SubUnit.builder().hsaId(new HsaId(ALFA_MEDICINCENTRUM_ID)).build())
+                .user(ajlaDoctorBuilder().accessScope(userAccessScope).build())
+                .build();
 
         final var certificate = certificateBuilder.build();
 
         assertTrue(
-            actionRuleWithinAccessScope.evaluate(Optional.of(certificate),
-                Optional.of(actionEvaluation)),
-            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate)
-        );
+            actionRuleWithinAccessScope.evaluate(
+                Optional.of(certificate), Optional.of(actionEvaluation)),
+            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate));
       }
 
       @Test
       void shallReturnFalseIfIssuedUnitDontMatchSubUnit() {
-        final var actionEvaluation = actionEvaluationBuilder
-            .subUnit(
-                SubUnit.builder()
-                    .hsaId(new HsaId(ALFA_HUDMOTTAGNINGEN_ID))
-                    .build()
-            )
-            .user(ajlaDoctorBuilder()
-                .accessScope(userAccessScope)
-                .build())
-            .build();
+        final var actionEvaluation =
+            actionEvaluationBuilder
+                .subUnit(SubUnit.builder().hsaId(new HsaId(ALFA_HUDMOTTAGNINGEN_ID)).build())
+                .user(ajlaDoctorBuilder().accessScope(userAccessScope).build())
+                .build();
 
         final var certificate = certificateBuilder.build();
 
         assertFalse(
-            actionRuleWithinAccessScope.evaluate(Optional.of(certificate),
-                Optional.of(actionEvaluation)),
-            () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate)
-        );
+            actionRuleWithinAccessScope.evaluate(
+                Optional.of(certificate), Optional.of(actionEvaluation)),
+            () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate));
       }
 
       @Test
       void shallReturnFalseIfCareUnitDontMatchSubUnitAndSubUnitDontMatchIssuingUnit() {
-        final var actionEvaluation = actionEvaluationBuilder
-            .subUnit(
-                SubUnit.builder()
-                    .hsaId(new HsaId(ALFA_VARDCENTRAL_ID))
-                    .build()
-            )
-            .user(ajlaDoctorBuilder()
-                .accessScope(userAccessScope)
-                .build())
-            .build();
+        final var actionEvaluation =
+            actionEvaluationBuilder
+                .subUnit(SubUnit.builder().hsaId(new HsaId(ALFA_VARDCENTRAL_ID)).build())
+                .user(ajlaDoctorBuilder().accessScope(userAccessScope).build())
+                .build();
 
         final var certificate = certificateBuilder.build();
 
         assertFalse(
-            actionRuleWithinAccessScope.evaluate(Optional.of(certificate),
-                Optional.of(actionEvaluation)),
-            () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate)
-        );
+            actionRuleWithinAccessScope.evaluate(
+                Optional.of(certificate), Optional.of(actionEvaluation)),
+            () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate));
       }
     }
 
@@ -218,90 +201,68 @@ class ActionRuleWithinAccessScopeTest {
 
       @Test
       void shallReturnTrueIfIssuedUnitMatchesSubUnit() {
-        final var actionEvaluation = actionEvaluationBuilder
-            .subUnit(SubUnit.builder()
-                .hsaId(new HsaId(ALFA_ALLERGIMOTTAGNINGEN_ID))
-                .build())
-            .user(ajlaDoctorBuilder()
-                .accessScope(userAccessScope)
-                .build())
-            .build();
+        final var actionEvaluation =
+            actionEvaluationBuilder
+                .subUnit(SubUnit.builder().hsaId(new HsaId(ALFA_ALLERGIMOTTAGNINGEN_ID)).build())
+                .user(ajlaDoctorBuilder().accessScope(userAccessScope).build())
+                .build();
 
         final var certificate = certificateBuilder.build();
 
         assertTrue(
-            actionRuleWithinAccessScope.evaluate(Optional.of(certificate),
-                Optional.of(actionEvaluation)),
-            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate)
-        );
+            actionRuleWithinAccessScope.evaluate(
+                Optional.of(certificate), Optional.of(actionEvaluation)),
+            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate));
       }
 
       @Test
       void shallReturnTrueIfCareUnitMatchesSubUnit() {
-        final var actionEvaluation = actionEvaluationBuilder
-            .subUnit(
-                SubUnit.builder()
-                    .hsaId(new HsaId(ALFA_MEDICINCENTRUM_ID))
-                    .build()
-            )
-            .user(ajlaDoctorBuilder()
-                .accessScope(userAccessScope)
-                .build())
-            .build();
+        final var actionEvaluation =
+            actionEvaluationBuilder
+                .subUnit(SubUnit.builder().hsaId(new HsaId(ALFA_MEDICINCENTRUM_ID)).build())
+                .user(ajlaDoctorBuilder().accessScope(userAccessScope).build())
+                .build();
 
         final var certificate = certificateBuilder.build();
 
         assertTrue(
-            actionRuleWithinAccessScope.evaluate(Optional.of(certificate),
-                Optional.of(actionEvaluation)),
-            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate)
-        );
+            actionRuleWithinAccessScope.evaluate(
+                Optional.of(certificate), Optional.of(actionEvaluation)),
+            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate));
       }
 
       @Test
       void shallReturnFalseIfIssuedUnitDontMatchSubUnit() {
-        final var actionEvaluation = actionEvaluationBuilder
-            .careUnit(ALFA_VARDCENTRAL)
-            .subUnit(
-                SubUnit.builder()
-                    .hsaId(new HsaId(ALFA_HUDMOTTAGNINGEN_ID))
-                    .build()
-            )
-            .user(ajlaDoctorBuilder()
-                .accessScope(userAccessScope)
-                .build())
-            .build();
+        final var actionEvaluation =
+            actionEvaluationBuilder
+                .careUnit(ALFA_VARDCENTRAL)
+                .subUnit(SubUnit.builder().hsaId(new HsaId(ALFA_HUDMOTTAGNINGEN_ID)).build())
+                .user(ajlaDoctorBuilder().accessScope(userAccessScope).build())
+                .build();
 
         final var certificate = certificateBuilder.build();
 
         assertFalse(
-            actionRuleWithinAccessScope.evaluate(Optional.of(certificate),
-                Optional.of(actionEvaluation)),
-            () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate)
-        );
+            actionRuleWithinAccessScope.evaluate(
+                Optional.of(certificate), Optional.of(actionEvaluation)),
+            () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate));
       }
 
       @Test
       void shallReturnFalseIfCareUnitDontMatchSubUnitAndSubUnitDontMatchIssuingUnit() {
-        final var actionEvaluation = actionEvaluationBuilder
-            .careUnit(ALFA_VARDCENTRAL)
-            .subUnit(
-                SubUnit.builder()
-                    .hsaId(new HsaId(ALFA_VARDCENTRAL_ID))
-                    .build()
-            )
-            .user(ajlaDoctorBuilder()
-                .accessScope(userAccessScope)
-                .build())
-            .build();
+        final var actionEvaluation =
+            actionEvaluationBuilder
+                .careUnit(ALFA_VARDCENTRAL)
+                .subUnit(SubUnit.builder().hsaId(new HsaId(ALFA_VARDCENTRAL_ID)).build())
+                .user(ajlaDoctorBuilder().accessScope(userAccessScope).build())
+                .build();
 
         final var certificate = certificateBuilder.build();
 
         assertFalse(
-            actionRuleWithinAccessScope.evaluate(Optional.of(certificate),
-                Optional.of(actionEvaluation)),
-            () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate)
-        );
+            actionRuleWithinAccessScope.evaluate(
+                Optional.of(certificate), Optional.of(actionEvaluation)),
+            () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate));
       }
     }
 
@@ -315,90 +276,68 @@ class ActionRuleWithinAccessScopeTest {
 
       @Test
       void shallReturnTrueIfIssuedUnitMatchesSubUnit() {
-        final var actionEvaluation = actionEvaluationBuilder
-            .subUnit(SubUnit.builder()
-                .hsaId(new HsaId(ALFA_ALLERGIMOTTAGNINGEN_ID))
-                .build())
-            .user(ajlaDoctorBuilder()
-                .accessScope(userAccessScope)
-                .build())
-            .build();
+        final var actionEvaluation =
+            actionEvaluationBuilder
+                .subUnit(SubUnit.builder().hsaId(new HsaId(ALFA_ALLERGIMOTTAGNINGEN_ID)).build())
+                .user(ajlaDoctorBuilder().accessScope(userAccessScope).build())
+                .build();
 
         final var certificate = certificateBuilder.build();
 
         assertTrue(
-            actionRuleWithinAccessScope.evaluate(Optional.of(certificate),
-                Optional.of(actionEvaluation)),
-            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate)
-        );
+            actionRuleWithinAccessScope.evaluate(
+                Optional.of(certificate), Optional.of(actionEvaluation)),
+            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate));
       }
 
       @Test
       void shallReturnTrueIfCareUnitMatchesSubUnit() {
-        final var actionEvaluation = actionEvaluationBuilder
-            .subUnit(
-                SubUnit.builder()
-                    .hsaId(new HsaId(ALFA_MEDICINCENTRUM_ID))
-                    .build()
-            )
-            .user(ajlaDoctorBuilder()
-                .accessScope(userAccessScope)
-                .build())
-            .build();
+        final var actionEvaluation =
+            actionEvaluationBuilder
+                .subUnit(SubUnit.builder().hsaId(new HsaId(ALFA_MEDICINCENTRUM_ID)).build())
+                .user(ajlaDoctorBuilder().accessScope(userAccessScope).build())
+                .build();
 
         final var certificate = certificateBuilder.build();
 
         assertTrue(
-            actionRuleWithinAccessScope.evaluate(Optional.of(certificate),
-                Optional.of(actionEvaluation)),
-            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate)
-        );
+            actionRuleWithinAccessScope.evaluate(
+                Optional.of(certificate), Optional.of(actionEvaluation)),
+            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate));
       }
 
       @Test
       void shallReturnFalseIfIssuedUnitDontMatchSubUnit() {
-        final var actionEvaluation = actionEvaluationBuilder
-            .careUnit(ALFA_VARDCENTRAL)
-            .subUnit(
-                SubUnit.builder()
-                    .hsaId(new HsaId(ALFA_HUDMOTTAGNINGEN_ID))
-                    .build()
-            )
-            .user(ajlaDoctorBuilder()
-                .accessScope(userAccessScope)
-                .build())
-            .build();
+        final var actionEvaluation =
+            actionEvaluationBuilder
+                .careUnit(ALFA_VARDCENTRAL)
+                .subUnit(SubUnit.builder().hsaId(new HsaId(ALFA_HUDMOTTAGNINGEN_ID)).build())
+                .user(ajlaDoctorBuilder().accessScope(userAccessScope).build())
+                .build();
 
         final var certificate = certificateBuilder.build();
 
         assertFalse(
-            actionRuleWithinAccessScope.evaluate(Optional.of(certificate),
-                Optional.of(actionEvaluation)),
-            () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate)
-        );
+            actionRuleWithinAccessScope.evaluate(
+                Optional.of(certificate), Optional.of(actionEvaluation)),
+            () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate));
       }
 
       @Test
       void shallReturnFalseIfCareUnitDontMatchSubUnitAndSubUnitDontMatchIssuingUnit() {
-        final var actionEvaluation = actionEvaluationBuilder
-            .careUnit(ALFA_VARDCENTRAL)
-            .subUnit(
-                SubUnit.builder()
-                    .hsaId(new HsaId(ALFA_VARDCENTRAL_ID))
-                    .build()
-            )
-            .user(ajlaDoctorBuilder()
-                .accessScope(userAccessScope)
-                .build())
-            .build();
+        final var actionEvaluation =
+            actionEvaluationBuilder
+                .careUnit(ALFA_VARDCENTRAL)
+                .subUnit(SubUnit.builder().hsaId(new HsaId(ALFA_VARDCENTRAL_ID)).build())
+                .user(ajlaDoctorBuilder().accessScope(userAccessScope).build())
+                .build();
 
         final var certificate = certificateBuilder.build();
 
         assertFalse(
-            actionRuleWithinAccessScope.evaluate(Optional.of(certificate),
-                Optional.of(actionEvaluation)),
-            () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate)
-        );
+            actionRuleWithinAccessScope.evaluate(
+                Optional.of(certificate), Optional.of(actionEvaluation)),
+            () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate));
       }
     }
   }
@@ -408,9 +347,8 @@ class ActionRuleWithinAccessScopeTest {
 
     @BeforeEach
     void setUp() {
-      actionRuleWithinAccessScope = new ActionRuleWithinAccessScope(
-          AccessScope.WITHIN_CARE_PROVIDER);
-
+      actionRuleWithinAccessScope =
+          new ActionRuleWithinAccessScope(AccessScope.WITHIN_CARE_PROVIDER);
     }
 
     @Nested
@@ -423,88 +361,66 @@ class ActionRuleWithinAccessScopeTest {
 
       @Test
       void shallReturnTrueIfIssuedUnitMatchesSubUnit() {
-        final var actionEvaluation = actionEvaluationBuilder
-            .subUnit(SubUnit.builder()
-                .hsaId(new HsaId(ALFA_ALLERGIMOTTAGNINGEN_ID))
-                .build())
-            .user(ajlaDoctorBuilder()
-                .accessScope(userAccessScope)
-                .build())
-            .build();
+        final var actionEvaluation =
+            actionEvaluationBuilder
+                .subUnit(SubUnit.builder().hsaId(new HsaId(ALFA_ALLERGIMOTTAGNINGEN_ID)).build())
+                .user(ajlaDoctorBuilder().accessScope(userAccessScope).build())
+                .build();
 
         final var certificate = certificateBuilder.build();
 
         assertTrue(
-            actionRuleWithinAccessScope.evaluate(Optional.of(certificate),
-                Optional.of(actionEvaluation)),
-            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate)
-        );
+            actionRuleWithinAccessScope.evaluate(
+                Optional.of(certificate), Optional.of(actionEvaluation)),
+            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate));
       }
 
       @Test
       void shallReturnTrueIfCareUnitMatchesSubUnit() {
-        final var actionEvaluation = actionEvaluationBuilder
-            .subUnit(
-                SubUnit.builder()
-                    .hsaId(new HsaId(ALFA_MEDICINCENTRUM_ID))
-                    .build()
-            )
-            .user(ajlaDoctorBuilder()
-                .accessScope(userAccessScope)
-                .build())
-            .build();
+        final var actionEvaluation =
+            actionEvaluationBuilder
+                .subUnit(SubUnit.builder().hsaId(new HsaId(ALFA_MEDICINCENTRUM_ID)).build())
+                .user(ajlaDoctorBuilder().accessScope(userAccessScope).build())
+                .build();
 
         final var certificate = certificateBuilder.build();
 
         assertTrue(
-            actionRuleWithinAccessScope.evaluate(Optional.of(certificate),
-                Optional.of(actionEvaluation)),
-            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate)
-        );
+            actionRuleWithinAccessScope.evaluate(
+                Optional.of(certificate), Optional.of(actionEvaluation)),
+            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate));
       }
 
       @Test
       void shallReturnFalseIfIssuedUnitDontMatchSubUnit() {
-        final var actionEvaluation = actionEvaluationBuilder
-            .subUnit(
-                SubUnit.builder()
-                    .hsaId(new HsaId(ALFA_HUDMOTTAGNINGEN_ID))
-                    .build()
-            )
-            .user(ajlaDoctorBuilder()
-                .accessScope(userAccessScope)
-                .build())
-            .build();
+        final var actionEvaluation =
+            actionEvaluationBuilder
+                .subUnit(SubUnit.builder().hsaId(new HsaId(ALFA_HUDMOTTAGNINGEN_ID)).build())
+                .user(ajlaDoctorBuilder().accessScope(userAccessScope).build())
+                .build();
 
         final var certificate = certificateBuilder.build();
 
         assertFalse(
-            actionRuleWithinAccessScope.evaluate(Optional.of(certificate),
-                Optional.of(actionEvaluation)),
-            () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate)
-        );
+            actionRuleWithinAccessScope.evaluate(
+                Optional.of(certificate), Optional.of(actionEvaluation)),
+            () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate));
       }
 
       @Test
       void shallReturnFalseIfCareUnitDontMatchSubUnitAndSubUnitDontMatchIssuingUnit() {
-        final var actionEvaluation = actionEvaluationBuilder
-            .subUnit(
-                SubUnit.builder()
-                    .hsaId(new HsaId(ALFA_VARDCENTRAL_ID))
-                    .build()
-            )
-            .user(ajlaDoctorBuilder()
-                .accessScope(userAccessScope)
-                .build())
-            .build();
+        final var actionEvaluation =
+            actionEvaluationBuilder
+                .subUnit(SubUnit.builder().hsaId(new HsaId(ALFA_VARDCENTRAL_ID)).build())
+                .user(ajlaDoctorBuilder().accessScope(userAccessScope).build())
+                .build();
 
         final var certificate = certificateBuilder.build();
 
         assertFalse(
-            actionRuleWithinAccessScope.evaluate(Optional.of(certificate),
-                Optional.of(actionEvaluation)),
-            () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate)
-        );
+            actionRuleWithinAccessScope.evaluate(
+                Optional.of(certificate), Optional.of(actionEvaluation)),
+            () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate));
       }
     }
 
@@ -518,58 +434,52 @@ class ActionRuleWithinAccessScopeTest {
 
       @Test
       void shallReturnTrueIfCareProviderMatchesCareProviderAndSubUnitMatchesSubUnit() {
-        final var actionEvaluation = actionEvaluationBuilder
-            .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
-            .careProvider(ALFA_REGIONEN)
-            .user(ajlaDoctorBuilder()
-                .accessScope(userAccessScope)
-                .build())
-            .build();
+        final var actionEvaluation =
+            actionEvaluationBuilder
+                .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
+                .careProvider(ALFA_REGIONEN)
+                .user(ajlaDoctorBuilder().accessScope(userAccessScope).build())
+                .build();
 
         final var certificate = certificateBuilder.build();
 
         assertTrue(
-            actionRuleWithinAccessScope.evaluate(Optional.of(certificate),
-                Optional.of(actionEvaluation)),
-            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate)
-        );
+            actionRuleWithinAccessScope.evaluate(
+                Optional.of(certificate), Optional.of(actionEvaluation)),
+            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate));
       }
 
       @Test
       void shallReturnTrueIfCareProviderMatchesCareProviderAndSubUnitDoesNotMatchSubUnit() {
-        final var actionEvaluation = actionEvaluationBuilder
-            .subUnit(ALFA_HUDMOTTAGNINGEN)
-            .careProvider(ALFA_REGIONEN)
-            .user(ajlaDoctorBuilder()
-                .accessScope(userAccessScope)
-                .build())
-            .build();
+        final var actionEvaluation =
+            actionEvaluationBuilder
+                .subUnit(ALFA_HUDMOTTAGNINGEN)
+                .careProvider(ALFA_REGIONEN)
+                .user(ajlaDoctorBuilder().accessScope(userAccessScope).build())
+                .build();
 
         final var certificate = certificateBuilder.build();
 
         assertTrue(
-            actionRuleWithinAccessScope.evaluate(Optional.of(certificate),
-                Optional.of(actionEvaluation)),
-            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate)
-        );
+            actionRuleWithinAccessScope.evaluate(
+                Optional.of(certificate), Optional.of(actionEvaluation)),
+            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate));
       }
 
       @Test
       void shallReturnFalseIfCareProviderDoesNotMatchCareProvider() {
-        final var actionEvaluation = actionEvaluationBuilder
-            .careProvider(BETA_REGIONEN)
-            .user(ajlaDoctorBuilder()
-                .accessScope(userAccessScope)
-                .build())
-            .build();
+        final var actionEvaluation =
+            actionEvaluationBuilder
+                .careProvider(BETA_REGIONEN)
+                .user(ajlaDoctorBuilder().accessScope(userAccessScope).build())
+                .build();
 
         final var certificate = certificateBuilder.build();
 
         assertFalse(
-            actionRuleWithinAccessScope.evaluate(Optional.of(certificate),
-                Optional.of(actionEvaluation)),
-            () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate)
-        );
+            actionRuleWithinAccessScope.evaluate(
+                Optional.of(certificate), Optional.of(actionEvaluation)),
+            () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate));
       }
     }
 
@@ -583,58 +493,52 @@ class ActionRuleWithinAccessScopeTest {
 
       @Test
       void shallReturnTrueIfCareProviderMatchesCareProviderAndSubUnitMatchesSubUnit() {
-        final var actionEvaluation = actionEvaluationBuilder
-            .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
-            .careProvider(ALFA_REGIONEN)
-            .user(ajlaDoctorBuilder()
-                .accessScope(userAccessScope)
-                .build())
-            .build();
+        final var actionEvaluation =
+            actionEvaluationBuilder
+                .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
+                .careProvider(ALFA_REGIONEN)
+                .user(ajlaDoctorBuilder().accessScope(userAccessScope).build())
+                .build();
 
         final var certificate = certificateBuilder.build();
 
         assertTrue(
-            actionRuleWithinAccessScope.evaluate(Optional.of(certificate),
-                Optional.of(actionEvaluation)),
-            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate)
-        );
+            actionRuleWithinAccessScope.evaluate(
+                Optional.of(certificate), Optional.of(actionEvaluation)),
+            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate));
       }
 
       @Test
       void shallReturnTrueIfCareProviderMatchesCareProviderAndSubUnitDoesNotMatchSubUnit() {
-        final var actionEvaluation = actionEvaluationBuilder
-            .subUnit(ALFA_HUDMOTTAGNINGEN)
-            .careProvider(ALFA_REGIONEN)
-            .user(ajlaDoctorBuilder()
-                .accessScope(userAccessScope)
-                .build())
-            .build();
+        final var actionEvaluation =
+            actionEvaluationBuilder
+                .subUnit(ALFA_HUDMOTTAGNINGEN)
+                .careProvider(ALFA_REGIONEN)
+                .user(ajlaDoctorBuilder().accessScope(userAccessScope).build())
+                .build();
 
         final var certificate = certificateBuilder.build();
 
         assertTrue(
-            actionRuleWithinAccessScope.evaluate(Optional.of(certificate),
-                Optional.of(actionEvaluation)),
-            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate)
-        );
+            actionRuleWithinAccessScope.evaluate(
+                Optional.of(certificate), Optional.of(actionEvaluation)),
+            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate));
       }
 
       @Test
       void shallReturnFalseIfCareProviderDoesNotMatchCareProvider() {
-        final var actionEvaluation = actionEvaluationBuilder
-            .careProvider(BETA_REGIONEN)
-            .user(ajlaDoctorBuilder()
-                .accessScope(userAccessScope)
-                .build())
-            .build();
+        final var actionEvaluation =
+            actionEvaluationBuilder
+                .careProvider(BETA_REGIONEN)
+                .user(ajlaDoctorBuilder().accessScope(userAccessScope).build())
+                .build();
 
         final var certificate = certificateBuilder.build();
 
         assertFalse(
-            actionRuleWithinAccessScope.evaluate(Optional.of(certificate),
-                Optional.of(actionEvaluation)),
-            () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate)
-        );
+            actionRuleWithinAccessScope.evaluate(
+                Optional.of(certificate), Optional.of(actionEvaluation)),
+            () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate));
       }
     }
   }
@@ -644,9 +548,7 @@ class ActionRuleWithinAccessScopeTest {
 
     @BeforeEach
     void setUp() {
-      actionRuleWithinAccessScope = new ActionRuleWithinAccessScope(
-          AccessScope.ALL_CARE_PROVIDERS);
-
+      actionRuleWithinAccessScope = new ActionRuleWithinAccessScope(AccessScope.ALL_CARE_PROVIDERS);
     }
 
     @Nested
@@ -659,88 +561,66 @@ class ActionRuleWithinAccessScopeTest {
 
       @Test
       void shallReturnTrueIfIssuedUnitMatchesSubUnit() {
-        final var actionEvaluation = actionEvaluationBuilder
-            .subUnit(SubUnit.builder()
-                .hsaId(new HsaId(ALFA_ALLERGIMOTTAGNINGEN_ID))
-                .build())
-            .user(ajlaDoctorBuilder()
-                .accessScope(userAccessScope)
-                .build())
-            .build();
+        final var actionEvaluation =
+            actionEvaluationBuilder
+                .subUnit(SubUnit.builder().hsaId(new HsaId(ALFA_ALLERGIMOTTAGNINGEN_ID)).build())
+                .user(ajlaDoctorBuilder().accessScope(userAccessScope).build())
+                .build();
 
         final var certificate = certificateBuilder.build();
 
         assertTrue(
-            actionRuleWithinAccessScope.evaluate(Optional.of(certificate),
-                Optional.of(actionEvaluation)),
-            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate)
-        );
+            actionRuleWithinAccessScope.evaluate(
+                Optional.of(certificate), Optional.of(actionEvaluation)),
+            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate));
       }
 
       @Test
       void shallReturnTrueIfCareUnitMatchesSubUnit() {
-        final var actionEvaluation = actionEvaluationBuilder
-            .subUnit(
-                SubUnit.builder()
-                    .hsaId(new HsaId(ALFA_MEDICINCENTRUM_ID))
-                    .build()
-            )
-            .user(ajlaDoctorBuilder()
-                .accessScope(userAccessScope)
-                .build())
-            .build();
+        final var actionEvaluation =
+            actionEvaluationBuilder
+                .subUnit(SubUnit.builder().hsaId(new HsaId(ALFA_MEDICINCENTRUM_ID)).build())
+                .user(ajlaDoctorBuilder().accessScope(userAccessScope).build())
+                .build();
 
         final var certificate = certificateBuilder.build();
 
         assertTrue(
-            actionRuleWithinAccessScope.evaluate(Optional.of(certificate),
-                Optional.of(actionEvaluation)),
-            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate)
-        );
+            actionRuleWithinAccessScope.evaluate(
+                Optional.of(certificate), Optional.of(actionEvaluation)),
+            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate));
       }
 
       @Test
       void shallReturnFalseIfIssuedUnitDontMatchSubUnit() {
-        final var actionEvaluation = actionEvaluationBuilder
-            .subUnit(
-                SubUnit.builder()
-                    .hsaId(new HsaId(ALFA_HUDMOTTAGNINGEN_ID))
-                    .build()
-            )
-            .user(ajlaDoctorBuilder()
-                .accessScope(userAccessScope)
-                .build())
-            .build();
+        final var actionEvaluation =
+            actionEvaluationBuilder
+                .subUnit(SubUnit.builder().hsaId(new HsaId(ALFA_HUDMOTTAGNINGEN_ID)).build())
+                .user(ajlaDoctorBuilder().accessScope(userAccessScope).build())
+                .build();
 
         final var certificate = certificateBuilder.build();
 
         assertFalse(
-            actionRuleWithinAccessScope.evaluate(Optional.of(certificate),
-                Optional.of(actionEvaluation)),
-            () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate)
-        );
+            actionRuleWithinAccessScope.evaluate(
+                Optional.of(certificate), Optional.of(actionEvaluation)),
+            () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate));
       }
 
       @Test
       void shallReturnFalseIfCareUnitDontMatchSubUnitAndSubUnitDontMatchIssuingUnit() {
-        final var actionEvaluation = actionEvaluationBuilder
-            .subUnit(
-                SubUnit.builder()
-                    .hsaId(new HsaId(ALFA_VARDCENTRAL_ID))
-                    .build()
-            )
-            .user(ajlaDoctorBuilder()
-                .accessScope(userAccessScope)
-                .build())
-            .build();
+        final var actionEvaluation =
+            actionEvaluationBuilder
+                .subUnit(SubUnit.builder().hsaId(new HsaId(ALFA_VARDCENTRAL_ID)).build())
+                .user(ajlaDoctorBuilder().accessScope(userAccessScope).build())
+                .build();
 
         final var certificate = certificateBuilder.build();
 
         assertFalse(
-            actionRuleWithinAccessScope.evaluate(Optional.of(certificate),
-                Optional.of(actionEvaluation)),
-            () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate)
-        );
+            actionRuleWithinAccessScope.evaluate(
+                Optional.of(certificate), Optional.of(actionEvaluation)),
+            () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate));
       }
     }
 
@@ -754,58 +634,52 @@ class ActionRuleWithinAccessScopeTest {
 
       @Test
       void shallReturnTrueIfCareProviderMatchesCareProviderAndSubUnitMatchesSubUnit() {
-        final var actionEvaluation = actionEvaluationBuilder
-            .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
-            .careProvider(ALFA_REGIONEN)
-            .user(ajlaDoctorBuilder()
-                .accessScope(userAccessScope)
-                .build())
-            .build();
+        final var actionEvaluation =
+            actionEvaluationBuilder
+                .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
+                .careProvider(ALFA_REGIONEN)
+                .user(ajlaDoctorBuilder().accessScope(userAccessScope).build())
+                .build();
 
         final var certificate = certificateBuilder.build();
 
         assertTrue(
-            actionRuleWithinAccessScope.evaluate(Optional.of(certificate),
-                Optional.of(actionEvaluation)),
-            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate)
-        );
+            actionRuleWithinAccessScope.evaluate(
+                Optional.of(certificate), Optional.of(actionEvaluation)),
+            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate));
       }
 
       @Test
       void shallReturnTrueIfCareProviderMatchesCareProviderAndSubUnitDoesNotMatchSubUnit() {
-        final var actionEvaluation = actionEvaluationBuilder
-            .subUnit(ALFA_HUDMOTTAGNINGEN)
-            .careProvider(ALFA_REGIONEN)
-            .user(ajlaDoctorBuilder()
-                .accessScope(userAccessScope)
-                .build())
-            .build();
+        final var actionEvaluation =
+            actionEvaluationBuilder
+                .subUnit(ALFA_HUDMOTTAGNINGEN)
+                .careProvider(ALFA_REGIONEN)
+                .user(ajlaDoctorBuilder().accessScope(userAccessScope).build())
+                .build();
 
         final var certificate = certificateBuilder.build();
 
         assertTrue(
-            actionRuleWithinAccessScope.evaluate(Optional.of(certificate),
-                Optional.of(actionEvaluation)),
-            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate)
-        );
+            actionRuleWithinAccessScope.evaluate(
+                Optional.of(certificate), Optional.of(actionEvaluation)),
+            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate));
       }
 
       @Test
       void shallReturnFalseIfCareProviderDoesNotMatchCareProvider() {
-        final var actionEvaluation = actionEvaluationBuilder
-            .careProvider(BETA_REGIONEN)
-            .user(ajlaDoctorBuilder()
-                .accessScope(userAccessScope)
-                .build())
-            .build();
+        final var actionEvaluation =
+            actionEvaluationBuilder
+                .careProvider(BETA_REGIONEN)
+                .user(ajlaDoctorBuilder().accessScope(userAccessScope).build())
+                .build();
 
         final var certificate = certificateBuilder.build();
 
         assertFalse(
-            actionRuleWithinAccessScope.evaluate(Optional.of(certificate),
-                Optional.of(actionEvaluation)),
-            () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate)
-        );
+            actionRuleWithinAccessScope.evaluate(
+                Optional.of(certificate), Optional.of(actionEvaluation)),
+            () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate));
       }
     }
 
@@ -819,58 +693,52 @@ class ActionRuleWithinAccessScopeTest {
 
       @Test
       void shallReturnTrueIfCareProviderMatchesCareProviderAndSubUnitMatchesSubUnit() {
-        final var actionEvaluation = actionEvaluationBuilder
-            .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
-            .careProvider(ALFA_REGIONEN)
-            .user(ajlaDoctorBuilder()
-                .accessScope(userAccessScope)
-                .build())
-            .build();
+        final var actionEvaluation =
+            actionEvaluationBuilder
+                .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
+                .careProvider(ALFA_REGIONEN)
+                .user(ajlaDoctorBuilder().accessScope(userAccessScope).build())
+                .build();
 
         final var certificate = certificateBuilder.build();
 
         assertTrue(
-            actionRuleWithinAccessScope.evaluate(Optional.of(certificate),
-                Optional.of(actionEvaluation)),
-            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate)
-        );
+            actionRuleWithinAccessScope.evaluate(
+                Optional.of(certificate), Optional.of(actionEvaluation)),
+            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate));
       }
 
       @Test
       void shallReturnTrueIfCareProviderMatchesCareProviderAndSubUnitDoesNotMatchSubUnit() {
-        final var actionEvaluation = actionEvaluationBuilder
-            .subUnit(ALFA_HUDMOTTAGNINGEN)
-            .careProvider(ALFA_REGIONEN)
-            .user(ajlaDoctorBuilder()
-                .accessScope(userAccessScope)
-                .build())
-            .build();
+        final var actionEvaluation =
+            actionEvaluationBuilder
+                .subUnit(ALFA_HUDMOTTAGNINGEN)
+                .careProvider(ALFA_REGIONEN)
+                .user(ajlaDoctorBuilder().accessScope(userAccessScope).build())
+                .build();
 
         final var certificate = certificateBuilder.build();
 
         assertTrue(
-            actionRuleWithinAccessScope.evaluate(Optional.of(certificate),
-                Optional.of(actionEvaluation)),
-            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate)
-        );
+            actionRuleWithinAccessScope.evaluate(
+                Optional.of(certificate), Optional.of(actionEvaluation)),
+            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate));
       }
 
       @Test
       void shallReturnTrueIfCareProviderDoesNotMatchCareProvider() {
-        final var actionEvaluation = actionEvaluationBuilder
-            .careProvider(BETA_REGIONEN)
-            .user(ajlaDoctorBuilder()
-                .accessScope(userAccessScope)
-                .build())
-            .build();
+        final var actionEvaluation =
+            actionEvaluationBuilder
+                .careProvider(BETA_REGIONEN)
+                .user(ajlaDoctorBuilder().accessScope(userAccessScope).build())
+                .build();
 
         final var certificate = certificateBuilder.build();
 
         assertTrue(
-            actionRuleWithinAccessScope.evaluate(Optional.of(certificate),
-                Optional.of(actionEvaluation)),
-            () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate)
-        );
+            actionRuleWithinAccessScope.evaluate(
+                Optional.of(certificate), Optional.of(actionEvaluation)),
+            () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate));
       }
     }
   }

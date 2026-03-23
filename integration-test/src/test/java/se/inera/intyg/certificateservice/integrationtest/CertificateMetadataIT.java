@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.integrationtest;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -43,8 +61,7 @@ import se.inera.intyg.certificateservice.patient.dto.PersonsResponseDTO;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 class CertificateMetadataIT {
 
-  @LocalServerPort
-  private int port;
+  @LocalServerPort private int port;
 
   private final TestRestTemplate restTemplate;
   private ApiUtil api;
@@ -64,10 +81,10 @@ class CertificateMetadataIT {
   void setUp() {
     this.api = new ApiUtil(restTemplate, port);
     this.testabilityApi = new TestabilityApiUtil(restTemplate, port);
-    final var mockServerClient = new MockServerClient(
-        Containers.MOCK_SERVER_CONTAINER.getHost(),
-        Containers.MOCK_SERVER_CONTAINER.getServerPort()
-    );
+    final var mockServerClient =
+        new MockServerClient(
+            Containers.MOCK_SERVER_CONTAINER.getHost(),
+            Containers.MOCK_SERVER_CONTAINER.getServerPort());
     mockIntygProxyService(mockServerClient);
   }
 
@@ -81,114 +98,114 @@ class CertificateMetadataIT {
   @DisplayName("Om patient uppdaterats ska de uppdaterade informationen finnas på det nya intyget")
   void shallUpdatePatient() {
 
-    final var updatedAthena = athenaReactAnderssonDtoBuilder()
-        .lastName("Athenasson").fullName("Athena Athenasson").build();
-    final var response = api.createCertificate(
-        defaultCreateCertificateRequest(CERTIFICATE_TYPE, ACTIVE_CERTIFICATE_TYPE_VERSION)
-    );
+    final var updatedAthena =
+        athenaReactAnderssonDtoBuilder()
+            .lastName("Athenasson")
+            .fullName("Athena Athenasson")
+            .build();
+    final var response =
+        api.createCertificate(
+            defaultCreateCertificateRequest(CERTIFICATE_TYPE, ACTIVE_CERTIFICATE_TYPE_VERSION));
 
     assertAll(
         () -> assertNotNull(certificate(response.getBody()), "Should return certificate"),
-        () -> assertEquals(ATHENA_REACT_ANDERSSON_DTO.getLastName(),
-            metadata(certificate(response.getBody())).getPatient().getLastName())
+        () ->
+            assertEquals(
+                ATHENA_REACT_ANDERSSON_DTO.getLastName(),
+                metadata(certificate(response.getBody())).getPatient().getLastName()));
 
-    );
-
-    final var updatedResponse = api.createCertificate(
-        customCreateCertificateRequest(CERTIFICATE_TYPE, ACTIVE_CERTIFICATE_TYPE_VERSION)
-            .patient(updatedAthena)
-            .user(AJLA_DOCTOR_DTO)
-            .build()
-    );
+    final var updatedResponse =
+        api.createCertificate(
+            customCreateCertificateRequest(CERTIFICATE_TYPE, ACTIVE_CERTIFICATE_TYPE_VERSION)
+                .patient(updatedAthena)
+                .user(AJLA_DOCTOR_DTO)
+                .build());
 
     assertAll(
         () -> assertNotNull(certificate(updatedResponse.getBody()), "Should return certificate"),
-        () -> assertEquals(updatedAthena.getLastName(),
-            metadata(certificate(updatedResponse.getBody())).getPatient().getLastName())
-
-    );
+        () ->
+            assertEquals(
+                updatedAthena.getLastName(),
+                metadata(certificate(updatedResponse.getBody())).getPatient().getLastName()));
   }
 
   @Test
-  @DisplayName("Om användaren uppdaterats ska den uppdaterade informationen finnas på det nya "
-      + "intyget")
+  @DisplayName(
+      "Om användaren uppdaterats ska den uppdaterade informationen finnas på det nya " + "intyget")
   void shallUpdateStaff() {
 
-    final var updatedAjla = ajlaDoktorDtoBuilder()
-        .lastName("Ajlasson").fullName("Ajla Ajlasson").build();
+    final var updatedAjla =
+        ajlaDoktorDtoBuilder().lastName("Ajlasson").fullName("Ajla Ajlasson").build();
 
-    final var response = api.createCertificate(
-        defaultCreateCertificateRequest(CERTIFICATE_TYPE, ACTIVE_CERTIFICATE_TYPE_VERSION)
-    );
+    final var response =
+        api.createCertificate(
+            defaultCreateCertificateRequest(CERTIFICATE_TYPE, ACTIVE_CERTIFICATE_TYPE_VERSION));
 
     assertAll(
         () -> assertNotNull(certificate(response.getBody()), "Should return certificate"),
-        () -> assertEquals(AJLA_DOCTOR_DTO.getLastName(),
-            metadata(certificate(response.getBody())).getCreatedBy().getLastName())
+        () ->
+            assertEquals(
+                AJLA_DOCTOR_DTO.getLastName(),
+                metadata(certificate(response.getBody())).getCreatedBy().getLastName()));
 
-    );
-
-    final var updatedResponse = api.createCertificate(
-        customCreateCertificateRequest(CERTIFICATE_TYPE, ACTIVE_CERTIFICATE_TYPE_VERSION)
-            .user(updatedAjla)
-            .build()
-    );
+    final var updatedResponse =
+        api.createCertificate(
+            customCreateCertificateRequest(CERTIFICATE_TYPE, ACTIVE_CERTIFICATE_TYPE_VERSION)
+                .user(updatedAjla)
+                .build());
 
     assertAll(
         () -> assertNotNull(certificate(updatedResponse.getBody()), "Should return certificate"),
-        () -> assertEquals(updatedAjla.getLastName(),
-            metadata(certificate(updatedResponse.getBody())).getCreatedBy().getLastName())
-
-    );
+        () ->
+            assertEquals(
+                updatedAjla.getLastName(),
+                metadata(certificate(updatedResponse.getBody())).getCreatedBy().getLastName()));
   }
 
   @Test
-  @DisplayName("Om vårdenheten uppdaterats ska den uppdaterade informationen finnas på det "
-      + "nya intyget")
+  @DisplayName(
+      "Om vårdenheten uppdaterats ska den uppdaterade informationen finnas på det " + "nya intyget")
   void shallUpdateUnit() {
 
-    final var updatedAlfaAllergi = alfaAllergimottagningenDtoBuilder()
-        .name("ALERGI").build();
-    final var response = api.createCertificate(
-        defaultCreateCertificateRequest(CERTIFICATE_TYPE, ACTIVE_CERTIFICATE_TYPE_VERSION)
-    );
+    final var updatedAlfaAllergi = alfaAllergimottagningenDtoBuilder().name("ALERGI").build();
+    final var response =
+        api.createCertificate(
+            defaultCreateCertificateRequest(CERTIFICATE_TYPE, ACTIVE_CERTIFICATE_TYPE_VERSION));
 
     assertAll(
         () -> assertNotNull(certificate(response.getBody()), "Should return certificate"),
-        () -> assertEquals(ALFA_ALLERGIMOTTAGNINGEN_DTO.getName(),
-            metadata(certificate(response.getBody())).getUnit().getUnitName())
+        () ->
+            assertEquals(
+                ALFA_ALLERGIMOTTAGNINGEN_DTO.getName(),
+                metadata(certificate(response.getBody())).getUnit().getUnitName()));
 
-    );
-
-    final var updatedResponse = api.createCertificate(
-        customCreateCertificateRequest(CERTIFICATE_TYPE, ACTIVE_CERTIFICATE_TYPE_VERSION)
-            .unit(updatedAlfaAllergi)
-            .build()
-    );
+    final var updatedResponse =
+        api.createCertificate(
+            customCreateCertificateRequest(CERTIFICATE_TYPE, ACTIVE_CERTIFICATE_TYPE_VERSION)
+                .unit(updatedAlfaAllergi)
+                .build());
 
     assertAll(
         () -> assertNotNull(certificate(updatedResponse.getBody()), "Should return certificate"),
-        () -> assertEquals(updatedAlfaAllergi.getName(),
-            metadata(certificate(updatedResponse.getBody())).getUnit().getUnitName())
-
-    );
+        () ->
+            assertEquals(
+                updatedAlfaAllergi.getName(),
+                metadata(certificate(updatedResponse.getBody())).getUnit().getUnitName()));
   }
 
   private void mockIntygProxyService(MockServerClient mockServerClient) {
     try {
-      mockServerClient.when(HttpRequest.request("/api/v1/persons"))
+      mockServerClient
+          .when(HttpRequest.request("/api/v1/persons"))
           .respond(
-              HttpResponse
-                  .response(
-                      new ObjectMapper().writeValueAsString(
-                          PersonsResponseDTO.builder()
-                              .persons(Collections.emptyList())
-                              .build()
-                      )
-                  )
+              HttpResponse.response(
+                      new ObjectMapper()
+                          .writeValueAsString(
+                              PersonsResponseDTO.builder()
+                                  .persons(Collections.emptyList())
+                                  .build()))
                   .withStatusCode(200)
-                  .withContentType(MediaType.APPLICATION_JSON)
-          );
+                  .withContentType(MediaType.APPLICATION_JSON));
     } catch (Exception ex) {
       throw new IllegalStateException(ex);
     }

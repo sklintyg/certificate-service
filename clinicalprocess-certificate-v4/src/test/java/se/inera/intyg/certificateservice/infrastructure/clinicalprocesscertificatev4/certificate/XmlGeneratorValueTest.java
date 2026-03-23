@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.certificate;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -48,34 +66,27 @@ class XmlGeneratorValueTest {
   private static final String TEXT_VALUE_ONE = "This is the text value One";
   private static final String TEXT_VALUE_TWO = "This is the text value Two";
 
-  @Mock
-  private Certificate certificate;
-  @Mock
-  private CertificateModel certificateModel;
-  @Mock
-  private XmlGeneratorElementValue xmlGeneratorElementValueOne;
-  @Mock
-  private XmlGeneratorCustomMapper xmlGeneratorCustomMapper;
-  @Mock
-  private XmlGeneratorElementValue xmlGeneratorElementValueTwo;
+  @Mock private Certificate certificate;
+  @Mock private CertificateModel certificateModel;
+  @Mock private XmlGeneratorElementValue xmlGeneratorElementValueOne;
+  @Mock private XmlGeneratorCustomMapper xmlGeneratorCustomMapper;
+  @Mock private XmlGeneratorElementValue xmlGeneratorElementValueTwo;
 
   private XmlGeneratorValue xmlGeneratorValue;
 
   @Test
   void shallNotMapUnitContactInformationToAnswer() {
-    final var data = ElementData.builder()
-        .value(
-            ElementValueUnitContactInformation.builder().build()
-        )
-        .id(new ElementId(QUESTION_ID_ONE))
-        .build();
+    final var data =
+        ElementData.builder()
+            .value(ElementValueUnitContactInformation.builder().build())
+            .id(new ElementId(QUESTION_ID_ONE))
+            .build();
 
     doReturn(List.of(data)).when(certificate).elementData();
 
-    xmlGeneratorValue = new XmlGeneratorValue(
-        List.of(xmlGeneratorElementValueOne),
-        List.of(xmlGeneratorCustomMapper)
-    );
+    xmlGeneratorValue =
+        new XmlGeneratorValue(
+            List.of(xmlGeneratorElementValueOne), List.of(xmlGeneratorCustomMapper));
 
     final var response = xmlGeneratorValue.generate(certificate);
 
@@ -86,27 +97,21 @@ class XmlGeneratorValueTest {
   void shallThrowIfNotConverterFoundForValue() {
     doReturn(certificateModel).when(certificate).certificateModel();
     final var elementSpecificationOne = mock(ElementSpecification.class);
-    when(certificateModel.elementSpecification(new ElementId(QUESTION_ID_ONE))).thenReturn(
-        elementSpecificationOne);
+    when(certificateModel.elementSpecification(new ElementId(QUESTION_ID_ONE)))
+        .thenReturn(elementSpecificationOne);
     when(elementSpecificationOne.includeInXml()).thenReturn(true);
 
-    final var data = ElementData.builder()
-        .value(
-            ElementValueText.builder().build()
-        )
-        .id(new ElementId(QUESTION_ID_ONE))
-        .build();
+    final var data =
+        ElementData.builder()
+            .value(ElementValueText.builder().build())
+            .id(new ElementId(QUESTION_ID_ONE))
+            .build();
 
     doReturn(List.of(data)).when(certificate).elementData();
 
-    xmlGeneratorValue = new XmlGeneratorValue(
-        Collections.emptyList(),
-        Collections.emptyList()
-    );
+    xmlGeneratorValue = new XmlGeneratorValue(Collections.emptyList(), Collections.emptyList());
 
-    assertThrows(IllegalStateException.class,
-        () -> xmlGeneratorValue.generate(certificate)
-    );
+    assertThrows(IllegalStateException.class, () -> xmlGeneratorValue.generate(certificate));
   }
 
   @Test
@@ -116,23 +121,22 @@ class XmlGeneratorValueTest {
     doReturn(certificateModel).when(certificate).certificateModel();
     final var elementSpecificationOne = mock(ElementSpecification.class);
     when(elementSpecificationOne.includeInXml()).thenReturn(false);
-    doReturn(elementSpecificationOne).when(certificateModel)
+    doReturn(elementSpecificationOne)
+        .when(certificateModel)
         .elementSpecification(new ElementId(QUESTION_ID_ONE));
 
-    xmlGeneratorValue = new XmlGeneratorValue(
-        List.of(xmlGeneratorElementValueOne),
-        Collections.emptyList()
-    );
+    xmlGeneratorValue =
+        new XmlGeneratorValue(List.of(xmlGeneratorElementValueOne), Collections.emptyList());
 
-    final var data = ElementData.builder()
-        .id(new ElementId(QUESTION_ID_ONE))
-        .value(
-            ElementValueText.builder()
-                .textId(new FieldId(ANSWER_ID_ONE))
-                .text(TEXT_VALUE_ONE)
-                .build()
-        )
-        .build();
+    final var data =
+        ElementData.builder()
+            .id(new ElementId(QUESTION_ID_ONE))
+            .value(
+                ElementValueText.builder()
+                    .textId(new FieldId(ANSWER_ID_ONE))
+                    .text(TEXT_VALUE_ONE)
+                    .build())
+            .build();
 
     doReturn(List.of(data)).when(certificate).elementData();
 
@@ -151,27 +155,25 @@ class XmlGeneratorValueTest {
       doReturn(certificateModel).when(certificate).certificateModel();
       final var elementSpecificationOne = mock(ElementSpecification.class);
       when(elementSpecificationOne.includeInXml()).thenReturn(true);
-      doReturn(elementSpecificationOne).when(certificateModel)
+      doReturn(elementSpecificationOne)
+          .when(certificateModel)
           .elementSpecification(new ElementId(QUESTION_ID_ONE));
 
-      xmlGeneratorValue = new XmlGeneratorValue(
-          List.of(xmlGeneratorElementValueOne),
-          Collections.emptyList()
-      );
-
+      xmlGeneratorValue =
+          new XmlGeneratorValue(List.of(xmlGeneratorElementValueOne), Collections.emptyList());
     }
 
     @Test
     void shouldMapValue() {
-      final var data = ElementData.builder()
-          .id(new ElementId(QUESTION_ID_ONE))
-          .value(
-              ElementValueText.builder()
-                  .textId(new FieldId(ANSWER_ID_ONE))
-                  .text(TEXT_VALUE_ONE)
-                  .build()
-          )
-          .build();
+      final var data =
+          ElementData.builder()
+              .id(new ElementId(QUESTION_ID_ONE))
+              .value(
+                  ElementValueText.builder()
+                      .textId(new FieldId(ANSWER_ID_ONE))
+                      .text(TEXT_VALUE_ONE)
+                      .build())
+              .build();
 
       doReturn(List.of(data)).when(certificate).elementData();
 
@@ -188,11 +190,13 @@ class XmlGeneratorValueTest {
 
       assertAll(
           () -> assertEquals(expectedData.getId(), response.getId()),
-          () -> assertEquals(expectedData.getDelsvar().get(0).getId(),
-              response.getDelsvar().get(0).getId()),
-          () -> assertEquals(expectedData.getDelsvar().get(0).getContent().get(0),
-              response.getDelsvar().get(0).getContent().get(0))
-      );
+          () ->
+              assertEquals(
+                  expectedData.getDelsvar().get(0).getId(), response.getDelsvar().get(0).getId()),
+          () ->
+              assertEquals(
+                  expectedData.getDelsvar().get(0).getContent().get(0),
+                  response.getDelsvar().get(0).getContent().get(0)));
     }
   }
 
@@ -204,29 +208,27 @@ class XmlGeneratorValueTest {
       doReturn(ElementValueText.class).when(xmlGeneratorElementValueOne).supports();
       doReturn(ElementValueDateList.class).when(xmlGeneratorElementValueTwo).supports();
 
-      xmlGeneratorValue = new XmlGeneratorValue(
-          List.of(xmlGeneratorElementValueOne, xmlGeneratorElementValueTwo),
-          List.of(xmlGeneratorCustomMapper)
-      );
+      xmlGeneratorValue =
+          new XmlGeneratorValue(
+              List.of(xmlGeneratorElementValueOne, xmlGeneratorElementValueTwo),
+              List.of(xmlGeneratorCustomMapper));
     }
 
     @Test
     void shouldMapEmptyIfNoValue() {
-      final var data = ElementData.builder()
-          .id(new ElementId(QUESTION_ID_ONE))
-          .value(
-              ElementValueText.builder()
-                  .textId(new FieldId(ANSWER_ID_ONE))
-                  .build()
-          )
-          .build();
+      final var data =
+          ElementData.builder()
+              .id(new ElementId(QUESTION_ID_ONE))
+              .value(ElementValueText.builder().textId(new FieldId(ANSWER_ID_ONE)).build())
+              .build();
 
       final var elementMapping = new ElementMapping(new ElementId(QUESTION_ID_TWO), null);
       final var elementSpecification = mock(ElementSpecification.class);
 
       doReturn(certificateModel).when(certificate).certificateModel();
       doReturn(true).when(elementSpecification).includeInXml();
-      doReturn(elementSpecification).when(certificateModel)
+      doReturn(elementSpecification)
+          .when(certificateModel)
           .elementSpecification(new ElementId(QUESTION_ID_ONE));
       doReturn(elementMapping).when(elementSpecification).mapping();
       doReturn(List.of(data)).when(certificate).elementData();
@@ -238,22 +240,20 @@ class XmlGeneratorValueTest {
 
     @Test
     void shouldMergeDelsvarWhenCustomMappingOnElementId() {
-      final var dataOne = ElementData.builder()
-          .id(new ElementId(QUESTION_ID_ONE))
-          .value(
-              ElementValueText.builder()
-                  .textId(new FieldId(ANSWER_ID_ONE))
-                  .text(TEXT_VALUE_ONE)
-                  .build()
-          )
-          .build();
-      final var dataTwo = ElementData.builder()
-          .id(new ElementId(QUESTION_ID_TWO))
-          .value(
-              ElementValueDateList.builder()
-                  .build()
-          )
-          .build();
+      final var dataOne =
+          ElementData.builder()
+              .id(new ElementId(QUESTION_ID_ONE))
+              .value(
+                  ElementValueText.builder()
+                      .textId(new FieldId(ANSWER_ID_ONE))
+                      .text(TEXT_VALUE_ONE)
+                      .build())
+              .build();
+      final var dataTwo =
+          ElementData.builder()
+              .id(new ElementId(QUESTION_ID_TWO))
+              .value(ElementValueDateList.builder().build())
+              .build();
 
       doReturn(List.of(dataOne, dataTwo)).when(certificate).elementData();
       doReturn(certificateModel).when(certificate).certificateModel();
@@ -261,9 +261,11 @@ class XmlGeneratorValueTest {
       when(elementSpecificationOne.includeInXml()).thenReturn(true);
       final var elementSpecificationTwo = mock(ElementSpecification.class);
       when(elementSpecificationTwo.includeInXml()).thenReturn(true);
-      doReturn(elementSpecificationOne).when(certificateModel)
+      doReturn(elementSpecificationOne)
+          .when(certificateModel)
           .elementSpecification(new ElementId(QUESTION_ID_ONE));
-      doReturn(elementSpecificationTwo).when(certificateModel)
+      doReturn(elementSpecificationTwo)
+          .when(certificateModel)
           .elementSpecification(new ElementId(QUESTION_ID_TWO));
       final var elementMapping = new ElementMapping(new ElementId(QUESTION_ID_ONE), null);
       doReturn(null).when(elementSpecificationOne).mapping();
@@ -294,35 +296,40 @@ class XmlGeneratorValueTest {
 
       assertAll(
           () -> assertEquals(expectedData.getId(), response.get(0).getId()),
-          () -> assertEquals(expectedData.getDelsvar().get(0).getId(),
-              response.get(0).getDelsvar().get(0).getId()),
-          () -> assertEquals(expectedData.getDelsvar().get(0).getContent().get(0),
-              response.get(0).getDelsvar().get(0).getContent().get(0)),
-          () -> assertEquals(expectedData.getDelsvar().get(1).getId(),
-              response.get(0).getDelsvar().get(1).getId()),
-          () -> assertEquals(expectedData.getDelsvar().get(1).getContent().get(0),
-              response.get(0).getDelsvar().get(1).getContent().get(0))
-      );
+          () ->
+              assertEquals(
+                  expectedData.getDelsvar().get(0).getId(),
+                  response.get(0).getDelsvar().get(0).getId()),
+          () ->
+              assertEquals(
+                  expectedData.getDelsvar().get(0).getContent().get(0),
+                  response.get(0).getDelsvar().get(0).getContent().get(0)),
+          () ->
+              assertEquals(
+                  expectedData.getDelsvar().get(1).getId(),
+                  response.get(0).getDelsvar().get(1).getId()),
+          () ->
+              assertEquals(
+                  expectedData.getDelsvar().get(1).getContent().get(0),
+                  response.get(0).getDelsvar().get(1).getContent().get(0)));
     }
 
     @Test
     void shouldMergeDelsvarWhenCustomMappingOnElementIdAndElementDataIsNotSorted() {
-      final var dataOne = ElementData.builder()
-          .id(new ElementId(QUESTION_ID_ONE))
-          .value(
-              ElementValueText.builder()
-                  .textId(new FieldId(ANSWER_ID_ONE))
-                  .text(TEXT_VALUE_ONE)
-                  .build()
-          )
-          .build();
-      final var dataTwo = ElementData.builder()
-          .id(new ElementId(QUESTION_ID_TWO))
-          .value(
-              ElementValueDateList.builder()
-                  .build()
-          )
-          .build();
+      final var dataOne =
+          ElementData.builder()
+              .id(new ElementId(QUESTION_ID_ONE))
+              .value(
+                  ElementValueText.builder()
+                      .textId(new FieldId(ANSWER_ID_ONE))
+                      .text(TEXT_VALUE_ONE)
+                      .build())
+              .build();
+      final var dataTwo =
+          ElementData.builder()
+              .id(new ElementId(QUESTION_ID_TWO))
+              .value(ElementValueDateList.builder().build())
+              .build();
 
       doReturn(List.of(dataTwo, dataOne)).when(certificate).elementData();
       doReturn(certificateModel).when(certificate).certificateModel();
@@ -330,11 +337,14 @@ class XmlGeneratorValueTest {
       when(elementSpecificationOne.includeInXml()).thenReturn(true);
       final var elementSpecificationTwo = mock(ElementSpecification.class);
       when(elementSpecificationTwo.includeInXml()).thenReturn(true);
-      doReturn(elementSpecificationOne).when(certificateModel)
+      doReturn(elementSpecificationOne)
+          .when(certificateModel)
           .elementSpecification(new ElementId(QUESTION_ID_ONE));
-      doReturn(elementSpecificationTwo).when(certificateModel)
+      doReturn(elementSpecificationTwo)
+          .when(certificateModel)
           .elementSpecification(new ElementId(QUESTION_ID_TWO));
-      doReturn(-1).when(certificateModel)
+      doReturn(-1)
+          .when(certificateModel)
           .compare(new ElementId(QUESTION_ID_ONE), new ElementId(QUESTION_ID_TWO));
       final var elementMapping = new ElementMapping(new ElementId(QUESTION_ID_ONE), null);
       doReturn(null).when(elementSpecificationOne).mapping();
@@ -365,35 +375,40 @@ class XmlGeneratorValueTest {
 
       assertAll(
           () -> assertEquals(expectedData.getId(), response.get(0).getId()),
-          () -> assertEquals(expectedData.getDelsvar().get(0).getId(),
-              response.get(0).getDelsvar().get(0).getId()),
-          () -> assertEquals(expectedData.getDelsvar().get(0).getContent().get(0),
-              response.get(0).getDelsvar().get(0).getContent().get(0)),
-          () -> assertEquals(expectedData.getDelsvar().get(1).getId(),
-              response.get(0).getDelsvar().get(1).getId()),
-          () -> assertEquals(expectedData.getDelsvar().get(1).getContent().get(0),
-              response.get(0).getDelsvar().get(1).getContent().get(0))
-      );
+          () ->
+              assertEquals(
+                  expectedData.getDelsvar().get(0).getId(),
+                  response.get(0).getDelsvar().get(0).getId()),
+          () ->
+              assertEquals(
+                  expectedData.getDelsvar().get(0).getContent().get(0),
+                  response.get(0).getDelsvar().get(0).getContent().get(0)),
+          () ->
+              assertEquals(
+                  expectedData.getDelsvar().get(1).getId(),
+                  response.get(0).getDelsvar().get(1).getId()),
+          () ->
+              assertEquals(
+                  expectedData.getDelsvar().get(1).getContent().get(0),
+                  response.get(0).getDelsvar().get(1).getContent().get(0)));
     }
 
     @Test
     void shouldMergeDelsvarWhenCustomMappingOnElementIdAndFieldId() {
-      final var dataOne = ElementData.builder()
-          .id(new ElementId(QUESTION_ID_ONE))
-          .value(
-              ElementValueText.builder()
-                  .textId(new FieldId(ANSWER_ID_ONE))
-                  .text(TEXT_VALUE_ONE)
-                  .build()
-          )
-          .build();
-      final var dataTwo = ElementData.builder()
-          .id(new ElementId(QUESTION_ID_TWO))
-          .value(
-              ElementValueDateList.builder()
-                  .build()
-          )
-          .build();
+      final var dataOne =
+          ElementData.builder()
+              .id(new ElementId(QUESTION_ID_ONE))
+              .value(
+                  ElementValueText.builder()
+                      .textId(new FieldId(ANSWER_ID_ONE))
+                      .text(TEXT_VALUE_ONE)
+                      .build())
+              .build();
+      final var dataTwo =
+          ElementData.builder()
+              .id(new ElementId(QUESTION_ID_TWO))
+              .value(ElementValueDateList.builder().build())
+              .build();
 
       doReturn(List.of(dataOne, dataTwo)).when(certificate).elementData();
       doReturn(certificateModel).when(certificate).certificateModel();
@@ -401,14 +416,15 @@ class XmlGeneratorValueTest {
       when(elementSpecificationOne.includeInXml()).thenReturn(true);
       final var elementSpecificationTwo = mock(ElementSpecification.class);
       when(elementSpecificationTwo.includeInXml()).thenReturn(true);
-      doReturn(elementSpecificationOne).when(certificateModel)
+      doReturn(elementSpecificationOne)
+          .when(certificateModel)
           .elementSpecification(new ElementId(QUESTION_ID_ONE));
-      doReturn(elementSpecificationTwo).when(certificateModel)
+      doReturn(elementSpecificationTwo)
+          .when(certificateModel)
           .elementSpecification(new ElementId(QUESTION_ID_TWO));
-      final var elementMapping = new ElementMapping(
-          new ElementId(QUESTION_ID_ONE),
-          new Code("Code2", "CodeSystem", "DisplayName2")
-      );
+      final var elementMapping =
+          new ElementMapping(
+              new ElementId(QUESTION_ID_ONE), new Code("Code2", "CodeSystem", "DisplayName2"));
       doReturn(null).when(elementSpecificationOne).mapping();
       doReturn(elementMapping).when(elementSpecificationTwo).mapping();
 
@@ -421,9 +437,7 @@ class XmlGeneratorValueTest {
       answerOneSubAnswerCodeOne.setCode("Code1");
       answerOneSubAnswerCodeOne.setCodeSystem("CodeSystem");
       answerOneSubAnswerCodeOne.setDisplayName("DisplayName1");
-      answerOneSubAnswerOne.getContent().add(
-          answerOneSubAnswerCodeOne
-      );
+      answerOneSubAnswerOne.getContent().add(answerOneSubAnswerCodeOne);
       expectedDataOne.getDelsvar().add(answerOneSubAnswerOne);
 
       final var expectedDataTwo = new Svar();
@@ -436,9 +450,9 @@ class XmlGeneratorValueTest {
       answerTwoSubAnswerCodeOne.setCode("Code2");
       answerTwoSubAnswerCodeOne.setCodeSystem("CodeSystem");
       answerTwoSubAnswerCodeOne.setDisplayName("DisplayName2");
-      answerTwoSubAnswerOne.getContent().add(
-          new ObjectFactory().createCv(answerTwoSubAnswerCodeOne)
-      );
+      answerTwoSubAnswerOne
+          .getContent()
+          .add(new ObjectFactory().createCv(answerTwoSubAnswerCodeOne));
       expectedDataTwo.getDelsvar().add(answerTwoSubAnswerOne);
       answerTwoSubAnswerTwo.setId(ANSWER_ID_TWO);
       answerTwoSubAnswerTwo.getContent().add(TEXT_VALUE_TWO);
@@ -465,39 +479,51 @@ class XmlGeneratorValueTest {
       assertAll(
           () -> assertEquals(expectedDataOne.getId(), response.get(0).getId()),
           () -> assertEquals(expectedDataOne.getInstans(), response.get(0).getInstans()),
-          () -> assertEquals(expectedDataOne.getDelsvar().get(0).getId(),
-              response.get(0).getDelsvar().get(0).getId()),
-          () -> assertEquals(expectedDataOne.getDelsvar().get(0).getContent().get(0),
-              response.get(0).getDelsvar().get(0).getContent().get(0)),
+          () ->
+              assertEquals(
+                  expectedDataOne.getDelsvar().get(0).getId(),
+                  response.get(0).getDelsvar().get(0).getId()),
+          () ->
+              assertEquals(
+                  expectedDataOne.getDelsvar().get(0).getContent().get(0),
+                  response.get(0).getDelsvar().get(0).getContent().get(0)),
           () -> assertEquals(expectedDataTwo.getId(), response.get(1).getId()),
-          () -> assertEquals(expectedDataTwo.getDelsvar().get(0).getId(),
-              response.get(1).getDelsvar().get(0).getId()),
-          () -> assertEquals(expectedDataTwo.getDelsvar().get(0).getContent().get(0),
-              response.get(1).getDelsvar().get(0).getContent().get(0)),
-          () -> assertEquals(expectedDataTwo.getDelsvar().get(1).getId(),
-              response.get(1).getDelsvar().get(1).getId()),
-          () -> assertEquals(expectedDataTwo.getDelsvar().get(1).getContent().get(0),
-              response.get(1).getDelsvar().get(1).getContent().get(0))
-      );
+          () ->
+              assertEquals(
+                  expectedDataTwo.getDelsvar().get(0).getId(),
+                  response.get(1).getDelsvar().get(0).getId()),
+          () ->
+              assertEquals(
+                  expectedDataTwo.getDelsvar().get(0).getContent().get(0),
+                  response.get(1).getDelsvar().get(0).getContent().get(0)),
+          () ->
+              assertEquals(
+                  expectedDataTwo.getDelsvar().get(1).getId(),
+                  response.get(1).getDelsvar().get(1).getId()),
+          () ->
+              assertEquals(
+                  expectedDataTwo.getDelsvar().get(1).getContent().get(0),
+                  response.get(1).getDelsvar().get(1).getContent().get(0)));
     }
 
     @Test
     void shouldProvideEmptySvarIfCustomMappingMissing() {
-      final var dataOne = ElementData.builder()
-          .id(new ElementId(QUESTION_ID_ONE))
-          .value(
-              ElementValueText.builder()
-                  .textId(new FieldId(ANSWER_ID_ONE))
-                  .text(TEXT_VALUE_ONE)
-                  .build()
-          )
-          .build();
+      final var dataOne =
+          ElementData.builder()
+              .id(new ElementId(QUESTION_ID_ONE))
+              .value(
+                  ElementValueText.builder()
+                      .textId(new FieldId(ANSWER_ID_ONE))
+                      .text(TEXT_VALUE_ONE)
+                      .build())
+              .build();
 
       doReturn(List.of(dataOne)).when(certificate).elementData();
       doReturn(certificateModel).when(certificate).certificateModel();
       final var elementSpecificationOne = mock(ElementSpecification.class);
       when(elementSpecificationOne.includeInXml()).thenReturn(true);
-      doReturn(elementSpecificationOne).when(certificateModel)
+      doReturn(elementSpecificationOne)
+          .when(certificateModel)
           .elementSpecification(new ElementId(QUESTION_ID_ONE));
       final var elementMapping = new ElementMapping(new ElementId("MISSING_QUESTION_ID"), null);
       doReturn(elementMapping).when(elementSpecificationOne).mapping();
@@ -519,11 +545,14 @@ class XmlGeneratorValueTest {
 
       assertAll(
           () -> assertEquals(expectedData.getId(), response.get(0).getId()),
-          () -> assertEquals(expectedData.getDelsvar().get(0).getId(),
-              response.get(0).getDelsvar().get(0).getId()),
-          () -> assertEquals(expectedData.getDelsvar().get(0).getContent().get(0),
-              response.get(0).getDelsvar().get(0).getContent().get(0))
-      );
+          () ->
+              assertEquals(
+                  expectedData.getDelsvar().get(0).getId(),
+                  response.get(0).getDelsvar().get(0).getId()),
+          () ->
+              assertEquals(
+                  expectedData.getDelsvar().get(0).getContent().get(0),
+                  response.get(0).getDelsvar().get(0).getContent().get(0)));
     }
   }
 
@@ -533,28 +562,25 @@ class XmlGeneratorValueTest {
     @BeforeEach
     void setUp() {
       doReturn(CODE_LIST_TO_BOOLEAN).when(xmlGeneratorCustomMapper).id();
-      xmlGeneratorValue = new XmlGeneratorValue(
-          List.of(xmlGeneratorElementValueOne),
-          List.of(xmlGeneratorCustomMapper)
-      );
+      xmlGeneratorValue =
+          new XmlGeneratorValue(
+              List.of(xmlGeneratorElementValueOne), List.of(xmlGeneratorCustomMapper));
     }
 
     @Test
     void shallUseElementValueMapperToGenerateConverter() {
-      final var dataOne = ElementData.builder()
-          .id(new ElementId(QUESTION_ID_ONE))
-          .value(
-              ElementValueCodeList.builder()
-                  .list(Collections.emptyList())
-                  .build()
-          )
-          .build();
+      final var dataOne =
+          ElementData.builder()
+              .id(new ElementId(QUESTION_ID_ONE))
+              .value(ElementValueCodeList.builder().list(Collections.emptyList()).build())
+              .build();
 
       doReturn(List.of(dataOne)).when(certificate).elementData();
       doReturn(certificateModel).when(certificate).certificateModel();
       final var elementSpecificationOne = mock(ElementSpecification.class);
       when(elementSpecificationOne.includeInXml()).thenReturn(true);
-      doReturn(elementSpecificationOne).when(certificateModel)
+      doReturn(elementSpecificationOne)
+          .when(certificateModel)
           .elementSpecification(new ElementId(QUESTION_ID_ONE));
       final var elementMapping = new ElementMapping(CODE_LIST_TO_BOOLEAN);
       doReturn(Optional.of(elementMapping)).when(elementSpecificationOne).getMapping();
@@ -576,11 +602,14 @@ class XmlGeneratorValueTest {
 
       assertAll(
           () -> assertEquals(expectedData.getId(), response.getFirst().getId()),
-          () -> assertEquals(expectedData.getDelsvar().getFirst().getId(),
-              response.getFirst().getDelsvar().getFirst().getId()),
-          () -> assertEquals(expectedData.getDelsvar().getFirst().getContent().getFirst(),
-              response.getFirst().getDelsvar().getFirst().getContent().getFirst())
-      );
+          () ->
+              assertEquals(
+                  expectedData.getDelsvar().getFirst().getId(),
+                  response.getFirst().getDelsvar().getFirst().getId()),
+          () ->
+              assertEquals(
+                  expectedData.getDelsvar().getFirst().getContent().getFirst(),
+                  response.getFirst().getDelsvar().getFirst().getContent().getFirst()));
     }
   }
 }

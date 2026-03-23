@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7804;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7804.elements.QuestionNedsattningArbetsformaga.QUESTION_NEDSATTNING_ARBETSFORMAGA_ID;
@@ -36,10 +54,11 @@ public class FK7804CertificateSendContentProvider implements CertificateActionCo
 
   @Override
   public String body(Certificate certificate) {
-    final var questionBedomning = certificate.elementData().stream()
-        .filter(data -> data.id().equals(QUESTION_NEDSATTNING_ARBETSFORMAGA_ID))
-        .findFirst()
-        .orElseThrow();
+    final var questionBedomning =
+        certificate.elementData().stream()
+            .filter(data -> data.id().equals(QUESTION_NEDSATTNING_ARBETSFORMAGA_ID))
+            .findFirst()
+            .orElseThrow();
 
     if (!(questionBedomning.value() instanceof ElementValueDateRangeList elementValueDateList)) {
       throw new IllegalStateException(
@@ -48,13 +67,12 @@ public class FK7804CertificateSendContentProvider implements CertificateActionCo
 
     final var ranges = getDateRanges(elementValueDateList);
 
-    var totalDays = ranges.stream()
-        .mapToLong(range -> ChronoUnit.DAYS.between(range.from(), range.to()) + 1)
-        .sum();
+    var totalDays =
+        ranges.stream()
+            .mapToLong(range -> ChronoUnit.DAYS.between(range.from(), range.to()) + 1)
+            .sum();
 
-    return totalDays < 15
-        ? SHORT_SICK_LEAVE_PERIOD_BODY
-        : LONG_SICK_LEAVE_PERIOD_BODY;
+    return totalDays < 15 ? SHORT_SICK_LEAVE_PERIOD_BODY : LONG_SICK_LEAVE_PERIOD_BODY;
   }
 
   private static ArrayList<DateRange> getDateRanges(
@@ -72,7 +90,8 @@ public class FK7804CertificateSendContentProvider implements CertificateActionCo
     sortedRanges.sort(Comparator.comparing(DateRange::to));
 
     final var ranges = new ArrayList<DateRange>();
-    sortedRanges.forEach(date -> {
+    sortedRanges.forEach(
+        date -> {
           final var dateRange = ranges.isEmpty() ? null : ranges.getLast();
 
           if (dateRange != null && hasOverlappingDates(date, dateRange)) {
@@ -82,8 +101,7 @@ public class FK7804CertificateSendContentProvider implements CertificateActionCo
           } else {
             ranges.add(date);
           }
-        }
-    );
+        });
 
     return ranges;
   }

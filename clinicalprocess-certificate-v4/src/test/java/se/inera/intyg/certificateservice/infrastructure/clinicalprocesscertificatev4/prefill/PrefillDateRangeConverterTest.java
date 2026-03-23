@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.prefill;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,31 +51,28 @@ class PrefillDateRangeConverterTest {
   private static final FieldId FIELD_ID = new FieldId("F2");
   private static final LocalDate START_DATE = LocalDate.of(2024, 1, 1);
   private static final LocalDate END_DATE = LocalDate.of(2024, 12, 31);
-  private static final ElementSpecification SPECIFICATION = ElementSpecification.builder()
-      .id(ELEMENT_ID)
-      .configuration(
-          ElementConfigurationDateRange.builder()
-              .id(FIELD_ID)
-              .build()
-      )
-      .build();
-  private static final ElementData EXPECTED_ELEMENT_DATA = ElementData.builder()
-      .id(ELEMENT_ID)
-      .value(
-          ElementValueDateRange.builder()
-              .id(FIELD_ID)
-              .fromDate(START_DATE)
-              .toDate(END_DATE)
-              .build()
-      )
-      .build();
+  private static final ElementSpecification SPECIFICATION =
+      ElementSpecification.builder()
+          .id(ELEMENT_ID)
+          .configuration(ElementConfigurationDateRange.builder().id(FIELD_ID).build())
+          .build();
+  private static final ElementData EXPECTED_ELEMENT_DATA =
+      ElementData.builder()
+          .id(ELEMENT_ID)
+          .value(
+              ElementValueDateRange.builder()
+                  .id(FIELD_ID)
+                  .fromDate(START_DATE)
+                  .toDate(END_DATE)
+                  .build())
+          .build();
 
-  private final PrefillDateRangeConverter prefillDateRangeConverter = new PrefillDateRangeConverter();
+  private final PrefillDateRangeConverter prefillDateRangeConverter =
+      new PrefillDateRangeConverter();
 
   @Test
   void shouldReturnSupportsDateRange() {
-    assertEquals(ElementConfigurationDateRange.class,
-        prefillDateRangeConverter.supports());
+    assertEquals(ElementConfigurationDateRange.class, prefillDateRangeConverter.supports());
   }
 
   @Nested
@@ -85,10 +100,7 @@ class PrefillDateRangeConverterTest {
 
       final var result = prefillDateRangeConverter.prefillAnswer(SPECIFICATION, prefill);
 
-      assertEquals(
-          PrefillErrorType.INVALID_SUB_ANSWER_ID,
-          result.getErrors().getFirst().type()
-      );
+      assertEquals(PrefillErrorType.INVALID_SUB_ANSWER_ID, result.getErrors().getFirst().type());
     }
 
     @Test
@@ -102,31 +114,27 @@ class PrefillDateRangeConverterTest {
       svar.getDelsvar().add(delsvar);
       prefill.getSvar().add(svar);
 
-      final var specification = ElementSpecification.builder()
-          .id(new ElementId(FIELD_ID.value()))
-          .configuration(
-              ElementConfigurationDateRange.builder()
-                  .id(FIELD_ID)
-                  .build()
-          )
-          .build();
+      final var specification =
+          ElementSpecification.builder()
+              .id(new ElementId(FIELD_ID.value()))
+              .configuration(ElementConfigurationDateRange.builder().id(FIELD_ID).build())
+              .build();
 
       final var result = prefillDateRangeConverter.prefillAnswer(specification, prefill);
 
-      final var expected = PrefillAnswer.builder()
-          .elementData(
-              ElementData.builder()
-                  .id(new ElementId(FIELD_ID.value()))
-                  .value(
-                      ElementValueDateRange.builder()
-                          .id(FIELD_ID)
-                          .fromDate(START_DATE)
-                          .toDate(END_DATE)
-                          .build()
-                  )
-                  .build()
-          )
-          .build();
+      final var expected =
+          PrefillAnswer.builder()
+              .elementData(
+                  ElementData.builder()
+                      .id(new ElementId(FIELD_ID.value()))
+                      .value(
+                          ElementValueDateRange.builder()
+                              .id(FIELD_ID)
+                              .fromDate(START_DATE)
+                              .toDate(END_DATE)
+                              .build())
+                      .build())
+              .build();
 
       assertEquals(expected, result);
     }
@@ -144,9 +152,7 @@ class PrefillDateRangeConverterTest {
 
       final var result = prefillDateRangeConverter.prefillAnswer(SPECIFICATION, prefill);
 
-      final var expected = PrefillAnswer.builder()
-          .elementData(EXPECTED_ELEMENT_DATA)
-          .build();
+      final var expected = PrefillAnswer.builder().elementData(EXPECTED_ELEMENT_DATA).build();
 
       assertEquals(expected, result);
     }
@@ -154,17 +160,15 @@ class PrefillDateRangeConverterTest {
     @Test
     void shouldReturnErrorIfWrongConfigurationType() {
       final var prefill = new Forifyllnad();
-      final var wrongSpec = ElementSpecification.builder()
-          .id(ELEMENT_ID)
-          .configuration(ElementConfigurationCategory.builder().build())
-          .build();
+      final var wrongSpec =
+          ElementSpecification.builder()
+              .id(ELEMENT_ID)
+              .configuration(ElementConfigurationCategory.builder().build())
+              .build();
 
       final var result = prefillDateRangeConverter.prefillAnswer(wrongSpec, prefill);
 
-      assertEquals(
-          PrefillErrorType.TECHNICAL_ERROR,
-          result.getErrors().getFirst().type()
-      );
+      assertEquals(PrefillErrorType.TECHNICAL_ERROR, result.getErrors().getFirst().type());
     }
 
     @Test
@@ -189,10 +193,7 @@ class PrefillDateRangeConverterTest {
 
       final var result = prefillDateRangeConverter.prefillAnswer(SPECIFICATION, prefill);
 
-      assertEquals(
-          PrefillErrorType.WRONG_NUMBER_OF_ANSWERS,
-          result.getErrors().getFirst().type()
-      );
+      assertEquals(PrefillErrorType.WRONG_NUMBER_OF_ANSWERS, result.getErrors().getFirst().type());
     }
 
     @Test
@@ -214,10 +215,7 @@ class PrefillDateRangeConverterTest {
 
       final var result = prefillDateRangeConverter.prefillAnswer(SPECIFICATION, prefill);
 
-      assertEquals(
-          PrefillErrorType.WRONG_NUMBER_OF_ANSWERS,
-          result.getErrors().getFirst().type()
-      );
+      assertEquals(PrefillErrorType.WRONG_NUMBER_OF_ANSWERS, result.getErrors().getFirst().type());
     }
 
     @Test
@@ -234,10 +232,7 @@ class PrefillDateRangeConverterTest {
 
       final var result = prefillDateRangeConverter.prefillAnswer(SPECIFICATION, prefill);
 
-      assertEquals(
-          PrefillErrorType.WRONG_NUMBER_OF_ANSWERS,
-          result.getErrors().getFirst().type()
-      );
+      assertEquals(PrefillErrorType.WRONG_NUMBER_OF_ANSWERS, result.getErrors().getFirst().type());
     }
   }
 
@@ -256,8 +251,10 @@ class PrefillDateRangeConverterTest {
 
     final var docFactory = DocumentBuilderFactory.newInstance();
     docFactory.setNamespaceAware(true);
-    final var doc = docFactory.newDocumentBuilder()
-        .parse(new org.xml.sax.InputSource(new StringReader(writer.toString())));
+    final var doc =
+        docFactory
+            .newDocumentBuilder()
+            .parse(new org.xml.sax.InputSource(new StringReader(writer.toString())));
     return doc.getDocumentElement();
   }
 

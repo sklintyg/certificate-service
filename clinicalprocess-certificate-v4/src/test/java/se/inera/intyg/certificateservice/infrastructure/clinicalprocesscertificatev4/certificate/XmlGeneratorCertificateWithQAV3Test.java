@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.certificate;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -72,25 +90,19 @@ import se.riv.clinicalprocess.healthcond.certificate.v3.Vardgivare;
 @ExtendWith(MockitoExtension.class)
 class XmlGeneratorCertificateWithQAV3Test {
 
-
   private static final String SUB_ANSWER_ID = "SUB_ANSWER_ID";
   private static final String ANSWER_ID = "ANSWER_ID";
   private Certificate certificate;
 
-  @Mock
-  XmlGeneratorValue xmlGeneratorValue;
-  @InjectMocks
-  XmlGeneratorCertificateWithQAV3 xmlGeneratorCertificateWithQAV3;
+  @Mock XmlGeneratorValue xmlGeneratorValue;
+  @InjectMocks XmlGeneratorCertificateWithQAV3 xmlGeneratorCertificateWithQAV3;
 
   @Nested
   class ListItemIntygTests {
 
     @BeforeEach
     void setUp() {
-      certificate = fk7210CertificateBuilder()
-          .xml(null)
-          .signed(null)
-          .build();
+      certificate = fk7210CertificateBuilder().xml(null).signed(null).build();
     }
 
     @Test
@@ -98,8 +110,7 @@ class XmlGeneratorCertificateWithQAV3Test {
       final var response = xmlGeneratorCertificateWithQAV3.generate(List.of(certificate));
 
       assertDoesNotThrow(
-          () -> unmarshal(response), () -> "Could not unmarshall xml '%s'".formatted(response)
-      );
+          () -> unmarshal(response), () -> "Could not unmarshall xml '%s'".formatted(response));
     }
 
     @Test
@@ -108,14 +119,16 @@ class XmlGeneratorCertificateWithQAV3Test {
       expected.setExtension(CERTIFICATE_ID.id());
       expected.setRoot(ALFA_ALLERGIMOTTAGNINGEN.hsaId().id());
 
-      final var intyg = unmarshal(
-          xmlGeneratorCertificateWithQAV3.generate(List.of(certificate))
-      ).getList().getItem().getFirst().getIntyg();
+      final var intyg =
+          unmarshal(xmlGeneratorCertificateWithQAV3.generate(List.of(certificate)))
+              .getList()
+              .getItem()
+              .getFirst()
+              .getIntyg();
 
       assertAll(
           () -> assertEquals(expected.getExtension(), intyg.getIntygsId().getExtension()),
-          () -> assertEquals(expected.getRoot(), intyg.getIntygsId().getRoot())
-      );
+          () -> assertEquals(expected.getRoot(), intyg.getIntygsId().getRoot()));
     }
 
     @Test
@@ -125,9 +138,13 @@ class XmlGeneratorCertificateWithQAV3Test {
       expected.setCodeSystem(FK7210_CODE_TYPE.codeSystem());
       expected.setDisplayName(FK7210_CODE_TYPE.displayName());
 
-      final var typAvIntyg = unmarshal(
-          xmlGeneratorCertificateWithQAV3.generate(List.of(certificate))
-      ).getList().getItem().getFirst().getIntyg().getTyp();
+      final var typAvIntyg =
+          unmarshal(xmlGeneratorCertificateWithQAV3.generate(List.of(certificate)))
+              .getList()
+              .getItem()
+              .getFirst()
+              .getIntyg()
+              .getTyp();
 
       assertAll(
           () -> assertEquals(expected.getCode(), typAvIntyg.getCode()),
@@ -135,21 +152,21 @@ class XmlGeneratorCertificateWithQAV3Test {
           () -> assertEquals(expected.getCodeSystemName(), typAvIntyg.getCodeSystemName()),
           () -> assertEquals(expected.getCodeSystemVersion(), typAvIntyg.getCodeSystemVersion()),
           () -> assertEquals(expected.getDisplayName(), typAvIntyg.getDisplayName()),
-          () -> assertEquals(expected.getOriginalText(), typAvIntyg.getOriginalText())
-      );
+          () -> assertEquals(expected.getOriginalText(), typAvIntyg.getOriginalText()));
     }
 
     @Test
     void shouldIncludeVersion() {
       final var expectedVersion = FK7210_VERSION.version();
 
-      final var intyg = unmarshal(
-          xmlGeneratorCertificateWithQAV3.generate(List.of(certificate))
-      ).getList().getItem().getFirst().getIntyg();
+      final var intyg =
+          unmarshal(xmlGeneratorCertificateWithQAV3.generate(List.of(certificate)))
+              .getList()
+              .getItem()
+              .getFirst()
+              .getIntyg();
 
-      assertAll(
-          () -> assertEquals(expectedVersion, intyg.getVersion())
-      );
+      assertAll(() -> assertEquals(expectedVersion, intyg.getVersion()));
     }
 
     @Test
@@ -165,22 +182,27 @@ class XmlGeneratorCertificateWithQAV3Test {
       expected.setPostnummer("");
       expected.setPostort("");
 
-      final var patient = unmarshal(
-          xmlGeneratorCertificateWithQAV3.generate(List.of(certificate))
-      ).getList().getItem().getFirst().getIntyg().getPatient();
+      final var patient =
+          unmarshal(xmlGeneratorCertificateWithQAV3.generate(List.of(certificate)))
+              .getList()
+              .getItem()
+              .getFirst()
+              .getIntyg()
+              .getPatient();
 
       assertAll(
           () -> assertEquals(expected.getPersonId().getRoot(), patient.getPersonId().getRoot()),
-          () -> assertEquals(expected.getPersonId().getExtension(),
-              patient.getPersonId().getExtension()),
+          () ->
+              assertEquals(
+                  expected.getPersonId().getExtension(), patient.getPersonId().getExtension()),
           () -> assertEquals(expected.getFornamn(), patient.getFornamn()),
           () -> assertEquals(expected.getMellannamn(), patient.getMellannamn()),
           () -> assertEquals(expected.getEfternamn(), patient.getEfternamn()),
           () -> assertEquals(expected.getPostadress(), patient.getPostadress()),
           () -> assertEquals(expected.getPostnummer(), patient.getPostnummer()),
           () -> assertEquals(expected.getPostort(), patient.getPostort()),
-          () -> assertEquals(expected.getKallaAdressuppgifter(), patient.getKallaAdressuppgifter())
-      );
+          () ->
+              assertEquals(expected.getKallaAdressuppgifter(), patient.getKallaAdressuppgifter()));
     }
 
     @Test
@@ -193,18 +215,22 @@ class XmlGeneratorCertificateWithQAV3Test {
       expected.setForskrivarkod("0000000");
       expected.setFullstandigtNamn(AJLA_DOCTOR_FULLNAME);
 
-      final var skapadAv = unmarshal(
-          xmlGeneratorCertificateWithQAV3.generate(List.of(certificate))
-      ).getList().getItem().getFirst().getIntyg().getSkapadAv();
+      final var skapadAv =
+          unmarshal(xmlGeneratorCertificateWithQAV3.generate(List.of(certificate)))
+              .getList()
+              .getItem()
+              .getFirst()
+              .getIntyg()
+              .getSkapadAv();
 
       assertAll(
-          () -> assertEquals(expected.getPersonalId().getRoot(),
-              skapadAv.getPersonalId().getRoot()),
-          () -> assertEquals(expected.getPersonalId().getExtension(),
-              skapadAv.getPersonalId().getExtension()),
+          () ->
+              assertEquals(expected.getPersonalId().getRoot(), skapadAv.getPersonalId().getRoot()),
+          () ->
+              assertEquals(
+                  expected.getPersonalId().getExtension(), skapadAv.getPersonalId().getExtension()),
           () -> assertEquals(expected.getForskrivarkod(), skapadAv.getForskrivarkod()),
-          () -> assertEquals(expected.getFullstandigtNamn(), skapadAv.getFullstandigtNamn())
-      );
+          () -> assertEquals(expected.getFullstandigtNamn(), skapadAv.getFullstandigtNamn()));
     }
 
     @Test
@@ -218,19 +244,23 @@ class XmlGeneratorCertificateWithQAV3Test {
       expectedTwo.setCodeSystem(PaTitle.OID);
       expectedTwo.setDisplayName(AJLA_DOCTOR_PA_TITLES.get(1).description());
 
-      final var befattningar = unmarshal(
-          xmlGeneratorCertificateWithQAV3.generate(List.of(certificate))
-      ).getList().getItem().getFirst().getIntyg().getSkapadAv().getBefattning();
+      final var befattningar =
+          unmarshal(xmlGeneratorCertificateWithQAV3.generate(List.of(certificate)))
+              .getList()
+              .getItem()
+              .getFirst()
+              .getIntyg()
+              .getSkapadAv()
+              .getBefattning();
 
       assertAll(
           () -> assertEquals(expectedOne.getCode(), befattningar.getFirst().getCode()),
           () -> assertEquals(expectedOne.getCodeSystem(), befattningar.getFirst().getCodeSystem()),
-          () -> assertEquals(expectedOne.getDisplayName(),
-              befattningar.getFirst().getDisplayName()),
+          () ->
+              assertEquals(expectedOne.getDisplayName(), befattningar.getFirst().getDisplayName()),
           () -> assertEquals(expectedTwo.getCode(), befattningar.get(1).getCode()),
           () -> assertEquals(expectedTwo.getCodeSystem(), befattningar.get(1).getCodeSystem()),
-          () -> assertEquals(expectedTwo.getDisplayName(), befattningar.get(1).getDisplayName())
-      );
+          () -> assertEquals(expectedTwo.getDisplayName(), befattningar.get(1).getDisplayName()));
     }
 
     @Test
@@ -242,18 +272,24 @@ class XmlGeneratorCertificateWithQAV3Test {
       expectedTwo.setCode("N/A");
       expectedTwo.setDisplayName(AJLA_DOCTOR_SPECIALITIES.get(1).value());
 
-      final var specialistkompetens = unmarshal(
-          xmlGeneratorCertificateWithQAV3.generate(List.of(certificate))
-      ).getList().getItem().getFirst().getIntyg().getSkapadAv().getSpecialistkompetens();
+      final var specialistkompetens =
+          unmarshal(xmlGeneratorCertificateWithQAV3.generate(List.of(certificate)))
+              .getList()
+              .getItem()
+              .getFirst()
+              .getIntyg()
+              .getSkapadAv()
+              .getSpecialistkompetens();
 
       assertAll(
           () -> assertEquals(expectedOne.getCode(), specialistkompetens.getFirst().getCode()),
-          () -> assertEquals(expectedOne.getDisplayName(),
-              specialistkompetens.getFirst().getDisplayName()),
+          () ->
+              assertEquals(
+                  expectedOne.getDisplayName(), specialistkompetens.getFirst().getDisplayName()),
           () -> assertEquals(expectedTwo.getCode(), specialistkompetens.get(1).getCode()),
-          () -> assertEquals(expectedTwo.getDisplayName(),
-              specialistkompetens.get(1).getDisplayName())
-      );
+          () ->
+              assertEquals(
+                  expectedTwo.getDisplayName(), specialistkompetens.get(1).getDisplayName()));
     }
 
     @Test
@@ -263,17 +299,23 @@ class XmlGeneratorCertificateWithQAV3Test {
       expectedOne.setCode("LK");
       expectedOne.setDisplayName(AJLA_DOCTOR_HEALTH_CARE_PROFESSIONAL_LICENCES.getFirst().value());
 
-      final var legitimeradeYrken = unmarshal(
-          xmlGeneratorCertificateWithQAV3.generate(List.of(certificate))
-      ).getList().getItem().getFirst().getIntyg().getSkapadAv().getLegitimeratYrke();
+      final var legitimeradeYrken =
+          unmarshal(xmlGeneratorCertificateWithQAV3.generate(List.of(certificate)))
+              .getList()
+              .getItem()
+              .getFirst()
+              .getIntyg()
+              .getSkapadAv()
+              .getLegitimeratYrke();
 
       assertAll(
           () -> assertEquals(expectedOne.getCode(), legitimeradeYrken.getFirst().getCode()),
-          () -> assertEquals(expectedOne.getDisplayName(),
-              legitimeradeYrken.getFirst().getDisplayName()),
-          () -> assertEquals(expectedOne.getCodeSystem(),
-              legitimeradeYrken.getFirst().getCodeSystem())
-      );
+          () ->
+              assertEquals(
+                  expectedOne.getDisplayName(), legitimeradeYrken.getFirst().getDisplayName()),
+          () ->
+              assertEquals(
+                  expectedOne.getCodeSystem(), legitimeradeYrken.getFirst().getCodeSystem()));
     }
 
     @Test
@@ -290,21 +332,26 @@ class XmlGeneratorCertificateWithQAV3Test {
       expected.setTelefonnummer(ALFA_ALLERGIMOTTAGNINGEN_PHONENUMBER);
       expected.setEpost(ALFA_ALLERGIMOTTAGNINGEN_EMAIL);
 
-      final var enhet = unmarshal(
-          xmlGeneratorCertificateWithQAV3.generate(List.of(certificate))
-      ).getList().getItem().getFirst().getIntyg().getSkapadAv().getEnhet();
+      final var enhet =
+          unmarshal(xmlGeneratorCertificateWithQAV3.generate(List.of(certificate)))
+              .getList()
+              .getItem()
+              .getFirst()
+              .getIntyg()
+              .getSkapadAv()
+              .getEnhet();
 
       assertAll(
           () -> assertEquals(expected.getEnhetsId().getRoot(), enhet.getEnhetsId().getRoot()),
-          () -> assertEquals(expected.getEnhetsId().getExtension(),
-              enhet.getEnhetsId().getExtension()),
+          () ->
+              assertEquals(
+                  expected.getEnhetsId().getExtension(), enhet.getEnhetsId().getExtension()),
           () -> assertEquals(expected.getEnhetsnamn(), enhet.getEnhetsnamn()),
           () -> assertEquals(expected.getPostadress(), enhet.getPostadress()),
           () -> assertEquals(expected.getPostnummer(), enhet.getPostnummer()),
           () -> assertEquals(expected.getPostort(), enhet.getPostort()),
           () -> assertEquals(expected.getTelefonnummer(), enhet.getTelefonnummer()),
-          () -> assertEquals(expected.getEpost(), enhet.getEpost())
-      );
+          () -> assertEquals(expected.getEpost(), enhet.getEpost()));
     }
 
     @Test
@@ -313,14 +360,19 @@ class XmlGeneratorCertificateWithQAV3Test {
       expected.setRoot(WorkplaceCode.OID);
       expected.setExtension(ALFA_ALLERGIMOTTAGNINGEN_WORKPLACE_CODE);
 
-      final var arbetsplatskod = unmarshal(
-          xmlGeneratorCertificateWithQAV3.generate(List.of(certificate))
-      ).getList().getItem().getFirst().getIntyg().getSkapadAv().getEnhet().getArbetsplatskod();
+      final var arbetsplatskod =
+          unmarshal(xmlGeneratorCertificateWithQAV3.generate(List.of(certificate)))
+              .getList()
+              .getItem()
+              .getFirst()
+              .getIntyg()
+              .getSkapadAv()
+              .getEnhet()
+              .getArbetsplatskod();
 
       assertAll(
           () -> assertEquals(expected.getRoot(), arbetsplatskod.getRoot()),
-          () -> assertEquals(expected.getExtension(), arbetsplatskod.getExtension())
-      );
+          () -> assertEquals(expected.getExtension(), arbetsplatskod.getExtension()));
     }
 
     @Test
@@ -332,17 +384,25 @@ class XmlGeneratorCertificateWithQAV3Test {
       expected.setVardgivareId(hsaId);
       expected.setVardgivarnamn(ALFA_REGIONEN_NAME);
 
-      final var vardgivare = unmarshal(
-          xmlGeneratorCertificateWithQAV3.generate(List.of(certificate))
-      ).getList().getItem().getFirst().getIntyg().getSkapadAv().getEnhet().getVardgivare();
+      final var vardgivare =
+          unmarshal(xmlGeneratorCertificateWithQAV3.generate(List.of(certificate)))
+              .getList()
+              .getItem()
+              .getFirst()
+              .getIntyg()
+              .getSkapadAv()
+              .getEnhet()
+              .getVardgivare();
 
       assertAll(
-          () -> assertEquals(expected.getVardgivareId().getRoot(),
-              vardgivare.getVardgivareId().getRoot()),
-          () -> assertEquals(expected.getVardgivareId().getExtension(),
-              vardgivare.getVardgivareId().getExtension()),
-          () -> assertEquals(expected.getVardgivarnamn(), vardgivare.getVardgivarnamn())
-      );
+          () ->
+              assertEquals(
+                  expected.getVardgivareId().getRoot(), vardgivare.getVardgivareId().getRoot()),
+          () ->
+              assertEquals(
+                  expected.getVardgivareId().getExtension(),
+                  vardgivare.getVardgivareId().getExtension()),
+          () -> assertEquals(expected.getVardgivarnamn(), vardgivare.getVardgivarnamn()));
     }
 
     @Test
@@ -355,41 +415,54 @@ class XmlGeneratorCertificateWithQAV3Test {
       final var expectedAnswers = List.of(answer);
       when(xmlGeneratorValue.generate(certificate)).thenReturn(expectedAnswers);
 
-      final var answers = unmarshal(
-          xmlGeneratorCertificateWithQAV3.generate(List.of(certificate))
-      ).getList().getItem().getFirst().getIntyg().getSvar();
+      final var answers =
+          unmarshal(xmlGeneratorCertificateWithQAV3.generate(List.of(certificate)))
+              .getList()
+              .getItem()
+              .getFirst()
+              .getIntyg()
+              .getSvar();
 
       assertAll(
           () -> assertEquals(ANSWER_ID, answers.getFirst().getId()),
-          () -> assertEquals(SUB_ANSWER_ID, answers.getFirst().getDelsvar().getFirst().getId())
-      );
+          () -> assertEquals(SUB_ANSWER_ID, answers.getFirst().getDelsvar().getFirst().getId()));
     }
 
     @Test
     void shouldNotIncludeUnderskrift() {
-      final var underskrift = unmarshal(
-          xmlGeneratorCertificateWithQAV3.generate(List.of(certificate))
-      ).getList().getItem().getFirst().getIntyg().getUnderskrift();
+      final var underskrift =
+          unmarshal(xmlGeneratorCertificateWithQAV3.generate(List.of(certificate)))
+              .getList()
+              .getItem()
+              .getFirst()
+              .getIntyg()
+              .getUnderskrift();
 
-      assertAll(
-          () -> assertNull(underskrift)
-      );
+      assertAll(() -> assertNull(underskrift));
     }
 
     @Test
     void shouldNotIncludeSigneringsTidpunktIfSignedIsNull() {
-      final var signeringstidpunkt = unmarshal(
-          xmlGeneratorCertificateWithQAV3.generate(List.of(certificate))
-      ).getList().getItem().getFirst().getIntyg().getSigneringstidpunkt();
+      final var signeringstidpunkt =
+          unmarshal(xmlGeneratorCertificateWithQAV3.generate(List.of(certificate)))
+              .getList()
+              .getItem()
+              .getFirst()
+              .getIntyg()
+              .getSigneringstidpunkt();
 
       assertNull(signeringstidpunkt);
     }
 
     @Test
     void shouldNotIncludeSkickatTidpunktIfSignedIsNull() {
-      final var skickatTidpunkt = unmarshal(
-          xmlGeneratorCertificateWithQAV3.generate(List.of(certificate))
-      ).getList().getItem().getFirst().getIntyg().getSkickatTidpunkt();
+      final var skickatTidpunkt =
+          unmarshal(xmlGeneratorCertificateWithQAV3.generate(List.of(certificate)))
+              .getList()
+              .getItem()
+              .getFirst()
+              .getIntyg()
+              .getSkickatTidpunkt();
 
       assertNull(skickatTidpunkt);
     }
@@ -397,95 +470,109 @@ class XmlGeneratorCertificateWithQAV3Test {
     @Test
     void shouldIncludeSigneringtidpunkt() {
       final var expectedValue = "2024-04-01T12:30:35";
-      final var signedCertificate = fk7210CertificateBuilder()
-          .xml(null)
-          .status(Status.SIGNED)
-          .signed(LocalDateTime.parse(expectedValue))
-          .build();
+      final var signedCertificate =
+          fk7210CertificateBuilder()
+              .xml(null)
+              .status(Status.SIGNED)
+              .signed(LocalDateTime.parse(expectedValue))
+              .build();
 
-      final var signeringstidpunkt = unmarshal(
-          xmlGeneratorCertificateWithQAV3.generate(List.of(signedCertificate))
-      ).getList().getItem().getFirst().getIntyg().getSigneringstidpunkt();
+      final var signeringstidpunkt =
+          unmarshal(xmlGeneratorCertificateWithQAV3.generate(List.of(signedCertificate)))
+              .getList()
+              .getItem()
+              .getFirst()
+              .getIntyg()
+              .getSigneringstidpunkt();
 
-      assertEquals(
-          expectedValue,
-          signeringstidpunkt.toString()
-      );
+      assertEquals(expectedValue, signeringstidpunkt.toString());
     }
 
     @Test
     void shouldIncludeSigneringtidpunktOnExactMinute() {
       final var expectedValue = "2024-04-01T12:30:00";
-      final var signedCertificate = fk7210CertificateBuilder()
-          .xml(null)
-          .status(Status.SIGNED)
-          .signed(LocalDateTime.parse(expectedValue))
-          .build();
+      final var signedCertificate =
+          fk7210CertificateBuilder()
+              .xml(null)
+              .status(Status.SIGNED)
+              .signed(LocalDateTime.parse(expectedValue))
+              .build();
 
-      final var signeringstidpunkt = unmarshal(
-          xmlGeneratorCertificateWithQAV3.generate(List.of(signedCertificate))
-      ).getList().getItem().getFirst().getIntyg().getSigneringstidpunkt();
+      final var signeringstidpunkt =
+          unmarshal(xmlGeneratorCertificateWithQAV3.generate(List.of(signedCertificate)))
+              .getList()
+              .getItem()
+              .getFirst()
+              .getIntyg()
+              .getSigneringstidpunkt();
 
-      assertEquals(
-          expectedValue,
-          signeringstidpunkt.toString()
-      );
+      assertEquals(expectedValue, signeringstidpunkt.toString());
     }
 
     @Test
     void shouldIncludeSkickatTidpunkt() {
       final var expectedValue = "2024-04-01T12:30:17";
-      final var signedCertificate = fk7210CertificateBuilder()
-          .status(Status.SIGNED)
-          .xml(null)
-          .signed(LocalDateTime.parse(expectedValue))
-          .build();
+      final var signedCertificate =
+          fk7210CertificateBuilder()
+              .status(Status.SIGNED)
+              .xml(null)
+              .signed(LocalDateTime.parse(expectedValue))
+              .build();
 
-      final var skickatTidpunkt = unmarshal(
-          xmlGeneratorCertificateWithQAV3.generate(List.of(signedCertificate))
-      ).getList().getItem().getFirst().getIntyg().getSkickatTidpunkt();
+      final var skickatTidpunkt =
+          unmarshal(xmlGeneratorCertificateWithQAV3.generate(List.of(signedCertificate)))
+              .getList()
+              .getItem()
+              .getFirst()
+              .getIntyg()
+              .getSkickatTidpunkt();
 
-      assertEquals(
-          expectedValue,
-          skickatTidpunkt.toString()
-      );
+      assertEquals(expectedValue, skickatTidpunkt.toString());
     }
 
     @Test
     void shouldNotIncludeRelationIfParentIsMissing() {
-      final var relation = unmarshal(
-          xmlGeneratorCertificateWithQAV3.generate(List.of(certificate))).getList().getItem()
-          .getFirst().getIntyg()
-          .getRelation();
+      final var relation =
+          unmarshal(xmlGeneratorCertificateWithQAV3.generate(List.of(certificate)))
+              .getList()
+              .getItem()
+              .getFirst()
+              .getIntyg()
+              .getRelation();
       assertTrue(relation.isEmpty());
     }
 
     @Test
     void shouldIncludeRelationIfParentIsPresent() {
       final var parentCertificate = certificate;
-      final var certificate = fk7210CertificateBuilder()
-          .xml(null)
-          .parent(
-              Relation.builder()
-                  .type(RelationType.REPLACE)
-                  .certificate(parentCertificate)
-                  .build()
-          )
-          .build();
+      final var certificate =
+          fk7210CertificateBuilder()
+              .xml(null)
+              .parent(
+                  Relation.builder()
+                      .type(RelationType.REPLACE)
+                      .certificate(parentCertificate)
+                      .build())
+              .build();
 
-      final var relation = unmarshal(
-          xmlGeneratorCertificateWithQAV3.generate(List.of(certificate))).getList().getItem()
-          .getFirst()
-          .getIntyg().getRelation();
+      final var relation =
+          unmarshal(xmlGeneratorCertificateWithQAV3.generate(List.of(certificate)))
+              .getList()
+              .getItem()
+              .getFirst()
+              .getIntyg()
+              .getRelation();
 
       assertAll(
-          () -> assertEquals("c2362fcd-eda0-4f9a-bd13-b3bbaf7f2146",
-              relation.getFirst().getTyp().getCodeSystem()),
+          () ->
+              assertEquals(
+                  "c2362fcd-eda0-4f9a-bd13-b3bbaf7f2146",
+                  relation.getFirst().getTyp().getCodeSystem()),
           () -> assertEquals("ERSATT", relation.getFirst().getTyp().getCode()),
           () -> assertEquals("Ersätter", relation.getFirst().getTyp().getDisplayName()),
-          () -> assertEquals(parentCertificate.id().id(),
-              relation.getFirst().getIntygsId().getExtension())
-      );
+          () ->
+              assertEquals(
+                  parentCertificate.id().id(), relation.getFirst().getIntygsId().getExtension()));
     }
   }
 
@@ -495,64 +582,72 @@ class XmlGeneratorCertificateWithQAV3Test {
     @Nested
     class MessagesFromCare {
 
-      private static final Message MESSAGE_WITH_ANSWER = Message.builder()
-          .authoredStaff(Staff.create(AJLA_DOKTOR))
-          .answer(Answer.builder().build())
-          .build();
-      private static final Message MESSAGE_WITHOUT_ANSWER = Message.builder()
-          .authoredStaff(Staff.create(AJLA_DOKTOR))
-          .build();
-      private static final Message HANDLED_MESSAGE = Message.builder()
-          .authoredStaff(Staff.create(AJLA_DOKTOR))
-          .status(MessageStatus.HANDLED)
-          .build();
+      private static final Message MESSAGE_WITH_ANSWER =
+          Message.builder()
+              .authoredStaff(Staff.create(AJLA_DOKTOR))
+              .answer(Answer.builder().build())
+              .build();
+      private static final Message MESSAGE_WITHOUT_ANSWER =
+          Message.builder().authoredStaff(Staff.create(AJLA_DOKTOR)).build();
+      private static final Message HANDLED_MESSAGE =
+          Message.builder()
+              .authoredStaff(Staff.create(AJLA_DOKTOR))
+              .status(MessageStatus.HANDLED)
+              .build();
 
       @BeforeEach
       void setUp() {
-        certificate = fk7210CertificateBuilder()
-            .xml(null)
-            .messages(
-                List.of(
-                    MESSAGE_WITH_ANSWER,
-                    MESSAGE_WITHOUT_ANSWER,
-                    HANDLED_MESSAGE
-                )
-            )
-            .build();
+        certificate =
+            fk7210CertificateBuilder()
+                .xml(null)
+                .messages(List.of(MESSAGE_WITH_ANSWER, MESSAGE_WITHOUT_ANSWER, HANDLED_MESSAGE))
+                .build();
       }
 
       @Test
       void shallIncludeTotal() {
-        final var messagesFromCare = unmarshal(
-            xmlGeneratorCertificateWithQAV3.generate(List.of(certificate))).getList().getItem()
-            .getFirst().getSkickadeFragor();
+        final var messagesFromCare =
+            unmarshal(xmlGeneratorCertificateWithQAV3.generate(List.of(certificate)))
+                .getList()
+                .getItem()
+                .getFirst()
+                .getSkickadeFragor();
 
         assertEquals(3, messagesFromCare.getTotalt());
       }
 
       @Test
       void shallIncludeAnswered() {
-        final var messagesFromCare = unmarshal(
-            xmlGeneratorCertificateWithQAV3.generate(List.of(certificate))).getList().getItem()
-            .getFirst().getSkickadeFragor();
+        final var messagesFromCare =
+            unmarshal(xmlGeneratorCertificateWithQAV3.generate(List.of(certificate)))
+                .getList()
+                .getItem()
+                .getFirst()
+                .getSkickadeFragor();
 
         assertEquals(1, messagesFromCare.getBesvarade());
       }
 
       @Test
       void shallIncludeNotAnswered() {
-        final var messagesFromCare = unmarshal(
-            xmlGeneratorCertificateWithQAV3.generate(List.of(certificate))).getList().getItem()
-            .getFirst().getSkickadeFragor();
+        final var messagesFromCare =
+            unmarshal(xmlGeneratorCertificateWithQAV3.generate(List.of(certificate)))
+                .getList()
+                .getItem()
+                .getFirst()
+                .getSkickadeFragor();
 
         assertEquals(2, messagesFromCare.getEjBesvarade());
       }
 
       @Test
       void shallIncludeHandled() {
-        final var messagesFromCare = unmarshal(
-            xmlGeneratorCertificateWithQAV3.generate(List.of(certificate))).getList().getItem()
-            .getFirst().getSkickadeFragor();
+        final var messagesFromCare =
+            unmarshal(xmlGeneratorCertificateWithQAV3.generate(List.of(certificate)))
+                .getList()
+                .getItem()
+                .getFirst()
+                .getSkickadeFragor();
 
         assertEquals(1, messagesFromCare.getHanterade());
       }
@@ -561,61 +656,65 @@ class XmlGeneratorCertificateWithQAV3Test {
     @Nested
     class MessagesFromRecipient {
 
-      private static final Message MESSAGE_WITH_ANSWER = Message.builder()
-          .answer(Answer.builder().build())
-          .build();
-      private static final Message MESSAGE_WITHOUT_ANSWER = Message.builder()
-          .build();
-      private static final Message HANDLED_MESSAGE = Message.builder()
-          .status(MessageStatus.HANDLED)
-          .build();
+      private static final Message MESSAGE_WITH_ANSWER =
+          Message.builder().answer(Answer.builder().build()).build();
+      private static final Message MESSAGE_WITHOUT_ANSWER = Message.builder().build();
+      private static final Message HANDLED_MESSAGE =
+          Message.builder().status(MessageStatus.HANDLED).build();
 
       @BeforeEach
       void setUp() {
-        certificate = fk7210CertificateBuilder()
-            .xml(null)
-            .messages(
-                List.of(
-                    MESSAGE_WITH_ANSWER,
-                    MESSAGE_WITHOUT_ANSWER,
-                    HANDLED_MESSAGE
-                )
-            )
-            .build();
+        certificate =
+            fk7210CertificateBuilder()
+                .xml(null)
+                .messages(List.of(MESSAGE_WITH_ANSWER, MESSAGE_WITHOUT_ANSWER, HANDLED_MESSAGE))
+                .build();
       }
 
       @Test
       void shallIncludeTotal() {
-        final var messagesFromCare = unmarshal(
-            xmlGeneratorCertificateWithQAV3.generate(List.of(certificate))).getList().getItem()
-            .getFirst().getMottagnaFragor();
+        final var messagesFromCare =
+            unmarshal(xmlGeneratorCertificateWithQAV3.generate(List.of(certificate)))
+                .getList()
+                .getItem()
+                .getFirst()
+                .getMottagnaFragor();
 
         assertEquals(3, messagesFromCare.getTotalt());
       }
 
       @Test
       void shallIncludeAnswered() {
-        final var messagesFromCare = unmarshal(
-            xmlGeneratorCertificateWithQAV3.generate(List.of(certificate))).getList().getItem()
-            .getFirst().getMottagnaFragor();
+        final var messagesFromCare =
+            unmarshal(xmlGeneratorCertificateWithQAV3.generate(List.of(certificate)))
+                .getList()
+                .getItem()
+                .getFirst()
+                .getMottagnaFragor();
 
         assertEquals(1, messagesFromCare.getBesvarade());
       }
 
       @Test
       void shallIncludeNotAnswered() {
-        final var messagesFromCare = unmarshal(
-            xmlGeneratorCertificateWithQAV3.generate(List.of(certificate))).getList().getItem()
-            .getFirst().getMottagnaFragor();
+        final var messagesFromCare =
+            unmarshal(xmlGeneratorCertificateWithQAV3.generate(List.of(certificate)))
+                .getList()
+                .getItem()
+                .getFirst()
+                .getMottagnaFragor();
 
         assertEquals(2, messagesFromCare.getEjBesvarade());
       }
 
       @Test
       void shallIncludeHandled() {
-        final var messagesFromCare = unmarshal(
-            xmlGeneratorCertificateWithQAV3.generate(List.of(certificate))).getList().getItem()
-            .getFirst().getMottagnaFragor();
+        final var messagesFromCare =
+            unmarshal(xmlGeneratorCertificateWithQAV3.generate(List.of(certificate)))
+                .getList()
+                .getItem()
+                .getFirst()
+                .getMottagnaFragor();
 
         assertEquals(1, messagesFromCare.getHanterade());
       }
@@ -629,28 +728,32 @@ class XmlGeneratorCertificateWithQAV3Test {
 
     @Test
     void shallIncludeRef() {
-      certificate = fk7210CertificateBuilder()
-          .xml(null)
-          .externalReference(new ExternalReference(EXPECTED_REF))
-          .build();
+      certificate =
+          fk7210CertificateBuilder()
+              .xml(null)
+              .externalReference(new ExternalReference(EXPECTED_REF))
+              .build();
 
-      final var actualRef = unmarshal(
-          xmlGeneratorCertificateWithQAV3.generate(List.of(certificate))).getList().getItem()
-          .getFirst().getRef();
+      final var actualRef =
+          unmarshal(xmlGeneratorCertificateWithQAV3.generate(List.of(certificate)))
+              .getList()
+              .getItem()
+              .getFirst()
+              .getRef();
 
       assertEquals(EXPECTED_REF, actualRef);
     }
 
     @Test
     void shallNotIncludeRef() {
-      certificate = fk7210CertificateBuilder()
-          .xml(null)
-          .externalReference(null)
-          .build();
+      certificate = fk7210CertificateBuilder().xml(null).externalReference(null).build();
 
-      final var ref = unmarshal(
-          xmlGeneratorCertificateWithQAV3.generate(List.of(certificate))).getList().getItem()
-          .getFirst().getRef();
+      final var ref =
+          unmarshal(xmlGeneratorCertificateWithQAV3.generate(List.of(certificate)))
+              .getList()
+              .getItem()
+              .getFirst()
+              .getRef();
 
       assertNull(ref);
     }
@@ -658,12 +761,12 @@ class XmlGeneratorCertificateWithQAV3Test {
 
   private ListCertificatesForCareWithQAResponseType unmarshal(Xml response) {
     try {
-      final var context = JAXBContext.newInstance(
-          ListCertificatesForCareWithQAResponseType.class);
+      final var context = JAXBContext.newInstance(ListCertificatesForCareWithQAResponseType.class);
       final var unmarshaller = context.createUnmarshaller();
       final var stringReader = new StringReader(response.xml());
-      final var jaxbElement = (JAXBElement<ListCertificatesForCareWithQAResponseType>) unmarshaller.unmarshal(
-          stringReader);
+      final var jaxbElement =
+          (JAXBElement<ListCertificatesForCareWithQAResponseType>)
+              unmarshaller.unmarshal(stringReader);
       return jaxbElement.getValue();
     } catch (Exception ex) {
       throw new IllegalStateException(ex);

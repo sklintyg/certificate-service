@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.certificate;
 
 import static se.inera.intyg.certificateservice.domain.certificate.model.CustomMapperId.CODE_LIST_TO_BOOLEAN;
@@ -26,28 +44,30 @@ public class XmlGeneratorCodeListToBoolean implements XmlGeneratorCustomMapper {
       return Collections.emptyList();
     }
 
-    if (!(specification.configuration() instanceof ElementConfigurationCheckboxMultipleCode configuration)) {
+    if (!(specification.configuration()
+        instanceof ElementConfigurationCheckboxMultipleCode configuration)) {
       throw new IllegalArgumentException(
           "Cannot generate xml for configuration of type '%s'"
-              .formatted(specification.configuration().getClass())
-      );
+              .formatted(specification.configuration().getClass()));
     }
 
     final var answer = new Svar();
     answer.setId(data.id().id());
 
-    configuration.list().forEach(codeValue -> {
-          final var subAnswer = new Delsvar();
-          subAnswer.setId(codeValue.id().value());
-          final var codeHasValue = codeListValue.list().stream()
-              .anyMatch(
-                  elementConfigurationCode -> elementConfigurationCode.code()
-                      .equals(codeValue.code().code())
-              );
-          subAnswer.getContent().add(codeHasValue ? "true" : "false");
-          answer.getDelsvar().add(subAnswer);
-        }
-    );
+    configuration
+        .list()
+        .forEach(
+            codeValue -> {
+              final var subAnswer = new Delsvar();
+              subAnswer.setId(codeValue.id().value());
+              final var codeHasValue =
+                  codeListValue.list().stream()
+                      .anyMatch(
+                          elementConfigurationCode ->
+                              elementConfigurationCode.code().equals(codeValue.code().code()));
+              subAnswer.getContent().add(codeHasValue ? "true" : "false");
+              answer.getDelsvar().add(subAnswer);
+            });
 
     return List.of(answer);
   }

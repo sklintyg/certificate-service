@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7426.elements;
 
 import java.util.List;
@@ -14,10 +32,10 @@ public class QuestionPeriodSjukdom {
 
   public static final ElementId QUESTION_PERIOD_SJUKDOM_ID = new ElementId("61");
   public static final FieldId QUESTION_PERIOD_SJUKDOM_FIELD_ID = new FieldId("61.1");
-  private static final PdfFieldId PDF_FIELD_ID_FROM = new PdfFieldId(
-      "form1[0].#subform[3].flt_datumFranMed[0]");
-  private static final PdfFieldId PDF_FIELD_ID_TO = new PdfFieldId(
-      "form1[0].#subform[3].flt_datumTillMed[0]");
+  private static final PdfFieldId PDF_FIELD_ID_FROM =
+      new PdfFieldId("form1[0].#subform[3].flt_datumFranMed[0]");
+  private static final PdfFieldId PDF_FIELD_ID_TO =
+      new PdfFieldId("form1[0].#subform[3].flt_datumTillMed[0]");
 
   private QuestionPeriodSjukdom() {
     throw new IllegalStateException("Utility class");
@@ -32,27 +50,14 @@ public class QuestionPeriodSjukdom {
                 .labelFrom("Fr.o.m")
                 .labelTo("T.o.m")
                 .id(QUESTION_PERIOD_SJUKDOM_FIELD_ID)
-                .build()
-        )
+                .build())
         .rules(
             List.of(
-                CertificateElementRuleFactory.mandatory(QUESTION_PERIOD_SJUKDOM_ID,
-                    QUESTION_PERIOD_SJUKDOM_FIELD_ID)
-            )
-        )
-        .validations(
-            List.of(
-                ElementValidationDateRange.builder()
-                    .mandatory(true)
-                    .build()
-            )
-        )
+                CertificateElementRuleFactory.mandatory(
+                    QUESTION_PERIOD_SJUKDOM_ID, QUESTION_PERIOD_SJUKDOM_FIELD_ID)))
+        .validations(List.of(ElementValidationDateRange.builder().mandatory(true).build()))
         .pdfConfiguration(
-            PdfConfigurationDateRange.builder()
-                .from(PDF_FIELD_ID_FROM)
-                .to(PDF_FIELD_ID_TO)
-                .build()
-        )
+            PdfConfigurationDateRange.builder().from(PDF_FIELD_ID_FROM).to(PDF_FIELD_ID_TO).build())
         .includeWhenRenewing(false)
         .build();
   }

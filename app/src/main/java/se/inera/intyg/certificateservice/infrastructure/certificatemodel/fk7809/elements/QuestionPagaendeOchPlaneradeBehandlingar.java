@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7809.elements;
 
 import java.util.List;
@@ -12,12 +30,12 @@ import se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.
 
 public class QuestionPagaendeOchPlaneradeBehandlingar {
 
-  public static final ElementId QUESTION_PAGAENDE_ELLER_PLANERAD_BEHANDLING_ID = new ElementId(
-      "50");
-  public static final FieldId QUESTION_PAGAENDE_ELLER_PLANERAD_BEHANDLING_FIELD_ID = new FieldId(
-      "50.1");
-  private static final PdfFieldId PDF_FIELD_ID = new PdfFieldId(
-      "form1[0].#subform[2].flt_txtPlaneradMedicinskBehandling[0]");
+  public static final ElementId QUESTION_PAGAENDE_ELLER_PLANERAD_BEHANDLING_ID =
+      new ElementId("50");
+  public static final FieldId QUESTION_PAGAENDE_ELLER_PLANERAD_BEHANDLING_FIELD_ID =
+      new FieldId("50.1");
+  private static final PdfFieldId PDF_FIELD_ID =
+      new PdfFieldId("form1[0].#subform[2].flt_txtPlaneradMedicinskBehandling[0]");
 
   private QuestionPagaendeOchPlaneradeBehandlingar() {
     throw new IllegalStateException("Utility class");
@@ -30,33 +48,20 @@ public class QuestionPagaendeOchPlaneradeBehandlingar {
         .configuration(
             ElementConfigurationTextArea.builder()
                 .id(QUESTION_PAGAENDE_ELLER_PLANERAD_BEHANDLING_FIELD_ID)
-                .name(
-                    "Ange pågående och planerade medicinska behandlingar")
-                .build()
-        )
+                .name("Ange pågående och planerade medicinska behandlingar")
+                .build())
         .rules(
             List.of(
                 CertificateElementRuleFactory.limit(
-                    QUESTION_PAGAENDE_ELLER_PLANERAD_BEHANDLING_ID,
-                    (short) 4000)
-            )
-        )
-        .validations(
-            List.of(
-                ElementValidationText.builder()
-                    .mandatory(false)
-                    .limit(4000)
-                    .build()
-            )
-        )
+                    QUESTION_PAGAENDE_ELLER_PLANERAD_BEHANDLING_ID, (short) 4000)))
+        .validations(List.of(ElementValidationText.builder().mandatory(false).limit(4000).build()))
         .pdfConfiguration(
             PdfConfigurationText.builder()
                 .pdfFieldId(PDF_FIELD_ID)
                 .maxLength(159)
                 .overflowSheetFieldId(
                     new PdfFieldId(("form1[0].#subform[4].flt_txtFortsattningsblad[0]")))
-                .build()
-        )
+                .build())
         .children(List.of(children))
         .build();
   }

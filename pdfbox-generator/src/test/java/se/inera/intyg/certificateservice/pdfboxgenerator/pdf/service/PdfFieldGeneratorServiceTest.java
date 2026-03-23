@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.pdfboxgenerator.pdf.service;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -29,62 +47,48 @@ import se.inera.intyg.certificateservice.pdfboxgenerator.pdf.value.PdfUnitValueG
 @ExtendWith(MockitoExtension.class)
 class PdfFieldGeneratorServiceTest {
 
-  @Mock
-  private PdfUnitValueGenerator pdfUnitValueGenerator;
-  @Mock
-  private PdfPatientValueGenerator pdfPatientValueGenerator;
-  @Mock
-  private PdfSignatureValueGenerator pdfSignatureValueGenerator;
-  @Mock
-  private PdfElementValueGenerator pdfElementValueGenerator;
+  @Mock private PdfUnitValueGenerator pdfUnitValueGenerator;
+  @Mock private PdfPatientValueGenerator pdfPatientValueGenerator;
+  @Mock private PdfSignatureValueGenerator pdfSignatureValueGenerator;
+  @Mock private PdfElementValueGenerator pdfElementValueGenerator;
 
-  @InjectMocks
-  private PdfFieldGeneratorService pdfFieldGeneratorService;
+  @InjectMocks private PdfFieldGeneratorService pdfFieldGeneratorService;
 
   private CertificatePdfContext context;
   private Certificate certificate;
   private TemplatePdfSpecification templatePdfSpecification;
 
-  private static final PdfField UNIT_FIELD = PdfField.builder()
-      .id("unit-field")
-      .value("Unit Value")
-      .build();
+  private static final PdfField UNIT_FIELD =
+      PdfField.builder().id("unit-field").value("Unit Value").build();
 
-  private static final PdfField PATIENT_FIELD = PdfField.builder()
-      .id("patient-field")
-      .value("Patient Value")
-      .patientField(true)
-      .build();
+  private static final PdfField PATIENT_FIELD =
+      PdfField.builder().id("patient-field").value("Patient Value").patientField(true).build();
 
-  private static final PdfField SIGNATURE_FIELD = PdfField.builder()
-      .id("signature-field")
-      .value("Signature Value")
-      .build();
+  private static final PdfField SIGNATURE_FIELD =
+      PdfField.builder().id("signature-field").value("Signature Value").build();
 
-  private static final PdfField ELEMENT_FIELD = PdfField.builder()
-      .id("element-field")
-      .value("Element Value")
-      .build();
+  private static final PdfField ELEMENT_FIELD =
+      PdfField.builder().id("element-field").value("Element Value").build();
 
   @BeforeEach
   void setUp() {
-    templatePdfSpecification = TemplatePdfSpecification.builder()
-        .patientIdFieldIds(List.of())
-        .build();
+    templatePdfSpecification =
+        TemplatePdfSpecification.builder().patientIdFieldIds(List.of()).build();
 
-    final var certificateModel = CertificateModel.builder()
-        .pdfSpecification(templatePdfSpecification)
-        .build();
+    final var certificateModel =
+        CertificateModel.builder().pdfSpecification(templatePdfSpecification).build();
 
-    certificate = MedicalCertificate.builder()
-        .certificateModel(certificateModel)
-        .status(Status.DRAFT)
-        .build();
+    certificate =
+        MedicalCertificate.builder()
+            .certificateModel(certificateModel)
+            .status(Status.DRAFT)
+            .build();
 
-    context = CertificatePdfContext.builder()
-        .certificate(certificate)
-        .templatePdfSpecification(templatePdfSpecification)
-        .build();
+    context =
+        CertificatePdfContext.builder()
+            .certificate(certificate)
+            .templatePdfSpecification(templatePdfSpecification)
+            .build();
   }
 
   @Nested
@@ -92,13 +96,11 @@ class PdfFieldGeneratorServiceTest {
 
     @Test
     void shouldGenerateAllPdfFieldsForDraftCertificate() {
-      when(pdfUnitValueGenerator.generate(certificate))
-          .thenReturn(List.of(UNIT_FIELD));
-      when(pdfPatientValueGenerator.generate(certificate,
-          templatePdfSpecification.patientIdFieldIds()))
+      when(pdfUnitValueGenerator.generate(certificate)).thenReturn(List.of(UNIT_FIELD));
+      when(pdfPatientValueGenerator.generate(
+              certificate, templatePdfSpecification.patientIdFieldIds()))
           .thenReturn(List.of(PATIENT_FIELD));
-      when(pdfElementValueGenerator.generate(certificate))
-          .thenReturn(List.of(ELEMENT_FIELD));
+      when(pdfElementValueGenerator.generate(certificate)).thenReturn(List.of(ELEMENT_FIELD));
 
       final var result = pdfFieldGeneratorService.generatePdfFields(context);
 
@@ -106,31 +108,30 @@ class PdfFieldGeneratorServiceTest {
           () -> assertEquals(3, result.size()),
           () -> assertTrue(result.contains(UNIT_FIELD)),
           () -> assertTrue(result.contains(PATIENT_FIELD)),
-          () -> assertTrue(result.contains(ELEMENT_FIELD))
-      );
+          () -> assertTrue(result.contains(ELEMENT_FIELD)));
     }
 
     @Test
     void shouldGenerateAllPdfFieldsIncludingSignatureForSignedCertificate() {
-      final var signedCertificate = MedicalCertificate.builder()
-          .certificateModel(certificate.certificateModel())
-          .status(Status.SIGNED)
-          .build();
+      final var signedCertificate =
+          MedicalCertificate.builder()
+              .certificateModel(certificate.certificateModel())
+              .status(Status.SIGNED)
+              .build();
 
-      final var signedContext = CertificatePdfContext.builder()
-          .certificate(signedCertificate)
-          .templatePdfSpecification(templatePdfSpecification)
-          .build();
+      final var signedContext =
+          CertificatePdfContext.builder()
+              .certificate(signedCertificate)
+              .templatePdfSpecification(templatePdfSpecification)
+              .build();
 
-      when(pdfUnitValueGenerator.generate(signedCertificate))
-          .thenReturn(List.of(UNIT_FIELD));
-      when(pdfPatientValueGenerator.generate(signedCertificate,
-          templatePdfSpecification.patientIdFieldIds()))
+      when(pdfUnitValueGenerator.generate(signedCertificate)).thenReturn(List.of(UNIT_FIELD));
+      when(pdfPatientValueGenerator.generate(
+              signedCertificate, templatePdfSpecification.patientIdFieldIds()))
           .thenReturn(List.of(PATIENT_FIELD));
       when(pdfSignatureValueGenerator.generate(signedCertificate))
           .thenReturn(List.of(SIGNATURE_FIELD));
-      when(pdfElementValueGenerator.generate(signedCertificate))
-          .thenReturn(List.of(ELEMENT_FIELD));
+      when(pdfElementValueGenerator.generate(signedCertificate)).thenReturn(List.of(ELEMENT_FIELD));
 
       final var result = pdfFieldGeneratorService.generatePdfFields(signedContext);
 
@@ -139,26 +140,26 @@ class PdfFieldGeneratorServiceTest {
           () -> assertTrue(result.contains(UNIT_FIELD)),
           () -> assertTrue(result.contains(PATIENT_FIELD)),
           () -> assertTrue(result.contains(SIGNATURE_FIELD)),
-          () -> assertTrue(result.contains(ELEMENT_FIELD))
-      );
+          () -> assertTrue(result.contains(ELEMENT_FIELD)));
     }
 
     @Test
     void shouldNotIncludeSignatureFieldsForLockedDraftCertificate() {
-      final var lockedDraftCertificate = MedicalCertificate.builder()
-          .certificateModel(certificate.certificateModel())
-          .status(Status.LOCKED_DRAFT)
-          .build();
+      final var lockedDraftCertificate =
+          MedicalCertificate.builder()
+              .certificateModel(certificate.certificateModel())
+              .status(Status.LOCKED_DRAFT)
+              .build();
 
-      final var lockedDraftContext = CertificatePdfContext.builder()
-          .certificate(lockedDraftCertificate)
-          .templatePdfSpecification(templatePdfSpecification)
-          .build();
+      final var lockedDraftContext =
+          CertificatePdfContext.builder()
+              .certificate(lockedDraftCertificate)
+              .templatePdfSpecification(templatePdfSpecification)
+              .build();
 
-      when(pdfUnitValueGenerator.generate(lockedDraftCertificate))
-          .thenReturn(List.of(UNIT_FIELD));
-      when(pdfPatientValueGenerator.generate(lockedDraftCertificate,
-          templatePdfSpecification.patientIdFieldIds()))
+      when(pdfUnitValueGenerator.generate(lockedDraftCertificate)).thenReturn(List.of(UNIT_FIELD));
+      when(pdfPatientValueGenerator.generate(
+              lockedDraftCertificate, templatePdfSpecification.patientIdFieldIds()))
           .thenReturn(List.of(PATIENT_FIELD));
       when(pdfElementValueGenerator.generate(lockedDraftCertificate))
           .thenReturn(List.of(ELEMENT_FIELD));
@@ -169,26 +170,26 @@ class PdfFieldGeneratorServiceTest {
           () -> assertEquals(3, result.size()),
           () -> assertTrue(result.contains(UNIT_FIELD)),
           () -> assertTrue(result.contains(PATIENT_FIELD)),
-          () -> assertTrue(result.contains(ELEMENT_FIELD))
-      );
+          () -> assertTrue(result.contains(ELEMENT_FIELD)));
     }
 
     @Test
     void shouldNotIncludeSignatureFieldsForRevokedCertificate() {
-      final var revokedCertificate = MedicalCertificate.builder()
-          .certificateModel(certificate.certificateModel())
-          .status(Status.REVOKED)
-          .build();
+      final var revokedCertificate =
+          MedicalCertificate.builder()
+              .certificateModel(certificate.certificateModel())
+              .status(Status.REVOKED)
+              .build();
 
-      final var revokedContext = CertificatePdfContext.builder()
-          .certificate(revokedCertificate)
-          .templatePdfSpecification(templatePdfSpecification)
-          .build();
+      final var revokedContext =
+          CertificatePdfContext.builder()
+              .certificate(revokedCertificate)
+              .templatePdfSpecification(templatePdfSpecification)
+              .build();
 
-      when(pdfUnitValueGenerator.generate(revokedCertificate))
-          .thenReturn(List.of(UNIT_FIELD));
-      when(pdfPatientValueGenerator.generate(revokedCertificate,
-          templatePdfSpecification.patientIdFieldIds()))
+      when(pdfUnitValueGenerator.generate(revokedCertificate)).thenReturn(List.of(UNIT_FIELD));
+      when(pdfPatientValueGenerator.generate(
+              revokedCertificate, templatePdfSpecification.patientIdFieldIds()))
           .thenReturn(List.of(PATIENT_FIELD));
       when(pdfElementValueGenerator.generate(revokedCertificate))
           .thenReturn(List.of(ELEMENT_FIELD));
@@ -203,31 +204,27 @@ class PdfFieldGeneratorServiceTest {
 
     @Test
     void shouldCallAllGeneratorsWithCorrectParameters() {
-      when(pdfUnitValueGenerator.generate(certificate))
-          .thenReturn(List.of(UNIT_FIELD));
-      when(pdfPatientValueGenerator.generate(certificate,
-          templatePdfSpecification.patientIdFieldIds()))
+      when(pdfUnitValueGenerator.generate(certificate)).thenReturn(List.of(UNIT_FIELD));
+      when(pdfPatientValueGenerator.generate(
+              certificate, templatePdfSpecification.patientIdFieldIds()))
           .thenReturn(List.of(PATIENT_FIELD));
-      when(pdfElementValueGenerator.generate(certificate))
-          .thenReturn(List.of(ELEMENT_FIELD));
+      when(pdfElementValueGenerator.generate(certificate)).thenReturn(List.of(ELEMENT_FIELD));
 
       pdfFieldGeneratorService.generatePdfFields(context);
 
       verify(pdfUnitValueGenerator).generate(certificate);
-      verify(pdfPatientValueGenerator).generate(certificate,
-          templatePdfSpecification.patientIdFieldIds());
+      verify(pdfPatientValueGenerator)
+          .generate(certificate, templatePdfSpecification.patientIdFieldIds());
       verify(pdfElementValueGenerator).generate(certificate);
     }
 
     @Test
     void shouldHandleEmptyListsFromGenerators() {
-      when(pdfUnitValueGenerator.generate(certificate))
+      when(pdfUnitValueGenerator.generate(certificate)).thenReturn(List.of());
+      when(pdfPatientValueGenerator.generate(
+              certificate, templatePdfSpecification.patientIdFieldIds()))
           .thenReturn(List.of());
-      when(pdfPatientValueGenerator.generate(certificate,
-          templatePdfSpecification.patientIdFieldIds()))
-          .thenReturn(List.of());
-      when(pdfElementValueGenerator.generate(certificate))
-          .thenReturn(List.of());
+      when(pdfElementValueGenerator.generate(certificate)).thenReturn(List.of());
 
       final var result = pdfFieldGeneratorService.generatePdfFields(context);
 
@@ -243,10 +240,9 @@ class PdfFieldGeneratorServiceTest {
       final var elementField1 = PdfField.builder().id("element-1").build();
       final var elementField2 = PdfField.builder().id("element-2").build();
 
-      when(pdfUnitValueGenerator.generate(certificate))
-          .thenReturn(List.of(unitField1, unitField2));
-      when(pdfPatientValueGenerator.generate(certificate,
-          templatePdfSpecification.patientIdFieldIds()))
+      when(pdfUnitValueGenerator.generate(certificate)).thenReturn(List.of(unitField1, unitField2));
+      when(pdfPatientValueGenerator.generate(
+              certificate, templatePdfSpecification.patientIdFieldIds()))
           .thenReturn(List.of(patientField1, patientField2));
       when(pdfElementValueGenerator.generate(certificate))
           .thenReturn(List.of(elementField1, elementField2));
@@ -254,9 +250,15 @@ class PdfFieldGeneratorServiceTest {
       final var result = pdfFieldGeneratorService.generatePdfFields(context);
 
       assertEquals(6, result.size());
-      assertTrue(result.containsAll(
-          List.of(unitField1, unitField2, patientField1, patientField2, elementField1,
-              elementField2)));
+      assertTrue(
+          result.containsAll(
+              List.of(
+                  unitField1,
+                  unitField2,
+                  patientField1,
+                  patientField2,
+                  elementField1,
+                  elementField2)));
     }
   }
 }

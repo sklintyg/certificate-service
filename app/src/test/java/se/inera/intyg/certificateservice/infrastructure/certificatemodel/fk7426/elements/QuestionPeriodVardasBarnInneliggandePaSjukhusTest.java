@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7426.elements;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,12 +52,13 @@ class QuestionPeriodVardasBarnInneliggandePaSjukhusTest {
 
   @Test
   void shouldIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationDateRange.builder()
-        .name("Ange period")
-        .labelFrom("Fr.o.m")
-        .labelTo("T.o.m")
-        .id(new FieldId("62.2"))
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationDateRange.builder()
+            .name("Ange period")
+            .labelFrom("Fr.o.m")
+            .labelTo("T.o.m")
+            .id(new FieldId("62.2"))
+            .build();
 
     final var element = questionPeriodVardasBarnInneliggandePaSjukhus();
 
@@ -48,18 +67,18 @@ class QuestionPeriodVardasBarnInneliggandePaSjukhusTest {
 
   @Test
   void shouldIncludeRules() {
-    final var expectedRules = List.of(
-        ElementRuleExpression.builder()
-            .id(new ElementId("62.2"))
-            .type(ElementRuleType.MANDATORY)
-            .expression(new RuleExpression("$62.2"))
-            .build(),
-        ElementRuleExpression.builder()
-            .id(new ElementId("62"))
-            .type(ElementRuleType.SHOW)
-            .expression(new RuleExpression("$62.1"))
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleExpression.builder()
+                .id(new ElementId("62.2"))
+                .type(ElementRuleType.MANDATORY)
+                .expression(new RuleExpression("$62.2"))
+                .build(),
+            ElementRuleExpression.builder()
+                .id(new ElementId("62"))
+                .type(ElementRuleType.SHOW)
+                .expression(new RuleExpression("$62.1"))
+                .build());
 
     final var element = questionPeriodVardasBarnInneliggandePaSjukhus();
 
@@ -68,9 +87,7 @@ class QuestionPeriodVardasBarnInneliggandePaSjukhusTest {
 
   @Test
   void shouldIncludeValidation() {
-    final var expectedValidation = ElementValidationDateRange.builder()
-        .mandatory(true)
-        .build();
+    final var expectedValidation = ElementValidationDateRange.builder().mandatory(true).build();
 
     final var element = questionPeriodVardasBarnInneliggandePaSjukhus();
 
@@ -81,10 +98,7 @@ class QuestionPeriodVardasBarnInneliggandePaSjukhusTest {
   void shouldIncludeElementMapping() {
     final var element = questionPeriodVardasBarnInneliggandePaSjukhus();
 
-    assertEquals(
-        new ElementMapping(new ElementId("62"), null),
-        element.mapping()
-    );
+    assertEquals(new ElementMapping(new ElementId("62"), null), element.mapping());
   }
 
   @Test
@@ -98,16 +112,12 @@ class QuestionPeriodVardasBarnInneliggandePaSjukhusTest {
 
     @Test
     void shouldReturnTrueIfBooleanIsTrue() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("62"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(true)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("62"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
 
       final var element = questionPeriodVardasBarnInneliggandePaSjukhus();
 
@@ -118,16 +128,12 @@ class QuestionPeriodVardasBarnInneliggandePaSjukhusTest {
 
     @Test
     void shouldReturnFalseIfElementMissing() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("62.3"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(true)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("62.3"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
 
       final var element = questionPeriodVardasBarnInneliggandePaSjukhus();
 
@@ -138,16 +144,12 @@ class QuestionPeriodVardasBarnInneliggandePaSjukhusTest {
 
     @Test
     void shouldReturnFalseIfBooleanIsFalse() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("62"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(false)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("62"))
+                  .value(ElementValueBoolean.builder().value(false).build())
+                  .build());
 
       final var element = questionPeriodVardasBarnInneliggandePaSjukhus();
 
@@ -158,10 +160,11 @@ class QuestionPeriodVardasBarnInneliggandePaSjukhusTest {
 
     @Test
     void shouldIncludePdfConfiguration() {
-      final var expectedPdfConfiguration = PdfConfigurationDateRange.builder()
-          .from(new PdfFieldId("form1[0].#subform[3].flt_datFranMed1[0]"))
-          .to(new PdfFieldId("form1[0].#subform[3].flt_datTillMed1[0]"))
-          .build();
+      final var expectedPdfConfiguration =
+          PdfConfigurationDateRange.builder()
+              .from(new PdfFieldId("form1[0].#subform[3].flt_datFranMed1[0]"))
+              .to(new PdfFieldId("form1[0].#subform[3].flt_datTillMed1[0]"))
+              .build();
 
       final var element = questionPeriodVardasBarnInneliggandePaSjukhus();
 

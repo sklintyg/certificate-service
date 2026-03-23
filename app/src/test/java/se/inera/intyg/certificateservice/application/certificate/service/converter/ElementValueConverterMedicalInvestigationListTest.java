@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service.converter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,28 +36,24 @@ import se.inera.intyg.certificateservice.domain.certificatemodel.model.FieldId;
 
 class ElementValueConverterMedicalInvestigationListTest {
 
-  private static final CertificateDataValueMedicalInvestigationList CERTIFICATE_DATA_VALUE
-      = CertificateDataValueMedicalInvestigationList.builder()
-      .id("MI_ID_LIST")
-      .list(List.of(
-          CertificateDataValueMedicalInvestigation.builder()
-              .id("MI_ID")
-              .date(CertificateDataValueDate.builder()
-                  .id("DATE_ID")
-                  .date(LocalDate.now())
-                  .build())
-              .informationSource(CertificateDataValueText.builder()
-                  .id("TEXT_ID")
-                  .text("TEXT")
-                  .build())
-              .investigationType(CertificateDataValueCode.builder()
-                  .id("CODE_ID")
-                  .code("CODE")
-                  .build())
-              .build()
-
-      ))
-      .build();
+  private static final CertificateDataValueMedicalInvestigationList CERTIFICATE_DATA_VALUE =
+      CertificateDataValueMedicalInvestigationList.builder()
+          .id("MI_ID_LIST")
+          .list(
+              List.of(
+                  CertificateDataValueMedicalInvestigation.builder()
+                      .id("MI_ID")
+                      .date(
+                          CertificateDataValueDate.builder()
+                              .id("DATE_ID")
+                              .date(LocalDate.now())
+                              .build())
+                      .informationSource(
+                          CertificateDataValueText.builder().id("TEXT_ID").text("TEXT").build())
+                      .investigationType(
+                          CertificateDataValueCode.builder().id("CODE_ID").code("CODE").build())
+                      .build()))
+          .build();
 
   private ElementValueConverterMedicalInvestigationList converter;
 
@@ -57,9 +71,7 @@ class ElementValueConverterMedicalInvestigationListTest {
   void shouldThrowExceptionIfInvalidValueType() {
     final var invalidType = CertificateDataValueText.builder().build();
 
-    assertThrows(IllegalStateException.class,
-        () -> converter.convert(invalidType)
-    );
+    assertThrows(IllegalStateException.class, () -> converter.convert(invalidType));
   }
 
   @Test
@@ -83,8 +95,8 @@ class ElementValueConverterMedicalInvestigationListTest {
     final var result = converter.convert(CERTIFICATE_DATA_VALUE);
     final var medicalInvestigationResult = (ElementValueMedicalInvestigationList) result;
 
-    assertEquals("TEXT_ID",
-        medicalInvestigationResult.list().get(0).informationSource().textId().value());
+    assertEquals(
+        "TEXT_ID", medicalInvestigationResult.list().get(0).informationSource().textId().value());
   }
 
   @Test
@@ -92,8 +104,7 @@ class ElementValueConverterMedicalInvestigationListTest {
     final var result = converter.convert(CERTIFICATE_DATA_VALUE);
     final var medicalInvestigationResult = (ElementValueMedicalInvestigationList) result;
 
-    assertEquals("TEXT",
-        medicalInvestigationResult.list().get(0).informationSource().text());
+    assertEquals("TEXT", medicalInvestigationResult.list().get(0).informationSource().text());
   }
 
   @Test
@@ -101,8 +112,8 @@ class ElementValueConverterMedicalInvestigationListTest {
     final var result = converter.convert(CERTIFICATE_DATA_VALUE);
     final var medicalInvestigationResult = (ElementValueMedicalInvestigationList) result;
 
-    assertEquals("CODE_ID",
-        medicalInvestigationResult.list().get(0).investigationType().codeId().value());
+    assertEquals(
+        "CODE_ID", medicalInvestigationResult.list().get(0).investigationType().codeId().value());
   }
 
   @Test
@@ -110,8 +121,7 @@ class ElementValueConverterMedicalInvestigationListTest {
     final var result = converter.convert(CERTIFICATE_DATA_VALUE);
     final var medicalInvestigationResult = (ElementValueMedicalInvestigationList) result;
 
-    assertEquals("CODE",
-        medicalInvestigationResult.list().get(0).investigationType().code());
+    assertEquals("CODE", medicalInvestigationResult.list().get(0).investigationType().code());
   }
 
   @Test

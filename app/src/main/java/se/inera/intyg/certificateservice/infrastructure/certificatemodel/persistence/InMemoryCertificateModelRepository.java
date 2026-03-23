@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.persistence;
 
 import jakarta.annotation.PostConstruct;
@@ -25,8 +43,8 @@ import se.inera.intyg.certificateservice.testability.certificate.service.reposit
 @Slf4j
 @Repository
 @RequiredArgsConstructor
-public class InMemoryCertificateModelRepository implements CertificateModelRepository,
-    TestabilityCertificateModelRepository {
+public class InMemoryCertificateModelRepository
+    implements CertificateModelRepository, TestabilityCertificateModelRepository {
 
   private final List<CertificateModelFactory> certificateModelFactories;
   private Map<CertificateModelId, CertificateModel> certificateModelMap;
@@ -35,31 +53,27 @@ public class InMemoryCertificateModelRepository implements CertificateModelRepos
   private void initCertificateModelMap() {
     log.info("Initiate certificate model repository");
     certificateModelMap = new HashMap<>();
-    certificateModelFactories.forEach(certificateModelFactory -> {
-      final var certificateModel = certificateModelFactory.create();
-      certificateModelMap.put(certificateModel.id(), certificateModel);
-      log.info("Loaded certificate model '{}' to repository", certificateModel.id());
-    });
+    certificateModelFactories.forEach(
+        certificateModelFactory -> {
+          final var certificateModel = certificateModelFactory.create();
+          certificateModelMap.put(certificateModel.id(), certificateModel);
+          log.info("Loaded certificate model '{}' to repository", certificateModel.id());
+        });
 
-    final var certificateTypeToVersionReference = certificateModelMap.values().stream()
-        .sorted(Comparator.comparing(model -> model.id().version().version()))
-        .collect(
-            Collectors.groupingBy(
-                model -> model.id().type(),
-                Collectors.mapping(
-                    Function.identity(),
-                    Collectors.toList())
-            )
-        );
+    final var certificateTypeToVersionReference =
+        certificateModelMap.values().stream()
+            .sorted(Comparator.comparing(model -> model.id().version().version()))
+            .collect(
+                Collectors.groupingBy(
+                    model -> model.id().type(),
+                    Collectors.mapping(Function.identity(), Collectors.toList())));
 
-    certificateModelMap.forEach((key, certificateModel) ->
-        certificateModelMap.put(
-            key,
-            certificateModel.withVersions(
-                certificateTypeToVersionReference.get(certificateModel.id().type())
-            )
-        )
-    );
+    certificateModelMap.forEach(
+        (key, certificateModel) ->
+            certificateModelMap.put(
+                key,
+                certificateModel.withVersions(
+                    certificateTypeToVersionReference.get(certificateModel.id().type()))));
   }
 
   private Map<CertificateModelId, CertificateModel> getCertificateModelMap() {
@@ -106,8 +120,7 @@ public class InMemoryCertificateModelRepository implements CertificateModelRepos
     final var certificateModel = getCertificateModelMap().get(certificateModelId);
     if (certificateModel == null) {
       throw new IllegalArgumentException(
-          "CertificateModel missing: %s".formatted(certificateModelId)
-      );
+          "CertificateModel missing: %s".formatted(certificateModelId));
     }
 
     return certificateModel;
@@ -122,17 +135,13 @@ public class InMemoryCertificateModelRepository implements CertificateModelRepos
     final var certificateModel = getCertificateModelMap().get(certificateModelId);
     if (certificateModel == null) {
       throw new IllegalArgumentException(
-          "CertificateModel missing: %s".formatted(certificateModelId)
-      );
+          "CertificateModel missing: %s".formatted(certificateModelId));
     }
 
     if (LocalDateTime.now(ZoneId.systemDefault()).isBefore(certificateModel.activeFrom())) {
       throw new IllegalArgumentException(
-          "CertificateModel with id '%s' not active until '%s'".formatted(
-              certificateModel.id(),
-              certificateModel.activeFrom()
-          )
-      );
+          "CertificateModel with id '%s' not active until '%s'"
+              .formatted(certificateModel.id(), certificateModel.activeFrom()));
     }
 
     return certificateModel;

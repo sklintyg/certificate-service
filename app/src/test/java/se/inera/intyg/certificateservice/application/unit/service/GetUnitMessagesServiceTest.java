@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.unit.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -43,34 +61,24 @@ import se.inera.intyg.certificateservice.domain.unit.service.GetUnitMessagesDoma
 @ExtendWith(MockitoExtension.class)
 class GetUnitMessagesServiceTest {
 
-  @Mock
-  private GetUnitMessagesRequestValidator getUnitMessagesRequestValidator;
-  @Mock
-  private ActionEvaluationFactory actionEvaluationFactory;
-  @Mock
-  private MessagesRequestFactory messagesRequestFactory;
-  @Mock
-  private GetUnitMessagesDomainService getUnitMessagesDomainService;
-  @Mock
-  private ResourceLinkConverter resourceLinkConverter;
-  @Mock
-  private CertificateConverter certificateConverter;
-  @Mock
-  private QuestionConverter questionConverter;
-  @InjectMocks
-  private GetUnitMessagesService getUnitMessagesService;
+  @Mock private GetUnitMessagesRequestValidator getUnitMessagesRequestValidator;
+  @Mock private ActionEvaluationFactory actionEvaluationFactory;
+  @Mock private MessagesRequestFactory messagesRequestFactory;
+  @Mock private GetUnitMessagesDomainService getUnitMessagesDomainService;
+  @Mock private ResourceLinkConverter resourceLinkConverter;
+  @Mock private CertificateConverter certificateConverter;
+  @Mock private QuestionConverter questionConverter;
+  @InjectMocks private GetUnitMessagesService getUnitMessagesService;
 
-  private static final MessagesRequest MESSAGES_REQUEST = MessagesRequest.builder()
-      .build();
-  private static final MessagesQueryCriteriaDTO CRITERIA_DTO = MessagesQueryCriteriaDTO.builder()
-      .build();
+  private static final MessagesRequest MESSAGES_REQUEST = MessagesRequest.builder().build();
+  private static final MessagesQueryCriteriaDTO CRITERIA_DTO =
+      MessagesQueryCriteriaDTO.builder().build();
   private static final CertificateId CERTIFICATE_ID = new CertificateId("CERT_ID");
 
   @Test
   void shallThrowIfInvalidRequest() {
     final var request = GetUnitMessagesRequest.builder().build();
-    doThrow(IllegalArgumentException.class).when(getUnitMessagesRequestValidator)
-        .validate(request);
+    doThrow(IllegalArgumentException.class).when(getUnitMessagesRequestValidator).validate(request);
 
     assertThrows(IllegalArgumentException.class, () -> getUnitMessagesService.get(request));
   }
@@ -78,69 +86,63 @@ class GetUnitMessagesServiceTest {
   @Test
   void shallReturnGetUnitMessagesResponse() {
     final var resourceLinkDTO = ResourceLinkDTO.builder().build();
-    final var certificateDTO = CertificateDTO.builder()
-        .links(List.of(resourceLinkDTO))
-        .build();
+    final var certificateDTO = CertificateDTO.builder().links(List.of(resourceLinkDTO)).build();
     final var questionDTO = QuestionDTO.builder().build();
-    final var expectedResponse = GetUnitMessagesResponse.builder()
-        .certificates(
-            List.of(certificateDTO)
-        )
-        .questions(
-            List.of(questionDTO)
-        )
-        .build();
+    final var expectedResponse =
+        GetUnitMessagesResponse.builder()
+            .certificates(List.of(certificateDTO))
+            .questions(List.of(questionDTO))
+            .build();
 
     final var actionEvaluation = ActionEvaluation.builder().build();
-    doReturn(actionEvaluation).when(actionEvaluationFactory).create(
-        AJLA_DOCTOR_DTO,
-        ALFA_ALLERGIMOTTAGNINGEN_DTO,
-        ALFA_MEDICINCENTRUM_DTO,
-        ALFA_REGIONEN_DTO
-    );
+    doReturn(actionEvaluation)
+        .when(actionEvaluationFactory)
+        .create(
+            AJLA_DOCTOR_DTO,
+            ALFA_ALLERGIMOTTAGNINGEN_DTO,
+            ALFA_MEDICINCENTRUM_DTO,
+            ALFA_REGIONEN_DTO);
 
     doReturn(MESSAGES_REQUEST).when(messagesRequestFactory).create(CRITERIA_DTO);
 
     final var message = mock(Message.class);
     final var certificate = mock(MedicalCertificate.class);
-    final var messageResponse = MessagesResponse.builder()
-        .messages(List.of(message))
-        .certificates(List.of(certificate))
-        .build();
+    final var messageResponse =
+        MessagesResponse.builder()
+            .messages(List.of(message))
+            .certificates(List.of(certificate))
+            .build();
 
-    when(message.certificateId())
-        .thenReturn(CERTIFICATE_ID);
-    when(certificate.id())
-        .thenReturn(CERTIFICATE_ID);
-    doReturn(messageResponse).when(getUnitMessagesDomainService).get(
-        MESSAGES_REQUEST,
-        actionEvaluation
-    );
+    when(message.certificateId()).thenReturn(CERTIFICATE_ID);
+    when(certificate.id()).thenReturn(CERTIFICATE_ID);
+    doReturn(messageResponse)
+        .when(getUnitMessagesDomainService)
+        .get(MESSAGES_REQUEST, actionEvaluation);
 
     final var messageActions = List.of(MessageActionLink.builder().build());
-    when(message.actions(actionEvaluation, certificate))
-        .thenReturn(messageActions);
+    when(message.actions(actionEvaluation, certificate)).thenReturn(messageActions);
 
     final var certificateAction = mock(CertificateAction.class);
     final List<CertificateAction> certificateActions = List.of(certificateAction);
     doReturn(certificateActions).when(certificate).actionsInclude(Optional.of(actionEvaluation));
 
-    doReturn(resourceLinkDTO).when(resourceLinkConverter).convert(certificateAction,
-        Optional.of(certificate), actionEvaluation);
-    doReturn(certificateDTO).when(certificateConverter)
+    doReturn(resourceLinkDTO)
+        .when(resourceLinkConverter)
+        .convert(certificateAction, Optional.of(certificate), actionEvaluation);
+    doReturn(certificateDTO)
+        .when(certificateConverter)
         .convert(certificate, List.of(resourceLinkDTO), actionEvaluation);
-    doReturn(questionDTO).when(questionConverter)
-        .convert(message, messageActions);
+    doReturn(questionDTO).when(questionConverter).convert(message, messageActions);
 
-    final var actualResult = getUnitMessagesService.get(
-        GetUnitMessagesRequest.builder()
-            .user(AJLA_DOCTOR_DTO)
-            .unit(ALFA_ALLERGIMOTTAGNINGEN_DTO)
-            .careUnit(ALFA_MEDICINCENTRUM_DTO)
-            .careProvider(ALFA_REGIONEN_DTO)
-            .messagesQueryCriteria(CRITERIA_DTO)
-            .build()
-    );
+    final var actualResult =
+        getUnitMessagesService.get(
+            GetUnitMessagesRequest.builder()
+                .user(AJLA_DOCTOR_DTO)
+                .unit(ALFA_ALLERGIMOTTAGNINGEN_DTO)
+                .careUnit(ALFA_MEDICINCENTRUM_DTO)
+                .careProvider(ALFA_REGIONEN_DTO)
+                .messagesQueryCriteria(CRITERIA_DTO)
+                .build());
 
     assertEquals(expectedResponse, actualResult);
   }

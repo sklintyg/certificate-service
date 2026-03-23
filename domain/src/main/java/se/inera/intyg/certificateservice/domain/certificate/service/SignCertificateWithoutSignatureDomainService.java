@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.certificate.service;
 
 import static se.inera.intyg.certificateservice.domain.certificate.model.RelationType.COMPLEMENT;
@@ -30,24 +48,22 @@ public class SignCertificateWithoutSignatureDomainService {
   private final XmlGenerator xmlGenerator;
   private final SetMessagesToHandleDomainService setMessagesToHandleDomainService;
 
-  public Certificate sign(CertificateId certificateId, Revision revision,
-      ActionEvaluation actionEvaluation) {
+  public Certificate sign(
+      CertificateId certificateId, Revision revision, ActionEvaluation actionEvaluation) {
     final var start = LocalDateTime.now(ZoneId.systemDefault());
 
     final var certificate = certificateRepository.getById(certificateId);
     if (!certificate.allowTo(CertificateActionType.SIGN, Optional.of(actionEvaluation))) {
       throw new CertificateActionForbidden(
           "Not allowed to sign certificate with id %s".formatted(certificateId),
-          certificate.reasonNotAllowed(CertificateActionType.SIGN, Optional.of(actionEvaluation))
-      );
+          certificate.reasonNotAllowed(CertificateActionType.SIGN, Optional.of(actionEvaluation)));
     }
 
     if (!Role.PRIVATE_DOCTOR.equals(actionEvaluation.user().role())) {
       throw new CertificateActionForbidden(
           "Only '%s' is allowed to sign without signature! Cannot sign certificate '%s'!"
               .formatted(Role.PRIVATE_DOCTOR.name(), certificateId.id()),
-          certificate.reasonNotAllowed(CertificateActionType.SIGN, Optional.of(actionEvaluation))
-      );
+          certificate.reasonNotAllowed(CertificateActionType.SIGN, Optional.of(actionEvaluation)));
     }
 
     certificate.updateMetadata(actionEvaluation);
@@ -60,8 +76,7 @@ public class SignCertificateWithoutSignatureDomainService {
       setMessagesToHandleDomainService.handle(
           signedCertificate.parent().certificate().messages().stream()
               .filter(message -> message.type() == MessageType.COMPLEMENT)
-              .toList()
-      );
+              .toList());
     }
 
     certificateEventDomainService.publish(
@@ -71,8 +86,7 @@ public class SignCertificateWithoutSignatureDomainService {
             .end(LocalDateTime.now(ZoneId.systemDefault()))
             .certificate(signedCertificate)
             .actionEvaluation(actionEvaluation)
-            .build()
-    );
+            .build());
 
     return signedCertificate;
   }

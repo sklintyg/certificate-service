@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.message.service;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -18,17 +36,13 @@ import se.inera.intyg.certificateservice.domain.message.repository.MessageReposi
 @ExtendWith(MockitoExtension.class)
 class SetMessagesToUnhandledDomainServiceTest {
 
-  @Mock
-  private MessageRepository messageRepository;
+  @Mock private MessageRepository messageRepository;
 
-  @InjectMocks
-  private SetMessagesToUnhandledDomainService setMessagesToHandleDomainService;
+  @InjectMocks private SetMessagesToUnhandledDomainService setMessagesToHandleDomainService;
 
   @Test
   void shallUnhandleMessage() {
-    final var messageToHandle = complementMessageBuilder()
-        .status(MessageStatus.HANDLED)
-        .build();
+    final var messageToHandle = complementMessageBuilder().status(MessageStatus.HANDLED).build();
 
     setMessagesToHandleDomainService.unhandled(List.of(messageToHandle));
 
@@ -37,9 +51,7 @@ class SetMessagesToUnhandledDomainServiceTest {
 
   @Test
   void shallSaveUnhandledMessage() {
-    final var messageToHandle = complementMessageBuilder()
-        .status(MessageStatus.HANDLED)
-        .build();
+    final var messageToHandle = complementMessageBuilder().status(MessageStatus.HANDLED).build();
 
     setMessagesToHandleDomainService.unhandled(List.of(messageToHandle));
 
@@ -48,37 +60,36 @@ class SetMessagesToUnhandledDomainServiceTest {
 
   @Test
   void shallUnhandleMessages() {
-    final var messagesToHandle = List.of(
-        complementMessageBuilder()
-            .id(new MessageId("firstMessage"))
-            .status(MessageStatus.HANDLED)
-            .build(),
-        complementMessageBuilder()
-            .id(new MessageId("secondMessage"))
-            .status(MessageStatus.HANDLED)
-            .build()
-    );
+    final var messagesToHandle =
+        List.of(
+            complementMessageBuilder()
+                .id(new MessageId("firstMessage"))
+                .status(MessageStatus.HANDLED)
+                .build(),
+            complementMessageBuilder()
+                .id(new MessageId("secondMessage"))
+                .status(MessageStatus.HANDLED)
+                .build());
 
     setMessagesToHandleDomainService.unhandled(messagesToHandle);
 
     assertAll(
         () -> assertEquals(MessageStatus.SENT, messagesToHandle.getFirst().status()),
-        () -> assertEquals(MessageStatus.SENT, messagesToHandle.getLast().status())
-    );
+        () -> assertEquals(MessageStatus.SENT, messagesToHandle.getLast().status()));
   }
 
   @Test
   void shallSaveMessages() {
-    final var messagesToHandle = List.of(
-        complementMessageBuilder()
-            .id(new MessageId("firstMessage"))
-            .status(MessageStatus.HANDLED)
-            .build(),
-        complementMessageBuilder()
-            .id(new MessageId("secondMessage"))
-            .status(MessageStatus.HANDLED)
-            .build()
-    );
+    final var messagesToHandle =
+        List.of(
+            complementMessageBuilder()
+                .id(new MessageId("firstMessage"))
+                .status(MessageStatus.HANDLED)
+                .build(),
+            complementMessageBuilder()
+                .id(new MessageId("secondMessage"))
+                .status(MessageStatus.HANDLED)
+                .build());
 
     setMessagesToHandleDomainService.unhandled(messagesToHandle);
 

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.testability.certificate.service.fillservice.fk7804;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7804.CertificateModelFactoryFK7804.FK7804_V2_0;
@@ -63,87 +81,88 @@ import se.inera.intyg.certificateservice.testability.certificate.service.fillser
 @Component
 public class TestabilityCertificateFillServiceFK7804 implements TestabilityCertificateFillService {
 
-  private static final List<ElementId> MAXIMAL_IDS = List.of(
-      QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID,
-      QUESTION_ANNAN_GRUND_FOR_MEDICINSKT_UNDERLAG_ID,
-      QUESTION_SYSSELSATTNING_ID,
-      QUESTION_YRKE_ARBETSUPPGIFTER_ID,
-      QUESTION_DIAGNOS_ID,
-      QUESTION_MEDICINSK_BEHANDLING_ID,
-      QUESTION_NEDSATTNING_ARBETSFORMAGA_ID,
-      QUESTION_ARBETFORMAGA_LANGRE_ID,
-      QUESTION_TRANSPORTSTOD_ID,
-      QUESTION_SVARARE_ATERGANG_VID_OJAMN_ARBETSTID_ID,
-      QUESTION_MEDICINSKA_SKAL_ID,
-      QUESTION_PROGNOS_ID,
-      QUESTION_ANTAL_MANADER_ID,
-      QUESTION_ATGARDER_ID,
-      QUESTION_OVRIGT_ID,
-      QUESTION_KONTAKT_ID,
-      QUESTION_VARFOR_KONTAKT_ID,
-      QUESTION_AKTIVITETSBEGRANSNING_ID,
-      QUESTION_FUNKTIONSNEDSATTNINGAR_ID
-  );
+  private static final List<ElementId> MAXIMAL_IDS =
+      List.of(
+          QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID,
+          QUESTION_ANNAN_GRUND_FOR_MEDICINSKT_UNDERLAG_ID,
+          QUESTION_SYSSELSATTNING_ID,
+          QUESTION_YRKE_ARBETSUPPGIFTER_ID,
+          QUESTION_DIAGNOS_ID,
+          QUESTION_MEDICINSK_BEHANDLING_ID,
+          QUESTION_NEDSATTNING_ARBETSFORMAGA_ID,
+          QUESTION_ARBETFORMAGA_LANGRE_ID,
+          QUESTION_TRANSPORTSTOD_ID,
+          QUESTION_SVARARE_ATERGANG_VID_OJAMN_ARBETSTID_ID,
+          QUESTION_MEDICINSKA_SKAL_ID,
+          QUESTION_PROGNOS_ID,
+          QUESTION_ANTAL_MANADER_ID,
+          QUESTION_ATGARDER_ID,
+          QUESTION_OVRIGT_ID,
+          QUESTION_KONTAKT_ID,
+          QUESTION_VARFOR_KONTAKT_ID,
+          QUESTION_AKTIVITETSBEGRANSNING_ID,
+          QUESTION_FUNKTIONSNEDSATTNINGAR_ID);
 
-  private static final List<ElementId> MINIMAL_IDS = List.of(
-      QUESTION_SMITTBARARPENNING_ID,
-      QUESTION_NEDSATTNING_ARBETSFORMAGA_ID,
-      QUESTION_DIAGNOS_ID
-  );
+  private static final List<ElementId> MINIMAL_IDS =
+      List.of(
+          QUESTION_SMITTBARARPENNING_ID,
+          QUESTION_NEDSATTNING_ARBETSFORMAGA_ID,
+          QUESTION_DIAGNOS_ID);
 
-  private static final Map<ElementId, String> TEXT_QUESTION_MOCKS = Map.ofEntries(
-      Map.entry(QUESTION_ANNAN_GRUND_FOR_MEDICINSKT_UNDERLAG_ID,
-          "Patienten har fått rådgivning via e-post."),
-      Map.entry(QUESTION_YRKE_ARBETSUPPGIFTER_ID,
-          "Butikssäljare, ansvarar för kassa och varuplock."),
-      Map.entry(QUESTION_MEDICINSK_BEHANDLING_ID, "Rehabövningar under 10 dagar hemifrån."),
-      Map.entry(QUESTION_ARBETFORMAGA_LANGRE_ID, "Fysiskt krävande arbete."),
-      Map.entry(QUESTION_MEDICINSKA_SKAL_ID,
-          "Behöver regelbundna vilopauser och kan inte arbeta heltid."),
-      Map.entry(QUESTION_GRUND_FOR_BEDOMNING_ID,
-          "Patienten har långvariga besvär och tidigare behandlingar har haft begränsad effekt."),
-      Map.entry(QUESTION_ATGARDER_ID,
-          "Arbetsanpassning med höj- och sänkbart skrivbord och flexibla arbetstider."),
-      Map.entry(QUESTION_OVRIGT_ID,
-          "Patienten har svårt att ta sig till arbetsplatsen med kollektivtrafik."),
-      Map.entry(QUESTION_VARFOR_KONTAKT_ID,
-          "Behöver diskutera kompletterande intyg med handläggare."),
-      Map.entry(QUESTION_AKTIVITETSBEGRANSNING_ID,
-          "Patienten har svårt att lyfta tunga föremål och behöver undvika långvarigt stående arbete."),
-      Map.entry(QUESTION_FUNKTIONSNEDSATTNINGAR_ID,
-          "Patienten har nedsatt rörlighet i höger arm och behöver hjälp med vissa rörelser.")
-  );
+  private static final Map<ElementId, String> TEXT_QUESTION_MOCKS =
+      Map.ofEntries(
+          Map.entry(
+              QUESTION_ANNAN_GRUND_FOR_MEDICINSKT_UNDERLAG_ID,
+              "Patienten har fått rådgivning via e-post."),
+          Map.entry(
+              QUESTION_YRKE_ARBETSUPPGIFTER_ID, "Butikssäljare, ansvarar för kassa och varuplock."),
+          Map.entry(QUESTION_MEDICINSK_BEHANDLING_ID, "Rehabövningar under 10 dagar hemifrån."),
+          Map.entry(QUESTION_ARBETFORMAGA_LANGRE_ID, "Fysiskt krävande arbete."),
+          Map.entry(
+              QUESTION_MEDICINSKA_SKAL_ID,
+              "Behöver regelbundna vilopauser och kan inte arbeta heltid."),
+          Map.entry(
+              QUESTION_GRUND_FOR_BEDOMNING_ID,
+              "Patienten har långvariga besvär och tidigare behandlingar har haft begränsad effekt."),
+          Map.entry(
+              QUESTION_ATGARDER_ID,
+              "Arbetsanpassning med höj- och sänkbart skrivbord och flexibla arbetstider."),
+          Map.entry(
+              QUESTION_OVRIGT_ID,
+              "Patienten har svårt att ta sig till arbetsplatsen med kollektivtrafik."),
+          Map.entry(
+              QUESTION_VARFOR_KONTAKT_ID,
+              "Behöver diskutera kompletterande intyg med handläggare."),
+          Map.entry(
+              QUESTION_AKTIVITETSBEGRANSNING_ID,
+              "Patienten har svårt att lyfta tunga föremål och behöver undvika långvarigt stående arbete."),
+          Map.entry(
+              QUESTION_FUNKTIONSNEDSATTNINGAR_ID,
+              "Patienten har nedsatt rörlighet i höger arm och behöver hjälp med vissa rörelser."));
 
   @Override
   public List<CertificateModelId> certificateModelIds() {
-    return List.of(
-        FK7804_V2_0
-    );
+    return List.of(FK7804_V2_0);
   }
 
   @Override
-  public List<ElementData> fill(CertificateModel certificateModel,
-      TestabilityFillTypeDTO fillType) {
-    return fillType == EMPTY
-        ? Collections.emptyList()
-        : fillWithValues(certificateModel, fillType);
+  public List<ElementData> fill(
+      CertificateModel certificateModel, TestabilityFillTypeDTO fillType) {
+    return fillType == EMPTY ? Collections.emptyList() : fillWithValues(certificateModel, fillType);
   }
 
-  private static List<ElementData> fillWithValues(CertificateModel certificateModel,
-      TestabilityFillTypeDTO fillType) {
+  private static List<ElementData> fillWithValues(
+      CertificateModel certificateModel, TestabilityFillTypeDTO fillType) {
     final var elementIds = fillType == MAXIMAL ? MAXIMAL_IDS : MINIMAL_IDS;
 
-    return elementIds.stream()
-        .map(certificateModel::elementSpecification)
-        .toList()
-        .stream()
+    return elementIds.stream().map(certificateModel::elementSpecification).toList().stream()
         .map(element -> fill(element, fillType))
         .filter(Objects::nonNull)
         .toList();
   }
 
-  private static ElementData fill(ElementSpecification elementSpecification,
-      TestabilityFillTypeDTO fillType) {
+  private static ElementData fill(
+      ElementSpecification elementSpecification, TestabilityFillTypeDTO fillType) {
     final var value = elementSpecification.configuration().emptyValue();
     if (value instanceof ElementValueBoolean elementValueBoolean) {
       return ElementData.builder()
@@ -156,12 +175,7 @@ public class TestabilityCertificateFillServiceFK7804 implements TestabilityCerti
       final var code = getCode(elementSpecification.id(), fillType).code();
       return ElementData.builder()
           .id(elementSpecification.id())
-          .value(
-              ElementValueCode.builder()
-                  .code(code)
-                  .codeId(new FieldId(code))
-                  .build()
-          )
+          .value(ElementValueCode.builder().code(code).codeId(new FieldId(code)).build())
           .build();
     }
 
@@ -181,10 +195,7 @@ public class TestabilityCertificateFillServiceFK7804 implements TestabilityCerti
                       ElementValueDate.builder()
                           .dateId(new FieldId(getCode(elementSpecification.id(), fillType).code()))
                           .date(LocalDate.now())
-                          .build()
-                  )
-              )
-          )
+                          .build())))
           .build();
     }
 
@@ -192,28 +203,21 @@ public class TestabilityCertificateFillServiceFK7804 implements TestabilityCerti
       return ElementData.builder()
           .id(elementSpecification.id())
           .value(
-              elementValueDiagnosisList.withDiagnoses(List.of(
+              elementValueDiagnosisList.withDiagnoses(
+                  List.of(
                       ElementValueDiagnosis.builder()
                           .code("A78")
                           .description("Q-feber")
                           .terminology(CodeSystemIcd10Se.terminology().id())
                           .id(new FieldId("huvuddiagnos"))
-                          .build()
-                  )
-              )
-          )
+                          .build())))
           .build();
     }
 
     if (value instanceof ElementValueDateRangeList elementValueDateRangeList) {
       return ElementData.builder()
           .id(elementSpecification.id())
-          .value(
-              elementValueDateRangeList.withDateRangeList(List.of(
-                      getDateRange(fillType)
-                  )
-              )
-          )
+          .value(elementValueDateRangeList.withDateRangeList(List.of(getDateRange(fillType))))
           .build();
     }
 
@@ -225,8 +229,7 @@ public class TestabilityCertificateFillServiceFK7804 implements TestabilityCerti
                   .value(10)
                   .unitOfMeasurement("månader")
                   .integerId(QUESTION_ANTAL_MANADER_FIELD_ID)
-                  .build()
-          )
+                  .build())
           .build();
     }
 
@@ -235,24 +238,16 @@ public class TestabilityCertificateFillServiceFK7804 implements TestabilityCerti
       return ElementData.builder()
           .id(elementSpecification.id())
           .value(
-              elementValueCodeList.withList(List.of(
-                  ElementValueCode.builder()
-                      .code(code)
-                      .codeId(new FieldId(code))
-                      .build()
-              ))
-          )
+              elementValueCodeList.withList(
+                  List.of(ElementValueCode.builder().code(code).codeId(new FieldId(code)).build())))
           .build();
     }
 
     if (value instanceof ElementValueIcf elementValueIcf) {
       return ElementData.builder()
           .id(elementSpecification.id())
-          .value(
-              elementValueIcf.withText(
-                  TEXT_QUESTION_MOCKS.get(elementSpecification.id())
-              )
-          ).build();
+          .value(elementValueIcf.withText(TEXT_QUESTION_MOCKS.get(elementSpecification.id())))
+          .build();
     }
 
     throw new IllegalStateException("No matching fill for element: " + elementSpecification.id());

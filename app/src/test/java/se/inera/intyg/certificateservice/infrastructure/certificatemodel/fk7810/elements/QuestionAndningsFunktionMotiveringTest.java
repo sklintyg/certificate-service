@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7810.elements;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -41,20 +59,20 @@ class QuestionAndningsFunktionMotiveringTest {
 
   @Test
   void shallIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationTextArea.builder()
-        .name("Andningsfunktion")
-        .label(
-            "Beskriv funktionsnedsättningen, om möjligt med grad. Ange även eventuella undersökningsfynd och funktionstester.")
-        .description(
-            """
+    final var expectedConfiguration =
+        ElementConfigurationTextArea.builder()
+            .name("Andningsfunktion")
+            .label(
+                "Beskriv funktionsnedsättningen, om möjligt med grad. Ange även eventuella undersökningsfynd och funktionstester.")
+            .description(
+                """
                 Med andningsfunktioner menas exempelvis:
                 <ul>
                 <li>funktioner att andas in luft i lungorna, gasutbyte mellan luft och blod samt utandning</li><li>funktioner i muskler som är involverade i andning</li></ul>
                 Inklusive eventuella åtgärder av annan person, så som slemsugning och hjälp att hantera respirator
-                """
-        )
-        .id(new FieldId("64.1"))
-        .build();
+                """)
+            .id(new FieldId("64.1"))
+            .build();
 
     final var element = questionAndningsFunktionMotivering();
 
@@ -63,23 +81,23 @@ class QuestionAndningsFunktionMotiveringTest {
 
   @Test
   void shallIncludeRules() {
-    final var expectedRules = List.of(
-        ElementRuleLimit.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.TEXT_LIMIT)
-            .limit(new RuleLimit((short) 4000))
-            .build(),
-        ElementRuleExpression.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.MANDATORY)
-            .expression(new RuleExpression("$64.1"))
-            .build(),
-        ElementRuleExpression.builder()
-            .id(new ElementId("funktionsnedsattning"))
-            .type(ElementRuleType.SHOW)
-            .expression(new RuleExpression("$64.2"))
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleLimit.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.TEXT_LIMIT)
+                .limit(new RuleLimit((short) 4000))
+                .build(),
+            ElementRuleExpression.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.MANDATORY)
+                .expression(new RuleExpression("$64.1"))
+                .build(),
+            ElementRuleExpression.builder()
+                .id(new ElementId("funktionsnedsattning"))
+                .type(ElementRuleType.SHOW)
+                .expression(new RuleExpression("$64.2"))
+                .build());
 
     final var element = questionAndningsFunktionMotivering();
 
@@ -88,26 +106,22 @@ class QuestionAndningsFunktionMotiveringTest {
 
   @Test
   void shallIncludeValidations() {
-    final var expectedValidations = List.of(
-        ElementValidationText.builder()
-            .mandatory(true)
-            .limit(4000)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationText.builder().mandatory(true).limit(4000).build());
 
     final var element = questionAndningsFunktionMotivering();
 
     assertEquals(expectedValidations, element.validations());
   }
 
-
   @Test
   void shallIncludePdfConfiguration() {
-    final var expected = PdfConfigurationText.builder()
-        .pdfFieldId(new PdfFieldId("form1[0].Sida3[0].flt_txtAndningsfunktioner[0]"))
-        .maxLength(PDF_TEXT_FIELD_LENGTH * 5)
-        .overflowSheetFieldId(OVERFLOW_SHEET_FIELD_ID)
-        .build();
+    final var expected =
+        PdfConfigurationText.builder()
+            .pdfFieldId(new PdfFieldId("form1[0].Sida3[0].flt_txtAndningsfunktioner[0]"))
+            .maxLength(PDF_TEXT_FIELD_LENGTH * 5)
+            .overflowSheetFieldId(OVERFLOW_SHEET_FIELD_ID)
+            .build();
 
     final var element = questionAndningsFunktionMotivering();
 
@@ -119,22 +133,17 @@ class QuestionAndningsFunktionMotiveringTest {
 
     @Test
     void shallReturnTrueIfElementPresent() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("funktionsnedsattning"))
-              .value(
-                  ElementValueCodeList.builder()
-                      .list(
-                          List.of(
-                              ElementValueCode.builder()
-                                  .codeId(new FieldId("64.2"))
-                                  .build()
-                          )
-                      )
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("funktionsnedsattning"))
+                  .value(
+                      ElementValueCodeList.builder()
+                          .list(
+                              List.of(
+                                  ElementValueCode.builder().codeId(new FieldId("64.2")).build()))
+                          .build())
+                  .build());
 
       final var element = questionAndningsFunktionMotivering();
 
@@ -145,22 +154,19 @@ class QuestionAndningsFunktionMotiveringTest {
 
     @Test
     void shallReturnFalseIfElementPresent() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("funktionsnedsattning"))
-              .value(
-                  ElementValueCodeList.builder()
-                      .list(
-                          List.of(
-                              ElementValueCode.builder()
-                                  .codeId(new FieldId("missing"))
-                                  .build()
-                          )
-                      )
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("funktionsnedsattning"))
+                  .value(
+                      ElementValueCodeList.builder()
+                          .list(
+                              List.of(
+                                  ElementValueCode.builder()
+                                      .codeId(new FieldId("missing"))
+                                      .build()))
+                          .build())
+                  .build());
 
       final var element = questionAndningsFunktionMotivering();
 
@@ -172,10 +178,11 @@ class QuestionAndningsFunktionMotiveringTest {
 
   @Test
   void shallIncludeVisibilityConfiguration() {
-    final var expectedVisibilityConfiguration = ElementVisibilityConfigurationsCheckboxMultipleCode.builder()
-        .elementId(FUNKTIONSNEDSATTNING_ID)
-        .fieldId(FUNKTIONSNEDSATTNING_ANDNINGS_ID)
-        .build();
+    final var expectedVisibilityConfiguration =
+        ElementVisibilityConfigurationsCheckboxMultipleCode.builder()
+            .elementId(FUNKTIONSNEDSATTNING_ID)
+            .fieldId(FUNKTIONSNEDSATTNING_ANDNINGS_ID)
+            .build();
 
     final var element = questionAndningsFunktionMotivering();
 

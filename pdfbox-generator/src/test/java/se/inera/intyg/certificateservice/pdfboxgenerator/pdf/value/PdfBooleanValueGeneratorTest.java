@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.pdfboxgenerator.pdf.value;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,7 +40,8 @@ class PdfBooleanValueGeneratorTest {
   private static final String NO_PDF_FIELD_ID = "form1[0].#subform[1].ksr_Nej[0]";
   private static final String CHECKBOX_VALUE = "1";
 
-  private static final PdfBooleanValueGenerator pdfBooleanValueGenerator = new PdfBooleanValueGenerator();
+  private static final PdfBooleanValueGenerator pdfBooleanValueGenerator =
+      new PdfBooleanValueGenerator();
 
   @Test
   void shouldReturnType() {
@@ -34,26 +53,20 @@ class PdfBooleanValueGeneratorTest {
 
     @Test
     void shouldSetValueIfElementDataWithBooleanValueTrue() {
-      final var expected = List.of(
-          PdfField.builder()
-              .id(YES_PDF_FIELD_ID)
-              .value(CHECKBOX_VALUE)
-              .build()
-      );
+      final var expected =
+          List.of(PdfField.builder().id(YES_PDF_FIELD_ID).value(CHECKBOX_VALUE).build());
 
-      final var elementSpecification = ElementSpecification.builder()
-          .pdfConfiguration(
-              PdfConfigurationBoolean.builder()
-                  .checkboxTrue(new PdfFieldId(YES_PDF_FIELD_ID))
-                  .checkboxFalse(new PdfFieldId(NO_PDF_FIELD_ID))
-                  .build()
-          )
-          .build();
+      final var elementSpecification =
+          ElementSpecification.builder()
+              .pdfConfiguration(
+                  PdfConfigurationBoolean.builder()
+                      .checkboxTrue(new PdfFieldId(YES_PDF_FIELD_ID))
+                      .checkboxFalse(new PdfFieldId(NO_PDF_FIELD_ID))
+                      .build())
+              .build();
 
-      final var elementValue = ElementValueBoolean.builder()
-          .booleanId(FIELD_ID)
-          .value(true)
-          .build();
+      final var elementValue =
+          ElementValueBoolean.builder().booleanId(FIELD_ID).value(true).build();
 
       final var result = pdfBooleanValueGenerator.generate(elementSpecification, elementValue);
 
@@ -62,26 +75,20 @@ class PdfBooleanValueGeneratorTest {
 
     @Test
     void shouldSetValueIfElementDataWithBooleanValueFalse() {
-      final var expected = List.of(
-          PdfField.builder()
-              .id(NO_PDF_FIELD_ID)
-              .value(CHECKBOX_VALUE)
-              .build()
-      );
+      final var expected =
+          List.of(PdfField.builder().id(NO_PDF_FIELD_ID).value(CHECKBOX_VALUE).build());
 
-      final var elementSpecification = ElementSpecification.builder()
-          .pdfConfiguration(
-              PdfConfigurationBoolean.builder()
-                  .checkboxTrue(new PdfFieldId(YES_PDF_FIELD_ID))
-                  .checkboxFalse(new PdfFieldId(NO_PDF_FIELD_ID))
-                  .build()
-          )
-          .build();
+      final var elementSpecification =
+          ElementSpecification.builder()
+              .pdfConfiguration(
+                  PdfConfigurationBoolean.builder()
+                      .checkboxTrue(new PdfFieldId(YES_PDF_FIELD_ID))
+                      .checkboxFalse(new PdfFieldId(NO_PDF_FIELD_ID))
+                      .build())
+              .build();
 
-      final var elementValue = ElementValueBoolean.builder()
-          .booleanId(FIELD_ID)
-          .value(false)
-          .build();
+      final var elementValue =
+          ElementValueBoolean.builder().booleanId(FIELD_ID).value(false).build();
 
       final var result = pdfBooleanValueGenerator.generate(elementSpecification, elementValue);
 
@@ -90,18 +97,16 @@ class PdfBooleanValueGeneratorTest {
 
     @Test
     void shouldReturnEmptyIfValueIsNull() {
-      final var elementSpecification = ElementSpecification.builder()
-          .pdfConfiguration(
-              PdfConfigurationBoolean.builder()
-                  .checkboxTrue(new PdfFieldId(YES_PDF_FIELD_ID))
-                  .checkboxFalse(new PdfFieldId(NO_PDF_FIELD_ID))
-                  .build()
-          )
-          .build();
+      final var elementSpecification =
+          ElementSpecification.builder()
+              .pdfConfiguration(
+                  PdfConfigurationBoolean.builder()
+                      .checkboxTrue(new PdfFieldId(YES_PDF_FIELD_ID))
+                      .checkboxFalse(new PdfFieldId(NO_PDF_FIELD_ID))
+                      .build())
+              .build();
 
-      final var elementValue = ElementValueBoolean.builder()
-          .booleanId(FIELD_ID)
-          .build();
+      final var elementValue = ElementValueBoolean.builder().booleanId(FIELD_ID).build();
 
       final var result = pdfBooleanValueGenerator.generate(elementSpecification, elementValue);
 
@@ -110,18 +115,16 @@ class PdfBooleanValueGeneratorTest {
 
     @Test
     void shouldHandleValueFalseAndCheckboxFalseNull() {
-      final var elementSpecification = ElementSpecification.builder()
-          .pdfConfiguration(
-              PdfConfigurationBoolean.builder()
-                  .checkboxTrue(new PdfFieldId(YES_PDF_FIELD_ID))
-                  .build()
-          )
-          .build();
+      final var elementSpecification =
+          ElementSpecification.builder()
+              .pdfConfiguration(
+                  PdfConfigurationBoolean.builder()
+                      .checkboxTrue(new PdfFieldId(YES_PDF_FIELD_ID))
+                      .build())
+              .build();
 
-      final var elementValue = ElementValueBoolean.builder()
-          .booleanId(FIELD_ID)
-          .value(false)
-          .build();
+      final var elementValue =
+          ElementValueBoolean.builder().booleanId(FIELD_ID).value(false).build();
 
       final var result = pdfBooleanValueGenerator.generate(elementSpecification, elementValue);
 
@@ -138,27 +141,21 @@ class PdfBooleanValueGeneratorTest {
 
     @Test
     void shouldSetValueIfElementDataWithBooleanValueTrue() {
-      final var expected = List.of(
-          PdfField.builder()
-              .id(RADIO_FIELD_ID)
-              .value(OPTION_TRUE_VALUE)
-              .build()
-      );
+      final var expected =
+          List.of(PdfField.builder().id(RADIO_FIELD_ID).value(OPTION_TRUE_VALUE).build());
 
-      final var elementSpecification = ElementSpecification.builder()
-          .pdfConfiguration(
-              PdfConfigurationRadioBoolean.builder()
-                  .pdfFieldId(new PdfFieldId(RADIO_FIELD_ID))
-                  .optionTrue(new PdfRadioOption(OPTION_TRUE_VALUE))
-                  .optionFalse(new PdfRadioOption(OPTION_FALSE_VALUE))
-                  .build()
-          )
-          .build();
+      final var elementSpecification =
+          ElementSpecification.builder()
+              .pdfConfiguration(
+                  PdfConfigurationRadioBoolean.builder()
+                      .pdfFieldId(new PdfFieldId(RADIO_FIELD_ID))
+                      .optionTrue(new PdfRadioOption(OPTION_TRUE_VALUE))
+                      .optionFalse(new PdfRadioOption(OPTION_FALSE_VALUE))
+                      .build())
+              .build();
 
-      final var elementValue = ElementValueBoolean.builder()
-          .booleanId(FIELD_ID)
-          .value(true)
-          .build();
+      final var elementValue =
+          ElementValueBoolean.builder().booleanId(FIELD_ID).value(true).build();
 
       final var result = pdfBooleanValueGenerator.generate(elementSpecification, elementValue);
 
@@ -167,27 +164,21 @@ class PdfBooleanValueGeneratorTest {
 
     @Test
     void shouldSetValueIfElementDataWithBooleanValueFalse() {
-      final var expected = List.of(
-          PdfField.builder()
-              .id(RADIO_FIELD_ID)
-              .value(OPTION_FALSE_VALUE)
-              .build()
-      );
+      final var expected =
+          List.of(PdfField.builder().id(RADIO_FIELD_ID).value(OPTION_FALSE_VALUE).build());
 
-      final var elementSpecification = ElementSpecification.builder()
-          .pdfConfiguration(
-              PdfConfigurationRadioBoolean.builder()
-                  .pdfFieldId(new PdfFieldId(RADIO_FIELD_ID))
-                  .optionTrue(new PdfRadioOption(OPTION_TRUE_VALUE))
-                  .optionFalse(new PdfRadioOption(OPTION_FALSE_VALUE))
-                  .build()
-          )
-          .build();
+      final var elementSpecification =
+          ElementSpecification.builder()
+              .pdfConfiguration(
+                  PdfConfigurationRadioBoolean.builder()
+                      .pdfFieldId(new PdfFieldId(RADIO_FIELD_ID))
+                      .optionTrue(new PdfRadioOption(OPTION_TRUE_VALUE))
+                      .optionFalse(new PdfRadioOption(OPTION_FALSE_VALUE))
+                      .build())
+              .build();
 
-      final var elementValue = ElementValueBoolean.builder()
-          .booleanId(FIELD_ID)
-          .value(false)
-          .build();
+      final var elementValue =
+          ElementValueBoolean.builder().booleanId(FIELD_ID).value(false).build();
 
       final var result = pdfBooleanValueGenerator.generate(elementSpecification, elementValue);
 
@@ -196,19 +187,17 @@ class PdfBooleanValueGeneratorTest {
 
     @Test
     void shouldReturnEmptyIfValueIsNull() {
-      final var elementSpecification = ElementSpecification.builder()
-          .pdfConfiguration(
-              PdfConfigurationRadioBoolean.builder()
-                  .pdfFieldId(new PdfFieldId(RADIO_FIELD_ID))
-                  .optionTrue(new PdfRadioOption(OPTION_TRUE_VALUE))
-                  .optionFalse(new PdfRadioOption(OPTION_FALSE_VALUE))
-                  .build()
-          )
-          .build();
+      final var elementSpecification =
+          ElementSpecification.builder()
+              .pdfConfiguration(
+                  PdfConfigurationRadioBoolean.builder()
+                      .pdfFieldId(new PdfFieldId(RADIO_FIELD_ID))
+                      .optionTrue(new PdfRadioOption(OPTION_TRUE_VALUE))
+                      .optionFalse(new PdfRadioOption(OPTION_FALSE_VALUE))
+                      .build())
+              .build();
 
-      final var elementValue = ElementValueBoolean.builder()
-          .booleanId(FIELD_ID)
-          .build();
+      final var elementValue = ElementValueBoolean.builder().booleanId(FIELD_ID).build();
 
       final var result = pdfBooleanValueGenerator.generate(elementSpecification, elementValue);
 
@@ -216,4 +205,3 @@ class PdfBooleanValueGeneratorTest {
     }
   }
 }
-

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ag114;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -30,30 +48,27 @@ class CertificateModelFactoryAG114Test {
   private static final String TYPE = "ag114";
   private static final String VERSION = "2.0";
 
-  @Mock
-  private CertificateActionFactory certificateActionFactory;
+  @Mock private CertificateActionFactory certificateActionFactory;
 
-  @Mock
-  private DiagnosisCodeRepository diagnosisCodeRepository;
+  @Mock private DiagnosisCodeRepository diagnosisCodeRepository;
 
   private CertificateModelFactoryAG114 certificateModelFactoryAG114;
 
   @BeforeEach
   void setUp() {
-    certificateModelFactoryAG114 = new CertificateModelFactoryAG114(
-        certificateActionFactory,
-        diagnosisCodeRepository
-    );
-    ReflectionTestUtils.setField(certificateModelFactoryAG114, "activeFrom",
-        LocalDateTime.now(ZoneId.systemDefault()));
+    certificateModelFactoryAG114 =
+        new CertificateModelFactoryAG114(certificateActionFactory, diagnosisCodeRepository);
+    ReflectionTestUtils.setField(
+        certificateModelFactoryAG114, "activeFrom", LocalDateTime.now(ZoneId.systemDefault()));
   }
 
   @Test
   void shouldIncludeId() {
-    final var expectedId = CertificateModelId.builder()
-        .type(new CertificateType(TYPE))
-        .version(new CertificateVersion(VERSION))
-        .build();
+    final var expectedId =
+        CertificateModelId.builder()
+            .type(new CertificateType(TYPE))
+            .version(new CertificateVersion(VERSION))
+            .build();
 
     final var certificateModel = certificateModelFactoryAG114.create();
 
@@ -95,11 +110,7 @@ class CertificateModelFactoryAG114Test {
   @Test
   void shouldIncludeActiveFrom() {
     final var expectedActiveFrom = LocalDateTime.now(ZoneId.systemDefault());
-    ReflectionTestUtils.setField(
-        certificateModelFactoryAG114,
-        "activeFrom",
-        expectedActiveFrom
-    );
+    ReflectionTestUtils.setField(certificateModelFactoryAG114, "activeFrom", expectedActiveFrom);
 
     final var certificateModel = certificateModelFactoryAG114.create();
 
@@ -117,8 +128,8 @@ class CertificateModelFactoryAG114Test {
   void shouldIncludeSummaryProvider() {
     final var certificateModel = certificateModelFactoryAG114.create();
 
-    assertEquals(AG114CertificateSummaryProvider.class,
-        certificateModel.summaryProvider().getClass());
+    assertEquals(
+        AG114CertificateSummaryProvider.class, certificateModel.summaryProvider().getClass());
   }
 
   @Test
@@ -134,8 +145,7 @@ class CertificateModelFactoryAG114Test {
 
     assertAll(
         () -> assertNotNull(certificateModel.certificateActionSpecifications()),
-        () -> assertFalse(certificateModel.certificateActionSpecifications().isEmpty())
-    );
+        () -> assertFalse(certificateModel.certificateActionSpecifications().isEmpty()));
   }
 
   @Test
@@ -147,11 +157,11 @@ class CertificateModelFactoryAG114Test {
 
   @Test
   void shouldIncludeCorrectType() {
-    final var expected = new Code(
-        "AG1-14",
-        "b64ea353-e8f6-4832-b563-fc7d46f29548",
-        "Läkarintyg om arbetsförmåga – sjuklöneperiod"
-    );
+    final var expected =
+        new Code(
+            "AG1-14",
+            "b64ea353-e8f6-4832-b563-fc7d46f29548",
+            "Läkarintyg om arbetsförmåga – sjuklöneperiod");
 
     final var actual = certificateModelFactoryAG114.create().type();
 
@@ -162,16 +172,37 @@ class CertificateModelFactoryAG114Test {
   class CertificateSpecifications {
 
     @ParameterizedTest
-    @ValueSource(strings = {
-        "KAT_1", "KAT_2", "KAT_3", "KAT_4", "KAT_5", "KAT_6", "KAT_7",
-        "UNIT_CONTACT_INFORMATION", "10", "10.3", "1", "3", "4", "5", "6", "6.2", "7", "7.2", "8",
-        "9", "9.2", "messageArbetsformaga"
-    })
+    @ValueSource(
+        strings = {
+          "KAT_1",
+          "KAT_2",
+          "KAT_3",
+          "KAT_4",
+          "KAT_5",
+          "KAT_6",
+          "KAT_7",
+          "UNIT_CONTACT_INFORMATION",
+          "10",
+          "10.3",
+          "1",
+          "3",
+          "4",
+          "5",
+          "6",
+          "6.2",
+          "7",
+          "7.2",
+          "8",
+          "9",
+          "9.2",
+          "messageArbetsformaga"
+        })
     void shouldIncludeElementSpecifications(String id) {
       final var elementId = new ElementId(id);
       final var certificateModel = certificateModelFactoryAG114.create();
 
-      assertTrue(certificateModel.elementSpecificationExists(elementId),
+      assertTrue(
+          certificateModel.elementSpecificationExists(elementId),
           "Expected elementId: '%s' to exist in elementSpecifications".formatted(elementId));
     }
   }

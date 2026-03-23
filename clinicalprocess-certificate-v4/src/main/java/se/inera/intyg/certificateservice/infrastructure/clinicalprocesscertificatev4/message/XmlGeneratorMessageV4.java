@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.message;
 
 import static se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.common.XmlGeneratorHosPersonal.enhet;
@@ -30,121 +48,60 @@ import se.riv.clinicalprocess.healthcond.certificate.v3.MeddelandeReferens;
 @RequiredArgsConstructor
 public class XmlGeneratorMessageV4 implements XmlGeneratorMessage {
 
-  private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(
-      "yyyy-MM-dd'T'HH:mm:ss");
+  private static final DateTimeFormatter DATE_TIME_FORMATTER =
+      DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
   @Override
   public Xml generate(Message message, Certificate certificate) {
-    return marshall(
-        sendMessageToRecipientType(
-            message,
-            certificate
-        )
-    );
+    return marshall(sendMessageToRecipientType(message, certificate));
   }
 
   @Override
   public Xml generateAnswer(Answer answer, Message message, Certificate certificate) {
-    return marshall(
-        sendMessageToRecipientType(
-            answer,
-            message,
-            certificate
-        )
-    );
+    return marshall(sendMessageToRecipientType(answer, message, certificate));
   }
 
-  private SendMessageToRecipientType sendMessageToRecipientType(Message message,
-      Certificate certificate) {
+  private SendMessageToRecipientType sendMessageToRecipientType(
+      Message message, Certificate certificate) {
     final var sendMessageToRecipientType = new SendMessageToRecipientType();
-    sendMessageToRecipientType.setMeddelandeId(
-        message.id().id()
-    );
+    sendMessageToRecipientType.setMeddelandeId(message.id().id());
     if (message.reference() != null) {
       sendMessageToRecipientType.setReferensId(message.reference().reference());
     }
-    sendMessageToRecipientType.setSkickatTidpunkt(
-        skickatTidpunkt(
-            message.sent()
-        )
-    );
-    sendMessageToRecipientType.setIntygsId(
-        intygsId(certificate)
-    );
-    sendMessageToRecipientType.setPatientPersonId(
-        patientPersonId(certificate)
-    );
-    sendMessageToRecipientType.setLogiskAdressMottagare(
-        logiskAdressMottagare(certificate)
-    );
-    sendMessageToRecipientType.setAmne(
-        amneskod(message.type())
-    );
-    sendMessageToRecipientType.setRubrik(
-        message.subject().subject()
-    );
-    sendMessageToRecipientType.setMeddelande(
-        message.content().content()
-    );
-    sendMessageToRecipientType.setSkickatAv(
-        skickatAv(
-            message.authoredStaff(),
-            certificate
-        )
-    );
+    sendMessageToRecipientType.setSkickatTidpunkt(skickatTidpunkt(message.sent()));
+    sendMessageToRecipientType.setIntygsId(intygsId(certificate));
+    sendMessageToRecipientType.setPatientPersonId(patientPersonId(certificate));
+    sendMessageToRecipientType.setLogiskAdressMottagare(logiskAdressMottagare(certificate));
+    sendMessageToRecipientType.setAmne(amneskod(message.type()));
+    sendMessageToRecipientType.setRubrik(message.subject().subject());
+    sendMessageToRecipientType.setMeddelande(message.content().content());
+    sendMessageToRecipientType.setSkickatAv(skickatAv(message.authoredStaff(), certificate));
     return sendMessageToRecipientType;
   }
 
-  private SendMessageToRecipientType sendMessageToRecipientType(Answer answer,
-      Message message, Certificate certificate) {
+  private SendMessageToRecipientType sendMessageToRecipientType(
+      Answer answer, Message message, Certificate certificate) {
     final var sendMessageToRecipientType = new SendMessageToRecipientType();
-    sendMessageToRecipientType.setMeddelandeId(
-        answer.id().id()
-    );
+    sendMessageToRecipientType.setMeddelandeId(answer.id().id());
     if (answer.reference() != null) {
       sendMessageToRecipientType.setReferensId(answer.reference().reference());
     }
-    sendMessageToRecipientType.setSkickatTidpunkt(
-        skickatTidpunkt(
-            answer.sent()
-        )
-    );
-    sendMessageToRecipientType.setIntygsId(
-        intygsId(certificate)
-    );
-    sendMessageToRecipientType.setPatientPersonId(
-        patientPersonId(certificate)
-    );
-    sendMessageToRecipientType.setLogiskAdressMottagare(
-        logiskAdressMottagare(certificate)
-    );
-    sendMessageToRecipientType.setAmne(
-        amneskod(message.type())
-    );
-    sendMessageToRecipientType.setRubrik(
-        answer.subject().subject()
-    );
-    sendMessageToRecipientType.setMeddelande(
-        answer.content().content()
-    );
-    sendMessageToRecipientType.setSvarPa(
-        svarPa(message)
-    );
-    sendMessageToRecipientType.setSkickatAv(
-        skickatAv(
-            answer.authoredStaff(),
-            certificate
-        )
-    );
+    sendMessageToRecipientType.setSkickatTidpunkt(skickatTidpunkt(answer.sent()));
+    sendMessageToRecipientType.setIntygsId(intygsId(certificate));
+    sendMessageToRecipientType.setPatientPersonId(patientPersonId(certificate));
+    sendMessageToRecipientType.setLogiskAdressMottagare(logiskAdressMottagare(certificate));
+    sendMessageToRecipientType.setAmne(amneskod(message.type()));
+    sendMessageToRecipientType.setRubrik(answer.subject().subject());
+    sendMessageToRecipientType.setMeddelande(answer.content().content());
+    sendMessageToRecipientType.setSvarPa(svarPa(message));
+    sendMessageToRecipientType.setSkickatAv(skickatAv(answer.authoredStaff(), certificate));
     return sendMessageToRecipientType;
   }
 
   private static XMLGregorianCalendar skickatTidpunkt(LocalDateTime sent) {
     try {
       return DatatypeFactory.newInstance()
-          .newXMLGregorianCalendar(
-              DATE_TIME_FORMATTER.format(sent)
-          );
+          .newXMLGregorianCalendar(DATE_TIME_FORMATTER.format(sent));
     } catch (Exception ex) {
       throw new IllegalStateException("Could not convert signed", ex);
     }
@@ -188,8 +145,7 @@ public class XmlGeneratorMessageV4 implements XmlGeneratorMessage {
   private static HosPersonal skickatAv(Staff authoredStaff, Certificate certificate) {
     final var hosPersonal = hosPersonalWithoutEnhet(authoredStaff);
     hosPersonal.setEnhet(
-        enhet(certificate.certificateMetaData(), certificate.unitContactInformation())
-    );
+        enhet(certificate.certificateMetaData(), certificate.unitContactInformation()));
     return hosPersonal;
   }
 
@@ -197,10 +153,8 @@ public class XmlGeneratorMessageV4 implements XmlGeneratorMessage {
     final var factory = new ObjectFactory();
     final var element = factory.createSendMessageToRecipient(sendMessageToRecipientType);
     try {
-      final var context = JAXBContext.newInstance(
-          SendMessageToRecipientType.class,
-          DatePeriodType.class
-      );
+      final var context =
+          JAXBContext.newInstance(SendMessageToRecipientType.class, DatePeriodType.class);
       final var writer = new StringWriter();
       context.createMarshaller().marshal(element, writer);
       return new Xml(XmlNamespaceTrimmer.trim(writer.toString()));

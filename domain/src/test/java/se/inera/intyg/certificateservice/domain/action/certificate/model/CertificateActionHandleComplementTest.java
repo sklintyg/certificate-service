@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.action.certificate.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -52,35 +70,34 @@ class CertificateActionHandleComplementTest {
   private MedicalCertificate.MedicalCertificateBuilder certificateBuilder;
   private ActionEvaluationBuilder actionEvaluationBuilder;
 
-  @Mock
-  CertificateActionConfigurationRepository certificateActionConfigurationRepository;
-  @InjectMocks
-  CertificateActionFactory certificateActionFactory;
+  @Mock CertificateActionConfigurationRepository certificateActionConfigurationRepository;
+  @InjectMocks CertificateActionFactory certificateActionFactory;
 
   @BeforeEach
   void setUp() {
-    certificateActionHandleComplement = (CertificateActionHandleComplement) certificateActionFactory.create(
-        CERTIFICATE_ACTION_SPECIFICATION
-    );
+    certificateActionHandleComplement =
+        (CertificateActionHandleComplement)
+            certificateActionFactory.create(CERTIFICATE_ACTION_SPECIFICATION);
 
-    actionEvaluationBuilder = ActionEvaluation.builder()
-        .user(AJLA_DOKTOR)
-        .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
-        .patient(ATHENA_REACT_ANDERSSON)
-        .careProvider(ALFA_REGIONEN)
-        .careUnit(ALFA_MEDICINCENTRUM);
+    actionEvaluationBuilder =
+        ActionEvaluation.builder()
+            .user(AJLA_DOKTOR)
+            .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
+            .patient(ATHENA_REACT_ANDERSSON)
+            .careProvider(ALFA_REGIONEN)
+            .careUnit(ALFA_MEDICINCENTRUM);
 
-    certificateBuilder = MedicalCertificate.builder()
-        .status(Status.SIGNED)
-        .sent(TestDataCertificate.SENT)
-        .certificateMetaData(
-            CertificateMetaData.builder()
-                .issuingUnit(ALFA_ALLERGIMOTTAGNINGEN)
-                .careUnit(ALFA_MEDICINCENTRUM)
-                .careProvider(ALFA_REGIONEN)
-                .patient(ATHENA_REACT_ANDERSSON)
-                .build()
-        );
+    certificateBuilder =
+        MedicalCertificate.builder()
+            .status(Status.SIGNED)
+            .sent(TestDataCertificate.SENT)
+            .certificateMetaData(
+                CertificateMetaData.builder()
+                    .issuingUnit(ALFA_ALLERGIMOTTAGNINGEN)
+                    .careUnit(ALFA_MEDICINCENTRUM)
+                    .careProvider(ALFA_REGIONEN)
+                    .patient(ATHENA_REACT_ANDERSSON)
+                    .build());
   }
 
   @Test
@@ -90,176 +107,187 @@ class CertificateActionHandleComplementTest {
 
   @Test
   void shallReturnType() {
-    assertEquals(CertificateActionType.HANDLE_COMPLEMENT,
-        certificateActionHandleComplement.getType());
+    assertEquals(
+        CertificateActionType.HANDLE_COMPLEMENT, certificateActionHandleComplement.getType());
   }
 
   @Test
   void shallReturnDescription() {
-    assertEquals("Hantera komplettering.",
+    assertEquals(
+        "Hantera komplettering.",
         certificateActionHandleComplement.getDescription(Optional.empty()));
   }
 
   @Test
   void shallReturnFalseIfPatientIsDeceased() {
-    final var actionEvaluation = ActionEvaluation.builder()
-        .patient(ATLAS_REACT_ABRAHAMSSON)
-        .user(AJLA_DOKTOR)
-        .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
-        .build();
+    final var actionEvaluation =
+        ActionEvaluation.builder()
+            .patient(ATLAS_REACT_ABRAHAMSSON)
+            .user(AJLA_DOKTOR)
+            .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
+            .build();
 
     final var certificate = certificateBuilder.build();
-    final var actualResult = certificateActionHandleComplement.evaluate(Optional.of(certificate),
-        Optional.of(actionEvaluation));
+    final var actualResult =
+        certificateActionHandleComplement.evaluate(
+            Optional.of(certificate), Optional.of(actionEvaluation));
 
     assertFalse(actualResult);
   }
 
   @Test
   void shallReturnTrueIfPatientIsNotDeceased() {
-    final var actionEvaluation = ActionEvaluation.builder()
-        .patient(ATHENA_REACT_ANDERSSON)
-        .user(AJLA_DOKTOR)
-        .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
-        .build();
+    final var actionEvaluation =
+        ActionEvaluation.builder()
+            .patient(ATHENA_REACT_ANDERSSON)
+            .user(AJLA_DOKTOR)
+            .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
+            .build();
 
     final var certificate = certificateBuilder.build();
-    final var actualResult = certificateActionHandleComplement.evaluate(Optional.of(certificate),
-        Optional.of(actionEvaluation));
+    final var actualResult =
+        certificateActionHandleComplement.evaluate(
+            Optional.of(certificate), Optional.of(actionEvaluation));
 
     assertTrue(actualResult);
   }
 
   @Test
   void shallReturnFalseIfUserIsBlocked() {
-    final var actionEvaluation = ActionEvaluation.builder()
-        .patient(ATHENA_REACT_ANDERSSON)
-        .user(
-            ajlaDoctorBuilder()
-                .blocked(BLOCKED_TRUE)
-                .build()
-        )
-        .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
-        .build();
+    final var actionEvaluation =
+        ActionEvaluation.builder()
+            .patient(ATHENA_REACT_ANDERSSON)
+            .user(ajlaDoctorBuilder().blocked(BLOCKED_TRUE).build())
+            .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
+            .build();
 
     final var certificate = certificateBuilder.build();
-    final var actualResult = certificateActionHandleComplement.evaluate(Optional.of(certificate),
-        Optional.of(actionEvaluation));
+    final var actualResult =
+        certificateActionHandleComplement.evaluate(
+            Optional.of(certificate), Optional.of(actionEvaluation));
 
     assertFalse(actualResult);
   }
 
   @Test
   void shallReturnTrueIfUserIsNotBlocked() {
-    final var actionEvaluation = ActionEvaluation.builder()
-        .patient(ATHENA_REACT_ANDERSSON)
-        .user(AJLA_DOKTOR)
-        .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
-        .build();
+    final var actionEvaluation =
+        ActionEvaluation.builder()
+            .patient(ATHENA_REACT_ANDERSSON)
+            .user(AJLA_DOKTOR)
+            .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
+            .build();
 
     final var certificate = certificateBuilder.build();
-    final var actualResult = certificateActionHandleComplement.evaluate(Optional.of(certificate),
-        Optional.of(actionEvaluation));
+    final var actualResult =
+        certificateActionHandleComplement.evaluate(
+            Optional.of(certificate), Optional.of(actionEvaluation));
 
     assertTrue(actualResult);
   }
 
   @Test
   void shallReturnFalseIfUserIsCareAdminAndPatientIsProtectedPerson() {
-    final var actionEvaluation = ActionEvaluation.builder()
-        .user(ALVA_VARDADMINISTRATOR)
-        .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
-        .patient(ANONYMA_REACT_ATTILA)
-        .build();
+    final var actionEvaluation =
+        ActionEvaluation.builder()
+            .user(ALVA_VARDADMINISTRATOR)
+            .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
+            .patient(ANONYMA_REACT_ATTILA)
+            .build();
 
-    final var certificate = certificateBuilder
-        .certificateMetaData(
-            CertificateMetaData.builder()
-                .patient(ANONYMA_REACT_ATTILA)
-                .issuingUnit(ALFA_ALLERGIMOTTAGNINGEN)
-                .build()
-        )
-        .build();
-    final var actualResult = certificateActionHandleComplement.evaluate(Optional.of(certificate),
-        Optional.of(actionEvaluation));
+    final var certificate =
+        certificateBuilder
+            .certificateMetaData(
+                CertificateMetaData.builder()
+                    .patient(ANONYMA_REACT_ATTILA)
+                    .issuingUnit(ALFA_ALLERGIMOTTAGNINGEN)
+                    .build())
+            .build();
+    final var actualResult =
+        certificateActionHandleComplement.evaluate(
+            Optional.of(certificate), Optional.of(actionEvaluation));
 
     assertFalse(actualResult);
   }
 
   @Test
   void shallReturnTrueIfUserIsDoctorAndPatientIsProtectedPerson() {
-    final var actionEvaluation = ActionEvaluation.builder()
-        .patient(ANONYMA_REACT_ATTILA)
-        .user(AJLA_DOKTOR)
-        .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
-        .build();
+    final var actionEvaluation =
+        ActionEvaluation.builder()
+            .patient(ANONYMA_REACT_ATTILA)
+            .user(AJLA_DOKTOR)
+            .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
+            .build();
 
     final var certificate = certificateBuilder.build();
-    final var actualResult = certificateActionHandleComplement.evaluate(Optional.of(certificate),
-        Optional.of(actionEvaluation));
+    final var actualResult =
+        certificateActionHandleComplement.evaluate(
+            Optional.of(certificate), Optional.of(actionEvaluation));
 
     assertTrue(actualResult);
   }
 
   @Test
   void shallReturnReasonNotAllowedIfEvaluateReturnsFalse() {
-    final var actionEvaluation = ActionEvaluation.builder()
-        .patient(ANONYMA_REACT_ATTILA)
-        .user(ALVA_VARDADMINISTRATOR)
-        .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
-        .build();
+    final var actionEvaluation =
+        ActionEvaluation.builder()
+            .patient(ANONYMA_REACT_ATTILA)
+            .user(ALVA_VARDADMINISTRATOR)
+            .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
+            .build();
 
-    final var actualResult = certificateActionHandleComplement.reasonNotAllowed(Optional.empty(),
-        Optional.of(actionEvaluation));
+    final var actualResult =
+        certificateActionHandleComplement.reasonNotAllowed(
+            Optional.empty(), Optional.of(actionEvaluation));
 
     assertFalse(actualResult.isEmpty());
   }
 
   @Test
   void shallReturnEmptyListIfEvaluateReturnsTrue() {
-    final var actionEvaluation = ActionEvaluation.builder()
-        .patient(ANONYMA_REACT_ATTILA)
-        .user(AJLA_DOKTOR)
-        .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
-        .build();
+    final var actionEvaluation =
+        ActionEvaluation.builder()
+            .patient(ANONYMA_REACT_ATTILA)
+            .user(AJLA_DOKTOR)
+            .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
+            .build();
 
     final var certificate = certificateBuilder.build();
-    final var actualResult = certificateActionHandleComplement.evaluate(Optional.of(certificate),
-        Optional.of(actionEvaluation));
+    final var actualResult =
+        certificateActionHandleComplement.evaluate(
+            Optional.of(certificate), Optional.of(actionEvaluation));
 
     assertTrue(actualResult);
   }
 
   @Test
   void shallReturnEnabledTrue() {
-    final var actionEvaluation = ActionEvaluation.builder()
-        .patient(ANONYMA_REACT_ATTILA)
-        .user(AJLA_DOKTOR)
-        .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
-        .build();
+    final var actionEvaluation =
+        ActionEvaluation.builder()
+            .patient(ANONYMA_REACT_ATTILA)
+            .user(AJLA_DOKTOR)
+            .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
+            .build();
 
     final var certificate = certificateBuilder.build();
-    final var actualResult = certificateActionHandleComplement.isEnabled(Optional.of(certificate),
-        Optional.of(actionEvaluation));
+    final var actualResult =
+        certificateActionHandleComplement.isEnabled(
+            Optional.of(certificate), Optional.of(actionEvaluation));
 
     assertTrue(actualResult);
   }
 
   @Test
   void shallReturnTrueIfUserHasAllowCopyFalse() {
-    final var actionEvaluation = actionEvaluationBuilder()
-        .user(
-            ajlaDoctorBuilder()
-                .allowCopy(ALLOW_COPY_FALSE)
-                .build()
-        )
-        .build();
+    final var actionEvaluation =
+        actionEvaluationBuilder()
+            .user(ajlaDoctorBuilder().allowCopy(ALLOW_COPY_FALSE).build())
+            .build();
     final var certificate = certificateBuilder.build();
     assertTrue(
-        certificateActionHandleComplement.evaluate(Optional.of(certificate),
-            Optional.of(actionEvaluation)),
-        () -> "Expected true when passing %s and %s".formatted(Optional.empty(), actionEvaluation)
-    );
+        certificateActionHandleComplement.evaluate(
+            Optional.of(certificate), Optional.of(actionEvaluation)),
+        () -> "Expected true when passing %s and %s".formatted(Optional.empty(), actionEvaluation));
   }
 
   @Test
@@ -268,25 +296,21 @@ class CertificateActionHandleComplementTest {
     final var certificate = certificateBuilder.build();
 
     assertTrue(
-        certificateActionHandleComplement.evaluate(Optional.of(certificate),
-            Optional.of(actionEvaluation)),
-        () -> "Expected true when passing %s and %s".formatted(Optional.empty(), actionEvaluation)
-    );
+        certificateActionHandleComplement.evaluate(
+            Optional.of(certificate), Optional.of(actionEvaluation)),
+        () -> "Expected true when passing %s and %s".formatted(Optional.empty(), actionEvaluation));
   }
 
   @Test
   void shallReturnFalseIfNotSent() {
     final var actionEvaluation = actionEvaluationBuilder().build();
 
-    final var certificate = certificateBuilder
-        .sent(null)
-        .build();
+    final var certificate = certificateBuilder.sent(null).build();
 
     assertFalse(
-        certificateActionHandleComplement.evaluate(Optional.of(certificate),
-            Optional.of(actionEvaluation)),
-        () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate)
-    );
+        certificateActionHandleComplement.evaluate(
+            Optional.of(certificate), Optional.of(actionEvaluation)),
+        () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate));
   }
 
   @Test
@@ -296,10 +320,9 @@ class CertificateActionHandleComplementTest {
     final var certificate = certificateBuilder.build();
 
     assertTrue(
-        certificateActionHandleComplement.evaluate(Optional.of(certificate),
-            Optional.of(actionEvaluation)),
-        () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate)
-    );
+        certificateActionHandleComplement.evaluate(
+            Optional.of(certificate), Optional.of(actionEvaluation)),
+        () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate));
   }
 
   @Nested
@@ -309,23 +332,18 @@ class CertificateActionHandleComplementTest {
 
     @BeforeEach
     void setUp() {
-      certificateBuilder = MedicalCertificate.builder()
-          .status(Status.SIGNED)
-          .sent(TestDataCertificate.SENT)
-          .certificateMetaData(
-              CertificateMetaData.builder()
-                  .issuingUnit(ALFA_ALLERGIMOTTAGNINGEN)
-                  .careUnit(ALFA_MEDICINCENTRUM)
-                  .careProvider(ALFA_REGIONEN)
-                  .patient(ATHENA_REACT_ANDERSSON)
-                  .build()
-          )
-          .children(
-              List.of(
-                  relationReplaceBuilder()
-                      .build()
-              )
-          );
+      certificateBuilder =
+          MedicalCertificate.builder()
+              .status(Status.SIGNED)
+              .sent(TestDataCertificate.SENT)
+              .certificateMetaData(
+                  CertificateMetaData.builder()
+                      .issuingUnit(ALFA_ALLERGIMOTTAGNINGEN)
+                      .careUnit(ALFA_MEDICINCENTRUM)
+                      .careProvider(ALFA_REGIONEN)
+                      .patient(ATHENA_REACT_ANDERSSON)
+                      .build())
+              .children(List.of(relationReplaceBuilder().build()));
     }
 
     @Nested
@@ -333,42 +351,39 @@ class CertificateActionHandleComplementTest {
 
       @BeforeEach
       void setUp() {
-        userAccessScope = se.inera.intyg.certificateservice.domain.common.model.AccessScope.WITHIN_CARE_UNIT;
+        userAccessScope =
+            se.inera.intyg.certificateservice.domain.common.model.AccessScope.WITHIN_CARE_UNIT;
       }
 
       @Test
       void shallReturnTrueIfWithinCareUnit() {
-        final var actionEvaluation = actionEvaluationBuilder()
-            .user(ajlaDoctorBuilder()
-                .accessScope(userAccessScope)
-                .build())
-            .build();
+        final var actionEvaluation =
+            actionEvaluationBuilder()
+                .user(ajlaDoctorBuilder().accessScope(userAccessScope).build())
+                .build();
 
         final var certificate = certificateBuilder.build();
 
         assertTrue(
-            certificateActionHandleComplement.evaluate(Optional.of(certificate),
-                Optional.of(actionEvaluation)),
-            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate)
-        );
+            certificateActionHandleComplement.evaluate(
+                Optional.of(certificate), Optional.of(actionEvaluation)),
+            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate));
       }
 
       @Test
       void shallReturnFalseIfNotWithinCareUnit() {
-        final var actionEvaluation = actionEvaluationBuilder()
-            .subUnit(ALFA_HUDMOTTAGNINGEN)
-            .user(ajlaDoctorBuilder()
-                .accessScope(userAccessScope)
-                .build())
-            .build();
+        final var actionEvaluation =
+            actionEvaluationBuilder()
+                .subUnit(ALFA_HUDMOTTAGNINGEN)
+                .user(ajlaDoctorBuilder().accessScope(userAccessScope).build())
+                .build();
 
         final var certificate = certificateBuilder.build();
 
         assertFalse(
-            certificateActionHandleComplement.evaluate(Optional.of(certificate),
-                Optional.of(actionEvaluation)),
-            () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate)
-        );
+            certificateActionHandleComplement.evaluate(
+                Optional.of(certificate), Optional.of(actionEvaluation)),
+            () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate));
       }
     }
 
@@ -377,43 +392,40 @@ class CertificateActionHandleComplementTest {
 
       @BeforeEach
       void setUp() {
-        userAccessScope = se.inera.intyg.certificateservice.domain.common.model.AccessScope.WITHIN_CARE_PROVIDER;
+        userAccessScope =
+            se.inera.intyg.certificateservice.domain.common.model.AccessScope.WITHIN_CARE_PROVIDER;
       }
 
       @Test
       void shallReturnTrueIfWithinCareUnit() {
-        final var actionEvaluation = actionEvaluationBuilder()
-            .user(ajlaDoctorBuilder()
-                .accessScope(userAccessScope)
-                .build())
-            .build();
+        final var actionEvaluation =
+            actionEvaluationBuilder()
+                .user(ajlaDoctorBuilder().accessScope(userAccessScope).build())
+                .build();
 
         final var certificate = certificateBuilder.build();
 
         assertTrue(
-            certificateActionHandleComplement.evaluate(Optional.of(certificate),
-                Optional.of(actionEvaluation)),
-            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate)
-        );
+            certificateActionHandleComplement.evaluate(
+                Optional.of(certificate), Optional.of(actionEvaluation)),
+            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate));
       }
 
       @Test
       void shallReturnFalseIfNotWithinCareUnit() {
-        final var actionEvaluation = actionEvaluationBuilder()
-            .careUnit(ALFA_VARDCENTRAL)
-            .subUnit(ALFA_HUDMOTTAGNINGEN)
-            .user(ajlaDoctorBuilder()
-                .accessScope(userAccessScope)
-                .build())
-            .build();
+        final var actionEvaluation =
+            actionEvaluationBuilder()
+                .careUnit(ALFA_VARDCENTRAL)
+                .subUnit(ALFA_HUDMOTTAGNINGEN)
+                .user(ajlaDoctorBuilder().accessScope(userAccessScope).build())
+                .build();
 
         final var certificate = certificateBuilder.build();
 
         assertFalse(
-            certificateActionHandleComplement.evaluate(Optional.of(certificate),
-                Optional.of(actionEvaluation)),
-            () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate)
-        );
+            certificateActionHandleComplement.evaluate(
+                Optional.of(certificate), Optional.of(actionEvaluation)),
+            () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate));
       }
     }
 
@@ -422,97 +434,86 @@ class CertificateActionHandleComplementTest {
 
       @BeforeEach
       void setUp() {
-        userAccessScope = se.inera.intyg.certificateservice.domain.common.model.AccessScope.ALL_CARE_PROVIDERS;
+        userAccessScope =
+            se.inera.intyg.certificateservice.domain.common.model.AccessScope.ALL_CARE_PROVIDERS;
       }
 
       @Test
       void shallReturnTrueIfWithinCareUnit() {
-        final var actionEvaluation = actionEvaluationBuilder()
-            .user(ajlaDoctorBuilder()
-                .accessScope(userAccessScope)
-                .build())
-            .build();
+        final var actionEvaluation =
+            actionEvaluationBuilder()
+                .user(ajlaDoctorBuilder().accessScope(userAccessScope).build())
+                .build();
 
         final var certificate = certificateBuilder.build();
 
         assertTrue(
-            certificateActionHandleComplement.evaluate(Optional.of(certificate),
-                Optional.of(actionEvaluation)),
-            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate)
-        );
+            certificateActionHandleComplement.evaluate(
+                Optional.of(certificate), Optional.of(actionEvaluation)),
+            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate));
       }
 
       @Test
       void shallReturnFalseIfNotWithinCareUnit() {
-        final var actionEvaluation = actionEvaluationBuilder()
-            .careUnit(ALFA_VARDCENTRAL)
-            .subUnit(ALFA_HUDMOTTAGNINGEN)
-            .user(ajlaDoctorBuilder()
-                .accessScope(userAccessScope)
-                .build())
-            .build();
+        final var actionEvaluation =
+            actionEvaluationBuilder()
+                .careUnit(ALFA_VARDCENTRAL)
+                .subUnit(ALFA_HUDMOTTAGNINGEN)
+                .user(ajlaDoctorBuilder().accessScope(userAccessScope).build())
+                .build();
 
         final var certificate = certificateBuilder.build();
 
         assertFalse(
-            certificateActionHandleComplement.evaluate(Optional.of(certificate),
-                Optional.of(actionEvaluation)),
-            () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate)
-        );
+            certificateActionHandleComplement.evaluate(
+                Optional.of(certificate), Optional.of(actionEvaluation)),
+            () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate));
       }
 
       @Test
       void shallReturnFalseIfNotWithinCareProvider() {
-        final var actionEvaluation = actionEvaluationBuilder()
-            .careUnit(BETA_VARDCENTRAL)
-            .subUnit(BETA_HUDMOTTAGNINGEN)
-            .careProvider(BETA_REGIONEN)
-            .user(ajlaDoctorBuilder()
-                .accessScope(userAccessScope)
-                .build())
-            .build();
+        final var actionEvaluation =
+            actionEvaluationBuilder()
+                .careUnit(BETA_VARDCENTRAL)
+                .subUnit(BETA_HUDMOTTAGNINGEN)
+                .careProvider(BETA_REGIONEN)
+                .user(ajlaDoctorBuilder().accessScope(userAccessScope).build())
+                .build();
 
         final var certificate = certificateBuilder.build();
 
         assertFalse(
-            certificateActionHandleComplement.evaluate(Optional.of(certificate),
-                Optional.of(actionEvaluation)),
-            () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate)
-        );
+            certificateActionHandleComplement.evaluate(
+                Optional.of(certificate), Optional.of(actionEvaluation)),
+            () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate));
       }
     }
   }
 
   @Test
   void shallReturnFalseIfUserMissingAgreement() {
-    final var actionEvaluation = actionEvaluationBuilder
-        .user(
-            ajlaDoctorBuilder()
-                .agreement(AGREEMENT_FALSE)
-                .build()
-        )
-        .build();
+    final var actionEvaluation =
+        actionEvaluationBuilder
+            .user(ajlaDoctorBuilder().agreement(AGREEMENT_FALSE).build())
+            .build();
 
     final var certificate = certificateBuilder.build();
 
     assertFalse(
-        certificateActionHandleComplement.evaluate(Optional.of(certificate),
-            Optional.of(actionEvaluation)),
-        () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate)
-    );
+        certificateActionHandleComplement.evaluate(
+            Optional.of(certificate), Optional.of(actionEvaluation)),
+        () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate));
   }
 
   @Test
   void shallReturnTrueIfUserHasAgreement() {
-    final var actionEvaluation = actionEvaluationBuilder
-        .build();
+    final var actionEvaluation = actionEvaluationBuilder.build();
 
     final var certificate = certificateBuilder.build();
 
     assertTrue(
-        certificateActionHandleComplement.evaluate(Optional.of(certificate),
-            Optional.of(actionEvaluation)),
-        () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate)
-    );
+        certificateActionHandleComplement.evaluate(
+            Optional.of(certificate), Optional.of(actionEvaluation)),
+        () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate));
   }
 }

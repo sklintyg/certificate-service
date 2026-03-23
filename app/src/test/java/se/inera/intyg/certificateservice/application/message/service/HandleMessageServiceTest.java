@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.message.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -32,60 +50,49 @@ import se.inera.intyg.certificateservice.domain.message.service.HandleMessageDom
 @ExtendWith(MockitoExtension.class)
 class HandleMessageServiceTest {
 
-  private static final HandleMessageRequest REQUEST = HandleMessageRequest.builder()
-      .unit(UnitDTO.builder().build())
-      .user(UserDTO.builder().build())
-      .careUnit(UnitDTO.builder().build())
-      .careProvider(UnitDTO.builder().build())
-      .handled(true)
-      .build();
+  private static final HandleMessageRequest REQUEST =
+      HandleMessageRequest.builder()
+          .unit(UnitDTO.builder().build())
+          .user(UserDTO.builder().build())
+          .careUnit(UnitDTO.builder().build())
+          .careProvider(UnitDTO.builder().build())
+          .handled(true)
+          .build();
   private static final ActionEvaluation ACTION = ActionEvaluation.builder().build();
   private static final String MESSAGE_ID = "messageId";
   private static final String CERTIFICATE_ID = "certId";
-  private static final Message MESSAGE = Message.builder()
-      .certificateId(new CertificateId(CERTIFICATE_ID)).build();
+  private static final Message MESSAGE =
+      Message.builder().certificateId(new CertificateId(CERTIFICATE_ID)).build();
   private static final QuestionDTO CONVERTED_QUESTION = QuestionDTO.builder().build();
 
-  @Mock
-  HandleMessageRequestValidator handleMessageRequestValidator;
+  @Mock HandleMessageRequestValidator handleMessageRequestValidator;
 
-  @Mock
-  HandleMessageDomainService handleMessageDomainService;
+  @Mock HandleMessageDomainService handleMessageDomainService;
 
-  @Mock
-  ActionEvaluationFactory actionEvaluationFactory;
+  @Mock ActionEvaluationFactory actionEvaluationFactory;
 
-  @Mock
-  MessageRepository messageRepository;
+  @Mock MessageRepository messageRepository;
 
-  @Mock
-  CertificateRepository certificateRepository;
+  @Mock CertificateRepository certificateRepository;
 
-  @Mock
-  QuestionConverter questionConverter;
+  @Mock QuestionConverter questionConverter;
 
-  @InjectMocks
-  HandleMessageService handleMessageService;
+  @InjectMocks HandleMessageService handleMessageService;
 
   @BeforeEach
   void setup() {
     final var certificate = mock(MedicalCertificate.class);
     final var message = mock(Message.class);
-    when(actionEvaluationFactory.create(REQUEST.getUser(), REQUEST.getUnit(), REQUEST.getCareUnit(),
-        REQUEST.getCareProvider()))
+    when(actionEvaluationFactory.create(
+            REQUEST.getUser(), REQUEST.getUnit(), REQUEST.getCareUnit(), REQUEST.getCareProvider()))
         .thenReturn(ACTION);
-    when(messageRepository.getById(new MessageId(MESSAGE_ID)))
-        .thenReturn(MESSAGE);
-    when(certificateRepository.getById(new CertificateId(CERTIFICATE_ID)))
-        .thenReturn(certificate);
+    when(messageRepository.getById(new MessageId(MESSAGE_ID))).thenReturn(MESSAGE);
+    when(certificateRepository.getById(new CertificateId(CERTIFICATE_ID))).thenReturn(certificate);
     when(handleMessageDomainService.handle(MESSAGE, REQUEST.getHandled(), certificate, ACTION))
         .thenReturn(message);
     final var messageActionLinks = List.of(MessageActionLink.builder().build());
     when(message.actions(ACTION, certificate)).thenReturn(messageActionLinks);
-    when(questionConverter.convert(
-        message,
-        messageActionLinks))
-        .thenReturn(CONVERTED_QUESTION);
+    when(questionConverter.convert(message, messageActionLinks)).thenReturn(CONVERTED_QUESTION);
   }
 
   @Test

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.testability.certificate.service.fillservice.fk7809;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.codesystems.CodeSystemKvFkmu0005.FYSIOTERAPEUT;
@@ -81,24 +99,23 @@ import se.inera.intyg.certificateservice.testability.certificate.dto.Testability
 import se.inera.intyg.certificateservice.testability.certificate.service.fillservice.TestabilityCertificateFillService;
 
 @Component
-public class TestabilityCertificateFillServiceFK7809 implements
-    TestabilityCertificateFillService {
+public class TestabilityCertificateFillServiceFK7809 implements TestabilityCertificateFillService {
 
   private static final FieldId MED_INVEST_1_DATE = new FieldId("medicalInvestigation1_DATE");
   private static final FieldId MED_INVEST_2_DATE = new FieldId("medicalInvestigation2_DATE");
   private static final FieldId MED_INVEST_3_DATE = new FieldId("medicalInvestigation3_DATE");
-  private static final FieldId MED_INVEST_1_TYPE = new FieldId(
-      "medicalInvestigation1_INVESTIGATION_TYPE");
-  private static final FieldId MED_INVEST_2_TYPE = new FieldId(
-      "medicalInvestigation2_INVESTIGATION_TYPE");
-  private static final FieldId MED_INVEST_3_TYPE = new FieldId(
-      "medicalInvestigation3_INVESTIGATION_TYPE");
-  private static final FieldId MED_INVEST_1_SOURCE = new FieldId(
-      "medicalInvestigation1_INFORMATION_SOURCE");
-  private static final FieldId MED_INVEST_2_SOURCE = new FieldId(
-      "medicalInvestigation2_INFORMATION_SOURCE");
-  private static final FieldId MED_INVEST_3_SOURCE = new FieldId(
-      "medicalInvestigation3_INFORMATION_SOURCE");
+  private static final FieldId MED_INVEST_1_TYPE =
+      new FieldId("medicalInvestigation1_INVESTIGATION_TYPE");
+  private static final FieldId MED_INVEST_2_TYPE =
+      new FieldId("medicalInvestigation2_INVESTIGATION_TYPE");
+  private static final FieldId MED_INVEST_3_TYPE =
+      new FieldId("medicalInvestigation3_INVESTIGATION_TYPE");
+  private static final FieldId MED_INVEST_1_SOURCE =
+      new FieldId("medicalInvestigation1_INFORMATION_SOURCE");
+  private static final FieldId MED_INVEST_2_SOURCE =
+      new FieldId("medicalInvestigation2_INFORMATION_SOURCE");
+  private static final FieldId MED_INVEST_3_SOURCE =
+      new FieldId("medicalInvestigation3_INFORMATION_SOURCE");
 
   @Override
   public List<CertificateModelId> certificateModelIds() {
@@ -106,33 +123,25 @@ public class TestabilityCertificateFillServiceFK7809 implements
   }
 
   @Override
-  public List<ElementData> fill(CertificateModel certificateModel,
-      TestabilityFillTypeDTO fillType) {
+  public List<ElementData> fill(
+      CertificateModel certificateModel, TestabilityFillTypeDTO fillType) {
 
-    return fillType == EMPTY
-        ? Collections.emptyList()
-        : fillWithValues(certificateModel, fillType);
+    return fillType == EMPTY ? Collections.emptyList() : fillWithValues(certificateModel, fillType);
   }
 
-  private static List<ElementData> fillWithValues(CertificateModel certificateModel,
-      TestabilityFillTypeDTO fillType) {
+  private static List<ElementData> fillWithValues(
+      CertificateModel certificateModel, TestabilityFillTypeDTO fillType) {
     final var elementData = new ArrayList<ElementData>();
-    final var specBaseratPa =
-        spec(QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID, certificateModel);
-    final var specBaseratPaAnhorig =
-        spec(QUESTION_RELATION_TILL_PATIENTEN_ID, certificateModel);
+    final var specBaseratPa = spec(QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID, certificateModel);
+    final var specBaseratPaAnhorig = spec(QUESTION_RELATION_TILL_PATIENTEN_ID, certificateModel);
     final var specBaseratPaAnnat =
         spec(QUESTION_ANNAN_GRUND_FOR_MEDICINSKT_UNDERLAG_ID, certificateModel);
-    final var specAnnanUtredning =
-        spec(QUESTION_BASERAT_PA_ANNAT_UNDERLAG_ID, certificateModel);
+    final var specAnnanUtredning = spec(QUESTION_BASERAT_PA_ANNAT_UNDERLAG_ID, certificateModel);
     final var specMedicinskaUtredningar =
         spec(QUESTION_ANDRA_MEDICINSKA_UTREDNINGAR_ID, certificateModel);
-    final var specDiagnos =
-        spec(DIAGNOSIS_ID, certificateModel);
-    final var specDiagnoshistorik =
-        spec(DIAGNOSIS_MOTIVATION_ID, certificateModel);
-    final var specFunktionsnedsattning =
-        spec(FUNKTIONSNEDSATTNING_ID, certificateModel);
+    final var specDiagnos = spec(DIAGNOSIS_ID, certificateModel);
+    final var specDiagnoshistorik = spec(DIAGNOSIS_MOTIVATION_ID, certificateModel);
+    final var specFunktionsnedsattning = spec(FUNKTIONSNEDSATTNING_ID, certificateModel);
     final var specIntellektuell =
         spec(FUNKTIONSNEDSATTNING_MOTIVERING_INTELLEKTUELL_FUNKTION_ID, certificateModel);
     final var specPsykosocial =
@@ -143,8 +152,7 @@ public class TestabilityCertificateFillServiceFK7809 implements
         spec(FUNKTIONSNEDSATTNING_MOTIVERING_PSYKISK_FUNKTION_ID, certificateModel);
     final var specHorsel =
         spec(FUNKTIONSNEDSATTNING_MOTIVERING_HORSELFUNKTION_ID, certificateModel);
-    final var specSyn =
-        spec(FUNKTIONSNEDSATTNING_MOTIVERING_SYNFUNKTION_ID, certificateModel);
+    final var specSyn = spec(FUNKTIONSNEDSATTNING_MOTIVERING_SYNFUNKTION_ID, certificateModel);
     final var specSinnes =
         spec(FUNKTIONSNEDSATTNING_MOTIVERING_SINNESFUNKTION_ID, certificateModel);
     final var specKoordination =
@@ -155,12 +163,9 @@ public class TestabilityCertificateFillServiceFK7809 implements
         spec(QUESTION_AKTIVITETSBEGRANSNINGAR_ID, certificateModel);
     final var specBehandling =
         spec(QUESTION_PAGAENDE_ELLER_PLANERAD_BEHANDLING_ID, certificateModel);
-    final var specAnsvarigVardenhet =
-        spec(QUESTION_VARDENHET_OCH_TIDPLAN_ID, certificateModel);
-    final var specPrognos =
-        spec(QUESTION_PROGNOS_ID, certificateModel);
-    final var specOvrigt =
-        spec(QUESTION_OVRIGT_ID, certificateModel);
+    final var specAnsvarigVardenhet = spec(QUESTION_VARDENHET_OCH_TIDPLAN_ID, certificateModel);
+    final var specPrognos = spec(QUESTION_PROGNOS_ID, certificateModel);
+    final var specOvrigt = spec(QUESTION_OVRIGT_ID, certificateModel);
 
     baseratPa(specBaseratPa, elementData, fillType);
     baseratPaAnhorig(specBaseratPaAnhorig, elementData, fillType);
@@ -188,78 +193,88 @@ public class TestabilityCertificateFillServiceFK7809 implements
     return elementData;
   }
 
-  private static void baseratPa(ElementSpecification spec, List<ElementData> list,
-      TestabilityFillTypeDTO fillType) {
+  private static void baseratPa(
+      ElementSpecification spec, List<ElementData> list, TestabilityFillTypeDTO fillType) {
     if (emptyValue(spec) instanceof ElementValueDateList elementValueDateList) {
-      final var dateList = List.of(
-          valueDate(new FieldId(UTLATANDE_BASERAT_PA_UNDERSOKNING_AV_PATIENTEN_FIELD_ID), now()),
-          valueDate(new FieldId(UTLATANDE_BASERAT_PA_JOURNALUPPGIFTER_FIELD_ID), now()),
-          valueDate(UTLATANDE_BASERAT_PA_ANHORIG_FIELD_ID, now()),
-          valueDate(UTLATANDE_BASERAT_PA_ANNAT_FIELD_ID, now())
-      );
+      final var dateList =
+          List.of(
+              valueDate(
+                  new FieldId(UTLATANDE_BASERAT_PA_UNDERSOKNING_AV_PATIENTEN_FIELD_ID), now()),
+              valueDate(new FieldId(UTLATANDE_BASERAT_PA_JOURNALUPPGIFTER_FIELD_ID), now()),
+              valueDate(UTLATANDE_BASERAT_PA_ANHORIG_FIELD_ID, now()),
+              valueDate(UTLATANDE_BASERAT_PA_ANNAT_FIELD_ID, now()));
 
-      final var valueDateList = elementValueDateList
-          .withDateList(fillType == MAXIMAL ? dateList : dateList.subList(0, 1));
+      final var valueDateList =
+          elementValueDateList.withDateList(
+              fillType == MAXIMAL ? dateList : dateList.subList(0, 1));
       list.add(elementData(spec.id(), valueDateList));
     }
   }
 
-  private static void baseratPaAnhorig(ElementSpecification spec, List<ElementData> list,
-      TestabilityFillTypeDTO fillType) {
+  private static void baseratPaAnhorig(
+      ElementSpecification spec, List<ElementData> list, TestabilityFillTypeDTO fillType) {
     if (fillType == MAXIMAL && emptyValue(spec) instanceof ElementValueText elementValueText) {
       final var text = elementValueText.withText("Anhörigs relation");
       list.add(elementData(spec.id(), text));
     }
   }
 
-  private static void baseratPaAnnat(ElementSpecification spec, List<ElementData> list,
-      TestabilityFillTypeDTO fillType) {
+  private static void baseratPaAnnat(
+      ElementSpecification spec, List<ElementData> list, TestabilityFillTypeDTO fillType) {
     if (fillType == MAXIMAL && emptyValue(spec) instanceof ElementValueText elementValueText) {
       final var text = elementValueText.withText("Anger vad annat är");
       list.add(elementData(spec.id(), text));
     }
   }
 
-  private static void annanUtredning(ElementSpecification spec, List<ElementData> list,
-      TestabilityFillTypeDTO fillType) {
+  private static void annanUtredning(
+      ElementSpecification spec, List<ElementData> list, TestabilityFillTypeDTO fillType) {
     if (emptyValue(spec) instanceof ElementValueBoolean elementValueBoolean) {
       list.add(elementData(spec.id(), elementValueBoolean.withValue(fillType == MAXIMAL)));
     }
   }
 
-  private static void medicinskaUtredningar(ElementSpecification spec, List<ElementData> list,
-      TestabilityFillTypeDTO fillType) {
-    if (fillType == MAXIMAL &&
-        emptyValue(spec) instanceof ElementValueMedicalInvestigationList medicalInvestigationList) {
-      final var investigations = List.of(
-          investigation(MEDICAL_INVESTIGATION_FIELD_ID_1,
-              valueDate(MED_INVEST_1_DATE, nowPlusDays(0)),
-              valueCode(MED_INVEST_1_TYPE, NEUROPSYKIATRISKT.code()),
-              valueText(MED_INVEST_1_SOURCE, "Neurokliniken")),
-          investigation(MEDICAL_INVESTIGATION_FIELD_ID_2,
-              valueDate(MED_INVEST_2_DATE, nowPlusDays(0)),
-              valueCode(MED_INVEST_2_TYPE, FYSIOTERAPEUT.code()),
-              valueText(MED_INVEST_2_SOURCE, "Fysiologikliniken")),
-          investigation(MEDICAL_INVESTIGATION_FIELD_ID_3,
-              valueDate(MED_INVEST_3_DATE, nowPlusDays(0)),
-              valueCode(MED_INVEST_3_TYPE, ORTOPEDTEKNIKER.code()),
-              valueText(MED_INVEST_3_SOURCE, "Ortopedkliniken")));
+  private static void medicinskaUtredningar(
+      ElementSpecification spec, List<ElementData> list, TestabilityFillTypeDTO fillType) {
+    if (fillType == MAXIMAL
+        && emptyValue(spec)
+            instanceof ElementValueMedicalInvestigationList medicalInvestigationList) {
+      final var investigations =
+          List.of(
+              investigation(
+                  MEDICAL_INVESTIGATION_FIELD_ID_1,
+                  valueDate(MED_INVEST_1_DATE, nowPlusDays(0)),
+                  valueCode(MED_INVEST_1_TYPE, NEUROPSYKIATRISKT.code()),
+                  valueText(MED_INVEST_1_SOURCE, "Neurokliniken")),
+              investigation(
+                  MEDICAL_INVESTIGATION_FIELD_ID_2,
+                  valueDate(MED_INVEST_2_DATE, nowPlusDays(0)),
+                  valueCode(MED_INVEST_2_TYPE, FYSIOTERAPEUT.code()),
+                  valueText(MED_INVEST_2_SOURCE, "Fysiologikliniken")),
+              investigation(
+                  MEDICAL_INVESTIGATION_FIELD_ID_3,
+                  valueDate(MED_INVEST_3_DATE, nowPlusDays(0)),
+                  valueCode(MED_INVEST_3_TYPE, ORTOPEDTEKNIKER.code()),
+                  valueText(MED_INVEST_3_SOURCE, "Ortopedkliniken")));
 
       final var investigationList = medicalInvestigationList.withList(investigations);
       list.add(elementData(spec.id(), investigationList));
     }
   }
 
-  private static void diagnos(ElementSpecification spec, List<ElementData> list,
-      TestabilityFillTypeDTO fillType) {
+  private static void diagnos(
+      ElementSpecification spec, List<ElementData> list, TestabilityFillTypeDTO fillType) {
     if (emptyValue(spec) instanceof ElementValueDiagnosisList) {
-      final var diagnoses = List.of(
-          valueDiagnosis(DIAGNOS_1, "A78", "Q-feber", CodeSystemIcd10Se.DIAGNOS_ICD_10_ID),
-          valueDiagnosis(DIAGNOS_2, "A25", "Råttbettsfeber", CodeSystemIcd10Se.DIAGNOS_ICD_10_ID),
-          valueDiagnosis(DIAGNOS_3, "A23", "Undulantfeber", CodeSystemIcd10Se.DIAGNOS_ICD_10_ID),
-          valueDiagnosis(DIAGNOS_4, "A984", "Ebolafeber", CodeSystemIcd10Se.DIAGNOS_ICD_10_ID),
-          valueDiagnosis(DIAGNOS_5, "A010", "Tyfoidfeber", CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
-      );
+      final var diagnoses =
+          List.of(
+              valueDiagnosis(DIAGNOS_1, "A78", "Q-feber", CodeSystemIcd10Se.DIAGNOS_ICD_10_ID),
+              valueDiagnosis(
+                  DIAGNOS_2, "A25", "Råttbettsfeber", CodeSystemIcd10Se.DIAGNOS_ICD_10_ID),
+              valueDiagnosis(
+                  DIAGNOS_3, "A23", "Undulantfeber", CodeSystemIcd10Se.DIAGNOS_ICD_10_ID),
+              valueDiagnosis(DIAGNOS_4, "A984", "Ebolafeber", CodeSystemIcd10Se.DIAGNOS_ICD_10_ID),
+              valueDiagnosis(
+                  DIAGNOS_5, "A010", "Tyfoidfeber", CodeSystemIcd10Se.DIAGNOS_ICD_10_ID));
 
       final var diagnosisList = fillType == MAXIMAL ? diagnoses : diagnoses.subList(0, 1);
       list.add(elementData(spec.id(), diagnosisList(diagnosisList)));
@@ -273,40 +288,40 @@ public class TestabilityCertificateFillServiceFK7809 implements
     }
   }
 
-  private static void funktionsnedsattning(ElementSpecification spec, List<ElementData> list,
-      TestabilityFillTypeDTO fillType) {
+  private static void funktionsnedsattning(
+      ElementSpecification spec, List<ElementData> list, TestabilityFillTypeDTO fillType) {
     if (emptyValue(spec) instanceof ElementValueCodeList elementValueCodeList) {
-      final var codes = List.of(
-          valueCode(
-              FUNKTIONSNEDSATTNING_INTELLEKTUELL_FUNKTION_ID,
-              FUNKTIONSNEDSATTNING_INTELLEKTUELL_FUNKTION_ID.value()),
-          valueCode(
-              FUNKTIONSNEDSATTNING_KOMMUNIKATION_SOCIAL_INTERAKTION_ID,
-              FUNKTIONSNEDSATTNING_KOMMUNIKATION_SOCIAL_INTERAKTION_ID.value()),
-          valueCode(
-              FUNKTIONSNEDSATTNING_UPPMAKRMSAHET_ID,
-              FUNKTIONSNEDSATTNING_UPPMAKRMSAHET_ID.value()),
-          valueCode(
-              FUNKTIONSNEDSATTNING_PSYKISK_FUNKTION_ID,
-              FUNKTIONSNEDSATTNING_PSYKISK_FUNKTION_ID.value()),
-          valueCode(
-              FUNKTIONSNEDSATTNING_HORSELFUNKTION_ID,
-              FUNKTIONSNEDSATTNING_HORSELFUNKTION_ID.value()),
-          valueCode(
-              FUNKTIONSNEDSATTNING_SYNFUNKTION_ID,
-              FUNKTIONSNEDSATTNING_SYNFUNKTION_ID.value()),
-          valueCode(
-              FUNKTIONSNEDSATTNING_SINNESFUNKTION_ID,
-              FUNKTIONSNEDSATTNING_SINNESFUNKTION_ID.value()),
-          valueCode(
-              FUNKTIONSNEDSATTNING_KOORDINATION_ID,
-              FUNKTIONSNEDSATTNING_KOORDINATION_ID.value()),
-          valueCode(
-              FUNKTIONSNEDSATTNING_ANNAN_KROPPSILIG_FUNKTION_ID,
-              FUNKTIONSNEDSATTNING_ANNAN_KROPPSILIG_FUNKTION_ID.value()));
+      final var codes =
+          List.of(
+              valueCode(
+                  FUNKTIONSNEDSATTNING_INTELLEKTUELL_FUNKTION_ID,
+                  FUNKTIONSNEDSATTNING_INTELLEKTUELL_FUNKTION_ID.value()),
+              valueCode(
+                  FUNKTIONSNEDSATTNING_KOMMUNIKATION_SOCIAL_INTERAKTION_ID,
+                  FUNKTIONSNEDSATTNING_KOMMUNIKATION_SOCIAL_INTERAKTION_ID.value()),
+              valueCode(
+                  FUNKTIONSNEDSATTNING_UPPMAKRMSAHET_ID,
+                  FUNKTIONSNEDSATTNING_UPPMAKRMSAHET_ID.value()),
+              valueCode(
+                  FUNKTIONSNEDSATTNING_PSYKISK_FUNKTION_ID,
+                  FUNKTIONSNEDSATTNING_PSYKISK_FUNKTION_ID.value()),
+              valueCode(
+                  FUNKTIONSNEDSATTNING_HORSELFUNKTION_ID,
+                  FUNKTIONSNEDSATTNING_HORSELFUNKTION_ID.value()),
+              valueCode(
+                  FUNKTIONSNEDSATTNING_SYNFUNKTION_ID, FUNKTIONSNEDSATTNING_SYNFUNKTION_ID.value()),
+              valueCode(
+                  FUNKTIONSNEDSATTNING_SINNESFUNKTION_ID,
+                  FUNKTIONSNEDSATTNING_SINNESFUNKTION_ID.value()),
+              valueCode(
+                  FUNKTIONSNEDSATTNING_KOORDINATION_ID,
+                  FUNKTIONSNEDSATTNING_KOORDINATION_ID.value()),
+              valueCode(
+                  FUNKTIONSNEDSATTNING_ANNAN_KROPPSILIG_FUNKTION_ID,
+                  FUNKTIONSNEDSATTNING_ANNAN_KROPPSILIG_FUNKTION_ID.value()));
 
-      final var codeList = elementValueCodeList.withList(
-          fillType == MAXIMAL ? codes : codes.subList(0, 1));
+      final var codeList =
+          elementValueCodeList.withList(fillType == MAXIMAL ? codes : codes.subList(0, 1));
       list.add(elementData(spec.id(), codeList));
     }
   }
@@ -318,88 +333,88 @@ public class TestabilityCertificateFillServiceFK7809 implements
     }
   }
 
-  private static void psykosocial(ElementSpecification spec, List<ElementData> list,
-      TestabilityFillTypeDTO fillType) {
+  private static void psykosocial(
+      ElementSpecification spec, List<ElementData> list, TestabilityFillTypeDTO fillType) {
     if (fillType == MAXIMAL && emptyValue(spec) instanceof ElementValueText elementValueText) {
       final var text = elementValueText.withText("Psykosocial funktion");
       list.add(elementData(spec.id(), text));
     }
   }
 
-  private static void uppmarksamhet(ElementSpecification spec, List<ElementData> list,
-      TestabilityFillTypeDTO fillType) {
+  private static void uppmarksamhet(
+      ElementSpecification spec, List<ElementData> list, TestabilityFillTypeDTO fillType) {
     if (fillType == MAXIMAL && emptyValue(spec) instanceof ElementValueText elementValueText) {
       final var text = elementValueText.withText("Uppmärksamhetsproblem");
       list.add(elementData(spec.id(), text));
     }
   }
 
-  private static void psykisk(ElementSpecification spec, List<ElementData> list,
-      TestabilityFillTypeDTO fillType) {
+  private static void psykisk(
+      ElementSpecification spec, List<ElementData> list, TestabilityFillTypeDTO fillType) {
     if (fillType == MAXIMAL && emptyValue(spec) instanceof ElementValueText elementValueText) {
       final var text = elementValueText.withText("Psykisk funktion");
       list.add(elementData(spec.id(), text));
     }
   }
 
-  private static void horsel(ElementSpecification spec, List<ElementData> list,
-      TestabilityFillTypeDTO fillType) {
+  private static void horsel(
+      ElementSpecification spec, List<ElementData> list, TestabilityFillTypeDTO fillType) {
     if (fillType == MAXIMAL && emptyValue(spec) instanceof ElementValueText elementValueText) {
       final var text = elementValueText.withText("Hörselfunktion");
       list.add(elementData(spec.id(), text));
     }
   }
 
-  private static void syn(ElementSpecification spec, List<ElementData> list,
-      TestabilityFillTypeDTO fillType) {
+  private static void syn(
+      ElementSpecification spec, List<ElementData> list, TestabilityFillTypeDTO fillType) {
     if (fillType == MAXIMAL && emptyValue(spec) instanceof ElementValueText elementValueText) {
       final var text = elementValueText.withText("Synfunktion");
       list.add(elementData(spec.id(), text));
     }
   }
 
-  private static void sinnes(ElementSpecification spec, List<ElementData> list,
-      TestabilityFillTypeDTO fillType) {
+  private static void sinnes(
+      ElementSpecification spec, List<ElementData> list, TestabilityFillTypeDTO fillType) {
     if (fillType == MAXIMAL && emptyValue(spec) instanceof ElementValueText elementValueText) {
       final var text = elementValueText.withText("Sinnesfunktion");
       list.add(elementData(spec.id(), text));
     }
   }
 
-  private static void koordination(ElementSpecification spec, List<ElementData> list,
-      TestabilityFillTypeDTO fillType) {
+  private static void koordination(
+      ElementSpecification spec, List<ElementData> list, TestabilityFillTypeDTO fillType) {
     if (fillType == MAXIMAL && emptyValue(spec) instanceof ElementValueText elementValueText) {
       final var text = elementValueText.withText("Koordinationsproblem");
       list.add(elementData(spec.id(), text));
     }
   }
 
-  private static void annanKroppslig(ElementSpecification spec, List<ElementData> list,
-      TestabilityFillTypeDTO fillType) {
+  private static void annanKroppslig(
+      ElementSpecification spec, List<ElementData> list, TestabilityFillTypeDTO fillType) {
     if (fillType == MAXIMAL && emptyValue(spec) instanceof ElementValueText elementValueText) {
       final var text = elementValueText.withText("Annan kroppslig funktion");
       list.add(elementData(spec.id(), text));
     }
   }
 
-  private static void aktivitetsbegransning(ElementSpecification spec, List<ElementData> list,
-      TestabilityFillTypeDTO fillType) {
+  private static void aktivitetsbegransning(
+      ElementSpecification spec, List<ElementData> list, TestabilityFillTypeDTO fillType) {
     if (fillType == MAXIMAL && emptyValue(spec) instanceof ElementValueText elementValueText) {
       final var text = elementValueText.withText("Aktivitetsbegränsning");
       list.add(elementData(spec.id(), text));
     }
   }
 
-  private static void behandling(ElementSpecification spec, List<ElementData> list,
-      TestabilityFillTypeDTO fillType) {
+  private static void behandling(
+      ElementSpecification spec, List<ElementData> list, TestabilityFillTypeDTO fillType) {
     if (fillType == MAXIMAL && emptyValue(spec) instanceof ElementValueText elementValueText) {
       final var text = elementValueText.withText("Medicinsk behandling");
       list.add(elementData(spec.id(), text));
     }
   }
 
-  private static void ansvarigVardenhet(ElementSpecification spec, List<ElementData> list,
-      TestabilityFillTypeDTO fillType) {
+  private static void ansvarigVardenhet(
+      ElementSpecification spec, List<ElementData> list, TestabilityFillTypeDTO fillType) {
     if (fillType == MAXIMAL && emptyValue(spec) instanceof ElementValueText elementValueText) {
       final var text = elementValueText.withText("Ansvarig vårdenhet");
       list.add(elementData(spec.id(), text));
@@ -413,8 +428,8 @@ public class TestabilityCertificateFillServiceFK7809 implements
     }
   }
 
-  private static void ovrigt(ElementSpecification spec, List<ElementData> list,
-      TestabilityFillTypeDTO fillType) {
+  private static void ovrigt(
+      ElementSpecification spec, List<ElementData> list, TestabilityFillTypeDTO fillType) {
     if (fillType == MAXIMAL && emptyValue(spec) instanceof ElementValueText elementValueText) {
       final var text = elementValueText.withText("Övrigt");
       list.add(elementData(spec.id(), text));

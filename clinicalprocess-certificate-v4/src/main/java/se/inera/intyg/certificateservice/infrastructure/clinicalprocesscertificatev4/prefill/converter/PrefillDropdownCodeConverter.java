@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.prefill.converter;
 
 import static se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.prefill.PrefillUnmarshaller.unmarshalType;
@@ -30,23 +48,23 @@ public class PrefillDropdownCodeConverter implements PrefillStandardConverter {
   }
 
   @Override
-  public PrefillAnswer prefillAnswer(ElementSpecification specification,
-      Forifyllnad prefill) {
-    if (!(specification.configuration() instanceof ElementConfigurationDropdownCode elementConfigurationDropdownCode)) {
-      return PrefillAnswer.builder()
-          .errors(List.of(PrefillError.wrongConfigurationType()))
-          .build();
+  public PrefillAnswer prefillAnswer(ElementSpecification specification, Forifyllnad prefill) {
+    if (!(specification.configuration()
+        instanceof ElementConfigurationDropdownCode elementConfigurationDropdownCode)) {
+      return PrefillAnswer.builder().errors(List.of(PrefillError.wrongConfigurationType())).build();
     }
 
-    final var answers = prefill.getSvar().stream()
-        .filter(svar -> svar.getId().equals(specification.id().id()))
-        .toList();
+    final var answers =
+        prefill.getSvar().stream()
+            .filter(svar -> svar.getId().equals(specification.id().id()))
+            .toList();
 
-    final var subAnswers = prefill.getSvar().stream()
-        .map(Svar::getDelsvar)
-        .flatMap(List::stream)
-        .filter(delsvar -> delsvar.getId().equals(specification.id().id()))
-        .toList();
+    final var subAnswers =
+        prefill.getSvar().stream()
+            .map(Svar::getDelsvar)
+            .flatMap(List::stream)
+            .filter(delsvar -> delsvar.getId().equals(specification.id().id()))
+            .toList();
 
     if (subAnswers.isEmpty() && answers.isEmpty()) {
       return null;
@@ -54,38 +72,30 @@ public class PrefillDropdownCodeConverter implements PrefillStandardConverter {
 
     final var prefillErrors = new ArrayList<PrefillError>();
     prefillErrors.addAll(
-        PrefillValidator.validateSingleAnswerOrSubAnswer(
-            answers,
-            subAnswers,
-            specification
-        )
-    );
+        PrefillValidator.validateSingleAnswerOrSubAnswer(answers, subAnswers, specification));
 
     prefillErrors.addAll(
         PrefillValidator.validateDelsvarId(
             SubAnswersUtil.get(answers, subAnswers),
             elementConfigurationDropdownCode,
-            specification
-        )
-    );
+            specification));
 
     if (!prefillErrors.isEmpty()) {
-      return PrefillAnswer.builder()
-          .errors(prefillErrors)
-          .build();
+      return PrefillAnswer.builder().errors(prefillErrors).build();
     }
 
     try {
-      final var content = getContent(subAnswers, answers,
-          specification.configuration().id().value());
+      final var content =
+          getContent(subAnswers, answers, specification.configuration().id().value());
       final var cvType = unmarshalType(content, CVType.class);
 
       if (cvType.isEmpty()) {
         throw new IllegalStateException("Invalid format cvType is empty");
       }
 
-      final var code = new Code(cvType.get().getCode(), cvType.get().getCodeSystem(),
-          cvType.get().getDisplayName());
+      final var code =
+          new Code(
+              cvType.get().getCode(), cvType.get().getCodeSystem(), cvType.get().getDisplayName());
 
       return PrefillAnswer.builder()
           .elementData(
@@ -95,10 +105,8 @@ public class PrefillDropdownCodeConverter implements PrefillStandardConverter {
                       ElementValueCode.builder()
                           .codeId(getId(elementConfigurationDropdownCode, code))
                           .code(code.code())
-                          .build()
-                  )
-                  .build()
-          )
+                          .build())
+                  .build())
           .build();
 
     } catch (Exception ex) {
@@ -106,16 +114,12 @@ public class PrefillDropdownCodeConverter implements PrefillStandardConverter {
     }
   }
 
-  private static FieldId getId(ElementConfigurationDropdownCode elementConfigurationDropdownCode,
-      Code code) {
-    return elementConfigurationDropdownCode.list()
-        .stream()
+  private static FieldId getId(
+      ElementConfigurationDropdownCode elementConfigurationDropdownCode, Code code) {
+    return elementConfigurationDropdownCode.list().stream()
         .filter(c -> c.code() != null && code.matches(c.code()))
         .findFirst()
-        .orElseThrow(
-            () -> new IllegalArgumentException(
-                "Code not found: '%s'".formatted(code))
-        )
+        .orElseThrow(() -> new IllegalArgumentException("Code not found: '%s'".formatted(code)))
         .id();
   }
 
@@ -123,10 +127,7 @@ public class PrefillDropdownCodeConverter implements PrefillStandardConverter {
     if (!subAnswers.isEmpty()) {
       return subAnswers.getFirst().getContent();
     }
-    return answers
-        .getFirst()
-        .getDelsvar()
-        .stream()
+    return answers.getFirst().getDelsvar().stream()
         .filter(subAnswer -> subAnswer.getId().equals(id))
         .toList()
         .getFirst()

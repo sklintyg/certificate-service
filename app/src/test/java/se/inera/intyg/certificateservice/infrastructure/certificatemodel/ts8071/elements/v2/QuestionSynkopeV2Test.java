@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.v2;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,14 +49,15 @@ class QuestionSynkopeV2Test {
 
   @Test
   void shouldIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationRadioBoolean.builder()
-        .name("Har personen haft en synkope?")
-        .description(
-            "Med synkope avses här sådan som är utlöst av arytmi men även situationsutlöst synkope (till följd av exempelvis hosta, nysning, skratt eller ansträngning) och reflexsynkope (vasovagal synkope) som exempelvis utlösts av rädsla eller smärta.")
-        .id(new FieldId("11.7"))
-        .selectedText("Ja")
-        .unselectedText("Nej")
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationRadioBoolean.builder()
+            .name("Har personen haft en synkope?")
+            .description(
+                "Med synkope avses här sådan som är utlöst av arytmi men även situationsutlöst synkope (till följd av exempelvis hosta, nysning, skratt eller ansträngning) och reflexsynkope (vasovagal synkope) som exempelvis utlösts av rädsla eller smärta.")
+            .id(new FieldId("11.7"))
+            .selectedText("Ja")
+            .unselectedText("Nej")
+            .build();
 
     final var element = QuestionSynkopeV2.questionSynkopeV2();
 
@@ -47,26 +66,18 @@ class QuestionSynkopeV2Test {
 
   @Test
   void shouldIncludeRules() {
-    final var expectedRule = List.of(
-        ElementRuleExpression.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.MANDATORY)
-            .expression(
-                new RuleExpression(
-                    "exists($11.7)"
-                )
-            )
-            .build(),
-        ElementRuleExpression.builder()
-            .id(new ElementId("11"))
-            .type(ElementRuleType.SHOW)
-            .expression(
-                new RuleExpression(
-                    "$11.1"
-                )
-            )
-            .build()
-    );
+    final var expectedRule =
+        List.of(
+            ElementRuleExpression.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.MANDATORY)
+                .expression(new RuleExpression("exists($11.7)"))
+                .build(),
+            ElementRuleExpression.builder()
+                .id(new ElementId("11"))
+                .type(ElementRuleType.SHOW)
+                .expression(new RuleExpression("$11.1"))
+                .build());
 
     final var element = QuestionSynkopeV2.questionSynkopeV2();
 
@@ -75,11 +86,8 @@ class QuestionSynkopeV2Test {
 
   @Test
   void shouldIncludeValidation() {
-    final var expectedValidations = List.of(
-        ElementValidationBoolean.builder()
-            .mandatory(true)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationBoolean.builder().mandatory(true).build());
 
     final var element = QuestionSynkopeV2.questionSynkopeV2();
 
@@ -98,16 +106,12 @@ class QuestionSynkopeV2Test {
 
     @Test
     void shouldReturnTrueIfBooleanIsTrue() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("11"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(true)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("11"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
 
       final var element = QuestionSynkopeV2.questionSynkopeV2();
 
@@ -118,16 +122,12 @@ class QuestionSynkopeV2Test {
 
     @Test
     void shouldReturnFalseIfElementMissing() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("8.1"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(true)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("8.1"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
 
       final var element = QuestionSynkopeV2.questionSynkopeV2();
 
@@ -138,16 +138,12 @@ class QuestionSynkopeV2Test {
 
     @Test
     void shouldReturnFalseIfElementFalse() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("11"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(false)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("11"))
+                  .value(ElementValueBoolean.builder().value(false).build())
+                  .build());
 
       final var element = QuestionSynkopeV2.questionSynkopeV2();
 
@@ -157,4 +153,3 @@ class QuestionSynkopeV2Test {
     }
   }
 }
-

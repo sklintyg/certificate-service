@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.citizen;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,22 +48,16 @@ class CitizenControllerTest {
 
   private static final String CERTIFICATE_ID = "CERTIFICATE_ID";
   private static final CertificateDTO CERTIFICATE = CertificateDTO.builder().build();
-  @Mock
-  SendCitizenCertificateService sendCitizenCertificateService;
-  @Mock
-  GetCitizenCertificateService getCitizenCertificateService;
+  @Mock SendCitizenCertificateService sendCitizenCertificateService;
+  @Mock GetCitizenCertificateService getCitizenCertificateService;
 
-  @Mock
-  CitizenCertificateExistsService citizenCertificateExistsService;
+  @Mock CitizenCertificateExistsService citizenCertificateExistsService;
 
-  @Mock
-  GetCitizenCertificateListService citizenCertificateListService;
+  @Mock GetCitizenCertificateListService citizenCertificateListService;
 
-  @Mock
-  PrintCitizenCertificateService printCitizenCertificateService;
+  @Mock PrintCitizenCertificateService printCitizenCertificateService;
 
-  @InjectMocks
-  CitizenController citizenController;
+  @InjectMocks CitizenController citizenController;
 
   @Test
   void shouldReturnGetCitizenCertificateResponse() {
@@ -71,9 +83,10 @@ class CitizenControllerTest {
   @Test
   void shouldReturnCitizenCertificateListResponse() {
     final var request = GetCitizenCertificateListRequest.builder().build();
-    final var expected = GetCitizenCertificateListResponse.builder()
-        .citizenCertificates(List.of(CERTIFICATE))
-        .build();
+    final var expected =
+        GetCitizenCertificateListResponse.builder()
+            .citizenCertificates(List.of(CERTIFICATE))
+            .build();
 
     when(citizenCertificateListService.get(request)).thenReturn(expected);
 

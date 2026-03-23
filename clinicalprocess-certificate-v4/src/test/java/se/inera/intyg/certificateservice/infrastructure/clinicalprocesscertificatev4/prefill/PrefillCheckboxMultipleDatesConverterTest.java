@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.prefill;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -36,56 +54,54 @@ class PrefillCheckboxMultipleDatesConverterTest {
   private static final FieldId CHECKBOXDATE_FIELD_ID_2 = new FieldId("CF2");
   private static final ObjectFactory factory = new ObjectFactory();
 
-  private static final List<CheckboxDate> checkboxDates = List.of(
-      CheckboxDate.builder()
-          .id(CHECKBOXDATE_FIELD_ID_1)
-          .code(CodeSystemKvFkmu0001.FYSISKUNDERSOKNING)
-          .min(null)
-          .max(Period.ofDays(5))
-          .build(),
-      CheckboxDate.builder()
-          .id(CHECKBOXDATE_FIELD_ID_2)
-          .code(CodeSystemKvFkmu0001.DIGITALUNDERSOKNING)
-          .min(null)
-          .max(Period.ofDays(5))
-          .build()
-  );
+  private static final List<CheckboxDate> checkboxDates =
+      List.of(
+          CheckboxDate.builder()
+              .id(CHECKBOXDATE_FIELD_ID_1)
+              .code(CodeSystemKvFkmu0001.FYSISKUNDERSOKNING)
+              .min(null)
+              .max(Period.ofDays(5))
+              .build(),
+          CheckboxDate.builder()
+              .id(CHECKBOXDATE_FIELD_ID_2)
+              .code(CodeSystemKvFkmu0001.DIGITALUNDERSOKNING)
+              .min(null)
+              .max(Period.ofDays(5))
+              .build());
 
-  private static final ElementSpecification SPECIFICATION = ElementSpecification.builder()
-      .id(ELEMENT_ID)
-      .configuration(
-          ElementConfigurationCheckboxMultipleDate.builder()
-              .id(FIELD_ID)
-              .name("TEXT")
-              .dates(checkboxDates)
-              .build()
-      )
-      .build();
+  private static final ElementSpecification SPECIFICATION =
+      ElementSpecification.builder()
+          .id(ELEMENT_ID)
+          .configuration(
+              ElementConfigurationCheckboxMultipleDate.builder()
+                  .id(FIELD_ID)
+                  .name("TEXT")
+                  .dates(checkboxDates)
+                  .build())
+          .build();
 
   private static final LocalDate DATE_NOW = LocalDate.now();
-  private static final ElementData EXPECTED_MULTIPLE_ELEMENT_DATA = ElementData.builder()
-      .id(ELEMENT_ID)
-      .value(
-          ElementValueDateList.builder()
-              .dateListId(FIELD_ID)
-              .dateList(
-                  List.of(
-                      ElementValueDate.builder()
-                          .dateId(CHECKBOXDATE_FIELD_ID_1)
-                          .date(DATE_NOW)
-                          .build(),
-                      ElementValueDate.builder()
-                          .dateId(CHECKBOXDATE_FIELD_ID_2)
-                          .date(DATE_NOW)
-                          .build()
-                  )
-              )
-              .build()
-      )
-      .build();
+  private static final ElementData EXPECTED_MULTIPLE_ELEMENT_DATA =
+      ElementData.builder()
+          .id(ELEMENT_ID)
+          .value(
+              ElementValueDateList.builder()
+                  .dateListId(FIELD_ID)
+                  .dateList(
+                      List.of(
+                          ElementValueDate.builder()
+                              .dateId(CHECKBOXDATE_FIELD_ID_1)
+                              .date(DATE_NOW)
+                              .build(),
+                          ElementValueDate.builder()
+                              .dateId(CHECKBOXDATE_FIELD_ID_2)
+                              .date(DATE_NOW)
+                              .build()))
+                  .build())
+          .build();
 
-
-  PrefillCheckboxMultipleDatesConverter prefillCheckboxMultipleDatesConverter = new PrefillCheckboxMultipleDatesConverter();
+  PrefillCheckboxMultipleDatesConverter prefillCheckboxMultipleDatesConverter =
+      new PrefillCheckboxMultipleDatesConverter();
 
   @Nested
   class PrefillAnswerWithForifyllnad {
@@ -93,23 +109,21 @@ class PrefillCheckboxMultipleDatesConverterTest {
     @Test
     void shouldReturnNullIfNoAnswers() {
       Forifyllnad prefill = new Forifyllnad();
-      PrefillAnswer result = prefillCheckboxMultipleDatesConverter.prefillAnswer(SPECIFICATION,
-          prefill);
+      PrefillAnswer result =
+          prefillCheckboxMultipleDatesConverter.prefillAnswer(SPECIFICATION, prefill);
       assertNull(result);
     }
-
 
     @Test
     void shouldReturnElementDataIfExists() {
 
       final var forifyllnad = createForifyllnad();
 
-      final var result = prefillCheckboxMultipleDatesConverter.prefillAnswer(
-          SPECIFICATION, forifyllnad);
+      final var result =
+          prefillCheckboxMultipleDatesConverter.prefillAnswer(SPECIFICATION, forifyllnad);
 
-      final var expected = PrefillAnswer.builder()
-          .elementData(EXPECTED_MULTIPLE_ELEMENT_DATA)
-          .build();
+      final var expected =
+          PrefillAnswer.builder().elementData(EXPECTED_MULTIPLE_ELEMENT_DATA).build();
 
       assertEquals(expected, result);
     }
@@ -123,55 +137,53 @@ class PrefillCheckboxMultipleDatesConverterTest {
 
       final var incompleteSvar = new Svar();
       incompleteSvar.setId("1");
-      incompleteSvar.getDelsvar().add(createDelsvarCode("FYSISKUNDERSOKNING",
-          "min undersökning vid fysiskt vårdmöte"));
+      incompleteSvar
+          .getDelsvar()
+          .add(createDelsvarCode("FYSISKUNDERSOKNING", "min undersökning vid fysiskt vårdmöte"));
 
       final var forifyllnad = new Forifyllnad();
       forifyllnad.getSvar().add(validSvar);
       forifyllnad.getSvar().add(incompleteSvar);
 
-      final var result = prefillCheckboxMultipleDatesConverter.prefillAnswer(SPECIFICATION,
-          forifyllnad);
+      final var result =
+          prefillCheckboxMultipleDatesConverter.prefillAnswer(SPECIFICATION, forifyllnad);
 
-      final var expectedData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(ElementValueDateList.builder()
-              .dateListId(FIELD_ID)
-              .dateList(
-                  List.of(
-                      ElementValueDate.builder()
-                          .dateId(CHECKBOXDATE_FIELD_ID_2)
-                          .date(DATE_NOW)
-                          .build(),
-                      ElementValueDate.builder()
-                          .dateId(CHECKBOXDATE_FIELD_ID_1)
-                          .date(LocalDate.now(ZoneId.systemDefault()))
-                          .build()
-                  )
-              )
-              .build())
-          .build();
+      final var expectedData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueDateList.builder()
+                      .dateListId(FIELD_ID)
+                      .dateList(
+                          List.of(
+                              ElementValueDate.builder()
+                                  .dateId(CHECKBOXDATE_FIELD_ID_2)
+                                  .date(DATE_NOW)
+                                  .build(),
+                              ElementValueDate.builder()
+                                  .dateId(CHECKBOXDATE_FIELD_ID_1)
+                                  .date(LocalDate.now(ZoneId.systemDefault()))
+                                  .build()))
+                      .build())
+              .build();
 
       assertAll(
           () -> assertEquals(expectedData, result.getElementData()),
-          () -> assertEquals(0, result.getErrors().size())
-      );
+          () -> assertEquals(0, result.getErrors().size()));
     }
 
     @Test
     void shouldReturnErrorIfWrongConfigurationType() {
       final var prefill = new Forifyllnad();
-      final var wrongSpec = ElementSpecification.builder()
-          .id(ELEMENT_ID)
-          .configuration(ElementConfigurationCategory.builder().build())
-          .build();
+      final var wrongSpec =
+          ElementSpecification.builder()
+              .id(ELEMENT_ID)
+              .configuration(ElementConfigurationCategory.builder().build())
+              .build();
 
       final var result = prefillCheckboxMultipleDatesConverter.prefillAnswer(wrongSpec, prefill);
 
-      assertEquals(
-          PrefillErrorType.TECHNICAL_ERROR,
-          result.getErrors().getFirst().type()
-      );
+      assertEquals(PrefillErrorType.TECHNICAL_ERROR, result.getErrors().getFirst().type());
     }
 
     @Test
@@ -179,30 +191,31 @@ class PrefillCheckboxMultipleDatesConverterTest {
       final var forifyllnad = new Forifyllnad();
       final var svar = new Svar();
       svar.setId("1");
-      svar.getDelsvar().add(createDelsvarCode("FYSISKUNDERSOKNING",
-          "min undersökning vid fysiskt vårdmöte"));
+      svar.getDelsvar()
+          .add(createDelsvarCode("FYSISKUNDERSOKNING", "min undersökning vid fysiskt vårdmöte"));
       forifyllnad.getSvar().add(svar);
 
-      final var result = prefillCheckboxMultipleDatesConverter.prefillAnswer(
-          SPECIFICATION, forifyllnad);
+      final var result =
+          prefillCheckboxMultipleDatesConverter.prefillAnswer(SPECIFICATION, forifyllnad);
 
-      final var expectedData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(ElementValueDateList.builder()
-              .dateListId(FIELD_ID)
-              .dateList(
-                  List.of(
-                      ElementValueDate.builder()
-                          .dateId(CHECKBOXDATE_FIELD_ID_1)
-                          .date(LocalDate.now(ZoneId.systemDefault()))
-                          .build()))
-              .build())
-          .build();
+      final var expectedData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueDateList.builder()
+                      .dateListId(FIELD_ID)
+                      .dateList(
+                          List.of(
+                              ElementValueDate.builder()
+                                  .dateId(CHECKBOXDATE_FIELD_ID_1)
+                                  .date(LocalDate.now(ZoneId.systemDefault()))
+                                  .build()))
+                      .build())
+              .build();
 
       assertAll(
           () -> assertEquals(expectedData, result.getElementData()),
-          () -> assertEquals(0, result.getErrors().size())
-      );
+          () -> assertEquals(0, result.getErrors().size()));
     }
 
     @Test
@@ -216,26 +229,27 @@ class PrefillCheckboxMultipleDatesConverterTest {
       svar.getDelsvar().add(createDelsvarCode("DIGITALUNDERSOKNING", "TEXT"));
       forifyllnad.getSvar().add(svar);
 
-      final var result = prefillCheckboxMultipleDatesConverter.prefillAnswer(
-          SPECIFICATION, forifyllnad);
+      final var result =
+          prefillCheckboxMultipleDatesConverter.prefillAnswer(SPECIFICATION, forifyllnad);
 
-      final var expectedData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(ElementValueDateList.builder()
-              .dateListId(FIELD_ID)
-              .dateList(
-                  List.of(
-                      ElementValueDate.builder()
-                          .dateId(CHECKBOXDATE_FIELD_ID_2)
-                          .date(LocalDate.now(ZoneId.systemDefault()))
-                          .build()))
-              .build())
-          .build();
+      final var expectedData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueDateList.builder()
+                      .dateListId(FIELD_ID)
+                      .dateList(
+                          List.of(
+                              ElementValueDate.builder()
+                                  .dateId(CHECKBOXDATE_FIELD_ID_2)
+                                  .date(LocalDate.now(ZoneId.systemDefault()))
+                                  .build()))
+                      .build())
+              .build();
 
       assertAll(
           () -> assertEquals(expectedData, result.getElementData()),
-          () -> assertEquals(0, result.getErrors().size())
-      );
+          () -> assertEquals(0, result.getErrors().size()));
     }
   }
 
@@ -246,8 +260,8 @@ class PrefillCheckboxMultipleDatesConverterTest {
       var svar = new Svar();
       svar.setId("1");
       svar.getDelsvar().add(createDelsvarDate());
-      svar.getDelsvar().add(createDelsvarCode("FYSISKUNDERSOKNING",
-          "min undersökning vid fysiskt vårdmöte"));
+      svar.getDelsvar()
+          .add(createDelsvarCode("FYSISKUNDERSOKNING", "min undersökning vid fysiskt vårdmöte"));
       forifyllnad.getSvar().add(svar);
 
       var svar2 = new Svar();
@@ -280,4 +294,3 @@ class PrefillCheckboxMultipleDatesConverterTest {
     return delsvarCode;
   }
 }
-

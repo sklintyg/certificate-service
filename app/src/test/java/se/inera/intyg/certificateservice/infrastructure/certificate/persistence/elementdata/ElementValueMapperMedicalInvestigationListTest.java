@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificate.persistence.elementdata;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -43,17 +61,16 @@ class ElementValueMapperMedicalInvestigationListTest {
   @Test
   void shallThrowErrorIfWrongMappedValueType() {
     final var mappedElementValue = MappedElementValueCode.builder().build();
-    assertThrows(IllegalStateException.class,
-        () -> elementValueMapper.toDomain(mappedElementValue));
+    assertThrows(
+        IllegalStateException.class, () -> elementValueMapper.toDomain(mappedElementValue));
   }
 
   @Test
   void shallThrowErrorIfWrongValueType() {
     final var mappedElementValue = ElementValueCode.builder().build();
-    assertThrows(IllegalStateException.class,
-        () -> elementValueMapper.toMapped(mappedElementValue));
+    assertThrows(
+        IllegalStateException.class, () -> elementValueMapper.toMapped(mappedElementValue));
   }
-
 
   @Test
   void shallMapToDomain() {
@@ -61,59 +78,45 @@ class ElementValueMapperMedicalInvestigationListTest {
     final var text = "text";
     final var code = "code";
 
-    final var expectedValue = ElementValueMedicalInvestigationList.builder()
-        .id(new FieldId("ID"))
-        .list(
-            List.of(
-                MedicalInvestigation.builder()
-                    .id(new FieldId("MEDICALINVESTIGATION_ID"))
-                    .date(ElementValueDate.builder()
-                        .dateId(new FieldId("DATE"))
-                        .date(date)
-                        .build())
-                    .informationSource(ElementValueText.builder()
-                        .text(text)
-                        .textId(new FieldId("TEXT"))
-                        .build())
-                    .investigationType(ElementValueCode.builder()
-                        .codeId(new FieldId("CODE"))
-                        .code(code)
-                        .build())
-                    .build()
-            )
-        )
-        .build();
+    final var expectedValue =
+        ElementValueMedicalInvestigationList.builder()
+            .id(new FieldId("ID"))
+            .list(
+                List.of(
+                    MedicalInvestigation.builder()
+                        .id(new FieldId("MEDICALINVESTIGATION_ID"))
+                        .date(
+                            ElementValueDate.builder()
+                                .dateId(new FieldId("DATE"))
+                                .date(date)
+                                .build())
+                        .informationSource(
+                            ElementValueText.builder()
+                                .text(text)
+                                .textId(new FieldId("TEXT"))
+                                .build())
+                        .investigationType(
+                            ElementValueCode.builder()
+                                .codeId(new FieldId("CODE"))
+                                .code(code)
+                                .build())
+                        .build()))
+            .build();
 
-    final var mappedElementValue = MappedElementValueMedicalInvestigationList.builder()
-        .id("ID")
-        .list(
-            List.of(
-                MappedMedicalInvestigation.builder()
-                    .id("MEDICALINVESTIGATION_ID")
-                    .date(MappedDate.builder()
-                        .id("DATE")
-                        .date(date)
-                        .build())
-                    .informationSource(
-                        MappedText.builder()
-                            .id("TEXT")
-                            .text(text)
-                            .build()
-                    )
-                    .investigationType(
-                        MappedCode.builder()
-                            .id("CODE")
-                            .code(code)
-                            .build()
-                    )
-                    .build()
-            )
-        )
-        .build();
+    final var mappedElementValue =
+        MappedElementValueMedicalInvestigationList.builder()
+            .id("ID")
+            .list(
+                List.of(
+                    MappedMedicalInvestigation.builder()
+                        .id("MEDICALINVESTIGATION_ID")
+                        .date(MappedDate.builder().id("DATE").date(date).build())
+                        .informationSource(MappedText.builder().id("TEXT").text(text).build())
+                        .investigationType(MappedCode.builder().id("CODE").code(code).build())
+                        .build()))
+            .build();
 
-    final var actualValue = elementValueMapper.toDomain(
-        mappedElementValue
-    );
+    final var actualValue = elementValueMapper.toDomain(mappedElementValue);
 
     assertEquals(expectedValue, actualValue);
   }
@@ -124,59 +127,45 @@ class ElementValueMapperMedicalInvestigationListTest {
     final var text = "text";
     final var code = "code";
 
-    final var expectedValue = MappedElementValueMedicalInvestigationList.builder()
-        .id("ID")
-        .list(
-            List.of(
-                MappedMedicalInvestigation.builder()
-                    .id("MEDICALINVESTIGATION_ID")
-                    .date(MappedDate.builder()
-                        .id("DATE")
-                        .date(date)
-                        .build())
-                    .informationSource(
-                        MappedText.builder()
-                            .id("TEXT")
-                            .text(text)
-                            .build()
-                    )
-                    .investigationType(
-                        MappedCode.builder()
-                            .id("CODE")
-                            .code(code)
-                            .build()
-                    )
-                    .build()
-            )
-        )
-        .build();
+    final var expectedValue =
+        MappedElementValueMedicalInvestigationList.builder()
+            .id("ID")
+            .list(
+                List.of(
+                    MappedMedicalInvestigation.builder()
+                        .id("MEDICALINVESTIGATION_ID")
+                        .date(MappedDate.builder().id("DATE").date(date).build())
+                        .informationSource(MappedText.builder().id("TEXT").text(text).build())
+                        .investigationType(MappedCode.builder().id("CODE").code(code).build())
+                        .build()))
+            .build();
 
-    final var elementValue = ElementValueMedicalInvestigationList.builder()
-        .id(new FieldId("ID"))
-        .list(
-            List.of(
-                MedicalInvestigation.builder()
-                    .id(new FieldId("MEDICALINVESTIGATION_ID"))
-                    .date(ElementValueDate.builder()
-                        .dateId(new FieldId("DATE"))
-                        .date(date)
-                        .build())
-                    .informationSource(ElementValueText.builder()
-                        .text(text)
-                        .textId(new FieldId("TEXT"))
-                        .build())
-                    .investigationType(ElementValueCode.builder()
-                        .codeId(new FieldId("CODE"))
-                        .code(code)
-                        .build())
-                    .build()
-            )
-        )
-        .build();
+    final var elementValue =
+        ElementValueMedicalInvestigationList.builder()
+            .id(new FieldId("ID"))
+            .list(
+                List.of(
+                    MedicalInvestigation.builder()
+                        .id(new FieldId("MEDICALINVESTIGATION_ID"))
+                        .date(
+                            ElementValueDate.builder()
+                                .dateId(new FieldId("DATE"))
+                                .date(date)
+                                .build())
+                        .informationSource(
+                            ElementValueText.builder()
+                                .text(text)
+                                .textId(new FieldId("TEXT"))
+                                .build())
+                        .investigationType(
+                            ElementValueCode.builder()
+                                .codeId(new FieldId("CODE"))
+                                .code(code)
+                                .build())
+                        .build()))
+            .build();
 
-    final var actualValue = elementValueMapper.toMapped(
-        elementValue
-    );
+    final var actualValue = elementValueMapper.toMapped(elementValue);
 
     assertEquals(expectedValue, actualValue);
   }

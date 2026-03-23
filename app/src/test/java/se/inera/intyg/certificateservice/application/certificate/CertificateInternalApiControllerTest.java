@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -48,53 +66,50 @@ class CertificateInternalApiControllerTest {
 
   @Mock
   private GetValidSickLeaveCertificatesInternalService getValidSickLeaveCertificatesInternalService;
+
+  @Mock PlaceholderCertificateExistsService placeholderCertificateExistsService;
+  @Mock RevokePlaceholderCertificateInternalService revokePlaceholderCertificateInternalService;
+
   @Mock
-  PlaceholderCertificateExistsService placeholderCertificateExistsService;
+  private EraseCertificateInternalForCareProviderService
+      eraseCertificateInternalForCareProviderService;
+
   @Mock
-  RevokePlaceholderCertificateInternalService revokePlaceholderCertificateInternalService;
+  private GetCertificateExportsInternalForCareProviderService
+      getCertificateExportsInternalForCareProviderService;
+
   @Mock
-  private EraseCertificateInternalForCareProviderService eraseCertificateInternalForCareProviderService;
-  @Mock
-  private GetCertificateExportsInternalForCareProviderService getCertificateExportsInternalForCareProviderService;
-  @Mock
-  private GetTotalExportsInternalForCareProviderService getTotalExportsInternalForCareProviderService;
-  @Mock
-  private GetCertificatesWithQAInternalService getCertificatesWithQAInternalService;
-  @Mock
-  private LockDraftsInternalService lockDraftsInternalService;
-  @Mock
-  private CertificateExistsService certificateExistsService;
-  @Mock
-  private GetCertificateInternalMetadataService getCertificateInternalMetadataService;
-  @Mock
-  private GetCertificateInternalService getCertificateInternalService;
-  @Mock
-  private GetSickLeaveCertificateInternalService getSickLeaveCertificateInternalService;
-  @Mock
-  private GetCertificateInternalXmlService getCertificateInternalXmlService;
-  @InjectMocks
-  private CertificateInternalApiController certificateInternalApiController;
+  private GetTotalExportsInternalForCareProviderService
+      getTotalExportsInternalForCareProviderService;
+
+  @Mock private GetCertificatesWithQAInternalService getCertificatesWithQAInternalService;
+  @Mock private LockDraftsInternalService lockDraftsInternalService;
+  @Mock private CertificateExistsService certificateExistsService;
+  @Mock private GetCertificateInternalMetadataService getCertificateInternalMetadataService;
+  @Mock private GetCertificateInternalService getCertificateInternalService;
+  @Mock private GetSickLeaveCertificateInternalService getSickLeaveCertificateInternalService;
+  @Mock private GetCertificateInternalXmlService getCertificateInternalXmlService;
+  @InjectMocks private CertificateInternalApiController certificateInternalApiController;
 
   @Test
   void shallReturnTrueIfCertificateExists() {
-    final var expectedResult = CertificateExistsResponse.builder()
-        .exists(true)
-        .build();
+    final var expectedResult = CertificateExistsResponse.builder().exists(true).build();
 
     doReturn(expectedResult).when(certificateExistsService).exist(CERTIFICATE_ID);
 
-    final var actualResult = certificateInternalApiController.findExistingCertificate(
-        CERTIFICATE_ID);
+    final var actualResult =
+        certificateInternalApiController.findExistingCertificate(CERTIFICATE_ID);
 
     assertEquals(expectedResult, actualResult);
   }
 
   @Test
   void shallReturnGetCertificateXmlResponse() {
-    final var expectedResult = GetCertificateInternalXmlResponse.builder()
-        .certificateId(CERTIFICATE_ID)
-        .xml("XML")
-        .build();
+    final var expectedResult =
+        GetCertificateInternalXmlResponse.builder()
+            .certificateId(CERTIFICATE_ID)
+            .xml("XML")
+            .build();
 
     doReturn(expectedResult).when(getCertificateInternalXmlService).get(CERTIFICATE_ID);
 
@@ -105,23 +120,25 @@ class CertificateInternalApiControllerTest {
 
   @Test
   void shallReturnGetCertificateMetadataResponse() {
-    final var expectedResult = GetCertificateInternalMetadataResponse.builder()
-        .certificateMetadata(CertificateMetadataDTO.builder().build())
-        .build();
+    final var expectedResult =
+        GetCertificateInternalMetadataResponse.builder()
+            .certificateMetadata(CertificateMetadataDTO.builder().build())
+            .build();
 
     doReturn(expectedResult).when(getCertificateInternalMetadataService).get(CERTIFICATE_ID);
 
-    final var actualResult = certificateInternalApiController.getCertificateMetadata(
-        CERTIFICATE_ID);
+    final var actualResult =
+        certificateInternalApiController.getCertificateMetadata(CERTIFICATE_ID);
 
     assertEquals(expectedResult, actualResult);
   }
 
   @Test
   void shallReturnGetCertificateResponse() {
-    final var expectedResult = GetCertificateInternalResponse.builder()
-        .certificate(CertificateDTO.builder().build())
-        .build();
+    final var expectedResult =
+        GetCertificateInternalResponse.builder()
+            .certificate(CertificateDTO.builder().build())
+            .build();
 
     doReturn(expectedResult).when(getCertificateInternalService).get(CERTIFICATE_ID);
 
@@ -132,36 +149,36 @@ class CertificateInternalApiControllerTest {
 
   @Test
   void shallReturnGetSickLeaveCertificateResponseIgnoreModelRulesIsFalse() {
-    final var request = GetSickLeaveCertificateInternalRequest.builder()
-        .ignoreModelRules(false)
-        .build();
-    final var expectedResult = GetSickLeaveCertificateInternalResponse.builder()
-        .sickLeaveCertificate(SickLeaveCertificateDTO.builder().build())
-        .build();
+    final var request =
+        GetSickLeaveCertificateInternalRequest.builder().ignoreModelRules(false).build();
+    final var expectedResult =
+        GetSickLeaveCertificateInternalResponse.builder()
+            .sickLeaveCertificate(SickLeaveCertificateDTO.builder().build())
+            .build();
 
-    doReturn(expectedResult).when(getSickLeaveCertificateInternalService)
+    doReturn(expectedResult)
+        .when(getSickLeaveCertificateInternalService)
         .get(CERTIFICATE_ID, false);
 
-    final var actualResult = certificateInternalApiController.getSickLeaveCertificate(
-        CERTIFICATE_ID, request);
+    final var actualResult =
+        certificateInternalApiController.getSickLeaveCertificate(CERTIFICATE_ID, request);
 
     assertEquals(expectedResult, actualResult);
   }
 
   @Test
   void shallReturnGetSickLeaveCertificateResponseIgnoreModelRulesIsTrue() {
-    final var request = GetSickLeaveCertificateInternalRequest.builder()
-        .ignoreModelRules(true)
-        .build();
-    final var expectedResult = GetSickLeaveCertificateInternalResponse.builder()
-        .sickLeaveCertificate(SickLeaveCertificateDTO.builder().build())
-        .build();
+    final var request =
+        GetSickLeaveCertificateInternalRequest.builder().ignoreModelRules(true).build();
+    final var expectedResult =
+        GetSickLeaveCertificateInternalResponse.builder()
+            .sickLeaveCertificate(SickLeaveCertificateDTO.builder().build())
+            .build();
 
-    doReturn(expectedResult).when(getSickLeaveCertificateInternalService)
-        .get(CERTIFICATE_ID, true);
+    doReturn(expectedResult).when(getSickLeaveCertificateInternalService).get(CERTIFICATE_ID, true);
 
-    final var actualResult = certificateInternalApiController.getSickLeaveCertificate(
-        CERTIFICATE_ID, request);
+    final var actualResult =
+        certificateInternalApiController.getSickLeaveCertificate(CERTIFICATE_ID, request);
 
     assertEquals(expectedResult, actualResult);
   }
@@ -191,11 +208,13 @@ class CertificateInternalApiControllerTest {
     final var expectedResult = ExportInternalResponse.builder().build();
     final var internalRequest = ExportCertificateInternalRequest.builder().build();
 
-    doReturn(expectedResult).when(getCertificateExportsInternalForCareProviderService)
+    doReturn(expectedResult)
+        .when(getCertificateExportsInternalForCareProviderService)
         .get(internalRequest, "careProviderId");
 
-    final var actualResult = certificateInternalApiController.getExportCertificatesForCareProvider(
-        internalRequest, "careProviderId");
+    final var actualResult =
+        certificateInternalApiController.getExportCertificatesForCareProvider(
+            internalRequest, "careProviderId");
     assertEquals(expectedResult, actualResult);
   }
 
@@ -203,11 +222,12 @@ class CertificateInternalApiControllerTest {
   void shallReturnTotalExportsInternalResponse() {
     final var expectedResult = TotalExportsInternalResponse.builder().build();
 
-    doReturn(expectedResult).when(getTotalExportsInternalForCareProviderService)
+    doReturn(expectedResult)
+        .when(getTotalExportsInternalForCareProviderService)
         .get("careProviderId");
 
-    final var actualResult = certificateInternalApiController.getTotalExportsForCareProvider(
-        "careProviderId");
+    final var actualResult =
+        certificateInternalApiController.getTotalExportsForCareProvider("careProviderId");
     assertEquals(expectedResult, actualResult);
   }
 
@@ -219,14 +239,12 @@ class CertificateInternalApiControllerTest {
 
   @Test
   void shouldReturnCertificateExistsResponseForPlaceholder() {
-    final var expectedResult = CertificateExistsResponse.builder()
-        .exists(true)
-        .build();
+    final var expectedResult = CertificateExistsResponse.builder().exists(true).build();
 
     when(placeholderCertificateExistsService.exist(CERTIFICATE_ID)).thenReturn(expectedResult);
 
-    final var actualResult = certificateInternalApiController.findExistingPlaceholderCertificate(
-        CERTIFICATE_ID);
+    final var actualResult =
+        certificateInternalApiController.findExistingPlaceholderCertificate(CERTIFICATE_ID);
     assertEquals(expectedResult, actualResult);
   }
 
@@ -243,9 +261,8 @@ class CertificateInternalApiControllerTest {
 
     when(getValidSickLeaveCertificatesInternalService.get(request)).thenReturn(expectedResult);
 
-    final var actualResult = certificateInternalApiController.getValidSickLeaveCertificateIds(
-        request
-    );
+    final var actualResult =
+        certificateInternalApiController.getValidSickLeaveCertificateIds(request);
     assertEquals(expectedResult, actualResult);
   }
 }

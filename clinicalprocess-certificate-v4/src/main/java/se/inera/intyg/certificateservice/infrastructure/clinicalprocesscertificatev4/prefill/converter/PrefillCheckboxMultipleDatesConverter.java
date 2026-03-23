@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.prefill.converter;
 
 import java.time.LocalDate;
@@ -34,73 +52,75 @@ public class PrefillCheckboxMultipleDatesConverter implements PrefillStandardCon
 
   @Override
   public PrefillAnswer prefillAnswer(ElementSpecification specification, Forifyllnad prefill) {
-    if (!(specification.configuration() instanceof ElementConfigurationCheckboxMultipleDate configurationCheckboxMultipleDate)) {
-      return PrefillAnswer.builder()
-          .errors(List.of(PrefillError.wrongConfigurationType()))
-          .build();
+    if (!(specification.configuration()
+        instanceof ElementConfigurationCheckboxMultipleDate configurationCheckboxMultipleDate)) {
+      return PrefillAnswer.builder().errors(List.of(PrefillError.wrongConfigurationType())).build();
     }
 
-    final var answers = prefill.getSvar().stream()
-        .filter(svar -> svar.getId().equals(specification.id().id()))
-        .toList();
+    final var answers =
+        prefill.getSvar().stream()
+            .filter(svar -> svar.getId().equals(specification.id().id()))
+            .toList();
 
     if (answers.isEmpty()) {
       return null;
     }
 
     final var prefillErrors = new ArrayList<PrefillError>();
-    final var elementData = ElementData.builder()
-        .id(specification.id())
-        .value(ElementValueDateList.builder()
-            .dateListId(configurationCheckboxMultipleDate.id())
-            .dateList(answers.stream()
-                .map(s -> {
-                  try {
-                    final var validationError = PrefillValidator.validateMinimumNumberOfDelsvar(
-                        s,
-                        MINIMUM_SUB_ANSWERS,
-                        specification
-                    );
+    final var elementData =
+        ElementData.builder()
+            .id(specification.id())
+            .value(
+                ElementValueDateList.builder()
+                    .dateListId(configurationCheckboxMultipleDate.id())
+                    .dateList(
+                        answers.stream()
+                            .map(
+                                s -> {
+                                  try {
+                                    final var validationError =
+                                        PrefillValidator.validateMinimumNumberOfDelsvar(
+                                            s, MINIMUM_SUB_ANSWERS, specification);
 
-                    if (!validationError.isEmpty()) {
-                      prefillErrors.addAll(validationError);
-                      return null;
-                    }
-                    var code = getCode(s.getDelsvar(), specification);
-                    var date = getDate(s, specification);
-                    return ElementValueDate.builder()
-                        .dateId(getCheckboxDate(configurationCheckboxMultipleDate, code).id())
-                        .date(date)
-                        .build();
-                  } catch (Exception ex) {
-                    prefillErrors.add(PrefillError.invalidFormat(s.getId(), ex.getMessage()));
-                    return null;
-                  }
-                })
-                .filter(Objects::nonNull)
-                .toList())
-            .build())
-        .build();
+                                    if (!validationError.isEmpty()) {
+                                      prefillErrors.addAll(validationError);
+                                      return null;
+                                    }
+                                    var code = getCode(s.getDelsvar(), specification);
+                                    var date = getDate(s, specification);
+                                    return ElementValueDate.builder()
+                                        .dateId(
+                                            getCheckboxDate(configurationCheckboxMultipleDate, code)
+                                                .id())
+                                        .date(date)
+                                        .build();
+                                  } catch (Exception ex) {
+                                    prefillErrors.add(
+                                        PrefillError.invalidFormat(s.getId(), ex.getMessage()));
+                                    return null;
+                                  }
+                                })
+                            .filter(Objects::nonNull)
+                            .toList())
+                    .build())
+            .build();
 
-    return PrefillAnswer.builder()
-        .elementData(elementData)
-        .errors(prefillErrors)
-        .build();
+    return PrefillAnswer.builder().elementData(elementData).errors(prefillErrors).build();
   }
 
-  private CheckboxDate getCheckboxDate(ElementConfigurationCheckboxMultipleDate configuration,
-      Code code) {
-    return configuration.dates()
-        .stream()
+  private CheckboxDate getCheckboxDate(
+      ElementConfigurationCheckboxMultipleDate configuration, Code code) {
+    return configuration.dates().stream()
         .filter(d -> d.code().matches(code))
         .findFirst()
         .orElseThrow(() -> new IllegalStateException("Could not find a matching code for " + code));
   }
 
   private LocalDate getDate(Svar s, ElementSpecification specification) {
-    final var subAnswer = s.getDelsvar().stream()
-        .filter(d -> d.getId().equals(specification.id().id() + ".2"))
-        .findFirst();
+    final var subAnswer =
+        s.getDelsvar().stream()
+            .filter(d -> d.getId().equals(specification.id().id() + ".2"))
+            .findFirst();
 
     if (subAnswer.isEmpty() || subAnswer.get().getContent().isEmpty()) {
       return LocalDate.now(ZoneId.systemDefault());
@@ -110,9 +130,10 @@ public class PrefillCheckboxMultipleDatesConverter implements PrefillStandardCon
   }
 
   private Code getCode(List<Delsvar> subAnswers, ElementSpecification specification) {
-    final var subAnswer = subAnswers.stream()
-        .filter(d -> d.getId().equals(specification.id().id() + ".1"))
-        .findFirst();
+    final var subAnswer =
+        subAnswers.stream()
+            .filter(d -> d.getId().equals(specification.id().id() + ".1"))
+            .findFirst();
 
     if (subAnswer.isEmpty()) {
       throw new IllegalStateException("Invalid format: code value is missing");

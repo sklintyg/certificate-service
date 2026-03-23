@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.validation.model;
 
 import java.time.temporal.TemporalAmount;
@@ -29,8 +47,8 @@ public class ElementValidationDateRangeList implements ElementValidation {
   TemporalAmount max;
 
   @Override
-  public List<ValidationError> validate(ElementData data,
-      Optional<ElementId> categoryId, List<ElementData> dataList) {
+  public List<ValidationError> validate(
+      ElementData data, Optional<ElementId> categoryId, List<ElementData> dataList) {
     if (data == null) {
       throw new IllegalArgumentException("Element data is null");
     }
@@ -54,15 +72,14 @@ public class ElementValidationDateRangeList implements ElementValidation {
               .fieldId(dateRangeList.dateRangeListId())
               .categoryId(categoryId.orElse(null))
               .message(ErrorMessageFactory.missingMultipleOption())
-              .build()
-      );
+              .build());
     }
 
     return Collections.emptyList();
   }
 
-  private List<ValidationError> getChildValidationErrors(ElementData data,
-      Optional<ElementId> categoryId, ElementValueDateRangeList dateRangeList) {
+  private List<ValidationError> getChildValidationErrors(
+      ElementData data, Optional<ElementId> categoryId, ElementValueDateRangeList dateRangeList) {
     if (dateRangeList.dateRangeList() == null) {
       return Collections.emptyList();
     }
@@ -74,14 +91,19 @@ public class ElementValidationDateRangeList implements ElementValidation {
     final var toAfterMaxErrors = getToAfterMaxErrors(data, categoryId, dateRangeList);
     final var toBeforeFromErrors = getToBeforeFromDateRangeErrors(data, categoryId, dateRangeList);
 
-    return Stream.of(fromBeforeMinErrors, incompleteErrors, toBeforeMinErrors, toBeforeFromErrors,
-            fromAfterMaxErrors, toAfterMaxErrors)
+    return Stream.of(
+            fromBeforeMinErrors,
+            incompleteErrors,
+            toBeforeMinErrors,
+            toBeforeFromErrors,
+            fromAfterMaxErrors,
+            toAfterMaxErrors)
         .flatMap(List::stream)
         .toList();
   }
 
-  private List<ValidationError> getOverlappingErrors(ElementData data,
-      Optional<ElementId> categoryId, ElementValueDateRangeList dateRangeList) {
+  private List<ValidationError> getOverlappingErrors(
+      ElementData data, Optional<ElementId> categoryId, ElementValueDateRangeList dateRangeList) {
     if (dateRangeList.dateRangeList() == null) {
       return Collections.emptyList();
     }
@@ -89,16 +111,15 @@ public class ElementValidationDateRangeList implements ElementValidation {
     return dateRangeList.dateRangeList().stream()
         .filter(dateRange -> doesDateRangeHaveOverlap(dateRange, dateRangeList.dateRangeList()))
         .findFirst()
-        .map(dateRange -> errorMessage(
-                data,
-                dateRangeList.dateRangeListId(),
-                categoryId,
-                ErrorMessageFactory.overlappingPeriods()
-            )
-        )
-        .stream().toList();
-
-
+        .map(
+            dateRange ->
+                errorMessage(
+                    data,
+                    dateRangeList.dateRangeListId(),
+                    categoryId,
+                    ErrorMessageFactory.overlappingPeriods()))
+        .stream()
+        .toList();
   }
 
   private boolean doesDateRangeHaveOverlap(DateRange dateRange, List<DateRange> list) {
@@ -108,82 +129,94 @@ public class ElementValidationDateRangeList implements ElementValidation {
   }
 
   private boolean doesDateRangesOverlap(DateRange dateRange1, DateRange dateRange2) {
-    final var overlap = Math.min(dateRange1.to().toEpochDay(), dateRange2.to().toEpochDay())
-        - Math.max(dateRange1.from().toEpochDay(), dateRange2.from().toEpochDay());
+    final var overlap =
+        Math.min(dateRange1.to().toEpochDay(), dateRange2.to().toEpochDay())
+            - Math.max(dateRange1.from().toEpochDay(), dateRange2.from().toEpochDay());
 
     return overlap >= 0;
   }
 
-  private List<ValidationError> getToBeforeFromDateRangeErrors(ElementData data,
-      Optional<ElementId> categoryId,
-      ElementValueDateRangeList dateRangeList) {
+  private List<ValidationError> getToBeforeFromDateRangeErrors(
+      ElementData data, Optional<ElementId> categoryId, ElementValueDateRangeList dateRangeList) {
     return dateRangeList.dateRangeList().stream()
         .filter(this::isToBeforeFrom)
-        .map(dateRange -> errorMessage(
-                data, getFieldId(dateRange.dateRangeId(), RANGE_SUFFIX), categoryId,
-                ErrorMessageFactory.endDateAfterStartDate()
-            )
-        )
+        .map(
+            dateRange ->
+                errorMessage(
+                    data,
+                    getFieldId(dateRange.dateRangeId(), RANGE_SUFFIX),
+                    categoryId,
+                    ErrorMessageFactory.endDateAfterStartDate()))
         .toList();
   }
 
-  private List<ValidationError> getIncompleteDateRangeErrors(ElementData data,
-      Optional<ElementId> categoryId, ElementValueDateRangeList dateRangeList) {
+  private List<ValidationError> getIncompleteDateRangeErrors(
+      ElementData data, Optional<ElementId> categoryId, ElementValueDateRangeList dateRangeList) {
     return dateRangeList.dateRangeList().stream()
         .filter(dateRange -> !isDateRangeComplete(dateRange))
-        .map(dateRange -> errorMessage(
-                data, getFieldIdOfIncompleteDateRange(dateRange), categoryId,
-                ErrorMessageFactory.missingDate()
-            )
-        )
+        .map(
+            dateRange ->
+                errorMessage(
+                    data,
+                    getFieldIdOfIncompleteDateRange(dateRange),
+                    categoryId,
+                    ErrorMessageFactory.missingDate()))
         .toList();
   }
 
-  private List<ValidationError> getFromBeforeMinErrors(ElementData data,
-      Optional<ElementId> categoryId, ElementValueDateRangeList dateRangeList) {
+  private List<ValidationError> getFromBeforeMinErrors(
+      ElementData data, Optional<ElementId> categoryId, ElementValueDateRangeList dateRangeList) {
     return dateRangeList.dateRangeList().stream()
         .filter(dateRange -> ElementValidator.isDateBeforeMin(dateRange.from(), min))
-        .map(dateRange -> errorMessage(
-                data, getFieldId(dateRange.dateRangeId(), FROM_SUFFIX), categoryId,
-                ErrorMessageFactory.minDate(min)
-            )
-        )
+        .map(
+            dateRange ->
+                errorMessage(
+                    data,
+                    getFieldId(dateRange.dateRangeId(), FROM_SUFFIX),
+                    categoryId,
+                    ErrorMessageFactory.minDate(min)))
         .toList();
   }
 
-  private List<ValidationError> getToBeforeMinErrors(ElementData data,
-      Optional<ElementId> categoryId, ElementValueDateRangeList dateRangeList) {
+  private List<ValidationError> getToBeforeMinErrors(
+      ElementData data, Optional<ElementId> categoryId, ElementValueDateRangeList dateRangeList) {
     return dateRangeList.dateRangeList().stream()
         .filter(dateRange -> ElementValidator.isDateBeforeMin(dateRange.to(), min))
-        .map(dateRange -> errorMessage(
-                data, getFieldId(dateRange.dateRangeId(), TO_SUFFIX), categoryId,
-                ErrorMessageFactory.minDate(min)
-            )
-        )
+        .map(
+            dateRange ->
+                errorMessage(
+                    data,
+                    getFieldId(dateRange.dateRangeId(), TO_SUFFIX),
+                    categoryId,
+                    ErrorMessageFactory.minDate(min)))
         .toList();
   }
 
-  private List<ValidationError> getFromAfterMaxErrors(ElementData data,
-      Optional<ElementId> categoryId, ElementValueDateRangeList dateRangeList) {
+  private List<ValidationError> getFromAfterMaxErrors(
+      ElementData data, Optional<ElementId> categoryId, ElementValueDateRangeList dateRangeList) {
     return dateRangeList.dateRangeList().stream()
         .filter(dateRange -> ElementValidator.isDateAfterMax(dateRange.from(), max))
-        .map(dateRange -> errorMessage(
-                data, getFieldId(dateRange.dateRangeId(), FROM_SUFFIX), categoryId,
-                ErrorMessageFactory.maxDate(max)
-            )
-        )
+        .map(
+            dateRange ->
+                errorMessage(
+                    data,
+                    getFieldId(dateRange.dateRangeId(), FROM_SUFFIX),
+                    categoryId,
+                    ErrorMessageFactory.maxDate(max)))
         .toList();
   }
 
-  private List<ValidationError> getToAfterMaxErrors(ElementData data,
-      Optional<ElementId> categoryId, ElementValueDateRangeList dateRangeList) {
+  private List<ValidationError> getToAfterMaxErrors(
+      ElementData data, Optional<ElementId> categoryId, ElementValueDateRangeList dateRangeList) {
     return dateRangeList.dateRangeList().stream()
         .filter(dateRange -> ElementValidator.isDateAfterMax(dateRange.to(), max))
-        .map(dateRange -> errorMessage(
-                data, getFieldId(dateRange.dateRangeId(), TO_SUFFIX), categoryId,
-                ErrorMessageFactory.maxDate(max)
-            )
-        )
+        .map(
+            dateRange ->
+                errorMessage(
+                    data,
+                    getFieldId(dateRange.dateRangeId(), TO_SUFFIX),
+                    categoryId,
+                    ErrorMessageFactory.maxDate(max)))
         .toList();
   }
 
@@ -197,14 +230,11 @@ public class ElementValidationDateRangeList implements ElementValidation {
     }
 
     throw new IllegalArgumentException(
-        "Element data value %s is of wrong type".formatted(value.getClass())
-    );
-
+        "Element data value %s is of wrong type".formatted(value.getClass()));
   }
 
   private boolean isDateRangeComplete(DateRange value) {
-    return value.from() != null
-        && value.to() != null;
+    return value.from() != null && value.to() != null;
   }
 
   private boolean isToBeforeFrom(DateRange value) {
@@ -224,15 +254,13 @@ public class ElementValidationDateRangeList implements ElementValidation {
     return new FieldId(id.value() + suffix);
   }
 
-  private static ValidationError errorMessage(ElementData data,
-      FieldId fieldId,
-      Optional<ElementId> categoryId, ErrorMessage message) {
-    return
-        ValidationError.builder()
-            .elementId(data.id())
-            .fieldId(fieldId)
-            .categoryId(categoryId.orElse(null))
-            .message(message)
-            .build();
+  private static ValidationError errorMessage(
+      ElementData data, FieldId fieldId, Optional<ElementId> categoryId, ErrorMessage message) {
+    return ValidationError.builder()
+        .elementId(data.id())
+        .fieldId(fieldId)
+        .categoryId(categoryId.orElse(null))
+        .message(message)
+        .build();
   }
 }

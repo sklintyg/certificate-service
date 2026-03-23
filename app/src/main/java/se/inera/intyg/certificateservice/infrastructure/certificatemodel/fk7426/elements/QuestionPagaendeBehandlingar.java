@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7426.elements;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7426.CertificateModelFactoryFK7426.TEXT_FIELD_LIMIT;
@@ -17,10 +35,9 @@ import se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.
 public class QuestionPagaendeBehandlingar {
 
   public static final ElementId QUESTION_PAGAENDE_BEHANDLING_ID = new ElementId("19");
-  public static final FieldId QUESTION_PAGAENDE_BEHANDLING_FIELD_ID = new FieldId(
-      "19.1");
-  private static final PdfFieldId PDF_FIELD_ID = new PdfFieldId(
-      "form1[0].#subform[2].flt_txt_PagaendeBehandling[0]");
+  public static final FieldId QUESTION_PAGAENDE_BEHANDLING_FIELD_ID = new FieldId("19.1");
+  private static final PdfFieldId PDF_FIELD_ID =
+      new PdfFieldId("form1[0].#subform[2].flt_txt_PagaendeBehandling[0]");
 
   private QuestionPagaendeBehandlingar() {
     throw new IllegalStateException("Utility class");
@@ -34,29 +51,23 @@ public class QuestionPagaendeBehandlingar {
                 .name("Pågående medicinska behandlingar/åtgärder")
                 .description("Ange vad syftet är och om möjligt tidplan samt ansvarig vårdenhet.")
                 .id(QUESTION_PAGAENDE_BEHANDLING_FIELD_ID)
-                .build()
-        )
+                .build())
         .rules(
             List.of(
-                CertificateElementRuleFactory.limit(QUESTION_PAGAENDE_BEHANDLING_ID,
-                    TEXT_FIELD_LIMIT)
-            )
-        )
+                CertificateElementRuleFactory.limit(
+                    QUESTION_PAGAENDE_BEHANDLING_ID, TEXT_FIELD_LIMIT)))
         .validations(
             List.of(
                 ElementValidationText.builder()
                     .mandatory(false)
                     .limit((int) TEXT_FIELD_LIMIT)
-                    .build()
-            )
-        )
+                    .build()))
         .pdfConfiguration(
             PdfConfigurationText.builder()
                 .pdfFieldId(PDF_FIELD_ID)
                 .maxLength(ROW_MAX_LENGTH * 4)
                 .overflowSheetFieldId(FORTSATTNINGSBLAD_ID)
-                .build()
-        )
+                .build())
         .build();
   }
 }

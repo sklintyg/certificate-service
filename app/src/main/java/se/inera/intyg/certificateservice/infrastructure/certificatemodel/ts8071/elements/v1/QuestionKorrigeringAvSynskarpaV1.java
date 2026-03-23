@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.v1;
 
 import static se.inera.intyg.certificateservice.domain.certificate.model.CustomMapperId.CODE_LIST_TO_BOOLEAN;
@@ -37,13 +55,13 @@ public class QuestionKorrigeringAvSynskarpaV1 {
 
   public static ElementSpecification questionKorrigeringAvSynskarpaV1(
       ElementSpecification... children) {
-    final var checkboxes = List.of(
-        CodeFactory.elementConfigurationCode(
-            CodeSystemKorrigeringAvSynskarpa.GLASOGON_INGEN_STYRKA_OVER_8_DIOPTRIER),
-        CodeFactory.elementConfigurationCode(
-            CodeSystemKorrigeringAvSynskarpa.GLASOGON_MED_STYRKA_OVER_8_DIOPTRIER),
-        CodeFactory.elementConfigurationCode(CodeSystemKorrigeringAvSynskarpa.KONTAKTLINSER)
-    );
+    final var checkboxes =
+        List.of(
+            CodeFactory.elementConfigurationCode(
+                CodeSystemKorrigeringAvSynskarpa.GLASOGON_INGEN_STYRKA_OVER_8_DIOPTRIER),
+            CodeFactory.elementConfigurationCode(
+                CodeSystemKorrigeringAvSynskarpa.GLASOGON_MED_STYRKA_OVER_8_DIOPTRIER),
+            CodeFactory.elementConfigurationCode(CodeSystemKorrigeringAvSynskarpa.KONTAKTLINSER));
 
     return ElementSpecification.builder()
         .id(QUESTION_KORRIGERING_AV_SYNSKARPA_V1_ID)
@@ -53,8 +71,7 @@ public class QuestionKorrigeringAvSynskarpaV1 {
                 .name("Korrigering av synskärpa genom")
                 .elementLayout(ElementLayout.ROWS)
                 .list(checkboxes)
-                .build()
-        )
+                .build())
         .rules(
             List.of(
                 CertificateElementRuleFactory.show(
@@ -67,24 +84,16 @@ public class QuestionKorrigeringAvSynskarpaV1 {
                                         multipleAndExpressions(
                                             lessThan(
                                                 withCitation(LEFT_EYE_WITHOUT_CORRECTION_ID),
-                                                "0.8"
-                                            ),
+                                                "0.8"),
                                             lessThan(
                                                 withCitation(RIGHT_EYE_WITHOUT_CORRECTION_ID),
-                                                "0.8"
-                                            )
-                                        )
-                                    ),
+                                                "0.8"))),
                                     wrapWithParenthesis(
                                         multipleAndExpressions(
                                             wrapWithNotEmpty(
                                                 withCitation(LEFT_EYE_WITHOUT_CORRECTION_ID)),
                                             wrapWithNotEmpty(
-                                                withCitation(RIGHT_EYE_WITHOUT_CORRECTION_ID))
-                                        )
-                                    )
-                                )
-                            ),
+                                                withCitation(RIGHT_EYE_WITHOUT_CORRECTION_ID)))))),
                             wrapWithParenthesis(
                                 multipleAndExpressions(
                                     multipleAndExpressions(
@@ -92,87 +101,70 @@ public class QuestionKorrigeringAvSynskarpaV1 {
                                             multipleOrExpression(
                                                 lessThan(
                                                     withCitation(LEFT_EYE_WITHOUT_CORRECTION_ID),
-                                                    "0.1"
-                                                ),
+                                                    "0.1"),
                                                 lessThan(
                                                     withCitation(RIGHT_EYE_WITHOUT_CORRECTION_ID),
-                                                    "0.1"
-                                                )
-                                            )
-                                        )
-                                    )
-                                    ,
+                                                    "0.1")))),
                                     wrapWithParenthesis(
                                         multipleAndExpressions(
                                             wrapWithNotEmpty(
                                                 withCitation(LEFT_EYE_WITHOUT_CORRECTION_ID)),
                                             wrapWithNotEmpty(
-                                                withCitation(RIGHT_EYE_WITHOUT_CORRECTION_ID))
-                                        )
-                                    )
-                                )
-                            )
-                        )
-                    )
-                ),
+                                                withCitation(
+                                                    RIGHT_EYE_WITHOUT_CORRECTION_ID))))))))),
                 CertificateElementRuleFactory.mandatoryOrExist(
                     QUESTION_KORRIGERING_AV_SYNSKARPA_V1_ID,
                     List.of(
                         new FieldId(
-                            CodeSystemKorrigeringAvSynskarpa.GLASOGON_MED_STYRKA_OVER_8_DIOPTRIER.code()),
+                            CodeSystemKorrigeringAvSynskarpa.GLASOGON_MED_STYRKA_OVER_8_DIOPTRIER
+                                .code()),
                         new FieldId(
-                            CodeSystemKorrigeringAvSynskarpa.GLASOGON_INGEN_STYRKA_OVER_8_DIOPTRIER.code()),
-                        new FieldId(CodeSystemKorrigeringAvSynskarpa.KONTAKTLINSER.code())
-                    )
-                ),
+                            CodeSystemKorrigeringAvSynskarpa.GLASOGON_INGEN_STYRKA_OVER_8_DIOPTRIER
+                                .code()),
+                        new FieldId(CodeSystemKorrigeringAvSynskarpa.KONTAKTLINSER.code()))),
                 CertificateElementRuleFactory.disableSubElements(
                     QUESTION_KORRIGERING_AV_SYNSKARPA_V1_ID,
-                    List.of(new FieldId(
-                        singleExpression(
-                            CodeSystemKorrigeringAvSynskarpa.GLASOGON_MED_STYRKA_OVER_8_DIOPTRIER.code()))),
                     List.of(
                         new FieldId(
-                            CodeSystemKorrigeringAvSynskarpa.GLASOGON_INGEN_STYRKA_OVER_8_DIOPTRIER.code())
-                    )
-                ),
+                            singleExpression(
+                                CodeSystemKorrigeringAvSynskarpa
+                                    .GLASOGON_MED_STYRKA_OVER_8_DIOPTRIER
+                                    .code()))),
+                    List.of(
+                        new FieldId(
+                            CodeSystemKorrigeringAvSynskarpa.GLASOGON_INGEN_STYRKA_OVER_8_DIOPTRIER
+                                .code()))),
                 CertificateElementRuleFactory.disableSubElements(
                     QUESTION_KORRIGERING_AV_SYNSKARPA_V1_ID,
-                    List.of(new FieldId(
-                        singleExpression(
-                            CodeSystemKorrigeringAvSynskarpa.GLASOGON_INGEN_STYRKA_OVER_8_DIOPTRIER.code()))),
                     List.of(
                         new FieldId(
-                            CodeSystemKorrigeringAvSynskarpa.GLASOGON_MED_STYRKA_OVER_8_DIOPTRIER.code())
-                    )
-                )
-            )
-        )
-        .validations(
-            List.of(
-                ElementValidationCodeList.builder()
-                    .mandatory(true)
-                    .build()
-            )
-        )
+                            singleExpression(
+                                CodeSystemKorrigeringAvSynskarpa
+                                    .GLASOGON_INGEN_STYRKA_OVER_8_DIOPTRIER
+                                    .code()))),
+                    List.of(
+                        new FieldId(
+                            CodeSystemKorrigeringAvSynskarpa.GLASOGON_MED_STYRKA_OVER_8_DIOPTRIER
+                                .code())))))
+        .validations(List.of(ElementValidationCodeList.builder().mandatory(true).build()))
         .children(List.of(children))
         .shouldValidate(
-            elementData -> elementData.stream()
-                .filter(data -> data.id().equals(QUESTION_SYNSKARPA_ID))
-                .map(data -> (ElementValueVisualAcuities) data.value())
-                .anyMatch(
-                    visualAcuities ->
-                        (visualAcuities.rightEye().withoutCorrection().value() != null
-                            && visualAcuities.rightEye().withoutCorrection().value() < 0.8
-                            && visualAcuities.leftEye().withoutCorrection().value() != null
-                            && visualAcuities.leftEye().withoutCorrection().value() < 0.8) ||
-                            (
-                                (visualAcuities.rightEye().withoutCorrection().value() != null
-                                    && visualAcuities.rightEye().withoutCorrection().value() < 0.1)
+            elementData ->
+                elementData.stream()
+                    .filter(data -> data.id().equals(QUESTION_SYNSKARPA_ID))
+                    .map(data -> (ElementValueVisualAcuities) data.value())
+                    .anyMatch(
+                        visualAcuities ->
+                            (visualAcuities.rightEye().withoutCorrection().value() != null
+                                    && visualAcuities.rightEye().withoutCorrection().value() < 0.8
+                                    && visualAcuities.leftEye().withoutCorrection().value() != null
+                                    && visualAcuities.leftEye().withoutCorrection().value() < 0.8)
+                                || ((visualAcuities.rightEye().withoutCorrection().value() != null
+                                        && visualAcuities.rightEye().withoutCorrection().value()
+                                            < 0.1)
                                     || (visualAcuities.leftEye().withoutCorrection().value() != null
-                                    && visualAcuities.leftEye().withoutCorrection().value() < 0.1)
-                            )
-                )
-        )
+                                        && visualAcuities.leftEye().withoutCorrection().value()
+                                            < 0.1))))
         .mapping(new ElementMapping(CODE_LIST_TO_BOOLEAN))
         .build();
   }

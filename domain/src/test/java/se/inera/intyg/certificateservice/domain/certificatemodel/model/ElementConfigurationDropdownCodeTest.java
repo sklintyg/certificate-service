@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.certificatemodel.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -20,18 +38,18 @@ class ElementConfigurationDropdownCodeTest {
   private static final FieldId FIELD_ID = new FieldId("field1");
   private static final Code CODE1 = new Code("A", "CODESYSTEM", "Alpha");
   private static final Code CODE2 = new Code("B", "CODESYSTEM", "Beta");
-  private static final ElementConfigurationCode CONFIG_CODE1 = new ElementConfigurationCode(
-      new FieldId(CODE1.code()), CODE1.displayName(), CODE1);
-  private static final ElementConfigurationCode CONFIG_CODE2 = new ElementConfigurationCode(
-      new FieldId(CODE2.code()), CODE2.displayName(), CODE2);
+  private static final ElementConfigurationCode CONFIG_CODE1 =
+      new ElementConfigurationCode(new FieldId(CODE1.code()), CODE1.displayName(), CODE1);
+  private static final ElementConfigurationCode CONFIG_CODE2 =
+      new ElementConfigurationCode(new FieldId(CODE2.code()), CODE2.displayName(), CODE2);
 
-  private final ElementConfigurationDropdownCode dropdown = ElementConfigurationDropdownCode.builder()
-      .id(FIELD_ID)
-      .name("Dropdown")
-      .message(ElementMessage.builder().build())
-      .list(List.of(CONFIG_CODE1, CONFIG_CODE2))
-      .build();
-
+  private final ElementConfigurationDropdownCode dropdown =
+      ElementConfigurationDropdownCode.builder()
+          .id(FIELD_ID)
+          .name("Dropdown")
+          .message(ElementMessage.builder().build())
+          .list(List.of(CONFIG_CODE1, CONFIG_CODE2))
+          .build();
 
   @Test
   void emptyValueShouldReturnElementValueCodeWithId() {
@@ -48,11 +66,10 @@ class ElementConfigurationDropdownCodeTest {
     assertTrue(result.isEmpty());
   }
 
-
   @Test
   void simplifiedShouldReturnDisplayNameIfValueIsPresent() {
-    ElementValueCode value = ElementValueCode.builder().codeId(new FieldId(CODE1.code()))
-        .code(CODE1.code()).build();
+    ElementValueCode value =
+        ElementValueCode.builder().codeId(new FieldId(CODE1.code())).code(CODE1.code()).build();
     Optional<ElementSimplifiedValue> result = dropdown.simplified(value);
     assertTrue(result.isPresent());
     assertInstanceOf(ElementSimplifiedValueText.class, result.get());
@@ -61,9 +78,7 @@ class ElementConfigurationDropdownCodeTest {
 
   @Test
   void simplifiedShouldThrowIfWrongType() {
-    var wrongValue = ElementValueText.builder()
-        .text("This is not a code value")
-        .build();
+    var wrongValue = ElementValueText.builder().text("This is not a code value").build();
     assertThrows(IllegalStateException.class, () -> dropdown.simplified(wrongValue));
   }
 

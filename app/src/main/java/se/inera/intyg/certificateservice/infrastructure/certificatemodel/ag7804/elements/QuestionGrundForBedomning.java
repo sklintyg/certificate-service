@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ag7804.elements;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.ag7804.elements.QuestionPrognos.QUESTION_PROGNOS_ID;
@@ -15,8 +33,7 @@ import se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.
 
 public class QuestionGrundForBedomning {
 
-  public static final ElementId QUESTION_GRUND_FOR_BEDOMNING_ID = new ElementId(
-      "39.2");
+  public static final ElementId QUESTION_GRUND_FOR_BEDOMNING_ID = new ElementId("39.2");
   private static final FieldId QUESTION_GRUND_FOR_BEDOMNING_FIELD_ID = new FieldId("39.2");
 
   private QuestionGrundForBedomning() {
@@ -30,36 +47,21 @@ public class QuestionGrundForBedomning {
         .configuration(
             ElementConfigurationTextArea.builder()
                 .id(QUESTION_GRUND_FOR_BEDOMNING_FIELD_ID)
-                .name(
-                    "Beskriv vad som ligger till grund för bedömningen")
-                .build()
-        )
+                .name("Beskriv vad som ligger till grund för bedömningen")
+                .build())
         .rules(
             List.of(
                 CertificateElementRuleFactory.mandatory(
-                    QUESTION_GRUND_FOR_BEDOMNING_ID,
-                    QUESTION_GRUND_FOR_BEDOMNING_FIELD_ID
-                ),
-                CertificateElementRuleFactory.limit(
-                    QUESTION_GRUND_FOR_BEDOMNING_ID,
-                    (short) 4000),
+                    QUESTION_GRUND_FOR_BEDOMNING_ID, QUESTION_GRUND_FOR_BEDOMNING_FIELD_ID),
+                CertificateElementRuleFactory.limit(QUESTION_GRUND_FOR_BEDOMNING_ID, (short) 4000),
                 CertificateElementRuleFactory.show(
-                    QUESTION_PROGNOS_ID, new FieldId(CodeSystemKvFkmu0006.PROGNOS_OKLAR.code())
-                )
-            )
-        )
-        .validations(
-            List.of(
-                ElementValidationText.builder()
-                    .mandatory(true)
-                    .limit(4000)
-                    .build()
-            )
-        )
-        .shouldValidate(ElementDataPredicateFactory.codes(QUESTION_PROGNOS_ID,
-            List.of(new FieldId(CodeSystemKvFkmu0006.PROGNOS_OKLAR.code()))))
+                    QUESTION_PROGNOS_ID, new FieldId(CodeSystemKvFkmu0006.PROGNOS_OKLAR.code()))))
+        .validations(List.of(ElementValidationText.builder().mandatory(true).limit(4000).build()))
+        .shouldValidate(
+            ElementDataPredicateFactory.codes(
+                QUESTION_PROGNOS_ID,
+                List.of(new FieldId(CodeSystemKvFkmu0006.PROGNOS_OKLAR.code()))))
         .mapping(new ElementMapping(QUESTION_PROGNOS_ID, CodeSystemKvFkmu0006.PROGNOS_OKLAR))
         .build();
   }
-
 }

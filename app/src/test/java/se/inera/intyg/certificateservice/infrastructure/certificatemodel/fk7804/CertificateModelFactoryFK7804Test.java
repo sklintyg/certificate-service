@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7804;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -43,21 +61,19 @@ class CertificateModelFactoryFK7804Test {
   private static final String VERSION = "2.0";
   private static final String LOGICAL_ADDRESS = "L-A";
 
-  @Mock
-  private CertificateActionFactory certificateActionFactory;
+  @Mock private CertificateActionFactory certificateActionFactory;
 
-  @Mock
-  private DiagnosisCodeRepository diagnosisCodeRepository;
+  @Mock private DiagnosisCodeRepository diagnosisCodeRepository;
 
   private CertificateModelFactoryFK7804 certificateModelFactoryFK7804;
 
   @BeforeEach
   void setUp() {
-    certificateModelFactoryFK7804 = new CertificateModelFactoryFK7804(
-        certificateActionFactory,
-        diagnosisCodeRepository
-    );
-    ReflectionTestUtils.setField(certificateModelFactoryFK7804, "activeFrom",
+    certificateModelFactoryFK7804 =
+        new CertificateModelFactoryFK7804(certificateActionFactory, diagnosisCodeRepository);
+    ReflectionTestUtils.setField(
+        certificateModelFactoryFK7804,
+        "activeFrom",
         java.time.LocalDateTime.now(java.time.ZoneId.systemDefault()));
     ReflectionTestUtils.setField(certificateModelFactoryFK7804, "fkLogicalAddress", "L-A");
   }
@@ -110,11 +126,7 @@ class CertificateModelFactoryFK7804Test {
   @Test
   void shouldIncludeActiveFrom() {
     final var expectedActiveFrom = LocalDateTime.now(ZoneId.systemDefault());
-    ReflectionTestUtils.setField(
-        certificateModelFactoryFK7804,
-        "activeFrom",
-        expectedActiveFrom
-    );
+    ReflectionTestUtils.setField(certificateModelFactoryFK7804, "activeFrom", expectedActiveFrom);
 
     final var certificateModel = certificateModelFactoryFK7804.create();
 
@@ -130,20 +142,20 @@ class CertificateModelFactoryFK7804Test {
 
   @Test
   void shouldIncludeTexts() {
-    final var expected = List.of(
-        CertificateText.builder()
-            .text(
-                "Det här är ditt intyg. Intyget innehåller all information som vården fyllt i. Du kan inte ändra något i ditt intyg. Har du frågor kontaktar du den som skrivit ditt intyg. Om du vill ansöka om sjukpenning, gör du det på {LINK_FK}.\n")
-            .type(CertificateTextType.PREAMBLE_TEXT)
-            .links(List.of(
-                CertificateLink.builder()
-                    .id("LINK_FK")
-                    .name("Försäkringskassan")
-                    .url("https://www.forsakringskassan.se/")
-                    .build()
-            ))
-            .build()
-    );
+    final var expected =
+        List.of(
+            CertificateText.builder()
+                .text(
+                    "Det här är ditt intyg. Intyget innehåller all information som vården fyllt i. Du kan inte ändra något i ditt intyg. Har du frågor kontaktar du den som skrivit ditt intyg. Om du vill ansöka om sjukpenning, gör du det på {LINK_FK}.\n")
+                .type(CertificateTextType.PREAMBLE_TEXT)
+                .links(
+                    List.of(
+                        CertificateLink.builder()
+                            .id("LINK_FK")
+                            .name("Försäkringskassan")
+                            .url("https://www.forsakringskassan.se/")
+                            .build()))
+                .build());
 
     final var certificateModel = certificateModelFactoryFK7804.create();
 
@@ -154,30 +166,30 @@ class CertificateModelFactoryFK7804Test {
   void shouldIncludeSummaryProvider() {
     final var certificateModel = certificateModelFactoryFK7804.create();
 
-    assertEquals(FK7804CertificateSummaryProvider.class,
-        certificateModel.summaryProvider().getClass());
+    assertEquals(
+        FK7804CertificateSummaryProvider.class, certificateModel.summaryProvider().getClass());
   }
 
   @Test
   void shouldIncludeMessageTypes() {
-    final var expectedMessageTypes = List.of(
-        CertificateMessageType.builder()
-            .type(MessageType.MISSING)
-            .subject(new Subject(MessageType.MISSING.displayName()))
-            .build(),
-        CertificateMessageType.builder()
-            .type(MessageType.COORDINATION)
-            .subject(new Subject(MessageType.COORDINATION.displayName()))
-            .build(),
-        CertificateMessageType.builder()
-            .type(MessageType.CONTACT)
-            .subject(new Subject(MessageType.CONTACT.displayName()))
-            .build(),
-        CertificateMessageType.builder()
-            .type(MessageType.OTHER)
-            .subject(new Subject(MessageType.OTHER.displayName()))
-            .build()
-    );
+    final var expectedMessageTypes =
+        List.of(
+            CertificateMessageType.builder()
+                .type(MessageType.MISSING)
+                .subject(new Subject(MessageType.MISSING.displayName()))
+                .build(),
+            CertificateMessageType.builder()
+                .type(MessageType.COORDINATION)
+                .subject(new Subject(MessageType.COORDINATION.displayName()))
+                .build(),
+            CertificateMessageType.builder()
+                .type(MessageType.CONTACT)
+                .subject(new Subject(MessageType.CONTACT.displayName()))
+                .build(),
+            CertificateMessageType.builder()
+                .type(MessageType.OTHER)
+                .subject(new Subject(MessageType.OTHER.displayName()))
+                .build());
 
     final var certificateModel = certificateModelFactoryFK7804.create();
 
@@ -186,11 +198,8 @@ class CertificateModelFactoryFK7804Test {
 
   @Test
   void shouldIncludeRecipient() {
-    final var expectedRecipient = new Recipient(
-        new RecipientId("FKASSA"),
-        "Försäkringskassan",
-        LOGICAL_ADDRESS
-    );
+    final var expectedRecipient =
+        new Recipient(new RecipientId("FKASSA"), "Försäkringskassan", LOGICAL_ADDRESS);
 
     final var certificateModel = certificateModelFactoryFK7804.create();
 
@@ -203,8 +212,7 @@ class CertificateModelFactoryFK7804Test {
 
     assertAll(
         () -> assertNotNull(certificateModel.certificateActionSpecifications()),
-        () -> assertFalse(certificateModel.certificateActionSpecifications().isEmpty())
-    );
+        () -> assertFalse(certificateModel.certificateActionSpecifications().isEmpty()));
   }
 
   @Test
@@ -213,8 +221,7 @@ class CertificateModelFactoryFK7804Test {
 
     assertAll(
         () -> assertNotNull(certificateModel.messageActionSpecifications()),
-        () -> assertFalse(certificateModel.messageActionSpecifications().isEmpty())
-    );
+        () -> assertFalse(certificateModel.messageActionSpecifications().isEmpty()));
   }
 
   @Test
@@ -249,8 +256,7 @@ class CertificateModelFactoryFK7804Test {
         && !(element.configuration() instanceof ElementConfigurationUnitContactInformation)) {
       assertNotNull(
           element.pdfConfiguration(),
-          () -> "Missing pdfConfiguration for element: " + element.id()
-      );
+          () -> "Missing pdfConfiguration for element: " + element.id());
     }
     element.children().forEach(this::checkPdfConfigRecursive);
   }
@@ -259,16 +265,47 @@ class CertificateModelFactoryFK7804Test {
   class CertificateSpecifications {
 
     @ParameterizedTest
-    @ValueSource(strings = {
-        "KAT_1", "KAT_2", "KAT_3", "KAT_4", "KAT_5", "KAT_6", "KAT_7", "KAT_8", "KAT_9", "KAT_10",
-        "KAT_11", "KAT_12", "UNIT_CONTACT_INFORMATION", "27", "1", "1.3", "28", "29", "19", "32",
-        "37", "34", "33", "33.2", "6", "44", "25", "39", "39.2", "39.4", "26", "26.2"
-    })
+    @ValueSource(
+        strings = {
+          "KAT_1",
+          "KAT_2",
+          "KAT_3",
+          "KAT_4",
+          "KAT_5",
+          "KAT_6",
+          "KAT_7",
+          "KAT_8",
+          "KAT_9",
+          "KAT_10",
+          "KAT_11",
+          "KAT_12",
+          "UNIT_CONTACT_INFORMATION",
+          "27",
+          "1",
+          "1.3",
+          "28",
+          "29",
+          "19",
+          "32",
+          "37",
+          "34",
+          "33",
+          "33.2",
+          "6",
+          "44",
+          "25",
+          "39",
+          "39.2",
+          "39.4",
+          "26",
+          "26.2"
+        })
     void shouldIncludeCategories(String id) {
       final var elementId = new ElementId(id);
       final var certificateModel = certificateModelFactoryFK7804.create();
 
-      assertTrue(certificateModel.elementSpecificationExists(elementId),
+      assertTrue(
+          certificateModel.elementSpecificationExists(elementId),
           "Expected elementId: '%s' to exist in elementSpecifications".formatted(elementId));
     }
   }

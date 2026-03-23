@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.certificate.service;
 
 import java.time.LocalDateTime;
@@ -16,40 +34,46 @@ public class GetCertificateEventsOfTypeDomainService {
       case CREATED ->
           List.of(eventFromTimestampAndRelation(certificate, certificate.created(), type));
       case AVAILABLE_FOR_PATIENT ->
-          Boolean.TRUE.equals(certificate.certificateModel().availableForCitizen()) ? List.of(
-              eventFromTimestamp(certificate, certificate.signed(), type))
+          Boolean.TRUE.equals(certificate.certificateModel().availableForCitizen())
+              ? List.of(eventFromTimestamp(certificate, certificate.signed(), type))
               : Collections.emptyList();
       case SIGNED -> List.of(eventFromTimestamp(certificate, certificate.signed(), type));
-      case SENT -> certificate.sent() != null
-          ? List.of(eventFromTimestamp(certificate, certificate.sent().sentAt(), type))
-          : Collections.emptyList();
-      case INCOMING_MESSAGE -> certificate.messages()
-          .stream()
-          .filter(message -> message.type() != MessageType.ANSWER
-              && message.type() != MessageType.COMPLEMENT)
-          .filter(message -> message.author().fromFK())
-          .map(message -> eventFromTimestamp(certificate, message.sent(), type))
-          .toList();
-      case OUTGOING_MESSAGE -> certificate.messages()
-          .stream()
-          .filter(message -> message.type() != MessageType.ANSWER
-              && message.type() != MessageType.COMPLEMENT)
-          .filter(message -> !message.author().fromFK())
-          .map(message -> eventFromTimestamp(certificate, message.sent(), type))
-          .toList();
-      case INCOMING_ANSWER -> certificate.messages(MessageType.ANSWER)
-          .stream()
-          .filter(message -> message.author().fromFK())
-          .map(message -> eventFromTimestamp(certificate, message.sent(), type))
-          .toList();
-      case REQUEST_FOR_COMPLEMENT -> certificate.messages()
-          .stream()
-          .filter(message -> !message.complements().isEmpty())
-          .map(complement -> eventFromTimestamp(certificate, complement.sent(), type))
-          .toList();
-      case REVOKED -> certificate.revoked() != null
-          ? List.of(eventFromTimestamp(certificate, certificate.revoked().revokedAt(), type))
-          : Collections.emptyList();
+      case SENT ->
+          certificate.sent() != null
+              ? List.of(eventFromTimestamp(certificate, certificate.sent().sentAt(), type))
+              : Collections.emptyList();
+      case INCOMING_MESSAGE ->
+          certificate.messages().stream()
+              .filter(
+                  message ->
+                      message.type() != MessageType.ANSWER
+                          && message.type() != MessageType.COMPLEMENT)
+              .filter(message -> message.author().fromFK())
+              .map(message -> eventFromTimestamp(certificate, message.sent(), type))
+              .toList();
+      case OUTGOING_MESSAGE ->
+          certificate.messages().stream()
+              .filter(
+                  message ->
+                      message.type() != MessageType.ANSWER
+                          && message.type() != MessageType.COMPLEMENT)
+              .filter(message -> !message.author().fromFK())
+              .map(message -> eventFromTimestamp(certificate, message.sent(), type))
+              .toList();
+      case INCOMING_ANSWER ->
+          certificate.messages(MessageType.ANSWER).stream()
+              .filter(message -> message.author().fromFK())
+              .map(message -> eventFromTimestamp(certificate, message.sent(), type))
+              .toList();
+      case REQUEST_FOR_COMPLEMENT ->
+          certificate.messages().stream()
+              .filter(message -> !message.complements().isEmpty())
+              .map(complement -> eventFromTimestamp(certificate, complement.sent(), type))
+              .toList();
+      case REVOKED ->
+          certificate.revoked() != null
+              ? List.of(eventFromTimestamp(certificate, certificate.revoked().revokedAt(), type))
+              : Collections.emptyList();
       case REPLACED -> certificateEventsForChildRelation(certificate, type, RelationType.REPLACE);
       case REPLACES -> certificateEventsForParentRelation(certificate, type, RelationType.REPLACE);
       case COMPLEMENTS ->
@@ -57,45 +81,53 @@ public class GetCertificateEventsOfTypeDomainService {
       case COMPLEMENTED ->
           certificateEventsForChildRelation(certificate, type, RelationType.COMPLEMENT);
       case EXTENDED -> certificateEventsForParentRelation(certificate, type, RelationType.RENEW);
-      case DELETED, LOCKED, READY_FOR_SIGN, INCOMING_MESSAGE_HANDLED, INCOMING_MESSAGE_REMINDER,
-           OUTGOING_MESSAGE_HANDLED, COPIED_BY, COPIED_FROM, CREATED_FROM,
-           RELATED_CERTIFICATE_REVOKED -> Collections.emptyList();
+      case DELETED,
+          LOCKED,
+          READY_FOR_SIGN,
+          INCOMING_MESSAGE_HANDLED,
+          INCOMING_MESSAGE_REMINDER,
+          OUTGOING_MESSAGE_HANDLED,
+          COPIED_BY,
+          COPIED_FROM,
+          CREATED_FROM,
+          RELATED_CERTIFICATE_REVOKED ->
+          Collections.emptyList();
     };
   }
 
-  private static List<CertificateEvent> certificateEventsForChildRelation(Certificate certificate,
-      CertificateEventType type, RelationType relationType) {
+  private static List<CertificateEvent> certificateEventsForChildRelation(
+      Certificate certificate, CertificateEventType type, RelationType relationType) {
     if (certificate.children() == null) {
       return Collections.emptyList();
     }
 
     return certificate.children().stream()
         .filter(child -> child.type() == relationType)
-        .map(
-            child -> eventFromRelation(certificate, child.certificate(), child.created(), type)
-        )
+        .map(child -> eventFromRelation(certificate, child.certificate(), child.created(), type))
         .toList();
   }
 
   private static List<CertificateEvent> certificateEventsForParentRelation(
-      Certificate certificate,
-      CertificateEventType type, RelationType relationType) {
+      Certificate certificate, CertificateEventType type, RelationType relationType) {
     if (certificate.parent() == null) {
       return Collections.emptyList();
     }
 
-    return certificate.parent().type() == relationType ?
-        List.of(
+    return certificate.parent().type() == relationType
+        ? List.of(
             eventFromRelation(
-                certificate, certificate.parent().certificate(), certificate.parent().created(),
-                type
-            )
-        ) : Collections.emptyList();
+                certificate,
+                certificate.parent().certificate(),
+                certificate.parent().created(),
+                type))
+        : Collections.emptyList();
   }
 
-  private static CertificateEvent eventFromRelation(Certificate certificate,
+  private static CertificateEvent eventFromRelation(
+      Certificate certificate,
       Certificate relatedCertificate,
-      LocalDateTime timestamp, CertificateEventType type) {
+      LocalDateTime timestamp,
+      CertificateEventType type) {
     if (timestamp == null) {
       return CertificateEvent.builder().build();
     }
@@ -109,8 +141,8 @@ public class GetCertificateEventsOfTypeDomainService {
         .build();
   }
 
-  private static CertificateEvent eventFromTimestamp(Certificate certificate,
-      LocalDateTime timestamp, CertificateEventType type) {
+  private static CertificateEvent eventFromTimestamp(
+      Certificate certificate, LocalDateTime timestamp, CertificateEventType type) {
     if (timestamp == null) {
       return CertificateEvent.builder().build();
     }
@@ -122,12 +154,13 @@ public class GetCertificateEventsOfTypeDomainService {
         .build();
   }
 
-  private static CertificateEvent eventFromTimestampAndRelation(Certificate certificate,
-      LocalDateTime timestamp, CertificateEventType type) {
+  private static CertificateEvent eventFromTimestampAndRelation(
+      Certificate certificate, LocalDateTime timestamp, CertificateEventType type) {
 
-    if (certificate.parent() != null && (certificate.parent().type().equals(RelationType.REPLACE)
-        || certificate.parent().type().equals(RelationType.COMPLEMENT)
-        || certificate.parent().type().equals(RelationType.RENEW))) {
+    if (certificate.parent() != null
+        && (certificate.parent().type().equals(RelationType.REPLACE)
+            || certificate.parent().type().equals(RelationType.COMPLEMENT)
+            || certificate.parent().type().equals(RelationType.RENEW))) {
       return CertificateEvent.builder().build();
     }
 

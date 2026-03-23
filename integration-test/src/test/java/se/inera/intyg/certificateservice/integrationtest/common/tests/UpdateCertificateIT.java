@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.integrationtest.common.tests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,147 +51,152 @@ import se.inera.intyg.certificateservice.integrationtest.common.setup.BaseIntegr
 public abstract class UpdateCertificateIT extends BaseIntegrationIT {
 
   @Test
-  @DisplayName("Vårdadmin - Om intyget är utfärdat på en patient som har skyddade personuppgifter skall felkod 403 (FORBIDDEN) returneras")
+  @DisplayName(
+      "Vårdadmin - Om intyget är utfärdat på en patient som har skyddade personuppgifter skall felkod 403 (FORBIDDEN) returneras")
   void shallNotUpdateDataIfUserIsCareAdminAndPatientIsProtectedPerson() {
-    final var testCertificates = testabilityApi().addCertificates(
-        customTestabilityCertificateRequest(type(), typeVersion())
-            .patient(ANONYMA_REACT_ATTILA_DTO)
-            .build()
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(
+                customTestabilityCertificateRequest(type(), typeVersion())
+                    .patient(ANONYMA_REACT_ATTILA_DTO)
+                    .build());
 
     final var certificate = certificate(testCertificates);
 
-    final var response = api().updateCertificate(
-        customUpdateCertificateRequest()
-            .user(ALVA_VARDADMINISTRATOR_DTO)
-            .certificate(certificate)
-            .build(),
-        certificateId(testCertificates)
-    );
+    final var response =
+        api()
+            .updateCertificate(
+                customUpdateCertificateRequest()
+                    .user(ALVA_VARDADMINISTRATOR_DTO)
+                    .certificate(certificate)
+                    .build(),
+                certificateId(testCertificates));
 
     assertEquals(403, response.getStatusCode().value());
   }
 
   @Test
-  @DisplayName("Om intyget är utfärdat på en annan mottagning skall felkod 403 (FORBIDDEN) returneras")
+  @DisplayName(
+      "Om intyget är utfärdat på en annan mottagning skall felkod 403 (FORBIDDEN) returneras")
   void shallReturn403IfUnitIsSubUnitAndNotOnSameUnit() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion())
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion()));
 
     final var certificate = certificate(testCertificates);
 
-    final var response = api().updateCertificate(
-        customUpdateCertificateRequest()
-            .certificate(certificate)
-            .unit(ALFA_HUDMOTTAGNINGEN_DTO)
-            .build(),
-        certificateId(testCertificates)
-    );
+    final var response =
+        api()
+            .updateCertificate(
+                customUpdateCertificateRequest()
+                    .certificate(certificate)
+                    .unit(ALFA_HUDMOTTAGNINGEN_DTO)
+                    .build(),
+                certificateId(testCertificates));
 
     assertEquals(403, response.getStatusCode().value());
   }
 
   @Test
-  @DisplayName("Om intyget är utfärdat på en annan vårdenhet skall felkod 403 (FORBIDDEN) returneras")
+  @DisplayName(
+      "Om intyget är utfärdat på en annan vårdenhet skall felkod 403 (FORBIDDEN) returneras")
   void shallReturn403IfUnitIsCareUnitAndNotOnCareUnit() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion())
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion()));
 
     final var certificate = certificate(testCertificates);
 
-    final var response = api().updateCertificate(
-        customUpdateCertificateRequest()
-            .certificate(certificate)
-            .unit(ALFA_VARDCENTRAL_DTO)
-            .build(),
-        certificateId(testCertificates)
-    );
+    final var response =
+        api()
+            .updateCertificate(
+                customUpdateCertificateRequest()
+                    .certificate(certificate)
+                    .unit(ALFA_VARDCENTRAL_DTO)
+                    .build(),
+                certificateId(testCertificates));
 
     assertEquals(403, response.getStatusCode().value());
   }
 
   @Test
-  @DisplayName("Om utkastet sparas med en inaktuell revision av utkastet skall felkod 409 (CONFLICT) returneras")
+  @DisplayName(
+      "Om utkastet sparas med en inaktuell revision av utkastet skall felkod 409 (CONFLICT) returneras")
   void shallNotUpdateDataIfUserIsTryingToSaveWithAnOldRevision() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion())
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion()));
 
     final var certificate = certificate(testCertificates);
 
-    api().updateCertificate(
-        customUpdateCertificateRequest()
-            .certificate(certificate)
-            .build(),
-        certificateId(testCertificates)
-    );
+    api()
+        .updateCertificate(
+            customUpdateCertificateRequest().certificate(certificate).build(),
+            certificateId(testCertificates));
 
-    final var response = api().updateCertificateWithConcurrentError(
-        customUpdateCertificateRequest()
-            .certificate(certificate)
-            .build(),
-        certificateId(testCertificates)
-    );
+    final var response =
+        api()
+            .updateCertificateWithConcurrentError(
+                customUpdateCertificateRequest().certificate(certificate).build(),
+                certificateId(testCertificates));
 
     assertEquals(409, response.getStatusCode().value());
   }
 
-
   @Test
-  @DisplayName("Läkare - Om intyget är utfärdat på en patient som har skyddade personuppgifter skall svarsalternativ uppdateras")
+  @DisplayName(
+      "Läkare - Om intyget är utfärdat på en patient som har skyddade personuppgifter skall svarsalternativ uppdateras")
   void shallUpdateDataIfUserIsDoctorAndPatientIsProtectedPerson() {
-    final var testCertificates = testabilityApi().addCertificates(
-        customTestabilityCertificateRequest(type(), typeVersion())
-            .patient(ANONYMA_REACT_ATTILA_DTO)
-            .build()
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(
+                customTestabilityCertificateRequest(type(), typeVersion())
+                    .patient(ANONYMA_REACT_ATTILA_DTO)
+                    .build());
     final var expectedValue = value();
     final var certificate = certificate(testCertificates);
 
     Objects.requireNonNull(
-        certificate.getData().put(
-            element().id(),
-            updateValue(certificate, element().id(), expectedValue)
-        )
-    );
+        certificate
+            .getData()
+            .put(element().id(), updateValue(certificate, element().id(), expectedValue)));
 
-    final var response = api().updateCertificate(
-        customUpdateCertificateRequest()
-            .user(AJLA_DOCTOR_DTO)
-            .certificate(certificate)
-            .build(),
-        certificateId(testCertificates)
-    );
+    final var response =
+        api()
+            .updateCertificate(
+                customUpdateCertificateRequest()
+                    .user(AJLA_DOCTOR_DTO)
+                    .certificate(certificate)
+                    .build(),
+                certificateId(testCertificates));
 
     assertValue(expectedValue, response, element().id());
   }
 
   @Test
-  @DisplayName("Om intyget är utfärdat på mottagning men på samma vårdenhet skall svarsalternativ uppdateras")
+  @DisplayName(
+      "Om intyget är utfärdat på mottagning men på samma vårdenhet skall svarsalternativ uppdateras")
   void shallUpdateDataIfUnitIsCareUnitAndOnSameCareUnit() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion())
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion()));
 
     final var expectedValue = value();
     final var certificate = certificate(testCertificates);
 
     Objects.requireNonNull(
-        certificate.getData().put(
-            element().id(),
-            updateValue(certificate, element().id(), expectedValue)
-        )
-    );
+        certificate
+            .getData()
+            .put(element().id(), updateValue(certificate, element().id(), expectedValue)));
 
-    final var response = api().updateCertificate(
-        customUpdateCertificateRequest()
-            .unit(ALFA_MEDICINCENTRUM_DTO)
-            .certificate(certificate)
-            .build(),
-        certificateId(testCertificates)
-    );
+    final var response =
+        api()
+            .updateCertificate(
+                customUpdateCertificateRequest()
+                    .unit(ALFA_MEDICINCENTRUM_DTO)
+                    .certificate(certificate)
+                    .build(),
+                certificateId(testCertificates));
 
     assertValue(expectedValue, response, element().id());
   }
@@ -181,29 +204,29 @@ public abstract class UpdateCertificateIT extends BaseIntegrationIT {
   @Test
   @DisplayName("Om intyget är utfärdat på samma vårdenhet skall svarsalternativ uppdateras")
   void shallUpdateDataIfUnitIsCareUnitAndIssuedOnSameCareUnit() {
-    final var testCertificates = testabilityApi().addCertificates(
-        customTestabilityCertificateRequest(type(), typeVersion())
-            .unit(ALFA_MEDICINCENTRUM_DTO)
-            .build()
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(
+                customTestabilityCertificateRequest(type(), typeVersion())
+                    .unit(ALFA_MEDICINCENTRUM_DTO)
+                    .build());
 
     final var expectedValue = value();
     final var certificate = certificate(testCertificates);
 
     Objects.requireNonNull(
-        certificate.getData().put(
-            element().id(),
-            updateValue(certificate, element().id(), expectedValue)
-        )
-    );
+        certificate
+            .getData()
+            .put(element().id(), updateValue(certificate, element().id(), expectedValue)));
 
-    final var response = api().updateCertificate(
-        customUpdateCertificateRequest()
-            .certificate(certificate)
-            .unit(ALFA_MEDICINCENTRUM_DTO)
-            .build(),
-        certificateId(testCertificates)
-    );
+    final var response =
+        api()
+            .updateCertificate(
+                customUpdateCertificateRequest()
+                    .certificate(certificate)
+                    .unit(ALFA_MEDICINCENTRUM_DTO)
+                    .build(),
+                certificateId(testCertificates));
 
     assertValue(expectedValue, response, element().id());
   }
@@ -211,32 +234,29 @@ public abstract class UpdateCertificateIT extends BaseIntegrationIT {
   @Test
   @DisplayName("Om intyget är utfärdat på samma mottagning skall svarsalternativ uppdateras")
   void shallUpdateDataIfUnitIsSubUnitAndOnSameUnit() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion())
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion()));
 
     final var expectedValue = value();
     final var certificate = certificate(testCertificates);
 
     Objects.requireNonNull(
-        certificate.getData().put(
-            element().id(),
-            updateValue(certificate, element().id(), expectedValue)
-        )
-    );
+        certificate
+            .getData()
+            .put(element().id(), updateValue(certificate, element().id(), expectedValue)));
 
-    final var response = api().updateCertificate(
-        customUpdateCertificateRequest()
-            .certificate(certificate)
-            .build(),
-        certificateId(testCertificates)
-    );
+    final var response =
+        api()
+            .updateCertificate(
+                customUpdateCertificateRequest().certificate(certificate).build(),
+                certificateId(testCertificates));
 
     assertValue(expectedValue, response, element().id());
   }
 
-  private CertificateDataElement updateValue(CertificateDTO certificate, String id,
-      Object expectedValue) {
+  private CertificateDataElement updateValue(
+      CertificateDTO certificate, String id, Object expectedValue) {
     if (expectedValue instanceof String expectedText) {
       return updateTextValue(certificate, id, expectedText);
     }
@@ -246,12 +266,12 @@ public abstract class UpdateCertificateIT extends BaseIntegrationIT {
     if (expectedValue instanceof Boolean expectedBoolean) {
       return updateBooleanValue(certificate, id, expectedBoolean);
     }
-    throw new IllegalStateException("No update function available for type %s"
-        .formatted(expectedValue.getClass()));
+    throw new IllegalStateException(
+        "No update function available for type %s".formatted(expectedValue.getClass()));
   }
 
-  private void assertValue(Object expectedValue, ResponseEntity<UpdateCertificateResponse> response,
-      String id) {
+  private void assertValue(
+      Object expectedValue, ResponseEntity<UpdateCertificateResponse> response, String id) {
     if (expectedValue instanceof String expectedText) {
       assertEquals(expectedText, getValueText(response, id));
       return;

@@ -1,5 +1,22 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificate.persistence;
-
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.doReturn;
@@ -29,12 +46,9 @@ import se.inera.intyg.certificateservice.infrastructure.certificate.persistence.
 @ExtendWith(MockitoExtension.class)
 class UnitRepositoryTest {
 
-  @Mock
-  private UnitEntityRepository unitEntityRepository;
-  @Mock
-  MetadataVersionRepository metadataVersionRepository;
-  @InjectMocks
-  private UnitRepository unitRepository;
+  @Mock private UnitEntityRepository unitEntityRepository;
+  @Mock MetadataVersionRepository metadataVersionRepository;
+  @InjectMocks private UnitRepository unitRepository;
 
   @Nested
   class CareProvider {
@@ -42,22 +56,17 @@ class UnitRepositoryTest {
     @Test
     void shallReturnEntityFromRepositoryIfExists() {
       doReturn(Optional.of(ALFA_REGIONEN_ENTITY))
-          .when(unitEntityRepository).findByHsaId(ALFA_REGIONEN_ID);
-      assertEquals(ALFA_REGIONEN_ENTITY,
-          unitRepository.careProvider(ALFA_REGIONEN)
-      );
+          .when(unitEntityRepository)
+          .findByHsaId(ALFA_REGIONEN_ID);
+      assertEquals(ALFA_REGIONEN_ENTITY, unitRepository.careProvider(ALFA_REGIONEN));
     }
 
     @Test
     void shallReturnMappedEntityIfEntityDontExistInRepository() {
-      doReturn(Optional.empty())
-          .when(unitEntityRepository).findByHsaId(ALFA_REGIONEN_ID);
-      doReturn(ALFA_REGIONEN_ENTITY)
-          .when(unitEntityRepository).save(ALFA_REGIONEN_ENTITY);
+      doReturn(Optional.empty()).when(unitEntityRepository).findByHsaId(ALFA_REGIONEN_ID);
+      doReturn(ALFA_REGIONEN_ENTITY).when(unitEntityRepository).save(ALFA_REGIONEN_ENTITY);
 
-      assertEquals(ALFA_REGIONEN_ENTITY,
-          unitRepository.careProvider(ALFA_REGIONEN)
-      );
+      assertEquals(ALFA_REGIONEN_ENTITY, unitRepository.careProvider(ALFA_REGIONEN));
     }
 
     @Test
@@ -66,10 +75,12 @@ class UnitRepositoryTest {
       final var updatedEntity = mock(UnitEntity.class);
 
       doReturn(Optional.of(existingEntity))
-          .when(unitEntityRepository).findByHsaId(ALFA_REGIONEN_ID);
+          .when(unitEntityRepository)
+          .findByHsaId(ALFA_REGIONEN_ID);
       doReturn(true).when(existingEntity).hasDiff(ALFA_REGIONEN_ENTITY);
       doReturn(updatedEntity)
-          .when(metadataVersionRepository).saveUnitVersion(existingEntity, ALFA_REGIONEN_ENTITY);
+          .when(metadataVersionRepository)
+          .saveUnitVersion(existingEntity, ALFA_REGIONEN_ENTITY);
 
       final var result = unitRepository.careProvider(ALFA_REGIONEN);
 
@@ -82,14 +93,15 @@ class UnitRepositoryTest {
       final var existingEntity = mock(UnitEntity.class);
 
       doReturn(Optional.of(existingEntity))
-          .when(unitEntityRepository).findByHsaId(ALFA_REGIONEN_ID);
+          .when(unitEntityRepository)
+          .findByHsaId(ALFA_REGIONEN_ID);
       doReturn(false).when(existingEntity).hasDiff(ALFA_REGIONEN_ENTITY);
 
       final var result = unitRepository.careProvider(ALFA_REGIONEN);
 
       assertEquals(existingEntity, result);
-      verify(metadataVersionRepository, never()).saveUnitVersion(existingEntity,
-          ALFA_REGIONEN_ENTITY);
+      verify(metadataVersionRepository, never())
+          .saveUnitVersion(existingEntity, ALFA_REGIONEN_ENTITY);
     }
   }
 
@@ -99,22 +111,19 @@ class UnitRepositoryTest {
     @Test
     void shallReturnEntityFromRepositoryIfExists() {
       doReturn(Optional.of(ALFA_MEDICINCENTRUM_ENTITY))
-          .when(unitEntityRepository).findByHsaId(ALFA_MEDICINCENTRUM_ID);
-      assertEquals(ALFA_MEDICINCENTRUM_ENTITY,
-          unitRepository.careUnit(ALFA_MEDICINCENTRUM)
-      );
+          .when(unitEntityRepository)
+          .findByHsaId(ALFA_MEDICINCENTRUM_ID);
+      assertEquals(ALFA_MEDICINCENTRUM_ENTITY, unitRepository.careUnit(ALFA_MEDICINCENTRUM));
     }
 
     @Test
     void shallReturnMappedEntityIfEntityDontExistInRepository() {
-      doReturn(Optional.empty())
-          .when(unitEntityRepository).findByHsaId(ALFA_MEDICINCENTRUM_ID);
+      doReturn(Optional.empty()).when(unitEntityRepository).findByHsaId(ALFA_MEDICINCENTRUM_ID);
       doReturn(ALFA_MEDICINCENTRUM_ENTITY)
-          .when(unitEntityRepository).save(ALFA_MEDICINCENTRUM_ENTITY);
+          .when(unitEntityRepository)
+          .save(ALFA_MEDICINCENTRUM_ENTITY);
 
-      assertEquals(ALFA_MEDICINCENTRUM_ENTITY,
-          unitRepository.careUnit(ALFA_MEDICINCENTRUM)
-      );
+      assertEquals(ALFA_MEDICINCENTRUM_ENTITY, unitRepository.careUnit(ALFA_MEDICINCENTRUM));
     }
 
     @Test
@@ -123,7 +132,8 @@ class UnitRepositoryTest {
       final var updatedEntity = mock(UnitEntity.class);
 
       doReturn(Optional.of(existingEntity))
-          .when(unitEntityRepository).findByHsaId(ALFA_MEDICINCENTRUM_ID);
+          .when(unitEntityRepository)
+          .findByHsaId(ALFA_MEDICINCENTRUM_ID);
       doReturn(true).when(existingEntity).hasDiff(ALFA_MEDICINCENTRUM_ENTITY);
       doReturn(updatedEntity)
           .when(metadataVersionRepository)
@@ -140,14 +150,15 @@ class UnitRepositoryTest {
       final var existingEntity = mock(UnitEntity.class);
 
       doReturn(Optional.of(existingEntity))
-          .when(unitEntityRepository).findByHsaId(ALFA_MEDICINCENTRUM_ID);
+          .when(unitEntityRepository)
+          .findByHsaId(ALFA_MEDICINCENTRUM_ID);
       doReturn(false).when(existingEntity).hasDiff(ALFA_MEDICINCENTRUM_ENTITY);
 
       final var result = unitRepository.careUnit(ALFA_MEDICINCENTRUM);
 
       assertEquals(existingEntity, result);
-      verify(metadataVersionRepository, never()).saveUnitVersion(existingEntity,
-          ALFA_MEDICINCENTRUM_ENTITY);
+      verify(metadataVersionRepository, never())
+          .saveUnitVersion(existingEntity, ALFA_MEDICINCENTRUM_ENTITY);
     }
   }
 
@@ -157,24 +168,24 @@ class UnitRepositoryTest {
     @Test
     void shallReturnEntityFromRepositoryIfExists() {
       doReturn(Optional.of(ALFA_ALLERGIMOTTAGNINGEN_ENTITY))
-          .when(unitEntityRepository).findByHsaId(ALFA_ALLERGIMOTTAGNINGEN_ID);
+          .when(unitEntityRepository)
+          .findByHsaId(ALFA_ALLERGIMOTTAGNINGEN_ID);
 
-      assertEquals(ALFA_ALLERGIMOTTAGNINGEN_ENTITY,
-          unitRepository.subUnit(ALFA_ALLERGIMOTTAGNINGEN)
-      );
+      assertEquals(
+          ALFA_ALLERGIMOTTAGNINGEN_ENTITY, unitRepository.subUnit(ALFA_ALLERGIMOTTAGNINGEN));
     }
 
     @Test
     void shallReturnMappedEntityIfEntityDontExistInRepository() {
       doReturn(Optional.empty())
-          .when(unitEntityRepository).findByHsaId(ALFA_ALLERGIMOTTAGNINGEN_ID);
+          .when(unitEntityRepository)
+          .findByHsaId(ALFA_ALLERGIMOTTAGNINGEN_ID);
       doReturn(ALFA_ALLERGIMOTTAGNINGEN_ENTITY)
-          .when(unitEntityRepository).save(ALFA_ALLERGIMOTTAGNINGEN_ENTITY);
+          .when(unitEntityRepository)
+          .save(ALFA_ALLERGIMOTTAGNINGEN_ENTITY);
 
-      assertEquals(ALFA_ALLERGIMOTTAGNINGEN_ENTITY,
-          unitRepository.subUnit(ALFA_ALLERGIMOTTAGNINGEN)
-
-      );
+      assertEquals(
+          ALFA_ALLERGIMOTTAGNINGEN_ENTITY, unitRepository.subUnit(ALFA_ALLERGIMOTTAGNINGEN));
     }
 
     @Test
@@ -183,7 +194,8 @@ class UnitRepositoryTest {
       final var updatedEntity = mock(UnitEntity.class);
 
       doReturn(Optional.of(existingEntity))
-          .when(unitEntityRepository).findByHsaId(ALFA_ALLERGIMOTTAGNINGEN_ID);
+          .when(unitEntityRepository)
+          .findByHsaId(ALFA_ALLERGIMOTTAGNINGEN_ID);
       doReturn(true).when(existingEntity).hasDiff(ALFA_ALLERGIMOTTAGNINGEN_ENTITY);
       doReturn(updatedEntity)
           .when(metadataVersionRepository)
@@ -192,8 +204,8 @@ class UnitRepositoryTest {
       final var result = unitRepository.subUnit(ALFA_ALLERGIMOTTAGNINGEN);
 
       assertEquals(updatedEntity, result);
-      verify(metadataVersionRepository).saveUnitVersion(existingEntity,
-          ALFA_ALLERGIMOTTAGNINGEN_ENTITY);
+      verify(metadataVersionRepository)
+          .saveUnitVersion(existingEntity, ALFA_ALLERGIMOTTAGNINGEN_ENTITY);
     }
 
     @Test
@@ -201,14 +213,15 @@ class UnitRepositoryTest {
       final var existingEntity = mock(UnitEntity.class);
 
       doReturn(Optional.of(existingEntity))
-          .when(unitEntityRepository).findByHsaId(ALFA_ALLERGIMOTTAGNINGEN_ID);
+          .when(unitEntityRepository)
+          .findByHsaId(ALFA_ALLERGIMOTTAGNINGEN_ID);
       doReturn(false).when(existingEntity).hasDiff(ALFA_ALLERGIMOTTAGNINGEN_ENTITY);
 
       final var result = unitRepository.subUnit(ALFA_ALLERGIMOTTAGNINGEN);
 
       assertEquals(existingEntity, result);
-      verify(metadataVersionRepository, never()).saveUnitVersion(existingEntity,
-          ALFA_ALLERGIMOTTAGNINGEN_ENTITY);
+      verify(metadataVersionRepository, never())
+          .saveUnitVersion(existingEntity, ALFA_ALLERGIMOTTAGNINGEN_ENTITY);
     }
   }
 
@@ -218,20 +231,19 @@ class UnitRepositoryTest {
     @Test
     void shallReturnSubUnitIfSubUnit() {
       doReturn(Optional.of(ALFA_ALLERGIMOTTAGNINGEN_ENTITY))
-          .when(unitEntityRepository).findByHsaId(ALFA_ALLERGIMOTTAGNINGEN_ID);
+          .when(unitEntityRepository)
+          .findByHsaId(ALFA_ALLERGIMOTTAGNINGEN_ID);
 
-      assertEquals(ALFA_ALLERGIMOTTAGNINGEN_ENTITY,
-          unitRepository.issuingUnit(ALFA_ALLERGIMOTTAGNINGEN)
-      );
+      assertEquals(
+          ALFA_ALLERGIMOTTAGNINGEN_ENTITY, unitRepository.issuingUnit(ALFA_ALLERGIMOTTAGNINGEN));
     }
 
     @Test
     void shallReturnCareUnitIfCareUnit() {
       doReturn(Optional.of(ALFA_MEDICINCENTRUM_ENTITY))
-          .when(unitEntityRepository).findByHsaId(ALFA_MEDICINCENTRUM_ID);
-      assertEquals(ALFA_MEDICINCENTRUM_ENTITY,
-          unitRepository.issuingUnit(ALFA_MEDICINCENTRUM)
-      );
+          .when(unitEntityRepository)
+          .findByHsaId(ALFA_MEDICINCENTRUM_ID);
+      assertEquals(ALFA_MEDICINCENTRUM_ENTITY, unitRepository.issuingUnit(ALFA_MEDICINCENTRUM));
     }
   }
 }

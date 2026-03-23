@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.testability.certificate.service;
 
 import static se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementConfigurationUnitContactInformation.UNIT_CONTACT_INFORMATION;
@@ -60,48 +78,42 @@ public class TestabilityCertificateService {
   public CreateCertificateResponse create(
       TestabilityCertificateRequest testabilityCertificateRequest) {
     final var certificateModelIdDTO = testabilityCertificateRequest.getCertificateModelId();
-    final var certificateModelId = CertificateModelId.builder()
-        .type(new CertificateType(certificateModelIdDTO.getType()))
-        .version(new CertificateVersion(certificateModelIdDTO.getVersion()))
-        .build();
+    final var certificateModelId =
+        CertificateModelId.builder()
+            .type(new CertificateType(certificateModelIdDTO.getType()))
+            .version(new CertificateVersion(certificateModelIdDTO.getVersion()))
+            .build();
 
-    final var certificateModel = testabilityCertificateModelRepository.all().stream()
-        .filter(model -> model.id().equals(certificateModelId))
-        .findFirst()
-        .orElseThrow(() -> new IllegalArgumentException(
-                "No certificateModelId matching %s'".formatted(certificateModelId)
-            )
-        );
+    final var certificateModel =
+        testabilityCertificateModelRepository.all().stream()
+            .filter(model -> model.id().equals(certificateModelId))
+            .findFirst()
+            .orElseThrow(
+                () ->
+                    new IllegalArgumentException(
+                        "No certificateModelId matching %s'".formatted(certificateModelId)));
 
-    final var actionEvaluation = actionEvaluationFactory.create(
-        testabilityCertificateRequest.getPatient(),
-        testabilityCertificateRequest.getUser(),
-        testabilityCertificateRequest.getUnit(),
-        testabilityCertificateRequest.getCareUnit(),
-        testabilityCertificateRequest.getCareProvider()
-    );
+    final var actionEvaluation =
+        actionEvaluationFactory.create(
+            testabilityCertificateRequest.getPatient(),
+            testabilityCertificateRequest.getUser(),
+            testabilityCertificateRequest.getUnit(),
+            testabilityCertificateRequest.getCareUnit(),
+            testabilityCertificateRequest.getCareProvider());
 
     final var certificate = testabilityCertificateRepository.create(certificateModel);
     certificate.updateMetadata(actionEvaluation);
 
-    final var prefillData = prefillData(
-        testabilityCertificateRequest, certificateModelId, certificateModel
-    );
+    final var prefillData =
+        prefillData(testabilityCertificateRequest, certificateModelId, certificateModel);
 
-    final var unitContactInformation = unitContactInformation(
-        testabilityCertificateRequest.getUnit());
+    final var unitContactInformation =
+        unitContactInformation(testabilityCertificateRequest.getUnit());
 
-    final var elementData = Stream.concat(
-            prefillData.stream(),
-            Stream.of(unitContactInformation)
-        )
-        .toList();
+    final var elementData =
+        Stream.concat(prefillData.stream(), Stream.of(unitContactInformation)).toList();
 
-    certificate.updateData(
-        elementData,
-        certificate.revision(),
-        actionEvaluation
-    );
+    certificate.updateData(elementData, certificate.revision(), actionEvaluation);
 
     if (CertificateStatusTypeDTO.SIGNED.equals(testabilityCertificateRequest.getStatus())) {
       certificate.sign(xmlGenerator, certificate.revision(), actionEvaluation);
@@ -119,27 +131,25 @@ public class TestabilityCertificateService {
             certificateConverter.convert(
                 savedCertificate,
                 savedCertificate.actionsInclude(Optional.of(actionEvaluation)).stream()
-                    .map(certificateAction ->
-                        resourceLinkConverter.convert(
-                            certificateAction,
-                            Optional.of(certificate),
-                            actionEvaluation
-                        )
-                    )
+                    .map(
+                        certificateAction ->
+                            resourceLinkConverter.convert(
+                                certificateAction, Optional.of(certificate), actionEvaluation))
                     .toList(),
-                actionEvaluation
-            )
-        )
+                actionEvaluation))
         .build();
   }
 
-  private List<ElementData> prefillData(TestabilityCertificateRequest testabilityCertificateRequest,
-      CertificateModelId certificateModelId, CertificateModel certificateModel) {
+  private List<ElementData> prefillData(
+      TestabilityCertificateRequest testabilityCertificateRequest,
+      CertificateModelId certificateModelId,
+      CertificateModel certificateModel) {
     return testabilityCertificateFillServices.stream()
         .filter(fillService -> fillService.certificateModelIds().contains(certificateModelId))
         .findAny()
-        .map(fillService -> fillService.fill(certificateModel,
-            testabilityCertificateRequest.getFillType()))
+        .map(
+            fillService ->
+                fillService.fill(certificateModel, testabilityCertificateRequest.getFillType()))
         .orElse(Collections.emptyList());
   }
 
@@ -152,8 +162,7 @@ public class TestabilityCertificateService {
                 .city(unit.getCity())
                 .zipCode(unit.getZipCode())
                 .phoneNumber(unit.getPhoneNumber())
-                .build()
-        )
+                .build())
         .build();
   }
 
@@ -161,54 +170,51 @@ public class TestabilityCertificateService {
     testabilityCertificateRepository.remove(
         testabilityCertificateRequest.getCertificateIds().stream()
             .map(CertificateId::new)
-            .toList()
-    );
+            .toList());
 
-    testabilityMessageRepository.remove(
-        testabilityCertificateRequest.getMessageIds()
-    );
+    testabilityMessageRepository.remove(testabilityCertificateRequest.getMessageIds());
   }
 
   public List<SupportedCertificateTypesResponse> supportedTypes() {
-    final var supportedCertificateTypesResponseMap = testabilityCertificateModelRepository.all()
-        .stream()
-        .filter(certificateModel -> !certificateModel.id().equals(TEST_CERTIFICATE_V1))
-        .collect(Collectors.toMap(
-            CertificateModel::name,
-            certificateModel ->
-                SupportedCertificateTypesResponse.builder()
-                    .type(certificateModel.id().type().type())
-                    .internalType(certificateModel.id().type().type())
-                    .versions(List.of(certificateModel.id().version().version()))
-                    .name(certificateModel.name())
-                    .fillType(Arrays.asList(TestabilityFillTypeDTO.values()))
-                    .statuses(Arrays.asList(TestabilityStatusTypeDTO.values()))
-                    .build(),
-            (existingValue, newValue) -> {
-              final var combinedVersions = new ArrayList<>(existingValue.getVersions());
-              combinedVersions.addAll(newValue.getVersions());
-              return existingValue.withVersions(combinedVersions);
-            }
-        ));
+    final var supportedCertificateTypesResponseMap =
+        testabilityCertificateModelRepository.all().stream()
+            .filter(certificateModel -> !certificateModel.id().equals(TEST_CERTIFICATE_V1))
+            .collect(
+                Collectors.toMap(
+                    CertificateModel::name,
+                    certificateModel ->
+                        SupportedCertificateTypesResponse.builder()
+                            .type(certificateModel.id().type().type())
+                            .internalType(certificateModel.id().type().type())
+                            .versions(List.of(certificateModel.id().version().version()))
+                            .name(certificateModel.name())
+                            .fillType(Arrays.asList(TestabilityFillTypeDTO.values()))
+                            .statuses(Arrays.asList(TestabilityStatusTypeDTO.values()))
+                            .build(),
+                    (existingValue, newValue) -> {
+                      final var combinedVersions = new ArrayList<>(existingValue.getVersions());
+                      combinedVersions.addAll(newValue.getVersions());
+                      return existingValue.withVersions(combinedVersions);
+                    }));
     return List.copyOf(supportedCertificateTypesResponseMap.values());
   }
 
   public GetCertificateTypeVersionsResponse getCertificateTypeVersions(String type) {
-    final var models = testabilityCertificateModelRepository.all().stream()
-        .filter(certificateModel -> certificateModel.id().type().type().equalsIgnoreCase(type))
-        .toList();
+    final var models =
+        testabilityCertificateModelRepository.all().stream()
+            .filter(certificateModel -> certificateModel.id().type().type().equalsIgnoreCase(type))
+            .toList();
 
     return GetCertificateTypeVersionsResponse.builder()
         .certificateModelIds(
             models.stream()
-                .map(model ->
-                    CertificateModelIdDTO.builder()
-                        .type(model.id().type().type())
-                        .version(model.id().version().version())
-                        .build()
-                )
-                .toList()
-        )
+                .map(
+                    model ->
+                        CertificateModelIdDTO.builder()
+                            .type(model.id().type().type())
+                            .version(model.id().version().version())
+                            .build())
+                .toList())
         .build();
   }
 }

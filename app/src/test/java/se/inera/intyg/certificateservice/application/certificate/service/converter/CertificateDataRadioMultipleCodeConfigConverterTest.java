@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service.converter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -21,96 +39,99 @@ import se.inera.intyg.certificateservice.domain.common.model.Code;
 
 class CertificateDataRadioMultipleCodeConfigConverterTest {
 
-
   private static final String ID_1 = "ID1";
   private static final String LABEL_1 = "LABEL1";
   private static final String ID_2 = "ID2";
   private static final String LABEL_2 = "LABEL2";
   private static final String NAME = "NAME";
-  private CertificateDataRadioMultipleCodeConfigConverter certificateDataRadioMultipleCodeConfigConverter;
+  private CertificateDataRadioMultipleCodeConfigConverter
+      certificateDataRadioMultipleCodeConfigConverter;
 
   @BeforeEach
   void setUp() {
-    certificateDataRadioMultipleCodeConfigConverter = new CertificateDataRadioMultipleCodeConfigConverter();
+    certificateDataRadioMultipleCodeConfigConverter =
+        new CertificateDataRadioMultipleCodeConfigConverter();
   }
 
   @Test
   void shouldThrowExceptionIfWrongClass() {
-    final var elementSpecification = ElementSpecification.builder()
-        .configuration(
-            ElementConfigurationTextArea.builder().build()
-        )
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .configuration(ElementConfigurationTextArea.builder().build())
+            .build();
 
-    assertThrows(IllegalStateException.class,
-        () -> certificateDataRadioMultipleCodeConfigConverter.convert(elementSpecification,
-            FK3226_CERTIFICATE)
-    );
+    assertThrows(
+        IllegalStateException.class,
+        () ->
+            certificateDataRadioMultipleCodeConfigConverter.convert(
+                elementSpecification, FK3226_CERTIFICATE));
   }
 
   @Test
   void shallIncludeText() {
-    final var elementSpecification = ElementSpecification.builder()
-        .configuration(
-            ElementConfigurationRadioMultipleCode.builder()
-                .name(NAME)
-                .elementLayout(ElementLayout.ROWS)
-                .list(Collections.emptyList())
-                .build())
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .configuration(
+                ElementConfigurationRadioMultipleCode.builder()
+                    .name(NAME)
+                    .elementLayout(ElementLayout.ROWS)
+                    .list(Collections.emptyList())
+                    .build())
+            .build();
 
-    final var result = certificateDataRadioMultipleCodeConfigConverter.convert(elementSpecification,
-        FK3226_CERTIFICATE);
+    final var result =
+        certificateDataRadioMultipleCodeConfigConverter.convert(
+            elementSpecification, FK3226_CERTIFICATE);
 
     assertEquals(NAME, result.getText());
   }
 
   @Test
   void shallIncludeLayout() {
-    final var elementSpecification = ElementSpecification.builder()
-        .configuration(
-            ElementConfigurationRadioMultipleCode.builder()
-                .elementLayout(ElementLayout.ROWS)
-                .list(Collections.emptyList())
-                .build())
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .configuration(
+                ElementConfigurationRadioMultipleCode.builder()
+                    .elementLayout(ElementLayout.ROWS)
+                    .list(Collections.emptyList())
+                    .build())
+            .build();
 
-    final var result = certificateDataRadioMultipleCodeConfigConverter.convert(elementSpecification,
-        FK3226_CERTIFICATE);
+    final var result =
+        certificateDataRadioMultipleCodeConfigConverter.convert(
+            elementSpecification, FK3226_CERTIFICATE);
 
     assertEquals(Layout.ROWS, ((CertificateDataConfigRadioMultipleCode) result).getLayout());
   }
 
   @Test
   void shallIncludeListOfRadioMultipleCode() {
-    final var expectedCodes = List.of(
-        RadioMultipleCode.builder()
-            .id(ID_1)
-            .label(LABEL_1)
-            .build(),
-        RadioMultipleCode.builder()
-            .id(ID_2)
-            .label(LABEL_2)
-            .build()
-    );
+    final var expectedCodes =
+        List.of(
+            RadioMultipleCode.builder().id(ID_1).label(LABEL_1).build(),
+            RadioMultipleCode.builder().id(ID_2).label(LABEL_2).build());
 
-    final var elementSpecification = ElementSpecification.builder()
-        .configuration(
-            ElementConfigurationRadioMultipleCode.builder()
-                .elementLayout(ElementLayout.ROWS)
-                .list(
-                    List.of(
-                        new ElementConfigurationCode(new FieldId(ID_1), LABEL_1,
-                            new Code("CODE", "CODE_SYSTEM", "DISPLAY_NAME")),
-                        new ElementConfigurationCode(new FieldId(ID_2), LABEL_2,
-                            new Code("CODE", "CODE_SYSTEM", "DISPLAY_NAME"))
-                    )
-                )
-                .build())
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .configuration(
+                ElementConfigurationRadioMultipleCode.builder()
+                    .elementLayout(ElementLayout.ROWS)
+                    .list(
+                        List.of(
+                            new ElementConfigurationCode(
+                                new FieldId(ID_1),
+                                LABEL_1,
+                                new Code("CODE", "CODE_SYSTEM", "DISPLAY_NAME")),
+                            new ElementConfigurationCode(
+                                new FieldId(ID_2),
+                                LABEL_2,
+                                new Code("CODE", "CODE_SYSTEM", "DISPLAY_NAME"))))
+                    .build())
+            .build();
 
-    final var result = certificateDataRadioMultipleCodeConfigConverter.convert(elementSpecification,
-        FK3226_CERTIFICATE);
+    final var result =
+        certificateDataRadioMultipleCodeConfigConverter.convert(
+            elementSpecification, FK3226_CERTIFICATE);
 
     assertEquals(expectedCodes, ((CertificateDataConfigRadioMultipleCode) result).getList());
   }

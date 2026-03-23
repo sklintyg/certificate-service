@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.integrationtest.common.tests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -17,38 +35,46 @@ public abstract class GetCitizenCertificateListIT extends BaseIntegrationIT {
   @Test
   @DisplayName("Om intyget är utfärdat på invånaren ska intyget returneras")
   void shallReturnListOfCertificatesIfAvailableForCitizen() {
-    testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED),
-        defaultTestablilityCertificateRequest("fk7472", "1.0", SIGNED),
-        defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED)
-    );
+    testabilityApi()
+        .addCertificates(
+            defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED),
+            defaultTestablilityCertificateRequest("fk7472", "1.0", SIGNED),
+            defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED));
 
-    final var response = api().getCitizenCertificateList(
-        GetCitizenCertificateListRequest.builder()
-            .personId(PersonIdDTO.builder()
-                .type(PersonIdTypeDTO.PERSONAL_IDENTITY_NUMBER)
-                .id(ATHENA_REACT_ANDERSSON_ID)
-                .build())
-            .build()
-    );
+    final var response =
+        api()
+            .getCitizenCertificateList(
+                GetCitizenCertificateListRequest.builder()
+                    .personId(
+                        PersonIdDTO.builder()
+                            .type(PersonIdTypeDTO.PERSONAL_IDENTITY_NUMBER)
+                            .id(ATHENA_REACT_ANDERSSON_ID)
+                            .build())
+                    .build());
 
-    assertEquals(2, response.getBody().getCitizenCertificates().size(),
+    assertEquals(
+        2,
+        response.getBody().getCitizenCertificates().size(),
         "Should return list of certificates available for citizen.");
   }
 
   @Test
   @DisplayName("Om invånaren inte har några intyg ska en tom lista returneras")
   void shallReturnEmptyListIfNoCertificatesIssuedOnCitizen() {
-    final var response = api().getCitizenCertificateList(
-        GetCitizenCertificateListRequest.builder()
-            .personId(PersonIdDTO.builder()
-                .type(PersonIdTypeDTO.PERSONAL_IDENTITY_NUMBER)
-                .id(ATHENA_REACT_ANDERSSON_ID)
-                .build())
-            .build()
-    );
+    final var response =
+        api()
+            .getCitizenCertificateList(
+                GetCitizenCertificateListRequest.builder()
+                    .personId(
+                        PersonIdDTO.builder()
+                            .type(PersonIdTypeDTO.PERSONAL_IDENTITY_NUMBER)
+                            .id(ATHENA_REACT_ANDERSSON_ID)
+                            .build())
+                    .build());
 
-    assertEquals(0, response.getBody().getCitizenCertificates().size(),
+    assertEquals(
+        0,
+        response.getBody().getCitizenCertificates().size(),
         "Should return empty list of certificates.");
   }
 }

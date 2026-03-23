@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7804;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7804.elements.QuestionDiagnos.QUESTION_DIAGNOS_ID;
@@ -23,13 +41,14 @@ public class FK7804SickLeaveProvider implements SickLeaveProvider {
 
   @Override
   public Optional<SickLeaveCertificate> build(Certificate certificate, boolean ignoreModuleRules) {
-    final var isNotSickLeaveCertificate = certificate.elementData().stream()
-        .filter(elementData -> elementData.id().equals(QUESTION_SMITTBARARPENNING_ID))
-        .findFirst()
-        .map(ElementData::value)
-        .map(ElementValueBoolean.class::cast)
-        .map(ElementValueBoolean::value)
-        .orElse(false);
+    final var isNotSickLeaveCertificate =
+        certificate.elementData().stream()
+            .filter(elementData -> elementData.id().equals(QUESTION_SMITTBARARPENNING_ID))
+            .findFirst()
+            .map(ElementData::value)
+            .map(ElementValueBoolean.class::cast)
+            .map(ElementValueBoolean::value)
+            .orElse(false);
 
     if (isNotSickLeaveCertificate && !ignoreModuleRules) {
       return Optional.empty();
@@ -37,8 +56,8 @@ public class FK7804SickLeaveProvider implements SickLeaveProvider {
     return buildSickLeaveCertificate(certificate, ignoreModuleRules);
   }
 
-  private Optional<SickLeaveCertificate> buildSickLeaveCertificate(Certificate certificate,
-      boolean ignoreModelRules) {
+  private Optional<SickLeaveCertificate> buildSickLeaveCertificate(
+      Certificate certificate, boolean ignoreModelRules) {
 
     final var metadata = certificate.certificateMetaData();
     return Optional.of(
@@ -55,61 +74,59 @@ public class FK7804SickLeaveProvider implements SickLeaveProvider {
             .diagnoseCode(
                 getElementValueDiagnoses(certificate).stream()
                     .findFirst()
-                    .orElseGet(() -> {
-                      if (ignoreModelRules) {
-                        return null;
-                      }
-                      throw new NoSuchElementException();
-                    })
-            )
+                    .orElseGet(
+                        () -> {
+                          if (ignoreModelRules) {
+                            return null;
+                          }
+                          throw new NoSuchElementException();
+                        }))
             .biDiagnoseCode1(
                 getElementValueDiagnoses(certificate).size() > 1
                     ? getElementValueDiagnoses(certificate).get(1)
-                    : null
-            )
+                    : null)
             .biDiagnoseCode2(
                 getElementValueDiagnoses(certificate).size() > 2
                     ? getElementValueDiagnoses(certificate).get(2)
-                    : null
-            )
+                    : null)
             .signingDoctorId(metadata.issuer().hsaId())
             .signingDateTime(certificate.signed())
             .deleted(certificate.revoked())
             .workCapacities(
                 certificate.elementData().stream()
                     .filter(
-                        elementData -> elementData.id()
-                            .equals(QUESTION_NEDSATTNING_ARBETSFORMAGA_ID))
+                        elementData ->
+                            elementData.id().equals(QUESTION_NEDSATTNING_ARBETSFORMAGA_ID))
                     .findFirst()
                     .map(ElementData::value)
                     .map(ElementValueDateRangeList.class::cast)
                     .map(ElementValueDateRangeList::dateRangeList)
-                    .orElseGet(() -> {
-                      if (ignoreModelRules) {
-                        return List.of();
-                      }
-                      throw new NoSuchElementException();
-                    })
-            )
+                    .orElseGet(
+                        () -> {
+                          if (ignoreModelRules) {
+                            return List.of();
+                          }
+                          throw new NoSuchElementException();
+                        }))
             .employment(
                 certificate.elementData().stream()
-                    .filter(
-                        elementData -> elementData.id().equals(QUESTION_SYSSELSATTNING_ID))
+                    .filter(elementData -> elementData.id().equals(QUESTION_SYSSELSATTNING_ID))
                     .findFirst()
                     .map(ElementData::value)
                     .map(ElementValueCodeList.class::cast)
                     .map(ElementValueCodeList::list)
-                    .orElseGet(() -> {
-                      if (ignoreModelRules) {
-                        return List.of();
-                      }
-                      throw new NoSuchElementException();
-                    })
-            )
-            .extendsCertificateId(certificate.hasParent(RelationType.RENEW) ?
-                certificate.parent().certificate().id().id() : null)
-            .build()
-    );
+                    .orElseGet(
+                        () -> {
+                          if (ignoreModelRules) {
+                            return List.of();
+                          }
+                          throw new NoSuchElementException();
+                        }))
+            .extendsCertificateId(
+                certificate.hasParent(RelationType.RENEW)
+                    ? certificate.parent().certificate().id().id()
+                    : null)
+            .build());
   }
 
   @Override

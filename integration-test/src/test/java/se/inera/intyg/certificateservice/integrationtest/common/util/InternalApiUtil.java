@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.integrationtest.common.util;
 
 import java.util.Collections;
@@ -35,10 +53,8 @@ public class InternalApiUtil {
   private final int port;
 
   public ResponseEntity<GetCertificateInternalXmlResponse> getCertificateXml(String certificateId) {
-    final var requestUrl = "http://localhost:%s/internalapi/certificate/%s/xml".formatted(
-        port,
-        certificateId
-    );
+    final var requestUrl =
+        "http://localhost:%s/internalapi/certificate/%s/xml".formatted(port, certificateId);
 
     final var headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
@@ -47,18 +63,14 @@ public class InternalApiUtil {
         requestUrl,
         HttpMethod.POST,
         new HttpEntity<>(null, headers),
-        new ParameterizedTypeReference<>() {
-        },
-        Collections.emptyMap()
-    );
+        new ParameterizedTypeReference<>() {},
+        Collections.emptyMap());
   }
 
   public ResponseEntity<GetCertificateInternalMetadataResponse> getCertificateMetadata(
       String certificateId) {
-    final var requestUrl = "http://localhost:%s/internalapi/certificate/%s/metadata".formatted(
-        port,
-        certificateId
-    );
+    final var requestUrl =
+        "http://localhost:%s/internalapi/certificate/%s/metadata".formatted(port, certificateId);
 
     final var headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
@@ -67,18 +79,13 @@ public class InternalApiUtil {
         requestUrl,
         HttpMethod.GET,
         new HttpEntity<>(null, headers),
-        new ParameterizedTypeReference<>() {
-        },
-        Collections.emptyMap()
-    );
+        new ParameterizedTypeReference<>() {},
+        Collections.emptyMap());
   }
 
-  public ResponseEntity<GetCertificateInternalResponse> getCertificate(
-      String certificateId) {
-    final var requestUrl = "http://localhost:%s/internalapi/certificate/%s".formatted(
-        port,
-        certificateId
-    );
+  public ResponseEntity<GetCertificateInternalResponse> getCertificate(String certificateId) {
+    final var requestUrl =
+        "http://localhost:%s/internalapi/certificate/%s".formatted(port, certificateId);
 
     final var headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
@@ -87,33 +94,26 @@ public class InternalApiUtil {
         requestUrl,
         HttpMethod.POST,
         new HttpEntity<>(null, headers),
-        new ParameterizedTypeReference<>() {
-        },
-        Collections.emptyMap()
-    );
+        new ParameterizedTypeReference<>() {},
+        Collections.emptyMap());
   }
 
-  public ResponseEntity<CertificateExistsResponse> certificateExists(
-      String certificateId) {
-    final var requestUrl = "http://localhost:%s/internalapi/certificate/%s/exists"
-        .formatted(port, certificateId);
+  public ResponseEntity<CertificateExistsResponse> certificateExists(String certificateId) {
+    final var requestUrl =
+        "http://localhost:%s/internalapi/certificate/%s/exists".formatted(port, certificateId);
     final var headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
     return this.restTemplate.exchange(
         requestUrl,
         HttpMethod.GET,
         new HttpEntity<>(headers),
-        new ParameterizedTypeReference<>() {
-        },
-        Collections.emptyMap()
-    );
+        new ParameterizedTypeReference<>() {},
+        Collections.emptyMap());
   }
 
   public ResponseEntity<GetCertificateMessageInternalResponse> getMessages(String certificateId) {
-    final var requestUrl = "http://localhost:%s/internalapi/message/%s".formatted(
-        port,
-        certificateId
-    );
+    final var requestUrl =
+        "http://localhost:%s/internalapi/message/%s".formatted(port, certificateId);
 
     final var headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
@@ -122,17 +122,13 @@ public class InternalApiUtil {
         requestUrl,
         HttpMethod.POST,
         new HttpEntity<>(null, headers),
-        new ParameterizedTypeReference<>() {
-        },
-        Collections.emptyMap()
-    );
+        new ParameterizedTypeReference<>() {},
+        Collections.emptyMap());
   }
 
   public ResponseEntity<GetMessageInternalXmlResponse> getMessageXml(String messageId) {
-    final var requestUrl = "http://localhost:%s/internalapi/message/%s/xml".formatted(
-        port,
-        messageId
-    );
+    final var requestUrl =
+        "http://localhost:%s/internalapi/message/%s/xml".formatted(port, messageId);
 
     final var headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
@@ -141,17 +137,13 @@ public class InternalApiUtil {
         requestUrl,
         HttpMethod.POST,
         new HttpEntity<>(null, headers),
-        new ParameterizedTypeReference<>() {
-        },
-        Collections.emptyMap()
-    );
+        new ParameterizedTypeReference<>() {},
+        Collections.emptyMap());
   }
 
   public ResponseEntity<CertificatesWithQAInternalResponse> getCertificatesInternalWithQA(
       CertificatesWithQAInternalRequest request) {
-    final var requestUrl = "http://localhost:%s/internalapi/certificate/qa".formatted(
-        port
-    );
+    final var requestUrl = "http://localhost:%s/internalapi/certificate/qa".formatted(port);
 
     final var headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
@@ -160,10 +152,8 @@ public class InternalApiUtil {
         requestUrl,
         HttpMethod.POST,
         new HttpEntity<>(request, headers),
-        new ParameterizedTypeReference<>() {
-        },
-        Collections.emptyMap()
-    );
+        new ParameterizedTypeReference<>() {},
+        Collections.emptyMap());
   }
 
   public ResponseEntity<GetSickLeaveCertificatesInternalResponse> getSickLeaveCertificatesInternal(
@@ -177,10 +167,8 @@ public class InternalApiUtil {
         requestUrl,
         HttpMethod.POST,
         new HttpEntity<>(request, headers),
-        new ParameterizedTypeReference<>() {
-        },
-        Collections.emptyList()
-    );
+        new ParameterizedTypeReference<>() {},
+        Collections.emptyList());
   }
 
   public ResponseEntity<ListObsoleteDraftsResponse> listObsoleteDrafts(
@@ -194,10 +182,8 @@ public class InternalApiUtil {
         requestUrl,
         HttpMethod.POST,
         new HttpEntity<>(request, headers),
-        new ParameterizedTypeReference<>() {
-        },
-        Collections.emptyMap()
-    );
+        new ParameterizedTypeReference<>() {},
+        Collections.emptyMap());
   }
 
   public ResponseEntity<DisposeObsoleteDraftsResponse> disposeObsoleteDrafts(
@@ -211,10 +197,8 @@ public class InternalApiUtil {
         requestUrl,
         HttpMethod.DELETE,
         new HttpEntity<>(request, headers),
-        new ParameterizedTypeReference<>() {
-        },
-        Collections.emptyMap()
-    );
+        new ParameterizedTypeReference<>() {},
+        Collections.emptyMap());
   }
 
   public ResponseEntity<GetSentMessagesCountResponse> getUnansweredCommunicationMessages(
@@ -228,10 +212,8 @@ public class InternalApiUtil {
         requestUrl,
         HttpMethod.POST,
         new HttpEntity<>(request, headers),
-        new ParameterizedTypeReference<>() {
-        },
-        Collections.emptyMap()
-    );
+        new ParameterizedTypeReference<>() {},
+        Collections.emptyMap());
   }
 
   public void reset() {

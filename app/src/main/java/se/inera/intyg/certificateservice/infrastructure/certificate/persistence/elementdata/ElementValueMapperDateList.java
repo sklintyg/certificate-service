@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificate.persistence.elementdata;
 
 import org.springframework.stereotype.Component;
@@ -11,8 +29,7 @@ public class ElementValueMapperDateList implements ElementValueMapper {
 
   @Override
   public boolean supports(Class<?> c) {
-    return c.equals(MappedElementValueDateList.class)
-        || c.equals(ElementValueDateList.class);
+    return c.equals(MappedElementValueDateList.class) || c.equals(ElementValueDateList.class);
   }
 
   @Override
@@ -22,15 +39,14 @@ public class ElementValueMapperDateList implements ElementValueMapper {
           .dateListId(new FieldId(mappedElementValueDateList.getDateListId()))
           .dateList(
               mappedElementValueDateList.getDateList().stream()
-                  .map(date ->
-                      ElementValueDate.builder()
-                          .dateId(new FieldId(date.getId()))
-                          .date(date.getDate())
-                          .build()
-                  ).toList()
-          )
+                  .map(
+                      date ->
+                          ElementValueDate.builder()
+                              .dateId(new FieldId(date.getId()))
+                              .date(date.getDate())
+                              .build())
+                  .toList())
           .build();
-
     }
     throw new IllegalStateException("MappedElementValue not supported '%s'".formatted(mappedValue));
   }
@@ -42,12 +58,10 @@ public class ElementValueMapperDateList implements ElementValueMapper {
           .dateListId(elementValueDateList.dateListId().value())
           .dateList(
               elementValueDateList.dateList().stream()
-                  .map(date -> MappedDate.builder()
-                      .id(date.dateId().value())
-                      .date(date.date())
-                      .build())
-                  .toList()
-          )
+                  .map(
+                      date ->
+                          MappedDate.builder().id(date.dateId().value()).date(date.date()).build())
+                  .toList())
           .build();
     }
     throw new IllegalStateException("ElementValue not supported '%s'".formatted(value));

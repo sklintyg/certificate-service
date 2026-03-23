@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.message.service;
 
 import java.util.List;
@@ -21,29 +39,26 @@ public class ReceiveQuestionMessageDomainService {
       throw new CertificateActionForbidden(
           "Not allowed to receive question message on certificate for %s"
               .formatted(certificate.id().id()),
-          certificate.reasonNotAllowed(CertificateActionType.RECEIVE_QUESTION, Optional.empty())
-      );
+          certificate.reasonNotAllowed(CertificateActionType.RECEIVE_QUESTION, Optional.empty()));
     }
 
     if (!certificate.isCertificateIssuedOnPatient(message.personId())) {
       throw new CertificateActionForbidden(
           "Not allowed to receive question on certificate for %s, because patient is not matching"
               .formatted(certificate.id().id()),
-          List.of("Different patient on certificate and incoming message!")
-      );
+          List.of("Different patient on certificate and incoming message!"));
     }
 
-    final var isAllowedMessageType = certificate.certificateModel().messageTypes().stream()
-        .anyMatch(type -> type.type().equals(message.type()));
+    final var isAllowedMessageType =
+        certificate.certificateModel().messageTypes().stream()
+            .anyMatch(type -> type.type().equals(message.type()));
     if (!isAllowedMessageType) {
       throw new CertificateActionForbidden(
           "Not allowed to receive message of type %s on certificate for %s"
               .formatted(message.type(), certificate.id().id()),
           List.of(
               "Message type %s not allowed on certificate model %s"
-                  .formatted(message.type(), certificate.certificateModel().id())
-          )
-      );
+                  .formatted(message.type(), certificate.certificateModel().id())));
     }
 
     return messageRepository.save(message);

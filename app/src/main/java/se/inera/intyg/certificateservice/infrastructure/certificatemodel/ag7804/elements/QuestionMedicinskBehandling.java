@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ag7804.elements;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.ag7804.elements.QuestionSmittbararpenning.QUESTION_SMITTBARARPENNING_FIELD_ID;
@@ -30,29 +48,15 @@ public class QuestionMedicinskBehandling {
                     "Beskriv pågående och planerade medicinska behandlingar/åtgärder som kan påverka arbetsförmågan")
                 .label("Ange vad syftet är och om möjligt tidsplan samt ansvarig vårdenhet.")
                 .id(QUESTION_MEDICINSK_BEHANDLING_FIELD_ID)
-                .build()
-        )
+                .build())
         .rules(
             List.of(
-                CertificateElementRuleFactory.limit(QUESTION_MEDICINSK_BEHANDLING_ID,
-                    (short) 4000),
+                CertificateElementRuleFactory.limit(QUESTION_MEDICINSK_BEHANDLING_ID, (short) 4000),
                 CertificateElementRuleFactory.hide(
-                    QUESTION_SMITTBARARPENNING_ID,
-                    QUESTION_SMITTBARARPENNING_FIELD_ID
-                )
-            )
-        )
-        .validations(
-            List.of(
-                ElementValidationText.builder()
-                    .mandatory(false)
-                    .limit(4000)
-                    .build()
-            )
-        )
+                    QUESTION_SMITTBARARPENNING_ID, QUESTION_SMITTBARARPENNING_FIELD_ID)))
+        .validations(List.of(ElementValidationText.builder().mandatory(false).limit(4000).build()))
         .shouldValidate(
-            ElementDataPredicateFactory.checkboxBoolean(QUESTION_SMITTBARARPENNING_ID, false)
-        )
+            ElementDataPredicateFactory.checkboxBoolean(QUESTION_SMITTBARARPENNING_ID, false))
         .children(List.of(children))
         .build();
   }

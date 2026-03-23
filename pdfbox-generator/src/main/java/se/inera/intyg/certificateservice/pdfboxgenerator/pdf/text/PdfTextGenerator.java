@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.pdfboxgenerator.pdf.text;
 
 import static se.inera.intyg.certificateservice.pdfboxgenerator.pdf.PdfConstants.TEXT_FIELD_LINE_HEIGHT;
@@ -28,26 +46,84 @@ import org.springframework.stereotype.Component;
 public class PdfTextGenerator {
 
   // TODO: Refactor this method overload approach, maybe use a builder pattern instead?
-  private void addText(PDDocument pdf, String text, int fontSize, Matrix matrix,
+  private void addText(
+      PDDocument pdf,
+      String text,
+      int fontSize,
+      Matrix matrix,
       Color strokingColor,
-      int mcid, PDStructureElement section)
+      int mcid,
+      PDStructureElement section)
       throws IOException {
-    addText(pdf, text, fontSize, matrix, strokingColor, null, null, false, mcid, section, 0, text,
+    addText(
+        pdf,
+        text,
+        fontSize,
+        matrix,
+        strokingColor,
+        null,
+        null,
+        false,
+        mcid,
+        section,
+        0,
+        text,
         false);
   }
 
-  public void addText(PDDocument pdf, String text, float fontSize, Float offsetX, Float offsetY,
-      int mcid, PDStructureElement section, int pageIndex, String actualText)
+  public void addText(
+      PDDocument pdf,
+      String text,
+      float fontSize,
+      Float offsetX,
+      Float offsetY,
+      int mcid,
+      PDStructureElement section,
+      int pageIndex,
+      String actualText)
       throws IOException {
-    addText(pdf, text, fontSize, null, Color.black, offsetX, offsetY, false, mcid, section,
-        pageIndex, actualText, false);
+    addText(
+        pdf,
+        text,
+        fontSize,
+        null,
+        Color.black,
+        offsetX,
+        offsetY,
+        false,
+        mcid,
+        section,
+        pageIndex,
+        actualText,
+        false);
   }
 
-  public void addText(PDDocument pdf, String text, float fontSize, Float offsetX, Float offsetY,
-      int mcid, PDStructureElement section, int pageIndex, String actualText, boolean prependTag)
+  public void addText(
+      PDDocument pdf,
+      String text,
+      float fontSize,
+      Float offsetX,
+      Float offsetY,
+      int mcid,
+      PDStructureElement section,
+      int pageIndex,
+      String actualText,
+      boolean prependTag)
       throws IOException {
-    addText(pdf, text, fontSize, null, Color.black, offsetX, offsetY, false, mcid, section,
-        pageIndex, actualText, prependTag);
+    addText(
+        pdf,
+        text,
+        fontSize,
+        null,
+        Color.black,
+        offsetX,
+        offsetY,
+        false,
+        mcid,
+        section,
+        pageIndex,
+        actualText,
+        prependTag);
   }
 
   private void addText(
@@ -62,8 +138,8 @@ public class PdfTextGenerator {
       int mcid,
       PDStructureElement section,
       int pageIndex,
-      boolean prependTag
-  ) throws IOException {
+      boolean prependTag)
+      throws IOException {
     addText(
         pdf,
         text,
@@ -77,8 +153,7 @@ public class PdfTextGenerator {
         section,
         pageIndex,
         text,
-        prependTag
-    );
+        prependTag);
   }
 
   private void addText(
@@ -94,8 +169,8 @@ public class PdfTextGenerator {
       PDStructureElement section,
       int pageIndex,
       String actualText,
-      boolean prependTag
-  ) throws IOException {
+      boolean prependTag)
+      throws IOException {
     final var page = pdf.getPage(pageIndex);
 
     try (final var contentStream = createContentStream(pdf, page)) {
@@ -110,24 +185,26 @@ public class PdfTextGenerator {
       }
 
       contentStream.setNonStrokingColor(strokingColor);
-      contentStream.setFont(new PDType1Font(
-          isBold
-              ? FontName.HELVETICA_BOLD
-              : FontName.HELVETICA
-      ), fontSize);
+      contentStream.setFont(
+          new PDType1Font(isBold ? FontName.HELVETICA_BOLD : FontName.HELVETICA), fontSize);
       final var dictionary = beginMarkedContent(contentStream, COSName.P, mcid);
       contentStream.showText(text);
       contentStream.endMarkedContent();
       if (section != null) {
-        addContentToCurrentSection(page, dictionary, section, COSName.P, StandardStructureTypes.P,
-            actualText, prependTag);
+        addContentToCurrentSection(
+            page, dictionary, section, COSName.P, StandardStructureTypes.P, actualText, prependTag);
       }
       contentStream.endText();
     }
   }
 
-  public void addTopWatermark(PDDocument document, String text, Matrix matrix, int fontSize,
-      int mcid, boolean addInExistingTopTag)
+  public void addTopWatermark(
+      PDDocument document,
+      String text,
+      Matrix matrix,
+      int fontSize,
+      int mcid,
+      boolean addInExistingTopTag)
       throws IOException {
     addText(
         document,
@@ -136,8 +213,7 @@ public class PdfTextGenerator {
         matrix,
         Color.gray,
         mcid,
-        addInExistingTopTag ? getFirstDiv(document) : createNewDivOnPage(document, 0, 0)
-    );
+        addInExistingTopTag ? getFirstDiv(document) : createNewDivOnPage(document, 0, 0));
   }
 
   public void addMarginText(PDDocument document, String text, int mcid, int pageIndex)
@@ -154,12 +230,17 @@ public class PdfTextGenerator {
         mcid,
         getLastDivOfPage(document, pageIndex),
         pageIndex,
-        false
-    );
+        false);
   }
 
-  public void addDigitalSignatureText(PDDocument pdDocument, String text, Float xPosition,
-      Float yPosition, int mcid, int index, int pageIndex)
+  public void addDigitalSignatureText(
+      PDDocument pdDocument,
+      String text,
+      Float xPosition,
+      Float yPosition,
+      int mcid,
+      int index,
+      int pageIndex)
       throws IOException {
     addText(
         pdDocument,
@@ -173,8 +254,7 @@ public class PdfTextGenerator {
         mcid,
         getDivInQuestionSection(pdDocument, index, pageIndex),
         pageIndex,
-        false
-    );
+        false);
   }
 
   public void addWatermark(PDDocument document, String text, int mcid) throws IOException {
@@ -210,15 +290,27 @@ public class PdfTextGenerator {
         contentStream.showText(text);
         contentStream.endMarkedContent();
         contentStream.endText();
-        addContentToCurrentSection(page, markedContentDictionary, section, COSName.P,
-            StandardStructureTypes.P, "Detta är ett " + text.toLowerCase());
+        addContentToCurrentSection(
+            page,
+            markedContentDictionary,
+            section,
+            COSName.P,
+            StandardStructureTypes.P,
+            "Detta är ett " + text.toLowerCase());
       }
       pageIndex++;
     }
   }
 
-  public void addTextLines(PDDocument document, List<String> lines, int fontSize,
-      PDFont font, Float xPosition, Float yPosition, int mcid, int pageIndex)
+  public void addTextLines(
+      PDDocument document,
+      List<String> lines,
+      int fontSize,
+      PDFont font,
+      Float xPosition,
+      Float yPosition,
+      int mcid,
+      int pageIndex)
       throws IOException {
 
     final var page = document.getPage(pageIndex);
@@ -233,8 +325,13 @@ public class PdfTextGenerator {
       final var markedContentDictionary = beginMarkedContent(contentStream, COSName.P, mcid);
       final var section = createNewDivOnPage(document, 1, pageIndex);
 
-      addContentToCurrentSection(page, markedContentDictionary, section, COSName.P,
-          StandardStructureTypes.P, String.join(" ", lines));
+      addContentToCurrentSection(
+          page,
+          markedContentDictionary,
+          section,
+          COSName.P,
+          StandardStructureTypes.P,
+          String.join(" ", lines));
 
       float leading = TEXT_FIELD_LINE_HEIGHT * fontSize;
       for (String line : lines) {

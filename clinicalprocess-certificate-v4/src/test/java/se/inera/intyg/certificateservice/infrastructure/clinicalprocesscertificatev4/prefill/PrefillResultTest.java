@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.prefill;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -22,14 +40,10 @@ import se.riv.clinicalprocess.healthcond.certificate.v33.Forifyllnad;
 @ExtendWith(MockitoExtension.class)
 class PrefillResultTest {
 
-  @Mock
-  private CertificateModel certificateModel;
-  @Mock
-  private PrefillHandler prefillHandler;
-  @Mock
-  private PrefillAnswer prefillAnswer;
-  @Mock
-  private ElementData elementData;
+  @Mock private CertificateModel certificateModel;
+  @Mock private PrefillHandler prefillHandler;
+  @Mock private PrefillAnswer prefillAnswer;
+  @Mock private ElementData elementData;
 
   @Test
   void shouldCreatePrefillResult() {
@@ -40,8 +54,7 @@ class PrefillResultTest {
     assertAll(
         () -> assertEquals(certificateModel, result.getCertificateModel()),
         () -> assertEquals(prefillHandler, result.getPrefillHandler()),
-        () -> assertEquals(forifyllnad, result.getPrefill())
-    );
+        () -> assertEquals(forifyllnad, result.getPrefill()));
   }
 
   @Test
@@ -59,12 +72,13 @@ class PrefillResultTest {
 
     when(prefillAnswer.getElementData()).thenReturn(elementData);
 
-    final var prefillResult = PrefillResult.builder()
-        .certificateModel(certificateModel)
-        .prefillHandler(prefillHandler)
-        .prefill(forifyllnad)
-        .prefilledAnswers(List.of(prefillAnswer))
-        .build();
+    final var prefillResult =
+        PrefillResult.builder()
+            .certificateModel(certificateModel)
+            .prefillHandler(prefillHandler)
+            .prefill(forifyllnad)
+            .prefilledAnswers(List.of(prefillAnswer))
+            .build();
 
     final var result = prefillResult.prefilledElements();
 
@@ -79,46 +93,53 @@ class PrefillResultTest {
     final var prefillAnswer = mock(PrefillAnswer.class);
     when(prefillAnswer.getErrors()).thenReturn(List.of(error));
 
-    final var prefillResult = PrefillResult.builder()
-        .certificateModel(certificateModel)
-        .prefillHandler(prefillHandler)
-        .prefill(forifyllnad)
-        .prefilledAnswers(List.of(prefillAnswer))
-        .build();
+    final var prefillResult =
+        PrefillResult.builder()
+            .certificateModel(certificateModel)
+            .prefillHandler(prefillHandler)
+            .prefill(forifyllnad)
+            .prefilledAnswers(List.of(prefillAnswer))
+            .build();
 
     final var json = prefillResult.toJsonReport();
 
     assertAll(
         () -> assertTrue(json.contains("ID1")),
-        () -> assertTrue(json.contains("ANSWER_NOT_FOUND"))
-    );
+        () -> assertTrue(json.contains("ANSWER_NOT_FOUND")));
   }
 
   @Test
   void shouldNotReturnDuplicateElements() {
-    final var prefilledAnswer = PrefillAnswer.builder()
-        .elementData(ElementData.builder()
-            .id(new ElementId("element1"))
-            .value(ElementValueText.builder()
-                .textId(new FieldId("fieldId"))
-                .text("answerText")
-                .build())
-            .build())
-        .build();
+    final var prefilledAnswer =
+        PrefillAnswer.builder()
+            .elementData(
+                ElementData.builder()
+                    .id(new ElementId("element1"))
+                    .value(
+                        ElementValueText.builder()
+                            .textId(new FieldId("fieldId"))
+                            .text("answerText")
+                            .build())
+                    .build())
+            .build();
 
-    final var duplicatePrefilledAnswer = PrefillAnswer.builder()
-        .elementData(ElementData.builder()
-            .id(new ElementId("element1"))
-            .value(ElementValueText.builder()
-                .textId(new FieldId("fieldId"))
-                .text("answerText")
-                .build())
-            .build())
-        .build();
+    final var duplicatePrefilledAnswer =
+        PrefillAnswer.builder()
+            .elementData(
+                ElementData.builder()
+                    .id(new ElementId("element1"))
+                    .value(
+                        ElementValueText.builder()
+                            .textId(new FieldId("fieldId"))
+                            .text("answerText")
+                            .build())
+                    .build())
+            .build();
 
-    PrefillResult prefillResult = PrefillResult.builder()
-        .prefilledAnswers(List.of(prefilledAnswer, duplicatePrefilledAnswer))
-        .build();
+    PrefillResult prefillResult =
+        PrefillResult.builder()
+            .prefilledAnswers(List.of(prefilledAnswer, duplicatePrefilledAnswer))
+            .build();
 
     assertEquals(1, prefillResult.prefilledElements().size());
   }

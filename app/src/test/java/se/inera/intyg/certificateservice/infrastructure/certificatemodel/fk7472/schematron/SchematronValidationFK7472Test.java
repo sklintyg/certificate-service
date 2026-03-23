@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7472.schematron;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -33,19 +51,15 @@ import se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertifica
 @ExtendWith(MockitoExtension.class)
 class SchematronValidationFK7472Test {
 
-  @Mock
-  private CertificateActionFactory certificateActionFactory;
+  @Mock private CertificateActionFactory certificateActionFactory;
   private SchematronValidator schematronValidator;
-  private final XmlGeneratorCertificateV4 generator = new XmlGeneratorCertificateV4(
-      new XmlGeneratorValue(
-          List.of(new XmlGeneratorDate(), new XmlGeneratorDateRangeList(), new XmlGeneratorText()),
-          Collections.emptyList()
-      ),
-      new XmlValidationService(
-          new SchematronValidator(),
-          new SchemaValidatorV4()
-      )
-  );
+  private final XmlGeneratorCertificateV4 generator =
+      new XmlGeneratorCertificateV4(
+          new XmlGeneratorValue(
+              List.of(
+                  new XmlGeneratorDate(), new XmlGeneratorDateRangeList(), new XmlGeneratorText()),
+              Collections.emptyList()),
+          new XmlValidationService(new SchematronValidator(), new SchemaValidatorV4()));
   private CertificateModelFactoryFK7472 certificateModelFactoryFK7472;
 
   @BeforeEach
@@ -56,16 +70,43 @@ class SchematronValidationFK7472Test {
 
   @Test
   void shallReturnTrueIfAllFieldsHaveValues() {
-    final var element = List.of(
-        ElementData.builder()
-            .id(new ElementId("55"))
-            .value(
-                ElementValueText.builder()
-                    .textId(new FieldId("55.1"))
-                    .text("text")
-                    .build()
-            )
-            .build(),
+    final var element =
+        List.of(
+            ElementData.builder()
+                .id(new ElementId("55"))
+                .value(ElementValueText.builder().textId(new FieldId("55.1")).text("text").build())
+                .build(),
+            ElementData.builder()
+                .id(new ElementId("56"))
+                .value(
+                    ElementValueDateRangeList.builder()
+                        .dateRangeList(
+                            List.of(
+                                DateRange.builder()
+                                    .dateRangeId(new FieldId("EN_ATTONDEL"))
+                                    .from(LocalDate.now())
+                                    .to(LocalDate.now().plusDays(1))
+                                    .build()))
+                        .dateRangeListId(new FieldId("56.2"))
+                        .build())
+                .build());
+
+    final var certificate =
+        TestDataCertificate.fk7472CertificateBuilder()
+            .certificateModel(certificateModelFactoryFK7472.create())
+            .elementData(element)
+            .build();
+
+    final var xml = generator.generate(certificate, true);
+    assertTrue(
+        schematronValidator.validate(
+            certificate.id(), xml, CertificateModelFactoryFK7472.SCHEMATRON_PATH));
+  }
+
+  @Nested
+  class QuestionDiagnosEllerSymtom {
+
+    private static final ElementData QUESTION_PERIOD =
         ElementData.builder()
             .id(new ElementId("56"))
             .value(
@@ -76,131 +117,99 @@ class SchematronValidationFK7472Test {
                                 .dateRangeId(new FieldId("EN_ATTONDEL"))
                                 .from(LocalDate.now())
                                 .to(LocalDate.now().plusDays(1))
-                                .build()
-                        )
-                    )
-                    .dateRangeListId(new FieldId("56.2"))
+                                .build()))
+                    .dateRangeListId(new FieldId("55.1"))
                     .build())
-            .build()
-    );
-
-    final var certificate = TestDataCertificate.fk7472CertificateBuilder()
-        .certificateModel(certificateModelFactoryFK7472.create())
-        .elementData(element)
-        .build();
-
-    final var xml = generator.generate(certificate, true);
-    assertTrue(schematronValidator.validate(certificate.id(), xml,
-        CertificateModelFactoryFK7472.SCHEMATRON_PATH)
-    );
-  }
-
-  @Nested
-  class QuestionDiagnosEllerSymtom {
-
-    private static final ElementData QUESTION_PERIOD = ElementData.builder()
-        .id(new ElementId("56"))
-        .value(
-            ElementValueDateRangeList.builder()
-                .dateRangeList(
-                    List.of(
-                        DateRange.builder()
-                            .dateRangeId(new FieldId("EN_ATTONDEL"))
-                            .from(LocalDate.now())
-                            .to(LocalDate.now().plusDays(1))
-                            .build()
-                    )
-                )
-                .dateRangeListId(new FieldId("55.1"))
-                .build())
-        .build();
+            .build();
 
     @Test
     void shallReturnQuestionMissing() {
-      final var certificate = TestDataCertificate.fk7472CertificateBuilder()
-          .certificateModel(certificateModelFactoryFK7472.create())
-          .elementData(List.of(QUESTION_PERIOD))
-          .build();
+      final var certificate =
+          TestDataCertificate.fk7472CertificateBuilder()
+              .certificateModel(certificateModelFactoryFK7472.create())
+              .elementData(List.of(QUESTION_PERIOD))
+              .build();
 
       assertThrows(IllegalStateException.class, () -> generator.generate(certificate, true));
     }
 
     @Test
     void shallReturnFalseIfValueIsNull() {
-      final var element = ElementData.builder()
-          .id(new ElementId("55"))
-          .value(
-              ElementValueText.builder()
-                  .textId(new FieldId("55.1"))
-                  .build()
-          ).build();
+      final var element =
+          ElementData.builder()
+              .id(new ElementId("55"))
+              .value(ElementValueText.builder().textId(new FieldId("55.1")).build())
+              .build();
 
-      final var certificate = TestDataCertificate.fk7472CertificateBuilder()
-          .certificateModel(certificateModelFactoryFK7472.create())
-          .elementData(List.of(element, QUESTION_PERIOD))
-          .build();
+      final var certificate =
+          TestDataCertificate.fk7472CertificateBuilder()
+              .certificateModel(certificateModelFactoryFK7472.create())
+              .elementData(List.of(element, QUESTION_PERIOD))
+              .build();
 
       assertThrows(IllegalStateException.class, () -> generator.generate(certificate, true));
     }
 
     @Test
     void shallReturnFalseIfValueIsBlank() {
-      final var element = ElementData.builder()
-          .id(new ElementId("55"))
-          .value(
-              ElementValueText.builder()
-                  .textId(new FieldId("55.1"))
-                  .text("")
-                  .build()
-          ).build();
+      final var element =
+          ElementData.builder()
+              .id(new ElementId("55"))
+              .value(ElementValueText.builder().textId(new FieldId("55.1")).text("").build())
+              .build();
 
-      final var certificate = TestDataCertificate.fk7472CertificateBuilder()
-          .certificateModel(certificateModelFactoryFK7472.create())
-          .elementData(List.of(element, QUESTION_PERIOD))
-          .build();
+      final var certificate =
+          TestDataCertificate.fk7472CertificateBuilder()
+              .certificateModel(certificateModelFactoryFK7472.create())
+              .elementData(List.of(element, QUESTION_PERIOD))
+              .build();
 
       assertThrows(IllegalStateException.class, () -> generator.generate(certificate, true));
     }
 
     @Test
     void shallReturnFalseIfValueHasLengthGreaterThan318() {
-      final var element = ElementData.builder()
-          .id(new ElementId("55"))
-          .value(
-              ElementValueText.builder()
-                  .textId(new FieldId("55.1"))
-                  .text(
-                      "awddawadwawdawdawdawdawdadwadwawdadawda"
-                          + "wawddawadwawdawdawdawdawdadwadwawd"
-                          + "adawdawawddawadwawdawdawdawdawdadw"
-                          + "adwawdadawdawawddawadwawdawdawdawd"
-                          + "awdadwadwawdadawdawawddawadwawdawd"
-                          + "awdawdawdadwadwawdadawdawawddawad"
-                          + "wawdawdawdawdawdadwadwawdadawdawawd"
-                          + "dawadwawdawdawdawdawdadwadwawdadawd"
-                          + "awawddawadwawdawdawdawdawdadwadwawdadawdddddd")
-                  .build()
-          ).build();
+      final var element =
+          ElementData.builder()
+              .id(new ElementId("55"))
+              .value(
+                  ElementValueText.builder()
+                      .textId(new FieldId("55.1"))
+                      .text(
+                          "awddawadwawdawdawdawdawdadwadwawdadawda"
+                              + "wawddawadwawdawdawdawdawdadwadwawd"
+                              + "adawdawawddawadwawdawdawdawdawdadw"
+                              + "adwawdadawdawawddawadwawdawdawdawd"
+                              + "awdadwadwawdadawdawawddawadwawdawd"
+                              + "awdawdawdadwadwawdadawdawawddawad"
+                              + "wawdawdawdawdawdadwadwawdadawdawawd"
+                              + "dawadwawdawdawdawdawdadwadwawdadawd"
+                              + "awawddawadwawdawdawdawdawdadwadwawdadawdddddd")
+                      .build())
+              .build();
 
-      final var certificate = TestDataCertificate.fk7472CertificateBuilder()
-          .certificateModel(certificateModelFactoryFK7472.create())
-          .elementData(List.of(element, QUESTION_PERIOD))
-          .build();
+      final var certificate =
+          TestDataCertificate.fk7472CertificateBuilder()
+              .certificateModel(certificateModelFactoryFK7472.create())
+              .elementData(List.of(element, QUESTION_PERIOD))
+              .build();
 
       assertThrows(IllegalStateException.class, () -> generator.generate(certificate, true));
     }
 
     @Test
     void shallReturnFalseIfQuestionMissing() {
-      final var element = ElementData.builder()
-          .id(new ElementId("55"))
-          .value(ElementValueText.builder().build())
-          .build();
+      final var element =
+          ElementData.builder()
+              .id(new ElementId("55"))
+              .value(ElementValueText.builder().build())
+              .build();
 
-      final var certificate = TestDataCertificate.fk7472CertificateBuilder()
-          .certificateModel(certificateModelFactoryFK7472.create())
-          .elementData(List.of(element, QUESTION_PERIOD))
-          .build();
+      final var certificate =
+          TestDataCertificate.fk7472CertificateBuilder()
+              .certificateModel(certificateModelFactoryFK7472.create())
+              .elementData(List.of(element, QUESTION_PERIOD))
+              .build();
 
       assertThrows(IllegalStateException.class, () -> generator.generate(certificate, true));
     }
@@ -209,179 +218,168 @@ class SchematronValidationFK7472Test {
   @Nested
   class QuestionPerioda {
 
-    private static final ElementData QUESTION_SYMTOM = ElementData.builder()
-        .id(new ElementId("55"))
-        .value(
-            ElementValueText.builder()
-                .textId(new FieldId("55.1"))
-                .text("text")
-                .build()
-        )
-        .build();
+    private static final ElementData QUESTION_SYMTOM =
+        ElementData.builder()
+            .id(new ElementId("55"))
+            .value(ElementValueText.builder().textId(new FieldId("55.1")).text("text").build())
+            .build();
 
     @Test
     void shallReturnFalseIfQuestionIdIsMissing() {
-      final var element = List.of(
-          QUESTION_SYMTOM
-      );
+      final var element = List.of(QUESTION_SYMTOM);
 
-      final var certificate = TestDataCertificate.fk7472CertificateBuilder()
-          .certificateModel(certificateModelFactoryFK7472.create())
-          .elementData(element)
-          .build();
+      final var certificate =
+          TestDataCertificate.fk7472CertificateBuilder()
+              .certificateModel(certificateModelFactoryFK7472.create())
+              .elementData(element)
+              .build();
 
       assertThrows(IllegalStateException.class, () -> generator.generate(certificate, true));
     }
 
     @Test
     void shallReturnFalseIfDateRangeIsMissing() {
-      final var element = List.of(
-          QUESTION_SYMTOM,
-          ElementData.builder()
-              .id(new ElementId("56"))
-              .value(
-                  ElementValueDateRangeList.builder()
-                      .dateRangeList(
-                          Collections.emptyList()
-                      )
-                      .dateRangeListId(new FieldId("56.1"))
-                      .build())
-              .build()
-      );
+      final var element =
+          List.of(
+              QUESTION_SYMTOM,
+              ElementData.builder()
+                  .id(new ElementId("56"))
+                  .value(
+                      ElementValueDateRangeList.builder()
+                          .dateRangeList(Collections.emptyList())
+                          .dateRangeListId(new FieldId("56.1"))
+                          .build())
+                  .build());
 
-      final var certificate = TestDataCertificate.fk7472CertificateBuilder()
-          .certificateModel(certificateModelFactoryFK7472.create())
-          .elementData(element)
-          .build();
+      final var certificate =
+          TestDataCertificate.fk7472CertificateBuilder()
+              .certificateModel(certificateModelFactoryFK7472.create())
+              .elementData(element)
+              .build();
 
       assertThrows(IllegalStateException.class, () -> generator.generate(certificate, true));
     }
 
     @Test
     void shallReturnFalseIfDateRangeIsOverlapping() {
-      final var element = List.of(
-          QUESTION_SYMTOM,
-          ElementData.builder()
-              .id(new ElementId("56"))
-              .value(
-                  ElementValueDateRangeList.builder()
-                      .dateRangeList(
-                          List.of(
-                              DateRange.builder()
-                                  .dateRangeId(new FieldId("EN_ATTONDEL"))
-                                  .from(LocalDate.now())
-                                  .to(LocalDate.now().plusDays(1))
-                                  .build(),
-                              DateRange.builder()
-                                  .dateRangeId(new FieldId("EN_FJARDEDEL"))
-                                  .from(LocalDate.now().minusDays(1))
-                                  .to(LocalDate.now().plusDays(2))
-                                  .build()
-                          )
-                      )
-                      .dateRangeListId(new FieldId("56.1"))
-                      .build())
-              .build()
-      );
+      final var element =
+          List.of(
+              QUESTION_SYMTOM,
+              ElementData.builder()
+                  .id(new ElementId("56"))
+                  .value(
+                      ElementValueDateRangeList.builder()
+                          .dateRangeList(
+                              List.of(
+                                  DateRange.builder()
+                                      .dateRangeId(new FieldId("EN_ATTONDEL"))
+                                      .from(LocalDate.now())
+                                      .to(LocalDate.now().plusDays(1))
+                                      .build(),
+                                  DateRange.builder()
+                                      .dateRangeId(new FieldId("EN_FJARDEDEL"))
+                                      .from(LocalDate.now().minusDays(1))
+                                      .to(LocalDate.now().plusDays(2))
+                                      .build()))
+                          .dateRangeListId(new FieldId("56.1"))
+                          .build())
+                  .build());
 
-      final var certificate = TestDataCertificate.fk7472CertificateBuilder()
-          .certificateModel(certificateModelFactoryFK7472.create())
-          .elementData(element)
-          .build();
+      final var certificate =
+          TestDataCertificate.fk7472CertificateBuilder()
+              .certificateModel(certificateModelFactoryFK7472.create())
+              .elementData(element)
+              .build();
 
       assertThrows(IllegalStateException.class, () -> generator.generate(certificate, true));
     }
 
     @Test
     void shallReturnFalseIfMultipleDateRangeWithSameCodeAppear() {
-      final var element = List.of(
-          QUESTION_SYMTOM,
-          ElementData.builder()
-              .id(new ElementId("56"))
-              .value(
-                  ElementValueDateRangeList.builder()
-                      .dateRangeList(
-                          List.of(
-                              DateRange.builder()
-                                  .dateRangeId(new FieldId("EN_ATTONDEL"))
-                                  .from(LocalDate.now())
-                                  .to(LocalDate.now().plusDays(1))
-                                  .build(),
-                              DateRange.builder()
-                                  .dateRangeId(new FieldId("EN_ATTONDEL"))
-                                  .from(LocalDate.now().minusDays(4))
-                                  .to(LocalDate.now().plusDays(9))
-                                  .build()
-                          )
-                      )
-                      .dateRangeListId(new FieldId("56.1"))
-                      .build())
-              .build()
-      );
+      final var element =
+          List.of(
+              QUESTION_SYMTOM,
+              ElementData.builder()
+                  .id(new ElementId("56"))
+                  .value(
+                      ElementValueDateRangeList.builder()
+                          .dateRangeList(
+                              List.of(
+                                  DateRange.builder()
+                                      .dateRangeId(new FieldId("EN_ATTONDEL"))
+                                      .from(LocalDate.now())
+                                      .to(LocalDate.now().plusDays(1))
+                                      .build(),
+                                  DateRange.builder()
+                                      .dateRangeId(new FieldId("EN_ATTONDEL"))
+                                      .from(LocalDate.now().minusDays(4))
+                                      .to(LocalDate.now().plusDays(9))
+                                      .build()))
+                          .dateRangeListId(new FieldId("56.1"))
+                          .build())
+                  .build());
 
-      final var certificate = TestDataCertificate.fk7472CertificateBuilder()
-          .certificateModel(certificateModelFactoryFK7472.create())
-          .elementData(element)
-          .build();
+      final var certificate =
+          TestDataCertificate.fk7472CertificateBuilder()
+              .certificateModel(certificateModelFactoryFK7472.create())
+              .elementData(element)
+              .build();
 
       assertThrows(IllegalStateException.class, () -> generator.generate(certificate, true));
     }
 
     @Test
     void shallReturnFalseIfDateRangeFromIsNull() {
-      final var element = List.of(
-          QUESTION_SYMTOM,
-          ElementData.builder()
-              .id(new ElementId("56"))
-              .value(
-                  ElementValueDateRangeList.builder()
-                      .dateRangeList(
-                          List.of(
-                              DateRange.builder()
-                                  .dateRangeId(new FieldId("EN_ATTONDEL"))
-                                  .to(LocalDate.now().plusDays(1))
-                                  .build()
-                          )
-                      )
-                      .dateRangeListId(new FieldId("56.1"))
-                      .build())
-              .build()
-      );
+      final var element =
+          List.of(
+              QUESTION_SYMTOM,
+              ElementData.builder()
+                  .id(new ElementId("56"))
+                  .value(
+                      ElementValueDateRangeList.builder()
+                          .dateRangeList(
+                              List.of(
+                                  DateRange.builder()
+                                      .dateRangeId(new FieldId("EN_ATTONDEL"))
+                                      .to(LocalDate.now().plusDays(1))
+                                      .build()))
+                          .dateRangeListId(new FieldId("56.1"))
+                          .build())
+                  .build());
 
-      final var certificate = TestDataCertificate.fk7472CertificateBuilder()
-          .certificateModel(certificateModelFactoryFK7472.create())
-          .elementData(element)
-          .build();
+      final var certificate =
+          TestDataCertificate.fk7472CertificateBuilder()
+              .certificateModel(certificateModelFactoryFK7472.create())
+              .elementData(element)
+              .build();
 
       assertThrows(IllegalStateException.class, () -> generator.generate(certificate, true));
     }
 
-
     @Test
     void shallReturnFalseIfDateRangeToIsNull() {
-      final var element = List.of(
-          QUESTION_SYMTOM,
-          ElementData.builder()
-              .id(new ElementId("56"))
-              .value(
-                  ElementValueDateRangeList.builder()
-                      .dateRangeList(
-                          List.of(
-                              DateRange.builder()
-                                  .dateRangeId(new FieldId("EN_ATTONDEL"))
-                                  .from(LocalDate.now())
-                                  .build()
-                          )
-                      )
-                      .dateRangeListId(new FieldId("56.1"))
-                      .build())
-              .build()
-      );
+      final var element =
+          List.of(
+              QUESTION_SYMTOM,
+              ElementData.builder()
+                  .id(new ElementId("56"))
+                  .value(
+                      ElementValueDateRangeList.builder()
+                          .dateRangeList(
+                              List.of(
+                                  DateRange.builder()
+                                      .dateRangeId(new FieldId("EN_ATTONDEL"))
+                                      .from(LocalDate.now())
+                                      .build()))
+                          .dateRangeListId(new FieldId("56.1"))
+                          .build())
+                  .build());
 
-      final var certificate = TestDataCertificate.fk7472CertificateBuilder()
-          .certificateModel(certificateModelFactoryFK7472.create())
-          .elementData(element)
-          .build();
+      final var certificate =
+          TestDataCertificate.fk7472CertificateBuilder()
+              .certificateModel(certificateModelFactoryFK7472.create())
+              .elementData(element)
+              .build();
 
       assertThrows(IllegalStateException.class, () -> generator.generate(certificate, true));
     }

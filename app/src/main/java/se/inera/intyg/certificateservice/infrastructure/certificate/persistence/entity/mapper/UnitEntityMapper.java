@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificate.persistence.entity.mapper;
 
 import se.inera.intyg.certificateservice.domain.common.model.HsaId;
@@ -26,8 +44,7 @@ public class UnitEntityMapper {
             UnitTypeEntity.builder()
                 .key(UnitType.CARE_UNIT.getKey())
                 .type(UnitType.CARE_UNIT.name())
-                .build()
-        )
+                .build())
         .hsaId(careUnit.hsaId().id())
         .name(careUnit.name().name())
         .address(careUnit.address().address())
@@ -45,8 +62,7 @@ public class UnitEntityMapper {
             UnitTypeEntity.builder()
                 .key(UnitType.SUB_UNIT.getKey())
                 .type(UnitType.SUB_UNIT.name())
-                .build()
-        )
+                .build())
         .hsaId(subUnit.hsaId().id())
         .name(subUnit.name().name())
         .address(subUnit.address().address())
@@ -64,8 +80,7 @@ public class UnitEntityMapper {
             UnitTypeEntity.builder()
                 .key(UnitType.CARE_PROVIDER.getKey())
                 .type(UnitType.CARE_PROVIDER.name())
-                .build()
-        )
+                .build())
         .hsaId(careProvider.hsaId().id())
         .name(careProvider.name().name())
         .build();
@@ -87,14 +102,12 @@ public class UnitEntityMapper {
                 .address(unit.getAddress())
                 .zipCode(unit.getZipCode())
                 .city(unit.getCity())
-                .build()
-        )
+                .build())
         .contactInfo(
             UnitContactInfo.builder()
                 .phoneNumber(unit.getPhoneNumber())
                 .email(unit.getEmail())
-                .build()
-        )
+                .build())
         .workplaceCode(new WorkplaceCode(unit.getWorkplaceCode()))
         .inactive(new Inactive(false))
         .build();
@@ -109,14 +122,12 @@ public class UnitEntityMapper {
                 .address(unit.getAddress())
                 .zipCode(unit.getZipCode())
                 .city(unit.getCity())
-                .build()
-        )
+                .build())
         .contactInfo(
             UnitContactInfo.builder()
                 .phoneNumber(unit.getPhoneNumber())
                 .email(unit.getEmail())
-                .build()
-        )
+                .build())
         .workplaceCode(new WorkplaceCode(unit.getWorkplaceCode()))
         .inactive(new Inactive(false))
         .build();

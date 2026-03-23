@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ag114.elements;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.ag114.elements.QuestionPeriodProcentBedomning.QUESTION_PERIOD_PROCENT_BEDOMNING_ID;
@@ -29,26 +47,13 @@ public class QuestionPeriodBedomning {
                 .name("Period då arbetsförmågan bedöms vara nedsatt")
                 .labelFrom("Fr.o.m")
                 .labelTo("T.o.m")
-                .build()
-        )
+                .build())
         .rules(
             List.of(
                 CertificateElementRuleFactory.mandatory(
-                    QUESTION_PERIOD_BEDOMNING_ID,
-                    QUESTION_PERIOD_BEDOMNING_FIELD_ID
-                )
-            )
-        )
-        .validations(
-            List.of(
-                ElementValidationDateRange.builder()
-                    .mandatory(true)
-                    .build()
-            )
-        )
-        .mapping(
-            new ElementMapping(QUESTION_PERIOD_PROCENT_BEDOMNING_ID, null)
-        )
+                    QUESTION_PERIOD_BEDOMNING_ID, QUESTION_PERIOD_BEDOMNING_FIELD_ID)))
+        .validations(List.of(ElementValidationDateRange.builder().mandatory(true).build()))
+        .mapping(new ElementMapping(QUESTION_PERIOD_PROCENT_BEDOMNING_ID, null))
         .build();
   }
 }

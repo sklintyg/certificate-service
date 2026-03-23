@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.integrationtest.common.tests;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -22,34 +40,28 @@ public abstract class MessageExistsIT extends BaseIntegrationIT {
   @Test
   @DisplayName("Om meddelandet finns så returneras true")
   void shallReturnTrueIfMessageExists() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED)
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED));
 
-    api().receiveMessage(
-        incomingComplementMessageBuilder()
-            .certificateId(certificateId(testCertificates))
-            .complements(List.of(incomingComplementDTOBuilder()
-                .questionId(questionId())
-                .build()))
-            .build()
-    );
+    api()
+        .receiveMessage(
+            incomingComplementMessageBuilder()
+                .certificateId(certificateId(testCertificates))
+                .complements(
+                    List.of(incomingComplementDTOBuilder().questionId(questionId()).build()))
+                .build());
 
-    final var messagesForCertificate = api().getMessagesForCertificate(
-        defaultGetCertificateMessageRequest(),
-        certificateId(testCertificates)
-    );
+    final var messagesForCertificate =
+        api()
+            .getMessagesForCertificate(
+                defaultGetCertificateMessageRequest(), certificateId(testCertificates));
 
     final var questions = questions(messagesForCertificate.getBody());
 
-    final var response = api().messageExists(
-        messageId(questions.get(0))
-    );
+    final var response = api().messageExists(messageId(questions.get(0)));
 
-    assertTrue(
-        exists(response.getBody()),
-        "Should return true when message exists!"
-    );
+    assertTrue(exists(response.getBody()), "Should return true when message exists!");
   }
 
   @Test
@@ -57,9 +69,6 @@ public abstract class MessageExistsIT extends BaseIntegrationIT {
   void shallReturnFalseIfMessageDoesntExist() {
     final var response = api().messageExists("message-not-exists");
 
-    assertFalse(
-        exists(response.getBody()),
-        "Should return false when message doesnt exists!"
-    );
+    assertFalse(exists(response.getBody()), "Should return false when message doesnt exists!");
   }
 }

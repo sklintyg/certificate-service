@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.testdata;
 
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataUserConstants.AJLA_DOCTOR_ACCESS_SCOPE;
@@ -97,8 +115,7 @@ public class TestDataUser {
                 .firstName(ANNA_SJUKSKOTERSKA_FIRST_NAME)
                 .middleName(ANNA_SJUKSKOTERSKA_MIDDLE_NAME)
                 .lastName(ANNA_SJUKSKOTERSKA_LAST_NAME)
-                .build()
-        )
+                .build())
         .blocked(ANNA_SJUKSKOTERSKA_BLOCKED)
         .agreement(ANNA_SJUKSKOTERSKA_AGREEMENT)
         .allowCopy(ANNA_SJUKSKOTERSKA_ALLOW_COPY)
@@ -118,8 +135,7 @@ public class TestDataUser {
                 .firstName(AJLA_DOCTOR_FIRST_NAME)
                 .middleName(AJLA_DOCTOR_MIDDLE_NAME)
                 .lastName(AJLA_DOCTOR_LAST_NAME)
-                .build()
-        )
+                .build())
         .blocked(AJLA_DOCTOR_BLOCKED)
         .agreement(AJLA_DOCTOR_AGREEMENT)
         .allowCopy(AJLA_DOCTOR_ALLOW_COPY)
@@ -139,8 +155,7 @@ public class TestDataUser {
                 .firstName(ALF_DOKTOR_FIRST_NAME)
                 .middleName(ALF_DOKTOR_MIDDLE_NAME)
                 .lastName(ALF_DOKTOR_LAST_NAME)
-                .build()
-        )
+                .build())
         .blocked(ALF_DOKTOR_BLOCKED)
         .agreement(ALF_DOKTOR_AGREEMENT)
         .allowCopy(ALF_DOKTOR_ALLOW_COPY)
@@ -159,8 +174,7 @@ public class TestDataUser {
                 .firstName(ALVA_VARDADMINISTRATOR_FIRST_NAME)
                 .middleName(ALVA_VARDADMINISTRATOR_MIDDLE_NAME)
                 .lastName(ALVA_VARDADMINISTRATOR_LAST_NAME)
-                .build()
-        )
+                .build())
         .blocked(ALVA_VARDADMINISTRATOR_BLOCKED)
         .agreement(ALVA_VARDADMINISTRATOR_AGREEMENT)
         .allowCopy(ALVA_VARDADMINISTRATOR_ALLOW_COPY)
@@ -180,8 +194,7 @@ public class TestDataUser {
                 .firstName(BERTIL_BARNMORSKA_FIRST_NAME)
                 .middleName(BERTIL_BARNMORSKA_MIDDLE_NAME)
                 .lastName(BERTIL_BARNMORSKA_LAST_NAME)
-                .build()
-        )
+                .build())
         .blocked(BERTIL_BARNMORSKA_BLOCKED)
         .agreement(BERTIL_BARNMORSKA_AGREEMENT)
         .allowCopy(BERTIL_BARNMORSKA_ALLOW_COPY)
@@ -201,8 +214,7 @@ public class TestDataUser {
                 .firstName(DAN_DENTIST_FIRST_NAME)
                 .middleName(DAN_DENTIST_MIDDLE_NAME)
                 .lastName(DAN_DENTIST_LAST_NAME)
-                .build()
-        )
+                .build())
         .blocked(DAN_DENTIST_BLOCKED)
         .agreement(DAN_DENTIST_AGREEMENT)
         .allowCopy(DAN_DENTIST_ALLOW_COPY)

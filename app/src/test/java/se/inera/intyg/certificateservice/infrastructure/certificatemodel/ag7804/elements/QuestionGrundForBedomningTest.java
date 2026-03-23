@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ag7804.elements;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,34 +51,34 @@ class QuestionGrundForBedomningTest {
 
   @Test
   void shouldIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationTextArea.builder()
-        .id(FIELD_ID)
-        .name("Beskriv vad som ligger till grund för bedömningen")
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationTextArea.builder()
+            .id(FIELD_ID)
+            .name("Beskriv vad som ligger till grund för bedömningen")
+            .build();
     final var element = QuestionGrundForBedomning.questionGrundForBedomning();
     assertEquals(expectedConfiguration, element.configuration());
   }
 
   @Test
   void shouldIncludeRules() {
-    final var expectedRules = List.of(
-        ElementRuleExpression.builder()
-            .type(ElementRuleType.MANDATORY)
-            .id(ELEMENT_ID)
-            .expression(new RuleExpression("$" + ELEMENT_ID.id()))
-            .build(),
-        ElementRuleLimit.builder()
-            .type(ElementRuleType.TEXT_LIMIT)
-            .id(ELEMENT_ID)
-            .limit(new RuleLimit((short) 4000))
-            .build(),
-        ElementRuleExpression.builder()
-            .type(ElementRuleType.SHOW)
-            .id(new ElementId("39"))
-            .expression(new RuleExpression(
-                "$" + CodeSystemKvFkmu0006.PROGNOS_OKLAR.code()))
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleExpression.builder()
+                .type(ElementRuleType.MANDATORY)
+                .id(ELEMENT_ID)
+                .expression(new RuleExpression("$" + ELEMENT_ID.id()))
+                .build(),
+            ElementRuleLimit.builder()
+                .type(ElementRuleType.TEXT_LIMIT)
+                .id(ELEMENT_ID)
+                .limit(new RuleLimit((short) 4000))
+                .build(),
+            ElementRuleExpression.builder()
+                .type(ElementRuleType.SHOW)
+                .id(new ElementId("39"))
+                .expression(new RuleExpression("$" + CodeSystemKvFkmu0006.PROGNOS_OKLAR.code()))
+                .build());
 
     final var element = QuestionGrundForBedomning.questionGrundForBedomning();
 
@@ -69,12 +87,8 @@ class QuestionGrundForBedomningTest {
 
   @Test
   void shouldIncludeValidations() {
-    final var expectedValidations = List.of(
-        ElementValidationText.builder()
-            .mandatory(true)
-            .limit(4000)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationText.builder().mandatory(true).limit(4000).build());
     final var element = QuestionGrundForBedomning.questionGrundForBedomning();
     assertEquals(expectedValidations, element.validations());
   }
@@ -90,16 +104,15 @@ class QuestionGrundForBedomningTest {
 
     @Test
     void shouldReturnTrueIfPrognosOklart() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("39"))
-              .value(
-                  ElementValueCode.builder()
-                      .codeId(new FieldId(CodeSystemKvFkmu0006.PROGNOS_OKLAR.code()))
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("39"))
+                  .value(
+                      ElementValueCode.builder()
+                          .codeId(new FieldId(CodeSystemKvFkmu0006.PROGNOS_OKLAR.code()))
+                          .build())
+                  .build());
       final var element = QuestionGrundForBedomning.questionGrundForBedomning();
       final var shouldValidate = element.elementSpecification(ELEMENT_ID).shouldValidate();
       assertTrue(shouldValidate.test(elementData));
@@ -107,20 +120,15 @@ class QuestionGrundForBedomningTest {
 
     @Test
     void shouldReturnFalseIfNotPrognosOklart() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("39"))
-              .value(
-                  ElementValueCode.builder()
-                      .codeId(new FieldId("OTHER_CODE"))
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("39"))
+                  .value(ElementValueCode.builder().codeId(new FieldId("OTHER_CODE")).build())
+                  .build());
       final var element = QuestionGrundForBedomning.questionGrundForBedomning();
       final var shouldValidate = element.elementSpecification(ELEMENT_ID).shouldValidate();
       assertFalse(shouldValidate.test(elementData));
     }
   }
-
 }

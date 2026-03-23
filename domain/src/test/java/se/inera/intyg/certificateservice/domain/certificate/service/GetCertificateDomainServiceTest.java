@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.certificate.service;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -34,14 +52,10 @@ class GetCertificateDomainServiceTest {
 
   private static final CertificateId CERTIFICATE_ID = new CertificateId("certificateId");
   private static final ActionEvaluation ACTION_EVALUATION = ActionEvaluation.builder().build();
-  @Mock
-  private CertificateRepository certificateRepository;
-  @Mock
-  private CertificateEventDomainService certificateEventDomainService;
-  @Mock
-  private Certificate certificate;
-  @InjectMocks
-  private GetCertificateDomainService getCertificateDomainService;
+  @Mock private CertificateRepository certificateRepository;
+  @Mock private CertificateEventDomainService certificateEventDomainService;
+  @Mock private Certificate certificate;
+  @InjectMocks private GetCertificateDomainService getCertificateDomainService;
 
   @BeforeEach
   void setUp() {
@@ -58,9 +72,9 @@ class GetCertificateDomainServiceTest {
   @Test
   void shallThrowIfNotAllowedToRead() {
     doReturn(false).when(certificate).allowTo(READ, Optional.of(ACTION_EVALUATION));
-    assertThrows(CertificateActionForbidden.class,
-        () -> getCertificateDomainService.get(CERTIFICATE_ID, ACTION_EVALUATION)
-    );
+    assertThrows(
+        CertificateActionForbidden.class,
+        () -> getCertificateDomainService.get(CERTIFICATE_ID, ACTION_EVALUATION));
   }
 
   @Test
@@ -92,8 +106,8 @@ class GetCertificateDomainServiceTest {
   @Test
   void shallReturnCertificate() {
     doReturn(true).when(certificate).allowTo(READ, Optional.of(ACTION_EVALUATION));
-    final var actualCertificate = getCertificateDomainService.get(CERTIFICATE_ID,
-        ACTION_EVALUATION);
+    final var actualCertificate =
+        getCertificateDomainService.get(CERTIFICATE_ID, ACTION_EVALUATION);
     assertEquals(certificate, actualCertificate);
   }
 
@@ -109,20 +123,21 @@ class GetCertificateDomainServiceTest {
         () -> assertEquals(CertificateEventType.READ, certificateEventCaptor.getValue().type()),
         () -> assertEquals(certificate, certificateEventCaptor.getValue().certificate()),
         () -> assertEquals(ACTION_EVALUATION, certificateEventCaptor.getValue().actionEvaluation()),
-        () -> assertTrue(certificateEventCaptor.getValue().duration() >= 0)
-    );
+        () -> assertTrue(certificateEventCaptor.getValue().duration() >= 0));
   }
 
   @Test
   void shallIncludeReasonNotAllowedToException() {
     final var expectedReason = List.of("expectedReason");
     doReturn(false).when(certificate).allowTo(READ, Optional.of(ACTION_EVALUATION));
-    doReturn(expectedReason).when(certificate)
+    doReturn(expectedReason)
+        .when(certificate)
         .reasonNotAllowed(CertificateActionType.READ, Optional.of(ACTION_EVALUATION));
 
-    final var certificateActionForbidden = assertThrows(CertificateActionForbidden.class,
-        () -> getCertificateDomainService.get(CERTIFICATE_ID, ACTION_EVALUATION)
-    );
+    final var certificateActionForbidden =
+        assertThrows(
+            CertificateActionForbidden.class,
+            () -> getCertificateDomainService.get(CERTIFICATE_ID, ACTION_EVALUATION));
 
     assertEquals(expectedReason, certificateActionForbidden.reason());
   }

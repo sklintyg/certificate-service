@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.certificate.service;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -29,10 +47,9 @@ import se.inera.intyg.certificateservice.domain.event.service.CertificateEventDo
 @ExtendWith(MockitoExtension.class)
 class SetCertificateReadyForSignDomainServiceTest {
 
-  @Mock
-  private CertificateRepository certificateRepository;
-  @Mock
-  private CertificateEventDomainService certificateEventDomainService;
+  @Mock private CertificateRepository certificateRepository;
+  @Mock private CertificateEventDomainService certificateEventDomainService;
+
   @InjectMocks
   private SetCertificateReadyForSignDomainService setCertificateReadyForSignDomainService;
 
@@ -42,10 +59,11 @@ class SetCertificateReadyForSignDomainServiceTest {
     doReturn(certificate).when(certificateRepository).getById(CERTIFICATE_ID);
     doReturn(false).when(certificate).allowTo(READY_FOR_SIGN, Optional.of(ACTION_EVALUATION));
 
-    assertThrows(CertificateActionForbidden.class,
-        () -> setCertificateReadyForSignDomainService.readyForSign(CERTIFICATE_ID,
-            ACTION_EVALUATION)
-    );
+    assertThrows(
+        CertificateActionForbidden.class,
+        () ->
+            setCertificateReadyForSignDomainService.readyForSign(
+                CERTIFICATE_ID, ACTION_EVALUATION));
   }
 
   @Test
@@ -68,9 +86,8 @@ class SetCertificateReadyForSignDomainServiceTest {
     doReturn(true).when(certificate).allowTo(READY_FOR_SIGN, Optional.of(ACTION_EVALUATION));
     doReturn(expectedCertificate).when(certificateRepository).save(certificate);
 
-    final var actualCertificate = setCertificateReadyForSignDomainService.readyForSign(
-        CERTIFICATE_ID,
-        ACTION_EVALUATION);
+    final var actualCertificate =
+        setCertificateReadyForSignDomainService.readyForSign(CERTIFICATE_ID, ACTION_EVALUATION);
 
     assertEquals(expectedCertificate, actualCertificate);
   }
@@ -90,12 +107,12 @@ class SetCertificateReadyForSignDomainServiceTest {
     verify(certificateEventDomainService).publish(certificateEventCaptor.capture());
 
     assertAll(
-        () -> assertEquals(CertificateEventType.READY_FOR_SIGN,
-            certificateEventCaptor.getValue().type()),
+        () ->
+            assertEquals(
+                CertificateEventType.READY_FOR_SIGN, certificateEventCaptor.getValue().type()),
         () -> assertEquals(expectedCertificate, certificateEventCaptor.getValue().certificate()),
         () -> assertEquals(ACTION_EVALUATION, certificateEventCaptor.getValue().actionEvaluation()),
-        () -> assertTrue(certificateEventCaptor.getValue().duration() >= 0)
-    );
+        () -> assertTrue(certificateEventCaptor.getValue().duration() >= 0));
   }
 
   @Test
@@ -104,12 +121,16 @@ class SetCertificateReadyForSignDomainServiceTest {
     final var expectedReason = List.of("expectedReason");
     doReturn(certificate).when(certificateRepository).getById(CERTIFICATE_ID);
     doReturn(false).when(certificate).allowTo(READY_FOR_SIGN, Optional.of(ACTION_EVALUATION));
-    doReturn(expectedReason).when(certificate)
+    doReturn(expectedReason)
+        .when(certificate)
         .reasonNotAllowed(READY_FOR_SIGN, Optional.of(ACTION_EVALUATION));
 
-    final var certificateActionForbidden = assertThrows(CertificateActionForbidden.class,
-        () -> setCertificateReadyForSignDomainService.readyForSign(CERTIFICATE_ID,
-            ACTION_EVALUATION));
+    final var certificateActionForbidden =
+        assertThrows(
+            CertificateActionForbidden.class,
+            () ->
+                setCertificateReadyForSignDomainService.readyForSign(
+                    CERTIFICATE_ID, ACTION_EVALUATION));
 
     assertEquals(expectedReason, certificateActionForbidden.reason());
   }

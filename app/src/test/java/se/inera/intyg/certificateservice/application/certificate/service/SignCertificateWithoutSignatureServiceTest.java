@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -42,41 +60,43 @@ class SignCertificateWithoutSignatureServiceTest {
   private static final String CERTIFICATE_ID = "certificateId";
   private static final long VERSION = 99;
   private static final Certificate CERTIFICATE = mock(MedicalCertificate.class);
-  private static final ResourceLinkDTO RESOURCE_LINK_DTO = ResourceLinkDTO.builder()
-      .type(ResourceLinkTypeDTO.CREATE_CERTIFICATE)
-      .build();
-  private static final CertificateDTO CERTIFICATE_DTO = CertificateDTO.builder()
-      .links(List.of(RESOURCE_LINK_DTO))
-      .build();
+  private static final ResourceLinkDTO RESOURCE_LINK_DTO =
+      ResourceLinkDTO.builder().type(ResourceLinkTypeDTO.CREATE_CERTIFICATE).build();
+  private static final CertificateDTO CERTIFICATE_DTO =
+      CertificateDTO.builder().links(List.of(RESOURCE_LINK_DTO)).build();
 
-  public static final SignCertificateWithoutSignatureRequest REQUEST = SignCertificateWithoutSignatureRequest.builder()
-      .user(AJLA_DOCTOR_DTO)
-      .unit(ALFA_ALLERGIMOTTAGNINGEN_DTO)
-      .careUnit(ALFA_MEDICINCENTRUM_DTO)
-      .careProvider(ALFA_REGIONEN_DTO)
-      .build();
+  public static final SignCertificateWithoutSignatureRequest REQUEST =
+      SignCertificateWithoutSignatureRequest.builder()
+          .user(AJLA_DOCTOR_DTO)
+          .unit(ALFA_ALLERGIMOTTAGNINGEN_DTO)
+          .careUnit(ALFA_MEDICINCENTRUM_DTO)
+          .careProvider(ALFA_REGIONEN_DTO)
+          .build();
+
+  @Mock private ActionEvaluationFactory actionEvaluationFactory;
 
   @Mock
-  private ActionEvaluationFactory actionEvaluationFactory;
-  @Mock
-  private SignCertificateWithoutSignatureRequestValidator signCertificateWithoutSignatureRequestValidator;
+  private SignCertificateWithoutSignatureRequestValidator
+      signCertificateWithoutSignatureRequestValidator;
+
   @Mock
   private SignCertificateWithoutSignatureDomainService signCertificateWithoutSignatureDomainService;
-  @Mock
-  private CertificateConverter certificateConverter;
-  @Mock
-  private ResourceLinkConverter resourceLinkConverter;
+
+  @Mock private CertificateConverter certificateConverter;
+  @Mock private ResourceLinkConverter resourceLinkConverter;
+
   @InjectMocks
   private SignCertificateWithoutSignatureService signCertificateWithoutSignatureService;
 
   @Test
   void shallThrowIfRequestIsInvalid() {
-    doThrow(IllegalArgumentException.class).when(signCertificateWithoutSignatureRequestValidator)
+    doThrow(IllegalArgumentException.class)
+        .when(signCertificateWithoutSignatureRequestValidator)
         .validate(REQUEST, CERTIFICATE_ID, VERSION);
 
-    assertThrows(IllegalArgumentException.class,
-        () -> signCertificateWithoutSignatureService.sign(REQUEST, CERTIFICATE_ID, VERSION)
-    );
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> signCertificateWithoutSignatureService.sign(REQUEST, CERTIFICATE_ID, VERSION));
   }
 
   @Nested
@@ -86,42 +106,40 @@ class SignCertificateWithoutSignatureServiceTest {
     void setup() {
       final var actionEvaluation = ActionEvaluation.builder().build();
 
-      doReturn(actionEvaluation).when(actionEvaluationFactory).create(
-          AJLA_DOCTOR_DTO,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      doReturn(actionEvaluation)
+          .when(actionEvaluationFactory)
+          .create(
+              AJLA_DOCTOR_DTO,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
-      doReturn(CERTIFICATE).when(signCertificateWithoutSignatureDomainService).sign(
-          new CertificateId(CERTIFICATE_ID), new Revision(VERSION), actionEvaluation
-      );
+      doReturn(CERTIFICATE)
+          .when(signCertificateWithoutSignatureDomainService)
+          .sign(new CertificateId(CERTIFICATE_ID), new Revision(VERSION), actionEvaluation);
 
       final var certificateAction = mock(CertificateAction.class);
       final List<CertificateAction> certificateActions = List.of(certificateAction);
       doReturn(certificateActions).when(CERTIFICATE).actionsInclude(Optional.of(actionEvaluation));
 
-      final var resourceLinkDTO = ResourceLinkDTO.builder()
-          .type(ResourceLinkTypeDTO.CREATE_CERTIFICATE)
-          .build();
+      final var resourceLinkDTO =
+          ResourceLinkDTO.builder().type(ResourceLinkTypeDTO.CREATE_CERTIFICATE).build();
 
-      doReturn(resourceLinkDTO).when(resourceLinkConverter).convert(certificateAction,
-          Optional.of(CERTIFICATE), actionEvaluation);
-      doReturn(CERTIFICATE_DTO).when(certificateConverter)
+      doReturn(resourceLinkDTO)
+          .when(resourceLinkConverter)
+          .convert(certificateAction, Optional.of(CERTIFICATE), actionEvaluation);
+      doReturn(CERTIFICATE_DTO)
+          .when(certificateConverter)
           .convert(CERTIFICATE, List.of(resourceLinkDTO), actionEvaluation);
     }
 
     @Test
     void shallReturnResponseWithXml() {
-      final var expectedResponse = SignCertificateResponse.builder()
-          .certificate(CERTIFICATE_DTO)
-          .build();
+      final var expectedResponse =
+          SignCertificateResponse.builder().certificate(CERTIFICATE_DTO).build();
 
-      final var actualResult = signCertificateWithoutSignatureService.sign(
-          REQUEST,
-          CERTIFICATE_ID,
-          VERSION
-      );
+      final var actualResult =
+          signCertificateWithoutSignatureService.sign(REQUEST, CERTIFICATE_ID, VERSION);
 
       assertEquals(expectedResponse, actualResult);
     }

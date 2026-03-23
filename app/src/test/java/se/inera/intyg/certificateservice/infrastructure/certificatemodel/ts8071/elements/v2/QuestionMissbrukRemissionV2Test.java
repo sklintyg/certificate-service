@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.v2;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,20 +52,19 @@ class QuestionMissbrukRemissionV2Test {
 
   @Test
   void shouldIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationRadioMultipleCode.builder()
-        .id(new FieldId("18.10"))
-        .name("Om diagnos beroende, är beroendet i fullständig långvarig remission?")
-        .description(
-            "Här avses exempelvis beroende eller skadligt mönster av bruk enligt ICD-11, skadligt bruk enligt ICD-10, missbruk enligt DSM-IV eller substansbrukssyndrom enligt DSM-5.")
-        .elementLayout(ElementLayout.ROWS)
-        .list(
-            List.of(
-                CodeFactory.elementConfigurationCode(CodeSystemKvTs001.JA),
-                CodeFactory.elementConfigurationCode(CodeSystemKvTs001.NEJ),
-                CodeFactory.elementConfigurationCode(CodeSystemKvTs001.VET_INTE)
-            )
-        )
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationRadioMultipleCode.builder()
+            .id(new FieldId("18.10"))
+            .name("Om diagnos beroende, är beroendet i fullständig långvarig remission?")
+            .description(
+                "Här avses exempelvis beroende eller skadligt mönster av bruk enligt ICD-11, skadligt bruk enligt ICD-10, missbruk enligt DSM-IV eller substansbrukssyndrom enligt DSM-5.")
+            .elementLayout(ElementLayout.ROWS)
+            .list(
+                List.of(
+                    CodeFactory.elementConfigurationCode(CodeSystemKvTs001.JA),
+                    CodeFactory.elementConfigurationCode(CodeSystemKvTs001.NEJ),
+                    CodeFactory.elementConfigurationCode(CodeSystemKvTs001.VET_INTE)))
+            .build();
 
     final var element = QuestionMissbrukRemissionV2.questionMissbrukRemissionV2();
 
@@ -56,26 +73,18 @@ class QuestionMissbrukRemissionV2Test {
 
   @Test
   void shouldIncludeRules() {
-    final var expectedRules = List.of(
-        ElementRuleExpression.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.MANDATORY)
-            .expression(
-                new RuleExpression(
-                    "exists($ja) || exists($nej) || exists($vetinte)"
-                )
-            )
-            .build(),
-        ElementRuleExpression.builder()
-            .id(new ElementId("18"))
-            .type(ElementRuleType.SHOW)
-            .expression(
-                new RuleExpression(
-                    "$18.1"
-                )
-            )
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleExpression.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.MANDATORY)
+                .expression(new RuleExpression("exists($ja) || exists($nej) || exists($vetinte)"))
+                .build(),
+            ElementRuleExpression.builder()
+                .id(new ElementId("18"))
+                .type(ElementRuleType.SHOW)
+                .expression(new RuleExpression("$18.1"))
+                .build());
 
     final var element = QuestionMissbrukRemissionV2.questionMissbrukRemissionV2();
 
@@ -84,11 +93,8 @@ class QuestionMissbrukRemissionV2Test {
 
   @Test
   void shouldIncludeValidation() {
-    final var expectedValidations = List.of(
-        ElementValidationCode.builder()
-            .mandatory(true)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationCode.builder().mandatory(true).build());
 
     final var element = QuestionMissbrukRemissionV2.questionMissbrukRemissionV2();
 
@@ -107,16 +113,12 @@ class QuestionMissbrukRemissionV2Test {
 
     @Test
     void shouldReturnTrueIfBooleanIsTrue() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("18"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(true)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("18"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
 
       final var element = QuestionMissbrukRemissionV2.questionMissbrukRemissionV2();
 
@@ -127,16 +129,12 @@ class QuestionMissbrukRemissionV2Test {
 
     @Test
     void shouldReturnFalseIfElementMissing() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("17"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(true)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("17"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
 
       final var element = QuestionMissbrukRemissionV2.questionMissbrukRemissionV2();
 
@@ -147,16 +145,12 @@ class QuestionMissbrukRemissionV2Test {
 
     @Test
     void shouldReturnFalseIfElementFalse() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("18"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(false)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("18"))
+                  .value(ElementValueBoolean.builder().value(false).build())
+                  .build());
 
       final var element = QuestionMissbrukRemissionV2.questionMissbrukRemissionV2();
 
@@ -166,4 +160,3 @@ class QuestionMissbrukRemissionV2Test {
     }
   }
 }
-

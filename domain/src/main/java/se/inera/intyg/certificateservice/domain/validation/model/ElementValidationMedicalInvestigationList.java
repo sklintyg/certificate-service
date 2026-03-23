@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.validation.model;
 
 import java.time.temporal.TemporalAmount;
@@ -28,32 +46,37 @@ public class ElementValidationMedicalInvestigationList implements ElementValidat
   Integer limit;
 
   @Override
-  public List<ValidationError> validate(ElementData data, Optional<ElementId> categoryId,
-      List<ElementData> dataList) {
+  public List<ValidationError> validate(
+      ElementData data, Optional<ElementId> categoryId, List<ElementData> dataList) {
     validateElementData(data);
     final var medicalInvestigationList = getValue(data.value());
 
     if (medicalInvestigationList.list().isEmpty()
         || medicalInvestigationList.list().stream()
-        .anyMatch(this::isMedicalInvestigationNotInitialized)) {
+            .anyMatch(this::isMedicalInvestigationNotInitialized)) {
       return Collections.emptyList();
     }
 
-    final var dateAfterMaxErrors = getDateAfterMaxErrors(data, categoryId,
-        medicalInvestigationList);
-    final var dateBeforeMinErrors = getDateBeforeMinErrors(data, categoryId,
-        medicalInvestigationList);
+    final var dateAfterMaxErrors =
+        getDateAfterMaxErrors(data, categoryId, medicalInvestigationList);
+    final var dateBeforeMinErrors =
+        getDateBeforeMinErrors(data, categoryId, medicalInvestigationList);
     final var mandatoryErrors = getMandatoryErrors(data, categoryId, medicalInvestigationList);
     final var rowOrderErrors = getRowOrderErrors(data, categoryId, medicalInvestigationList);
     final var textLimitErrors = getTextLimitErrors(data, categoryId, medicalInvestigationList);
 
-    return Stream.of(dateAfterMaxErrors, dateBeforeMinErrors, mandatoryErrors, rowOrderErrors,
+    return Stream.of(
+            dateAfterMaxErrors,
+            dateBeforeMinErrors,
+            mandatoryErrors,
+            rowOrderErrors,
             textLimitErrors)
         .flatMap(List::stream)
         .toList();
   }
 
-  private List<ValidationError> getMandatoryErrors(ElementData data,
+  private List<ValidationError> getMandatoryErrors(
+      ElementData data,
       Optional<ElementId> categoryId,
       ElementValueMedicalInvestigationList medicalInvestigationList) {
     if (!mandatory) {
@@ -62,80 +85,84 @@ public class ElementValidationMedicalInvestigationList implements ElementValidat
 
     if (hasIncorrectRowOrder(medicalInvestigationList)) {
       return Boolean.TRUE.equals(isIncomplete(medicalInvestigationList.list().get(0)))
-          ? getRowEmptyFieldErrors(
-          medicalInvestigationList.list().get(0), data, categoryId) : Collections.emptyList();
+          ? getRowEmptyFieldErrors(medicalInvestigationList.list().get(0), data, categoryId)
+          : Collections.emptyList();
     }
 
-    if (isEmpty(medicalInvestigationList.list().get(0)) || isIncomplete(
-        medicalInvestigationList.list().get(0))) {
-      return Stream.concat(Stream.of(errorMessage(
-              data,
-              medicalInvestigationList.list().get(0).id(),
-              categoryId,
-              ErrorMessageFactory.missingAnswer())),
-          getRowEmptyFieldErrors(medicalInvestigationList.list().get(0), data, categoryId).stream()
-      ).toList();
+    if (isEmpty(medicalInvestigationList.list().get(0))
+        || isIncomplete(medicalInvestigationList.list().get(0))) {
+      return Stream.concat(
+              Stream.of(
+                  errorMessage(
+                      data,
+                      medicalInvestigationList.list().get(0).id(),
+                      categoryId,
+                      ErrorMessageFactory.missingAnswer())),
+              getRowEmptyFieldErrors(medicalInvestigationList.list().get(0), data, categoryId)
+                  .stream())
+          .toList();
     }
 
     return Collections.emptyList();
   }
 
-
-  private List<ValidationError> getDateAfterMaxErrors(ElementData data,
+  private List<ValidationError> getDateAfterMaxErrors(
+      ElementData data,
       Optional<ElementId> categoryId,
       ElementValueMedicalInvestigationList medicalInvestigationList) {
     return medicalInvestigationList.list().stream()
-        .filter(medicalInvestigation -> ElementValidator.isDateAfterMax(
-                medicalInvestigation.date().date(),
-                max
-            )
-        )
-        .map(medicalInvestigation -> errorMessage(
-            data,
-            medicalInvestigation.date().dateId(),
-            categoryId,
-            ErrorMessageFactory.maxDate(max)
-        ))
+        .filter(
+            medicalInvestigation ->
+                ElementValidator.isDateAfterMax(medicalInvestigation.date().date(), max))
+        .map(
+            medicalInvestigation ->
+                errorMessage(
+                    data,
+                    medicalInvestigation.date().dateId(),
+                    categoryId,
+                    ErrorMessageFactory.maxDate(max)))
         .toList();
   }
 
-  private List<ValidationError> getDateBeforeMinErrors(ElementData data,
+  private List<ValidationError> getDateBeforeMinErrors(
+      ElementData data,
       Optional<ElementId> categoryId,
       ElementValueMedicalInvestigationList medicalInvestigationList) {
     return medicalInvestigationList.list().stream()
-        .filter(medicalInvestigation -> ElementValidator.isDateBeforeMin(
-                medicalInvestigation.date().date(),
-                min
-            )
-        )
-        .map(medicalInvestigation -> errorMessage(
-            data,
-            medicalInvestigation.date().dateId(),
-            categoryId,
-            ErrorMessageFactory.minDate(min)
-        ))
+        .filter(
+            medicalInvestigation ->
+                ElementValidator.isDateBeforeMin(medicalInvestigation.date().date(), min))
+        .map(
+            medicalInvestigation ->
+                errorMessage(
+                    data,
+                    medicalInvestigation.date().dateId(),
+                    categoryId,
+                    ErrorMessageFactory.minDate(min)))
         .toList();
   }
 
-  private List<ValidationError> getTextLimitErrors(ElementData data,
+  private List<ValidationError> getTextLimitErrors(
+      ElementData data,
       Optional<ElementId> categoryId,
       ElementValueMedicalInvestigationList medicalInvestigationList) {
     return medicalInvestigationList.list().stream()
-        .filter(medicalInvestigation -> ElementValidator.isTextOverLimit(
-                medicalInvestigation.informationSource().text(),
-                limit
-            )
-        )
-        .map(medicalInvestigation -> errorMessage(
-            data,
-            medicalInvestigation.informationSource().textId(),
-            categoryId,
-            ErrorMessageFactory.textLimit(limit)
-        ))
+        .filter(
+            medicalInvestigation ->
+                ElementValidator.isTextOverLimit(
+                    medicalInvestigation.informationSource().text(), limit))
+        .map(
+            medicalInvestigation ->
+                errorMessage(
+                    data,
+                    medicalInvestigation.informationSource().textId(),
+                    categoryId,
+                    ErrorMessageFactory.textLimit(limit)))
         .toList();
   }
 
-  private List<ValidationError> getRowOrderErrors(ElementData data,
+  private List<ValidationError> getRowOrderErrors(
+      ElementData data,
       Optional<ElementId> categoryId,
       ElementValueMedicalInvestigationList medicalInvestigationList) {
     final var errors = new ArrayList<ValidationError>();
@@ -143,19 +170,24 @@ public class ElementValidationMedicalInvestigationList implements ElementValidat
     final var hasIncorrectRowOrder = hasIncorrectRowOrder(medicalInvestigationList);
 
     if (hasIncorrectRowOrder) {
-      errors.add(errorMessage(
-          data,
-          medicalInvestigationList.id(),
-          categoryId,
-          ErrorMessageFactory.fieldOrderDescending()
-      ));
+      errors.add(
+          errorMessage(
+              data,
+              medicalInvestigationList.id(),
+              categoryId,
+              ErrorMessageFactory.fieldOrderDescending()));
     }
 
-    final var wrongRowOrderErrors = medicalInvestigationList.list().stream()
-        .filter(row -> (isEmpty(row) && hasFilledInRowBelow(medicalInvestigationList, row))
-            || (isIncomplete(row) && medicalInvestigationList.list().indexOf(row) != 0))
-        .map(medicalInvestigation -> getRowEmptyFieldErrors(medicalInvestigation, data, categoryId))
-        .toList();
+    final var wrongRowOrderErrors =
+        medicalInvestigationList.list().stream()
+            .filter(
+                row ->
+                    (isEmpty(row) && hasFilledInRowBelow(medicalInvestigationList, row))
+                        || (isIncomplete(row) && medicalInvestigationList.list().indexOf(row) != 0))
+            .map(
+                medicalInvestigation ->
+                    getRowEmptyFieldErrors(medicalInvestigation, data, categoryId))
+            .toList();
 
     return Stream.concat(errors.stream(), wrongRowOrderErrors.stream().flatMap(List::stream))
         .toList();
@@ -164,65 +196,75 @@ public class ElementValidationMedicalInvestigationList implements ElementValidat
   private boolean hasIncorrectRowOrder(
       ElementValueMedicalInvestigationList medicalInvestigationList) {
     return medicalInvestigationList.list().stream()
-        .anyMatch(medicalInvestigation -> isAddedInWrongOrder(medicalInvestigationList,
-            medicalInvestigation));
+        .anyMatch(
+            medicalInvestigation ->
+                isAddedInWrongOrder(medicalInvestigationList, medicalInvestigation));
   }
 
-  private boolean isAddedInWrongOrder(ElementValueMedicalInvestigationList medicalInvestigationList,
+  private boolean isAddedInWrongOrder(
+      ElementValueMedicalInvestigationList medicalInvestigationList,
       MedicalInvestigation medicalInvestigation) {
-    final var listAboveObject = medicalInvestigationList.list()
-        .subList(0, medicalInvestigationList.list().indexOf(medicalInvestigation));
+    final var listAboveObject =
+        medicalInvestigationList
+            .list()
+            .subList(0, medicalInvestigationList.list().indexOf(medicalInvestigation));
     return !isEmpty(medicalInvestigation) && hasIncompleteOrEmptyRow(listAboveObject);
   }
 
-  private boolean hasFilledInRowBelow(ElementValueMedicalInvestigationList medicalInvestigationList,
+  private boolean hasFilledInRowBelow(
+      ElementValueMedicalInvestigationList medicalInvestigationList,
       MedicalInvestigation medicalInvestigation) {
-    final var listUnderObject = medicalInvestigationList.list()
-        .subList(medicalInvestigationList.list().indexOf(medicalInvestigation) + 1,
-            medicalInvestigationList.list().size());
+    final var listUnderObject =
+        medicalInvestigationList
+            .list()
+            .subList(
+                medicalInvestigationList.list().indexOf(medicalInvestigation) + 1,
+                medicalInvestigationList.list().size());
     return listUnderObject.stream().anyMatch(row -> !isEmpty(row));
   }
 
-  private List<ValidationError> getRowEmptyFieldErrors(MedicalInvestigation medicalInvestigation,
-      ElementData data, Optional<ElementId> categoryId) {
+  private List<ValidationError> getRowEmptyFieldErrors(
+      MedicalInvestigation medicalInvestigation, ElementData data, Optional<ElementId> categoryId) {
     final var errors = new ArrayList<ValidationError>();
 
     if (isDateEmpty(medicalInvestigation)) {
-      errors.add(errorMessage(
-          data,
-          medicalInvestigation.date().dateId(),
-          categoryId,
-          ErrorMessageFactory.missingDate()));
+      errors.add(
+          errorMessage(
+              data,
+              medicalInvestigation.date().dateId(),
+              categoryId,
+              ErrorMessageFactory.missingDate()));
     }
 
     if (isTypeEmpty(medicalInvestigation)) {
-      errors.add(errorMessage(
-          data,
-          medicalInvestigation.investigationType().codeId(),
-          categoryId,
-          ErrorMessageFactory.missingOption()));
+      errors.add(
+          errorMessage(
+              data,
+              medicalInvestigation.investigationType().codeId(),
+              categoryId,
+              ErrorMessageFactory.missingOption()));
     }
 
     if (isSourceEmpty(medicalInvestigation)) {
-      errors.add(errorMessage(
-          data,
-          medicalInvestigation.informationSource().textId(),
-          categoryId,
-          ErrorMessageFactory.missingAnswer()));
+      errors.add(
+          errorMessage(
+              data,
+              medicalInvestigation.informationSource().textId(),
+              categoryId,
+              ErrorMessageFactory.missingAnswer()));
     }
     return errors;
   }
 
   private Boolean hasIncompleteOrEmptyRow(List<MedicalInvestigation> medicalInvestigationList) {
-    return medicalInvestigationList.stream()
-        .anyMatch(row -> isIncomplete(row) || isEmpty(row));
+    return medicalInvestigationList.stream().anyMatch(row -> isIncomplete(row) || isEmpty(row));
   }
 
   private Boolean isIncomplete(MedicalInvestigation medicalInvestigation) {
     return !isEmpty(medicalInvestigation)
         && (isDateEmpty(medicalInvestigation)
-        || isTypeEmpty(medicalInvestigation)
-        || isSourceEmpty(medicalInvestigation));
+            || isTypeEmpty(medicalInvestigation)
+            || isSourceEmpty(medicalInvestigation));
   }
 
   private Boolean isEmpty(MedicalInvestigation medicalInvestigation) {
@@ -252,20 +294,17 @@ public class ElementValidationMedicalInvestigationList implements ElementValidat
     }
 
     throw new IllegalArgumentException(
-        "Element data value %s is of wrong type".formatted(value.getClass())
-    );
+        "Element data value %s is of wrong type".formatted(value.getClass()));
   }
 
-  private ValidationError errorMessage(ElementData data,
-      FieldId fieldId,
-      Optional<ElementId> categoryId, ErrorMessage message) {
-    return
-        ValidationError.builder()
-            .elementId(data.id())
-            .fieldId(fieldId)
-            .categoryId(categoryId.orElse(null))
-            .message(message)
-            .build();
+  private ValidationError errorMessage(
+      ElementData data, FieldId fieldId, Optional<ElementId> categoryId, ErrorMessage message) {
+    return ValidationError.builder()
+        .elementId(data.id())
+        .fieldId(fieldId)
+        .categoryId(categoryId.orElse(null))
+        .message(message)
+        .build();
   }
 
   private void validateElementData(ElementData data) {
@@ -277,11 +316,9 @@ public class ElementValidationMedicalInvestigationList implements ElementValidat
     }
   }
 
-  private boolean isMedicalInvestigationNotInitialized(
-      MedicalInvestigation medicalInvestigation) {
+  private boolean isMedicalInvestigationNotInitialized(MedicalInvestigation medicalInvestigation) {
     return medicalInvestigation.date() == null
         || medicalInvestigation.investigationType() == null
         || medicalInvestigation.informationSource() == null;
   }
-
 }

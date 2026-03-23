@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service;
 
 import java.util.Optional;
@@ -27,58 +45,48 @@ public class CreateCertificateService {
   private final CertificateConverter certificateConverter;
   private final ResourceLinkConverter resourceLinkConverter;
 
-
   @Transactional
   public CreateCertificateResponse create(CreateCertificateRequest createCertificateRequest) {
     createCertificateRequestValidator.validate(createCertificateRequest);
-    final var actionEvaluation = actionEvaluationFactory.create(
-        createCertificateRequest.getPatient(),
-        createCertificateRequest.getUser(),
-        createCertificateRequest.getUnit(),
-        createCertificateRequest.getCareUnit(),
-        createCertificateRequest.getCareProvider()
-    );
+    final var actionEvaluation =
+        actionEvaluationFactory.create(
+            createCertificateRequest.getPatient(),
+            createCertificateRequest.getUser(),
+            createCertificateRequest.getUnit(),
+            createCertificateRequest.getCareUnit(),
+            createCertificateRequest.getCareProvider());
 
-    final var certificate = createCertificateDomainService.create(
-        certificateModelId(createCertificateRequest),
-        actionEvaluation,
-        createCertificateRequest.getExternalReference() != null
-            ? new ExternalReference(createCertificateRequest.getExternalReference())
-            : null,
-        createCertificateRequest.getPrefillXml() != null ?
-            new Xml(createCertificateRequest.getPrefillXml().value()) : null
-    );
+    final var certificate =
+        createCertificateDomainService.create(
+            certificateModelId(createCertificateRequest),
+            actionEvaluation,
+            createCertificateRequest.getExternalReference() != null
+                ? new ExternalReference(createCertificateRequest.getExternalReference())
+                : null,
+            createCertificateRequest.getPrefillXml() != null
+                ? new Xml(createCertificateRequest.getPrefillXml().value())
+                : null);
 
     return CreateCertificateResponse.builder()
-        .certificate(certificateConverter.convert(
-            certificate,
-            certificate.actionsInclude(Optional.of(actionEvaluation)).stream()
-                .map(certificateAction ->
-                    resourceLinkConverter.convert(
-                        certificateAction,
-                        Optional.of(certificate),
-                        actionEvaluation
-                    )
-                )
-                .toList(),
-            actionEvaluation)
-        )
+        .certificate(
+            certificateConverter.convert(
+                certificate,
+                certificate.actionsInclude(Optional.of(actionEvaluation)).stream()
+                    .map(
+                        certificateAction ->
+                            resourceLinkConverter.convert(
+                                certificateAction, Optional.of(certificate), actionEvaluation))
+                    .toList(),
+                actionEvaluation))
         .build();
   }
 
   private static CertificateModelId certificateModelId(
       CreateCertificateRequest createCertificateRequest) {
     return CertificateModelId.builder()
-        .type(
-            new CertificateType(
-                createCertificateRequest.getCertificateModelId().getType()
-            )
-        )
+        .type(new CertificateType(createCertificateRequest.getCertificateModelId().getType()))
         .version(
-            new CertificateVersion(
-                createCertificateRequest.getCertificateModelId().getVersion()
-            )
-        )
+            new CertificateVersion(createCertificateRequest.getCertificateModelId().getVersion()))
         .build();
   }
 }

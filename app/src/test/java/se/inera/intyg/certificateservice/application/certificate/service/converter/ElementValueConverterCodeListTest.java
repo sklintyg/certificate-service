@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service.converter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -17,17 +35,11 @@ class ElementValueConverterCodeListTest {
 
   private static final String CODE_LIST_ID = "CODE_LIST_ID";
 
-  private static final CertificateDataValueCodeList CERTIFICATE_DATA_VALUE = CertificateDataValueCodeList.builder()
-      .id(CODE_LIST_ID)
-      .list(
-          List.of(
-              CertificateDataValueCode.builder()
-                  .code("code")
-                  .id("ID")
-                  .build()
-          )
-      )
-      .build();
+  private static final CertificateDataValueCodeList CERTIFICATE_DATA_VALUE =
+      CertificateDataValueCodeList.builder()
+          .id(CODE_LIST_ID)
+          .list(List.of(CertificateDataValueCode.builder().code("code").id("ID").build()))
+          .build();
 
   private ElementValueConverterCodeList converter;
 
@@ -39,9 +51,9 @@ class ElementValueConverterCodeListTest {
   @Test
   void shallThrowIfTypeIsNotCertificateDataValueCodeList() {
     final var certificateDataTextValue = CertificateDataValueText.builder().build();
-    final var illegalStateException = assertThrows(IllegalStateException.class,
-        () -> converter.convert(certificateDataTextValue)
-    );
+    final var illegalStateException =
+        assertThrows(
+            IllegalStateException.class, () -> converter.convert(certificateDataTextValue));
     assertTrue(illegalStateException.getMessage().contains("Invalid value type"));
   }
 
@@ -54,10 +66,7 @@ class ElementValueConverterCodeListTest {
   void shallReturnCodeListId() {
     final var result = converter.convert(CERTIFICATE_DATA_VALUE);
     final var actualResult = (ElementValueCodeList) result;
-    assertEquals(
-        CERTIFICATE_DATA_VALUE.getId(),
-        actualResult.id().value()
-    );
+    assertEquals(CERTIFICATE_DATA_VALUE.getId(), actualResult.id().value());
   }
 
   @Test
@@ -66,8 +75,7 @@ class ElementValueConverterCodeListTest {
     final var actualResult = (ElementValueCodeList) result;
     assertEquals(
         CERTIFICATE_DATA_VALUE.getList().get(0).getId(),
-        actualResult.list().get(0).codeId().value()
-    );
+        actualResult.list().get(0).codeId().value());
   }
 
   @Test
@@ -75,8 +83,6 @@ class ElementValueConverterCodeListTest {
     final var result = converter.convert(CERTIFICATE_DATA_VALUE);
     final var actualResult = (ElementValueCodeList) result;
     assertEquals(
-        CERTIFICATE_DATA_VALUE.getList().get(0).getCode(),
-        actualResult.list().get(0).code()
-    );
+        CERTIFICATE_DATA_VALUE.getList().get(0).getCode(), actualResult.list().get(0).code());
   }
 }

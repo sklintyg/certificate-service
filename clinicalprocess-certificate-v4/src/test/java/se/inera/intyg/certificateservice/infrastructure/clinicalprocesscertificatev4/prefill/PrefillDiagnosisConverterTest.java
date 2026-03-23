@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.prefill;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -50,62 +68,53 @@ class PrefillDiagnosisConverterTest {
   private static final String DIAGNOS_DESCRIPTION = "diagnos_description";
   private static final String DIAGNOS_DESCRIPTION_2 = "diagnos_description_2";
 
-  private static final ElementSpecification SPECIFICATION = ElementSpecification.builder()
-      .id(ELEMENT_ID)
-      .configuration(
-          ElementConfigurationDiagnosis.builder()
-              .id(FIELD_ID)
-              .terminology(
-                  List.of(CodeSystemIcd10Se.terminology())
-              )
-              .list(
-                  List.of(
-                      new ElementDiagnosisListItem(DIAGNOS_FIELD_ID),
-                      new ElementDiagnosisListItem(DIAGNOS_2_FIELD_ID)
-                  )
-              )
-              .build()
-      )
-      .build();
-  private static final ElementData EXPECTED_ELEMENT_DATA = ElementData.builder()
-      .id(ELEMENT_ID)
-      .value(
-          ElementValueDiagnosisList.builder()
-              .diagnoses(
-                  List.of(
-                      ElementValueDiagnosis.builder()
-                          .id(DIAGNOS_FIELD_ID)
-                          .code(DIAGNOS_CODE)
-                          .description(DIAGNOS_DESCRIPTION)
-                          .terminology(DIAGNOS_ICD_10_ID)
-                          .build(),
-                      ElementValueDiagnosis.builder()
-                          .id(DIAGNOS_2_FIELD_ID)
-                          .code(DIAGNOS_CODE_2)
-                          .description(DIAGNOS_DESCRIPTION_2)
-                          .terminology(DIAGNOS_ICD_10_ID)
-                          .build()
-                  )
-              )
-              .build()
-      ).build();
+  private static final ElementSpecification SPECIFICATION =
+      ElementSpecification.builder()
+          .id(ELEMENT_ID)
+          .configuration(
+              ElementConfigurationDiagnosis.builder()
+                  .id(FIELD_ID)
+                  .terminology(List.of(CodeSystemIcd10Se.terminology()))
+                  .list(
+                      List.of(
+                          new ElementDiagnosisListItem(DIAGNOS_FIELD_ID),
+                          new ElementDiagnosisListItem(DIAGNOS_2_FIELD_ID)))
+                  .build())
+          .build();
+  private static final ElementData EXPECTED_ELEMENT_DATA =
+      ElementData.builder()
+          .id(ELEMENT_ID)
+          .value(
+              ElementValueDiagnosisList.builder()
+                  .diagnoses(
+                      List.of(
+                          ElementValueDiagnosis.builder()
+                              .id(DIAGNOS_FIELD_ID)
+                              .code(DIAGNOS_CODE)
+                              .description(DIAGNOS_DESCRIPTION)
+                              .terminology(DIAGNOS_ICD_10_ID)
+                              .build(),
+                          ElementValueDiagnosis.builder()
+                              .id(DIAGNOS_2_FIELD_ID)
+                              .code(DIAGNOS_CODE_2)
+                              .description(DIAGNOS_DESCRIPTION_2)
+                              .terminology(DIAGNOS_ICD_10_ID)
+                              .build()))
+                  .build())
+          .build();
 
-  @Mock
-  private DiagnosisCodeRepository diagnosisCodeRepository;
+  @Mock private DiagnosisCodeRepository diagnosisCodeRepository;
 
   private PrefillDiagnosisConverter prefillDiagnosisConverter;
 
   @BeforeEach
   void setUp() {
-    prefillDiagnosisConverter = new PrefillDiagnosisConverter(
-        diagnosisCodeRepository
-    );
+    prefillDiagnosisConverter = new PrefillDiagnosisConverter(diagnosisCodeRepository);
   }
 
   @Test
   void shouldReturnSupportsDiagnosis() {
-    assertEquals(ElementConfigurationDiagnosis.class,
-        prefillDiagnosisConverter.supports());
+    assertEquals(ElementConfigurationDiagnosis.class, prefillDiagnosisConverter.supports());
   }
 
   @Nested
@@ -115,10 +124,7 @@ class PrefillDiagnosisConverterTest {
     void shouldReturnNullIfNoAnswerExists() {
       Forifyllnad prefill = new Forifyllnad();
 
-      PrefillAnswer result = prefillDiagnosisConverter.prefillAnswer(
-          SPECIFICATION,
-          prefill
-      );
+      PrefillAnswer result = prefillDiagnosisConverter.prefillAnswer(SPECIFICATION, prefill);
 
       assertNull(result);
     }
@@ -135,10 +141,7 @@ class PrefillDiagnosisConverterTest {
 
       final var result = prefillDiagnosisConverter.prefillAnswer(SPECIFICATION, prefill);
 
-      assertEquals(
-          PrefillErrorType.WRONG_NUMBER_OF_ANSWERS,
-          result.getErrors().getLast().type()
-      );
+      assertEquals(PrefillErrorType.WRONG_NUMBER_OF_ANSWERS, result.getErrors().getLast().type());
     }
 
     @Test
@@ -176,14 +179,12 @@ class PrefillDiagnosisConverterTest {
       prefill.getSvar().add(svar2);
 
       doReturn(Optional.empty())
-          .when(diagnosisCodeRepository).findByCode(new DiagnosisCode(DIAGNOS_CODE));
+          .when(diagnosisCodeRepository)
+          .findByCode(new DiagnosisCode(DIAGNOS_CODE));
 
       final var result = prefillDiagnosisConverter.prefillAnswer(SPECIFICATION, prefill);
 
-      assertEquals(
-          PrefillErrorType.INVALID_DIAGNOSIS_CODE,
-          result.getErrors().getFirst().type()
-      );
+      assertEquals(PrefillErrorType.INVALID_DIAGNOSIS_CODE, result.getErrors().getFirst().type());
     }
 
     @Test
@@ -207,17 +208,19 @@ class PrefillDiagnosisConverterTest {
       prefill.getSvar().add(invalidAnswer);
 
       doReturn(Optional.of(Diagnosis.builder().build()))
-          .when(diagnosisCodeRepository).findByCode(new DiagnosisCode(DIAGNOS_CODE));
+          .when(diagnosisCodeRepository)
+          .findByCode(new DiagnosisCode(DIAGNOS_CODE));
       doReturn(Optional.of(Diagnosis.builder().build()))
-          .when(diagnosisCodeRepository).findByCode(new DiagnosisCode(DIAGNOS_CODE_2));
+          .when(diagnosisCodeRepository)
+          .findByCode(new DiagnosisCode(DIAGNOS_CODE_2));
       final var result = prefillDiagnosisConverter.prefillAnswer(SPECIFICATION, prefill);
 
       assertAll(
           () -> assertEquals(EXPECTED_ELEMENT_DATA, result.getElementData()),
           () -> assertEquals(1, result.getErrors().size()),
-          () -> assertEquals(PrefillErrorType.INVALID_DIAGNOSIS_CODE,
-              result.getErrors().getFirst().type())
-      );
+          () ->
+              assertEquals(
+                  PrefillErrorType.INVALID_DIAGNOSIS_CODE, result.getErrors().getFirst().type()));
     }
 
     @Test
@@ -225,16 +228,16 @@ class PrefillDiagnosisConverterTest {
       final var prefill = getPrefill();
 
       doReturn(Optional.of(Diagnosis.builder().build()))
-          .when(diagnosisCodeRepository).findByCode(new DiagnosisCode(DIAGNOS_CODE));
+          .when(diagnosisCodeRepository)
+          .findByCode(new DiagnosisCode(DIAGNOS_CODE));
 
       doReturn(Optional.of(Diagnosis.builder().build()))
-          .when(diagnosisCodeRepository).findByCode(new DiagnosisCode(DIAGNOS_CODE_2));
+          .when(diagnosisCodeRepository)
+          .findByCode(new DiagnosisCode(DIAGNOS_CODE_2));
 
       final var result = prefillDiagnosisConverter.prefillAnswer(SPECIFICATION, prefill);
 
-      final var expected = PrefillAnswer.builder()
-          .elementData(EXPECTED_ELEMENT_DATA)
-          .build();
+      final var expected = PrefillAnswer.builder().elementData(EXPECTED_ELEMENT_DATA).build();
 
       assertEquals(expected, result);
     }
@@ -260,15 +263,15 @@ class PrefillDiagnosisConverterTest {
       prefill.getSvar().add(svar);
 
       doReturn(Optional.of(Diagnosis.builder().build()))
-          .when(diagnosisCodeRepository).findByCode(new DiagnosisCode(DIAGNOS_CODE));
+          .when(diagnosisCodeRepository)
+          .findByCode(new DiagnosisCode(DIAGNOS_CODE));
 
       doReturn(
-          Diagnosis.builder()
-              .description(
-                  new DiagnosisDescription(expectedDescription)
-              )
-              .build()
-      ).when(diagnosisCodeRepository).getByCode(new DiagnosisCode(DIAGNOS_CODE));
+              Diagnosis.builder()
+                  .description(new DiagnosisDescription(expectedDescription))
+                  .build())
+          .when(diagnosisCodeRepository)
+          .getByCode(new DiagnosisCode(DIAGNOS_CODE));
 
       final var result = prefillDiagnosisConverter.prefillAnswer(SPECIFICATION, prefill);
 
@@ -299,10 +302,8 @@ class PrefillDiagnosisConverterTest {
     delsvar1Description.setId("%s.1".formatted(SPECIFICATION.id().id()));
     delsvar2Description.setId("%s.1".formatted(SPECIFICATION.id().id()));
 
-    delsvar1Code.getContent()
-        .add(createCVTypeElement(DIAGNOS_CODE, "1.2.752.116.1.1.1.1.8"));
-    delsvar2Code.getContent()
-        .add(createCVTypeElement(DIAGNOS_CODE_2, "1.2.752.116.1.1.1.1.3"));
+    delsvar1Code.getContent().add(createCVTypeElement(DIAGNOS_CODE, "1.2.752.116.1.1.1.1.8"));
+    delsvar2Code.getContent().add(createCVTypeElement(DIAGNOS_CODE_2, "1.2.752.116.1.1.1.1.3"));
     delsvar1Description.getContent().add(DIAGNOS_DESCRIPTION);
     delsvar2Description.getContent().add(DIAGNOS_DESCRIPTION_2);
 
@@ -315,16 +316,16 @@ class PrefillDiagnosisConverterTest {
     prefill.getSvar().add(svar2);
 
     doReturn(Optional.of(Diagnosis.builder().build()))
-        .when(diagnosisCodeRepository).findByCode(new DiagnosisCode(DIAGNOS_CODE));
+        .when(diagnosisCodeRepository)
+        .findByCode(new DiagnosisCode(DIAGNOS_CODE));
 
     doReturn(Optional.of(Diagnosis.builder().build()))
-        .when(diagnosisCodeRepository).findByCode(new DiagnosisCode(DIAGNOS_CODE_2));
+        .when(diagnosisCodeRepository)
+        .findByCode(new DiagnosisCode(DIAGNOS_CODE_2));
 
     final var result = prefillDiagnosisConverter.prefillAnswer(SPECIFICATION, prefill);
 
-    final var expected = PrefillAnswer.builder()
-        .elementData(EXPECTED_ELEMENT_DATA)
-        .build();
+    final var expected = PrefillAnswer.builder().elementData(EXPECTED_ELEMENT_DATA).build();
 
     assertEquals(expected, result);
   }

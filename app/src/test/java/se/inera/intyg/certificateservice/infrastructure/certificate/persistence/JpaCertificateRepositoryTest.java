@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificate.persistence;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -103,293 +121,280 @@ import se.inera.intyg.certificateservice.infrastructure.certificate.persistence.
 @ExtendWith(MockitoExtension.class)
 class JpaCertificateRepositoryTest {
 
-  @Mock
-  CertificateRepository certificateRepository;
-  @Mock
-  CertificateRelationRepository certificateRelationRepository;
-  @Mock
-  CertificateEntityRepository certificateEntityRepository;
-  @Mock
-  CertificateEntityMapper certificateEntityMapper;
-  @Mock
-  PlaceholderCertificateEntityMapper placeHolderEntityMapper;
-  @Mock
-  StaffVersionEntityRepository staffVersionEntityRepository;
-  @Mock
-  PatientVersionEntityRepository patientVersionEntityRepository;
-  @Mock
-  UnitVersionEntityRepository unitVersionEntityRepository;
-  @Mock
-  CertificateEntitySpecificationFactory certificateEntitySpecificationFactory;
-  @InjectMocks
-  JpaCertificateRepository jpaCertificateRepository;
+  @Mock CertificateRepository certificateRepository;
+  @Mock CertificateRelationRepository certificateRelationRepository;
+  @Mock CertificateEntityRepository certificateEntityRepository;
+  @Mock CertificateEntityMapper certificateEntityMapper;
+  @Mock PlaceholderCertificateEntityMapper placeHolderEntityMapper;
+  @Mock StaffVersionEntityRepository staffVersionEntityRepository;
+  @Mock PatientVersionEntityRepository patientVersionEntityRepository;
+  @Mock UnitVersionEntityRepository unitVersionEntityRepository;
+  @Mock CertificateEntitySpecificationFactory certificateEntitySpecificationFactory;
+  @InjectMocks JpaCertificateRepository jpaCertificateRepository;
 
   private void stubDomain() {
-    when(certificateEntityMapper.toDomain(any(CertificateEntity.class),
-        any(CertificateRepository.class)))
-        .thenAnswer(inv -> {
-          CertificateEntity ce = inv.getArgument(0);
+    when(certificateEntityMapper.toDomain(
+            any(CertificateEntity.class), any(CertificateRepository.class)))
+        .thenAnswer(
+            inv -> {
+              CertificateEntity ce = inv.getArgument(0);
 
-          return MedicalCertificate.builder()
-              .id(new CertificateId(ce.getCertificateId()))
-              .created(ce.getCreated())
-              .signed(ce.getSigned())
-              .locked(ce.getLocked())
-              .modified(ce.getModified())
-              .revision(new Revision(
-                  ce.getRevision() == null ? 0 : ce.getRevision()
-              ))
-              .certificateModel(CONVERTED_MODEL)
-              .status(
-                  ce.getStatus() != null
-                      ? Status.valueOf(ce.getStatus().getStatus())
-                      : Status.SIGNED
-              )
-              .certificateMetaData(
-                  CertificateMetaData.builder()
-                      .issuer(Staff.builder()
-                          .name(Name.builder()
-                              .firstName(ce.getIssuedBy().getFirstName())
-                              .middleName(ce.getIssuedBy().getMiddleName())
-                              .lastName(ce.getIssuedBy().getLastName())
-                              .build())
-                          .hsaId(new HsaId(ce.getIssuedBy().getHsaId()))
+              return MedicalCertificate.builder()
+                  .id(new CertificateId(ce.getCertificateId()))
+                  .created(ce.getCreated())
+                  .signed(ce.getSigned())
+                  .locked(ce.getLocked())
+                  .modified(ce.getModified())
+                  .revision(new Revision(ce.getRevision() == null ? 0 : ce.getRevision()))
+                  .certificateModel(CONVERTED_MODEL)
+                  .status(
+                      ce.getStatus() != null
+                          ? Status.valueOf(ce.getStatus().getStatus())
+                          : Status.SIGNED)
+                  .certificateMetaData(
+                      CertificateMetaData.builder()
+                          .issuer(
+                              Staff.builder()
+                                  .name(
+                                      Name.builder()
+                                          .firstName(ce.getIssuedBy().getFirstName())
+                                          .middleName(ce.getIssuedBy().getMiddleName())
+                                          .lastName(ce.getIssuedBy().getLastName())
+                                          .build())
+                                  .hsaId(new HsaId(ce.getIssuedBy().getHsaId()))
+                                  .build())
+                          .careProvider(CARE_PROVIDER)
+                          .careUnit(CARE_UNIT)
+                          .issuingUnit(
+                              SubUnit.builder()
+                                  .name(new UnitName(ce.getIssuedOnUnit().getName()))
+                                  .hsaId(new HsaId(ce.getIssuedOnUnit().getHsaId()))
+                                  .build())
+                          .patient(
+                              Patient.builder()
+                                  .id(
+                                      PersonId.builder()
+                                          .id(ce.getPatient().getId())
+                                          .type(
+                                              PersonIdType.valueOf(
+                                                  ce.getPatient().getType().getType()))
+                                          .build())
+                                  .testIndicated(
+                                      new TestIndicated(ce.getPatient().isTestIndicated()))
+                                  .protectedPerson(
+                                      new ProtectedPerson(ce.getPatient().isProtectedPerson()))
+                                  .deceased(new Deceased(ce.getPatient().isDeceased()))
+                                  .name(
+                                      Name.builder()
+                                          .firstName(ce.getPatient().getFirstName())
+                                          .middleName(ce.getPatient().getMiddleName())
+                                          .lastName(ce.getPatient().getLastName())
+                                          .build())
+                                  .build())
+                          .creator(ISSUED_BY)
                           .build())
-                      .careProvider(CARE_PROVIDER)
-                      .careUnit(CARE_UNIT)
-                      .issuingUnit(SubUnit.builder()
-                          .name(new UnitName(ce.getIssuedOnUnit().getName()))
-                          .hsaId(new HsaId(ce.getIssuedOnUnit().getHsaId()))
-                          .build()
-                      )
-                      .patient(Patient.builder()
-                          .id(PersonId.builder()
-                              .id(ce.getPatient().getId())
-                              .type(PersonIdType.valueOf(ce.getPatient().getType().getType()))
-                              .build())
-                          .testIndicated(new TestIndicated(ce.getPatient().isTestIndicated()))
-                          .protectedPerson(new ProtectedPerson(ce.getPatient().isProtectedPerson()))
-                          .deceased(new Deceased(ce.getPatient().isDeceased()))
-                          .name(Name.builder()
-                              .firstName(ce.getPatient().getFirstName())
-                              .middleName(ce.getPatient().getMiddleName())
-                              .lastName(ce.getPatient().getLastName())
-                              .build())
-                          .build())
-                      .creator(ISSUED_BY)
-                      .build()
-              )
-              .build();
-        });
+                  .build();
+            });
   }
 
   private void stubEntity() {
     when(certificateEntityMapper.toEntity(any(Certificate.class)))
-        .thenAnswer(inv -> {
-          Certificate cert = inv.getArgument(0);
-          return CertificateEntity.builder()
-              .certificateId(cert.id().id())
-              .created(cert.created())
-              .signed(cert.signed())
-              .modified(cert.modified())
-              .revision(cert.revision().value())
-              .locked(cert.locked())
-              .patient(PATIENT_ENTITY)
-              .certificateModel(MODEL)
-              .createdBy(ISSUED_BY_ENTITY)
-              .careProvider(CARE_PROVIDER_ENTITY)
-              .careUnit(CARE_UNIT_ENTITY)
-              .issuedBy(ISSUED_BY_ENTITY)
-              .issuedOnUnit(ISSUED_ON_UNIT_ENTITY)
-              .status(new CertificateStatusEntity((short) 1, Status.SIGNED.name()))
-              .data(DATA)
-              .placeholder(cert.isPlaceholder())
-              .build();
-        });
+        .thenAnswer(
+            inv -> {
+              Certificate cert = inv.getArgument(0);
+              return CertificateEntity.builder()
+                  .certificateId(cert.id().id())
+                  .created(cert.created())
+                  .signed(cert.signed())
+                  .modified(cert.modified())
+                  .revision(cert.revision().value())
+                  .locked(cert.locked())
+                  .patient(PATIENT_ENTITY)
+                  .certificateModel(MODEL)
+                  .createdBy(ISSUED_BY_ENTITY)
+                  .careProvider(CARE_PROVIDER_ENTITY)
+                  .careUnit(CARE_UNIT_ENTITY)
+                  .issuedBy(ISSUED_BY_ENTITY)
+                  .issuedOnUnit(ISSUED_ON_UNIT_ENTITY)
+                  .status(new CertificateStatusEntity((short) 1, Status.SIGNED.name()))
+                  .data(DATA)
+                  .placeholder(cert.isPlaceholder())
+                  .build();
+            });
   }
 
-  private static final LocalDateTime TIMESTAMP = LocalDateTime.now()
-      .truncatedTo(ChronoUnit.SECONDS);
+  private static final LocalDateTime TIMESTAMP =
+      LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 
-  private static final CertificateModelEntity MODEL = CertificateModelEntity.builder()
-      .name("NAME")
-      .type("TYPE")
-      .version("VERSION")
-      .build();
+  private static final CertificateModelEntity MODEL =
+      CertificateModelEntity.builder().name("NAME").type("TYPE").version("VERSION").build();
 
   private static final String ID = "ID";
 
-  private static final CertificateModel CONVERTED_MODEL = CertificateModelEntityMapper.toDomain(
-      MODEL);
-  private static final UnitEntity CARE_PROVIDER_ENTITY = UnitEntity.builder()
-      .type(
-          UnitTypeEntity.builder()
-              .type(UnitType.CARE_PROVIDER.name())
-              .key(UnitType.CARE_PROVIDER.getKey())
-              .build()
-      )
-      .hsaId("HSA_ID_PROVIDER")
-      .name("NAME_PROVIDER")
-      .build();
+  private static final CertificateModel CONVERTED_MODEL =
+      CertificateModelEntityMapper.toDomain(MODEL);
+  private static final UnitEntity CARE_PROVIDER_ENTITY =
+      UnitEntity.builder()
+          .type(
+              UnitTypeEntity.builder()
+                  .type(UnitType.CARE_PROVIDER.name())
+                  .key(UnitType.CARE_PROVIDER.getKey())
+                  .build())
+          .hsaId("HSA_ID_PROVIDER")
+          .name("NAME_PROVIDER")
+          .build();
 
-  private static final CareProvider CARE_PROVIDER = CareProvider.builder()
-      .hsaId(new HsaId("HSA_ID_PROVIDER"))
-      .name(new UnitName("NAME_PROVIDER"))
-      .build();
+  private static final CareProvider CARE_PROVIDER =
+      CareProvider.builder()
+          .hsaId(new HsaId("HSA_ID_PROVIDER"))
+          .name(new UnitName("NAME_PROVIDER"))
+          .build();
 
-  private static final UnitEntity CARE_UNIT_ENTITY = UnitEntity.builder()
-      .type(
-          UnitTypeEntity.builder()
-              .type(UnitType.CARE_UNIT.name())
-              .key(UnitType.CARE_UNIT.getKey())
-              .build()
-      )
-      .hsaId("HSA_ID_UNIT")
-      .name("NAME_UNIT")
-      .build();
+  private static final UnitEntity CARE_UNIT_ENTITY =
+      UnitEntity.builder()
+          .type(
+              UnitTypeEntity.builder()
+                  .type(UnitType.CARE_UNIT.name())
+                  .key(UnitType.CARE_UNIT.getKey())
+                  .build())
+          .hsaId("HSA_ID_UNIT")
+          .name("NAME_UNIT")
+          .build();
 
-  private static final CareUnit CARE_UNIT = CareUnit.builder()
-      .hsaId(new HsaId("HSA_ID_UNIT"))
-      .name(new UnitName("NAME_UNIT"))
-      .build();
+  private static final CareUnit CARE_UNIT =
+      CareUnit.builder().hsaId(new HsaId("HSA_ID_UNIT")).name(new UnitName("NAME_UNIT")).build();
 
-  private static final UnitEntity ISSUED_ON_UNIT_ENTITY = UnitEntity.builder()
-      .type(
-          UnitTypeEntity.builder()
-              .type(UnitType.SUB_UNIT.name())
-              .key(UnitType.SUB_UNIT.getKey())
-              .build()
-      )
-      .hsaId("HSA_ID_ISSUED")
-      .name("NAME_ISSUED")
-      .build();
+  private static final UnitEntity ISSUED_ON_UNIT_ENTITY =
+      UnitEntity.builder()
+          .type(
+              UnitTypeEntity.builder()
+                  .type(UnitType.SUB_UNIT.name())
+                  .key(UnitType.SUB_UNIT.getKey())
+                  .build())
+          .hsaId("HSA_ID_ISSUED")
+          .name("NAME_ISSUED")
+          .build();
 
+  private static final SubUnit ISSUED_ON_UNIT =
+      SubUnit.builder().hsaId(new HsaId("HSA_ID_ISSUED")).name(new UnitName("NAME_ISSUED")).build();
 
-  private static final SubUnit ISSUED_ON_UNIT = SubUnit.builder()
-      .hsaId(new HsaId("HSA_ID_ISSUED"))
-      .name(new UnitName("NAME_ISSUED"))
-      .build();
-
-  private static final PatientEntity PATIENT_ENTITY = PatientEntity.builder()
-      .id("ID")
-      .protectedPerson(false)
-      .testIndicated(false)
-      .deceased(false)
-      .type(PatientIdTypeEntity.builder()
-          .type(PersonIdType.PERSONAL_IDENTITY_NUMBER.name())
-          .key(1)
-          .build())
-      .firstName("FIRST")
-      .middleName("MIDDLE")
-      .lastName("LAST")
-      .build();
-
-
-  private static final Patient PATIENT = Patient.builder()
-      .id(PersonId.builder()
+  private static final PatientEntity PATIENT_ENTITY =
+      PatientEntity.builder()
           .id("ID")
-          .type(PersonIdType.PERSONAL_IDENTITY_NUMBER)
-          .build())
-      .testIndicated(new TestIndicated(false))
-      .protectedPerson(new ProtectedPerson(false))
-      .deceased(new Deceased(false))
-      .name(Name.builder()
+          .protectedPerson(false)
+          .testIndicated(false)
+          .deceased(false)
+          .type(
+              PatientIdTypeEntity.builder()
+                  .type(PersonIdType.PERSONAL_IDENTITY_NUMBER.name())
+                  .key(1)
+                  .build())
           .firstName("FIRST")
           .middleName("MIDDLE")
           .lastName("LAST")
-          .build())
-      .build();
+          .build();
 
-  private static final Staff ISSUED_BY = Staff.builder()
-      .name(Name.builder()
+  private static final Patient PATIENT =
+      Patient.builder()
+          .id(PersonId.builder().id("ID").type(PersonIdType.PERSONAL_IDENTITY_NUMBER).build())
+          .testIndicated(new TestIndicated(false))
+          .protectedPerson(new ProtectedPerson(false))
+          .deceased(new Deceased(false))
+          .name(Name.builder().firstName("FIRST").middleName("MIDDLE").lastName("LAST").build())
+          .build();
+
+  private static final Staff ISSUED_BY =
+      Staff.builder()
+          .name(Name.builder().firstName("NAME").middleName("NAME").lastName("NAME").build())
+          .hsaId(new HsaId("HSA_ID"))
+          .build();
+
+  private static final StaffEntity ISSUED_BY_ENTITY =
+      StaffEntity.builder()
           .firstName("NAME")
           .middleName("NAME")
           .lastName("NAME")
-          .build())
-      .hsaId(new HsaId("HSA_ID"))
-      .build();
-
-
-  private static final StaffEntity ISSUED_BY_ENTITY = StaffEntity.builder()
-      .firstName("NAME")
-      .middleName("NAME")
-      .lastName("NAME")
-      .hsaId("HSA_ID")
-      .paTitles(Collections.emptyList())
-      .specialities(Collections.emptyList())
-      .build();
-
+          .hsaId("HSA_ID")
+          .paTitles(Collections.emptyList())
+          .specialities(Collections.emptyList())
+          .build();
 
   private static final LocalDate NOW = LocalDate.now();
   private static final String JSON =
-      "[{\"id\":\"F10\",\"value\":{\"type\":\"DATE\",\"date\":[" + NOW.getYear() + ","
-          + NOW.getMonthValue() + "," + NOW.getDayOfMonth() + "]}}]";
+      "[{\"id\":\"F10\",\"value\":{\"type\":\"DATE\",\"date\":["
+          + NOW.getYear()
+          + ","
+          + NOW.getMonthValue()
+          + ","
+          + NOW.getDayOfMonth()
+          + "]}}]";
 
   private static final CertificateDataEntity DATA = new CertificateDataEntity(JSON);
 
-  private static final CertificateEntity CERTIFICATE_ENTITY = CertificateEntity.builder()
-      .revision(1L)
-      .certificateId("ID")
-      .modified(TIMESTAMP)
-      .created(TIMESTAMP)
-      .careProvider(CARE_PROVIDER_ENTITY)
-      .careUnit(CARE_UNIT_ENTITY)
-      .issuedOnUnit(ISSUED_ON_UNIT_ENTITY)
-      .issuedBy(ISSUED_BY_ENTITY)
-      .patient(PATIENT_ENTITY)
-      .certificateModel(MODEL)
-      .status(new CertificateStatusEntity(1, Status.SIGNED.name()))
-      .data(DATA)
-      .placeholder(false)
-      .build();
+  private static final CertificateEntity CERTIFICATE_ENTITY =
+      CertificateEntity.builder()
+          .revision(1L)
+          .certificateId("ID")
+          .modified(TIMESTAMP)
+          .created(TIMESTAMP)
+          .careProvider(CARE_PROVIDER_ENTITY)
+          .careUnit(CARE_UNIT_ENTITY)
+          .issuedOnUnit(ISSUED_ON_UNIT_ENTITY)
+          .issuedBy(ISSUED_BY_ENTITY)
+          .patient(PATIENT_ENTITY)
+          .certificateModel(MODEL)
+          .status(new CertificateStatusEntity(1, Status.SIGNED.name()))
+          .data(DATA)
+          .placeholder(false)
+          .build();
 
-  private static final CertificateEntity SIGNED_CERTIFICATE_ENTITY = CertificateEntity.builder()
-      .revision(1L)
-      .certificateId("ID")
-      .modified(TIMESTAMP)
-      .signed(TIMESTAMP)
-      .created(TIMESTAMP)
-      .careProvider(CARE_PROVIDER_ENTITY)
-      .careUnit(CARE_UNIT_ENTITY)
-      .createdBy(ISSUED_BY_ENTITY)
-      .issuedOnUnit(ISSUED_ON_UNIT_ENTITY)
-      .issuedBy(ISSUED_BY_ENTITY)
-      .patient(PATIENT_ENTITY)
-      .certificateModel(MODEL)
-      .status(new CertificateStatusEntity(1, Status.SIGNED.name()))
-      .data(DATA)
-      .placeholder(false)
-      .build();
+  private static final CertificateEntity SIGNED_CERTIFICATE_ENTITY =
+      CertificateEntity.builder()
+          .revision(1L)
+          .certificateId("ID")
+          .modified(TIMESTAMP)
+          .signed(TIMESTAMP)
+          .created(TIMESTAMP)
+          .careProvider(CARE_PROVIDER_ENTITY)
+          .careUnit(CARE_UNIT_ENTITY)
+          .createdBy(ISSUED_BY_ENTITY)
+          .issuedOnUnit(ISSUED_ON_UNIT_ENTITY)
+          .issuedBy(ISSUED_BY_ENTITY)
+          .patient(PATIENT_ENTITY)
+          .certificateModel(MODEL)
+          .status(new CertificateStatusEntity(1, Status.SIGNED.name()))
+          .data(DATA)
+          .placeholder(false)
+          .build();
 
-
-  private static final Certificate EXPECTED_CERTIFICATE = MedicalCertificate.builder()
-      .revision(new Revision(1L))
-      .id(new CertificateId("ID"))
-      .status(Status.SIGNED)
-      .created(TIMESTAMP)
-      .modified(TIMESTAMP)
-      .signed(TIMESTAMP)
-      .status(Status.SIGNED)
-      .certificateModel(CONVERTED_MODEL)
-      .certificateMetaData(
-          CertificateMetaData.builder()
-              .issuer(ISSUED_BY)
-              .careProvider(CARE_PROVIDER)
-              .careUnit(CARE_UNIT)
-              .issuingUnit(ISSUED_ON_UNIT)
-              .patient(PATIENT)
-              .creator(ISSUED_BY)
-              .build()
-      )
-      .build();
-
+  private static final Certificate EXPECTED_CERTIFICATE =
+      MedicalCertificate.builder()
+          .revision(new Revision(1L))
+          .id(new CertificateId("ID"))
+          .status(Status.SIGNED)
+          .created(TIMESTAMP)
+          .modified(TIMESTAMP)
+          .signed(TIMESTAMP)
+          .status(Status.SIGNED)
+          .certificateModel(CONVERTED_MODEL)
+          .certificateMetaData(
+              CertificateMetaData.builder()
+                  .issuer(ISSUED_BY)
+                  .careProvider(CARE_PROVIDER)
+                  .careUnit(CARE_UNIT)
+                  .issuingUnit(ISSUED_ON_UNIT)
+                  .patient(PATIENT)
+                  .creator(ISSUED_BY)
+                  .build())
+          .build();
 
   @Nested
   class Create {
 
     @Test
     void shouldThrowExceptionIfCertificateModelIsNull() {
-      assertThrows(IllegalArgumentException.class,
+      assertThrows(
+          IllegalArgumentException.class,
           () -> jpaCertificateRepository.create(null, certificateRepository));
     }
 
@@ -413,8 +418,7 @@ class JpaCertificateRepositoryTest {
 
       assertEquals(
           LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS),
-          response.created().truncatedTo(ChronoUnit.SECONDS)
-      );
+          response.created().truncatedTo(ChronoUnit.SECONDS));
     }
 
     @Test
@@ -430,32 +434,30 @@ class JpaCertificateRepositoryTest {
 
     @Test
     void shouldThrowExceptionIfCertificateIsNull() {
-      assertThrows(IllegalArgumentException.class,
-          () -> jpaCertificateRepository.save(null)
-      );
+      assertThrows(IllegalArgumentException.class, () -> jpaCertificateRepository.save(null));
     }
 
     @Test
     void shouldReturnCertificate() {
       stubDomain();
       stubEntity();
-      doReturn(SIGNED_CERTIFICATE_ENTITY).when(certificateEntityRepository)
+      doReturn(SIGNED_CERTIFICATE_ENTITY)
+          .when(certificateEntityRepository)
           .save(SIGNED_CERTIFICATE_ENTITY);
 
-      final var response = jpaCertificateRepository.save(EXPECTED_CERTIFICATE,
-          certificateRepository);
+      final var response =
+          jpaCertificateRepository.save(EXPECTED_CERTIFICATE, certificateRepository);
 
       assertEquals(EXPECTED_CERTIFICATE, response);
     }
 
     @Test
     void shouldDeleteCertificate() {
-      final var expectedResult = MedicalCertificate.builder()
-          .id(CERTIFICATE_ID)
-          .status(Status.DELETED_DRAFT)
-          .build();
+      final var expectedResult =
+          MedicalCertificate.builder().id(CERTIFICATE_ID).status(Status.DELETED_DRAFT).build();
 
-      doReturn(Optional.of(CERTIFICATE_ENTITY)).when(certificateEntityRepository)
+      doReturn(Optional.of(CERTIFICATE_ENTITY))
+          .when(certificateEntityRepository)
           .findByCertificateId(CERTIFICATE_ID.id());
       final var actualResult = jpaCertificateRepository.save(expectedResult, certificateRepository);
 
@@ -466,12 +468,11 @@ class JpaCertificateRepositoryTest {
 
     @Test
     void shouldDeleteRelationsIfStatusLockedDraft() {
-      final var expectedResult = MedicalCertificate.builder()
-          .id(CERTIFICATE_ID)
-          .status(Status.LOCKED_DRAFT)
-          .build();
+      final var expectedResult =
+          MedicalCertificate.builder().id(CERTIFICATE_ID).status(Status.LOCKED_DRAFT).build();
 
-      doReturn(Optional.of(CERTIFICATE_ENTITY)).when(certificateEntityRepository)
+      doReturn(Optional.of(CERTIFICATE_ENTITY))
+          .when(certificateEntityRepository)
           .findByCertificateId(CERTIFICATE_ID.id());
       jpaCertificateRepository.save(expectedResult, certificateRepository);
 
@@ -483,7 +484,8 @@ class JpaCertificateRepositoryTest {
       stubDomain();
       stubEntity();
 
-      doReturn(SIGNED_CERTIFICATE_ENTITY).when(certificateEntityRepository)
+      doReturn(SIGNED_CERTIFICATE_ENTITY)
+          .when(certificateEntityRepository)
           .save(SIGNED_CERTIFICATE_ENTITY);
 
       jpaCertificateRepository.save(EXPECTED_CERTIFICATE, certificateRepository);
@@ -496,16 +498,17 @@ class JpaCertificateRepositoryTest {
 
     @Test
     void shouldThrowExceptionIfIdIsNull() {
-      assertThrows(IllegalArgumentException.class,
+      assertThrows(
+          IllegalArgumentException.class,
           () -> jpaCertificateRepository.getById(null, certificateRepository));
     }
 
     @Test
     void shouldThrowExceptionIfCertificateIsNull() {
       final var id = new CertificateId("ID");
-      assertThrows(IllegalArgumentException.class,
-          () -> jpaCertificateRepository.getById(id, certificateRepository)
-      );
+      assertThrows(
+          IllegalArgumentException.class,
+          () -> jpaCertificateRepository.getById(id, certificateRepository));
     }
 
     @Test
@@ -514,8 +517,8 @@ class JpaCertificateRepositoryTest {
       when(certificateEntityRepository.findByCertificateId("ID"))
           .thenReturn(Optional.of(SIGNED_CERTIFICATE_ENTITY));
 
-      final var response = jpaCertificateRepository.getById(new CertificateId("ID"),
-          certificateRepository);
+      final var response =
+          jpaCertificateRepository.getById(new CertificateId("ID"), certificateRepository);
 
       assertEquals(EXPECTED_CERTIFICATE, response);
     }
@@ -526,16 +529,17 @@ class JpaCertificateRepositoryTest {
 
     @Test
     void shouldThrowExceptionIfIdsIsNull() {
-      assertThrows(IllegalArgumentException.class,
+      assertThrows(
+          IllegalArgumentException.class,
           () -> jpaCertificateRepository.getByIds(null, certificateRepository));
     }
 
     @Test
     void shouldThrowExceptionIfIdsIsEmpty() {
       final List<CertificateId> certificateIds = Collections.emptyList();
-      assertThrows(IllegalArgumentException.class,
-          () -> jpaCertificateRepository.getByIds(certificateIds, certificateRepository)
-      );
+      assertThrows(
+          IllegalArgumentException.class,
+          () -> jpaCertificateRepository.getByIds(certificateIds, certificateRepository));
     }
 
     @Test
@@ -548,8 +552,8 @@ class JpaCertificateRepositoryTest {
       final var certificateIds = List.of(certificate1, certificate2);
 
       when(certificateEntityRepository.findCertificateEntitiesByCertificateIdIn(
-          List.of("ID1", "ID2"))
-      ).thenReturn(List.of(SIGNED_CERTIFICATE_ENTITY, SIGNED_CERTIFICATE_ENTITY));
+              List.of("ID1", "ID2")))
+          .thenReturn(List.of(SIGNED_CERTIFICATE_ENTITY, SIGNED_CERTIFICATE_ENTITY));
 
       final var response = jpaCertificateRepository.getByIds(certificateIds, certificateRepository);
 
@@ -564,28 +568,26 @@ class JpaCertificateRepositoryTest {
       final var certificateIds = List.of(certificate1, certificate2);
 
       when(certificateEntityRepository.findCertificateEntitiesByCertificateIdIn(
-          List.of("ID1", "ID2"))
-      ).thenReturn(List.of(CertificateEntity.builder().certificateId("ID").build()));
+              List.of("ID1", "ID2")))
+          .thenReturn(List.of(CertificateEntity.builder().certificateId("ID").build()));
 
-      assertThrows(IllegalStateException.class,
+      assertThrows(
+          IllegalStateException.class,
           () -> jpaCertificateRepository.getByIds(certificateIds, certificateRepository));
     }
   }
-
 
   @Nested
   class Exists {
 
     @Test
     void shouldThrowExceptionIfNoCertificateId() {
-      assertThrows(IllegalArgumentException.class,
-          () -> jpaCertificateRepository.exists(null));
+      assertThrows(IllegalArgumentException.class, () -> jpaCertificateRepository.exists(null));
     }
 
     @Test
     void shouldReturnFalseIfCertificateDoesNotExist() {
-      when(certificateEntityRepository.findByCertificateId("ID"))
-          .thenReturn(Optional.empty());
+      when(certificateEntityRepository.findByCertificateId("ID")).thenReturn(Optional.empty());
       assertFalse(jpaCertificateRepository.exists(new CertificateId("ID")));
     }
 
@@ -605,11 +607,13 @@ class JpaCertificateRepositoryTest {
     void shouldInsertCertificates() {
       stubDomain();
       stubEntity();
-      doReturn(SIGNED_CERTIFICATE_ENTITY).when(certificateEntityRepository)
+      doReturn(SIGNED_CERTIFICATE_ENTITY)
+          .when(certificateEntityRepository)
           .save(SIGNED_CERTIFICATE_ENTITY);
 
-      final var actualCertificate = jpaCertificateRepository.insert(EXPECTED_CERTIFICATE,
-          new Revision(1), certificateRepository);
+      final var actualCertificate =
+          jpaCertificateRepository.insert(
+              EXPECTED_CERTIFICATE, new Revision(1), certificateRepository);
 
       assertEquals(EXPECTED_CERTIFICATE, actualCertificate);
     }
@@ -618,7 +622,8 @@ class JpaCertificateRepositoryTest {
     void shouldSaveCertificateRelations() {
       stubDomain();
       stubEntity();
-      doReturn(SIGNED_CERTIFICATE_ENTITY).when(certificateEntityRepository)
+      doReturn(SIGNED_CERTIFICATE_ENTITY)
+          .when(certificateEntityRepository)
           .save(SIGNED_CERTIFICATE_ENTITY);
 
       jpaCertificateRepository.insert(EXPECTED_CERTIFICATE, new Revision(1), certificateRepository);
@@ -629,21 +634,18 @@ class JpaCertificateRepositoryTest {
     void shouldRemoveCertificates() {
       final var ids = List.of("ID1", "ID2");
 
-      jpaCertificateRepository.remove(
-          List.of(new CertificateId("ID1"), new CertificateId("ID2"))
-      );
+      jpaCertificateRepository.remove(List.of(new CertificateId("ID1"), new CertificateId("ID2")));
 
       verify(certificateEntityRepository).deleteAllByCertificateIdIn(ids);
     }
 
     @Test
     void shouldRemoveCertificatesRelations() {
-      doReturn(Optional.of(CERTIFICATE_ENTITY)).when(certificateEntityRepository)
+      doReturn(Optional.of(CERTIFICATE_ENTITY))
+          .when(certificateEntityRepository)
           .findByCertificateId("ID1");
 
-      jpaCertificateRepository.remove(
-          List.of(new CertificateId("ID1"), new CertificateId("ID2"))
-      );
+      jpaCertificateRepository.remove(List.of(new CertificateId("ID1"), new CertificateId("ID2")));
 
       verify(certificateRelationRepository).deleteRelations(CERTIFICATE_ENTITY);
     }
@@ -651,7 +653,6 @@ class JpaCertificateRepositoryTest {
 
   @Nested
   class FindByIdsTests {
-
 
     @Test
     void shallReturnListOfCertificate() {
@@ -662,11 +663,12 @@ class JpaCertificateRepositoryTest {
       final var request = List.of(CERTIFICATE_ID);
       final var certificateIds = List.of(CERTIFICATE_ID.id());
 
-      doReturn(List.of(SIGNED_CERTIFICATE_ENTITY)).when(certificateEntityRepository)
+      doReturn(List.of(SIGNED_CERTIFICATE_ENTITY))
+          .when(certificateEntityRepository)
           .findCertificateEntitiesByCertificateIdIn(certificateIds);
 
-      final var actualCertificates = jpaCertificateRepository.findByIds(request,
-          certificateRepository);
+      final var actualCertificates =
+          jpaCertificateRepository.findByIds(request, certificateRepository);
       assertEquals(expectedCertificates, actualCertificates);
     }
 
@@ -676,20 +678,24 @@ class JpaCertificateRepositoryTest {
       final var request = List.of(CERTIFICATE_ID);
       final var certificateIds = List.of(CERTIFICATE_ID.id());
 
-      doReturn(Collections.emptyList()).when(certificateEntityRepository)
+      doReturn(Collections.emptyList())
+          .when(certificateEntityRepository)
           .findCertificateEntitiesByCertificateIdIn(certificateIds);
 
-      final var actualCertificates = jpaCertificateRepository.findByIds(request,
-          certificateRepository);
+      final var actualCertificates =
+          jpaCertificateRepository.findByIds(request, certificateRepository);
       assertEquals(expectedCertificates, actualCertificates);
     }
 
     @Test
     void shallThrowIfCertificateIdsIsNull() {
-      final var illegalArgumentException = assertThrows(IllegalArgumentException.class,
-          () -> jpaCertificateRepository.findByIds(null, certificateRepository));
+      final var illegalArgumentException =
+          assertThrows(
+              IllegalArgumentException.class,
+              () -> jpaCertificateRepository.findByIds(null, certificateRepository));
 
-      assertEquals("Cannot get certificate if certificateIds is null",
+      assertEquals(
+          "Cannot get certificate if certificateIds is null",
           illegalArgumentException.getMessage());
     }
   }
@@ -699,40 +705,46 @@ class JpaCertificateRepositoryTest {
 
     @Test
     void shallThrowIfCareProviderIdIsNull() {
-      final var illegalArgumentException = assertThrows(IllegalArgumentException.class,
-          () -> jpaCertificateRepository.getExportByCareProviderId(null, 0, 0,
-              certificateRepository));
+      final var illegalArgumentException =
+          assertThrows(
+              IllegalArgumentException.class,
+              () ->
+                  jpaCertificateRepository.getExportByCareProviderId(
+                      null, 0, 0, certificateRepository));
 
-      assertEquals("Cannot get certificates if careProviderId is null",
+      assertEquals(
+          "Cannot get certificates if careProviderId is null",
           illegalArgumentException.getMessage());
     }
 
     @Test
     void shallReturnCertificateExportPage() {
-      final var expectedResult = CertificateExportPage.builder()
-          .totalRevoked(2L)
-          .total(2L)
-          .certificates(Collections.singletonList(FK3226_CERTIFICATE))
-          .build();
+      final var expectedResult =
+          CertificateExportPage.builder()
+              .totalRevoked(2L)
+              .total(2L)
+              .certificates(Collections.singletonList(FK3226_CERTIFICATE))
+              .build();
 
       final var page = mock(Page.class);
       final var certificateEntity = CertificateEntity.builder().build();
 
-      doReturn(page).when(certificateEntityRepository)
+      doReturn(page)
+          .when(certificateEntityRepository)
           .findSignedCertificateEntitiesByCareProviderHsaId(
-              eq(CARE_PROVIDER_ENTITY.getHsaId()), any(Pageable.class)
-          );
-      doReturn(2L).when(certificateEntityRepository)
-          .findRevokedCertificateEntitiesByCareProviderHsaId(
-              CARE_PROVIDER_ENTITY.getHsaId()
-          );
+              eq(CARE_PROVIDER_ENTITY.getHsaId()), any(Pageable.class));
+      doReturn(2L)
+          .when(certificateEntityRepository)
+          .findRevokedCertificateEntitiesByCareProviderHsaId(CARE_PROVIDER_ENTITY.getHsaId());
       doReturn(Collections.singletonList(certificateEntity)).when(page).getContent();
       doReturn(2L).when(page).getTotalElements();
-      doReturn(FK3226_CERTIFICATE).when(certificateEntityMapper).toDomain(eq(certificateEntity),
-          any(CertificateRepository.class));
+      doReturn(FK3226_CERTIFICATE)
+          .when(certificateEntityMapper)
+          .toDomain(eq(certificateEntity), any(CertificateRepository.class));
 
-      final var actualResult = jpaCertificateRepository.getExportByCareProviderId(
-          new HsaId(CARE_PROVIDER_ENTITY.getHsaId()), 0, 10, certificateRepository);
+      final var actualResult =
+          jpaCertificateRepository.getExportByCareProviderId(
+              new HsaId(CARE_PROVIDER_ENTITY.getHsaId()), 0, 10, certificateRepository);
       assertEquals(expectedResult, actualResult);
     }
   }
@@ -747,7 +759,8 @@ class JpaCertificateRepositoryTest {
 
     @Test
     void shouldThrowExceptionIfCareProviderIdIsNull() {
-      assertThrows(IllegalArgumentException.class,
+      assertThrows(
+          IllegalArgumentException.class,
           () -> jpaCertificateRepository.deleteByCareProviderId(null));
     }
 
@@ -755,23 +768,22 @@ class JpaCertificateRepositoryTest {
     void shouldDeleteCertificateByCareProviderId() {
       final var pageable = PageRequest.of(0, 10, Sort.by(Direction.ASC, "signed", "certificateId"));
       final var page = mock(Page.class);
-      final var certificateEntity = CertificateEntity.builder()
-          .certificateId("ID")
-          .build();
+      final var certificateEntity = CertificateEntity.builder().certificateId("ID").build();
 
-      doReturn(page).when(certificateEntityRepository).findCertificateEntitiesByCareProviderHsaId(
-          CARE_PROVIDER_ENTITY.getHsaId(), pageable
-      );
+      doReturn(page)
+          .when(certificateEntityRepository)
+          .findCertificateEntitiesByCareProviderHsaId(CARE_PROVIDER_ENTITY.getHsaId(), pageable);
       doReturn(List.of(certificateEntity)).when(page).getContent();
       doReturn(false).when(page).hasNext();
       doReturn(1L).when(page).getTotalElements();
 
-      final var deletedCount = jpaCertificateRepository.deleteByCareProviderId(
-          new HsaId(CARE_PROVIDER_ENTITY.getHsaId()));
+      final var deletedCount =
+          jpaCertificateRepository.deleteByCareProviderId(
+              new HsaId(CARE_PROVIDER_ENTITY.getHsaId()));
 
       verify(certificateRelationRepository).deleteRelations(certificateEntity);
-      verify(certificateEntityRepository).deleteAllByCertificateIdIn(
-          List.of(certificateEntity.getCertificateId()));
+      verify(certificateEntityRepository)
+          .deleteAllByCertificateIdIn(List.of(certificateEntity.getCertificateId()));
       assertEquals(1L, deletedCount);
     }
   }
@@ -781,64 +793,64 @@ class JpaCertificateRepositoryTest {
 
     @Test
     void shouldCreateMedicalCertificateWithParentRelationFromPlaceholder() {
-      final var placeHolderRequest = PlaceholderCertificateRequest.builder()
-          .certificateId(new CertificateId(ID))
-          .status(Status.SIGNED)
-          .build();
+      final var placeHolderRequest =
+          PlaceholderCertificateRequest.builder()
+              .certificateId(new CertificateId(ID))
+              .status(Status.SIGNED)
+              .build();
 
-      final var response = jpaCertificateRepository
-          .createFromPlaceholder(placeHolderRequest, CONVERTED_MODEL, certificateRepository);
+      final var response =
+          jpaCertificateRepository.createFromPlaceholder(
+              placeHolderRequest, CONVERTED_MODEL, certificateRepository);
 
       assertAll(
           () -> assertEquals(RelationType.RENEW, response.parent().type()),
           () -> assertEquals(ID, response.parent().certificate().id().id()),
-          () -> assertEquals(Status.SIGNED, response.parent().certificate().status())
-      );
+          () -> assertEquals(Status.SIGNED, response.parent().certificate().status()));
     }
 
     @Test
     void shouldCreateMedicalCertificate() {
-      final var placeHolderRequest = PlaceholderCertificateRequest.builder()
-          .certificateId(new CertificateId(ID))
-          .status(Status.DRAFT)
-          .build();
+      final var placeHolderRequest =
+          PlaceholderCertificateRequest.builder()
+              .certificateId(new CertificateId(ID))
+              .status(Status.DRAFT)
+              .build();
 
-      final var response = jpaCertificateRepository
-          .createFromPlaceholder(placeHolderRequest, CONVERTED_MODEL, certificateRepository);
+      final var response =
+          jpaCertificateRepository.createFromPlaceholder(
+              placeHolderRequest, CONVERTED_MODEL, certificateRepository);
 
       assertAll(
           () -> assertNotNull(response.id().id()),
           () -> assertNotNull(response.created()),
           () -> assertEquals(CONVERTED_MODEL, response.certificateModel()),
           () -> assertEquals(Status.DRAFT, response.status()),
-          () -> assertEquals(0, response.revision().value())
-      );
+          () -> assertEquals(0, response.revision().value()));
     }
 
     @Test
     void shouldSavePlaceHolderCertificate() {
       final var issuingUnit = SubUnit.builder().build();
-      final var placeHolderRequest = PlaceholderCertificateRequest.builder()
-          .certificateId(new CertificateId(ID))
-          .status(Status.DRAFT)
-          .issuingUnit(issuingUnit)
-          .build();
+      final var placeHolderRequest =
+          PlaceholderCertificateRequest.builder()
+              .certificateId(new CertificateId(ID))
+              .status(Status.DRAFT)
+              .issuingUnit(issuingUnit)
+              .build();
 
-      final var expectedPlaceHolderCertificate = PlaceholderCertificate.builder()
-          .id(new CertificateId(ID))
-          .status(Status.DRAFT)
-          .certificateMetaData(
-              CertificateMetaData.builder()
-                  .issuingUnit(issuingUnit)
-                  .build()
-          )
-          .build();
+      final var expectedPlaceHolderCertificate =
+          PlaceholderCertificate.builder()
+              .id(new CertificateId(ID))
+              .status(Status.DRAFT)
+              .certificateMetaData(CertificateMetaData.builder().issuingUnit(issuingUnit).build())
+              .build();
 
       when(placeHolderEntityMapper.toEntity(expectedPlaceHolderCertificate))
           .thenReturn(CERTIFICATE_ENTITY);
 
-      jpaCertificateRepository
-          .createFromPlaceholder(placeHolderRequest, CONVERTED_MODEL, certificateRepository);
+      jpaCertificateRepository.createFromPlaceholder(
+          placeHolderRequest, CONVERTED_MODEL, certificateRepository);
 
       verify(certificateEntityRepository).save(CERTIFICATE_ENTITY);
     }
@@ -849,17 +861,20 @@ class JpaCertificateRepositoryTest {
 
     @Test
     void shouldThrowIfCertificateIdIsNull() {
-      final var illegalArgumentException = assertThrows(IllegalArgumentException.class,
-          () -> jpaCertificateRepository.placeholderExists(null));
+      final var illegalArgumentException =
+          assertThrows(
+              IllegalArgumentException.class,
+              () -> jpaCertificateRepository.placeholderExists(null));
 
-      assertEquals("Cannot check if placeholder certificate exists since certificateId is null",
+      assertEquals(
+          "Cannot check if placeholder certificate exists since certificateId is null",
           illegalArgumentException.getMessage());
     }
 
     @Test
     void shouldReturnTrueIfPlaceholderExists() {
-      when(certificateEntityRepository.findPlaceholderByCertificateId(
-          CERTIFICATE_ID.id())).thenReturn(Optional.of(CERTIFICATE_ENTITY));
+      when(certificateEntityRepository.findPlaceholderByCertificateId(CERTIFICATE_ID.id()))
+          .thenReturn(Optional.of(CERTIFICATE_ENTITY));
       assertTrue(jpaCertificateRepository.placeholderExists(CERTIFICATE_ID));
     }
   }
@@ -869,22 +884,28 @@ class JpaCertificateRepositoryTest {
 
     @Test
     void shouldThrowIfCertificateIdIsNull() {
-      final var illegalArgumentException = assertThrows(IllegalArgumentException.class,
-          () -> jpaCertificateRepository.getPlaceholderById(null));
+      final var illegalArgumentException =
+          assertThrows(
+              IllegalArgumentException.class,
+              () -> jpaCertificateRepository.getPlaceholderById(null));
 
-      assertEquals("Cannot get placeholder certificate if certificateId is null",
+      assertEquals(
+          "Cannot get placeholder certificate if certificateId is null",
           illegalArgumentException.getMessage());
     }
 
     @Test
     void shouldThrowIfPlaceholderCertificateIsNotPresent() {
-      when(certificateEntityRepository.findPlaceholderByCertificateId(
-          CERTIFICATE_ID.id())).thenReturn(Optional.empty());
+      when(certificateEntityRepository.findPlaceholderByCertificateId(CERTIFICATE_ID.id()))
+          .thenReturn(Optional.empty());
 
-      final var illegalArgumentException = assertThrows(IllegalArgumentException.class,
-          () -> jpaCertificateRepository.getPlaceholderById(CERTIFICATE_ID));
+      final var illegalArgumentException =
+          assertThrows(
+              IllegalArgumentException.class,
+              () -> jpaCertificateRepository.getPlaceholderById(CERTIFICATE_ID));
 
-      assertEquals("CertificateId '%s' not present in repository".formatted(CERTIFICATE_ID),
+      assertEquals(
+          "CertificateId '%s' not present in repository".formatted(CERTIFICATE_ID),
           illegalArgumentException.getMessage());
     }
 
@@ -892,8 +913,8 @@ class JpaCertificateRepositoryTest {
     void shouldReturnPlaceholderCertificateIfPresent() {
       final var expectedResult = PlaceholderCertificate.builder().build();
 
-      when(certificateEntityRepository.findPlaceholderByCertificateId(
-          CERTIFICATE_ID.id())).thenReturn(Optional.of(CERTIFICATE_ENTITY));
+      when(certificateEntityRepository.findPlaceholderByCertificateId(CERTIFICATE_ID.id()))
+          .thenReturn(Optional.of(CERTIFICATE_ENTITY));
       when(placeHolderEntityMapper.toDomain(CERTIFICATE_ENTITY)).thenReturn(expectedResult);
 
       final var actualResult = jpaCertificateRepository.getPlaceholderById(CERTIFICATE_ID);
@@ -905,22 +926,22 @@ class JpaCertificateRepositoryTest {
   @Nested
   class SavePlaceholderCertificateTests {
 
-    private static final PlaceholderCertificate PLACEHOLDER_CERTIFICATE = PlaceholderCertificate.builder()
-        .build();
+    private static final PlaceholderCertificate PLACEHOLDER_CERTIFICATE =
+        PlaceholderCertificate.builder().build();
 
     @Test
     void shouldThrowIfCertificateIsNull() {
-      final var illegalArgumentException = assertThrows(IllegalArgumentException.class,
-          () -> jpaCertificateRepository.save(null));
+      final var illegalArgumentException =
+          assertThrows(IllegalArgumentException.class, () -> jpaCertificateRepository.save(null));
 
-      assertEquals("Unable to save, placeholderCertificate was null",
-          illegalArgumentException.getMessage());
+      assertEquals(
+          "Unable to save, placeholderCertificate was null", illegalArgumentException.getMessage());
     }
 
     @Test
     void shouldSavePlaceholderCertificate() {
-      when(placeHolderEntityMapper.toEntity(PLACEHOLDER_CERTIFICATE)).thenReturn(
-          CERTIFICATE_ENTITY);
+      when(placeHolderEntityMapper.toEntity(PLACEHOLDER_CERTIFICATE))
+          .thenReturn(CERTIFICATE_ENTITY);
 
       jpaCertificateRepository.save(PLACEHOLDER_CERTIFICATE);
 
@@ -929,11 +950,11 @@ class JpaCertificateRepositoryTest {
 
     @Test
     void shouldReturnPersistedPlaceholderCertificate() {
-      when(placeHolderEntityMapper.toEntity(PLACEHOLDER_CERTIFICATE)).thenReturn(
-          CERTIFICATE_ENTITY);
+      when(placeHolderEntityMapper.toEntity(PLACEHOLDER_CERTIFICATE))
+          .thenReturn(CERTIFICATE_ENTITY);
       when(certificateEntityRepository.save(CERTIFICATE_ENTITY)).thenReturn(CERTIFICATE_ENTITY);
-      when(placeHolderEntityMapper.toDomain(CERTIFICATE_ENTITY)).thenReturn(
-          PLACEHOLDER_CERTIFICATE);
+      when(placeHolderEntityMapper.toDomain(CERTIFICATE_ENTITY))
+          .thenReturn(PLACEHOLDER_CERTIFICATE);
 
       final var actualCertificate = jpaCertificateRepository.save(PLACEHOLDER_CERTIFICATE);
 
@@ -946,7 +967,8 @@ class JpaCertificateRepositoryTest {
 
     @Test
     void shouldThrowIllegalStateExceptionWhenNotSigned() {
-      assertThrows(IllegalStateException.class,
+      assertThrows(
+          IllegalStateException.class,
           () -> jpaCertificateRepository.getMetadataFromSignInstance(CERTIFICATE_META_DATA, null));
     }
 
@@ -955,13 +977,13 @@ class JpaCertificateRepositoryTest {
 
       final var athenaWithoutAddress = athenaReactAnderssonBuilder().address(null).build();
 
-      doReturn(Optional.of(ATHENA_REACT_ANDERSSON_VERSION_ENTITY)).when(
-              patientVersionEntityRepository)
-          .findFirstCoveringTimestampOrderByMostRecent(CERTIFICATE_META_DATA
-              .patient().id().idWithoutDash(), TIMESTAMP);
+      doReturn(Optional.of(ATHENA_REACT_ANDERSSON_VERSION_ENTITY))
+          .when(patientVersionEntityRepository)
+          .findFirstCoveringTimestampOrderByMostRecent(
+              CERTIFICATE_META_DATA.patient().id().idWithoutDash(), TIMESTAMP);
 
-      final var result = jpaCertificateRepository.getMetadataFromSignInstance(
-          CERTIFICATE_META_DATA, TIMESTAMP);
+      final var result =
+          jpaCertificateRepository.getMetadataFromSignInstance(CERTIFICATE_META_DATA, TIMESTAMP);
 
       assertEquals(athenaWithoutAddress, result.patient());
     }
@@ -969,41 +991,39 @@ class JpaCertificateRepositoryTest {
     @Test
     void shouldReturnVersionedStaffMetadataWhenSigned() {
 
-      doReturn(List.of(AJLA_DOKTOR_VERSION_ENTITY, ALF_DOKTOR_VERSION_ENTITY)).when(
-              staffVersionEntityRepository)
-          .findAllCoveringTimestampByHsaIdIn(List.of(AJLA_DOCTOR_HSA_ID, ALF_DOKTOR_HSA_ID),
-              TIMESTAMP);
+      doReturn(List.of(AJLA_DOKTOR_VERSION_ENTITY, ALF_DOKTOR_VERSION_ENTITY))
+          .when(staffVersionEntityRepository)
+          .findAllCoveringTimestampByHsaIdIn(
+              List.of(AJLA_DOCTOR_HSA_ID, ALF_DOKTOR_HSA_ID), TIMESTAMP);
 
-      final var result = jpaCertificateRepository.getMetadataFromSignInstance(
-          CERTIFICATE_META_DATA, TIMESTAMP);
+      final var result =
+          jpaCertificateRepository.getMetadataFromSignInstance(CERTIFICATE_META_DATA, TIMESTAMP);
 
       assertAll(
           () -> assertEquals(AJLA_DOKTOR, result.issuer()),
-          () -> assertEquals(ALF_DOKTOR, result.creator())
-      );
-
+          () -> assertEquals(ALF_DOKTOR, result.creator()));
     }
 
     @Test
     void shouldReturnUnitsMetadataWhenSigned() {
 
-      doReturn(List.of(
-          ALFA_REGIONEN_VERSION_ENTITY,
-          ALFA_MEDICINCENTRUM_VERSION_ENTITY,
-          ALFA_ALLERGIMOTTAGNINGEN_VERSION_ENTITY))
+      doReturn(
+              List.of(
+                  ALFA_REGIONEN_VERSION_ENTITY,
+                  ALFA_MEDICINCENTRUM_VERSION_ENTITY,
+                  ALFA_ALLERGIMOTTAGNINGEN_VERSION_ENTITY))
           .when(unitVersionEntityRepository)
-          .findAllCoveringTimestampByHsaIdIn(List.of(
-                  ALFA_REGIONEN_ID, ALFA_MEDICINCENTRUM_ID, ALFA_ALLERGIMOTTAGNINGEN_ID),
+          .findAllCoveringTimestampByHsaIdIn(
+              List.of(ALFA_REGIONEN_ID, ALFA_MEDICINCENTRUM_ID, ALFA_ALLERGIMOTTAGNINGEN_ID),
               TIMESTAMP);
 
-      final var result = jpaCertificateRepository.getMetadataFromSignInstance(
-          CERTIFICATE_META_DATA, TIMESTAMP);
+      final var result =
+          jpaCertificateRepository.getMetadataFromSignInstance(CERTIFICATE_META_DATA, TIMESTAMP);
 
       assertAll(
           () -> assertEquals(ALFA_REGIONEN, result.careProvider()),
           () -> assertEquals(ALFA_MEDICINCENTRUM, result.careUnit()),
-          () -> assertEquals(ALFA_ALLERGIMOTTAGNINGEN, result.issuingUnit())
-      );
+          () -> assertEquals(ALFA_ALLERGIMOTTAGNINGEN, result.issuingUnit()));
     }
   }
 
@@ -1012,13 +1032,12 @@ class JpaCertificateRepositoryTest {
 
     @Test
     void shouldReturnEmptyListIfNoCertificatesAreFound() {
-      final var request = CertificatesRequest.builder()
-          .build();
+      final var request = CertificatesRequest.builder().build();
 
       doReturn(List.of()).when(certificateEntityRepository).findAll(any());
 
-      final var actualCertificates = jpaCertificateRepository.findByCertificatesRequest(request,
-          certificateRepository);
+      final var actualCertificates =
+          jpaCertificateRepository.findByCertificatesRequest(request, certificateRepository);
 
       assertTrue(actualCertificates.isEmpty());
     }
@@ -1026,22 +1045,21 @@ class JpaCertificateRepositoryTest {
     @Test
     void shouldReturnListOfCertificates() {
       final var expectedCertificates = List.of(EXPECTED_CERTIFICATE);
-      final var request = CertificatesRequest.builder()
-          .build();
+      final var request = CertificatesRequest.builder().build();
       doReturn(List.of(CERTIFICATE_ENTITY)).when(certificateEntityRepository).findAll(any());
-      doReturn(EXPECTED_CERTIFICATE).when(certificateEntityMapper)
+      doReturn(EXPECTED_CERTIFICATE)
+          .when(certificateEntityMapper)
           .toDomain(CERTIFICATE_ENTITY, certificateRepository);
 
-      final var actualCertificates = jpaCertificateRepository.findByCertificatesRequest(request,
-          certificateRepository);
+      final var actualCertificates =
+          jpaCertificateRepository.findByCertificatesRequest(request, certificateRepository);
 
       assertEquals(expectedCertificates, actualCertificates);
     }
 
     @Test
     void shouldCallSpecificationFactoryToCreateSpecification() {
-      final var request = CertificatesRequest.builder()
-          .build();
+      final var request = CertificatesRequest.builder().build();
       final var specification = mock(Specification.class);
       doReturn(List.of()).when(certificateEntityRepository).findAll(any());
       when(certificateEntitySpecificationFactory.create(request)).thenReturn(specification);
@@ -1057,32 +1075,34 @@ class JpaCertificateRepositoryTest {
 
     @Test
     void shouldReturnEmptyListIfNoCertificatesAreFound() {
-      final var request = CertificatesRequest.builder()
-          .createdTo(LocalDateTime.now())
-          .statuses(List.of(Status.DRAFT, Status.LOCKED_DRAFT))
-          .build();
+      final var request =
+          CertificatesRequest.builder()
+              .createdTo(LocalDateTime.now())
+              .statuses(List.of(Status.DRAFT, Status.LOCKED_DRAFT))
+              .build();
 
-      doReturn(List.of()).when(certificateEntityRepository)
-          .findCertificateIdsByCreatedBeforeAndStatusIn(request.createdTo(),
-              List.of(1, 4));
-      final var actualCertificateIds = jpaCertificateRepository.findIdsByCreatedBeforeAndStatusIn(
-          request);
+      doReturn(List.of())
+          .when(certificateEntityRepository)
+          .findCertificateIdsByCreatedBeforeAndStatusIn(request.createdTo(), List.of(1, 4));
+      final var actualCertificateIds =
+          jpaCertificateRepository.findIdsByCreatedBeforeAndStatusIn(request);
 
       assertTrue(actualCertificateIds.isEmpty());
     }
 
     @Test
     void shouldReturnListOfCertificateIds() {
-      final var request = CertificatesRequest.builder()
-          .createdTo(LocalDateTime.now())
-          .statuses(List.of(Status.DRAFT, Status.LOCKED_DRAFT))
-          .build();
-      doReturn(List.of(CERTIFICATE_ID.id())).when(certificateEntityRepository)
-          .findCertificateIdsByCreatedBeforeAndStatusIn(request.createdTo(),
-              List.of(1, 4));
+      final var request =
+          CertificatesRequest.builder()
+              .createdTo(LocalDateTime.now())
+              .statuses(List.of(Status.DRAFT, Status.LOCKED_DRAFT))
+              .build();
+      doReturn(List.of(CERTIFICATE_ID.id()))
+          .when(certificateEntityRepository)
+          .findCertificateIdsByCreatedBeforeAndStatusIn(request.createdTo(), List.of(1, 4));
 
-      final var actualCertificateIds = jpaCertificateRepository.findIdsByCreatedBeforeAndStatusIn(
-          request);
+      final var actualCertificateIds =
+          jpaCertificateRepository.findIdsByCreatedBeforeAndStatusIn(request);
 
       assertEquals(List.of(CERTIFICATE_ID), actualCertificateIds);
     }
@@ -1092,17 +1112,14 @@ class JpaCertificateRepositoryTest {
   class FindValidSickLeavesByIdsTests {
 
     private static final String ID1 = "CERTIFICATE_ID";
-    private static final List<CertificateId> CERTIFICATE_IDS = List.of(
-        new CertificateId(ID1));
+    private static final List<CertificateId> CERTIFICATE_IDS = List.of(new CertificateId(ID1));
 
     @Test
     void shouldReturnListOfCertificateIds() {
-      when(
-          certificateEntityRepository.findValidSickLeaveCertificatesByIds(List.of(ID1))).thenReturn(
-          List.of(CERTIFICATE_ENTITY.getCertificateId()));
+      when(certificateEntityRepository.findValidSickLeaveCertificatesByIds(List.of(ID1)))
+          .thenReturn(List.of(CERTIFICATE_ENTITY.getCertificateId()));
 
-      final var result = jpaCertificateRepository.findValidSickLeavesByIds(
-          CERTIFICATE_IDS);
+      final var result = jpaCertificateRepository.findValidSickLeavesByIds(CERTIFICATE_IDS);
       assertEquals(List.of(EXPECTED_CERTIFICATE.id()), result);
     }
   }
@@ -1113,11 +1130,12 @@ class JpaCertificateRepositoryTest {
     @Test
     void shouldUpdatePatientMetadataFromVersionEntity() {
       final var athenaWithoutAddress = athenaReactAnderssonBuilder().address(null).build();
-      final var certificate = MedicalCertificate.builder()
-          .id(CERTIFICATE_ID)
-          .signed(TIMESTAMP)
-          .certificateMetaData(CERTIFICATE_META_DATA)
-          .build();
+      final var certificate =
+          MedicalCertificate.builder()
+              .id(CERTIFICATE_ID)
+              .signed(TIMESTAMP)
+              .certificateMetaData(CERTIFICATE_META_DATA)
+              .build();
 
       doReturn(List.of(ATHENA_REACT_ANDERSSON_VERSION_ENTITY))
           .when(patientVersionEntityRepository)
@@ -1132,14 +1150,14 @@ class JpaCertificateRepositoryTest {
 
     @Test
     void shouldUpdateStaffMetadataFromVersionEntities() {
-      final var certificate = MedicalCertificate.builder()
-          .id(CERTIFICATE_ID)
-          .signed(TIMESTAMP)
-          .certificateMetaData(CERTIFICATE_META_DATA)
-          .build();
+      final var certificate =
+          MedicalCertificate.builder()
+              .id(CERTIFICATE_ID)
+              .signed(TIMESTAMP)
+              .certificateMetaData(CERTIFICATE_META_DATA)
+              .build();
 
-      doReturn(List.of()).when(patientVersionEntityRepository)
-          .findAllByIdIn(any());
+      doReturn(List.of()).when(patientVersionEntityRepository).findAllByIdIn(any());
       doReturn(List.of(AJLA_DOKTOR_VERSION_ENTITY, ALF_DOKTOR_VERSION_ENTITY))
           .when(staffVersionEntityRepository)
           .findAllByHsaIdIn(List.of(AJLA_DOCTOR_HSA_ID, ALF_DOKTOR_HSA_ID));
@@ -1149,49 +1167,49 @@ class JpaCertificateRepositoryTest {
 
       assertAll(
           () -> assertEquals(AJLA_DOKTOR, certificate.certificateMetaData().issuer()),
-          () -> assertEquals(ALF_DOKTOR, certificate.certificateMetaData().creator())
-      );
+          () -> assertEquals(ALF_DOKTOR, certificate.certificateMetaData().creator()));
     }
 
     @Test
     void shouldUpdateUnitMetadataFromVersionEntities() {
-      final var certificate = MedicalCertificate.builder()
-          .id(CERTIFICATE_ID)
-          .signed(TIMESTAMP)
-          .certificateMetaData(CERTIFICATE_META_DATA)
-          .build();
+      final var certificate =
+          MedicalCertificate.builder()
+              .id(CERTIFICATE_ID)
+              .signed(TIMESTAMP)
+              .certificateMetaData(CERTIFICATE_META_DATA)
+              .build();
 
-      doReturn(List.of()).when(patientVersionEntityRepository)
-          .findAllByIdIn(any());
+      doReturn(List.of()).when(patientVersionEntityRepository).findAllByIdIn(any());
       doReturn(List.of()).when(staffVersionEntityRepository).findAllByHsaIdIn(any());
-      doReturn(List.of(
-          ALFA_REGIONEN_VERSION_ENTITY,
-          ALFA_MEDICINCENTRUM_VERSION_ENTITY,
-          ALFA_ALLERGIMOTTAGNINGEN_VERSION_ENTITY))
+      doReturn(
+              List.of(
+                  ALFA_REGIONEN_VERSION_ENTITY,
+                  ALFA_MEDICINCENTRUM_VERSION_ENTITY,
+                  ALFA_ALLERGIMOTTAGNINGEN_VERSION_ENTITY))
           .when(unitVersionEntityRepository)
-          .findAllByHsaIdIn(List.of(
-              ALFA_MEDICINCENTRUM_ID, ALFA_REGIONEN_ID, ALFA_ALLERGIMOTTAGNINGEN_ID));
+          .findAllByHsaIdIn(
+              List.of(ALFA_MEDICINCENTRUM_ID, ALFA_REGIONEN_ID, ALFA_ALLERGIMOTTAGNINGEN_ID));
 
       jpaCertificateRepository.updateCertificateMetadataFromSignInstances(List.of(certificate));
 
       assertAll(
           () -> assertEquals(ALFA_REGIONEN, certificate.certificateMetaData().careProvider()),
           () -> assertEquals(ALFA_MEDICINCENTRUM, certificate.certificateMetaData().careUnit()),
-          () -> assertEquals(ALFA_ALLERGIMOTTAGNINGEN,
-              certificate.certificateMetaData().issuingUnit())
-      );
+          () ->
+              assertEquals(
+                  ALFA_ALLERGIMOTTAGNINGEN, certificate.certificateMetaData().issuingUnit()));
     }
 
     @Test
     void shouldDefaultToOriginalMetadataWhenNoVersionFound() {
-      final var certificate = MedicalCertificate.builder()
-          .id(CERTIFICATE_ID)
-          .signed(TIMESTAMP)
-          .certificateMetaData(CERTIFICATE_META_DATA)
-          .build();
+      final var certificate =
+          MedicalCertificate.builder()
+              .id(CERTIFICATE_ID)
+              .signed(TIMESTAMP)
+              .certificateMetaData(CERTIFICATE_META_DATA)
+              .build();
 
-      doReturn(List.of()).when(patientVersionEntityRepository)
-          .findAllByIdIn(any());
+      doReturn(List.of()).when(patientVersionEntityRepository).findAllByIdIn(any());
       doReturn(List.of()).when(staffVersionEntityRepository).findAllByHsaIdIn(any());
       doReturn(List.of()).when(unitVersionEntityRepository).findAllByHsaIdIn(any());
 
@@ -1202,11 +1220,12 @@ class JpaCertificateRepositoryTest {
 
     @Test
     void shouldNotUpdateMetadataForUnsignedCertificate() {
-      final var unsignedCertificate = MedicalCertificate.builder()
-          .id(CERTIFICATE_ID)
-          .signed(null)
-          .certificateMetaData(CERTIFICATE_META_DATA)
-          .build();
+      final var unsignedCertificate =
+          MedicalCertificate.builder()
+              .id(CERTIFICATE_ID)
+              .signed(null)
+              .certificateMetaData(CERTIFICATE_META_DATA)
+              .build();
 
       jpaCertificateRepository.updateCertificateMetadataFromSignInstances(
           List.of(unsignedCertificate));
@@ -1216,54 +1235,58 @@ class JpaCertificateRepositoryTest {
 
     @Test
     void shouldHandleMultipleCertificates() {
-      final var certificate1 = MedicalCertificate.builder()
-          .id(CERTIFICATE_ID)
-          .signed(TIMESTAMP)
-          .certificateMetaData(CERTIFICATE_META_DATA)
-          .build();
+      final var certificate1 =
+          MedicalCertificate.builder()
+              .id(CERTIFICATE_ID)
+              .signed(TIMESTAMP)
+              .certificateMetaData(CERTIFICATE_META_DATA)
+              .build();
 
-      final var certificate2 = MedicalCertificate.builder()
-          .id(new CertificateId("ID2"))
-          .signed(TIMESTAMP)
-          .certificateMetaData(CERTIFICATE_META_DATA)
-          .build();
+      final var certificate2 =
+          MedicalCertificate.builder()
+              .id(new CertificateId("ID2"))
+              .signed(TIMESTAMP)
+              .certificateMetaData(CERTIFICATE_META_DATA)
+              .build();
 
       doReturn(List.of(ATHENA_REACT_ANDERSSON_VERSION_ENTITY))
           .when(patientVersionEntityRepository)
           .findAllByIdIn(any());
       doReturn(List.of(AJLA_DOKTOR_VERSION_ENTITY, ALF_DOKTOR_VERSION_ENTITY))
-          .when(staffVersionEntityRepository).findAllByHsaIdIn(any());
-      doReturn(List.of(
-          ALFA_REGIONEN_VERSION_ENTITY,
-          ALFA_MEDICINCENTRUM_VERSION_ENTITY,
-          ALFA_ALLERGIMOTTAGNINGEN_VERSION_ENTITY))
-          .when(unitVersionEntityRepository).findAllByHsaIdIn(any());
+          .when(staffVersionEntityRepository)
+          .findAllByHsaIdIn(any());
+      doReturn(
+              List.of(
+                  ALFA_REGIONEN_VERSION_ENTITY,
+                  ALFA_MEDICINCENTRUM_VERSION_ENTITY,
+                  ALFA_ALLERGIMOTTAGNINGEN_VERSION_ENTITY))
+          .when(unitVersionEntityRepository)
+          .findAllByHsaIdIn(any());
 
       jpaCertificateRepository.updateCertificateMetadataFromSignInstances(
           List.of(certificate1, certificate2));
 
       assertAll(
           () -> assertNotNull(certificate1.certificateMetaData()),
-          () -> assertNotNull(certificate2.certificateMetaData())
-      );
+          () -> assertNotNull(certificate2.certificateMetaData()));
     }
 
     @Test
     void shouldFilterVersionsBySignedTimestamp() {
-      final var certificate = MedicalCertificate.builder()
-          .id(CERTIFICATE_ID)
-          .signed(TIMESTAMP)
-          .certificateMetaData(CERTIFICATE_META_DATA)
-          .build();
+      final var certificate =
+          MedicalCertificate.builder()
+              .id(CERTIFICATE_ID)
+              .signed(TIMESTAMP)
+              .certificateMetaData(CERTIFICATE_META_DATA)
+              .build();
 
       final var versionEntity =
           athenaReactAnderssonVersionEntityBuilder()
               .validFrom(TIMESTAMP.minusDays(1))
-              .validTo(TIMESTAMP.plusDays(1)).build();
+              .validTo(TIMESTAMP.plusDays(1))
+              .build();
 
-      doReturn(List.of(versionEntity))
-          .when(patientVersionEntityRepository)
-          .findAllByIdIn(any());
+      doReturn(List.of(versionEntity)).when(patientVersionEntityRepository).findAllByIdIn(any());
       doReturn(List.of()).when(staffVersionEntityRepository).findAllByHsaIdIn(any());
       doReturn(List.of()).when(unitVersionEntityRepository).findAllByHsaIdIn(any());
 

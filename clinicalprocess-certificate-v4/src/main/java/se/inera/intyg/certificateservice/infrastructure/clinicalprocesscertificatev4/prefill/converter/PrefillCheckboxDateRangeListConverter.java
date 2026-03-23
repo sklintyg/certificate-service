@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.prefill.converter;
 
 import java.util.ArrayList;
@@ -32,15 +50,15 @@ public class PrefillCheckboxDateRangeListConverter implements PrefillStandardCon
 
   @Override
   public PrefillAnswer prefillAnswer(ElementSpecification specification, Forifyllnad prefill) {
-    if (!(specification.configuration() instanceof ElementConfigurationCheckboxDateRangeList configurationCheckboxDateRangeList)) {
-      return PrefillAnswer.builder()
-          .errors(List.of(PrefillError.wrongConfigurationType()))
-          .build();
+    if (!(specification.configuration()
+        instanceof ElementConfigurationCheckboxDateRangeList configurationCheckboxDateRangeList)) {
+      return PrefillAnswer.builder().errors(List.of(PrefillError.wrongConfigurationType())).build();
     }
 
-    final var answers = prefill.getSvar().stream()
-        .filter(svar -> svar.getId().equals(specification.id().id()))
-        .toList();
+    final var answers =
+        prefill.getSvar().stream()
+            .filter(svar -> svar.getId().equals(specification.id().id()))
+            .toList();
 
     if (answers.isEmpty()) {
       return null;
@@ -48,77 +66,72 @@ public class PrefillCheckboxDateRangeListConverter implements PrefillStandardCon
 
     final var prefillErrors = new ArrayList<PrefillError>();
 
-    final var elementData = ElementData.builder()
-        .id(specification.id())
-        .value(ElementValueDateRangeList.builder()
-            .dateRangeListId(configurationCheckboxDateRangeList.id())
-            .dateRangeList(answers.stream()
-                .map(svar -> {
-                  try {
+    final var elementData =
+        ElementData.builder()
+            .id(specification.id())
+            .value(
+                ElementValueDateRangeList.builder()
+                    .dateRangeListId(configurationCheckboxDateRangeList.id())
+                    .dateRangeList(
+                        answers.stream()
+                            .map(
+                                svar -> {
+                                  try {
 
-                    final var minimumNumberOfDelsvarError = PrefillValidator.validateMinimumNumberOfDelsvar(
-                        answers,
-                        MINIMUM,
-                        specification
-                    );
+                                    final var minimumNumberOfDelsvarError =
+                                        PrefillValidator.validateMinimumNumberOfDelsvar(
+                                            answers, MINIMUM, specification);
 
-                    if (!minimumNumberOfDelsvarError.isEmpty()) {
-                      prefillErrors.addAll(minimumNumberOfDelsvarError);
-                      return null;
-                    }
+                                    if (!minimumNumberOfDelsvarError.isEmpty()) {
+                                      prefillErrors.addAll(minimumNumberOfDelsvarError);
+                                      return null;
+                                    }
 
-                    final var dateContent = getDateContent(svar, specification);
-                    final var datePeriodAnswer = PrefillUnmarshaller.datePeriodType(
-                        dateContent
-                    );
+                                    final var dateContent = getDateContent(svar, specification);
+                                    final var datePeriodAnswer =
+                                        PrefillUnmarshaller.datePeriodType(dateContent);
 
-                    final var code = getCode(svar.getDelsvar(), specification);
-                    final var codeConfiguration = getCodeConfiguration(
-                        configurationCheckboxDateRangeList,
-                        code
-                    );
+                                    final var code = getCode(svar.getDelsvar(), specification);
+                                    final var codeConfiguration =
+                                        getCodeConfiguration(
+                                            configurationCheckboxDateRangeList, code);
 
-                    return DateRange.builder()
-                        .dateRangeId(codeConfiguration.id())
-                        .from(
-                            PrefillUnmarshaller.toLocalDate(
-                                datePeriodAnswer.orElseThrow().getStart())
-                        )
-                        .to(
-                            PrefillUnmarshaller.toLocalDate(
-                                datePeriodAnswer.orElseThrow().getEnd())
-                        )
-                        .build();
-                  } catch (Exception ex) {
-                    prefillErrors.add(PrefillError.invalidFormat(svar.getId(), ex.getMessage()));
-                    return null;
-                  }
-                })
-                .filter(Objects::nonNull)
-                .toList())
-            .build())
-        .build();
+                                    return DateRange.builder()
+                                        .dateRangeId(codeConfiguration.id())
+                                        .from(
+                                            PrefillUnmarshaller.toLocalDate(
+                                                datePeriodAnswer.orElseThrow().getStart()))
+                                        .to(
+                                            PrefillUnmarshaller.toLocalDate(
+                                                datePeriodAnswer.orElseThrow().getEnd()))
+                                        .build();
+                                  } catch (Exception ex) {
+                                    prefillErrors.add(
+                                        PrefillError.invalidFormat(svar.getId(), ex.getMessage()));
+                                    return null;
+                                  }
+                                })
+                            .filter(Objects::nonNull)
+                            .toList())
+                    .build())
+            .build();
 
-    return PrefillAnswer.builder()
-        .elementData(elementData)
-        .errors(prefillErrors)
-        .build();
+    return PrefillAnswer.builder().elementData(elementData).errors(prefillErrors).build();
   }
 
   private ElementConfigurationCode getCodeConfiguration(
-      ElementConfigurationCheckboxDateRangeList configuration,
-      Code code) {
-    return configuration.dateRanges()
-        .stream()
+      ElementConfigurationCheckboxDateRangeList configuration, Code code) {
+    return configuration.dateRanges().stream()
         .filter(d -> d.code().matches(code))
         .findFirst()
         .orElseThrow(() -> new IllegalStateException("Could not find a matching code for " + code));
   }
 
   private Code getCode(List<Delsvar> subAnswers, ElementSpecification specification) {
-    final var subAnswer = subAnswers.stream()
-        .filter(d -> d.getId().equals(specification.id().id() + ".1"))
-        .findFirst();
+    final var subAnswer =
+        subAnswers.stream()
+            .filter(d -> d.getId().equals(specification.id().id() + ".1"))
+            .findFirst();
 
     if (subAnswer.isEmpty()) {
       throw new IllegalStateException("Invalid format: code value is missing");
@@ -135,8 +148,7 @@ public class PrefillCheckboxDateRangeListConverter implements PrefillStandardCon
   }
 
   private static List<Object> getDateContent(Svar answer, ElementSpecification specification) {
-    return answer.getDelsvar()
-        .stream()
+    return answer.getDelsvar().stream()
         .filter(d -> d.getId().equals(specification.id().id() + ".2"))
         .findFirst()
         .orElseThrow()

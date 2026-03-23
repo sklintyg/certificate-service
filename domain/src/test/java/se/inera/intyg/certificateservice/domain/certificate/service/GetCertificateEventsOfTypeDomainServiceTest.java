@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.certificate.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,14 +47,27 @@ class GetCertificateEventsOfTypeDomainServiceTest {
 
   private static final LocalDateTime NOW = LocalDateTime.now();
   private static final CertificateId CERTIFICATE_ID = new CertificateId("C_ID");
-  private final GetCertificateEventsOfTypeDomainService getCertificateEventsOfTypeDomainService = new GetCertificateEventsOfTypeDomainService();
+  private final GetCertificateEventsOfTypeDomainService getCertificateEventsOfTypeDomainService =
+      new GetCertificateEventsOfTypeDomainService();
 
   @ParameterizedTest
-  @EnumSource(value = CertificateEventType.class, names = {"DELETED", "LOCKED", "READY_FOR_SIGN",
-      "INCOMING_MESSAGE_HANDLED", "INCOMING_MESSAGE_REMINDER", "OUTGOING_MESSAGE_HANDLED",
-      "COPIED_BY", "COPIED_FROM", "CREATED_FROM", "RELATED_CERTIFICATE_REVOKED"})
+  @EnumSource(
+      value = CertificateEventType.class,
+      names = {
+        "DELETED",
+        "LOCKED",
+        "READY_FOR_SIGN",
+        "INCOMING_MESSAGE_HANDLED",
+        "INCOMING_MESSAGE_REMINDER",
+        "OUTGOING_MESSAGE_HANDLED",
+        "COPIED_BY",
+        "COPIED_FROM",
+        "CREATED_FROM",
+        "RELATED_CERTIFICATE_REVOKED"
+      })
   void shouldReturnEmptyListForNonHandledEvents(CertificateEventType type) {
-    assertEquals(Collections.emptyList(),
+    assertEquals(
+        Collections.emptyList(),
         getCertificateEventsOfTypeDomainService.events(fk7809CertificateBuilder().build(), type));
   }
 
@@ -47,99 +78,97 @@ class GetCertificateEventsOfTypeDomainServiceTest {
 
     @Test
     void shouldReturnEvent() {
-      final var expected = CertificateEvent.builder()
-          .certificateId(certificate.id())
-          .timestamp(certificate.created())
-          .type(CertificateEventType.CREATED)
-          .build();
+      final var expected =
+          CertificateEvent.builder()
+              .certificateId(certificate.id())
+              .timestamp(certificate.created())
+              .type(CertificateEventType.CREATED)
+              .build();
 
       assertEquals(
           List.of(expected),
-          getCertificateEventsOfTypeDomainService.events(certificate, CertificateEventType.CREATED)
-      );
+          getCertificateEventsOfTypeDomainService.events(
+              certificate, CertificateEventType.CREATED));
     }
 
     @Test
     void shouldNotReturnCreatedEventIfCertificateHasParentRelationReplace() {
-      final var parent = fk7809CertificateBuilder()
-          .id(CERTIFICATE_ID)
-          .build();
-      final var certificate = fk7809CertificateBuilder()
-          .created(LocalDateTime.now())
-          .parent(
-              Relation.builder()
-                  .certificate(parent)
-                  .created(NOW)
-                  .type(RelationType.REPLACE)
-                  .build()
+      final var parent = fk7809CertificateBuilder().id(CERTIFICATE_ID).build();
+      final var certificate =
+          fk7809CertificateBuilder()
+              .created(LocalDateTime.now())
+              .parent(
+                  Relation.builder()
+                      .certificate(parent)
+                      .created(NOW)
+                      .type(RelationType.REPLACE)
+                      .build())
+              .build();
 
-          )
-          .build();
-
-      final var createdEvent = CertificateEvent.builder()
-          .certificateId(certificate.id())
-          .timestamp(certificate.created())
-          .type(CertificateEventType.CREATED)
-          .build();
+      final var createdEvent =
+          CertificateEvent.builder()
+              .certificateId(certificate.id())
+              .timestamp(certificate.created())
+              .type(CertificateEventType.CREATED)
+              .build();
 
       assertFalse(
-          getCertificateEventsOfTypeDomainService.events(certificate, CertificateEventType.CREATED)
+          getCertificateEventsOfTypeDomainService
+              .events(certificate, CertificateEventType.CREATED)
               .contains(createdEvent));
     }
 
     @Test
     void shouldNotReturnCreatedEventIfCertificateHasParentRelationComplement() {
-      final var parent = fk7809CertificateBuilder()
-          .id(CERTIFICATE_ID)
-          .build();
-      final var certificate = fk7809CertificateBuilder()
-          .created(LocalDateTime.now())
-          .parent(
-              Relation.builder()
-                  .certificate(parent)
-                  .created(NOW)
-                  .type(RelationType.COMPLEMENT)
-                  .build()
+      final var parent = fk7809CertificateBuilder().id(CERTIFICATE_ID).build();
+      final var certificate =
+          fk7809CertificateBuilder()
+              .created(LocalDateTime.now())
+              .parent(
+                  Relation.builder()
+                      .certificate(parent)
+                      .created(NOW)
+                      .type(RelationType.COMPLEMENT)
+                      .build())
+              .build();
 
-          )
-          .build();
-
-      final var createdEvent = CertificateEvent.builder()
-          .certificateId(certificate.id())
-          .timestamp(certificate.created())
-          .type(CertificateEventType.CREATED)
-          .build();
+      final var createdEvent =
+          CertificateEvent.builder()
+              .certificateId(certificate.id())
+              .timestamp(certificate.created())
+              .type(CertificateEventType.CREATED)
+              .build();
 
       assertFalse(
-          getCertificateEventsOfTypeDomainService.events(certificate, CertificateEventType.CREATED)
+          getCertificateEventsOfTypeDomainService
+              .events(certificate, CertificateEventType.CREATED)
               .contains(createdEvent));
     }
 
     @Test
     void shouldNotReturnCreatedEventIfCertificateHasParentRelationRenew() {
-      final var parent = fk7809CertificateBuilder()
-          .id(CERTIFICATE_ID)
-          .build();
-      final var certificate = fk7809CertificateBuilder()
-          .created(LocalDateTime.now())
-          .parent(
-              Relation.builder()
-                  .certificate(parent)
-                  .created(NOW)
-                  .type(RelationType.RENEW)
-                  .build()
+      final var parent = fk7809CertificateBuilder().id(CERTIFICATE_ID).build();
+      final var certificate =
+          fk7809CertificateBuilder()
+              .created(LocalDateTime.now())
+              .parent(
+                  Relation.builder()
+                      .certificate(parent)
+                      .created(NOW)
+                      .type(RelationType.RENEW)
+                      .build())
+              .build();
 
-          )
-          .build();
-
-      final var createdEvent = CertificateEvent.builder()
-          .certificateId(certificate.id())
-          .timestamp(certificate.created())
-          .type(CertificateEventType.CREATED)
-          .build();
+      final var createdEvent =
+          CertificateEvent.builder()
+              .certificateId(certificate.id())
+              .timestamp(certificate.created())
+              .type(CertificateEventType.CREATED)
+              .build();
 
       assertFalse(
-          getCertificateEventsOfTypeDomainService.events(certificate, CertificateEventType.CREATED)
+          getCertificateEventsOfTypeDomainService
+              .events(certificate, CertificateEventType.CREATED)
               .contains(createdEvent));
     }
   }
@@ -149,49 +178,41 @@ class GetCertificateEventsOfTypeDomainServiceTest {
 
     @Test
     void shouldReturnEventIfSignedAndAvailableForPatient() {
-      final var certificate = fk7809CertificateBuilder()
-          .signed(NOW)
-          .build();
+      final var certificate = fk7809CertificateBuilder().signed(NOW).build();
 
-      final var expected = CertificateEvent.builder()
-          .certificateId(certificate.id())
-          .timestamp(certificate.signed())
-          .type(CertificateEventType.AVAILABLE_FOR_PATIENT)
-          .build();
+      final var expected =
+          CertificateEvent.builder()
+              .certificateId(certificate.id())
+              .timestamp(certificate.signed())
+              .type(CertificateEventType.AVAILABLE_FOR_PATIENT)
+              .build();
 
       assertEquals(
           List.of(expected),
-          getCertificateEventsOfTypeDomainService.events(certificate,
-              CertificateEventType.AVAILABLE_FOR_PATIENT)
-      );
+          getCertificateEventsOfTypeDomainService.events(
+              certificate, CertificateEventType.AVAILABLE_FOR_PATIENT));
     }
 
     @Test
     void shouldReturnEmptyListIfSignedAndNotAvailableForPatient() {
-      final var certificate = fk7472CertificateBuilder()
-          .signed(NOW)
-          .build();
+      final var certificate = fk7472CertificateBuilder().signed(NOW).build();
 
       assertEquals(
           Collections.emptyList(),
-          getCertificateEventsOfTypeDomainService.events(certificate,
-              CertificateEventType.AVAILABLE_FOR_PATIENT)
-      );
+          getCertificateEventsOfTypeDomainService.events(
+              certificate, CertificateEventType.AVAILABLE_FOR_PATIENT));
     }
 
     @Test
     void shouldReturnEmptyEventIfNotSigned() {
-      final var certificate = fk7809CertificateBuilder()
-          .build();
+      final var certificate = fk7809CertificateBuilder().build();
 
-      final var expected = CertificateEvent.builder()
-          .build();
+      final var expected = CertificateEvent.builder().build();
 
       assertEquals(
           List.of(expected),
-          getCertificateEventsOfTypeDomainService.events(certificate,
-              CertificateEventType.AVAILABLE_FOR_PATIENT)
-      );
+          getCertificateEventsOfTypeDomainService.events(
+              certificate, CertificateEventType.AVAILABLE_FOR_PATIENT));
     }
   }
 
@@ -200,36 +221,29 @@ class GetCertificateEventsOfTypeDomainServiceTest {
 
     @Test
     void shouldReturnEventIfSigned() {
-      final var certificate = fk7809CertificateBuilder()
-          .signed(NOW)
-          .build();
+      final var certificate = fk7809CertificateBuilder().signed(NOW).build();
 
-      final var expected = CertificateEvent.builder()
-          .certificateId(certificate.id())
-          .timestamp(certificate.signed())
-          .type(CertificateEventType.SIGNED)
-          .build();
+      final var expected =
+          CertificateEvent.builder()
+              .certificateId(certificate.id())
+              .timestamp(certificate.signed())
+              .type(CertificateEventType.SIGNED)
+              .build();
 
       assertEquals(
           List.of(expected),
-          getCertificateEventsOfTypeDomainService.events(certificate,
-              CertificateEventType.SIGNED)
-      );
+          getCertificateEventsOfTypeDomainService.events(certificate, CertificateEventType.SIGNED));
     }
 
     @Test
     void shouldReturnEmptyEventIfNotSigned() {
-      final var certificate = fk7809CertificateBuilder()
-          .build();
+      final var certificate = fk7809CertificateBuilder().build();
 
-      final var expected = CertificateEvent.builder()
-          .build();
+      final var expected = CertificateEvent.builder().build();
 
       assertEquals(
           List.of(expected),
-          getCertificateEventsOfTypeDomainService.events(certificate,
-              CertificateEventType.SIGNED)
-      );
+          getCertificateEventsOfTypeDomainService.events(certificate, CertificateEventType.SIGNED));
     }
   }
 
@@ -238,57 +252,39 @@ class GetCertificateEventsOfTypeDomainServiceTest {
 
     @Test
     void shouldReturnEventIfSent() {
-      final var certificate = fk7809CertificateBuilder()
-          .sent(
-              Sent.builder()
-                  .sentAt(NOW)
-                  .build()
-          )
-          .build();
+      final var certificate =
+          fk7809CertificateBuilder().sent(Sent.builder().sentAt(NOW).build()).build();
 
-      final var expected = CertificateEvent.builder()
-          .certificateId(certificate.id())
-          .timestamp(NOW)
-          .type(CertificateEventType.SENT)
-          .build();
+      final var expected =
+          CertificateEvent.builder()
+              .certificateId(certificate.id())
+              .timestamp(NOW)
+              .type(CertificateEventType.SENT)
+              .build();
 
       assertEquals(
           List.of(expected),
-          getCertificateEventsOfTypeDomainService.events(certificate,
-              CertificateEventType.SENT)
-      );
+          getCertificateEventsOfTypeDomainService.events(certificate, CertificateEventType.SENT));
     }
 
     @Test
     void shouldReturnEmptyListIfNotSent() {
-      final var certificate = fk7809CertificateBuilder()
-          .sent(null)
-          .build();
+      final var certificate = fk7809CertificateBuilder().sent(null).build();
 
       assertEquals(
           Collections.emptyList(),
-          getCertificateEventsOfTypeDomainService.events(certificate,
-              CertificateEventType.SENT)
-      );
+          getCertificateEventsOfTypeDomainService.events(certificate, CertificateEventType.SENT));
     }
 
     @Test
     void shouldReturnEmptyEventIfNotSentTimestamp() {
-      final var certificate = fk7809CertificateBuilder()
-          .sent(
-              Sent.builder()
-                  .build()
-          )
-          .build();
+      final var certificate = fk7809CertificateBuilder().sent(Sent.builder().build()).build();
 
-      final var expected = CertificateEvent.builder()
-          .build();
+      final var expected = CertificateEvent.builder().build();
 
       assertEquals(
           List.of(expected),
-          getCertificateEventsOfTypeDomainService.events(certificate,
-              CertificateEventType.SENT)
-      );
+          getCertificateEventsOfTypeDomainService.events(certificate, CertificateEventType.SENT));
     }
   }
 
@@ -297,77 +293,67 @@ class GetCertificateEventsOfTypeDomainServiceTest {
 
     @Test
     void shouldReturnEventIfComplementRequestFromFK() {
-      final var certificate = fk7809CertificateBuilder()
-          .messages(
-              List.of(
-                  Message.builder()
-                      .complements(List.of(Complement.builder().build()))
-                      .sent(NOW)
-                      .build()
-              )
-          )
-          .build();
+      final var certificate =
+          fk7809CertificateBuilder()
+              .messages(
+                  List.of(
+                      Message.builder()
+                          .complements(List.of(Complement.builder().build()))
+                          .sent(NOW)
+                          .build()))
+              .build();
 
-      final var expected = CertificateEvent.builder()
-          .certificateId(certificate.id())
-          .timestamp(NOW)
-          .type(CertificateEventType.REQUEST_FOR_COMPLEMENT)
-          .build();
+      final var expected =
+          CertificateEvent.builder()
+              .certificateId(certificate.id())
+              .timestamp(NOW)
+              .type(CertificateEventType.REQUEST_FOR_COMPLEMENT)
+              .build();
 
       assertEquals(
           List.of(expected),
-          getCertificateEventsOfTypeDomainService.events(certificate,
-              CertificateEventType.REQUEST_FOR_COMPLEMENT)
-      );
+          getCertificateEventsOfTypeDomainService.events(
+              certificate, CertificateEventType.REQUEST_FOR_COMPLEMENT));
     }
 
     @Test
     void shouldReturnSeveralEventsIfComplementRequestFromFKOnSeveralMessages() {
-      final var certificate = fk7809CertificateBuilder()
-          .messages(
-              List.of(
-                  Message.builder()
-                      .complements(List.of(Complement.builder().build()))
-                      .sent(NOW)
-                      .build(),
-                  Message.builder()
-                      .complements(List.of(Complement.builder().build()))
-                      .sent(NOW)
-                      .build()
-              )
-          )
-          .build();
+      final var certificate =
+          fk7809CertificateBuilder()
+              .messages(
+                  List.of(
+                      Message.builder()
+                          .complements(List.of(Complement.builder().build()))
+                          .sent(NOW)
+                          .build(),
+                      Message.builder()
+                          .complements(List.of(Complement.builder().build()))
+                          .sent(NOW)
+                          .build()))
+              .build();
 
-      final var expected = CertificateEvent.builder()
-          .certificateId(certificate.id())
-          .timestamp(NOW)
-          .type(CertificateEventType.REQUEST_FOR_COMPLEMENT)
-          .build();
+      final var expected =
+          CertificateEvent.builder()
+              .certificateId(certificate.id())
+              .timestamp(NOW)
+              .type(CertificateEventType.REQUEST_FOR_COMPLEMENT)
+              .build();
 
       assertEquals(
           List.of(expected, expected),
-          getCertificateEventsOfTypeDomainService.events(certificate,
-              CertificateEventType.REQUEST_FOR_COMPLEMENT)
-      );
+          getCertificateEventsOfTypeDomainService.events(
+              certificate, CertificateEventType.REQUEST_FOR_COMPLEMENT));
     }
 
     @Test
     void shouldReturnEmptyListIfNoComplementRequests() {
-      final var certificate = fk7809CertificateBuilder()
-          .messages(
-              List.of(
-                  Message.builder()
-                      .sent(NOW)
-                      .build()
-              )
-          )
-          .build();
+      final var certificate =
+          fk7809CertificateBuilder().messages(List.of(Message.builder().sent(NOW).build())).build();
 
       assertEquals(
           Collections.emptyList(),
-          getCertificateEventsOfTypeDomainService.events(certificate,
-              CertificateEventType.REQUEST_FOR_COMPLEMENT)
-      );
+          getCertificateEventsOfTypeDomainService.events(
+              certificate, CertificateEventType.REQUEST_FOR_COMPLEMENT));
     }
   }
 
@@ -376,57 +362,42 @@ class GetCertificateEventsOfTypeDomainServiceTest {
 
     @Test
     void shouldReturnEventIfRevoked() {
-      final var certificate = fk7809CertificateBuilder()
-          .revoked(
-              Revoked.builder()
-                  .revokedAt(NOW)
-                  .build()
-          )
-          .build();
+      final var certificate =
+          fk7809CertificateBuilder().revoked(Revoked.builder().revokedAt(NOW).build()).build();
 
-      final var expected = CertificateEvent.builder()
-          .certificateId(certificate.id())
-          .timestamp(NOW)
-          .type(CertificateEventType.REVOKED)
-          .build();
+      final var expected =
+          CertificateEvent.builder()
+              .certificateId(certificate.id())
+              .timestamp(NOW)
+              .type(CertificateEventType.REVOKED)
+              .build();
 
       assertEquals(
           List.of(expected),
-          getCertificateEventsOfTypeDomainService.events(certificate,
-              CertificateEventType.REVOKED)
-      );
+          getCertificateEventsOfTypeDomainService.events(
+              certificate, CertificateEventType.REVOKED));
     }
 
     @Test
     void shouldReturnEmptyListIfNotSent() {
-      final var certificate = fk7809CertificateBuilder()
-          .revoked(null)
-          .build();
+      final var certificate = fk7809CertificateBuilder().revoked(null).build();
 
       assertEquals(
           Collections.emptyList(),
-          getCertificateEventsOfTypeDomainService.events(certificate,
-              CertificateEventType.REVOKED)
-      );
+          getCertificateEventsOfTypeDomainService.events(
+              certificate, CertificateEventType.REVOKED));
     }
 
     @Test
     void shouldReturnEmptyEventIfNotRevokedTimestamp() {
-      final var certificate = fk7809CertificateBuilder()
-          .revoked(
-              Revoked.builder()
-                  .build()
-          )
-          .build();
+      final var certificate = fk7809CertificateBuilder().revoked(Revoked.builder().build()).build();
 
-      final var expected = CertificateEvent.builder()
-          .build();
+      final var expected = CertificateEvent.builder().build();
 
       assertEquals(
           List.of(expected),
-          getCertificateEventsOfTypeDomainService.events(certificate,
-              CertificateEventType.REVOKED)
-      );
+          getCertificateEventsOfTypeDomainService.events(
+              certificate, CertificateEventType.REVOKED));
     }
   }
 
@@ -437,43 +408,40 @@ class GetCertificateEventsOfTypeDomainServiceTest {
 
     @Test
     void shouldReturnEventIfParentRelationExists() {
-      final var parent = fk7809CertificateBuilder()
-          .id(CERTIFICATE_ID)
-          .build();
-      final var certificate = fk7809CertificateBuilder()
-          .parent(
-              Relation.builder()
-                  .certificate(parent)
-                  .created(NOW)
-                  .type(RelationType.RENEW)
-                  .build()
-          )
-          .build();
+      final var parent = fk7809CertificateBuilder().id(CERTIFICATE_ID).build();
+      final var certificate =
+          fk7809CertificateBuilder()
+              .parent(
+                  Relation.builder()
+                      .certificate(parent)
+                      .created(NOW)
+                      .type(RelationType.RENEW)
+                      .build())
+              .build();
 
-      final var expected = CertificateEvent.builder()
-          .certificateId(certificate.id())
-          .timestamp(NOW)
-          .type(CertificateEventType.EXTENDED)
-          .relatedCertificateId(parent.id())
-          .relatedCertificateStatus(parent.status())
-          .build();
+      final var expected =
+          CertificateEvent.builder()
+              .certificateId(certificate.id())
+              .timestamp(NOW)
+              .type(CertificateEventType.EXTENDED)
+              .relatedCertificateId(parent.id())
+              .relatedCertificateStatus(parent.status())
+              .build();
 
       assertEquals(
           List.of(expected),
-          getCertificateEventsOfTypeDomainService.events(certificate, CertificateEventType.EXTENDED)
-      );
+          getCertificateEventsOfTypeDomainService.events(
+              certificate, CertificateEventType.EXTENDED));
     }
 
     @Test
     void shouldReturnEmptyListIfNoParentRelation() {
-      final var certificate = fk7809CertificateBuilder()
-          .build();
+      final var certificate = fk7809CertificateBuilder().build();
 
       assertEquals(
           Collections.emptyList(),
-          getCertificateEventsOfTypeDomainService.events(certificate,
-              CertificateEventType.EXTENDED)
-      );
+          getCertificateEventsOfTypeDomainService.events(
+              certificate, CertificateEventType.EXTENDED));
     }
   }
 
@@ -482,88 +450,80 @@ class GetCertificateEventsOfTypeDomainServiceTest {
 
     @Test
     void shouldReturnEventIfChildRelationExists() {
-      final var child = fk7809CertificateBuilder()
-          .id(CERTIFICATE_ID)
-          .build();
-      final var certificate = fk7809CertificateBuilder()
-          .children(
-              List.of(
-                  Relation.builder()
-                      .certificate(child)
-                      .created(NOW)
-                      .type(RelationType.COMPLEMENT)
-                      .build()
-              )
-          )
-          .build();
+      final var child = fk7809CertificateBuilder().id(CERTIFICATE_ID).build();
+      final var certificate =
+          fk7809CertificateBuilder()
+              .children(
+                  List.of(
+                      Relation.builder()
+                          .certificate(child)
+                          .created(NOW)
+                          .type(RelationType.COMPLEMENT)
+                          .build()))
+              .build();
 
-      final var expected = CertificateEvent.builder()
-          .certificateId(certificate.id())
-          .timestamp(NOW)
-          .type(CertificateEventType.COMPLEMENTED)
-          .relatedCertificateId(child.id())
-          .relatedCertificateStatus(child.status())
-          .build();
+      final var expected =
+          CertificateEvent.builder()
+              .certificateId(certificate.id())
+              .timestamp(NOW)
+              .type(CertificateEventType.COMPLEMENTED)
+              .relatedCertificateId(child.id())
+              .relatedCertificateStatus(child.status())
+              .build();
 
       assertEquals(
           List.of(expected),
-          getCertificateEventsOfTypeDomainService.events(certificate,
-              CertificateEventType.COMPLEMENTED)
-      );
+          getCertificateEventsOfTypeDomainService.events(
+              certificate, CertificateEventType.COMPLEMENTED));
     }
 
     @Test
     void shouldReturnEventIfSeveralChildRelationsExists() {
-      final var child = fk7809CertificateBuilder()
-          .id(CERTIFICATE_ID)
-          .build();
-      final var certificate = fk7809CertificateBuilder()
-          .children(
-              List.of(
-                  Relation.builder()
-                      .certificate(child)
-                      .created(NOW)
-                      .type(RelationType.COMPLEMENT)
-                      .build(),
-                  Relation.builder()
-                      .certificate(child)
-                      .created(NOW)
-                      .type(RelationType.RENEW)
-                      .build(),
-                  Relation.builder()
-                      .certificate(child)
-                      .created(NOW)
-                      .type(RelationType.COMPLEMENT)
-                      .build()
-              )
-          )
-          .build();
+      final var child = fk7809CertificateBuilder().id(CERTIFICATE_ID).build();
+      final var certificate =
+          fk7809CertificateBuilder()
+              .children(
+                  List.of(
+                      Relation.builder()
+                          .certificate(child)
+                          .created(NOW)
+                          .type(RelationType.COMPLEMENT)
+                          .build(),
+                      Relation.builder()
+                          .certificate(child)
+                          .created(NOW)
+                          .type(RelationType.RENEW)
+                          .build(),
+                      Relation.builder()
+                          .certificate(child)
+                          .created(NOW)
+                          .type(RelationType.COMPLEMENT)
+                          .build()))
+              .build();
 
-      final var expected = CertificateEvent.builder()
-          .certificateId(certificate.id())
-          .timestamp(NOW)
-          .type(CertificateEventType.COMPLEMENTED)
-          .relatedCertificateId(child.id())
-          .relatedCertificateStatus(child.status())
-          .build();
+      final var expected =
+          CertificateEvent.builder()
+              .certificateId(certificate.id())
+              .timestamp(NOW)
+              .type(CertificateEventType.COMPLEMENTED)
+              .relatedCertificateId(child.id())
+              .relatedCertificateStatus(child.status())
+              .build();
 
       assertEquals(
           List.of(expected, expected),
-          getCertificateEventsOfTypeDomainService.events(certificate,
-              CertificateEventType.COMPLEMENTED)
-      );
+          getCertificateEventsOfTypeDomainService.events(
+              certificate, CertificateEventType.COMPLEMENTED));
     }
 
     @Test
     void shouldReturnEmptyListIfNoChildRelation() {
-      final var certificate = fk7809CertificateBuilder()
-          .build();
+      final var certificate = fk7809CertificateBuilder().build();
 
       assertEquals(
           Collections.emptyList(),
-          getCertificateEventsOfTypeDomainService.events(certificate,
-              CertificateEventType.COMPLEMENTED)
-      );
+          getCertificateEventsOfTypeDomainService.events(
+              certificate, CertificateEventType.COMPLEMENTED));
     }
   }
 
@@ -572,86 +532,80 @@ class GetCertificateEventsOfTypeDomainServiceTest {
 
     @Test
     void shouldReturnEventIfChildRelationExists() {
-      final var child = fk7809CertificateBuilder()
-          .id(CERTIFICATE_ID)
-          .build();
-      final var certificate = fk7809CertificateBuilder()
-          .children(
-              List.of(
-                  Relation.builder()
-                      .certificate(child)
-                      .created(NOW)
-                      .type(RelationType.REPLACE)
-                      .build()
-              )
-          )
-          .build();
+      final var child = fk7809CertificateBuilder().id(CERTIFICATE_ID).build();
+      final var certificate =
+          fk7809CertificateBuilder()
+              .children(
+                  List.of(
+                      Relation.builder()
+                          .certificate(child)
+                          .created(NOW)
+                          .type(RelationType.REPLACE)
+                          .build()))
+              .build();
 
-      final var expected = CertificateEvent.builder()
-          .certificateId(certificate.id())
-          .timestamp(NOW)
-          .type(CertificateEventType.REPLACED)
-          .relatedCertificateId(child.id())
-          .relatedCertificateStatus(child.status())
-          .build();
+      final var expected =
+          CertificateEvent.builder()
+              .certificateId(certificate.id())
+              .timestamp(NOW)
+              .type(CertificateEventType.REPLACED)
+              .relatedCertificateId(child.id())
+              .relatedCertificateStatus(child.status())
+              .build();
 
       assertEquals(
           List.of(expected),
-          getCertificateEventsOfTypeDomainService.events(certificate, CertificateEventType.REPLACED)
-      );
+          getCertificateEventsOfTypeDomainService.events(
+              certificate, CertificateEventType.REPLACED));
     }
 
     @Test
     void shouldReturnEventIfSeveralChildRelationsExists() {
-      final var child = fk7809CertificateBuilder()
-          .id(CERTIFICATE_ID)
-          .build();
-      final var certificate = fk7809CertificateBuilder()
-          .children(
-              List.of(
-                  Relation.builder()
-                      .certificate(child)
-                      .created(NOW)
-                      .type(RelationType.REPLACE)
-                      .build(),
-                  Relation.builder()
-                      .certificate(child)
-                      .created(NOW)
-                      .type(RelationType.REPLACE)
-                      .build(),
-                  Relation.builder()
-                      .certificate(child)
-                      .created(NOW)
-                      .type(RelationType.COMPLEMENT)
-                      .build()
-              )
-          )
-          .build();
+      final var child = fk7809CertificateBuilder().id(CERTIFICATE_ID).build();
+      final var certificate =
+          fk7809CertificateBuilder()
+              .children(
+                  List.of(
+                      Relation.builder()
+                          .certificate(child)
+                          .created(NOW)
+                          .type(RelationType.REPLACE)
+                          .build(),
+                      Relation.builder()
+                          .certificate(child)
+                          .created(NOW)
+                          .type(RelationType.REPLACE)
+                          .build(),
+                      Relation.builder()
+                          .certificate(child)
+                          .created(NOW)
+                          .type(RelationType.COMPLEMENT)
+                          .build()))
+              .build();
 
-      final var expected = CertificateEvent.builder()
-          .certificateId(certificate.id())
-          .timestamp(NOW)
-          .type(CertificateEventType.REPLACED)
-          .relatedCertificateId(child.id())
-          .relatedCertificateStatus(child.status())
-          .build();
+      final var expected =
+          CertificateEvent.builder()
+              .certificateId(certificate.id())
+              .timestamp(NOW)
+              .type(CertificateEventType.REPLACED)
+              .relatedCertificateId(child.id())
+              .relatedCertificateStatus(child.status())
+              .build();
 
       assertEquals(
           List.of(expected, expected),
-          getCertificateEventsOfTypeDomainService.events(certificate, CertificateEventType.REPLACED)
-      );
+          getCertificateEventsOfTypeDomainService.events(
+              certificate, CertificateEventType.REPLACED));
     }
 
     @Test
     void shouldReturnEmptyListIfNoChildRelation() {
-      final var certificate = fk7809CertificateBuilder()
-          .build();
+      final var certificate = fk7809CertificateBuilder().build();
 
       assertEquals(
           Collections.emptyList(),
-          getCertificateEventsOfTypeDomainService.events(certificate,
-              CertificateEventType.REPLACED)
-      );
+          getCertificateEventsOfTypeDomainService.events(
+              certificate, CertificateEventType.REPLACED));
     }
   }
 
@@ -660,65 +614,59 @@ class GetCertificateEventsOfTypeDomainServiceTest {
 
     @Test
     void shouldReturnEventIfParentRelationExists() {
-      final var parent = fk7809CertificateBuilder()
-          .id(CERTIFICATE_ID)
-          .build();
-      final var certificate = fk7809CertificateBuilder()
-          .parent(
-              Relation.builder()
-                  .certificate(parent)
-                  .created(NOW)
-                  .type(RelationType.REPLACE)
-                  .build()
-          )
-          .build();
+      final var parent = fk7809CertificateBuilder().id(CERTIFICATE_ID).build();
+      final var certificate =
+          fk7809CertificateBuilder()
+              .parent(
+                  Relation.builder()
+                      .certificate(parent)
+                      .created(NOW)
+                      .type(RelationType.REPLACE)
+                      .build())
+              .build();
 
-      final var expected = CertificateEvent.builder()
-          .certificateId(certificate.id())
-          .timestamp(NOW)
-          .type(CertificateEventType.REPLACES)
-          .relatedCertificateId(parent.id())
-          .relatedCertificateStatus(parent.status())
-          .build();
+      final var expected =
+          CertificateEvent.builder()
+              .certificateId(certificate.id())
+              .timestamp(NOW)
+              .type(CertificateEventType.REPLACES)
+              .relatedCertificateId(parent.id())
+              .relatedCertificateStatus(parent.status())
+              .build();
 
       assertEquals(
           List.of(expected),
-          getCertificateEventsOfTypeDomainService.events(certificate, CertificateEventType.REPLACES)
-      );
+          getCertificateEventsOfTypeDomainService.events(
+              certificate, CertificateEventType.REPLACES));
     }
 
     @Test
     void shouldReturnEmptyListIfWrongParentRelation() {
-      final var parent = fk7809CertificateBuilder()
-          .id(CERTIFICATE_ID)
-          .build();
-      final var certificate = fk7809CertificateBuilder()
-          .parent(
-              Relation.builder()
-                  .certificate(parent)
-                  .created(NOW)
-                  .type(RelationType.COMPLEMENT)
-                  .build()
-          )
-          .build();
+      final var parent = fk7809CertificateBuilder().id(CERTIFICATE_ID).build();
+      final var certificate =
+          fk7809CertificateBuilder()
+              .parent(
+                  Relation.builder()
+                      .certificate(parent)
+                      .created(NOW)
+                      .type(RelationType.COMPLEMENT)
+                      .build())
+              .build();
 
       assertEquals(
           Collections.emptyList(),
-          getCertificateEventsOfTypeDomainService.events(certificate,
-              CertificateEventType.REPLACES)
-      );
+          getCertificateEventsOfTypeDomainService.events(
+              certificate, CertificateEventType.REPLACES));
     }
 
     @Test
     void shouldReturnEmptyListIfNoParentRelation() {
-      final var certificate = fk7809CertificateBuilder()
-          .build();
+      final var certificate = fk7809CertificateBuilder().build();
 
       assertEquals(
           Collections.emptyList(),
-          getCertificateEventsOfTypeDomainService.events(certificate,
-              CertificateEventType.REPLACES)
-      );
+          getCertificateEventsOfTypeDomainService.events(
+              certificate, CertificateEventType.REPLACES));
     }
   }
 
@@ -727,66 +675,59 @@ class GetCertificateEventsOfTypeDomainServiceTest {
 
     @Test
     void shouldReturnEventIfParentRelationExists() {
-      final var parent = fk7809CertificateBuilder()
-          .id(CERTIFICATE_ID)
-          .build();
-      final var certificate = fk7809CertificateBuilder()
-          .parent(
-              Relation.builder()
-                  .certificate(parent)
-                  .created(NOW)
-                  .type(RelationType.COMPLEMENT)
-                  .build()
-          )
-          .build();
+      final var parent = fk7809CertificateBuilder().id(CERTIFICATE_ID).build();
+      final var certificate =
+          fk7809CertificateBuilder()
+              .parent(
+                  Relation.builder()
+                      .certificate(parent)
+                      .created(NOW)
+                      .type(RelationType.COMPLEMENT)
+                      .build())
+              .build();
 
-      final var expected = CertificateEvent.builder()
-          .certificateId(certificate.id())
-          .timestamp(NOW)
-          .type(CertificateEventType.COMPLEMENTS)
-          .relatedCertificateId(parent.id())
-          .relatedCertificateStatus(parent.status())
-          .build();
+      final var expected =
+          CertificateEvent.builder()
+              .certificateId(certificate.id())
+              .timestamp(NOW)
+              .type(CertificateEventType.COMPLEMENTS)
+              .relatedCertificateId(parent.id())
+              .relatedCertificateStatus(parent.status())
+              .build();
 
       assertEquals(
           List.of(expected),
-          getCertificateEventsOfTypeDomainService.events(certificate,
-              CertificateEventType.COMPLEMENTS)
-      );
+          getCertificateEventsOfTypeDomainService.events(
+              certificate, CertificateEventType.COMPLEMENTS));
     }
 
     @Test
     void shouldReturnEmptyListIfWrongParentRelation() {
-      final var parent = fk7809CertificateBuilder()
-          .id(CERTIFICATE_ID)
-          .build();
-      final var certificate = fk7809CertificateBuilder()
-          .parent(
-              Relation.builder()
-                  .certificate(parent)
-                  .created(NOW)
-                  .type(RelationType.REPLACE)
-                  .build()
-          )
-          .build();
+      final var parent = fk7809CertificateBuilder().id(CERTIFICATE_ID).build();
+      final var certificate =
+          fk7809CertificateBuilder()
+              .parent(
+                  Relation.builder()
+                      .certificate(parent)
+                      .created(NOW)
+                      .type(RelationType.REPLACE)
+                      .build())
+              .build();
 
       assertEquals(
           Collections.emptyList(),
-          getCertificateEventsOfTypeDomainService.events(certificate,
-              CertificateEventType.COMPLEMENTS)
-      );
+          getCertificateEventsOfTypeDomainService.events(
+              certificate, CertificateEventType.COMPLEMENTS));
     }
 
     @Test
     void shouldReturnEmptyListIfNoParentRelation() {
-      final var certificate = fk7809CertificateBuilder()
-          .build();
+      final var certificate = fk7809CertificateBuilder().build();
 
       assertEquals(
           Collections.emptyList(),
-          getCertificateEventsOfTypeDomainService.events(certificate,
-              CertificateEventType.COMPLEMENTS)
-      );
+          getCertificateEventsOfTypeDomainService.events(
+              certificate, CertificateEventType.COMPLEMENTS));
     }
   }
 
@@ -795,103 +736,97 @@ class GetCertificateEventsOfTypeDomainServiceTest {
 
     @Test
     void shouldReturnEventIfMessageFromFK() {
-      final var certificate = fk7809CertificateBuilder()
-          .messages(
-              List.of(
-                  Message.builder()
-                      .type(MessageType.CONTACT)
-                      .author(new Author("FK"))
-                      .sent(NOW)
-                      .build()
-              )
-          )
-          .build();
+      final var certificate =
+          fk7809CertificateBuilder()
+              .messages(
+                  List.of(
+                      Message.builder()
+                          .type(MessageType.CONTACT)
+                          .author(new Author("FK"))
+                          .sent(NOW)
+                          .build()))
+              .build();
 
-      final var expected = CertificateEvent.builder()
-          .certificateId(certificate.id())
-          .timestamp(NOW)
-          .type(CertificateEventType.INCOMING_MESSAGE)
-          .build();
+      final var expected =
+          CertificateEvent.builder()
+              .certificateId(certificate.id())
+              .timestamp(NOW)
+              .type(CertificateEventType.INCOMING_MESSAGE)
+              .build();
 
       assertEquals(
           List.of(expected),
-          getCertificateEventsOfTypeDomainService.events(certificate,
-              CertificateEventType.INCOMING_MESSAGE)
-      );
+          getCertificateEventsOfTypeDomainService.events(
+              certificate, CertificateEventType.INCOMING_MESSAGE));
     }
 
     @Test
     void shouldReturnSeveralEventsIfMessagesFromFK() {
-      final var certificate = fk7809CertificateBuilder()
-          .messages(
-              List.of(
-                  Message.builder()
-                      .type(MessageType.CONTACT)
-                      .author(new Author("FK"))
-                      .sent(NOW)
-                      .build(),
-                  Message.builder()
-                      .type(MessageType.OTHER)
-                      .author(new Author("FK"))
-                      .sent(NOW)
-                      .build()
-              )
-          )
-          .build();
+      final var certificate =
+          fk7809CertificateBuilder()
+              .messages(
+                  List.of(
+                      Message.builder()
+                          .type(MessageType.CONTACT)
+                          .author(new Author("FK"))
+                          .sent(NOW)
+                          .build(),
+                      Message.builder()
+                          .type(MessageType.OTHER)
+                          .author(new Author("FK"))
+                          .sent(NOW)
+                          .build()))
+              .build();
 
-      final var expected = CertificateEvent.builder()
-          .certificateId(certificate.id())
-          .timestamp(NOW)
-          .type(CertificateEventType.INCOMING_MESSAGE)
-          .build();
+      final var expected =
+          CertificateEvent.builder()
+              .certificateId(certificate.id())
+              .timestamp(NOW)
+              .type(CertificateEventType.INCOMING_MESSAGE)
+              .build();
 
       assertEquals(
           List.of(expected, expected),
-          getCertificateEventsOfTypeDomainService.events(certificate,
-              CertificateEventType.INCOMING_MESSAGE)
-      );
+          getCertificateEventsOfTypeDomainService.events(
+              certificate, CertificateEventType.INCOMING_MESSAGE));
     }
 
     @Test
     void shouldReturnEmptyListIfNoMessageFromFK() {
-      final var certificate = fk7809CertificateBuilder()
-          .messages(
-              List.of(
-                  Message.builder()
-                      .type(MessageType.OTHER)
-                      .author(new Author("WC"))
-                      .sent(NOW)
-                      .build()
-              )
-          )
-          .build();
+      final var certificate =
+          fk7809CertificateBuilder()
+              .messages(
+                  List.of(
+                      Message.builder()
+                          .type(MessageType.OTHER)
+                          .author(new Author("WC"))
+                          .sent(NOW)
+                          .build()))
+              .build();
 
       assertEquals(
           Collections.emptyList(),
-          getCertificateEventsOfTypeDomainService.events(certificate,
-              CertificateEventType.INCOMING_MESSAGE)
-      );
+          getCertificateEventsOfTypeDomainService.events(
+              certificate, CertificateEventType.INCOMING_MESSAGE));
     }
 
     @Test
     void shouldReturnEmptyListIfNoMessageOfCorrectType() {
-      final var certificate = fk7809CertificateBuilder()
-          .messages(
-              List.of(
-                  Message.builder()
-                      .type(MessageType.COMPLEMENT)
-                      .author(new Author("FK"))
-                      .sent(NOW)
-                      .build()
-              )
-          )
-          .build();
+      final var certificate =
+          fk7809CertificateBuilder()
+              .messages(
+                  List.of(
+                      Message.builder()
+                          .type(MessageType.COMPLEMENT)
+                          .author(new Author("FK"))
+                          .sent(NOW)
+                          .build()))
+              .build();
 
       assertEquals(
           Collections.emptyList(),
-          getCertificateEventsOfTypeDomainService.events(certificate,
-              CertificateEventType.INCOMING_MESSAGE)
-      );
+          getCertificateEventsOfTypeDomainService.events(
+              certificate, CertificateEventType.INCOMING_MESSAGE));
     }
   }
 
@@ -900,103 +835,97 @@ class GetCertificateEventsOfTypeDomainServiceTest {
 
     @Test
     void shouldReturnEventIfMessageFromWC() {
-      final var certificate = fk7809CertificateBuilder()
-          .messages(
-              List.of(
-                  Message.builder()
-                      .type(MessageType.CONTACT)
-                      .author(new Author("WC"))
-                      .sent(NOW)
-                      .build()
-              )
-          )
-          .build();
+      final var certificate =
+          fk7809CertificateBuilder()
+              .messages(
+                  List.of(
+                      Message.builder()
+                          .type(MessageType.CONTACT)
+                          .author(new Author("WC"))
+                          .sent(NOW)
+                          .build()))
+              .build();
 
-      final var expected = CertificateEvent.builder()
-          .certificateId(certificate.id())
-          .timestamp(NOW)
-          .type(CertificateEventType.OUTGOING_MESSAGE)
-          .build();
+      final var expected =
+          CertificateEvent.builder()
+              .certificateId(certificate.id())
+              .timestamp(NOW)
+              .type(CertificateEventType.OUTGOING_MESSAGE)
+              .build();
 
       assertEquals(
           List.of(expected),
-          getCertificateEventsOfTypeDomainService.events(certificate,
-              CertificateEventType.OUTGOING_MESSAGE)
-      );
+          getCertificateEventsOfTypeDomainService.events(
+              certificate, CertificateEventType.OUTGOING_MESSAGE));
     }
 
     @Test
     void shouldReturnSeveralEventsIfMessagesFromWC() {
-      final var certificate = fk7809CertificateBuilder()
-          .messages(
-              List.of(
-                  Message.builder()
-                      .type(MessageType.CONTACT)
-                      .author(new Author("WC"))
-                      .sent(NOW)
-                      .build(),
-                  Message.builder()
-                      .type(MessageType.OTHER)
-                      .author(new Author("WC"))
-                      .sent(NOW)
-                      .build()
-              )
-          )
-          .build();
+      final var certificate =
+          fk7809CertificateBuilder()
+              .messages(
+                  List.of(
+                      Message.builder()
+                          .type(MessageType.CONTACT)
+                          .author(new Author("WC"))
+                          .sent(NOW)
+                          .build(),
+                      Message.builder()
+                          .type(MessageType.OTHER)
+                          .author(new Author("WC"))
+                          .sent(NOW)
+                          .build()))
+              .build();
 
-      final var expected = CertificateEvent.builder()
-          .certificateId(certificate.id())
-          .timestamp(NOW)
-          .type(CertificateEventType.OUTGOING_MESSAGE)
-          .build();
+      final var expected =
+          CertificateEvent.builder()
+              .certificateId(certificate.id())
+              .timestamp(NOW)
+              .type(CertificateEventType.OUTGOING_MESSAGE)
+              .build();
 
       assertEquals(
           List.of(expected, expected),
-          getCertificateEventsOfTypeDomainService.events(certificate,
-              CertificateEventType.OUTGOING_MESSAGE)
-      );
+          getCertificateEventsOfTypeDomainService.events(
+              certificate, CertificateEventType.OUTGOING_MESSAGE));
     }
 
     @Test
     void shouldReturnEmptyListIfNoMessageFromWC() {
-      final var certificate = fk7809CertificateBuilder()
-          .messages(
-              List.of(
-                  Message.builder()
-                      .type(MessageType.OTHER)
-                      .author(new Author("FK"))
-                      .sent(NOW)
-                      .build()
-              )
-          )
-          .build();
+      final var certificate =
+          fk7809CertificateBuilder()
+              .messages(
+                  List.of(
+                      Message.builder()
+                          .type(MessageType.OTHER)
+                          .author(new Author("FK"))
+                          .sent(NOW)
+                          .build()))
+              .build();
 
       assertEquals(
           Collections.emptyList(),
-          getCertificateEventsOfTypeDomainService.events(certificate,
-              CertificateEventType.OUTGOING_MESSAGE)
-      );
+          getCertificateEventsOfTypeDomainService.events(
+              certificate, CertificateEventType.OUTGOING_MESSAGE));
     }
 
     @Test
     void shouldReturnEmptyListIfNoMessageOfCorrectType() {
-      final var certificate = fk7809CertificateBuilder()
-          .messages(
-              List.of(
-                  Message.builder()
-                      .type(MessageType.COMPLEMENT)
-                      .author(new Author("WC"))
-                      .sent(NOW)
-                      .build()
-              )
-          )
-          .build();
+      final var certificate =
+          fk7809CertificateBuilder()
+              .messages(
+                  List.of(
+                      Message.builder()
+                          .type(MessageType.COMPLEMENT)
+                          .author(new Author("WC"))
+                          .sent(NOW)
+                          .build()))
+              .build();
 
       assertEquals(
           Collections.emptyList(),
-          getCertificateEventsOfTypeDomainService.events(certificate,
-              CertificateEventType.OUTGOING_MESSAGE)
-      );
+          getCertificateEventsOfTypeDomainService.events(
+              certificate, CertificateEventType.OUTGOING_MESSAGE));
     }
   }
 
@@ -1005,103 +934,97 @@ class GetCertificateEventsOfTypeDomainServiceTest {
 
     @Test
     void shouldReturnEventIfAnswerFromFK() {
-      final var certificate = fk7809CertificateBuilder()
-          .messages(
-              List.of(
-                  Message.builder()
-                      .type(MessageType.ANSWER)
-                      .author(new Author("FK"))
-                      .sent(NOW)
-                      .build()
-              )
-          )
-          .build();
+      final var certificate =
+          fk7809CertificateBuilder()
+              .messages(
+                  List.of(
+                      Message.builder()
+                          .type(MessageType.ANSWER)
+                          .author(new Author("FK"))
+                          .sent(NOW)
+                          .build()))
+              .build();
 
-      final var expected = CertificateEvent.builder()
-          .certificateId(certificate.id())
-          .timestamp(NOW)
-          .type(CertificateEventType.INCOMING_ANSWER)
-          .build();
+      final var expected =
+          CertificateEvent.builder()
+              .certificateId(certificate.id())
+              .timestamp(NOW)
+              .type(CertificateEventType.INCOMING_ANSWER)
+              .build();
 
       assertEquals(
           List.of(expected),
-          getCertificateEventsOfTypeDomainService.events(certificate,
-              CertificateEventType.INCOMING_ANSWER)
-      );
+          getCertificateEventsOfTypeDomainService.events(
+              certificate, CertificateEventType.INCOMING_ANSWER));
     }
 
     @Test
     void shouldReturnSeveralEventsIfAnswersFromFK() {
-      final var certificate = fk7809CertificateBuilder()
-          .messages(
-              List.of(
-                  Message.builder()
-                      .type(MessageType.ANSWER)
-                      .author(new Author("FK"))
-                      .sent(NOW)
-                      .build(),
-                  Message.builder()
-                      .type(MessageType.ANSWER)
-                      .author(new Author("FK"))
-                      .sent(NOW)
-                      .build()
-              )
-          )
-          .build();
+      final var certificate =
+          fk7809CertificateBuilder()
+              .messages(
+                  List.of(
+                      Message.builder()
+                          .type(MessageType.ANSWER)
+                          .author(new Author("FK"))
+                          .sent(NOW)
+                          .build(),
+                      Message.builder()
+                          .type(MessageType.ANSWER)
+                          .author(new Author("FK"))
+                          .sent(NOW)
+                          .build()))
+              .build();
 
-      final var expected = CertificateEvent.builder()
-          .certificateId(certificate.id())
-          .timestamp(NOW)
-          .type(CertificateEventType.INCOMING_ANSWER)
-          .build();
+      final var expected =
+          CertificateEvent.builder()
+              .certificateId(certificate.id())
+              .timestamp(NOW)
+              .type(CertificateEventType.INCOMING_ANSWER)
+              .build();
 
       assertEquals(
           List.of(expected, expected),
-          getCertificateEventsOfTypeDomainService.events(certificate,
-              CertificateEventType.INCOMING_ANSWER)
-      );
+          getCertificateEventsOfTypeDomainService.events(
+              certificate, CertificateEventType.INCOMING_ANSWER));
     }
 
     @Test
     void shouldReturnEmptyListIfNoMessageFromFK() {
-      final var certificate = fk7809CertificateBuilder()
-          .messages(
-              List.of(
-                  Message.builder()
-                      .type(MessageType.ANSWER)
-                      .author(new Author("WC"))
-                      .sent(NOW)
-                      .build()
-              )
-          )
-          .build();
+      final var certificate =
+          fk7809CertificateBuilder()
+              .messages(
+                  List.of(
+                      Message.builder()
+                          .type(MessageType.ANSWER)
+                          .author(new Author("WC"))
+                          .sent(NOW)
+                          .build()))
+              .build();
 
       assertEquals(
           Collections.emptyList(),
-          getCertificateEventsOfTypeDomainService.events(certificate,
-              CertificateEventType.INCOMING_ANSWER)
-      );
+          getCertificateEventsOfTypeDomainService.events(
+              certificate, CertificateEventType.INCOMING_ANSWER));
     }
 
     @Test
     void shouldReturnEmptyListIfNoMessageOfCorrectType() {
-      final var certificate = fk7809CertificateBuilder()
-          .messages(
-              List.of(
-                  Message.builder()
-                      .type(MessageType.COMPLEMENT)
-                      .author(new Author("FK"))
-                      .sent(NOW)
-                      .build()
-              )
-          )
-          .build();
+      final var certificate =
+          fk7809CertificateBuilder()
+              .messages(
+                  List.of(
+                      Message.builder()
+                          .type(MessageType.COMPLEMENT)
+                          .author(new Author("FK"))
+                          .sent(NOW)
+                          .build()))
+              .build();
 
       assertEquals(
           Collections.emptyList(),
-          getCertificateEventsOfTypeDomainService.events(certificate,
-              CertificateEventType.INCOMING_ANSWER)
-      );
+          getCertificateEventsOfTypeDomainService.events(
+              certificate, CertificateEventType.INCOMING_ANSWER));
     }
   }
 }

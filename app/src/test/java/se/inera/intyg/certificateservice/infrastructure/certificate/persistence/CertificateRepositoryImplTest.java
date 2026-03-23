@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificate.persistence;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,13 +47,9 @@ import se.inera.intyg.certificateservice.domain.patient.service.PatientInformati
 @ExtendWith(MockitoExtension.class)
 class CertificateRepositoryImplTest {
 
-  @Mock
-  JpaCertificateRepository jpaCertificateRepository;
-  @Mock
-  PatientInformationProvider patientInformationProvider;
-  @InjectMocks
-  CertificateRepositoryImpl certificateRepository;
-
+  @Mock JpaCertificateRepository jpaCertificateRepository;
+  @Mock PatientInformationProvider patientInformationProvider;
+  @InjectMocks CertificateRepositoryImpl certificateRepository;
 
   @Nested
   class CreateTests {
@@ -54,8 +68,8 @@ class CertificateRepositoryImplTest {
     void shouldReturnCertificateFromJpaCertificateRepository() {
       final var request = PlaceholderCertificateRequest.builder().build();
       certificateRepository.createFromPlaceholder(request, FK7804_CERTIFICATE_MODEL);
-      verify(jpaCertificateRepository).createFromPlaceholder(request, FK7804_CERTIFICATE_MODEL,
-          certificateRepository);
+      verify(jpaCertificateRepository)
+          .createFromPlaceholder(request, FK7804_CERTIFICATE_MODEL, certificateRepository);
     }
   }
 
@@ -76,7 +90,7 @@ class CertificateRepositoryImplTest {
       when(jpaCertificateRepository.save(FK7210_CERTIFICATE, certificateRepository))
           .thenReturn(FK7210_CERTIFICATE);
       when(patientInformationProvider.findPatient(
-          FK7210_CERTIFICATE.certificateMetaData().patient().id()))
+              FK7210_CERTIFICATE.certificateMetaData().patient().id()))
           .thenReturn(Optional.of(ATHENA_REACT_ANDERSSON));
 
       final var result = certificateRepository.save(FK7210_CERTIFICATE);
@@ -103,7 +117,7 @@ class CertificateRepositoryImplTest {
       when(jpaCertificateRepository.getById(certificateId, certificateRepository))
           .thenReturn(FK7210_CERTIFICATE);
       when(patientInformationProvider.findPatient(
-          FK7210_CERTIFICATE.certificateMetaData().patient().id()))
+              FK7210_CERTIFICATE.certificateMetaData().patient().id()))
           .thenReturn(Optional.of(ATHENA_REACT_ANDERSSON));
 
       final var result = certificateRepository.getById(certificateId);
@@ -129,8 +143,8 @@ class CertificateRepositoryImplTest {
       final var certificateIds = List.of(FK7210_CERTIFICATE.id());
       when(jpaCertificateRepository.getByIds(certificateIds, certificateRepository))
           .thenReturn(List.of(FK7210_CERTIFICATE));
-      when(patientInformationProvider.findPatients(List.of(
-          FK7210_CERTIFICATE.certificateMetaData().patient().id())))
+      when(patientInformationProvider.findPatients(
+              List.of(FK7210_CERTIFICATE.certificateMetaData().patient().id())))
           .thenReturn(List.of(ATHENA_REACT_ANDERSSON));
 
       final var result = certificateRepository.getByIds(certificateIds);
@@ -156,8 +170,8 @@ class CertificateRepositoryImplTest {
       final var certificateIds = List.of(FK7210_CERTIFICATE.id());
       when(jpaCertificateRepository.findByIds(certificateIds, certificateRepository))
           .thenReturn(List.of(FK7210_CERTIFICATE));
-      when(patientInformationProvider.findPatients(List.of(
-          FK7210_CERTIFICATE.certificateMetaData().patient().id())))
+      when(patientInformationProvider.findPatients(
+              List.of(FK7210_CERTIFICATE.certificateMetaData().patient().id())))
           .thenReturn(List.of(ATHENA_REACT_ANDERSSON));
 
       final var result = certificateRepository.findByIds(certificateIds);
@@ -205,8 +219,8 @@ class CertificateRepositoryImplTest {
       final var request = CertificatesRequest.builder().build();
       when(jpaCertificateRepository.findByCertificatesRequest(request, certificateRepository))
           .thenReturn(List.of(FK7210_CERTIFICATE));
-      when(patientInformationProvider.findPatients(List.of(
-          FK7210_CERTIFICATE.certificateMetaData().patient().id())))
+      when(patientInformationProvider.findPatients(
+              List.of(FK7210_CERTIFICATE.certificateMetaData().patient().id())))
           .thenReturn(List.of(ATHENA_REACT_ANDERSSON));
 
       final var result = certificateRepository.findByCertificatesRequest(request);
@@ -223,12 +237,12 @@ class CertificateRepositoryImplTest {
       final var page = 0;
       final var size = 10;
       final var expectedPage = CertificateExportPage.builder().build();
-      when(jpaCertificateRepository.getExportByCareProviderId(careProviderId, page, size,
-          certificateRepository))
+      when(jpaCertificateRepository.getExportByCareProviderId(
+              careProviderId, page, size, certificateRepository))
           .thenReturn(expectedPage);
 
-      final var result = certificateRepository.getExportByCareProviderId(careProviderId, page,
-          size);
+      final var result =
+          certificateRepository.getExportByCareProviderId(careProviderId, page, size);
       assertEquals(expectedPage, result);
     }
   }

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.patient.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,26 +52,21 @@ import se.inera.intyg.certificateservice.domain.patient.service.GetPatientCertif
 @ExtendWith(MockitoExtension.class)
 class GetPatientCertificateServiceTest {
 
-  @Mock
-  private GetPatientCertificatesRequestValidator getPatientCertificatesRequestValidator;
-  @Mock
-  private ActionEvaluationFactory actionEvaluationFactory;
+  @Mock private GetPatientCertificatesRequestValidator getPatientCertificatesRequestValidator;
+  @Mock private ActionEvaluationFactory actionEvaluationFactory;
 
-  @Mock
-  private GetPatientCertificatesDomainService getPatientCertificatesDomainService;
+  @Mock private GetPatientCertificatesDomainService getPatientCertificatesDomainService;
 
-  @Mock
-  private ResourceLinkConverter resourceLinkConverter;
+  @Mock private ResourceLinkConverter resourceLinkConverter;
 
-  @Mock
-  private CertificateConverter certificateConverter;
-  @InjectMocks
-  private GetPatientCertificateService getPatientCertificateService;
+  @Mock private CertificateConverter certificateConverter;
+  @InjectMocks private GetPatientCertificateService getPatientCertificateService;
 
   @Test
   void shallThrowIfInvalidRequest() {
     final var request = GetPatientCertificatesRequest.builder().build();
-    doThrow(IllegalArgumentException.class).when(getPatientCertificatesRequestValidator)
+    doThrow(IllegalArgumentException.class)
+        .when(getPatientCertificatesRequestValidator)
         .validate(request);
 
     assertThrows(IllegalArgumentException.class, () -> getPatientCertificateService.get(request));
@@ -62,47 +75,43 @@ class GetPatientCertificateServiceTest {
   @Test
   void shallReturnGetPatientCertificatesResponse() {
     final var resourceLinkDTO = ResourceLinkDTO.builder().build();
-    final var certificateDTO = CertificateDTO.builder()
-        .links(List.of(resourceLinkDTO))
-        .build();
-    final var expectedResponse = GetPatientCertificatesResponse.builder()
-        .certificates(
-            List.of(certificateDTO)
-        )
-        .build();
+    final var certificateDTO = CertificateDTO.builder().links(List.of(resourceLinkDTO)).build();
+    final var expectedResponse =
+        GetPatientCertificatesResponse.builder().certificates(List.of(certificateDTO)).build();
 
     final var actionEvaluation = ActionEvaluation.builder().build();
-    doReturn(actionEvaluation).when(actionEvaluationFactory).create(
-        ATHENA_REACT_ANDERSSON_DTO,
-        AJLA_DOCTOR_DTO,
-        ALFA_ALLERGIMOTTAGNINGEN_DTO,
-        ALFA_MEDICINCENTRUM_DTO,
-        ALFA_REGIONEN_DTO
-    );
+    doReturn(actionEvaluation)
+        .when(actionEvaluationFactory)
+        .create(
+            ATHENA_REACT_ANDERSSON_DTO,
+            AJLA_DOCTOR_DTO,
+            ALFA_ALLERGIMOTTAGNINGEN_DTO,
+            ALFA_MEDICINCENTRUM_DTO,
+            ALFA_REGIONEN_DTO);
 
     final var certificate = mock(MedicalCertificate.class);
-    doReturn(List.of(certificate)).when(getPatientCertificatesDomainService).get(
-        actionEvaluation
-    );
+    doReturn(List.of(certificate)).when(getPatientCertificatesDomainService).get(actionEvaluation);
 
     final var certificateAction = mock(CertificateAction.class);
     final List<CertificateAction> certificateActions = List.of(certificateAction);
     doReturn(certificateActions).when(certificate).actionsInclude(Optional.of(actionEvaluation));
 
-    doReturn(resourceLinkDTO).when(resourceLinkConverter).convert(certificateAction,
-        Optional.of(certificate), actionEvaluation);
-    doReturn(certificateDTO).when(certificateConverter)
+    doReturn(resourceLinkDTO)
+        .when(resourceLinkConverter)
+        .convert(certificateAction, Optional.of(certificate), actionEvaluation);
+    doReturn(certificateDTO)
+        .when(certificateConverter)
         .convert(certificate, List.of(resourceLinkDTO), actionEvaluation);
 
-    final var actualResult = getPatientCertificateService.get(
-        GetPatientCertificatesRequest.builder()
-            .patient(ATHENA_REACT_ANDERSSON_DTO)
-            .user(AJLA_DOCTOR_DTO)
-            .unit(ALFA_ALLERGIMOTTAGNINGEN_DTO)
-            .careUnit(ALFA_MEDICINCENTRUM_DTO)
-            .careProvider(ALFA_REGIONEN_DTO)
-            .build()
-    );
+    final var actualResult =
+        getPatientCertificateService.get(
+            GetPatientCertificatesRequest.builder()
+                .patient(ATHENA_REACT_ANDERSSON_DTO)
+                .user(AJLA_DOCTOR_DTO)
+                .unit(ALFA_ALLERGIMOTTAGNINGEN_DTO)
+                .careUnit(ALFA_MEDICINCENTRUM_DTO)
+                .careProvider(ALFA_REGIONEN_DTO)
+                .build());
 
     assertEquals(expectedResponse, actualResult);
   }

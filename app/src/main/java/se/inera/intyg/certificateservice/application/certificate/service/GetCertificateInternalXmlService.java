@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service;
 
 import static se.inera.intyg.certificateservice.application.common.dto.PersonIdTypeDTO.toPersonIdTypeDTO;
@@ -32,8 +50,8 @@ public class GetCertificateInternalXmlService {
   public GetCertificateInternalXmlResponse get(String certificateId) {
     final var certificate = certificateRepository.getById(new CertificateId(certificateId));
 
-    final var xml = certificate.xml() != null ? certificate.xml()
-        : xmlGenerator.generate(certificate, false);
+    final var xml =
+        certificate.xml() != null ? certificate.xml() : xmlGenerator.generate(certificate, false);
 
     return GetCertificateInternalXmlResponse.builder()
         .certificateId(certificate.id().id())
@@ -43,14 +61,12 @@ public class GetCertificateInternalXmlService {
                 certificate.certificateMetaData().issuingUnit(),
                 certificate.elementData().stream()
                     .filter(data -> data.id().equals(UNIT_CONTACT_INFORMATION))
-                    .findFirst())
-        )
+                    .findFirst()))
         .careProvider(
             UnitDTO.builder()
                 .unitId(certificate.certificateMetaData().careProvider().hsaId().id())
                 .unitName(certificate.certificateMetaData().careProvider().name().name())
-                .build()
-        )
+                .build())
         .xml(xml.base64())
         .revoked(convertRevoked(Optional.ofNullable(certificate.revoked())))
         .recipient(convertRecipient(Optional.ofNullable(certificate.sent())))
@@ -59,10 +75,7 @@ public class GetCertificateInternalXmlService {
   }
 
   private PersonIdDTO convertPersonId(PersonId id) {
-    return PersonIdDTO.builder()
-        .id(id.id())
-        .type(toPersonIdTypeDTO(id.type()))
-        .build();
+    return PersonIdDTO.builder().id(id.id()).type(toPersonIdTypeDTO(id.type())).build();
   }
 
   private CertificateRecipientDTO convertRecipient(Optional<Sent> sent) {
@@ -72,21 +85,20 @@ public class GetCertificateInternalXmlService {
                     .sent(send.sentAt())
                     .id(send.recipient().id().id())
                     .name(send.recipient().name())
-                    .build()
-        )
+                    .build())
         .orElse(null);
   }
 
   private RevokedDTO convertRevoked(Optional<Revoked> revoked) {
-    return revoked.map(
+    return revoked
+        .map(
             revoke ->
                 RevokedDTO.builder()
                     .revokedAt(revoke.revokedAt())
                     .revokedBy(convertRevokedBy(revoke.revokedBy()))
                     .reason(revoke.revokedInformation().reason())
                     .message(revoke.revokedInformation().message())
-                    .build()
-        )
+                    .build())
         .orElse(null);
   }
 

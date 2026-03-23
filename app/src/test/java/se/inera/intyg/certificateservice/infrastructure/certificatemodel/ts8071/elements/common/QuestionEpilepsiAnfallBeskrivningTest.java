@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.common;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,10 +51,11 @@ class QuestionEpilepsiAnfallBeskrivningTest {
 
   @Test
   void shallIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationTextField.builder()
-        .name("Ange tidpunkt för senaste epileptiska anfall")
-        .id(new FieldId("14.4"))
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationTextField.builder()
+            .name("Ange tidpunkt för senaste epileptiska anfall")
+            .id(new FieldId("14.4"))
+            .build();
 
     final var element = QuestionEpilepsiAnfallBeskrivning.questionEpilepsiAnfallBeskrivning();
 
@@ -45,23 +64,23 @@ class QuestionEpilepsiAnfallBeskrivningTest {
 
   @Test
   void shallIncludeRules() {
-    final var expectedRules = List.of(
-        ElementRuleExpression.builder()
-            .id(new ElementId("14.3"))
-            .type(ElementRuleType.SHOW)
-            .expression(new RuleExpression("$14.3"))
-            .build(),
-        ElementRuleExpression.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.MANDATORY)
-            .expression(new RuleExpression("$14.4"))
-            .build(),
-        ElementRuleLimit.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.TEXT_LIMIT)
-            .limit(new RuleLimit((short) 50))
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleExpression.builder()
+                .id(new ElementId("14.3"))
+                .type(ElementRuleType.SHOW)
+                .expression(new RuleExpression("$14.3"))
+                .build(),
+            ElementRuleExpression.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.MANDATORY)
+                .expression(new RuleExpression("$14.4"))
+                .build(),
+            ElementRuleLimit.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.TEXT_LIMIT)
+                .limit(new RuleLimit((short) 50))
+                .build());
 
     final var element = QuestionEpilepsiAnfallBeskrivning.questionEpilepsiAnfallBeskrivning();
 
@@ -70,12 +89,8 @@ class QuestionEpilepsiAnfallBeskrivningTest {
 
   @Test
   void shallIncludeValidations() {
-    final var expectedValidations = List.of(
-        ElementValidationText.builder()
-            .mandatory(true)
-            .limit(50)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationText.builder().mandatory(true).limit(50).build());
 
     final var element = QuestionEpilepsiAnfallBeskrivning.questionEpilepsiAnfallBeskrivning();
 
@@ -94,16 +109,12 @@ class QuestionEpilepsiAnfallBeskrivningTest {
 
     @Test
     void shallReturnTrueIfBooleanIsTrue() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("14.3"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(true)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("14.3"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
 
       final var element = QuestionEpilepsiAnfallBeskrivning.questionEpilepsiAnfallBeskrivning();
 
@@ -114,16 +125,12 @@ class QuestionEpilepsiAnfallBeskrivningTest {
 
     @Test
     void shallReturnFalseIfElementMissing() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("7.1"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(true)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("7.1"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
 
       final var element = QuestionEpilepsiAnfallBeskrivning.questionEpilepsiAnfallBeskrivning();
 
@@ -134,16 +141,12 @@ class QuestionEpilepsiAnfallBeskrivningTest {
 
     @Test
     void shallReturnFalseIfElementFalse() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("14.3"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(false)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("14.3"))
+                  .value(ElementValueBoolean.builder().value(false).build())
+                  .build());
 
       final var element = QuestionEpilepsiAnfallBeskrivning.questionEpilepsiAnfallBeskrivning();
 

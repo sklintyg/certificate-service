@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.common;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -77,101 +95,94 @@ class ActionEvaluationFactoryTest {
 
     @Test
     void shallIncludeCareUnitId() {
-      final var actionEvaluation = actionEvaluationFactory.create(
-          ATHENA_REACT_ANDERSSON_DTO,
-          AJLA_DOCTOR_DTO,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              ATHENA_REACT_ANDERSSON_DTO,
+              AJLA_DOCTOR_DTO,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
       assertEquals(ALFA_MEDICINCENTRUM_ID, actionEvaluation.careUnit().hsaId().id());
     }
 
     @Test
     void shallIncludeCareUnitName() {
-      final var actionEvaluation = actionEvaluationFactory.create(
-          ATHENA_REACT_ANDERSSON_DTO,
-          AJLA_DOCTOR_DTO,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              ATHENA_REACT_ANDERSSON_DTO,
+              AJLA_DOCTOR_DTO,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
       assertEquals(ALFA_MEDICINCENTRUM_NAME, actionEvaluation.careUnit().name().name());
     }
 
     @Test
     void shallIncludeCareUnitAddress() {
-      final var actionEvaluation = actionEvaluationFactory.create(
-          ATHENA_REACT_ANDERSSON_DTO,
-          AJLA_DOCTOR_DTO,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              ATHENA_REACT_ANDERSSON_DTO,
+              AJLA_DOCTOR_DTO,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
-      assertEquals(ALFA_MEDICINCENTRUM_ADDRESS,
-          actionEvaluation.careUnit().address().address()
-      );
+      assertEquals(ALFA_MEDICINCENTRUM_ADDRESS, actionEvaluation.careUnit().address().address());
     }
 
     @Test
     void shallIncludeCareUnitZipCode() {
-      final var actionEvaluation = actionEvaluationFactory.create(
-          ATHENA_REACT_ANDERSSON_DTO,
-          AJLA_DOCTOR_DTO,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              ATHENA_REACT_ANDERSSON_DTO,
+              AJLA_DOCTOR_DTO,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
       assertEquals(ALFA_MEDICINCENTRUM_ZIP_CODE, actionEvaluation.careUnit().address().zipCode());
     }
 
     @Test
     void shallIncludeCareUnitCity() {
-      final var actionEvaluation = actionEvaluationFactory.create(
-          ATHENA_REACT_ANDERSSON_DTO,
-          AJLA_DOCTOR_DTO,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              ATHENA_REACT_ANDERSSON_DTO,
+              AJLA_DOCTOR_DTO,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
-      assertEquals(ALFA_MEDICINCENTRUM_CITY,
-          actionEvaluation.careUnit().address().city()
-      );
+      assertEquals(ALFA_MEDICINCENTRUM_CITY, actionEvaluation.careUnit().address().city());
     }
 
     @Test
     void shallIncludeCareUnitPhoneNumber() {
-      final var actionEvaluation = actionEvaluationFactory.create(
-          ATHENA_REACT_ANDERSSON_DTO,
-          AJLA_DOCTOR_DTO,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              ATHENA_REACT_ANDERSSON_DTO,
+              AJLA_DOCTOR_DTO,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
-      assertEquals(ALFA_MEDICINCENTRUM_PHONENUMBER,
-          actionEvaluation.careUnit().contactInfo().phoneNumber()
-      );
+      assertEquals(
+          ALFA_MEDICINCENTRUM_PHONENUMBER, actionEvaluation.careUnit().contactInfo().phoneNumber());
     }
 
     @Test
     void shallIncludeCareUnitEmail() {
-      final var actionEvaluation = actionEvaluationFactory.create(
-          ATHENA_REACT_ANDERSSON_DTO,
-          AJLA_DOCTOR_DTO,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              ATHENA_REACT_ANDERSSON_DTO,
+              AJLA_DOCTOR_DTO,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
-      assertEquals(ALFA_MEDICINCENTRUM_EMAIL,
-          actionEvaluation.careUnit().contactInfo().email()
-      );
+      assertEquals(ALFA_MEDICINCENTRUM_EMAIL, actionEvaluation.careUnit().contactInfo().email());
     }
   }
 
@@ -180,137 +191,127 @@ class ActionEvaluationFactoryTest {
 
     @Test
     void shallIncludeSubUnitId() {
-      final var actionEvaluation = actionEvaluationFactory.create(
-          ATHENA_REACT_ANDERSSON_DTO,
-          AJLA_DOCTOR_DTO,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              ATHENA_REACT_ANDERSSON_DTO,
+              AJLA_DOCTOR_DTO,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
       assertEquals(ALFA_ALLERGIMOTTAGNINGEN_ID, actionEvaluation.subUnit().hsaId().id());
     }
 
     @Test
     void shallIncludeSubUnitName() {
-      final var actionEvaluation = actionEvaluationFactory.create(
-          ATHENA_REACT_ANDERSSON_DTO,
-          AJLA_DOCTOR_DTO,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              ATHENA_REACT_ANDERSSON_DTO,
+              AJLA_DOCTOR_DTO,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
       assertEquals(ALFA_ALLERGIMOTTAGNINGEN_NAME, actionEvaluation.subUnit().name().name());
     }
 
     @Test
     void shallIncludeSubUnitAddress() {
-      final var actionEvaluation = actionEvaluationFactory.create(
-          ATHENA_REACT_ANDERSSON_DTO,
-          AJLA_DOCTOR_DTO,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              ATHENA_REACT_ANDERSSON_DTO,
+              AJLA_DOCTOR_DTO,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
-      assertEquals(ALFA_ALLERGIMOTTAGNINGEN_ADDRESS,
-          actionEvaluation.subUnit().address().address()
-      );
+      assertEquals(
+          ALFA_ALLERGIMOTTAGNINGEN_ADDRESS, actionEvaluation.subUnit().address().address());
     }
 
     @Test
     void shallIncludeSubUnitZipCode() {
-      final var actionEvaluation = actionEvaluationFactory.create(
-          ATHENA_REACT_ANDERSSON_DTO,
-          AJLA_DOCTOR_DTO,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              ATHENA_REACT_ANDERSSON_DTO,
+              AJLA_DOCTOR_DTO,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
-      assertEquals(ALFA_ALLERGIMOTTAGNINGEN_ZIP_CODE,
-          actionEvaluation.subUnit().address().zipCode()
-      );
+      assertEquals(
+          ALFA_ALLERGIMOTTAGNINGEN_ZIP_CODE, actionEvaluation.subUnit().address().zipCode());
     }
 
     @Test
     void shallIncludeSubUnitCity() {
-      final var actionEvaluation = actionEvaluationFactory.create(
-          ATHENA_REACT_ANDERSSON_DTO,
-          AJLA_DOCTOR_DTO,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              ATHENA_REACT_ANDERSSON_DTO,
+              AJLA_DOCTOR_DTO,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
-      assertEquals(ALFA_ALLERGIMOTTAGNINGEN_CITY,
-          actionEvaluation.subUnit().address().city()
-      );
+      assertEquals(ALFA_ALLERGIMOTTAGNINGEN_CITY, actionEvaluation.subUnit().address().city());
     }
 
     @Test
     void shallIncludeSubUnitPhoneNumber() {
-      final var actionEvaluation = actionEvaluationFactory.create(
-          ATHENA_REACT_ANDERSSON_DTO,
-          AJLA_DOCTOR_DTO,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              ATHENA_REACT_ANDERSSON_DTO,
+              AJLA_DOCTOR_DTO,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
-      assertEquals(ALFA_ALLERGIMOTTAGNINGEN_PHONENUMBER,
-          actionEvaluation.subUnit().contactInfo().phoneNumber()
-      );
+      assertEquals(
+          ALFA_ALLERGIMOTTAGNINGEN_PHONENUMBER,
+          actionEvaluation.subUnit().contactInfo().phoneNumber());
     }
 
     @Test
     void shallIncludeSubUnitEmail() {
-      final var actionEvaluation = actionEvaluationFactory.create(
-          ATHENA_REACT_ANDERSSON_DTO,
-          AJLA_DOCTOR_DTO,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              ATHENA_REACT_ANDERSSON_DTO,
+              AJLA_DOCTOR_DTO,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
-      assertEquals(ALFA_ALLERGIMOTTAGNINGEN_EMAIL,
-          actionEvaluation.subUnit().contactInfo().email()
-      );
+      assertEquals(
+          ALFA_ALLERGIMOTTAGNINGEN_EMAIL, actionEvaluation.subUnit().contactInfo().email());
     }
 
     @Test
     void shallIncludeSubunitInactiveTrue() {
-      final var unit = alfaHudmottagningenDtoBuilder()
-          .inactive(true)
-          .build();
+      final var unit = alfaHudmottagningenDtoBuilder().inactive(true).build();
 
-      final var actionEvaluation = actionEvaluationFactory.create(
-          ATHENA_REACT_ANDERSSON_DTO,
-          AJLA_DOCTOR_DTO,
-          unit,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              ATHENA_REACT_ANDERSSON_DTO,
+              AJLA_DOCTOR_DTO,
+              unit,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
-      assertEquals(INACTIVE_TRUE.value(),
-          actionEvaluation.subUnit().inactive().value()
-      );
+      assertEquals(INACTIVE_TRUE.value(), actionEvaluation.subUnit().inactive().value());
     }
 
     @Test
     void shallIncludeSubunitInactiveFalse() {
-      final var actionEvaluation = actionEvaluationFactory.create(
-          ATHENA_REACT_ANDERSSON_DTO,
-          AJLA_DOCTOR_DTO,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              ATHENA_REACT_ANDERSSON_DTO,
+              AJLA_DOCTOR_DTO,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
-      assertEquals(ALFA_ALLERGIMOTTAGNINGEN_INACTIVE.value(),
-          actionEvaluation.subUnit().inactive().value()
-      );
+      assertEquals(
+          ALFA_ALLERGIMOTTAGNINGEN_INACTIVE.value(), actionEvaluation.subUnit().inactive().value());
     }
   }
 
@@ -319,26 +320,26 @@ class ActionEvaluationFactoryTest {
 
     @Test
     void shallIncludeCareProviderId() {
-      final var actionEvaluation = actionEvaluationFactory.create(
-          ATHENA_REACT_ANDERSSON_DTO,
-          AJLA_DOCTOR_DTO,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              ATHENA_REACT_ANDERSSON_DTO,
+              AJLA_DOCTOR_DTO,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
       assertEquals(ALFA_REGIONEN_ID, actionEvaluation.careProvider().hsaId().id());
     }
 
     @Test
     void shallIncludeCareProviderName() {
-      final var actionEvaluation = actionEvaluationFactory.create(
-          ATHENA_REACT_ANDERSSON_DTO,
-          AJLA_DOCTOR_DTO,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              ATHENA_REACT_ANDERSSON_DTO,
+              AJLA_DOCTOR_DTO,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
       assertEquals(ALFA_REGIONEN_NAME, actionEvaluation.careProvider().name().name());
     }
@@ -349,17 +350,14 @@ class ActionEvaluationFactoryTest {
 
     @Test
     void createActionEvaluationWithoutPatient() {
-      final var actionEvaluation = actionEvaluationFactory.create(
-          AJLA_DOCTOR_DTO,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              AJLA_DOCTOR_DTO,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
-      assertNull(
-          actionEvaluation.patient(),
-          "Expected patient to be null"
-      );
+      assertNull(actionEvaluation.patient(), "Expected patient to be null");
     }
   }
 
@@ -368,239 +366,219 @@ class ActionEvaluationFactoryTest {
 
     @Test
     void shallIncludePatientIdTypePersonalIdentityNumber() {
-      final var actionEvaluation = actionEvaluationFactory.create(
-          ATHENA_REACT_ANDERSSON_DTO,
-          AJLA_DOCTOR_DTO,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              ATHENA_REACT_ANDERSSON_DTO,
+              AJLA_DOCTOR_DTO,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
-      assertEquals(PersonIdType.PERSONAL_IDENTITY_NUMBER,
-          actionEvaluation.patient().id().type());
+      assertEquals(PersonIdType.PERSONAL_IDENTITY_NUMBER, actionEvaluation.patient().id().type());
     }
 
     @Test
     void shallIncludePatientIdTypeCoordinationNumber() {
-      final var patient = athenaReactAnderssonDtoBuilder()
-          .id(
-              PersonIdDTO.builder()
-                  .type(PersonIdTypeDTO.COORDINATION_NUMBER)
-                  .id(ATHENA_REACT_ANDERSSON_ID)
-                  .build()
-          )
-          .build();
+      final var patient =
+          athenaReactAnderssonDtoBuilder()
+              .id(
+                  PersonIdDTO.builder()
+                      .type(PersonIdTypeDTO.COORDINATION_NUMBER)
+                      .id(ATHENA_REACT_ANDERSSON_ID)
+                      .build())
+              .build();
 
-      final var actionEvaluation = actionEvaluationFactory.create(
-          patient,
-          AJLA_DOCTOR_DTO,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              patient,
+              AJLA_DOCTOR_DTO,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
-      assertEquals(PersonIdType.COORDINATION_NUMBER,
-          actionEvaluation.patient().id().type()
-      );
+      assertEquals(PersonIdType.COORDINATION_NUMBER, actionEvaluation.patient().id().type());
     }
 
     @Test
     void shallIncludePatientIdId() {
-      final var actionEvaluation = actionEvaluationFactory.create(
-          ATHENA_REACT_ANDERSSON_DTO,
-          AJLA_DOCTOR_DTO,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              ATHENA_REACT_ANDERSSON_DTO,
+              AJLA_DOCTOR_DTO,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
       assertEquals(ATHENA_REACT_ANDERSSON_ID, actionEvaluation.patient().id().id());
     }
 
     @Test
     void shallIncludePatientFirstName() {
-      final var actionEvaluation = actionEvaluationFactory.create(
-          ATHENA_REACT_ANDERSSON_DTO,
-          AJLA_DOCTOR_DTO,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              ATHENA_REACT_ANDERSSON_DTO,
+              AJLA_DOCTOR_DTO,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
-      assertEquals(ATHENA_REACT_ANDERSSON_FIRST_NAME,
-          actionEvaluation.patient().name().firstName()
-      );
+      assertEquals(
+          ATHENA_REACT_ANDERSSON_FIRST_NAME, actionEvaluation.patient().name().firstName());
     }
 
     @Test
     void shallIncludePatientMiddleName() {
-      final var actionEvaluation = actionEvaluationFactory.create(
-          ATHENA_REACT_ANDERSSON_DTO,
-          AJLA_DOCTOR_DTO,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              ATHENA_REACT_ANDERSSON_DTO,
+              AJLA_DOCTOR_DTO,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
-      assertEquals(ATHENA_REACT_ANDERSSON_MIDDLE_NAME,
-          actionEvaluation.patient().name().middleName()
-      );
+      assertEquals(
+          ATHENA_REACT_ANDERSSON_MIDDLE_NAME, actionEvaluation.patient().name().middleName());
     }
 
     @Test
     void shallIncludePatientLastName() {
-      final var actionEvaluation = actionEvaluationFactory.create(
-          ATHENA_REACT_ANDERSSON_DTO,
-          AJLA_DOCTOR_DTO,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              ATHENA_REACT_ANDERSSON_DTO,
+              AJLA_DOCTOR_DTO,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
-      assertEquals(ATHENA_REACT_ANDERSSON_LAST_NAME,
-          actionEvaluation.patient().name().lastName()
-      );
+      assertEquals(ATHENA_REACT_ANDERSSON_LAST_NAME, actionEvaluation.patient().name().lastName());
     }
 
     @Test
     void shallIncludePatientCity() {
-      final var actionEvaluation = actionEvaluationFactory.create(
-          ATHENA_REACT_ANDERSSON_DTO,
-          AJLA_DOCTOR_DTO,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              ATHENA_REACT_ANDERSSON_DTO,
+              AJLA_DOCTOR_DTO,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
-      assertEquals(ATHENA_REACT_ANDERSSON_CITY,
-          actionEvaluation.patient().address().city()
-      );
+      assertEquals(ATHENA_REACT_ANDERSSON_CITY, actionEvaluation.patient().address().city());
     }
 
     @Test
     void shallIncludePatientStreet() {
-      final var actionEvaluation = actionEvaluationFactory.create(
-          ATHENA_REACT_ANDERSSON_DTO,
-          AJLA_DOCTOR_DTO,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              ATHENA_REACT_ANDERSSON_DTO,
+              AJLA_DOCTOR_DTO,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
-      assertEquals(ATHENA_REACT_ANDERSSON_STREET,
-          actionEvaluation.patient().address().street()
-      );
+      assertEquals(ATHENA_REACT_ANDERSSON_STREET, actionEvaluation.patient().address().street());
     }
 
     @Test
     void shallIncludePatientZipCode() {
-      final var actionEvaluation = actionEvaluationFactory.create(
-          ATHENA_REACT_ANDERSSON_DTO,
-          AJLA_DOCTOR_DTO,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              ATHENA_REACT_ANDERSSON_DTO,
+              AJLA_DOCTOR_DTO,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
-      assertEquals(ATHENA_REACT_ANDERSSON_ZIP_CODE,
-          actionEvaluation.patient().address().zipCode()
-      );
+      assertEquals(ATHENA_REACT_ANDERSSON_ZIP_CODE, actionEvaluation.patient().address().zipCode());
     }
 
     @Test
     void shallIncludePatientDeceasedTrue() {
-      final var actionEvaluation = actionEvaluationFactory.create(
-          ATLAS_REACT_ABRAHAMSSON_DTO,
-          AJLA_DOCTOR_DTO,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              ATLAS_REACT_ABRAHAMSSON_DTO,
+              AJLA_DOCTOR_DTO,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
-      assertTrue(actionEvaluation.patient().deceased().value(),
-          "Expected patient.value to be true");
+      assertTrue(
+          actionEvaluation.patient().deceased().value(), "Expected patient.value to be true");
     }
 
     @Test
     void shallIncludePatientDeceasedFalse() {
-      final var actionEvaluation = actionEvaluationFactory.create(
-          ATHENA_REACT_ANDERSSON_DTO,
-          AJLA_DOCTOR_DTO,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              ATHENA_REACT_ANDERSSON_DTO,
+              AJLA_DOCTOR_DTO,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
-      assertFalse(actionEvaluation.patient().deceased().value(),
-          "Expected patient.value to be false");
+      assertFalse(
+          actionEvaluation.patient().deceased().value(), "Expected patient.value to be false");
     }
 
     @Test
     void shallIncludePatientTestIndicatedTrue() {
-      final var patient = athenaReactAnderssonDtoBuilder()
-          .testIndicated(true)
-          .build();
+      final var patient = athenaReactAnderssonDtoBuilder().testIndicated(true).build();
 
-      final var actionEvaluation = actionEvaluationFactory.create(
-          patient,
-          AJLA_DOCTOR_DTO,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              patient,
+              AJLA_DOCTOR_DTO,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
-      assertEquals(TEST_INDICATED_TRUE.value(),
-          actionEvaluation.patient().testIndicated().value()
-      );
+      assertEquals(TEST_INDICATED_TRUE.value(), actionEvaluation.patient().testIndicated().value());
     }
 
     @Test
     void shallIncludePatientTestIndicatedFalse() {
-      final var actionEvaluation = actionEvaluationFactory.create(
-          ATHENA_REACT_ANDERSSON_DTO,
-          AJLA_DOCTOR_DTO,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              ATHENA_REACT_ANDERSSON_DTO,
+              AJLA_DOCTOR_DTO,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
-      assertEquals(ATHENA_REACT_ANDERSSON_TEST_INDICATED.value(),
-          actionEvaluation.patient().testIndicated().value()
-      );
+      assertEquals(
+          ATHENA_REACT_ANDERSSON_TEST_INDICATED.value(),
+          actionEvaluation.patient().testIndicated().value());
     }
 
     @Test
     void shallIncludePatientProtectedPersonTrue() {
-      final var patient = athenaReactAnderssonDtoBuilder()
-          .protectedPerson(true)
-          .build();
+      final var patient = athenaReactAnderssonDtoBuilder().protectedPerson(true).build();
 
-      final var actionEvaluation = actionEvaluationFactory.create(
-          patient,
-          AJLA_DOCTOR_DTO,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              patient,
+              AJLA_DOCTOR_DTO,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
-      assertEquals(PROTECTED_PERSON_TRUE.value(),
-          actionEvaluation.patient().protectedPerson().value()
-      );
+      assertEquals(
+          PROTECTED_PERSON_TRUE.value(), actionEvaluation.patient().protectedPerson().value());
     }
 
     @Test
     void shallIncludePatientProtectedPersonFalse() {
-      final var actionEvaluation = actionEvaluationFactory.create(
-          ATHENA_REACT_ANDERSSON_DTO,
-          AJLA_DOCTOR_DTO,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              ATHENA_REACT_ANDERSSON_DTO,
+              AJLA_DOCTOR_DTO,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
-      assertEquals(ATHENA_REACT_ANDERSSON_PROTECTED_PERSON.value(),
-          actionEvaluation.patient().protectedPerson().value()
-      );
+      assertEquals(
+          ATHENA_REACT_ANDERSSON_PROTECTED_PERSON.value(),
+          actionEvaluation.patient().protectedPerson().value());
     }
   }
 
@@ -609,241 +587,229 @@ class ActionEvaluationFactoryTest {
 
     @Test
     void shallIncludeUserId() {
-      final var actionEvaluation = actionEvaluationFactory.create(
-          ATHENA_REACT_ANDERSSON_DTO,
-          AJLA_DOCTOR_DTO,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              ATHENA_REACT_ANDERSSON_DTO,
+              AJLA_DOCTOR_DTO,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
       assertEquals(AJLA_DOCTOR_HSA_ID, actionEvaluation.user().hsaId().id());
     }
 
     @Test
     void shallIncludeUserBlockedFalse() {
-      final var actionEvaluation = actionEvaluationFactory.create(
-          ATHENA_REACT_ANDERSSON_DTO,
-          AJLA_DOCTOR_DTO,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              ATHENA_REACT_ANDERSSON_DTO,
+              AJLA_DOCTOR_DTO,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
       assertEquals(AJLA_DOCTOR_BLOCKED.value(), actionEvaluation.user().blocked().value());
     }
 
     @Test
     void shallIncludeUserBlockedTrue() {
-      final var user = ajlaDoktorDtoBuilder()
-          .blocked(true)
-          .build();
+      final var user = ajlaDoktorDtoBuilder().blocked(true).build();
 
-      final var actionEvaluation = actionEvaluationFactory.create(
-          ATHENA_REACT_ANDERSSON_DTO,
-          user,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              ATHENA_REACT_ANDERSSON_DTO,
+              user,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
       assertEquals(BLOCKED_TRUE.value(), actionEvaluation.user().blocked().value());
     }
 
     @Test
     void shallIncludeUserAgreementTrue() {
-      final var actionEvaluation = actionEvaluationFactory.create(
-          ATHENA_REACT_ANDERSSON_DTO,
-          AJLA_DOCTOR_DTO,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              ATHENA_REACT_ANDERSSON_DTO,
+              AJLA_DOCTOR_DTO,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
       assertEquals(AJLA_DOCTOR_AGREEMENT.value(), actionEvaluation.user().agreement().value());
     }
 
     @Test
     void shallIncludeUserAgreementFalse() {
-      final var user = ajlaDoktorDtoBuilder()
-          .agreement(false)
-          .build();
+      final var user = ajlaDoktorDtoBuilder().agreement(false).build();
 
-      final var actionEvaluation = actionEvaluationFactory.create(
-          ATHENA_REACT_ANDERSSON_DTO,
-          user,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              ATHENA_REACT_ANDERSSON_DTO,
+              user,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
       assertEquals(AGREEMENT_FALSE.value(), actionEvaluation.user().agreement().value());
     }
 
     @Test
     void shallIncludeUserAllowCopyFalse() {
-      final var user = ajlaDoktorDtoBuilder()
-          .allowCopy(true)
-          .build();
+      final var user = ajlaDoktorDtoBuilder().allowCopy(true).build();
 
-      final var actionEvaluation = actionEvaluationFactory.create(
-          ATHENA_REACT_ANDERSSON_DTO,
-          user,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              ATHENA_REACT_ANDERSSON_DTO,
+              user,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
       assertEquals(ALLOW_COPY_FALSE.value(), actionEvaluation.user().blocked().value());
     }
 
     @Test
     void shallIncludeUserAllowCopyTrue() {
-      final var actionEvaluation = actionEvaluationFactory.create(
-          ATHENA_REACT_ANDERSSON_DTO,
-          AJLA_DOCTOR_DTO,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              ATHENA_REACT_ANDERSSON_DTO,
+              AJLA_DOCTOR_DTO,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
       assertEquals(AJLA_DOCTOR_ALLOW_COPY.value(), actionEvaluation.user().allowCopy().value());
     }
 
     @Test
     void shallIncludeUserName() {
-      final var actionEvaluation = actionEvaluationFactory.create(
-          ATHENA_REACT_ANDERSSON_DTO,
-          AJLA_DOCTOR_DTO,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              ATHENA_REACT_ANDERSSON_DTO,
+              AJLA_DOCTOR_DTO,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
       assertEquals(AJLA_DOKTOR.name(), actionEvaluation.user().name());
     }
 
     @Test
     void shallIncludeUserRole() {
-      final var actionEvaluation = actionEvaluationFactory.create(
-          ATHENA_REACT_ANDERSSON_DTO,
-          AJLA_DOCTOR_DTO,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              ATHENA_REACT_ANDERSSON_DTO,
+              AJLA_DOCTOR_DTO,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
       assertEquals(AJLA_DOCTOR_ROLE, actionEvaluation.user().role());
     }
 
     @Test
     void shallIncludeUserAccessScopeWithinCareUnit() {
-      final var user = ajlaDoktorDtoBuilder()
-          .accessScope(AccessScopeTypeDTO.WITHIN_CARE_UNIT)
-          .build();
+      final var user =
+          ajlaDoktorDtoBuilder().accessScope(AccessScopeTypeDTO.WITHIN_CARE_UNIT).build();
 
-      final var actionEvaluation = actionEvaluationFactory.create(
-          ATHENA_REACT_ANDERSSON_DTO,
-          user,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              ATHENA_REACT_ANDERSSON_DTO,
+              user,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
       assertEquals(AccessScope.WITHIN_CARE_UNIT, actionEvaluation.user().accessScope());
     }
 
     @Test
     void shallIncludeUserAccessScopeWithinCareProvider() {
-      final var user = ajlaDoktorDtoBuilder()
-          .accessScope(AccessScopeTypeDTO.WITHIN_CARE_PROVIDER)
-          .build();
+      final var user =
+          ajlaDoktorDtoBuilder().accessScope(AccessScopeTypeDTO.WITHIN_CARE_PROVIDER).build();
 
-      final var actionEvaluation = actionEvaluationFactory.create(
-          ATHENA_REACT_ANDERSSON_DTO,
-          user,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              ATHENA_REACT_ANDERSSON_DTO,
+              user,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
       assertEquals(AccessScope.WITHIN_CARE_PROVIDER, actionEvaluation.user().accessScope());
     }
 
     @Test
     void shallIncludeUserAccessScopeAllCareProviders() {
-      final var user = ajlaDoktorDtoBuilder()
-          .accessScope(AccessScopeTypeDTO.ALL_CARE_PROVIDERS)
-          .build();
+      final var user =
+          ajlaDoktorDtoBuilder().accessScope(AccessScopeTypeDTO.ALL_CARE_PROVIDERS).build();
 
-      final var actionEvaluation = actionEvaluationFactory.create(
-          ATHENA_REACT_ANDERSSON_DTO,
-          user,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              ATHENA_REACT_ANDERSSON_DTO,
+              user,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
       assertEquals(AccessScope.ALL_CARE_PROVIDERS, actionEvaluation.user().accessScope());
     }
 
     @Test
     void shallSetDefaultAccessScopeWithinCareUnitIfNull() {
-      final var user = ajlaDoktorDtoBuilder()
-          .accessScope(null)
-          .build();
+      final var user = ajlaDoktorDtoBuilder().accessScope(null).build();
 
-      final var actionEvaluation = actionEvaluationFactory.create(
-          ATHENA_REACT_ANDERSSON_DTO,
-          user,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              ATHENA_REACT_ANDERSSON_DTO,
+              user,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
       assertEquals(AccessScope.WITHIN_CARE_UNIT, actionEvaluation.user().accessScope());
     }
 
     @Test
     void shallIncludeLegitimateProfessionalRoles() {
-      final var actionEvaluation = actionEvaluationFactory.create(
-          ATHENA_REACT_ANDERSSON_DTO,
-          AJLA_DOCTOR_DTO,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              ATHENA_REACT_ANDERSSON_DTO,
+              AJLA_DOCTOR_DTO,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
-      assertEquals(AJLA_DOCTOR_HEALTH_CARE_PROFESSIONAL_LICENCES,
+      assertEquals(
+          AJLA_DOCTOR_HEALTH_CARE_PROFESSIONAL_LICENCES,
           actionEvaluation.user().healthCareProfessionalLicence());
     }
 
     @Test
     void shallIncludeResponsibleIssuer() {
-      final var actionEvaluation = actionEvaluationFactory.create(
-          ATHENA_REACT_ANDERSSON_DTO,
-          AJLA_DOCTOR_DTO,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              ATHENA_REACT_ANDERSSON_DTO,
+              AJLA_DOCTOR_DTO,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
-      assertEquals(AJLA_DOCTOR_RESPONSIBLE_ISSUER,
-          actionEvaluation.user().responsibleIssuer());
+      assertEquals(AJLA_DOCTOR_RESPONSIBLE_ISSUER, actionEvaluation.user().responsibleIssuer());
     }
 
     @Test
     void shallIncludeSrs() {
-      final var actionEvaluation = actionEvaluationFactory.create(
-          ATHENA_REACT_ANDERSSON_DTO,
-          AJLA_DOCTOR_DTO,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      final var actionEvaluation =
+          actionEvaluationFactory.create(
+              ATHENA_REACT_ANDERSSON_DTO,
+              AJLA_DOCTOR_DTO,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
-      assertEquals(AJLA_DOCTOR_RESPONSIBLE_ISSUER,
-          actionEvaluation.user().responsibleIssuer());
+      assertEquals(AJLA_DOCTOR_RESPONSIBLE_ISSUER, actionEvaluation.user().responsibleIssuer());
     }
   }
 }

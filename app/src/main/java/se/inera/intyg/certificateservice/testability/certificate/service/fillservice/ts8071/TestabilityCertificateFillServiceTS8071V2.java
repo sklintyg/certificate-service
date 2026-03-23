@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.testability.certificate.service.fillservice.ts8071;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.codesystems.CodeSystemKvIdKontroll.IDK1;
@@ -111,66 +129,117 @@ import se.inera.intyg.certificateservice.testability.certificate.dto.Testability
 import se.inera.intyg.certificateservice.testability.certificate.service.fillservice.TestabilityCertificateFillService;
 
 @Component
-public class TestabilityCertificateFillServiceTS8071V2 implements
-    TestabilityCertificateFillService {
+public class TestabilityCertificateFillServiceTS8071V2
+    implements TestabilityCertificateFillService {
 
-  private static final List<ElementId> MAXIMAL_IDS = List.of(
-      QUESTION_INTYGET_AVSER_ID, QUESTION_BASERAT_PA_ID, QUESTION_BASERAT_PA_DATUM_ID,
-      QUESTION_SYNSKARPA_ID, QUESTION_IDENTITET_ID, QUESTION_SYNFUNKTIONER_ID,
-      QUESTION_TOLERANS_KORREKTION_V2_ID, QUESTION_GLASOGON_STYRKA_V2_ID,
-      QUESTION_SJUKDOM_ELLER_SYNNEDSATTNING_ID,
-      QUESTION_SJUKDOM_ELLER_SYNNEDSATTNING_BESKRIVNING_V2_ID, QUESTION_SJUKDOMSHISTORIK_ID,
-      QUESTION_SJUKDOMSHISTORIK_BESKRIVNING_V2_ID, QUESTION_BALANSSINNE_ID,
-      QUESTION_BALANSSINNE_BESKRIVNING_V2_ID, QUESTION_HORSEL_V2_ID,
-      QUESTION_HORSELHJALPMEDEL_V2_ID,
-      QUESTION_HORSELHJALPMEDEL_POSITION_V2_ID, QUESTION_RORLIGHET_ID,
-      QUESTION_RORLIGHET_BESKRIVNING_ID,
-      QUESTION_RORLIGHET_HJALPA_PASSAGERARE_ID, QUESTION_HJARTSJUKDOM_ID,
-      QUESTION_HJARTSJUKDOM_BESKRIVNING_V2_ID,
-      QUESTION_HJARTSJUKDOM_BEHANDLAD_ID, QUESTION_HJARTSJUKDOM_BEHANDLAD_BESKRIVNING_V2_ID,
-      QUESTION_ARYTMI_ID, QUESTION_ARYTMI_BESKRIVNING_ID, QUESTION_SYNKOPE_V2_ID,
-      QUESTION_SYNKOPE_BESKRIVNING_ID, QUESTION_STROKE_V2_ID, QUESTION_STROKE_PAVARKAN_V2_ID,
-      QUESTION_DIABETES_V2_ID, QUESTION_NEUROLOGISK_SJUKDOM_V2_ID,
-      QUESTION_NEUROLOGISK_SJUKDOM_BESKRIVNING_V2_ID, QUESTION_EPILEPSI_ID,
-      QUESTION_EPILEPSI_BESKRIVNING_ID, QUESTION_EPILEPSI_ANFALL_ID,
-      QUESTION_EPILEPSI_ANFALL_BESKRIVNING_ID, QUESTION_EPILEPSI_MEDICIN_ID,
-      QUESTION_EPILEPSI_MEDICIN_BESKRIVNING_ID, QUESTION_EPILEPSI_MEDICIN_TIDPUNKT_V2_ID,
-      QUESTION_MEDVETANDESTORNING_ID, QUESTION_MEDVETANDESTORNING_TIDPUNKT_ID,
-      QUESTION_NJURFUNKTION_ID, QUESTION_NJURTRANSPLATATION_ID,
-      QUESTION_NJURTRANSPLATATION_TIDPUNKT_ID, QUESTION_KOGNITIV_STORNING_V2_ID,
-      QUESTION_DEMENS_V2_ID,
-      QUESTION_DEMENS_BESKRIVNING_V2_ID, QUESTION_SOMN_V2_ID, QUESTION_SOMN_BESKRIVNING_ID,
-      QUESTION_SOMN_BEHANDLING_ID, QUESTION_MISSBRUK_V2_ID, QUESTION_MISSBRUK_BESKRIVNING_V2_ID,
-      QUESTION_MISSBRUK_REMISSION_V2_ID, QUESTION_MISSBRUK_JOURNALUPPGIFTER_V2_ID,
-      QUESTION_MISSBRUK_JOURNALUPPGIFTER_BESKRIVNING_V2_ID,
-      QUESTION_MISSBRUK_PROVTAGNING_ID, QUESTION_MISSBRUK_VARD_V2_ID,
-      QUESTION_MISSBRUK_VARD_BESKRIVNING_V2_ID, QUESTION_LAKEMEDEL_V2_ID,
-      QUESTION_LAKEMEDEL_BESKRIVNING_V2_ID, QUESTION_PSYKISK_V2_ID, QUESTION_PSYKISK_BESKRIVNING_ID,
-      QUESTION_PSYKISK_TIDPUNKT_V2_ID, QUESTION_INTELLEKTUELL_FUNKTIONSNEDSATTNING_V2_ID,
-      QUESTION_INTELLEKTUELL_FUNKTIONSNEDSATTNING_BESKRIVNING_V2_ID,
-      QUESTION_MEDICINERING_ID, QUESTION_MEDICINERING_BESKRIVNING_V2_ID,
-      QUESTION_OVRIG_BESKRIVNING_ID,
-      QUESTION_BEDOMNING_ID, QUESTION_BEDOMNING_RISK_V2_ID, QUESTION_BEDOMNING_OKAND_ID
-  );
+  private static final List<ElementId> MAXIMAL_IDS =
+      List.of(
+          QUESTION_INTYGET_AVSER_ID,
+          QUESTION_BASERAT_PA_ID,
+          QUESTION_BASERAT_PA_DATUM_ID,
+          QUESTION_SYNSKARPA_ID,
+          QUESTION_IDENTITET_ID,
+          QUESTION_SYNFUNKTIONER_ID,
+          QUESTION_TOLERANS_KORREKTION_V2_ID,
+          QUESTION_GLASOGON_STYRKA_V2_ID,
+          QUESTION_SJUKDOM_ELLER_SYNNEDSATTNING_ID,
+          QUESTION_SJUKDOM_ELLER_SYNNEDSATTNING_BESKRIVNING_V2_ID,
+          QUESTION_SJUKDOMSHISTORIK_ID,
+          QUESTION_SJUKDOMSHISTORIK_BESKRIVNING_V2_ID,
+          QUESTION_BALANSSINNE_ID,
+          QUESTION_BALANSSINNE_BESKRIVNING_V2_ID,
+          QUESTION_HORSEL_V2_ID,
+          QUESTION_HORSELHJALPMEDEL_V2_ID,
+          QUESTION_HORSELHJALPMEDEL_POSITION_V2_ID,
+          QUESTION_RORLIGHET_ID,
+          QUESTION_RORLIGHET_BESKRIVNING_ID,
+          QUESTION_RORLIGHET_HJALPA_PASSAGERARE_ID,
+          QUESTION_HJARTSJUKDOM_ID,
+          QUESTION_HJARTSJUKDOM_BESKRIVNING_V2_ID,
+          QUESTION_HJARTSJUKDOM_BEHANDLAD_ID,
+          QUESTION_HJARTSJUKDOM_BEHANDLAD_BESKRIVNING_V2_ID,
+          QUESTION_ARYTMI_ID,
+          QUESTION_ARYTMI_BESKRIVNING_ID,
+          QUESTION_SYNKOPE_V2_ID,
+          QUESTION_SYNKOPE_BESKRIVNING_ID,
+          QUESTION_STROKE_V2_ID,
+          QUESTION_STROKE_PAVARKAN_V2_ID,
+          QUESTION_DIABETES_V2_ID,
+          QUESTION_NEUROLOGISK_SJUKDOM_V2_ID,
+          QUESTION_NEUROLOGISK_SJUKDOM_BESKRIVNING_V2_ID,
+          QUESTION_EPILEPSI_ID,
+          QUESTION_EPILEPSI_BESKRIVNING_ID,
+          QUESTION_EPILEPSI_ANFALL_ID,
+          QUESTION_EPILEPSI_ANFALL_BESKRIVNING_ID,
+          QUESTION_EPILEPSI_MEDICIN_ID,
+          QUESTION_EPILEPSI_MEDICIN_BESKRIVNING_ID,
+          QUESTION_EPILEPSI_MEDICIN_TIDPUNKT_V2_ID,
+          QUESTION_MEDVETANDESTORNING_ID,
+          QUESTION_MEDVETANDESTORNING_TIDPUNKT_ID,
+          QUESTION_NJURFUNKTION_ID,
+          QUESTION_NJURTRANSPLATATION_ID,
+          QUESTION_NJURTRANSPLATATION_TIDPUNKT_ID,
+          QUESTION_KOGNITIV_STORNING_V2_ID,
+          QUESTION_DEMENS_V2_ID,
+          QUESTION_DEMENS_BESKRIVNING_V2_ID,
+          QUESTION_SOMN_V2_ID,
+          QUESTION_SOMN_BESKRIVNING_ID,
+          QUESTION_SOMN_BEHANDLING_ID,
+          QUESTION_MISSBRUK_V2_ID,
+          QUESTION_MISSBRUK_BESKRIVNING_V2_ID,
+          QUESTION_MISSBRUK_REMISSION_V2_ID,
+          QUESTION_MISSBRUK_JOURNALUPPGIFTER_V2_ID,
+          QUESTION_MISSBRUK_JOURNALUPPGIFTER_BESKRIVNING_V2_ID,
+          QUESTION_MISSBRUK_PROVTAGNING_ID,
+          QUESTION_MISSBRUK_VARD_V2_ID,
+          QUESTION_MISSBRUK_VARD_BESKRIVNING_V2_ID,
+          QUESTION_LAKEMEDEL_V2_ID,
+          QUESTION_LAKEMEDEL_BESKRIVNING_V2_ID,
+          QUESTION_PSYKISK_V2_ID,
+          QUESTION_PSYKISK_BESKRIVNING_ID,
+          QUESTION_PSYKISK_TIDPUNKT_V2_ID,
+          QUESTION_INTELLEKTUELL_FUNKTIONSNEDSATTNING_V2_ID,
+          QUESTION_INTELLEKTUELL_FUNKTIONSNEDSATTNING_BESKRIVNING_V2_ID,
+          QUESTION_MEDICINERING_ID,
+          QUESTION_MEDICINERING_BESKRIVNING_V2_ID,
+          QUESTION_OVRIG_BESKRIVNING_ID,
+          QUESTION_BEDOMNING_ID,
+          QUESTION_BEDOMNING_RISK_V2_ID,
+          QUESTION_BEDOMNING_OKAND_ID);
 
-  private static final List<ElementId> MINIMAL_IDS = List.of(
-      QUESTION_BASERAT_PA_ID, QUESTION_INTYGET_AVSER_ID,
-      QUESTION_IDENTITET_ID, QUESTION_SYNFUNKTIONER_ID, QUESTION_BALANSSINNE_ID,
-      QUESTION_HORSEL_V2_ID,
-      QUESTION_HORSELHJALPMEDEL_V2_ID, QUESTION_HORSELHJALPMEDEL_POSITION_V2_ID,
-      QUESTION_RORLIGHET_ID,
-      QUESTION_RORLIGHET_HJALPA_PASSAGERARE_ID, QUESTION_HJARTSJUKDOM_ID, QUESTION_DIABETES_V2_ID,
-      QUESTION_NEUROLOGISK_SJUKDOM_V2_ID,
-      QUESTION_EPILEPSI_ID, QUESTION_EPILEPSI_ANFALL_ID,
-      QUESTION_MEDVETANDESTORNING_ID,
-      QUESTION_NJURFUNKTION_ID, QUESTION_NJURTRANSPLATATION_ID,
-      QUESTION_KOGNITIV_STORNING_V2_ID, QUESTION_DEMENS_V2_ID,
-      QUESTION_SOMN_V2_ID, QUESTION_SOMN_BEHANDLING_ID, QUESTION_MISSBRUK_V2_ID,
-      QUESTION_MISSBRUK_JOURNALUPPGIFTER_V2_ID, QUESTION_MISSBRUK_VARD_V2_ID,
-      QUESTION_LAKEMEDEL_V2_ID, QUESTION_PSYKISK_V2_ID,
-      QUESTION_INTELLEKTUELL_FUNKTIONSNEDSATTNING_V2_ID,
-      QUESTION_MEDICINERING_ID, QUESTION_BEDOMNING_ID, QUESTION_GLASOGON_STYRKA_V2_ID
-  );
+  private static final List<ElementId> MINIMAL_IDS =
+      List.of(
+          QUESTION_BASERAT_PA_ID,
+          QUESTION_INTYGET_AVSER_ID,
+          QUESTION_IDENTITET_ID,
+          QUESTION_SYNFUNKTIONER_ID,
+          QUESTION_BALANSSINNE_ID,
+          QUESTION_HORSEL_V2_ID,
+          QUESTION_HORSELHJALPMEDEL_V2_ID,
+          QUESTION_HORSELHJALPMEDEL_POSITION_V2_ID,
+          QUESTION_RORLIGHET_ID,
+          QUESTION_RORLIGHET_HJALPA_PASSAGERARE_ID,
+          QUESTION_HJARTSJUKDOM_ID,
+          QUESTION_DIABETES_V2_ID,
+          QUESTION_NEUROLOGISK_SJUKDOM_V2_ID,
+          QUESTION_EPILEPSI_ID,
+          QUESTION_EPILEPSI_ANFALL_ID,
+          QUESTION_MEDVETANDESTORNING_ID,
+          QUESTION_NJURFUNKTION_ID,
+          QUESTION_NJURTRANSPLATATION_ID,
+          QUESTION_KOGNITIV_STORNING_V2_ID,
+          QUESTION_DEMENS_V2_ID,
+          QUESTION_SOMN_V2_ID,
+          QUESTION_SOMN_BEHANDLING_ID,
+          QUESTION_MISSBRUK_V2_ID,
+          QUESTION_MISSBRUK_JOURNALUPPGIFTER_V2_ID,
+          QUESTION_MISSBRUK_VARD_V2_ID,
+          QUESTION_LAKEMEDEL_V2_ID,
+          QUESTION_PSYKISK_V2_ID,
+          QUESTION_INTELLEKTUELL_FUNKTIONSNEDSATTNING_V2_ID,
+          QUESTION_MEDICINERING_ID,
+          QUESTION_BEDOMNING_ID,
+          QUESTION_GLASOGON_STYRKA_V2_ID);
 
   @Override
   public List<CertificateModelId> certificateModelIds() {
@@ -178,22 +247,17 @@ public class TestabilityCertificateFillServiceTS8071V2 implements
   }
 
   @Override
-  public List<ElementData> fill(CertificateModel certificateModel,
-      TestabilityFillTypeDTO fillType) {
+  public List<ElementData> fill(
+      CertificateModel certificateModel, TestabilityFillTypeDTO fillType) {
 
-    return fillType == EMPTY
-        ? Collections.emptyList()
-        : fillWithValues(certificateModel, fillType);
+    return fillType == EMPTY ? Collections.emptyList() : fillWithValues(certificateModel, fillType);
   }
 
-  private static List<ElementData> fillWithValues(CertificateModel certificateModel,
-      TestabilityFillTypeDTO fillType) {
+  private static List<ElementData> fillWithValues(
+      CertificateModel certificateModel, TestabilityFillTypeDTO fillType) {
     final var elementIds = fillType == MAXIMAL ? MAXIMAL_IDS : MINIMAL_IDS;
 
-    return elementIds.stream()
-        .map(certificateModel::elementSpecification)
-        .toList()
-        .stream()
+    return elementIds.stream().map(certificateModel::elementSpecification).toList().stream()
         .map(element -> fill(element, fillType))
         .filter(Objects::nonNull)
         .toList();
@@ -213,11 +277,12 @@ public class TestabilityCertificateFillServiceTS8071V2 implements
       final var questionName = elementSpecification.configuration().name();
       return ElementData.builder()
           .id(elementSpecification.id())
-          .value(elementValueText.withText(
-              String.format(
-                  "Ett exempel på text för frågan %s",
-                  elementSpecification.configuration().name()
-              ).substring(0, questionName.length() < 50 ? questionName.length() - 1 : 49)))
+          .value(
+              elementValueText.withText(
+                  String.format(
+                          "Ett exempel på text för frågan %s",
+                          elementSpecification.configuration().name())
+                      .substring(0, questionName.length() < 50 ? questionName.length() - 1 : 49)))
           .build();
     }
 
@@ -232,12 +297,7 @@ public class TestabilityCertificateFillServiceTS8071V2 implements
       final var code = getCode(elementSpecification.id(), fillType).code();
       return ElementData.builder()
           .id(elementSpecification.id())
-          .value(
-              ElementValueCode.builder()
-                  .code(code)
-                  .codeId(new FieldId(code))
-                  .build()
-          )
+          .value(ElementValueCode.builder().code(code).codeId(new FieldId(code)).build())
           .build();
     }
 
@@ -246,13 +306,8 @@ public class TestabilityCertificateFillServiceTS8071V2 implements
       return ElementData.builder()
           .id(elementSpecification.id())
           .value(
-              elementValueCodeList.withList(List.of(
-                  ElementValueCode.builder()
-                      .code(code)
-                      .codeId(new FieldId(code))
-                      .build()
-              ))
-          )
+              elementValueCodeList.withList(
+                  List.of(ElementValueCode.builder().code(code).codeId(new FieldId(code)).build())))
           .build();
     }
 
@@ -266,31 +321,21 @@ public class TestabilityCertificateFillServiceTS8071V2 implements
                       VisualAcuity.builder()
                           .withoutCorrection(
                               getCorrection(config.binocular().withoutCorrectionId(), 1D))
-                          .withCorrection(
-                              getCorrection(config.binocular().withCorrectionId(), 1D)
-                          )
-                          .build()
-                  )
+                          .withCorrection(getCorrection(config.binocular().withCorrectionId(), 1D))
+                          .build())
                   .rightEye(
                       VisualAcuity.builder()
                           .withoutCorrection(
                               getCorrection(config.rightEye().withoutCorrectionId(), 0.5D))
-                          .withCorrection(
-                              getCorrection(config.rightEye().withCorrectionId(), 0.8)
-                          )
-                          .build()
-                  )
+                          .withCorrection(getCorrection(config.rightEye().withCorrectionId(), 0.8))
+                          .build())
                   .leftEye(
                       VisualAcuity.builder()
                           .withoutCorrection(
                               getCorrection(config.leftEye().withoutCorrectionId(), 0.0D))
-                          .withCorrection(
-                              getCorrection(config.leftEye().withCorrectionId(), 0.1D)
-                          )
-                          .build()
-                  )
-                  .build()
-          )
+                          .withCorrection(getCorrection(config.leftEye().withCorrectionId(), 0.1D))
+                          .build())
+                  .build())
           .build();
     }
 
@@ -298,10 +343,7 @@ public class TestabilityCertificateFillServiceTS8071V2 implements
   }
 
   private static Correction getCorrection(String id, Double value) {
-    return Correction.builder()
-        .id(new FieldId(id))
-        .value(value)
-        .build();
+    return Correction.builder().id(new FieldId(id)).value(value).build();
   }
 
   private static boolean getBoolean(ElementId elementId, TestabilityFillTypeDTO fillType) {
@@ -312,7 +354,6 @@ public class TestabilityCertificateFillServiceTS8071V2 implements
     return elementId != QUESTION_SYNFUNKTIONER_ID
         && elementId != QUESTION_MISSBRUK_JOURNALUPPGIFTER_V2_ID;
   }
-
 
   private static Code getCode(ElementId elementId, TestabilityFillTypeDTO fillType) {
     if (elementId == QUESTION_IDENTITET_ID) {
@@ -359,9 +400,6 @@ public class TestabilityCertificateFillServiceTS8071V2 implements
     }
 
     throw new IllegalStateException(
-        String.format("Code not defined in TS8071V2 fill service for question %s",
-            elementId.id()));
-
+        String.format("Code not defined in TS8071V2 fill service for question %s", elementId.id()));
   }
 }
-

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.v2;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.common.QuestionSynskarpa.LEFT_EYE_WITHOUT_CORRECTION_ID;
@@ -32,32 +50,17 @@ public class QuestionGlasogonStyrkaV2 {
                     "Vid korrigering av synskärpa med glasögon, har något av glasen en styrka över plus 8 dioptrier i den mest brytande meridianen?")
                 .selectedText("Ja")
                 .unselectedText("Nej")
-                .build()
-        )
+                .build())
         .rules(
             List.of(
                 CertificateElementRuleFactory.visualAcuities(
                     QUESTION_SYNSKARPA_ID,
                     new FieldId(LEFT_EYE_WITHOUT_CORRECTION_ID),
-                    new FieldId(RIGHT_EYE_WITHOUT_CORRECTION_ID)
-                ),
+                    new FieldId(RIGHT_EYE_WITHOUT_CORRECTION_ID)),
                 CertificateElementRuleFactory.mandatoryExist(
-                    QUESTION_GLASOGON_STYRKA_V2_ID,
-                    QUESTION_GLASOGON_STYRKA_V2_FIELD_ID
-                )
-            )
-        )
-        .validations(
-            List.of(
-                ElementValidationBoolean.builder()
-                    .mandatory(true)
-                    .build()
-            )
-        )
-        .shouldValidate(
-            ElementDataPredicateFactory.visualAcuities(QUESTION_SYNSKARPA_ID, 0.8, 0.1)
-        )
+                    QUESTION_GLASOGON_STYRKA_V2_ID, QUESTION_GLASOGON_STYRKA_V2_FIELD_ID)))
+        .validations(List.of(ElementValidationBoolean.builder().mandatory(true).build()))
+        .shouldValidate(ElementDataPredicateFactory.visualAcuities(QUESTION_SYNSKARPA_ID, 0.8, 0.1))
         .build();
   }
 }
-

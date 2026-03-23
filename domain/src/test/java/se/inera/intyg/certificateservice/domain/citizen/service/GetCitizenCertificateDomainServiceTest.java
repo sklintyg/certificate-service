@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.citizen.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -27,43 +45,36 @@ class GetCitizenCertificateDomainServiceTest {
 
   private static final String TOLVAN_ID = "191212121212";
   private static final String LILLTOLVAN_ID = "201212121212";
-  private static final PersonId TOLVAN_PERSON_ID = PersonId.builder()
-      .type(PersonIdType.PERSONAL_IDENTITY_NUMBER)
-      .id(TOLVAN_ID)
-      .build();
-  private static final PersonId LILLTOLVAN_PERSON_ID = PersonId.builder()
-      .type(PersonIdType.PERSONAL_IDENTITY_NUMBER)
-      .id(LILLTOLVAN_ID)
-      .build();
+  private static final PersonId TOLVAN_PERSON_ID =
+      PersonId.builder().type(PersonIdType.PERSONAL_IDENTITY_NUMBER).id(TOLVAN_ID).build();
+  private static final PersonId LILLTOLVAN_PERSON_ID =
+      PersonId.builder().type(PersonIdType.PERSONAL_IDENTITY_NUMBER).id(LILLTOLVAN_ID).build();
   private static final CertificateId CERTIFICATE_ID = new CertificateId("CERTIFICATE_ID");
   private static final Certificate CERTIFICATE = getCertificate(TOLVAN_ID, true);
 
-  @Mock
-  CertificateRepository certificateRepository;
+  @Mock CertificateRepository certificateRepository;
 
-  @InjectMocks
-  GetCitizenCertificateDomainService getCitizenCertificateDomainService;
+  @InjectMocks GetCitizenCertificateDomainService getCitizenCertificateDomainService;
 
   @Nested
   class AvailableForCitizen {
 
     @BeforeEach
     void setup() {
-      when(certificateRepository.getById(CERTIFICATE_ID))
-          .thenReturn(CERTIFICATE);
+      when(certificateRepository.getById(CERTIFICATE_ID)).thenReturn(CERTIFICATE);
     }
 
     @Test
     void shouldThrowIfPatientIdDoesNotMatchCitizen() {
-      assertThrows(CitizenCertificateForbidden.class,
-          () -> getCitizenCertificateDomainService.get(CERTIFICATE_ID, LILLTOLVAN_PERSON_ID)
-      );
+      assertThrows(
+          CitizenCertificateForbidden.class,
+          () -> getCitizenCertificateDomainService.get(CERTIFICATE_ID, LILLTOLVAN_PERSON_ID));
     }
 
     @Test
     void shouldReturnCertificateIfPatientIdMatchesCitizen() {
-      final var certificate = getCitizenCertificateDomainService.get(CERTIFICATE_ID,
-          TOLVAN_PERSON_ID);
+      final var certificate =
+          getCitizenCertificateDomainService.get(CERTIFICATE_ID, TOLVAN_PERSON_ID);
 
       assertEquals(CERTIFICATE, certificate);
     }
@@ -74,23 +85,19 @@ class GetCitizenCertificateDomainServiceTest {
     when(certificateRepository.getById(CERTIFICATE_ID))
         .thenReturn(getCertificate(LILLTOLVAN_ID, false));
 
-    assertThrows(CitizenCertificateForbidden.class,
-        () -> getCitizenCertificateDomainService.get(CERTIFICATE_ID, LILLTOLVAN_PERSON_ID)
-    );
+    assertThrows(
+        CitizenCertificateForbidden.class,
+        () -> getCitizenCertificateDomainService.get(CERTIFICATE_ID, LILLTOLVAN_PERSON_ID));
   }
 
   private static Certificate getCertificate(String personId, Boolean availableForCitizen) {
     return MedicalCertificate.builder()
-        .certificateModel(CertificateModel.builder()
-            .availableForCitizen(availableForCitizen)
-            .build())
-        .certificateMetaData(CertificateMetaData.builder()
-            .patient(Patient.builder()
-                .id(PersonId.builder()
-                    .id(personId)
-                    .build())
+        .certificateModel(
+            CertificateModel.builder().availableForCitizen(availableForCitizen).build())
+        .certificateMetaData(
+            CertificateMetaData.builder()
+                .patient(Patient.builder().id(PersonId.builder().id(personId).build()).build())
                 .build())
-            .build())
         .build();
   }
 }

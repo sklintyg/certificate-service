@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.pdfboxgenerator.pdf.value;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -21,7 +39,8 @@ class PdfCodeListValueGeneratorTest {
   private static final FieldId CODE_FIELD_ID = new FieldId("AKUT_LIVSHOTANDE");
   private static final String CHECKBOX_VALUE = "1";
 
-  private static final PdfCodeListValueGenerator pdfCodeListValueGenerator = new PdfCodeListValueGenerator();
+  private static final PdfCodeListValueGenerator pdfCodeListValueGenerator =
+      new PdfCodeListValueGenerator();
 
   @Test
   void shouldReturnType() {
@@ -30,33 +49,25 @@ class PdfCodeListValueGeneratorTest {
 
   @Test
   void shouldSetValueIfElementDataWithCodeListValue() {
-    final var expected = List.of(
-        PdfField.builder()
-            .id(PDF_FIELD_ID)
-            .value(CHECKBOX_VALUE)
-            .build()
-    );
+    final var expected = List.of(PdfField.builder().id(PDF_FIELD_ID).value(CHECKBOX_VALUE).build());
 
-    final var elementSpecification = ElementSpecification.builder()
-        .pdfConfiguration(
-            PdfConfigurationCode.builder()
-                .codes(
-                    Map.of(CODE_FIELD_ID, new PdfFieldId(PDF_FIELD_ID))
-                )
-                .build()
-        )
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .pdfConfiguration(
+                PdfConfigurationCode.builder()
+                    .codes(Map.of(CODE_FIELD_ID, new PdfFieldId(PDF_FIELD_ID)))
+                    .build())
+            .build();
 
-    final var elementValue = ElementValueCodeList.builder()
-        .list(
-            List.of(
-                ElementValueCode.builder()
-                    .codeId(CODE_FIELD_ID)
-                    .code(CODE_FIELD_ID.value())
-                    .build()
-            )
-        )
-        .build();
+    final var elementValue =
+        ElementValueCodeList.builder()
+            .list(
+                List.of(
+                    ElementValueCode.builder()
+                        .codeId(CODE_FIELD_ID)
+                        .code(CODE_FIELD_ID.value())
+                        .build()))
+            .build();
 
     final var result = pdfCodeListValueGenerator.generate(elementSpecification, elementValue);
 
@@ -65,23 +76,16 @@ class PdfCodeListValueGeneratorTest {
 
   @Test
   void shouldReturnEmptyListIfElementDataWithInvalidCode() {
-    final var elementSpecification = ElementSpecification.builder()
-        .pdfConfiguration(
-            PdfConfigurationCode.builder()
-                .codes(
-                    Map.of(CODE_FIELD_ID, new PdfFieldId(PDF_FIELD_ID))
-                )
-                .build()
-        )
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .pdfConfiguration(
+                PdfConfigurationCode.builder()
+                    .codes(Map.of(CODE_FIELD_ID, new PdfFieldId(PDF_FIELD_ID)))
+                    .build())
+            .build();
 
-    final var elementValue = ElementValueCodeList.builder()
-        .list(
-            List.of(
-                ElementValueCode.builder().build()
-            )
-        )
-        .build();
+    final var elementValue =
+        ElementValueCodeList.builder().list(List.of(ElementValueCode.builder().build())).build();
 
     final var result = pdfCodeListValueGenerator.generate(elementSpecification, elementValue);
 
@@ -90,30 +94,26 @@ class PdfCodeListValueGeneratorTest {
 
   @Test
   void shouldThrowExceptionIfCodeIdIsMissingFromPdfConfiguration() {
-    final var elementSpecification = ElementSpecification.builder()
-        .pdfConfiguration(
-            PdfConfigurationCode.builder()
-                .codes(
-                    Map.of(CODE_FIELD_ID, new PdfFieldId(PDF_FIELD_ID))
-                )
-                .build()
-        )
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .pdfConfiguration(
+                PdfConfigurationCode.builder()
+                    .codes(Map.of(CODE_FIELD_ID, new PdfFieldId(PDF_FIELD_ID)))
+                    .build())
+            .build();
 
-    final var elementValue = ElementValueCodeList.builder()
-        .list(
-            List.of(
-                ElementValueCode.builder()
-                    .codeId(new FieldId("missing codeId"))
-                    .code("missing codeId")
-                    .build()
-            )
-        )
-        .build();
+    final var elementValue =
+        ElementValueCodeList.builder()
+            .list(
+                List.of(
+                    ElementValueCode.builder()
+                        .codeId(new FieldId("missing codeId"))
+                        .code("missing codeId")
+                        .build()))
+            .build();
 
-    assertThrows(IllegalArgumentException.class,
-        () -> pdfCodeListValueGenerator.generate(elementSpecification, elementValue)
-    );
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> pdfCodeListValueGenerator.generate(elementSpecification, elementValue));
   }
 }
-

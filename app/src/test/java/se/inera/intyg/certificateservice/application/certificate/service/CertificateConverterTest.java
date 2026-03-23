@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -43,15 +61,10 @@ class CertificateConverterTest {
   private Certificate certificate;
   private static final String KEY = "key";
 
-
-  @Mock
-  private HandleComplementElementVisibilityService handleComplementElementVisibilityService;
-  @Mock
-  private CertificateMetadataConverter certificateMetadataConverter;
-  @Mock
-  private CertificateDataConverter certificateDataConverter;
-  @InjectMocks
-  private CertificateConverter certificateConverter;
+  @Mock private HandleComplementElementVisibilityService handleComplementElementVisibilityService;
+  @Mock private CertificateMetadataConverter certificateMetadataConverter;
+  @Mock private CertificateDataConverter certificateDataConverter;
+  @InjectMocks private CertificateConverter certificateConverter;
 
   @Nested
   class ConvertForCare {
@@ -67,10 +80,11 @@ class CertificateConverterTest {
       @Test
       void shallIncludeMetadata() {
         final var expectedMetadata = CertificateMetadataDTO.builder().build();
-        doReturn(expectedMetadata).when(certificateMetadataConverter)
+        doReturn(expectedMetadata)
+            .when(certificateMetadataConverter)
             .convert(certificate, ACTION_EVALUATION);
-        final var actualMetadata = certificateMetadataConverter.convert(certificate,
-            ACTION_EVALUATION);
+        final var actualMetadata =
+            certificateMetadataConverter.convert(certificate, ACTION_EVALUATION);
         assertEquals(expectedMetadata, actualMetadata);
       }
     }
@@ -82,11 +96,12 @@ class CertificateConverterTest {
       void shallIncludeData() {
         final var expectedValue = Map.of(KEY, CertificateDataElement.builder().build());
 
-        doReturn(expectedValue).when(certificateDataConverter)
-            .convert(certificate, false);
+        doReturn(expectedValue).when(certificateDataConverter).convert(certificate, false);
 
-        assertEquals(expectedValue,
-            certificateConverter.convert(certificate, resourceLinkDTOs, ACTION_EVALUATION)
+        assertEquals(
+            expectedValue,
+            certificateConverter
+                .convert(certificate, resourceLinkDTOs, ACTION_EVALUATION)
                 .getData());
       }
     }
@@ -98,7 +113,8 @@ class CertificateConverterTest {
       void shallIncludeLinks() {
         final var resourceLinkDTO = ResourceLinkDTO.builder().build();
         final var expectedLinks = List.of(resourceLinkDTO);
-        assertEquals(expectedLinks,
+        assertEquals(
+            expectedLinks,
             certificateConverter.convert(certificate, expectedLinks, ACTION_EVALUATION).getLinks());
       }
     }
@@ -119,11 +135,12 @@ class CertificateConverterTest {
       void shallIncludeMetadata() {
         final var expectedMetadata = CertificateMetadataDTO.builder().build();
 
-        doReturn(expectedMetadata).when(certificateMetadataConverter)
+        doReturn(expectedMetadata)
+            .when(certificateMetadataConverter)
             .convert(certificate, ACTION_EVALUATION);
 
-        final var actualMetadata = certificateMetadataConverter.convert(certificate,
-            ACTION_EVALUATION);
+        final var actualMetadata =
+            certificateMetadataConverter.convert(certificate, ACTION_EVALUATION);
 
         assertEquals(expectedMetadata, actualMetadata);
       }
@@ -136,12 +153,11 @@ class CertificateConverterTest {
       void shallIncludeData() {
         final var expectedValue = Map.of(KEY, CertificateDataElement.builder().build());
 
-        doReturn(expectedValue).when(certificateDataConverter)
-            .convert(certificate, true);
+        doReturn(expectedValue).when(certificateDataConverter).convert(certificate, true);
 
-        assertEquals(expectedValue,
-            certificateConverter.convertForCitizen(certificate, resourceLinkDTOs)
-                .getData());
+        assertEquals(
+            expectedValue,
+            certificateConverter.convertForCitizen(certificate, resourceLinkDTOs).getData());
       }
     }
 
@@ -153,7 +169,8 @@ class CertificateConverterTest {
         final var resourceLinkDTO = ResourceLinkDTO.builder().build();
         final var expectedLinks = List.of(resourceLinkDTO);
 
-        assertEquals(expectedLinks,
+        assertEquals(
+            expectedLinks,
             certificateConverter.convertForCitizen(certificate, expectedLinks).getLinks());
       }
     }
@@ -166,95 +183,73 @@ class CertificateConverterTest {
     void shallHandleVisibilityConfigurationIfCertificateIsDraftWithComplementOnParent() {
       final var elementId = new ElementId("id");
 
-      final var visibilityConfiguration = ElementVisibilityConfigurationsCheckboxMultipleCode
-          .builder()
-          .build();
+      final var visibilityConfiguration =
+          ElementVisibilityConfigurationsCheckboxMultipleCode.builder().build();
 
-      final var medicalCertificate = MedicalCertificate.builder()
-          .status(Status.DRAFT)
-          .certificateModel(
-              CertificateModel.builder()
-                  .elementSpecifications(
-                      List.of(
-                          ElementSpecification.builder()
-                              .id(elementId)
-                              .visibilityConfiguration(
-                                  visibilityConfiguration
-                              )
-                              .build()
-                      )
-                  )
-                  .build()
-          )
-          .parent(
-              Relation.builder()
-                  .type(RelationType.COMPLEMENT)
-                  .certificate(
-                      MedicalCertificate.builder()
-                          .messages(
-                              List.of(
-                                  Message.builder()
-                                      .complements(
-                                          List.of(
-                                              Complement.builder()
-                                                  .elementId(elementId)
-                                                  .build()
-                                          )
-                                      )
-                                      .build()
-                              )
-                          )
-                          .build()
-                  )
-                  .build()
-          )
-          .build();
+      final var medicalCertificate =
+          MedicalCertificate.builder()
+              .status(Status.DRAFT)
+              .certificateModel(
+                  CertificateModel.builder()
+                      .elementSpecifications(
+                          List.of(
+                              ElementSpecification.builder()
+                                  .id(elementId)
+                                  .visibilityConfiguration(visibilityConfiguration)
+                                  .build()))
+                      .build())
+              .parent(
+                  Relation.builder()
+                      .type(RelationType.COMPLEMENT)
+                      .certificate(
+                          MedicalCertificate.builder()
+                              .messages(
+                                  List.of(
+                                      Message.builder()
+                                          .complements(
+                                              List.of(
+                                                  Complement.builder()
+                                                      .elementId(elementId)
+                                                      .build()))
+                                          .build()))
+                              .build())
+                      .build())
+              .build();
 
       final var dataElementMap = Map.of(KEY, CertificateDataElement.builder().build());
 
-      doReturn(dataElementMap).when(certificateDataConverter)
-          .convert(medicalCertificate, false);
+      doReturn(dataElementMap).when(certificateDataConverter).convert(medicalCertificate, false);
 
       certificateConverter.convert(medicalCertificate, resourceLinkDTOs, ACTION_EVALUATION);
 
-      verify(handleComplementElementVisibilityService).handle(
-          elementId,
-          dataElementMap,
-          medicalCertificate,
-          visibilityConfiguration
-      );
+      verify(handleComplementElementVisibilityService)
+          .handle(elementId, dataElementMap, medicalCertificate, visibilityConfiguration);
     }
 
     @Test
     void shallNotHandleVisibilityConfigurationIfCertificateIsDraftWithoutComplementOnParent() {
       final var elementId = new ElementId("id");
 
-      final var visibilityConfiguration = ElementVisibilityConfigurationsCheckboxMultipleCode
-          .builder()
-          .build();
+      final var visibilityConfiguration =
+          ElementVisibilityConfigurationsCheckboxMultipleCode.builder().build();
 
-      final var medicalCertificate = MedicalCertificate.builder()
-          .status(Status.DRAFT)
-          .certificateModel(
-              CertificateModel.builder()
-                  .elementSpecifications(
-                      List.of(
-                          ElementSpecification.builder()
-                              .id(elementId)
-                              .visibilityConfiguration(
-                                  visibilityConfiguration
-                              )
-                              .build()
-                      )
-                  )
-                  .build()
-          )
-          .build();
+      final var medicalCertificate =
+          MedicalCertificate.builder()
+              .status(Status.DRAFT)
+              .certificateModel(
+                  CertificateModel.builder()
+                      .elementSpecifications(
+                          List.of(
+                              ElementSpecification.builder()
+                                  .id(elementId)
+                                  .visibilityConfiguration(visibilityConfiguration)
+                                  .build()))
+                      .build())
+              .build();
 
       final var dataElementMap = Map.of(KEY, CertificateDataElement.builder().build());
 
-      doReturn(dataElementMap).when(certificateDataConverter)
-          .convert(medicalCertificate, false);
+      doReturn(dataElementMap).when(certificateDataConverter).convert(medicalCertificate, false);
 
       certificateConverter.convert(medicalCertificate, resourceLinkDTOs, ACTION_EVALUATION);
 
@@ -262,50 +257,39 @@ class CertificateConverterTest {
     }
 
     @Test
-    void shallNotHandleVisibilityConfigurationIfCertificateIsDraftWithComplementOnParentWithoutVisibilityConfiguration() {
+    void
+        shallNotHandleVisibilityConfigurationIfCertificateIsDraftWithComplementOnParentWithoutVisibilityConfiguration() {
       final var elementId = new ElementId("id");
 
-      final var medicalCertificate = MedicalCertificate.builder()
-          .status(Status.DRAFT)
-          .certificateModel(
-              CertificateModel.builder()
-                  .elementSpecifications(
-                      List.of(
-                          ElementSpecification.builder()
-                              .id(elementId)
-                              .build()
-                      )
-                  )
-                  .build()
-          )
-          .parent(
-              Relation.builder()
-                  .type(RelationType.COMPLEMENT)
-                  .certificate(
-                      MedicalCertificate.builder()
-                          .messages(
-                              List.of(
-                                  Message.builder()
-                                      .complements(
-                                          List.of(
-                                              Complement.builder()
-                                                  .elementId(elementId)
-                                                  .build()
-                                          )
-                                      )
-                                      .build()
-                              )
-                          )
-                          .build()
-                  )
-                  .build()
-          )
-          .build();
+      final var medicalCertificate =
+          MedicalCertificate.builder()
+              .status(Status.DRAFT)
+              .certificateModel(
+                  CertificateModel.builder()
+                      .elementSpecifications(
+                          List.of(ElementSpecification.builder().id(elementId).build()))
+                      .build())
+              .parent(
+                  Relation.builder()
+                      .type(RelationType.COMPLEMENT)
+                      .certificate(
+                          MedicalCertificate.builder()
+                              .messages(
+                                  List.of(
+                                      Message.builder()
+                                          .complements(
+                                              List.of(
+                                                  Complement.builder()
+                                                      .elementId(elementId)
+                                                      .build()))
+                                          .build()))
+                              .build())
+                      .build())
+              .build();
 
       final var dataElementMap = Map.of(KEY, CertificateDataElement.builder().build());
 
-      doReturn(dataElementMap).when(certificateDataConverter)
-          .convert(medicalCertificate, false);
+      doReturn(dataElementMap).when(certificateDataConverter).convert(medicalCertificate, false);
 
       certificateConverter.convert(medicalCertificate, resourceLinkDTOs, ACTION_EVALUATION);
 
@@ -314,9 +298,7 @@ class CertificateConverterTest {
 
     @Test
     void shallNotHandleVisibilityConfigurationIfCertificateIsNotDraft() {
-      final var medicalCertificate = MedicalCertificate.builder()
-          .status(Status.SIGNED)
-          .build();
+      final var medicalCertificate = MedicalCertificate.builder().status(Status.SIGNED).build();
 
       certificateConverter.convert(medicalCertificate, resourceLinkDTOs, ACTION_EVALUATION);
 

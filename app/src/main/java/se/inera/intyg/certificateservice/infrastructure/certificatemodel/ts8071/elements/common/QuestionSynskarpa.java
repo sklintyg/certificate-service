@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.common;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.common.QuestionSynfunktioner.QUESTION_SYNFUNKTIONER_FIELD_ID;
@@ -44,24 +62,20 @@ public class QuestionSynskarpa {
                         .label("Höger öga")
                         .withoutCorrectionId(RIGHT_EYE_WITHOUT_CORRECTION_ID)
                         .withCorrectionId(RIGHT_EYE_WITH_CORRECTION_ID)
-                        .build()
-                )
+                        .build())
                 .leftEye(
                     ElementVisualAcuity.builder()
                         .label("Vänster öga")
                         .withoutCorrectionId(LEFT_EYE_WITHOUT_CORRECTION_ID)
                         .withCorrectionId(LEFT_EYE_WITH_CORRECTION_ID)
-                        .build()
-                )
+                        .build())
                 .binocular(
                     ElementVisualAcuity.builder()
                         .label("Binokulärt")
                         .withoutCorrectionId(BINOCULAR_WITHOUT_CORRECTION_ID)
                         .withCorrectionId(BINOCULAR_WITH_CORRECTION_ID)
-                        .build()
-                )
-                .build()
-        )
+                        .build())
+                .build())
         .validations(
             List.of(
                 ElementValidationVisualAcuities.builder()
@@ -70,26 +84,17 @@ public class QuestionSynskarpa {
                     .max(2.0)
                     .minAllowedSightOneEye(0.1)
                     .minAllowedSightOtherEye(0.8)
-                    .build()
-            )
-
-        )
+                    .build()))
         .rules(
             List.of(
                 CertificateElementRuleFactory.showIfNot(
-                    QUESTION_SYNFUNKTIONER_ID,
-                    QUESTION_SYNFUNKTIONER_FIELD_ID
-                ),
+                    QUESTION_SYNFUNKTIONER_ID, QUESTION_SYNFUNKTIONER_FIELD_ID),
                 CertificateElementRuleFactory.mandatoryAndExist(
                     QUESTION_SYNSKARPA_ID,
                     List.of(
                         new FieldId(RIGHT_EYE_WITHOUT_CORRECTION_ID),
                         new FieldId(LEFT_EYE_WITHOUT_CORRECTION_ID),
-                        new FieldId(BINOCULAR_WITHOUT_CORRECTION_ID)
-                    )
-                )
-            )
-        )
+                        new FieldId(BINOCULAR_WITHOUT_CORRECTION_ID)))))
         .shouldValidate(ElementDataPredicateFactory.valueBoolean(QUESTION_SYNFUNKTIONER_ID, false))
         .build();
   }

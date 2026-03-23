@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7809.elements;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7809.elements.QuestionPagaendeOchPlaneradeBehandlingar.QUESTION_PAGAENDE_ELLER_PLANERAD_BEHANDLING_FIELD_ID;
@@ -17,11 +35,10 @@ import se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.
 
 public class QuestionVardenhetOchTidplan {
 
-  public static final ElementId QUESTION_VARDENHET_OCH_TIDPLAN_ID = new ElementId(
-      "50.2");
+  public static final ElementId QUESTION_VARDENHET_OCH_TIDPLAN_ID = new ElementId("50.2");
   private static final FieldId QUESTION_VARDENHET_OCH_TIDPLAN_FIELD_ID = new FieldId("50.2");
-  private static final PdfFieldId PDF_FIELD_ID = new PdfFieldId(
-      "form1[0].#subform[2].flt_txtVardenhetTidplan[0]");
+  private static final PdfFieldId PDF_FIELD_ID =
+      new PdfFieldId("form1[0].#subform[2].flt_txtVardenhetTidplan[0]");
 
   private QuestionVardenhetOchTidplan() {
     throw new IllegalStateException("Utility class");
@@ -34,47 +51,32 @@ public class QuestionVardenhetOchTidplan {
             ElementConfigurationTextField.builder()
                 .id(QUESTION_VARDENHET_OCH_TIDPLAN_FIELD_ID)
                 .name("Ange ansvarig vårdenhet och tidplan")
-                .build()
-        )
+                .build())
         .rules(
             List.of(
                 CertificateElementRuleFactory.mandatory(
-                    QUESTION_VARDENHET_OCH_TIDPLAN_ID,
-                    QUESTION_VARDENHET_OCH_TIDPLAN_FIELD_ID
-                ),
+                    QUESTION_VARDENHET_OCH_TIDPLAN_ID, QUESTION_VARDENHET_OCH_TIDPLAN_FIELD_ID),
                 CertificateElementRuleFactory.limit(
-                    QUESTION_VARDENHET_OCH_TIDPLAN_ID,
-                    (short) 4000),
+                    QUESTION_VARDENHET_OCH_TIDPLAN_ID, (short) 4000),
                 CertificateElementRuleFactory.show(
                     QUESTION_PAGAENDE_ELLER_PLANERAD_BEHANDLING_ID,
-                    QUESTION_PAGAENDE_ELLER_PLANERAD_BEHANDLING_FIELD_ID
-                )
-            )
-        )
-        .validations(
-            List.of(
-                ElementValidationText.builder()
-                    .mandatory(true)
-                    .limit(4000)
-                    .build()
-            )
-        )
-        .mapping(
-            new ElementMapping(QUESTION_PAGAENDE_ELLER_PLANERAD_BEHANDLING_ID, null)
-        )
+                    QUESTION_PAGAENDE_ELLER_PLANERAD_BEHANDLING_FIELD_ID)))
+        .validations(List.of(ElementValidationText.builder().mandatory(true).limit(4000).build()))
+        .mapping(new ElementMapping(QUESTION_PAGAENDE_ELLER_PLANERAD_BEHANDLING_ID, null))
         .pdfConfiguration(
             PdfConfigurationText.builder()
                 .pdfFieldId(PDF_FIELD_ID)
                 .maxLength(53)
                 .overflowSheetFieldId(
                     new PdfFieldId(("form1[0].#subform[4].flt_txtFortsattningsblad[0]")))
-                .build()
-        )
+                .build())
         .shouldValidate(
-            elementData -> elementData.stream()
-                .filter(data -> data.id().equals(QUESTION_PAGAENDE_ELLER_PLANERAD_BEHANDLING_ID))
-                .map(element -> (ElementValueText) element.value())
-                .anyMatch(value -> value.text() != null && !value.text().isEmpty())
-        ).build();
+            elementData ->
+                elementData.stream()
+                    .filter(
+                        data -> data.id().equals(QUESTION_PAGAENDE_ELLER_PLANERAD_BEHANDLING_ID))
+                    .map(element -> (ElementValueText) element.value())
+                    .anyMatch(value -> value.text() != null && !value.text().isEmpty()))
+        .build();
   }
 }

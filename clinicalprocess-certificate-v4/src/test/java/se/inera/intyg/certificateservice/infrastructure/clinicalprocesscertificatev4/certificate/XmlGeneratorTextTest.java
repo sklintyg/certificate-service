@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.certificate;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -25,18 +43,15 @@ class XmlGeneratorTextTest {
   private static final String VALUE = "VALUE";
   private final ElementSpecification ELEMENT_SPECIFICATION = ElementSpecification.builder().build();
 
-  @InjectMocks
-  private XmlGeneratorText xmlGeneratorText;
+  @InjectMocks private XmlGeneratorText xmlGeneratorText;
 
   @Test
   void shouldMapDate() {
-    final var data = ElementData.builder()
-        .id(new ElementId(QUESTION_ID))
-        .value(ElementValueText.builder()
-            .text(VALUE)
-            .textId(new FieldId(ANSWER_ID))
-            .build())
-        .build();
+    final var data =
+        ElementData.builder()
+            .id(new ElementId(QUESTION_ID))
+            .value(ElementValueText.builder().text(VALUE).textId(new FieldId(ANSWER_ID)).build())
+            .build();
     final var expectedData = new Svar();
     final var subAnswer = new Delsvar();
     subAnswer.getContent().add(VALUE);
@@ -48,22 +63,23 @@ class XmlGeneratorTextTest {
 
     assertAll(
         () -> assertEquals(expectedData.getId(), response.get(0).getId()),
-        () -> assertEquals(expectedData.getDelsvar().get(0).getId(),
-            response.get(0).getDelsvar().get(0).getId()),
-        () -> assertEquals(expectedData.getDelsvar().get(0).getContent().get(0),
-            response.get(0).getDelsvar().get(0).getContent().get(0))
-    );
+        () ->
+            assertEquals(
+                expectedData.getDelsvar().get(0).getId(),
+                response.get(0).getDelsvar().get(0).getId()),
+        () ->
+            assertEquals(
+                expectedData.getDelsvar().get(0).getContent().get(0),
+                response.get(0).getDelsvar().get(0).getContent().get(0)));
   }
 
   @Test
   void shouldMapEmptyIfNullValue() {
-    final var data = ElementData.builder()
-        .value(ElementValueText.builder()
-            .textId(new FieldId(ANSWER_ID))
-            .build()
-        )
-        .id(new ElementId(QUESTION_ID))
-        .build();
+    final var data =
+        ElementData.builder()
+            .value(ElementValueText.builder().textId(new FieldId(ANSWER_ID)).build())
+            .id(new ElementId(QUESTION_ID))
+            .build();
 
     final var response = xmlGeneratorText.generate(data, ELEMENT_SPECIFICATION);
 
@@ -72,14 +88,11 @@ class XmlGeneratorTextTest {
 
   @Test
   void shouldMapEmptyIfEmptyValue() {
-    final var data = ElementData.builder()
-        .value(ElementValueText.builder()
-            .textId(new FieldId(ANSWER_ID))
-            .text("")
-            .build()
-        )
-        .id(new ElementId(QUESTION_ID))
-        .build();
+    final var data =
+        ElementData.builder()
+            .value(ElementValueText.builder().textId(new FieldId(ANSWER_ID)).text("").build())
+            .id(new ElementId(QUESTION_ID))
+            .build();
 
     final var response = xmlGeneratorText.generate(data, ELEMENT_SPECIFICATION);
 
@@ -88,12 +101,11 @@ class XmlGeneratorTextTest {
 
   @Test
   void shouldMapEmptyIfValueIsNotText() {
-    final var data = ElementData.builder()
-        .value(ElementValueUnitContactInformation.builder()
-            .build()
-        )
-        .id(new ElementId(QUESTION_ID))
-        .build();
+    final var data =
+        ElementData.builder()
+            .value(ElementValueUnitContactInformation.builder().build())
+            .id(new ElementId(QUESTION_ID))
+            .build();
 
     final var response = xmlGeneratorText.generate(data, ELEMENT_SPECIFICATION);
 

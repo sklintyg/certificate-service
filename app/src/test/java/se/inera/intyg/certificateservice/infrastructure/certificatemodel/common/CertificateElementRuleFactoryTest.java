@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.common;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,16 +36,15 @@ class CertificateElementRuleFactoryTest {
 
   @Test
   void shouldReturnMandatoryRule() {
-    final var expected = ElementRuleExpression.builder()
-        .id(new ElementId("ID"))
-        .type(ElementRuleType.MANDATORY)
-        .expression(new RuleExpression("$FIELD"))
-        .build();
+    final var expected =
+        ElementRuleExpression.builder()
+            .id(new ElementId("ID"))
+            .type(ElementRuleType.MANDATORY)
+            .expression(new RuleExpression("$FIELD"))
+            .build();
 
-    final var response = CertificateElementRuleFactory.mandatory(
-        new ElementId("ID"),
-        new FieldId("FIELD")
-    );
+    final var response =
+        CertificateElementRuleFactory.mandatory(new ElementId("ID"), new FieldId("FIELD"));
 
     assertEquals(expected, response);
   }
@@ -35,214 +52,208 @@ class CertificateElementRuleFactoryTest {
   @Test
   void shouldReturnAutoFillRule() {
     final var fieldToFill = new FieldId("FIELDTOFILL");
-    final var elementToFill = ElementValueBoolean.builder()
-        .booleanId(fieldToFill)
-        .value(true)
-        .build();
-    final var expected = ElementRuleAutofill.builder()
-        .id(new ElementId("ID"))
-        .type(ElementRuleType.AUTO_FILL)
-        .expression(new RuleExpression("$FIELD"))
-        .fillValue(elementToFill)
-        .build();
+    final var elementToFill =
+        ElementValueBoolean.builder().booleanId(fieldToFill).value(true).build();
+    final var expected =
+        ElementRuleAutofill.builder()
+            .id(new ElementId("ID"))
+            .type(ElementRuleType.AUTO_FILL)
+            .expression(new RuleExpression("$FIELD"))
+            .fillValue(elementToFill)
+            .build();
 
-    final var response = CertificateElementRuleFactory.autofill(
-        new ElementId("ID"),
-        new FieldId("FIELD"),
-        fieldToFill
-    );
+    final var response =
+        CertificateElementRuleFactory.autofill(
+            new ElementId("ID"), new FieldId("FIELD"), fieldToFill);
 
     assertEquals(expected, response);
   }
 
   @Test
   void shouldReturnShowEmptyRule() {
-    final var expected = ElementRuleExpression.builder()
-        .id(new ElementId("ID"))
-        .type(ElementRuleType.SHOW)
-        .expression(new RuleExpression("empty($FIELD)"))
-        .build();
+    final var expected =
+        ElementRuleExpression.builder()
+            .id(new ElementId("ID"))
+            .type(ElementRuleType.SHOW)
+            .expression(new RuleExpression("empty($FIELD)"))
+            .build();
 
-    final var response = CertificateElementRuleFactory.showEmpty(
-        new ElementId("ID"),
-        new FieldId("FIELD")
-    );
+    final var response =
+        CertificateElementRuleFactory.showEmpty(new ElementId("ID"), new FieldId("FIELD"));
 
     assertEquals(expected, response);
   }
 
   @Test
   void shouldReturnDisableElementRule() {
-    final var expected = ElementRuleExpression.builder()
-        .id(new ElementId("ID"))
-        .type(ElementRuleType.DISABLE)
-        .expression(new RuleExpression("$FIELD"))
-        .build();
+    final var expected =
+        ElementRuleExpression.builder()
+            .id(new ElementId("ID"))
+            .type(ElementRuleType.DISABLE)
+            .expression(new RuleExpression("$FIELD"))
+            .build();
 
-    final var response = CertificateElementRuleFactory.disableElement(
-        new ElementId("ID"),
-        new FieldId("FIELD")
-    );
+    final var response =
+        CertificateElementRuleFactory.disableElement(new ElementId("ID"), new FieldId("FIELD"));
 
     assertEquals(expected, response);
   }
 
   @Test
   void shouldReturnDisableEmptyElementRule() {
-    final var expected = ElementRuleExpression.builder()
-        .id(new ElementId("ID"))
-        .type(ElementRuleType.DISABLE)
-        .expression(new RuleExpression("empty($FIELD)"))
-        .build();
+    final var expected =
+        ElementRuleExpression.builder()
+            .id(new ElementId("ID"))
+            .type(ElementRuleType.DISABLE)
+            .expression(new RuleExpression("empty($FIELD)"))
+            .build();
 
-    final var response = CertificateElementRuleFactory.disableEmptyElement(
-        new ElementId("ID"),
-        new FieldId("FIELD")
-    );
+    final var response =
+        CertificateElementRuleFactory.disableEmptyElement(
+            new ElementId("ID"), new FieldId("FIELD"));
 
     assertEquals(expected, response);
   }
 
   @Test
   void shouldReturnShowRule() {
-    final var expected = ElementRuleExpression.builder()
-        .id(new ElementId("ID"))
-        .type(ElementRuleType.SHOW)
-        .expression(new RuleExpression("$FIELD"))
-        .build();
+    final var expected =
+        ElementRuleExpression.builder()
+            .id(new ElementId("ID"))
+            .type(ElementRuleType.SHOW)
+            .expression(new RuleExpression("$FIELD"))
+            .build();
 
-    final var response = CertificateElementRuleFactory.show(
-        new ElementId("ID"),
-        new FieldId("FIELD")
-    );
+    final var response =
+        CertificateElementRuleFactory.show(new ElementId("ID"), new FieldId("FIELD"));
 
     assertEquals(expected, response);
   }
 
   @Test
   void shouldReturnShowIfNotRule() {
-    final var expected = ElementRuleExpression.builder()
-        .id(new ElementId("ID"))
-        .type(ElementRuleType.SHOW)
-        .expression(new RuleExpression("!$FIELD && !empty($FIELD)"))
-        .build();
+    final var expected =
+        ElementRuleExpression.builder()
+            .id(new ElementId("ID"))
+            .type(ElementRuleType.SHOW)
+            .expression(new RuleExpression("!$FIELD && !empty($FIELD)"))
+            .build();
 
-    final var response = CertificateElementRuleFactory.showIfNot(
-        new ElementId("ID"),
-        new FieldId("FIELD")
-    );
+    final var response =
+        CertificateElementRuleFactory.showIfNot(new ElementId("ID"), new FieldId("FIELD"));
 
     assertEquals(expected, response);
   }
 
-
   @Test
   void shouldReturnMandatoryRuleForSeveralFields() {
-    final var expected = ElementRuleExpression.builder()
-        .id(new ElementId("ID"))
-        .type(ElementRuleType.MANDATORY)
-        .expression(new RuleExpression("$FIELD0 || $FIELD1 || $FIELD2"))
-        .build();
+    final var expected =
+        ElementRuleExpression.builder()
+            .id(new ElementId("ID"))
+            .type(ElementRuleType.MANDATORY)
+            .expression(new RuleExpression("$FIELD0 || $FIELD1 || $FIELD2"))
+            .build();
 
-    final var response = CertificateElementRuleFactory.mandatory(
-        new ElementId("ID"),
-        List.of(new FieldId("FIELD0"), new FieldId("FIELD1"), new FieldId("FIELD2"))
-    );
+    final var response =
+        CertificateElementRuleFactory.mandatory(
+            new ElementId("ID"),
+            List.of(new FieldId("FIELD0"), new FieldId("FIELD1"), new FieldId("FIELD2")));
 
     assertEquals(expected, response);
   }
 
   @Test
   void shouldReturnMandatoryOrExistRule() {
-    final var expected = ElementRuleExpression.builder()
-        .id(new ElementId("ID"))
-        .type(ElementRuleType.MANDATORY)
-        .expression(new RuleExpression("exists($FIELD1)"))
-        .build();
+    final var expected =
+        ElementRuleExpression.builder()
+            .id(new ElementId("ID"))
+            .type(ElementRuleType.MANDATORY)
+            .expression(new RuleExpression("exists($FIELD1)"))
+            .build();
 
-    final var response = CertificateElementRuleFactory.mandatoryExist(
-        new ElementId("ID"), new FieldId("FIELD1")
-    );
+    final var response =
+        CertificateElementRuleFactory.mandatoryExist(new ElementId("ID"), new FieldId("FIELD1"));
 
     assertEquals(expected, response);
   }
 
-
   @Test
   void shouldReturnMandatoryOrExistRuleForSeveralFields() {
-    final var expected = ElementRuleExpression.builder()
-        .id(new ElementId("ID"))
-        .type(ElementRuleType.MANDATORY)
-        .expression(new RuleExpression("exists($FIELD0) || exists($FIELD1) || exists($FIELD2)"))
-        .build();
+    final var expected =
+        ElementRuleExpression.builder()
+            .id(new ElementId("ID"))
+            .type(ElementRuleType.MANDATORY)
+            .expression(new RuleExpression("exists($FIELD0) || exists($FIELD1) || exists($FIELD2)"))
+            .build();
 
-    final var response = CertificateElementRuleFactory.mandatoryOrExist(
-        new ElementId("ID"),
-        List.of(new FieldId("FIELD0"), new FieldId("FIELD1"), new FieldId("FIELD2"))
-    );
+    final var response =
+        CertificateElementRuleFactory.mandatoryOrExist(
+            new ElementId("ID"),
+            List.of(new FieldId("FIELD0"), new FieldId("FIELD1"), new FieldId("FIELD2")));
 
     assertEquals(expected, response);
   }
 
   @Test
   void shouldReturnMandatoryAndExistRuleForSeveralFields() {
-    final var expected = ElementRuleExpression.builder()
-        .id(new ElementId("ID"))
-        .type(ElementRuleType.MANDATORY)
-        .expression(new RuleExpression("exists($FIELD0) && exists($FIELD1) && exists($FIELD2)"))
-        .build();
+    final var expected =
+        ElementRuleExpression.builder()
+            .id(new ElementId("ID"))
+            .type(ElementRuleType.MANDATORY)
+            .expression(new RuleExpression("exists($FIELD0) && exists($FIELD1) && exists($FIELD2)"))
+            .build();
 
-    final var response = CertificateElementRuleFactory.mandatoryAndExist(
-        new ElementId("ID"),
-        List.of(new FieldId("FIELD0"), new FieldId("FIELD1"), new FieldId("FIELD2"))
-    );
+    final var response =
+        CertificateElementRuleFactory.mandatoryAndExist(
+            new ElementId("ID"),
+            List.of(new FieldId("FIELD0"), new FieldId("FIELD1"), new FieldId("FIELD2")));
 
     assertEquals(expected, response);
   }
 
   @Test
   void shouldReturnLimitRule() {
-    final var expected = ElementRuleLimit.builder()
-        .id(new ElementId("ID"))
-        .type(ElementRuleType.TEXT_LIMIT)
-        .limit(new RuleLimit((short) 100))
-        .build();
+    final var expected =
+        ElementRuleLimit.builder()
+            .id(new ElementId("ID"))
+            .type(ElementRuleType.TEXT_LIMIT)
+            .limit(new RuleLimit((short) 100))
+            .build();
 
-    final var response = CertificateElementRuleFactory.limit(
-        new ElementId("ID"),
-        (short) 100
-    );
+    final var response = CertificateElementRuleFactory.limit(new ElementId("ID"), (short) 100);
 
     assertEquals(expected, response);
   }
 
   @Test
   void shouldReturnMandatoryNotEmptyRule() {
-    final var expected = ElementRuleExpression.builder()
-        .id(new ElementId("ID"))
-        .type(ElementRuleType.MANDATORY)
-        .expression(new RuleExpression("!empty($FIELD1)"))
-        .build();
+    final var expected =
+        ElementRuleExpression.builder()
+            .id(new ElementId("ID"))
+            .type(ElementRuleType.MANDATORY)
+            .expression(new RuleExpression("!empty($FIELD1)"))
+            .build();
 
-    final var response = CertificateElementRuleFactory.mandatoryNotEmpty(
-        new ElementId("ID"), List.of(new FieldId("FIELD1"))
-    );
+    final var response =
+        CertificateElementRuleFactory.mandatoryNotEmpty(
+            new ElementId("ID"), List.of(new FieldId("FIELD1")));
 
     assertEquals(expected, response);
   }
 
   @Test
   void shouldReturnMandatoryNotEmptyRuleForSeveralFields() {
-    final var expected = ElementRuleExpression.builder()
-        .id(new ElementId("ID"))
-        .type(ElementRuleType.MANDATORY)
-        .expression(new RuleExpression("!empty($FIELD0) || !empty($FIELD1) || !empty($FIELD2)"))
-        .build();
+    final var expected =
+        ElementRuleExpression.builder()
+            .id(new ElementId("ID"))
+            .type(ElementRuleType.MANDATORY)
+            .expression(new RuleExpression("!empty($FIELD0) || !empty($FIELD1) || !empty($FIELD2)"))
+            .build();
 
-    final var response = CertificateElementRuleFactory.mandatoryNotEmpty(
-        new ElementId("ID"),
-        List.of(new FieldId("FIELD0"), new FieldId("FIELD1"), new FieldId("FIELD2"))
-    );
+    final var response =
+        CertificateElementRuleFactory.mandatoryNotEmpty(
+            new ElementId("ID"),
+            List.of(new FieldId("FIELD0"), new FieldId("FIELD1"), new FieldId("FIELD2")));
 
     assertEquals(expected, response);
   }
@@ -298,32 +309,31 @@ class CertificateElementRuleFactoryTest {
 
   @Test
   void shouldReturnHideRule() {
-    final var expected = ElementRuleExpression.builder()
-        .id(new ElementId("ID"))
-        .type(ElementRuleType.HIDE)
-        .expression(new RuleExpression("$FIELD"))
-        .build();
+    final var expected =
+        ElementRuleExpression.builder()
+            .id(new ElementId("ID"))
+            .type(ElementRuleType.HIDE)
+            .expression(new RuleExpression("$FIELD"))
+            .build();
 
-    final var response = CertificateElementRuleFactory.hide(
-        new ElementId("ID"),
-        new FieldId("FIELD")
-    );
+    final var response =
+        CertificateElementRuleFactory.hide(new ElementId("ID"), new FieldId("FIELD"));
 
     assertEquals(expected, response);
   }
 
   @Test
   void shouldReturnHideRuleWithExpression() {
-    final var expected = ElementRuleExpression.builder()
-        .id(new ElementId("ID"))
-        .type(ElementRuleType.HIDE)
-        .expression(new RuleExpression("someExpression"))
-        .build();
+    final var expected =
+        ElementRuleExpression.builder()
+            .id(new ElementId("ID"))
+            .type(ElementRuleType.HIDE)
+            .expression(new RuleExpression("someExpression"))
+            .build();
 
-    final var response = CertificateElementRuleFactory.hide(
-        new ElementId("ID"),
-        new RuleExpression("someExpression")
-    );
+    final var response =
+        CertificateElementRuleFactory.hide(
+            new ElementId("ID"), new RuleExpression("someExpression"));
 
     assertEquals(expected, response);
   }

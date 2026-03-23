@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.testdata;
 
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataElementDataConstants.CATEGORY_ELEMENT_ID;
@@ -27,11 +45,14 @@ import se.inera.intyg.certificateservice.domain.validation.model.ElementValidati
 
 public class TestDataElementSpecification {
 
-  public static final ElementSpecification DATE_ELEMENT_SPECIFICATION = dateElementSpecificationBuilder().build();
-  public static final ElementSpecification CATEGORY_ELEMENT_SPECIFICATION = categoryElementSpecificationBuilder().build();
-  public static final ElementSpecification MESSAGE_ELEMENT_SPECIFICATION = messageElementSpecificationBuilder().build();
-  public static final ElementSpecification ISSUING_UNIT_ELEMENT_SPECIFICATION = issuingUnitElementSpecificationBuilder().build();
-
+  public static final ElementSpecification DATE_ELEMENT_SPECIFICATION =
+      dateElementSpecificationBuilder().build();
+  public static final ElementSpecification CATEGORY_ELEMENT_SPECIFICATION =
+      categoryElementSpecificationBuilder().build();
+  public static final ElementSpecification MESSAGE_ELEMENT_SPECIFICATION =
+      messageElementSpecificationBuilder().build();
+  public static final ElementSpecification ISSUING_UNIT_ELEMENT_SPECIFICATION =
+      issuingUnitElementSpecificationBuilder().build();
 
   public static ElementSpecification.ElementSpecificationBuilder dateElementSpecificationBuilder() {
     return ElementSpecification.builder()
@@ -42,50 +63,35 @@ public class TestDataElementSpecification {
                 .id(new FieldId(DATE_ELEMENT_VALUE_ID))
                 .min(DATE_ELEMENT_CONFIGURATION_MIN)
                 .max(DATE_ELEMENT_CONFIGURATION_MAX)
-                .build()
-        )
+                .build())
         .rules(
             List.of(
                 ElementRuleExpression.builder()
                     .id(new ElementId(DATE_ELEMENT_ID))
                     .type(ElementRuleType.MANDATORY)
                     .expression(new RuleExpression(DATE_ELEMENT_RULE_EXPRESSION))
-                    .build()
-            )
-        )
-        .validations(
-            List.of(
-                ElementValidationDate.builder().build()
-            )
-        );
+                    .build()))
+        .validations(List.of(ElementValidationDate.builder().build()));
   }
 
-  public static ElementSpecification.ElementSpecificationBuilder categoryElementSpecificationBuilder() {
+  public static ElementSpecification.ElementSpecificationBuilder
+      categoryElementSpecificationBuilder() {
     return ElementSpecification.builder()
         .id(new ElementId(CATEGORY_ELEMENT_ID))
-        .configuration(
-            ElementConfigurationCategory.builder()
-                .name(CATEGORY_ELEMENT_NAME)
-                .build()
-        );
+        .configuration(ElementConfigurationCategory.builder().name(CATEGORY_ELEMENT_NAME).build());
   }
 
-  public static ElementSpecification.ElementSpecificationBuilder messageElementSpecificationBuilder() {
+  public static ElementSpecification.ElementSpecificationBuilder
+      messageElementSpecificationBuilder() {
     return ElementSpecification.builder()
         .id(new ElementId(MESSAGE_ELEMENT_ID))
-        .configuration(
-            ElementConfigurationMessage.builder()
-                .name(MESSAGE_ELEMENT_NAME)
-                .build()
-        );
+        .configuration(ElementConfigurationMessage.builder().name(MESSAGE_ELEMENT_NAME).build());
   }
 
-  public static ElementSpecification.ElementSpecificationBuilder issuingUnitElementSpecificationBuilder() {
+  public static ElementSpecification.ElementSpecificationBuilder
+      issuingUnitElementSpecificationBuilder() {
     return ElementSpecification.builder()
         .id(new ElementId(ISSUING_UNIT_ELEMENT_ID))
-        .configuration(
-            ElementConfigurationUnitContactInformation.builder()
-                .build()
-        );
+        .configuration(ElementConfigurationUnitContactInformation.builder().build());
   }
 }

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.integrationtest.common.tests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -10,31 +28,25 @@ import se.inera.intyg.certificateservice.application.certificatetypeinfo.dto.Cer
 import se.inera.intyg.certificateservice.integrationtest.common.setup.BaseIntegrationIT;
 
 public abstract class ExistsCertificateExternalTypeInfoIT extends BaseIntegrationIT {
-  
+
   @Test
-  @DisplayName("Skall returnera den senaste aktiva versionen om intygstypen med bifogat kodsystem existerar")
+  @DisplayName(
+      "Skall returnera den senaste aktiva versionen om intygstypen med bifogat kodsystem existerar")
   void shallReturnLatestVersionWhenExternalTypeExists() {
-    final var expectedCertificateModelId = CertificateModelIdDTO.builder()
-        .type(type())
-        .version(typeVersion())
-        .build();
+    final var expectedCertificateModelId =
+        CertificateModelIdDTO.builder().type(type()).version(typeVersion()).build();
 
-    final var response = api().findLatestCertificateExternalTypeVersion(
-        codeSystem(), code()
-    );
+    final var response = api().findLatestCertificateExternalTypeVersion(codeSystem(), code());
 
-    assertEquals(
-        expectedCertificateModelId,
-        certificateModelId(response.getBody())
-    );
+    assertEquals(expectedCertificateModelId, certificateModelId(response.getBody()));
   }
 
   @Test
-  @DisplayName("Skall returnera ett tomt svar om intygstypen finns men det bifogade kodsystemet matchar inte")
+  @DisplayName(
+      "Skall returnera ett tomt svar om intygstypen finns men det bifogade kodsystemet matchar inte")
   void shallReturnEmptyResponseIfCodeSystemDontMatch() {
-    final var response = api().findLatestCertificateExternalTypeVersion(
-        "invalidCodeSystem", code()
-    );
+    final var response =
+        api().findLatestCertificateExternalTypeVersion("invalidCodeSystem", code());
 
     assertNull(certificateModelId(response.getBody()));
   }
@@ -42,9 +54,8 @@ public abstract class ExistsCertificateExternalTypeInfoIT extends BaseIntegratio
   @Test
   @DisplayName("Skall returnera ett tomt svar om intygstypen inte finns")
   void shallReturnEmptyResponseIfCodeDontMatch() {
-    final var response = api().findLatestCertificateExternalTypeVersion(
-        codeSystem(), "invalidCode"
-    );
+    final var response =
+        api().findLatestCertificateExternalTypeVersion(codeSystem(), "invalidCode");
 
     assertNull(certificateModelId(response.getBody()));
   }

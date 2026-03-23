@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -36,11 +54,11 @@ class QuestionUtlatandeBaseratPaAnnatTest {
 
   @Test
   void shallIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationTextField.builder()
-        .name(
-            "Ange vad annat är")
-        .id(new FieldId("1.3"))
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationTextField.builder()
+            .name("Ange vad annat är")
+            .id(new FieldId("1.3"))
+            .build();
 
     final var element = QuestionUtlatandeBaseratPaAnnat.questionUtlatandeBaseratPaAnnat();
 
@@ -49,31 +67,23 @@ class QuestionUtlatandeBaseratPaAnnatTest {
 
   @Test
   void shallIncludeRules() {
-    final var expectedRules = List.of(
-        ElementRuleExpression.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.MANDATORY)
-            .expression(
-                new RuleExpression(
-                    "$1.3"
-                )
-            )
-            .build(),
-        ElementRuleLimit.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.TEXT_LIMIT)
-            .limit(new RuleLimit((short) 50))
-            .build(),
-        ElementRuleExpression.builder()
-            .id(new ElementId("1"))
-            .type(ElementRuleType.SHOW)
-            .expression(
-                new RuleExpression(
-                    "$annat"
-                )
-            )
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleExpression.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.MANDATORY)
+                .expression(new RuleExpression("$1.3"))
+                .build(),
+            ElementRuleLimit.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.TEXT_LIMIT)
+                .limit(new RuleLimit((short) 50))
+                .build(),
+            ElementRuleExpression.builder()
+                .id(new ElementId("1"))
+                .type(ElementRuleType.SHOW)
+                .expression(new RuleExpression("$annat"))
+                .build());
 
     final var element = QuestionUtlatandeBaseratPaAnnat.questionUtlatandeBaseratPaAnnat();
 
@@ -82,14 +92,8 @@ class QuestionUtlatandeBaseratPaAnnatTest {
 
   @Test
   void shallIncludeCustomMapping() {
-    final var expectedConfiguration = new ElementMapping(
-        new ElementId("1"),
-        new Code(
-            "ANNAT",
-            "KV_FKMU_0001",
-            "annat"
-        )
-    );
+    final var expectedConfiguration =
+        new ElementMapping(new ElementId("1"), new Code("ANNAT", "KV_FKMU_0001", "annat"));
 
     final var element = QuestionUtlatandeBaseratPaAnnat.questionUtlatandeBaseratPaAnnat();
 
@@ -101,22 +105,17 @@ class QuestionUtlatandeBaseratPaAnnatTest {
 
     @Test
     void shallReturnTrueIfElementPresent() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("1"))
-              .value(
-                  ElementValueDateList.builder()
-                      .dateList(
-                          List.of(
-                              ElementValueDate.builder()
-                                  .dateId(new FieldId("annat"))
-                                  .build()
-                          )
-                      )
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("1"))
+                  .value(
+                      ElementValueDateList.builder()
+                          .dateList(
+                              List.of(
+                                  ElementValueDate.builder().dateId(new FieldId("annat")).build()))
+                          .build())
+                  .build());
 
       final var element = QuestionUtlatandeBaseratPaAnnat.questionUtlatandeBaseratPaAnnat();
 
@@ -127,22 +126,17 @@ class QuestionUtlatandeBaseratPaAnnatTest {
 
     @Test
     void shallReturnFalseIfElementMissing() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("2"))
-              .value(
-                  ElementValueDateList.builder()
-                      .dateList(
-                          List.of(
-                              ElementValueDate.builder()
-                                  .dateId(new FieldId("annat"))
-                                  .build()
-                          )
-                      )
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("2"))
+                  .value(
+                      ElementValueDateList.builder()
+                          .dateList(
+                              List.of(
+                                  ElementValueDate.builder().dateId(new FieldId("annat")).build()))
+                          .build())
+                  .build());
 
       final var element = QuestionUtlatandeBaseratPaAnnat.questionUtlatandeBaseratPaAnnat();
 
@@ -154,9 +148,10 @@ class QuestionUtlatandeBaseratPaAnnatTest {
 
   @Test
   void shallIncludePdfConfiguration() {
-    final var expected = PdfConfigurationText.builder()
-        .pdfFieldId(new PdfFieldId("form1[0].#subform[0].flt_txtAnnatAngeVad[0]"))
-        .build();
+    final var expected =
+        PdfConfigurationText.builder()
+            .pdfFieldId(new PdfFieldId("form1[0].#subform[0].flt_txtAnnatAngeVad[0]"))
+            .build();
 
     final var element = QuestionUtlatandeBaseratPaAnnat.questionUtlatandeBaseratPaAnnat();
 

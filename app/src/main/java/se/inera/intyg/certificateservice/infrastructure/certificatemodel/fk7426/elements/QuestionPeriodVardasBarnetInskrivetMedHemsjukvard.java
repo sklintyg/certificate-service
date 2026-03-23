@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7426.elements;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7426.elements.QuestionVardasBarnetInneliggandePaSjukhus.QUESTION_VARDAS_BARNET_INNELIGGANDE_PA_SJUKHUS_ID;
@@ -18,14 +36,14 @@ import se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.
 
 public class QuestionPeriodVardasBarnetInskrivetMedHemsjukvard {
 
-  public static final ElementId QUESTION_PERIOD_VARDAS_BARN_INSKRIVET_MED_HEMSJUKVARD_ID = new ElementId(
-      "62.4");
-  private static final FieldId QUESTION_PERIOD_VARDAS_BARN_INSKRIVET_MED_HEMSJUKVARD_FIELD_ID = new FieldId(
-      "62.4");
-  private static final PdfFieldId PDF_FIELD_ID_FROM = new PdfFieldId(
-      "form1[0].#subform[3].flt_datFranMed2[0]");
-  private static final PdfFieldId PDF_FIELD_ID_TO = new PdfFieldId(
-      "form1[0].#subform[3].flt_datTillMed2[0]");
+  public static final ElementId QUESTION_PERIOD_VARDAS_BARN_INSKRIVET_MED_HEMSJUKVARD_ID =
+      new ElementId("62.4");
+  private static final FieldId QUESTION_PERIOD_VARDAS_BARN_INSKRIVET_MED_HEMSJUKVARD_FIELD_ID =
+      new FieldId("62.4");
+  private static final PdfFieldId PDF_FIELD_ID_FROM =
+      new PdfFieldId("form1[0].#subform[3].flt_datFranMed2[0]");
+  private static final PdfFieldId PDF_FIELD_ID_TO =
+      new PdfFieldId("form1[0].#subform[3].flt_datTillMed2[0]");
 
   private QuestionPeriodVardasBarnetInskrivetMedHemsjukvard() {
     throw new IllegalStateException("Utility class");
@@ -40,8 +58,7 @@ public class QuestionPeriodVardasBarnetInskrivetMedHemsjukvard {
                 .labelFrom("Fr.o.m")
                 .labelTo("T.o.m")
                 .id(QUESTION_PERIOD_VARDAS_BARN_INSKRIVET_MED_HEMSJUKVARD_FIELD_ID)
-                .build()
-        )
+                .build())
         .rules(
             List.of(
                 CertificateElementRuleFactory.mandatory(
@@ -49,26 +66,13 @@ public class QuestionPeriodVardasBarnetInskrivetMedHemsjukvard {
                     QUESTION_PERIOD_VARDAS_BARN_INSKRIVET_MED_HEMSJUKVARD_FIELD_ID),
                 CertificateElementRuleFactory.show(
                     QUESTION_VARDAS_BARN_INSKRIVET_MED_HEMSJUKVARD_ID,
-                    QUESTION_VARDAS_BARN_INSKRIVET_MED_HEMSJUKVARD_FIELD_ID)
-            )
-        )
-        .validations(
-            List.of(
-                ElementValidationDateRange.builder()
-                    .mandatory(true)
-                    .build()
-            )
-        )
+                    QUESTION_VARDAS_BARN_INSKRIVET_MED_HEMSJUKVARD_FIELD_ID)))
+        .validations(List.of(ElementValidationDateRange.builder().mandatory(true).build()))
         .shouldValidate(
             ElementDataPredicateFactory.valueBoolean(
-                QUESTION_VARDAS_BARN_INSKRIVET_MED_HEMSJUKVARD_ID)
-        )
+                QUESTION_VARDAS_BARN_INSKRIVET_MED_HEMSJUKVARD_ID))
         .pdfConfiguration(
-            PdfConfigurationDateRange.builder()
-                .from(PDF_FIELD_ID_FROM)
-                .to(PDF_FIELD_ID_TO)
-                .build()
-        )
+            PdfConfigurationDateRange.builder().from(PDF_FIELD_ID_FROM).to(PDF_FIELD_ID_TO).build())
         .includeWhenRenewing(false)
         .mapping(new ElementMapping(QUESTION_VARDAS_BARNET_INNELIGGANDE_PA_SJUKHUS_ID, null))
         .build();

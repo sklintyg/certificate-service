@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.certificate;
 
 import static se.inera.intyg.certificateservice.domain.certificate.model.CustomMapperId.UNIFIED_DIAGNOSIS_LIST;
@@ -39,8 +57,7 @@ public class XmlGeneratorUnifiedDiagnosisList implements XmlGeneratorCustomMappe
     if (!(specification.configuration() instanceof ElementConfigurationDiagnosis configuration)) {
       throw new IllegalArgumentException(
           "Cannot generate xml for configuration of type '%s'"
-              .formatted(specification.configuration().getClass())
-      );
+              .formatted(specification.configuration().getClass()));
     }
 
     if (diagnosisList.diagnoses() == null || diagnosisList.diagnoses().isEmpty()) {
@@ -52,35 +69,36 @@ public class XmlGeneratorUnifiedDiagnosisList implements XmlGeneratorCustomMappe
     final var diagnosisAnswer = new Svar();
     diagnosisAnswer.setId(data.id().id());
 
-    diagnosisList.diagnoses().forEach(
-        diagnosis -> {
-          final var subAnswerDiagnosisDescription = new Delsvar();
-          subAnswerDiagnosisDescription.setId(
-              getIdDescription(data, atomicInteger.getAndIncrement())
-          );
-          subAnswerDiagnosisDescription.getContent().add(diagnosis.description());
+    diagnosisList
+        .diagnoses()
+        .forEach(
+            diagnosis -> {
+              final var subAnswerDiagnosisDescription = new Delsvar();
+              subAnswerDiagnosisDescription.setId(
+                  getIdDescription(data, atomicInteger.getAndIncrement()));
+              subAnswerDiagnosisDescription.getContent().add(diagnosis.description());
 
-          final var subAnswerDiagnosisCode = new Delsvar();
-          subAnswerDiagnosisCode.setId(getIdCode(data, atomicInteger.getAndIncrement()));
+              final var subAnswerDiagnosisCode = new Delsvar();
+              subAnswerDiagnosisCode.setId(getIdCode(data, atomicInteger.getAndIncrement()));
 
-          final var cvType = new CVType();
-          cvType.setCode(diagnosis.code());
-          cvType.setDisplayName(getDisplayName(diagnosis));
-          cvType.setCodeSystem(configuration.codeSystem(diagnosis.terminology()));
+              final var cvType = new CVType();
+              cvType.setCode(diagnosis.code());
+              cvType.setDisplayName(getDisplayName(diagnosis));
+              cvType.setCodeSystem(configuration.codeSystem(diagnosis.terminology()));
 
-          final var convertedCvType = objectFactory.createCv(cvType);
-          subAnswerDiagnosisCode.getContent().add(convertedCvType);
+              final var convertedCvType = objectFactory.createCv(cvType);
+              subAnswerDiagnosisCode.getContent().add(convertedCvType);
 
-          diagnosisAnswer.getDelsvar().add(subAnswerDiagnosisDescription);
-          diagnosisAnswer.getDelsvar().add(subAnswerDiagnosisCode);
-        }
-    );
+              diagnosisAnswer.getDelsvar().add(subAnswerDiagnosisDescription);
+              diagnosisAnswer.getDelsvar().add(subAnswerDiagnosisCode);
+            });
 
     return List.of(diagnosisAnswer);
   }
 
   private String getDisplayName(ElementValueDiagnosis diagnosis) {
-    return diagnosisCodeRepository.findByCode(new DiagnosisCode(diagnosis.code()))
+    return diagnosisCodeRepository
+        .findByCode(new DiagnosisCode(diagnosis.code()))
         .map(diagnosis1 -> diagnosis1.description().description())
         .orElse(null);
   }

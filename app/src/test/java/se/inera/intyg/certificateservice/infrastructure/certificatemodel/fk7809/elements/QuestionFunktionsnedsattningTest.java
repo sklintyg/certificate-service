@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7809.elements;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -37,33 +55,38 @@ class QuestionFunktionsnedsattningTest {
 
   @Test
   void shallIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationCheckboxMultipleCode.builder()
-        .id(new FieldId("funktionsnedsattning"))
-        .name("Välj alternativ att fylla i för att visa fritextfält. Välj minst ett:")
-        .elementLayout(ElementLayout.COLUMNS)
-        .list(List.of(
-            new ElementConfigurationCode(new FieldId("8.2"),
-                INTELLEKTUELL_FUNKTION.displayName(),
-                INTELLEKTUELL_FUNKTION),
-            new ElementConfigurationCode(new FieldId("9.2"),
-                KOMMUNIKATION_SOCIAL_INTERAKTION.displayName(),
-                KOMMUNIKATION_SOCIAL_INTERAKTION),
-            new ElementConfigurationCode(new FieldId("10.2"), UPPMARKSAMHET.displayName(),
-                UPPMARKSAMHET),
-            new ElementConfigurationCode(new FieldId("11.2"), PSYKISK_FUNKTION.displayName(),
-                PSYKISK_FUNKTION),
-            new ElementConfigurationCode(new FieldId("48.2"), HORSELFUNKTION.displayName(),
-                HORSELFUNKTION),
-            new ElementConfigurationCode(new FieldId("49.2"), SYNFUNKTION.displayName(),
-                SYNFUNKTION),
-            new ElementConfigurationCode(new FieldId("12.2"), SINNESFUNKTION_V1.displayName(),
-                SINNESFUNKTION_V1),
-            new ElementConfigurationCode(new FieldId("13.2"), KOORDINATION.displayName(),
-                KOORDINATION),
-            new ElementConfigurationCode(new FieldId("14.2"),
-                ANNAN_KROPPSILIG_FUNKTION.displayName(), ANNAN_KROPPSILIG_FUNKTION)
-        ))
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationCheckboxMultipleCode.builder()
+            .id(new FieldId("funktionsnedsattning"))
+            .name("Välj alternativ att fylla i för att visa fritextfält. Välj minst ett:")
+            .elementLayout(ElementLayout.COLUMNS)
+            .list(
+                List.of(
+                    new ElementConfigurationCode(
+                        new FieldId("8.2"),
+                        INTELLEKTUELL_FUNKTION.displayName(),
+                        INTELLEKTUELL_FUNKTION),
+                    new ElementConfigurationCode(
+                        new FieldId("9.2"),
+                        KOMMUNIKATION_SOCIAL_INTERAKTION.displayName(),
+                        KOMMUNIKATION_SOCIAL_INTERAKTION),
+                    new ElementConfigurationCode(
+                        new FieldId("10.2"), UPPMARKSAMHET.displayName(), UPPMARKSAMHET),
+                    new ElementConfigurationCode(
+                        new FieldId("11.2"), PSYKISK_FUNKTION.displayName(), PSYKISK_FUNKTION),
+                    new ElementConfigurationCode(
+                        new FieldId("48.2"), HORSELFUNKTION.displayName(), HORSELFUNKTION),
+                    new ElementConfigurationCode(
+                        new FieldId("49.2"), SYNFUNKTION.displayName(), SYNFUNKTION),
+                    new ElementConfigurationCode(
+                        new FieldId("12.2"), SINNESFUNKTION_V1.displayName(), SINNESFUNKTION_V1),
+                    new ElementConfigurationCode(
+                        new FieldId("13.2"), KOORDINATION.displayName(), KOORDINATION),
+                    new ElementConfigurationCode(
+                        new FieldId("14.2"),
+                        ANNAN_KROPPSILIG_FUNKTION.displayName(),
+                        ANNAN_KROPPSILIG_FUNKTION)))
+            .build();
 
     final var element = QuestionFunktionsnedsattning.questionFunktionsnedsattning();
 
@@ -72,15 +95,15 @@ class QuestionFunktionsnedsattningTest {
 
   @Test
   void shallIncludeRules() {
-    final var expectedRules = List.of(
-        ElementRuleExpression.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.MANDATORY)
-            .expression(
-                new RuleExpression(
-                    "$8.2 || $9.2 || $10.2 || $11.2 || $48.2 || $49.2 || $12.2 || $13.2 || $14.2"))
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleExpression.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.MANDATORY)
+                .expression(
+                    new RuleExpression(
+                        "$8.2 || $9.2 || $10.2 || $11.2 || $48.2 || $49.2 || $12.2 || $13.2 || $14.2"))
+                .build());
 
     final var element = QuestionFunktionsnedsattning.questionFunktionsnedsattning();
 
@@ -89,11 +112,8 @@ class QuestionFunktionsnedsattningTest {
 
   @Test
   void shallIncludeValidations() {
-    final var expectedValidations = List.of(
-        ElementValidationCodeList.builder()
-            .mandatory(true)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationCodeList.builder().mandatory(true).build());
 
     final var element = QuestionFunktionsnedsattning.questionFunktionsnedsattning();
 
@@ -102,8 +122,7 @@ class QuestionFunktionsnedsattningTest {
 
   @Test
   void shallIncludePdfConfiguration() {
-    final var expected = PdfConfigurationHidden.builder()
-        .build();
+    final var expected = PdfConfigurationHidden.builder().build();
 
     final var element = QuestionFunktionsnedsattning.questionFunktionsnedsattning();
 

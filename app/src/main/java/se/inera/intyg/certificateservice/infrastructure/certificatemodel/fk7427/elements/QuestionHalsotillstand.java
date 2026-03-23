@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7427.elements;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7427.CertificateModelFactoryFK7427.TEXT_FIELD_LIMIT;
@@ -17,8 +35,8 @@ public class QuestionHalsotillstand {
 
   public static final ElementId QUESTION_HALSOTILLSTAND_ID = new ElementId("59");
   private static final FieldId QUESTION_HALSOTILLSTAND_FIELD_ID = new FieldId("59.1");
-  private static final PdfFieldId PDF_FIELD_ID = new PdfFieldId(
-      "form1[0].#subform[2].flt_txtBeskrivBarnetsHalsotillstand[1]");
+  private static final PdfFieldId PDF_FIELD_ID =
+      new PdfFieldId("form1[0].#subform[2].flt_txtBeskrivBarnetsHalsotillstand[1]");
 
   private QuestionHalsotillstand() {
     throw new IllegalStateException("Utility class");
@@ -33,31 +51,25 @@ public class QuestionHalsotillstand {
                 .description(
                     "Beskriv barnets nuvarande hälsotillstånd (utifrån akut sjukdom eller försämring i funktionsnedsättning).")
                 .id(QUESTION_HALSOTILLSTAND_FIELD_ID)
-                .build()
-        )
+                .build())
         .rules(
             List.of(
-                CertificateElementRuleFactory.mandatory(QUESTION_HALSOTILLSTAND_ID,
-                    QUESTION_HALSOTILLSTAND_FIELD_ID),
-                CertificateElementRuleFactory.limit(QUESTION_HALSOTILLSTAND_ID, TEXT_FIELD_LIMIT)
-            )
-        )
+                CertificateElementRuleFactory.mandatory(
+                    QUESTION_HALSOTILLSTAND_ID, QUESTION_HALSOTILLSTAND_FIELD_ID),
+                CertificateElementRuleFactory.limit(QUESTION_HALSOTILLSTAND_ID, TEXT_FIELD_LIMIT)))
         .validations(
             List.of(
                 ElementValidationText.builder()
                     .mandatory(true)
                     .limit((int) TEXT_FIELD_LIMIT)
-                    .build()
-            )
-        )
+                    .build()))
         .pdfConfiguration(
             PdfConfigurationText.builder()
                 .pdfFieldId(PDF_FIELD_ID)
                 .maxLength(ROW_MAX_LENGTH * 8)
                 .overflowSheetFieldId(
                     new PdfFieldId("form1[0].#subform[3].flt_txtFortsattningsblad[0]"))
-                .build()
-        )
+                .build())
         .build();
   }
 }

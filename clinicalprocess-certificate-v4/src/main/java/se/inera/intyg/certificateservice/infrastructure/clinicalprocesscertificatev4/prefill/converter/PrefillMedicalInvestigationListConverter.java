@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.prefill.converter;
 
 import java.time.LocalDate;
@@ -35,99 +53,88 @@ public class PrefillMedicalInvestigationListConverter implements PrefillStandard
   }
 
   @Override
-  public PrefillAnswer prefillAnswer(ElementSpecification specification,
-      Forifyllnad prefill) {
-    if (!(specification.configuration() instanceof ElementConfigurationMedicalInvestigationList medicalInvestigationListConfig)) {
-      return PrefillAnswer.builder()
-          .errors(List.of(PrefillError.wrongConfigurationType()))
-          .build();
+  public PrefillAnswer prefillAnswer(ElementSpecification specification, Forifyllnad prefill) {
+    if (!(specification.configuration()
+        instanceof ElementConfigurationMedicalInvestigationList medicalInvestigationListConfig)) {
+      return PrefillAnswer.builder().errors(List.of(PrefillError.wrongConfigurationType())).build();
     }
 
-    final var answers = prefill.getSvar().stream()
-        .filter(svar -> svar.getId().equals(specification.id().id()))
-        .toList();
+    final var answers =
+        prefill.getSvar().stream()
+            .filter(svar -> svar.getId().equals(specification.id().id()))
+            .toList();
 
     if (answers.isEmpty()) {
       return null;
     }
 
-    final var prefillError = PrefillValidator.validateMinimumNumberOfDelsvar(
-        answers,
-        MINIMUM_SUB_ANSWERS,
-        specification
-    );
+    final var prefillError =
+        PrefillValidator.validateMinimumNumberOfDelsvar(
+            answers, MINIMUM_SUB_ANSWERS, specification);
 
     if (!prefillError.isEmpty()) {
-      return PrefillAnswer.builder()
-          .errors(prefillError)
-          .build();
+      return PrefillAnswer.builder().errors(prefillError).build();
     }
 
     final var prefillErrors = new ArrayList<PrefillError>();
 
-    final var elementData = ElementData.builder()
-        .id(specification.id())
-        .value(
-            ElementValueMedicalInvestigationList.builder()
-                .id(specification.configuration().id())
-                .list(
-                    answers.stream()
-                        .map(answer -> {
-                          try {
-                            final var subAnswers = answer.getDelsvar();
-                            final var instance = answer.getInstans() - 1;
-                            final var config = medicalInvestigationListConfig.list()
-                                .get(instance);
-                            return MedicalInvestigation.builder()
-                                .id(config.id())
-                                .investigationType(
-                                    getCode(subAnswers, config, specification.id())
-                                )
-                                .date(getDate(subAnswers, config, specification.id())
-                                )
-                                .informationSource(
-                                    getText(subAnswers, config, specification.id())
-                                )
-                                .build();
-                          } catch (Exception ex) {
-                            prefillErrors.add(
-                                PrefillError.invalidFormat(answer.getId(), ex.getMessage()));
-                            return null;
-                          }
-                        })
-                        .filter(Objects::nonNull)
-                        .toList()
-                )
-                .build()
-        )
-        .build();
+    final var elementData =
+        ElementData.builder()
+            .id(specification.id())
+            .value(
+                ElementValueMedicalInvestigationList.builder()
+                    .id(specification.configuration().id())
+                    .list(
+                        answers.stream()
+                            .map(
+                                answer -> {
+                                  try {
+                                    final var subAnswers = answer.getDelsvar();
+                                    final var instance = answer.getInstans() - 1;
+                                    final var config =
+                                        medicalInvestigationListConfig.list().get(instance);
+                                    return MedicalInvestigation.builder()
+                                        .id(config.id())
+                                        .investigationType(
+                                            getCode(subAnswers, config, specification.id()))
+                                        .date(getDate(subAnswers, config, specification.id()))
+                                        .informationSource(
+                                            getText(subAnswers, config, specification.id()))
+                                        .build();
+                                  } catch (Exception ex) {
+                                    prefillErrors.add(
+                                        PrefillError.invalidFormat(
+                                            answer.getId(), ex.getMessage()));
+                                    return null;
+                                  }
+                                })
+                            .filter(Objects::nonNull)
+                            .toList())
+                    .build())
+            .build();
 
-    return PrefillAnswer.builder()
-        .elementData(elementData)
-        .errors(prefillErrors)
-        .build();
+    return PrefillAnswer.builder().elementData(elementData).errors(prefillErrors).build();
   }
 
-  private ElementValueCode getCode(List<Delsvar> subAnswer,
-      MedicalInvestigationConfig config, ElementId elementId) {
-    final var cvType = PrefillUnmarshaller.cvType(
-        getContentFromSubAnswer(subAnswer, elementId, "%s.1")
-    );
+  private ElementValueCode getCode(
+      List<Delsvar> subAnswer, MedicalInvestigationConfig config, ElementId elementId) {
+    final var cvType =
+        PrefillUnmarshaller.cvType(getContentFromSubAnswer(subAnswer, elementId, "%s.1"));
 
     if (cvType.isEmpty()) {
       throw new IllegalStateException("Invalid format cvType is empty");
     }
 
-    final var code = new Code(cvType.get().getCode(), cvType.get().getCodeSystem(),
-        cvType.get().getDisplayName());
+    final var code =
+        new Code(
+            cvType.get().getCode(), cvType.get().getCodeSystem(), cvType.get().getDisplayName());
 
-    final var validCode = config.typeOptions().stream()
-        .filter(c -> c.matches(code))
-        .findFirst()
-        .orElseThrow(
-            () -> new IllegalArgumentException(
-                "Code not found: '%s'".formatted(code))
-        );
+    final var validCode =
+        config.typeOptions().stream()
+            .filter(c -> c.matches(code))
+            .findFirst()
+            .orElseThrow(
+                () -> new IllegalArgumentException("Code not found: '%s'".formatted(code)));
 
     return ElementValueCode.builder()
         .codeId(config.investigationTypeId())
@@ -135,30 +142,23 @@ public class PrefillMedicalInvestigationListConverter implements PrefillStandard
         .build();
   }
 
-  private ElementValueDate getDate(List<Delsvar> subAnswer,
-      MedicalInvestigationConfig config, ElementId elementId) {
-    final var date = LocalDate.parse((String) getContentFromSubAnswer(subAnswer, elementId, "%s.2")
-        .getFirst());
+  private ElementValueDate getDate(
+      List<Delsvar> subAnswer, MedicalInvestigationConfig config, ElementId elementId) {
+    final var date =
+        LocalDate.parse((String) getContentFromSubAnswer(subAnswer, elementId, "%s.2").getFirst());
 
-    return ElementValueDate.builder()
-        .dateId(config.dateId())
-        .date(date)
-        .build();
+    return ElementValueDate.builder().dateId(config.dateId()).date(date).build();
   }
 
-  private ElementValueText getText(List<Delsvar> subAnswer,
-      MedicalInvestigationConfig config, ElementId elementId) {
-    final var text = (String) getContentFromSubAnswer(subAnswer, elementId, "%s.3")
-        .getFirst();
+  private ElementValueText getText(
+      List<Delsvar> subAnswer, MedicalInvestigationConfig config, ElementId elementId) {
+    final var text = (String) getContentFromSubAnswer(subAnswer, elementId, "%s.3").getFirst();
 
-    return ElementValueText.builder()
-        .textId(config.informationSourceId())
-        .text(text)
-        .build();
+    return ElementValueText.builder().textId(config.informationSourceId()).text(text).build();
   }
 
-  private static List<Object> getContentFromSubAnswer(List<Delsvar> subAnswer,
-      ElementId id, String idFormat) {
+  private static List<Object> getContentFromSubAnswer(
+      List<Delsvar> subAnswer, ElementId id, String idFormat) {
     return subAnswer.stream()
         .filter(answer -> answer.getId().equals(idFormat.formatted(id.id())))
         .findFirst()

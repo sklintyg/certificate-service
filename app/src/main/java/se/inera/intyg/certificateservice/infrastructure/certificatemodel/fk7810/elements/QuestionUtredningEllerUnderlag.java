@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7810.elements;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.codesystems.CodeSystemKvFkmu0005.ARBETSTERAPEUT;
@@ -38,28 +56,28 @@ public class QuestionUtredningEllerUnderlag {
 
   public static final ElementId QUESTION_ANDRA_MEDICINSKA_UTREDNINGAR_ID = new ElementId("4");
   private static final FieldId QUESTION_ANDRA_MEDICINSKA_UTREDNINGAR_FIELD_ID = new FieldId("4.1");
-  public static final FieldId MEDICAL_INVESTIGATION_FIELD_ID_1 = new FieldId(
-      "medicalInvestigation1");
-  public static final FieldId MEDICAL_INVESTIGATION_FIELD_ID_2 = new FieldId(
-      "medicalInvestigation2");
-  public static final FieldId MEDICAL_INVESTIGATION_FIELD_ID_3 = new FieldId(
-      "medicalInvestigation3");
+  public static final FieldId MEDICAL_INVESTIGATION_FIELD_ID_1 =
+      new FieldId("medicalInvestigation1");
+  public static final FieldId MEDICAL_INVESTIGATION_FIELD_ID_2 =
+      new FieldId("medicalInvestigation2");
+  public static final FieldId MEDICAL_INVESTIGATION_FIELD_ID_3 =
+      new FieldId("medicalInvestigation3");
 
   public static final String PDF_DATE_ID_1 = "form1[0].#subform[0].flt_datUtredningUnderlag_2[0]";
-  public static final PdfFieldId PDF_SOURCE_ID_1 = new PdfFieldId(
-      "form1[0].#subform[0].flt_txtUtredning_1[0]");
+  public static final PdfFieldId PDF_SOURCE_ID_1 =
+      new PdfFieldId("form1[0].#subform[0].flt_txtUtredning_1[0]");
   public static final String PDF_DATE_ID_2 = "form1[0].#subform[0].flt_datUtredningUnderlag_3[0]";
-  public static final PdfFieldId PDF_SOURCE_ID_2 = new PdfFieldId(
-      "form1[0].#subform[0].flt_txtUtredning_2[0]");
+  public static final PdfFieldId PDF_SOURCE_ID_2 =
+      new PdfFieldId("form1[0].#subform[0].flt_txtUtredning_2[0]");
   public static final String PDF_DATE_ID_3 = "form1[0].#subform[0].flt_datUtredningUnderlag_4[0]";
-  public static final PdfFieldId PDF_SOURCE_ID_3 = new PdfFieldId(
-      "form1[0].#subform[0].flt_txtUtredning_3[0]");
-  public static final PdfFieldId INVESTIGATION_PDF_FIELD_ID_1 = new PdfFieldId(
-      "form1[0].#subform[0].lbx_listVardeUtredningUnderlag_1[0]");
-  public static final PdfFieldId INVESTIGATION_PDF_FIELD_ID_2 = new PdfFieldId(
-      "form1[0].#subform[0].lbx_listVardeUtredningUnderlag_2[0]");
-  public static final PdfFieldId INVESTIGATION_PDF_FIELD_ID_3 = new PdfFieldId(
-      "form1[0].#subform[0].lbx_listVardeUtredningUnderlag_3[0]");
+  public static final PdfFieldId PDF_SOURCE_ID_3 =
+      new PdfFieldId("form1[0].#subform[0].flt_txtUtredning_3[0]");
+  public static final PdfFieldId INVESTIGATION_PDF_FIELD_ID_1 =
+      new PdfFieldId("form1[0].#subform[0].lbx_listVardeUtredningUnderlag_1[0]");
+  public static final PdfFieldId INVESTIGATION_PDF_FIELD_ID_2 =
+      new PdfFieldId("form1[0].#subform[0].lbx_listVardeUtredningUnderlag_2[0]");
+  public static final PdfFieldId INVESTIGATION_PDF_FIELD_ID_3 =
+      new PdfFieldId("form1[0].#subform[0].lbx_listVardeUtredningUnderlag_3[0]");
   public static final int LIMIT = 53;
   private static final String SYNHABILITERING = "SYNHABILITERING";
 
@@ -69,11 +87,11 @@ public class QuestionUtredningEllerUnderlag {
 
   public static ElementSpecification questionUtredningEllerUnderlag(
       ElementSpecification... children) {
-    final var medicalInvestigations = List.of(
-        getMedicalInvestigationConfig(MEDICAL_INVESTIGATION_FIELD_ID_1),
-        getMedicalInvestigationConfig(MEDICAL_INVESTIGATION_FIELD_ID_2),
-        getMedicalInvestigationConfig(MEDICAL_INVESTIGATION_FIELD_ID_3)
-    );
+    final var medicalInvestigations =
+        List.of(
+            getMedicalInvestigationConfig(MEDICAL_INVESTIGATION_FIELD_ID_1),
+            getMedicalInvestigationConfig(MEDICAL_INVESTIGATION_FIELD_ID_2),
+            getMedicalInvestigationConfig(MEDICAL_INVESTIGATION_FIELD_ID_3));
 
     return ElementSpecification.builder()
         .id(QUESTION_ANDRA_MEDICINSKA_UTREDNINGAR_ID)
@@ -87,8 +105,7 @@ public class QuestionUtredningEllerUnderlag {
                 .typeText("Utredning eller underlag")
                 .informationSourceText("Från vilken vårdgivare")
                 .list(medicalInvestigations)
-                .build()
-        )
+                .build())
         .rules(
             List.of(
                 CertificateElementRuleFactory.mandatoryNotEmpty(
@@ -96,28 +113,19 @@ public class QuestionUtredningEllerUnderlag {
                     List.of(
                         getDateId(MEDICAL_INVESTIGATION_FIELD_ID_1),
                         getInvestigationTypeId(MEDICAL_INVESTIGATION_FIELD_ID_1),
-                        getInformationSourceId(MEDICAL_INVESTIGATION_FIELD_ID_1)
-                    )
-                ),
+                        getInformationSourceId(MEDICAL_INVESTIGATION_FIELD_ID_1))),
                 CertificateElementRuleFactory.show(
                     QUESTION_BASERAT_PA_ANNAT_UNDERLAG_ID,
-                    QUESTION_BASERAT_PA_ANNAT_UNDERLAG_FIELD_ID
-                ),
+                    QUESTION_BASERAT_PA_ANNAT_UNDERLAG_FIELD_ID),
                 CertificateElementRuleFactory.limit(
-                    QUESTION_ANDRA_MEDICINSKA_UTREDNINGAR_ID,
-                    (short) LIMIT
-                )
-            )
-        )
+                    QUESTION_ANDRA_MEDICINSKA_UTREDNINGAR_ID, (short) LIMIT)))
         .validations(
             List.of(
                 ElementValidationMedicalInvestigationList.builder()
                     .mandatory(true)
                     .max(Period.ofDays(0))
                     .limit(LIMIT)
-                    .build()
-            )
-        )
+                    .build()))
         .shouldValidate(
             ElementDataPredicateFactory.valueBoolean(QUESTION_BASERAT_PA_ANNAT_UNDERLAG_ID))
         .pdfConfiguration(
@@ -144,11 +152,8 @@ public class QuestionUtredningEllerUnderlag {
                             .sourceTypePdfFieldId(PDF_SOURCE_ID_3)
                             .investigationPdfFieldId(INVESTIGATION_PDF_FIELD_ID_3)
                             .investigationPdfOptions(getInvestigationPdfOptions())
-                            .build()
-                    )
-                )
-                .build()
-        )
+                            .build()))
+                .build())
         .children(List.of(children))
         .build();
   }
@@ -167,13 +172,8 @@ public class QuestionUtredningEllerUnderlag {
             HORSELHABILITERING,
             SYNHABILITERINGEN,
             DIETIST,
-            OVRIGT
-        )
-        .collect(Collectors.toMap(
-                Code::code,
-                Code::displayName
-            )
-        );
+            OVRIGT)
+        .collect(Collectors.toMap(Code::code, Code::displayName));
   }
 
   private static MedicalInvestigationConfig getMedicalInvestigationConfig(FieldId fieldId) {
@@ -196,9 +196,7 @@ public class QuestionUtredningEllerUnderlag {
                 HORSELHABILITERING,
                 SYNHABILITERINGEN,
                 DIETIST,
-                OVRIGT
-            )
-        )
+                OVRIGT))
         .legacyMapping(Map.of(SYNHABILITERING, SYNHABILITERINGEN))
         .min(null)
         .max(Period.ofDays(0))

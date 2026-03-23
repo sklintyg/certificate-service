@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificate.persistence;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -47,23 +65,17 @@ import se.inera.intyg.certificateservice.infrastructure.certificate.persistence.
 @ExtendWith(MockitoExtension.class)
 class JpaMessageRepositoryTest {
 
-  @Mock
-  private MessageRelationEntityRepository messageRelationEntityRepository;
+  @Mock private MessageRelationEntityRepository messageRelationEntityRepository;
 
-  @Mock
-  private MessageRelationRepository messageRelationRepository;
+  @Mock private MessageRelationRepository messageRelationRepository;
 
-  @Mock
-  private MessageEntityMapper messageEntityMapper;
+  @Mock private MessageEntityMapper messageEntityMapper;
 
-  @Mock
-  private MessageEntityRepository messageEntityRepository;
+  @Mock private MessageEntityRepository messageEntityRepository;
 
-  @Mock
-  private MessageEntitySpecificationFactory messageEntitySpecificationFactory;
+  @Mock private MessageEntitySpecificationFactory messageEntitySpecificationFactory;
 
-  @InjectMocks
-  private JpaMessageRepository jpaMessageRepository;
+  @InjectMocks private JpaMessageRepository jpaMessageRepository;
 
   @Nested
   class TestSaveMessage {
@@ -86,15 +98,15 @@ class JpaMessageRepositoryTest {
     @Test
     void shallReturnUpdatedMessageWhenSaved() {
       final var expectedMessage = complementMessageBuilder().created(LocalDateTime.now()).build();
-      final var existingMessageEntity = MessageEntity.builder()
-          .key(MESSAGE_KEY)
-          .build();
+      final var existingMessageEntity = MessageEntity.builder().key(MESSAGE_KEY).build();
       final var messageEntityToSave = MessageEntity.builder().build();
       final var savedMessageEntity = MessageEntity.builder().build();
 
-      doReturn(Optional.of(existingMessageEntity)).when(messageEntityRepository)
+      doReturn(Optional.of(existingMessageEntity))
+          .when(messageEntityRepository)
           .findMessageEntityById(MESSAGE_ID);
-      doReturn(messageEntityToSave).when(messageEntityMapper)
+      doReturn(messageEntityToSave)
+          .when(messageEntityMapper)
           .toEntity(COMPLEMENT_MESSAGE, MESSAGE_KEY);
       doReturn(savedMessageEntity).when(messageEntityRepository).save(messageEntityToSave);
       doReturn(expectedMessage).when(messageEntityMapper).toDomain(savedMessageEntity);
@@ -126,15 +138,17 @@ class JpaMessageRepositoryTest {
 
     @Test
     void shallDeleteMessageIfStatusIsDeletedDraft() {
-      final var message = Message.builder()
-          .status(MessageStatus.DELETED_DRAFT)
-          .id(new MessageId(MESSAGE_ID))
-          .build();
+      final var message =
+          Message.builder()
+              .status(MessageStatus.DELETED_DRAFT)
+              .id(new MessageId(MESSAGE_ID))
+              .build();
 
       final var messageEntity = MessageEntity.builder().build();
       final var messageEntityToDelete = Optional.of(messageEntity);
 
-      doReturn(messageEntityToDelete).when(messageEntityRepository)
+      doReturn(messageEntityToDelete)
+          .when(messageEntityRepository)
           .findMessageEntityById(MESSAGE_ID);
 
       jpaMessageRepository.save(message);
@@ -142,18 +156,19 @@ class JpaMessageRepositoryTest {
       verify(messageEntityRepository).delete(messageEntity);
     }
 
-
     @Test
     void shallReturnMessageAfterDeletingEntity() {
-      final var message = Message.builder()
-          .status(MessageStatus.DELETED_DRAFT)
-          .id(new MessageId(MESSAGE_ID))
-          .build();
+      final var message =
+          Message.builder()
+              .status(MessageStatus.DELETED_DRAFT)
+              .id(new MessageId(MESSAGE_ID))
+              .build();
 
       final var messageEntity = MessageEntity.builder().build();
       final var messageEntityToDelete = Optional.of(messageEntity);
 
-      doReturn(messageEntityToDelete).when(messageEntityRepository)
+      doReturn(messageEntityToDelete)
+          .when(messageEntityRepository)
           .findMessageEntityById(MESSAGE_ID);
 
       final var actualResult = jpaMessageRepository.save(message);
@@ -168,22 +183,17 @@ class JpaMessageRepositoryTest {
     void shallRemoveMessages() {
       final var ids = List.of("ID1", "ID2");
 
-      jpaMessageRepository.remove(
-          ids
-      );
+      jpaMessageRepository.remove(ids);
 
       verify(messageEntityRepository).deleteAllByIdIn(ids);
     }
 
     @Test
     void shallNotRemoveMessagesIfListIsEmpty() {
-      jpaMessageRepository.remove(
-          Collections.emptyList()
-      );
+      jpaMessageRepository.remove(Collections.emptyList());
 
       verifyNoInteractions(messageEntityRepository);
     }
-
   }
 
   @Nested
@@ -193,7 +203,8 @@ class JpaMessageRepositoryTest {
     void shallReturnTrueIfMessageExists() {
       final var messageId = new MessageId(MESSAGE_ID);
       final var messageEntity = MessageEntity.builder().build();
-      doReturn(Optional.of(messageEntity)).when(messageEntityRepository)
+      doReturn(Optional.of(messageEntity))
+          .when(messageEntityRepository)
           .findMessageEntityById(MESSAGE_ID);
       assertTrue(jpaMessageRepository.exists(messageId));
     }
@@ -211,16 +222,13 @@ class JpaMessageRepositoryTest {
 
     @Test
     void shouldThrowExceptionIfIdIsNull() {
-      assertThrows(IllegalArgumentException.class,
-          () -> jpaMessageRepository.getById(null));
+      assertThrows(IllegalArgumentException.class, () -> jpaMessageRepository.getById(null));
     }
 
     @Test
     void shouldThrowExceptionIfMessageNotFound() {
       final var id = new MessageId("ID");
-      assertThrows(IllegalArgumentException.class,
-          () -> jpaMessageRepository.getById(id)
-      );
+      assertThrows(IllegalArgumentException.class, () -> jpaMessageRepository.getById(id));
     }
 
     @Test
@@ -229,8 +237,7 @@ class JpaMessageRepositoryTest {
 
       when(messageEntityRepository.findMessageEntityById("ID"))
           .thenReturn(Optional.of(COMPLEMENT_MESSAGE_ENTITY));
-      when(messageEntityMapper.toDomain(COMPLEMENT_MESSAGE_ENTITY))
-          .thenReturn(expectedMessage);
+      when(messageEntityMapper.toDomain(COMPLEMENT_MESSAGE_ENTITY)).thenReturn(expectedMessage);
 
       final var response = jpaMessageRepository.getById(new MessageId("ID"));
 
@@ -243,32 +250,29 @@ class JpaMessageRepositoryTest {
 
     @Test
     void shouldThrowExceptionIfIdIsNull() {
-      assertThrows(IllegalArgumentException.class,
-          () -> jpaMessageRepository.findById(null));
+      assertThrows(IllegalArgumentException.class, () -> jpaMessageRepository.findById(null));
     }
 
     @Test
     void shouldThrowExceptionIfMessageNotFound() {
       final var id = new MessageId("ID");
-      assertThrows(IllegalArgumentException.class,
-          () -> jpaMessageRepository.findById(id)
-      );
+      assertThrows(IllegalArgumentException.class, () -> jpaMessageRepository.findById(id));
     }
 
     @Test
     void shouldReturnParentMessageFromRepository() {
       final var expectedMessage = Message.builder().build();
-      final var messageRelationEntity = MessageRelationEntity.builder()
-          .parentMessage(COMPLEMENT_MESSAGE_ENTITY)
-          .childMessage(ANSWER_MESSAGE_ENTITY)
-          .build();
+      final var messageRelationEntity =
+          MessageRelationEntity.builder()
+              .parentMessage(COMPLEMENT_MESSAGE_ENTITY)
+              .childMessage(ANSWER_MESSAGE_ENTITY)
+              .build();
 
       when(messageEntityRepository.findMessageEntityById("ID"))
           .thenReturn(Optional.of(ANSWER_MESSAGE_ENTITY));
       when(messageRelationEntityRepository.findByChildMessage(ANSWER_MESSAGE_ENTITY))
           .thenReturn(Optional.of(messageRelationEntity));
-      when(messageEntityMapper.toDomain(COMPLEMENT_MESSAGE_ENTITY))
-          .thenReturn(expectedMessage);
+      when(messageEntityMapper.toDomain(COMPLEMENT_MESSAGE_ENTITY)).thenReturn(expectedMessage);
 
       final var response = jpaMessageRepository.findById(new MessageId("ID"));
 
@@ -281,8 +285,7 @@ class JpaMessageRepositoryTest {
 
       when(messageEntityRepository.findMessageEntityById("ID"))
           .thenReturn(Optional.of(COMPLEMENT_MESSAGE_ENTITY));
-      when(messageEntityMapper.toDomain(COMPLEMENT_MESSAGE_ENTITY))
-          .thenReturn(expectedMessage);
+      when(messageEntityMapper.toDomain(COMPLEMENT_MESSAGE_ENTITY)).thenReturn(expectedMessage);
 
       final var response = jpaMessageRepository.findById(new MessageId("ID"));
 
@@ -298,12 +301,10 @@ class JpaMessageRepositoryTest {
       final var specification = mock(Specification.class);
       final var expectedMessage = Message.builder().build();
       final var request = MessagesRequest.builder().build();
-      when(messageEntitySpecificationFactory.create(request))
-          .thenReturn(specification);
+      when(messageEntitySpecificationFactory.create(request)).thenReturn(specification);
       when(messageEntityRepository.findAll(specification))
           .thenReturn(List.of(COMPLEMENT_MESSAGE_ENTITY));
-      when(messageEntityMapper.toDomain(COMPLEMENT_MESSAGE_ENTITY))
-          .thenReturn(expectedMessage);
+      when(messageEntityMapper.toDomain(COMPLEMENT_MESSAGE_ENTITY)).thenReturn(expectedMessage);
 
       final var response = jpaMessageRepository.findByMessagesRequest(request);
 
@@ -314,10 +315,8 @@ class JpaMessageRepositoryTest {
     void shouldReturnEmptyListIfNoMessagesAreFound() {
       final var specification = mock(Specification.class);
       final var request = MessagesRequest.builder().build();
-      when(messageEntitySpecificationFactory.create(request))
-          .thenReturn(specification);
-      when(messageEntityRepository.findAll(specification))
-          .thenReturn(Collections.emptyList());
+      when(messageEntitySpecificationFactory.create(request)).thenReturn(specification);
+      when(messageEntityRepository.findAll(specification)).thenReturn(Collections.emptyList());
 
       final var response = jpaMessageRepository.findByMessagesRequest(request);
 
@@ -331,40 +330,30 @@ class JpaMessageRepositoryTest {
       final var answerMessageEntity = MessageEntity.builder().build();
       final var draftMessageEntity = MessageEntity.builder().build();
 
-      final var missingMessage = Message.builder()
-          .type(MessageType.MISSING)
-          .build();
-      final var reminderMessage = Message.builder()
-          .type(MessageType.REMINDER)
-          .build();
-      final var answerMessage = Message.builder()
-          .type(MessageType.ANSWER)
-          .build();
-      final var draftMessage = Message.builder()
-          .type(MessageType.CONTACT)
-          .status(MessageStatus.DRAFT)
-          .build();
+      final var missingMessage = Message.builder().type(MessageType.MISSING).build();
+      final var reminderMessage = Message.builder().type(MessageType.REMINDER).build();
+      final var answerMessage = Message.builder().type(MessageType.ANSWER).build();
+      final var draftMessage =
+          Message.builder().type(MessageType.CONTACT).status(MessageStatus.DRAFT).build();
 
       final var specification = mock(Specification.class);
       final var expectedMessage = Message.builder().build();
       final var request = MessagesRequest.builder().build();
 
-      when(messageEntitySpecificationFactory.create(request))
-          .thenReturn(specification);
+      when(messageEntitySpecificationFactory.create(request)).thenReturn(specification);
       when(messageEntityRepository.findAll(specification))
           .thenReturn(
-              List.of(COMPLEMENT_MESSAGE_ENTITY, missingMessageEntity, reminderMessageEntity,
-                  answerMessageEntity, draftMessageEntity));
-      when(messageEntityMapper.toDomain(COMPLEMENT_MESSAGE_ENTITY))
-          .thenReturn(expectedMessage);
-      when(messageEntityMapper.toDomain(missingMessageEntity))
-          .thenReturn(missingMessage);
-      when(messageEntityMapper.toDomain(reminderMessageEntity))
-          .thenReturn(reminderMessage);
-      when(messageEntityMapper.toDomain(answerMessageEntity))
-          .thenReturn(answerMessage);
-      when(messageEntityMapper.toDomain(draftMessageEntity))
-          .thenReturn(draftMessage);
+              List.of(
+                  COMPLEMENT_MESSAGE_ENTITY,
+                  missingMessageEntity,
+                  reminderMessageEntity,
+                  answerMessageEntity,
+                  draftMessageEntity));
+      when(messageEntityMapper.toDomain(COMPLEMENT_MESSAGE_ENTITY)).thenReturn(expectedMessage);
+      when(messageEntityMapper.toDomain(missingMessageEntity)).thenReturn(missingMessage);
+      when(messageEntityMapper.toDomain(reminderMessageEntity)).thenReturn(reminderMessage);
+      when(messageEntityMapper.toDomain(answerMessageEntity)).thenReturn(answerMessage);
+      when(messageEntityMapper.toDomain(draftMessageEntity)).thenReturn(draftMessage);
 
       final var response = jpaMessageRepository.findByMessagesRequest(request);
 
@@ -378,8 +367,8 @@ class JpaMessageRepositoryTest {
     private static final String PATIENT_ID = "191212121212";
     private static final Integer MAX_DAYS = 7;
 
-    private static CertificateMessageCountEntity createEntity(String certificateId, int complements,
-        int others) {
+    private static CertificateMessageCountEntity createEntity(
+        String certificateId, int complements, int others) {
       return new CertificateMessageCountEntity() {
         @Override
         public String getCertificateId() {
@@ -400,12 +389,12 @@ class JpaMessageRepositoryTest {
 
     @Test
     void shallReturnEmptyListWhenNoMessagesFound() {
-      when(messageEntityRepository.getMessageCountForCertificates(
-          List.of(PATIENT_ID), MAX_DAYS))
+      when(messageEntityRepository.getMessageCountForCertificates(List.of(PATIENT_ID), MAX_DAYS))
           .thenReturn(List.of());
 
-      final var result = jpaMessageRepository.findCertificateMessageCountByPatientKeyAndStatusSentAndCreatedAfter(
-          List.of(PersonId.builder().id(PATIENT_ID).build()), MAX_DAYS);
+      final var result =
+          jpaMessageRepository.findCertificateMessageCountByPatientKeyAndStatusSentAndCreatedAfter(
+              List.of(PersonId.builder().id(PATIENT_ID).build()), MAX_DAYS);
 
       assertEquals(Collections.emptyList(), result);
     }
@@ -414,12 +403,12 @@ class JpaMessageRepositoryTest {
     void shallReturnMessageWhenOneMessageFound() {
       final var entity = createEntity("cert123", 5, 1);
 
-      when(messageEntityRepository.getMessageCountForCertificates(
-          List.of(PATIENT_ID), MAX_DAYS))
+      when(messageEntityRepository.getMessageCountForCertificates(List.of(PATIENT_ID), MAX_DAYS))
           .thenReturn(List.of(entity));
 
-      final var result = jpaMessageRepository.findCertificateMessageCountByPatientKeyAndStatusSentAndCreatedAfter(
-          List.of(PersonId.builder().id(PATIENT_ID).build()), MAX_DAYS);
+      final var result =
+          jpaMessageRepository.findCertificateMessageCountByPatientKeyAndStatusSentAndCreatedAfter(
+              List.of(PersonId.builder().id(PATIENT_ID).build()), MAX_DAYS);
 
       assertEquals(1, result.size());
       assertEquals("cert123", result.getFirst().certificateId().id());
@@ -432,12 +421,12 @@ class JpaMessageRepositoryTest {
       final var entity1 = createEntity("cert123", 5, 1);
       final var entity2 = createEntity("cert456", 3, 2);
 
-      when(messageEntityRepository.getMessageCountForCertificates(
-          List.of(PATIENT_ID), MAX_DAYS))
+      when(messageEntityRepository.getMessageCountForCertificates(List.of(PATIENT_ID), MAX_DAYS))
           .thenReturn(List.of(entity1, entity2));
 
-      final var result = jpaMessageRepository.findCertificateMessageCountByPatientKeyAndStatusSentAndCreatedAfter(
-          List.of(PersonId.builder().id(PATIENT_ID).build()), MAX_DAYS);
+      final var result =
+          jpaMessageRepository.findCertificateMessageCountByPatientKeyAndStatusSentAndCreatedAfter(
+              List.of(PersonId.builder().id(PATIENT_ID).build()), MAX_DAYS);
 
       assertEquals(2, result.size());
       assertEquals("cert123", result.getFirst().certificateId().id());
@@ -450,15 +439,13 @@ class JpaMessageRepositoryTest {
 
     @Test
     void shallCallRepositoryWithCorrectParameters() {
-      when(messageEntityRepository.getMessageCountForCertificates(
-          List.of(PATIENT_ID), MAX_DAYS))
+      when(messageEntityRepository.getMessageCountForCertificates(List.of(PATIENT_ID), MAX_DAYS))
           .thenReturn(List.of());
 
       jpaMessageRepository.findCertificateMessageCountByPatientKeyAndStatusSentAndCreatedAfter(
           List.of(PersonId.builder().id(PATIENT_ID).build()), MAX_DAYS);
 
-      verify(messageEntityRepository).getMessageCountForCertificates(
-          List.of(PATIENT_ID), MAX_DAYS);
+      verify(messageEntityRepository).getMessageCountForCertificates(List.of(PATIENT_ID), MAX_DAYS);
     }
 
     @Test
@@ -466,16 +453,16 @@ class JpaMessageRepositoryTest {
       final var patientIds = List.of("1", "2", "3", "4", "5");
       final var entity = createEntity("cert123", 1, 1);
 
-      when(messageEntityRepository.getMessageCountForCertificates(
-          patientIds, MAX_DAYS))
+      when(messageEntityRepository.getMessageCountForCertificates(patientIds, MAX_DAYS))
           .thenReturn(List.of(entity));
 
-      final var result = jpaMessageRepository.findCertificateMessageCountByPatientKeyAndStatusSentAndCreatedAfter(
-          patientIds.stream().map(p -> PersonId.builder().id(p).build()).toList(), MAX_DAYS);
+      final var result =
+          jpaMessageRepository.findCertificateMessageCountByPatientKeyAndStatusSentAndCreatedAfter(
+              patientIds.stream().map(p -> PersonId.builder().id(p).build()).toList(), MAX_DAYS);
 
       assertEquals(1, result.size());
-      verify(messageEntityRepository, times(1)).getMessageCountForCertificates(
-          patientIds, MAX_DAYS);
+      verify(messageEntityRepository, times(1))
+          .getMessageCountForCertificates(patientIds, MAX_DAYS);
     }
 
     @Test
@@ -490,25 +477,26 @@ class JpaMessageRepositoryTest {
       final var entity3 = createEntity("cert1001", 2, 6);
 
       when(messageEntityRepository.getMessageCountForCertificates(
-          patientIds.subList(0, 1000), MAX_DAYS))
+              patientIds.subList(0, 1000), MAX_DAYS))
           .thenReturn(List.of(entity1));
       when(messageEntityRepository.getMessageCountForCertificates(
-          patientIds.subList(1000, 2000), MAX_DAYS))
+              patientIds.subList(1000, 2000), MAX_DAYS))
           .thenReturn(List.of(entity2));
       when(messageEntityRepository.getMessageCountForCertificates(
-          patientIds.subList(2000, 2001), MAX_DAYS))
+              patientIds.subList(2000, 2001), MAX_DAYS))
           .thenReturn(List.of(entity3));
 
-      final var result = jpaMessageRepository.findCertificateMessageCountByPatientKeyAndStatusSentAndCreatedAfter(
-          patientIds.stream().map(p -> PersonId.builder().id(p).build()).toList(), MAX_DAYS);
+      final var result =
+          jpaMessageRepository.findCertificateMessageCountByPatientKeyAndStatusSentAndCreatedAfter(
+              patientIds.stream().map(p -> PersonId.builder().id(p).build()).toList(), MAX_DAYS);
 
       assertEquals(3, result.size());
-      verify(messageEntityRepository, times(1)).getMessageCountForCertificates(
-          patientIds.subList(0, 1000), MAX_DAYS);
-      verify(messageEntityRepository, times(1)).getMessageCountForCertificates(
-          patientIds.subList(1000, 2000), MAX_DAYS);
-      verify(messageEntityRepository, times(1)).getMessageCountForCertificates(
-          patientIds.subList(2000, 2001), MAX_DAYS);
+      verify(messageEntityRepository, times(1))
+          .getMessageCountForCertificates(patientIds.subList(0, 1000), MAX_DAYS);
+      verify(messageEntityRepository, times(1))
+          .getMessageCountForCertificates(patientIds.subList(1000, 2000), MAX_DAYS);
+      verify(messageEntityRepository, times(1))
+          .getMessageCountForCertificates(patientIds.subList(2000, 2001), MAX_DAYS);
     }
   }
 }

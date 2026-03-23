@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.citizen;
 
 import static se.inera.intyg.certificateservice.logging.MdcLogConstants.EVENT_TYPE_ACCESSED;
@@ -26,7 +44,6 @@ import se.inera.intyg.certificateservice.application.citizen.service.PrintCitize
 import se.inera.intyg.certificateservice.application.citizen.service.SendCitizenCertificateService;
 import se.inera.intyg.certificateservice.logging.PerformanceLogging;
 
-
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/citizen")
@@ -39,7 +56,9 @@ public class CitizenController {
   private final SendCitizenCertificateService sendCitizenCertificateService;
 
   @GetMapping("/certificate/{certificateId}/exists")
-  @PerformanceLogging(eventAction = "citizen-find-existing-certificate", eventType = EVENT_TYPE_ACCESSED)
+  @PerformanceLogging(
+      eventAction = "citizen-find-existing-certificate",
+      eventType = EVENT_TYPE_ACCESSED)
   CitizenCertificateExistsResponse findExistingCertificate(
       @PathVariable("certificateId") String certificateId) {
     return citizenCertificateExistsService.exist(certificateId);
@@ -54,14 +73,18 @@ public class CitizenController {
   }
 
   @PostMapping("/certificate")
-  @PerformanceLogging(eventAction = "citizen-retrieve-certificate-list", eventType = EVENT_TYPE_ACCESSED)
+  @PerformanceLogging(
+      eventAction = "citizen-retrieve-certificate-list",
+      eventType = EVENT_TYPE_ACCESSED)
   GetCitizenCertificateListResponse getCertificateList(
       @RequestBody GetCitizenCertificateListRequest getCitizenCertificateListRequest) {
     return getCitizenCertificateListService.get(getCitizenCertificateListRequest);
   }
 
   @PostMapping("/certificate/{certificateId}/print")
-  @PerformanceLogging(eventAction = "citizen-retrieve-certificate-pdf", eventType = EVENT_TYPE_ACCESSED)
+  @PerformanceLogging(
+      eventAction = "citizen-retrieve-certificate-pdf",
+      eventType = EVENT_TYPE_ACCESSED)
   PrintCitizenCertificateResponse printCertificate(
       @RequestBody PrintCitizenCertificateRequest printCitizenCertificateRequest,
       @PathVariable("certificateId") String certificateId) {

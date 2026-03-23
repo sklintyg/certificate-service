@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.unit.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,31 +48,29 @@ import se.inera.intyg.certificateservice.domain.unit.model.UnitStatistics;
 class GetUnitStatisticsDomainServiceTest {
 
   private static final List<HsaId> ISSUED_ON_UNIT_IDS = List.of(new HsaId("unit1"));
-  @Mock
-  private StatisticsRepository statisticsRepository;
-  @Mock
-  private CertificateModelRepository certificateModelRepository;
-  @InjectMocks
-  private GetUnitStatisticsDomainService getUnitStatisticsDomainService;
+  @Mock private StatisticsRepository statisticsRepository;
+  @Mock private CertificateModelRepository certificateModelRepository;
+  @InjectMocks private GetUnitStatisticsDomainService getUnitStatisticsDomainService;
 
   @Test
   void shallSetAllowedToViewProtectedPersonToFalseIfUserIsCareAdmin() {
     final ArgumentCaptor<List<CertificateModelId>> captor = ArgumentCaptor.forClass(List.class);
 
     final var certificateModel = mock(CertificateModel.class);
-    final var actionSpecification = CertificateActionSpecification.builder()
-        .allowedRolesForProtectedPersons(List.of(Role.DOCTOR))
-        .build();
+    final var actionSpecification =
+        CertificateActionSpecification.builder()
+            .allowedRolesForProtectedPersons(List.of(Role.DOCTOR))
+            .build();
 
-    doReturn(Optional.of(actionSpecification)).when(certificateModel)
+    doReturn(Optional.of(actionSpecification))
+        .when(certificateModel)
         .certificateAction(CertificateActionType.READ);
 
     doReturn(List.of(certificateModel)).when(certificateModelRepository).findAllActive();
 
     getUnitStatisticsDomainService.get(Role.CARE_ADMIN, Collections.emptyList());
-    verify(statisticsRepository).getStatisticsForUnits(
-        eq(Collections.emptyList()),
-        captor.capture());
+    verify(statisticsRepository)
+        .getStatisticsForUnits(eq(Collections.emptyList()), captor.capture());
 
     assertEquals(0, captor.getValue().size());
   }
@@ -64,19 +80,20 @@ class GetUnitStatisticsDomainServiceTest {
     final ArgumentCaptor<List<CertificateModelId>> captor = ArgumentCaptor.forClass(List.class);
 
     final var certificateModel = mock(CertificateModel.class);
-    final var actionSpecification = CertificateActionSpecification.builder()
-        .allowedRolesForProtectedPersons(List.of(Role.DOCTOR))
-        .build();
+    final var actionSpecification =
+        CertificateActionSpecification.builder()
+            .allowedRolesForProtectedPersons(List.of(Role.DOCTOR))
+            .build();
 
-    doReturn(Optional.of(actionSpecification)).when(certificateModel)
+    doReturn(Optional.of(actionSpecification))
+        .when(certificateModel)
         .certificateAction(CertificateActionType.READ);
 
     doReturn(List.of(certificateModel)).when(certificateModelRepository).findAllActive();
 
     getUnitStatisticsDomainService.get(Role.DOCTOR, Collections.emptyList());
-    verify(statisticsRepository).getStatisticsForUnits(
-        eq(Collections.emptyList()),
-        captor.capture());
+    verify(statisticsRepository)
+        .getStatisticsForUnits(eq(Collections.emptyList()), captor.capture());
 
     assertEquals(1, captor.getValue().size());
   }
@@ -85,13 +102,12 @@ class GetUnitStatisticsDomainServiceTest {
   void shallReturnMapOfUnitStatistics() {
     final var expectedUnitStatisticsMap = Map.of(new HsaId("unit1"), new UnitStatistics(1, 4));
 
-    doReturn(expectedUnitStatisticsMap).when(statisticsRepository)
+    doReturn(expectedUnitStatisticsMap)
+        .when(statisticsRepository)
         .getStatisticsForUnits(ISSUED_ON_UNIT_IDS, Collections.emptyList());
 
-    final var actualUnitStatisticsMap = getUnitStatisticsDomainService.get(
-        Role.DOCTOR,
-        ISSUED_ON_UNIT_IDS
-    );
+    final var actualUnitStatisticsMap =
+        getUnitStatisticsDomainService.get(Role.DOCTOR, ISSUED_ON_UNIT_IDS);
 
     assertEquals(expectedUnitStatisticsMap, actualUnitStatisticsMap);
   }

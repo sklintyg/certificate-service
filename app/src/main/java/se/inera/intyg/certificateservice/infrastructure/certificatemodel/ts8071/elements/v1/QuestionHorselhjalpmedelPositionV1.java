@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.v1;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.v1.QuestionHorselV1.QUESTION_HORSEL_V1_ID;
@@ -20,10 +38,8 @@ import se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.
 
 public class QuestionHorselhjalpmedelPositionV1 {
 
-  public static final ElementId QUESTION_HORSELHJALPMEDEL_POSITION_V1_ID = new ElementId(
-      "9.3");
-  public static final FieldId QUESTION_HORSELHJALPMEDEL_POSITION_V1_FIELD_ID = new FieldId(
-      "9.3");
+  public static final ElementId QUESTION_HORSELHJALPMEDEL_POSITION_V1_ID = new ElementId("9.3");
+  public static final FieldId QUESTION_HORSELHJALPMEDEL_POSITION_V1_FIELD_ID = new FieldId("9.3");
 
   private QuestionHorselhjalpmedelPositionV1() {
     throw new IllegalStateException("Utility class");
@@ -31,12 +47,13 @@ public class QuestionHorselhjalpmedelPositionV1 {
 
   public static ElementSpecification questionHorselhjalpmedelPositionV1(
       ElementSpecification... children) {
-    final var radioMultipleCodes = List.of(
-        CodeFactory.elementConfigurationCode(CodeSystemKvAnatomiskLokalisationHorapparat.VANSTER),
-        CodeFactory.elementConfigurationCode(CodeSystemKvAnatomiskLokalisationHorapparat.HOGER),
-        CodeFactory.elementConfigurationCode(
-            CodeSystemKvAnatomiskLokalisationHorapparat.BADA_ORONEN)
-    );
+    final var radioMultipleCodes =
+        List.of(
+            CodeFactory.elementConfigurationCode(
+                CodeSystemKvAnatomiskLokalisationHorapparat.VANSTER),
+            CodeFactory.elementConfigurationCode(CodeSystemKvAnatomiskLokalisationHorapparat.HOGER),
+            CodeFactory.elementConfigurationCode(
+                CodeSystemKvAnatomiskLokalisationHorapparat.BADA_ORONEN));
 
     return ElementSpecification.builder()
         .id(QUESTION_HORSELHJALPMEDEL_POSITION_V1_ID)
@@ -47,27 +64,15 @@ public class QuestionHorselhjalpmedelPositionV1 {
                     "Om personen behöver använda hörapparat, ange på vilket öra eller om hörapparat används på båda öronen")
                 .elementLayout(ElementLayout.ROWS)
                 .list(radioMultipleCodes)
-                .build()
-        )
+                .build())
         .rules(
             List.of(
                 CertificateElementRuleFactory.mandatoryOrExist(
                     QUESTION_HORSELHJALPMEDEL_POSITION_V1_ID,
-                    radioMultipleCodes.stream().map(ElementConfigurationCode::id).toList()
-                ),
+                    radioMultipleCodes.stream().map(ElementConfigurationCode::id).toList()),
                 CertificateElementRuleFactory.show(
-                    QUESTION_HORSELHJALPMEDEL_V1_ID,
-                    QUESTION_HORSELHJALPMEDEL_V1_FIELD_ID
-                )
-            )
-        )
-        .validations(
-            List.of(
-                ElementValidationCode.builder()
-                    .mandatory(true)
-                    .build()
-            )
-        )
+                    QUESTION_HORSELHJALPMEDEL_V1_ID, QUESTION_HORSELHJALPMEDEL_V1_FIELD_ID)))
+        .validations(List.of(ElementValidationCode.builder().mandatory(true).build()))
         .shouldValidate(ElementDataPredicateFactory.valueBoolean(QUESTION_HORSELHJALPMEDEL_V1_ID))
         .mapping(new ElementMapping(QUESTION_HORSEL_V1_ID, null))
         .children(List.of(children))

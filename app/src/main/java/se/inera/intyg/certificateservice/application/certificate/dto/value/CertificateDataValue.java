@@ -1,31 +1,49 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.dto.value;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-@JsonTypeInfo(
-    use = JsonTypeInfo.Id.NAME,
-    property = "type")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
-    @Type(value = CertificateDataValueDate.class, name = "DATE"),
-    @Type(value = CertificateDataValueText.class, name = "TEXT"),
-    @Type(value = CertificateDataValueDateRange.class, name = "DATE_RANGE"),
-    @Type(value = CertificateDataValueDateRangeList.class, name = "DATE_RANGE_LIST"),
-    @Type(value = CertificateDataValueDateList.class, name = "DATE_LIST"),
-    @Type(value = CertificateDataValueCode.class, name = "CODE"),
-    @Type(value = CertificateDataValueBoolean.class, name = "BOOLEAN"),
-    @Type(value = CertificateDataValueDiagnosisList.class, name = "DIAGNOSIS_LIST"),
-    @Type(value = CertificateDataValueDiagnosis.class, name = "DIAGNOSIS"),
-    @Type(value = CertificateDataValueBoolean.class, name = "BOOLEAN"),
-    @Type(value = CertificateDataValueMedicalInvestigation.class, name = "MEDICAL_INVESTIGATION"),
-    @Type(value = CertificateDataValueMedicalInvestigationList.class, name = "MEDICAL_INVESTIGATION_LIST"),
-    @Type(value = CertificateDataValueCodeList.class, name = "CODE_LIST"),
-    @Type(value = CertificateDataValueVisualAcuities.class, name = "VISUAL_ACUITIES"),
-    @Type(value = CertificateDataValueVisualAcuity.class, name = "VISUAL_ACUITY"),
-    @Type(value = CertificateDataValueDouble.class, name = "DOUBLE"),
-    @Type(value = CertificateDataValueInteger.class, name = "INTEGER"),
-    @Type(value = CertificateDataIcfValue.class, name = "ICF"),
+  @Type(value = CertificateDataValueDate.class, name = "DATE"),
+  @Type(value = CertificateDataValueText.class, name = "TEXT"),
+  @Type(value = CertificateDataValueDateRange.class, name = "DATE_RANGE"),
+  @Type(value = CertificateDataValueDateRangeList.class, name = "DATE_RANGE_LIST"),
+  @Type(value = CertificateDataValueDateList.class, name = "DATE_LIST"),
+  @Type(value = CertificateDataValueCode.class, name = "CODE"),
+  @Type(value = CertificateDataValueBoolean.class, name = "BOOLEAN"),
+  @Type(value = CertificateDataValueDiagnosisList.class, name = "DIAGNOSIS_LIST"),
+  @Type(value = CertificateDataValueDiagnosis.class, name = "DIAGNOSIS"),
+  @Type(value = CertificateDataValueBoolean.class, name = "BOOLEAN"),
+  @Type(value = CertificateDataValueMedicalInvestigation.class, name = "MEDICAL_INVESTIGATION"),
+  @Type(
+      value = CertificateDataValueMedicalInvestigationList.class,
+      name = "MEDICAL_INVESTIGATION_LIST"),
+  @Type(value = CertificateDataValueCodeList.class, name = "CODE_LIST"),
+  @Type(value = CertificateDataValueVisualAcuities.class, name = "VISUAL_ACUITIES"),
+  @Type(value = CertificateDataValueVisualAcuity.class, name = "VISUAL_ACUITY"),
+  @Type(value = CertificateDataValueDouble.class, name = "DOUBLE"),
+  @Type(value = CertificateDataValueInteger.class, name = "INTEGER"),
+  @Type(value = CertificateDataIcfValue.class, name = "ICF"),
 })
 public interface CertificateDataValue {
 

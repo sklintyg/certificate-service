@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.common;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,15 +48,16 @@ class QuestionSjukdomEllerSynnedsattningTest {
 
   @Test
   void shallIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationRadioBoolean.builder()
-        .name("Finns uppgift om ögonsjukdom eller synnedsättning?")
-        .description(
-            "Exempel på vanligt förekommande ögonsjukdomar är glaukom, retinopati och retinitis pigmentosa. Exempel på synnedsättning kan vara "
-                + "dubbelseende, syn med enbart ett öga eller plötsligt nedsatt synskärpa.")
-        .id(new FieldId("7.1"))
-        .selectedText("Ja")
-        .unselectedText("Nej")
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationRadioBoolean.builder()
+            .name("Finns uppgift om ögonsjukdom eller synnedsättning?")
+            .description(
+                "Exempel på vanligt förekommande ögonsjukdomar är glaukom, retinopati och retinitis pigmentosa. Exempel på synnedsättning kan vara "
+                    + "dubbelseende, syn med enbart ett öga eller plötsligt nedsatt synskärpa.")
+            .id(new FieldId("7.1"))
+            .selectedText("Ja")
+            .unselectedText("Nej")
+            .build();
 
     final var element = QuestionSjukdomEllerSynnedsattning.questionSjukdomEllerSynnedsattning();
 
@@ -47,19 +66,18 @@ class QuestionSjukdomEllerSynnedsattningTest {
 
   @Test
   void shallIncludeRules() {
-    final var expectedRule = List.of(
-        ElementRuleExpression.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.MANDATORY)
-            .expression(new RuleExpression("exists($7.1)")
-            )
-            .build(),
-        ElementRuleExpression.builder()
-            .id(new ElementId("4"))
-            .type(ElementRuleType.SHOW)
-            .expression(new RuleExpression("!$4.1 && !empty($4.1)"))
-            .build()
-    );
+    final var expectedRule =
+        List.of(
+            ElementRuleExpression.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.MANDATORY)
+                .expression(new RuleExpression("exists($7.1)"))
+                .build(),
+            ElementRuleExpression.builder()
+                .id(new ElementId("4"))
+                .type(ElementRuleType.SHOW)
+                .expression(new RuleExpression("!$4.1 && !empty($4.1)"))
+                .build());
 
     final var element = QuestionSjukdomEllerSynnedsattning.questionSjukdomEllerSynnedsattning();
 
@@ -68,11 +86,8 @@ class QuestionSjukdomEllerSynnedsattningTest {
 
   @Test
   void shallIncludeValidation() {
-    final var expectedValidations = List.of(
-        ElementValidationBoolean.builder()
-            .mandatory(true)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationBoolean.builder().mandatory(true).build());
 
     final var element = QuestionSjukdomEllerSynnedsattning.questionSjukdomEllerSynnedsattning();
 
@@ -84,16 +99,12 @@ class QuestionSjukdomEllerSynnedsattningTest {
 
     @Test
     void shallReturnFalseIfBooleanIsTrue() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("4"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(true)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("4"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
 
       final var element = QuestionSjukdomEllerSynnedsattning.questionSjukdomEllerSynnedsattning();
 
@@ -104,16 +115,12 @@ class QuestionSjukdomEllerSynnedsattningTest {
 
     @Test
     void shallReturnFalseIfElementMissing() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("8.1"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(true)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("8.1"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
 
       final var element = QuestionSjukdomEllerSynnedsattning.questionSjukdomEllerSynnedsattning();
 
@@ -124,16 +131,12 @@ class QuestionSjukdomEllerSynnedsattningTest {
 
     @Test
     void shallReturnTrueIfElementFalse() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("4"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(false)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("4"))
+                  .value(ElementValueBoolean.builder().value(false).build())
+                  .build());
 
       final var element = QuestionSjukdomEllerSynnedsattning.questionSjukdomEllerSynnedsattning();
 

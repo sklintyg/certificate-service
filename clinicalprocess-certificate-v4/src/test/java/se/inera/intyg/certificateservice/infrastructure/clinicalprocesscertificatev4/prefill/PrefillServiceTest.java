@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.prefill;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -24,11 +42,9 @@ import se.riv.clinicalprocess.healthcond.certificate.v33.Forifyllnad;
 @ExtendWith(MockitoExtension.class)
 class PrefillServiceTest {
 
-  @Mock
-  private PrefillHandler prefillHandler;
+  @Mock private PrefillHandler prefillHandler;
 
-  @InjectMocks
-  private PrefillService prefillService;
+  @InjectMocks private PrefillService prefillService;
 
   @Test
   void shouldReturnEmptySetIfPrefillXmlIsNull() {
@@ -45,7 +61,8 @@ class PrefillServiceTest {
     final var xml = mock(Xml.class);
     when(xml.decode()).thenReturn("xmlstring");
     try (var mocked = mockStatic(PrefillUnmarshaller.class)) {
-      mocked.when(() -> PrefillUnmarshaller.forifyllnadType("xmlstring"))
+      mocked
+          .when(() -> PrefillUnmarshaller.forifyllnadType("xmlstring"))
           .thenReturn(Optional.empty());
 
       final var result = prefillService.prefill(certificateModel, xml, CERTIFICATE_ID);
@@ -63,14 +80,16 @@ class PrefillServiceTest {
     final var forifyllnad = mock(Forifyllnad.class);
 
     try (var mockedUnmarshaller = mockStatic(PrefillUnmarshaller.class)) {
-      mockedUnmarshaller.when(() -> PrefillUnmarshaller.forifyllnadType("xmlstring"))
+      mockedUnmarshaller
+          .when(() -> PrefillUnmarshaller.forifyllnadType("xmlstring"))
           .thenReturn(Optional.of(forifyllnad));
 
       final var prefillResult = mock(PrefillResult.class);
       when(prefillResult.prefilledElements()).thenReturn(elementData);
 
       try (var mockedResult = mockStatic(PrefillResult.class)) {
-        mockedResult.when(() -> PrefillResult.create(certificateModel, forifyllnad, prefillHandler))
+        mockedResult
+            .when(() -> PrefillResult.create(certificateModel, forifyllnad, prefillHandler))
             .thenReturn(prefillResult);
 
         final var result = prefillService.prefill(certificateModel, xml, CERTIFICATE_ID);

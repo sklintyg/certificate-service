@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.testability.certificate.testcertificate.elements;
 
 import java.util.List;
@@ -39,32 +57,21 @@ public class QuestionVisualAcuities {
                         .label("Höger öga")
                         .withoutCorrectionId(TEST1_ID)
                         .withCorrectionId(TEST2_ID)
-                        .build()
-                )
+                        .build())
                 .leftEye(
                     ElementVisualAcuity.builder()
                         .label("Vänster öga")
                         .withoutCorrectionId(TEST3_ID)
                         .withCorrectionId(TEST4_ID)
-                        .build()
-                )
+                        .build())
                 .binocular(
                     ElementVisualAcuity.builder()
                         .label("Binokulärt")
                         .withoutCorrectionId(TEST5_ID)
                         .withCorrectionId(TEST6_ID)
-                        .build()
-                )
-                .build()
-        )
-        .validations(
-            List.of(
-                ElementValidationVisualAcuities.builder()
-                    .mandatory(false)
-                    .build()
-            )
-
-        )
+                        .build())
+                .build())
+        .validations(List.of(ElementValidationVisualAcuities.builder().mandatory(false).build()))
         .build();
   }
 }

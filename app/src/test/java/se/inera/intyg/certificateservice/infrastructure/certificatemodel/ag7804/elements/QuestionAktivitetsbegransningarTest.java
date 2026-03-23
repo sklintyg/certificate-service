@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ag7804.elements;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,11 +46,12 @@ class QuestionAktivitetsbegransningarTest {
 
   @Test
   void shouldIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationTextArea.builder()
-        .id(QUESTION_AKTIVITETSBEGRANSNING_FIELD_ID)
-        .name(
-            "Beskriv vad du bedömer att patienten har svårt att göra på grund av sin sjukdom. Ange exempel på sådana begränsningar relaterade till de arbetsuppgifter eller annan sysselsättning som du bedömer arbetsförmågan i förhållande till. Ange om möjligt svårighetsgrad.")
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationTextArea.builder()
+            .id(QUESTION_AKTIVITETSBEGRANSNING_FIELD_ID)
+            .name(
+                "Beskriv vad du bedömer att patienten har svårt att göra på grund av sin sjukdom. Ange exempel på sådana begränsningar relaterade till de arbetsuppgifter eller annan sysselsättning som du bedömer arbetsförmågan i förhållande till. Ange om möjligt svårighetsgrad.")
+            .build();
 
     final var element = QuestionAktivitetsbegransningar.questionAktivitetsbegransningar();
 
@@ -42,34 +61,26 @@ class QuestionAktivitetsbegransningarTest {
   @Test
   void shouldIncludeRules() {
     final var element = QuestionAktivitetsbegransningar.questionAktivitetsbegransningar();
-    final var expectedRules = List.of(
-        ElementRuleExpression.builder()
-            .id(QUESTION_AKTIVITETSBEGRANSNING_ID)
-            .type(ElementRuleType.MANDATORY)
-            .expression(
-                new RuleExpression(
-                    "$17.1"
-                )
-            )
-            .build(),
-        ElementRuleExpression.builder()
-            .id(new ElementId("27"))
-            .type(ElementRuleType.HIDE)
-            .expression(new RuleExpression("$27.1"))
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleExpression.builder()
+                .id(QUESTION_AKTIVITETSBEGRANSNING_ID)
+                .type(ElementRuleType.MANDATORY)
+                .expression(new RuleExpression("$17.1"))
+                .build(),
+            ElementRuleExpression.builder()
+                .id(new ElementId("27"))
+                .type(ElementRuleType.HIDE)
+                .expression(new RuleExpression("$27.1"))
+                .build());
     assertEquals(expectedRules, element.rules());
   }
 
   @Test
   void shouldIncludeValidation() {
     final var element = QuestionAktivitetsbegransningar.questionAktivitetsbegransningar();
-    final var expectedValidations = List.of(
-        ElementValidationText.builder()
-            .mandatory(true)
-            .limit(4000)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationText.builder().mandatory(true).limit(4000).build());
     assertEquals(expectedValidations, element.validations());
   }
 
@@ -78,12 +89,12 @@ class QuestionAktivitetsbegransningarTest {
 
     @Test
     void shouldReturnTrueIfBooleanIsFalse() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("27"))
-              .value(ElementValueBoolean.builder().value(false).build())
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("27"))
+                  .value(ElementValueBoolean.builder().value(false).build())
+                  .build());
       final var element = QuestionAktivitetsbegransningar.questionAktivitetsbegransningar();
       final var shouldValidate = element.shouldValidate();
       assertTrue(shouldValidate.test(elementData));
@@ -91,12 +102,12 @@ class QuestionAktivitetsbegransningarTest {
 
     @Test
     void shouldReturnTrueIfElementMissing() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("7"))
-              .value(ElementValueBoolean.builder().value(true).build())
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("7"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
       final var element = QuestionAktivitetsbegransningar.questionAktivitetsbegransningar();
       final var shouldValidate = element.shouldValidate();
       assertTrue(shouldValidate.test(elementData));
@@ -104,16 +115,15 @@ class QuestionAktivitetsbegransningarTest {
 
     @Test
     void shouldReturnFalseIfBooleanIsTrue() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("27"))
-              .value(ElementValueBoolean.builder().value(true).build())
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("27"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
       final var element = QuestionAktivitetsbegransningar.questionAktivitetsbegransningar();
       final var shouldValidate = element.shouldValidate();
       assertFalse(shouldValidate.test(elementData));
     }
   }
-
 }

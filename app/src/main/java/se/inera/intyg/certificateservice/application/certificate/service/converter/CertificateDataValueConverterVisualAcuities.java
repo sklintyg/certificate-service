@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service.converter;
 
 import org.springframework.stereotype.Component;
@@ -19,18 +37,15 @@ public class CertificateDataValueConverterVisualAcuities implements CertificateD
   }
 
   @Override
-  public CertificateDataValue convert(ElementSpecification elementSpecification,
-      ElementValue elementValue) {
+  public CertificateDataValue convert(
+      ElementSpecification elementSpecification, ElementValue elementValue) {
     if (elementValue != null && !(elementValue instanceof ElementValueVisualAcuities)) {
       throw new IllegalStateException(
-          "Invalid value type. Type was '%s'".formatted(elementValue.getClass())
-      );
+          "Invalid value type. Type was '%s'".formatted(elementValue.getClass()));
     }
 
-    final var elementValueVisualAcuities = getElementValueVisualAcuities(
-        elementValue,
-        elementSpecification
-    );
+    final var elementValueVisualAcuities =
+        getElementValueVisualAcuities(elementValue, elementSpecification);
 
     return CertificateDataValueVisualAcuities.builder()
         .rightEye(
@@ -39,61 +54,46 @@ public class CertificateDataValueConverterVisualAcuities implements CertificateD
                     CertificateDataValueDouble.builder()
                         .id(elementValueVisualAcuities.rightEye().withCorrection().id().value())
                         .value(elementValueVisualAcuities.rightEye().withCorrection().value())
-                        .build()
-                )
+                        .build())
                 .withoutCorrection(
                     CertificateDataValueDouble.builder()
-                        .id(elementValueVisualAcuities.rightEye().withoutCorrection().id()
-                            .value())
-                        .value(
-                            elementValueVisualAcuities.rightEye().withoutCorrection().value())
-                        .build()
-                )
-                .build()
-        )
+                        .id(elementValueVisualAcuities.rightEye().withoutCorrection().id().value())
+                        .value(elementValueVisualAcuities.rightEye().withoutCorrection().value())
+                        .build())
+                .build())
         .leftEye(
             CertificateDataValueVisualAcuity.builder()
                 .withCorrection(
                     CertificateDataValueDouble.builder()
                         .id(elementValueVisualAcuities.leftEye().withCorrection().id().value())
                         .value(elementValueVisualAcuities.leftEye().withCorrection().value())
-                        .build()
-                )
+                        .build())
                 .withoutCorrection(
                     CertificateDataValueDouble.builder()
-                        .id(elementValueVisualAcuities.leftEye().withoutCorrection().id()
-                            .value())
+                        .id(elementValueVisualAcuities.leftEye().withoutCorrection().id().value())
                         .value(elementValueVisualAcuities.leftEye().withoutCorrection().value())
-                        .build()
-                )
-                .build()
-        )
+                        .build())
+                .build())
         .binocular(
             CertificateDataValueVisualAcuity.builder()
                 .withCorrection(
                     CertificateDataValueDouble.builder()
-                        .id(elementValueVisualAcuities.binocular().withCorrection().id()
-                            .value())
+                        .id(elementValueVisualAcuities.binocular().withCorrection().id().value())
                         .value(elementValueVisualAcuities.binocular().withCorrection().value())
-                        .build()
-                )
+                        .build())
                 .withoutCorrection(
                     CertificateDataValueDouble.builder()
-                        .id(elementValueVisualAcuities.binocular().withoutCorrection().id()
-                            .value())
-                        .value(
-                            elementValueVisualAcuities.binocular().withoutCorrection().value())
-                        .build()
-                )
-                .build()
-        )
+                        .id(elementValueVisualAcuities.binocular().withoutCorrection().id().value())
+                        .value(elementValueVisualAcuities.binocular().withoutCorrection().value())
+                        .build())
+                .build())
         .build();
   }
 
   private static ElementValueVisualAcuities getElementValueVisualAcuities(
       ElementValue elementValue, ElementSpecification elementSpecification) {
-    return elementValue != null ? (ElementValueVisualAcuities) elementValue
+    return elementValue != null
+        ? (ElementValueVisualAcuities) elementValue
         : (ElementValueVisualAcuities) elementSpecification.configuration().emptyValue();
   }
-
 }

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.testability.certificate.service.fillservice.ag114;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.ag114.CertificateModelFactoryAG114.AG114_V2_0;
@@ -47,45 +65,50 @@ import se.inera.intyg.certificateservice.testability.certificate.service.fillser
 @Component
 public class TestabilityCertificateFillServiceAG114 implements TestabilityCertificateFillService {
 
-  private static final List<ElementId> MAXIMAL_IDS = List.of(
-      QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID,
-      QUESTION_ANGE_VAD_ANNAT_AR_ID,
-      QUESTION_SYSSELSATTNING_ID,
-      QUESTION_FORMEDLA_DIAGNOS_ID,
-      QUESTION_DIAGNOS_ID,
-      QUESTION_ARBETSFORMAGA_ID,
-      QUESTION_FINNS_ARBETSFORMAGA_ID,
-      QUESTION_BESKRIV_ARBETSFORMAGAN_ID,
-      QUESTION_PERIOD_PROCENT_BEDOMNING_ID,
-      QUESTION_PERIOD_BEDOMNING_ID,
-      QUESTION_OVRIGT_ID,
-      QUESTION_KONTAKT_ID,
-      QUESTION_KONTAKT_BESKRIVNING_ID
-  );
+  private static final List<ElementId> MAXIMAL_IDS =
+      List.of(
+          QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID,
+          QUESTION_ANGE_VAD_ANNAT_AR_ID,
+          QUESTION_SYSSELSATTNING_ID,
+          QUESTION_FORMEDLA_DIAGNOS_ID,
+          QUESTION_DIAGNOS_ID,
+          QUESTION_ARBETSFORMAGA_ID,
+          QUESTION_FINNS_ARBETSFORMAGA_ID,
+          QUESTION_BESKRIV_ARBETSFORMAGAN_ID,
+          QUESTION_PERIOD_PROCENT_BEDOMNING_ID,
+          QUESTION_PERIOD_BEDOMNING_ID,
+          QUESTION_OVRIGT_ID,
+          QUESTION_KONTAKT_ID,
+          QUESTION_KONTAKT_BESKRIVNING_ID);
 
-  private static final List<ElementId> MINIMAL_IDS = List.of(
-      QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID,
-      QUESTION_SYSSELSATTNING_ID,
-      QUESTION_FORMEDLA_DIAGNOS_ID,
-      QUESTION_ARBETSFORMAGA_ID,
-      QUESTION_FINNS_ARBETSFORMAGA_ID,
-      QUESTION_PERIOD_PROCENT_BEDOMNING_ID,
-      QUESTION_PERIOD_BEDOMNING_ID
-  );
+  private static final List<ElementId> MINIMAL_IDS =
+      List.of(
+          QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID,
+          QUESTION_SYSSELSATTNING_ID,
+          QUESTION_FORMEDLA_DIAGNOS_ID,
+          QUESTION_ARBETSFORMAGA_ID,
+          QUESTION_FINNS_ARBETSFORMAGA_ID,
+          QUESTION_PERIOD_PROCENT_BEDOMNING_ID,
+          QUESTION_PERIOD_BEDOMNING_ID);
 
-  private static final Map<ElementId, String> TEXT_QUESTION_MOCKS = Map.ofEntries(
-      Map.entry(QUESTION_ANGE_VAD_ANNAT_AR_ID, "Patienten har fått vård via videolänk."),
-      Map.entry(QUESTION_SYSSELSATTNING_ID,
-          "Kontorsarbetare, ansvarar för administrativt stöd och kundkontakt."),
-      Map.entry(QUESTION_ARBETSFORMAGA_ID,
-          "Ryggsymptom begränsar förmågan att sitta längre perioder och lyfta tunga föremål."),
-      Map.entry(QUESTION_BESKRIV_ARBETSFORMAGAN_ID,
-          "Kan utföra mindre krävande administrativa uppgifter under kortare perioder med regelbundna pauser."),
-      Map.entry(QUESTION_OVRIGT_ID,
-          "Patienten behöver flexibla arbetstider och möjlighet att arbeta hemifrån vissa dagar."),
-      Map.entry(QUESTION_KONTAKT_BESKRIVNING_ID,
-          "Behöver diskutera arbetsanpassningar med HR-avdelningen.")
-  );
+  private static final Map<ElementId, String> TEXT_QUESTION_MOCKS =
+      Map.ofEntries(
+          Map.entry(QUESTION_ANGE_VAD_ANNAT_AR_ID, "Patienten har fått vård via videolänk."),
+          Map.entry(
+              QUESTION_SYSSELSATTNING_ID,
+              "Kontorsarbetare, ansvarar för administrativt stöd och kundkontakt."),
+          Map.entry(
+              QUESTION_ARBETSFORMAGA_ID,
+              "Ryggsymptom begränsar förmågan att sitta längre perioder och lyfta tunga föremål."),
+          Map.entry(
+              QUESTION_BESKRIV_ARBETSFORMAGAN_ID,
+              "Kan utföra mindre krävande administrativa uppgifter under kortare perioder med regelbundna pauser."),
+          Map.entry(
+              QUESTION_OVRIGT_ID,
+              "Patienten behöver flexibla arbetstider och möjlighet att arbeta hemifrån vissa dagar."),
+          Map.entry(
+              QUESTION_KONTAKT_BESKRIVNING_ID,
+              "Behöver diskutera arbetsanpassningar med HR-avdelningen."));
 
   @Override
   public List<CertificateModelId> certificateModelIds() {
@@ -93,28 +116,23 @@ public class TestabilityCertificateFillServiceAG114 implements TestabilityCertif
   }
 
   @Override
-  public List<ElementData> fill(CertificateModel certificateModel,
-      TestabilityFillTypeDTO fillType) {
-    return fillType == EMPTY
-        ? Collections.emptyList()
-        : fillWithValues(certificateModel, fillType);
+  public List<ElementData> fill(
+      CertificateModel certificateModel, TestabilityFillTypeDTO fillType) {
+    return fillType == EMPTY ? Collections.emptyList() : fillWithValues(certificateModel, fillType);
   }
 
-  private static List<ElementData> fillWithValues(CertificateModel certificateModel,
-      TestabilityFillTypeDTO fillType) {
+  private static List<ElementData> fillWithValues(
+      CertificateModel certificateModel, TestabilityFillTypeDTO fillType) {
     final var elementIds = fillType == MAXIMAL ? MAXIMAL_IDS : MINIMAL_IDS;
 
-    return elementIds.stream()
-        .map(certificateModel::elementSpecification)
-        .toList()
-        .stream()
+    return elementIds.stream().map(certificateModel::elementSpecification).toList().stream()
         .map(element -> fill(element, fillType))
         .filter(Objects::nonNull)
         .toList();
   }
 
-  private static ElementData fill(ElementSpecification elementSpecification,
-      TestabilityFillTypeDTO fillType) {
+  private static ElementData fill(
+      ElementSpecification elementSpecification, TestabilityFillTypeDTO fillType) {
     final var value = elementSpecification.configuration().emptyValue();
 
     if (value instanceof ElementValueBoolean elementValueBoolean) {
@@ -140,10 +158,7 @@ public class TestabilityCertificateFillServiceAG114 implements TestabilityCertif
                       ElementValueDate.builder()
                           .dateId(new FieldId(getCode(elementSpecification.id(), fillType).code()))
                           .date(LocalDate.now())
-                          .build()
-                  )
-              )
-          )
+                          .build())))
           .build();
     }
 
@@ -151,16 +166,14 @@ public class TestabilityCertificateFillServiceAG114 implements TestabilityCertif
       return ElementData.builder()
           .id(elementSpecification.id())
           .value(
-              elementValueDiagnosisList.withDiagnoses(List.of(
+              elementValueDiagnosisList.withDiagnoses(
+                  List.of(
                       ElementValueDiagnosis.builder()
                           .code("A78")
                           .description("Q-feber")
                           .terminology(CodeSystemIcd10Se.terminology().id())
                           .id(new FieldId("huvuddiagnos"))
-                          .build()
-                  )
-              )
-          )
+                          .build())))
           .build();
     }
 
@@ -172,8 +185,7 @@ public class TestabilityCertificateFillServiceAG114 implements TestabilityCertif
                   .fromDate(LocalDate.now())
                   .toDate(LocalDate.now().plusDays(7))
                   .id(elementValueDateRange.id())
-                  .build()
-          )
+                  .build())
           .build();
     }
 
@@ -184,8 +196,7 @@ public class TestabilityCertificateFillServiceAG114 implements TestabilityCertif
               ElementValueInteger.builder()
                   .value(25)
                   .integerId(elementSpecification.configuration().id())
-                  .build()
-          )
+                  .build())
           .build();
     }
 

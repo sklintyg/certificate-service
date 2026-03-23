@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate;
 
 import static se.inera.intyg.certificateservice.logging.MdcLogConstants.EVENT_TYPE_ACCESSED;
@@ -47,9 +65,12 @@ import se.inera.intyg.certificateservice.logging.PerformanceLogging;
 @RequestMapping("/internalapi/certificate")
 public class CertificateInternalApiController {
 
-  private final EraseCertificateInternalForCareProviderService eraseCertificateInternalForCareProviderService;
-  private final GetTotalExportsInternalForCareProviderService getTotalExportsInternalForCareProviderService;
-  private final GetCertificateExportsInternalForCareProviderService getCertificateExportsInternalForCareProviderService;
+  private final EraseCertificateInternalForCareProviderService
+      eraseCertificateInternalForCareProviderService;
+  private final GetTotalExportsInternalForCareProviderService
+      getTotalExportsInternalForCareProviderService;
+  private final GetCertificateExportsInternalForCareProviderService
+      getCertificateExportsInternalForCareProviderService;
   private final GetCertificateInternalXmlService getCertificateInternalXmlService;
   private final GetCertificateInternalMetadataService getCertificateInternalMetadataService;
   private final GetCertificateInternalService getCertificateInternalService;
@@ -57,45 +78,57 @@ public class CertificateInternalApiController {
   private final LockDraftsInternalService lockDraftsInternalService;
   private final GetCertificatesWithQAInternalService getCertificatesWithQAInternalService;
   private final PlaceholderCertificateExistsService placeholderCertificateExistsService;
-  private final RevokePlaceholderCertificateInternalService revokePlaceholderCertificateInternalService;
+  private final RevokePlaceholderCertificateInternalService
+      revokePlaceholderCertificateInternalService;
   private final GetSickLeaveCertificateInternalService getSickLeaveCertificateInternalService;
-  private final GetValidSickLeaveCertificatesInternalService getValidSickLeaveCertificatesInternalService;
+  private final GetValidSickLeaveCertificatesInternalService
+      getValidSickLeaveCertificatesInternalService;
 
   @GetMapping("/{certificateId}/exists")
-  @PerformanceLogging(eventAction = "internal-find-existing-certificate", eventType = EVENT_TYPE_ACCESSED)
+  @PerformanceLogging(
+      eventAction = "internal-find-existing-certificate",
+      eventType = EVENT_TYPE_ACCESSED)
   CertificateExistsResponse findExistingCertificate(
       @PathVariable("certificateId") String certificateId) {
     return certificateExistsService.exist(certificateId);
   }
 
   @PostMapping("/{certificateId}/xml")
-  @PerformanceLogging(eventAction = "internal-retrieve-certificate-xml", eventType = EVENT_TYPE_ACCESSED)
+  @PerformanceLogging(
+      eventAction = "internal-retrieve-certificate-xml",
+      eventType = EVENT_TYPE_ACCESSED)
   GetCertificateInternalXmlResponse getCertificateXml(
       @PathVariable("certificateId") String certificateId) {
     return getCertificateInternalXmlService.get(certificateId);
   }
 
   @GetMapping("/{certificateId}/metadata")
-  @PerformanceLogging(eventAction = "internal-retrieve-certificate-metadata", eventType = EVENT_TYPE_ACCESSED)
+  @PerformanceLogging(
+      eventAction = "internal-retrieve-certificate-metadata",
+      eventType = EVENT_TYPE_ACCESSED)
   GetCertificateInternalMetadataResponse getCertificateMetadata(
       @PathVariable("certificateId") String certificateId) {
     return getCertificateInternalMetadataService.get(certificateId);
   }
 
   @PostMapping("/{certificateId}")
-  @PerformanceLogging(eventAction = "internal-retrieve-certificate", eventType = EVENT_TYPE_ACCESSED)
+  @PerformanceLogging(
+      eventAction = "internal-retrieve-certificate",
+      eventType = EVENT_TYPE_ACCESSED)
   GetCertificateInternalResponse getCertificate(
       @PathVariable("certificateId") String certificateId) {
     return getCertificateInternalService.get(certificateId);
   }
 
   @PostMapping("/{certificateId}/sickleave")
-  @PerformanceLogging(eventAction = "internal-retrieve-sick-leave-certificate", eventType = EVENT_TYPE_ACCESSED)
+  @PerformanceLogging(
+      eventAction = "internal-retrieve-sick-leave-certificate",
+      eventType = EVENT_TYPE_ACCESSED)
   GetSickLeaveCertificateInternalResponse getSickLeaveCertificate(
       @PathVariable("certificateId") String certificateId,
       @RequestBody(required = false) GetSickLeaveCertificateInternalRequest request) {
-    return getSickLeaveCertificateInternalService.get(certificateId,
-        request != null && request.isIgnoreModelRules());
+    return getSickLeaveCertificateInternalService.get(
+        certificateId, request != null && request.isIgnoreModelRules());
   }
 
   @PostMapping("/lock")
@@ -105,14 +138,18 @@ public class CertificateInternalApiController {
   }
 
   @PostMapping("/qa")
-  @PerformanceLogging(eventAction = "internal-retrieve-certificate-with-qa", eventType = EVENT_TYPE_ACCESSED)
+  @PerformanceLogging(
+      eventAction = "internal-retrieve-certificate-with-qa",
+      eventType = EVENT_TYPE_ACCESSED)
   CertificatesWithQAInternalResponse getCertificatesWithQA(
       @RequestBody CertificatesWithQAInternalRequest request) {
     return getCertificatesWithQAInternalService.get(request);
   }
 
   @PostMapping("/export/{careProviderId}")
-  @PerformanceLogging(eventAction = "internal-retrieve-export-certificates-for-care-provider", eventType = EVENT_TYPE_ACCESSED)
+  @PerformanceLogging(
+      eventAction = "internal-retrieve-export-certificates-for-care-provider",
+      eventType = EVENT_TYPE_ACCESSED)
   ExportInternalResponse getExportCertificatesForCareProvider(
       @RequestBody ExportCertificateInternalRequest request,
       @PathVariable("careProviderId") String careProviderId) {
@@ -120,33 +157,43 @@ public class CertificateInternalApiController {
   }
 
   @GetMapping("/export/{careProviderId}/total")
-  @PerformanceLogging(eventAction = "internal-retrieve-total-export-for-care-provider", eventType = EVENT_TYPE_ACCESSED)
+  @PerformanceLogging(
+      eventAction = "internal-retrieve-total-export-for-care-provider",
+      eventType = EVENT_TYPE_ACCESSED)
   TotalExportsInternalResponse getTotalExportsForCareProvider(
       @PathVariable("careProviderId") String careProviderId) {
     return getTotalExportsInternalForCareProviderService.get(careProviderId);
   }
 
   @DeleteMapping("/erase/{careProviderId}")
-  @PerformanceLogging(eventAction = "internal-erase-certificates-for-care-provider", eventType = EVENT_TYPE_DELETION)
+  @PerformanceLogging(
+      eventAction = "internal-erase-certificates-for-care-provider",
+      eventType = EVENT_TYPE_DELETION)
   void eraseCertificates(@PathVariable("careProviderId") String careProviderId) {
     eraseCertificateInternalForCareProviderService.erase(careProviderId);
   }
 
   @GetMapping("/placeholder/{certificateId}/exists")
-  @PerformanceLogging(eventAction = "find-existing-placeholder-certificate", eventType = EVENT_TYPE_ACCESSED)
+  @PerformanceLogging(
+      eventAction = "find-existing-placeholder-certificate",
+      eventType = EVENT_TYPE_ACCESSED)
   CertificateExistsResponse findExistingPlaceholderCertificate(
       @PathVariable("certificateId") String certificateId) {
     return placeholderCertificateExistsService.exist(certificateId);
   }
 
   @PostMapping("/placeholder/{certificateId}/revoke")
-  @PerformanceLogging(eventAction = "internal-revoke-placeholder-certificate", eventType = EVENT_TYPE_ACCESSED)
+  @PerformanceLogging(
+      eventAction = "internal-revoke-placeholder-certificate",
+      eventType = EVENT_TYPE_ACCESSED)
   void revokePlaceholderCertificate(@PathVariable("certificateId") String certificateId) {
     revokePlaceholderCertificateInternalService.revoke(certificateId);
   }
 
   @PostMapping("/sickleave/valid")
-  @PerformanceLogging(eventAction = "internal-get-valid-sick-leave-certificate-ids", eventType = EVENT_TYPE_ACCESSED)
+  @PerformanceLogging(
+      eventAction = "internal-get-valid-sick-leave-certificate-ids",
+      eventType = EVENT_TYPE_ACCESSED)
   GetValidSickLeaveCertificateIdsInternalResponse getValidSickLeaveCertificateIds(
       @RequestBody GetValidSickLeaveCertificateIdsInternalRequest request) {
     return getValidSickLeaveCertificatesInternalService.get(request);

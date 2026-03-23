@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.testability.certificate.service.fillservice.fk7426;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7426.CertificateModelFactoryFK7426.FK7426_V1_0;
@@ -52,34 +70,34 @@ import se.inera.intyg.certificateservice.testability.certificate.service.fillser
 @Component
 public class TestabilityCertificateFillServiceFK7426 implements TestabilityCertificateFillService {
 
-  private static final List<ElementId> MAXIMAL_IDS = List.of(
-      QuestionGrundForMedicinsktUnderlag.QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID,
-      QuestionAnnanGrundForMedicinsktUnderlag.QUESTION_ANNAN_GRUND_FOR_MEDICINSKT_UNDERLAG_ID,
-      QuestionDiagnos.DIAGNOSIS_ID,
-      QuestionSymtom.QUESTION_SYMTOM_ID,
-      QUESTION_HALSOTILLSTAND_SOMATISKA_ID,
-      QuestionHalsotillstandPsykiska.QUESTION_HALSOTILLSTAND_PSYKISKA_ID,
-      QuestionPagaendeBehandlingar.QUESTION_PAGAENDE_BEHANDLING_ID,
-      QuestionPlaneradeBehandlingar.QUESTION_PLANERADE_BEHANDLING_ID,
-      QuestionGrundForBedomning.QUESTION_GRUND_FOR_BEDOMNING_ID,
-      QUESTION_VARDAS_BARNET_INNELIGGANDE_PA_SJUKHUS_ID,
-      QUESTION_VARDAS_BARN_INSKRIVET_MED_HEMSJUKVARD_ID,
-      QUESTION_PERIOD_SJUKDOM_MOTIVERING_ID,
-      QUESTION_PERIOD_SJUKDOM_ID,
-      QUESTION_PERIOD_VARDAS_BARN_INNE_SJUKHUS_ID,
-      QUESTION_PERIOD_VARDAS_BARN_INSKRIVET_MED_HEMSJUKVARD_ID
-  );
+  private static final List<ElementId> MAXIMAL_IDS =
+      List.of(
+          QuestionGrundForMedicinsktUnderlag.QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID,
+          QuestionAnnanGrundForMedicinsktUnderlag.QUESTION_ANNAN_GRUND_FOR_MEDICINSKT_UNDERLAG_ID,
+          QuestionDiagnos.DIAGNOSIS_ID,
+          QuestionSymtom.QUESTION_SYMTOM_ID,
+          QUESTION_HALSOTILLSTAND_SOMATISKA_ID,
+          QuestionHalsotillstandPsykiska.QUESTION_HALSOTILLSTAND_PSYKISKA_ID,
+          QuestionPagaendeBehandlingar.QUESTION_PAGAENDE_BEHANDLING_ID,
+          QuestionPlaneradeBehandlingar.QUESTION_PLANERADE_BEHANDLING_ID,
+          QuestionGrundForBedomning.QUESTION_GRUND_FOR_BEDOMNING_ID,
+          QUESTION_VARDAS_BARNET_INNELIGGANDE_PA_SJUKHUS_ID,
+          QUESTION_VARDAS_BARN_INSKRIVET_MED_HEMSJUKVARD_ID,
+          QUESTION_PERIOD_SJUKDOM_MOTIVERING_ID,
+          QUESTION_PERIOD_SJUKDOM_ID,
+          QUESTION_PERIOD_VARDAS_BARN_INNE_SJUKHUS_ID,
+          QUESTION_PERIOD_VARDAS_BARN_INSKRIVET_MED_HEMSJUKVARD_ID);
 
-  private static final List<ElementId> MINIMAL_IDS = List.of(
-      QuestionGrundForMedicinsktUnderlag.QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID,
-      QuestionDiagnos.DIAGNOSIS_ID,
-      QUESTION_HALSOTILLSTAND_SOMATISKA_ID,
-      QuestionGrundForBedomning.QUESTION_GRUND_FOR_BEDOMNING_ID,
-      QUESTION_VARDAS_BARNET_INNELIGGANDE_PA_SJUKHUS_ID,
-      QUESTION_VARDAS_BARN_INSKRIVET_MED_HEMSJUKVARD_ID,
-      QUESTION_PERIOD_SJUKDOM_MOTIVERING_ID,
-      QUESTION_PERIOD_SJUKDOM_ID
-  );
+  private static final List<ElementId> MINIMAL_IDS =
+      List.of(
+          QuestionGrundForMedicinsktUnderlag.QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID,
+          QuestionDiagnos.DIAGNOSIS_ID,
+          QUESTION_HALSOTILLSTAND_SOMATISKA_ID,
+          QuestionGrundForBedomning.QUESTION_GRUND_FOR_BEDOMNING_ID,
+          QUESTION_VARDAS_BARNET_INNELIGGANDE_PA_SJUKHUS_ID,
+          QUESTION_VARDAS_BARN_INSKRIVET_MED_HEMSJUKVARD_ID,
+          QUESTION_PERIOD_SJUKDOM_MOTIVERING_ID,
+          QUESTION_PERIOD_SJUKDOM_ID);
 
   @Override
   public List<CertificateModelId> certificateModelIds() {
@@ -87,27 +105,24 @@ public class TestabilityCertificateFillServiceFK7426 implements TestabilityCerti
   }
 
   @Override
-  public List<ElementData> fill(CertificateModel certificateModel,
-      TestabilityFillTypeDTO fillType) {
+  public List<ElementData> fill(
+      CertificateModel certificateModel, TestabilityFillTypeDTO fillType) {
     return fillType == TestabilityFillTypeDTO.EMPTY
         ? Collections.emptyList()
         : fillWithValues(certificateModel, fillType);
   }
 
-  private static List<ElementData> fillWithValues(CertificateModel certificateModel,
-      TestabilityFillTypeDTO fillType) {
+  private static List<ElementData> fillWithValues(
+      CertificateModel certificateModel, TestabilityFillTypeDTO fillType) {
     final var elementIds = fillType == MAXIMAL ? MAXIMAL_IDS : MINIMAL_IDS;
-    return elementIds.stream()
-        .map(certificateModel::elementSpecification)
-        .toList()
-        .stream()
+    return elementIds.stream().map(certificateModel::elementSpecification).toList().stream()
         .map(element -> fill(element, fillType))
         .filter(Objects::nonNull)
         .toList();
   }
 
-  private static ElementData fill(ElementSpecification elementSpecification,
-      TestabilityFillTypeDTO fillType) {
+  private static ElementData fill(
+      ElementSpecification elementSpecification, TestabilityFillTypeDTO fillType) {
     final var value = elementSpecification.configuration().emptyValue();
 
     if (value instanceof ElementValueBoolean elementValueBoolean) {
@@ -134,38 +149,39 @@ public class TestabilityCertificateFillServiceFK7426 implements TestabilityCerti
     if (value instanceof ElementValueDateRange elementValueDateRange) {
       return ElementData.builder()
           .id(elementSpecification.id())
-          .value(ElementValueDateRange.builder()
-              .fromDate(LocalDate.now().minusDays(7))
-              .toDate(LocalDate.now())
-              .id(elementValueDateRange.id())
-              .build()
-          ).build();
-    }
-
-    if (value instanceof ElementValueDateList elementValueDateList) {
-      final var dateList = List.of(
-          valueDate(UTLATANDE_BASERAT_PA_FYSISKT_MOTE_FIELD_ID, now()),
-          valueDate(UTLATANDE_BASERAT_PA_DIGITALT_VARDMOTE_FIELD_ID, now()),
-          valueDate(UTLATANDE_BASERAT_PA_JOURNALUPPGIFTER_FIELD_ID, now()),
-          valueDate(UTLATANDE_BASERAT_PA_FORALDERS_BESKRIVNING_FIELD_ID, now()),
-          valueDate(UTLATANDE_BASERAT_PA_ANNAT_FIELD_ID, now())
-      );
-
-      final var valueDateList = elementValueDateList
-          .withDateList(fillType == MAXIMAL ? dateList : dateList.subList(0, 1));
-
-      return ElementData.builder()
-          .id(elementSpecification.id())
-          .value(valueDateList)
+          .value(
+              ElementValueDateRange.builder()
+                  .fromDate(LocalDate.now().minusDays(7))
+                  .toDate(LocalDate.now())
+                  .id(elementValueDateRange.id())
+                  .build())
           .build();
     }
 
+    if (value instanceof ElementValueDateList elementValueDateList) {
+      final var dateList =
+          List.of(
+              valueDate(UTLATANDE_BASERAT_PA_FYSISKT_MOTE_FIELD_ID, now()),
+              valueDate(UTLATANDE_BASERAT_PA_DIGITALT_VARDMOTE_FIELD_ID, now()),
+              valueDate(UTLATANDE_BASERAT_PA_JOURNALUPPGIFTER_FIELD_ID, now()),
+              valueDate(UTLATANDE_BASERAT_PA_FORALDERS_BESKRIVNING_FIELD_ID, now()),
+              valueDate(UTLATANDE_BASERAT_PA_ANNAT_FIELD_ID, now()));
+
+      final var valueDateList =
+          elementValueDateList.withDateList(
+              fillType == MAXIMAL ? dateList : dateList.subList(0, 1));
+
+      return ElementData.builder().id(elementSpecification.id()).value(valueDateList).build();
+    }
+
     if (value instanceof ElementValueDiagnosisList elementValueDiagnosisList) {
-      final var diagnoses = List.of(
-          valueDiagnosis(DIAGNOS_1, "A78", "Q-feber", CodeSystemIcd10Se.DIAGNOS_ICD_10_ID),
-          valueDiagnosis(DIAGNOS_2, "A25", "Råttbettsfeber", CodeSystemIcd10Se.DIAGNOS_ICD_10_ID),
-          valueDiagnosis(DIAGNOS_3, "A23", "Undulantfeber", CodeSystemIcd10Se.DIAGNOS_ICD_10_ID)
-      );
+      final var diagnoses =
+          List.of(
+              valueDiagnosis(DIAGNOS_1, "A78", "Q-feber", CodeSystemIcd10Se.DIAGNOS_ICD_10_ID),
+              valueDiagnosis(
+                  DIAGNOS_2, "A25", "Råttbettsfeber", CodeSystemIcd10Se.DIAGNOS_ICD_10_ID),
+              valueDiagnosis(
+                  DIAGNOS_3, "A23", "Undulantfeber", CodeSystemIcd10Se.DIAGNOS_ICD_10_ID));
 
       final var diagnosisList = fillType == MAXIMAL ? diagnoses : diagnoses.subList(0, 1);
       return ElementData.builder()

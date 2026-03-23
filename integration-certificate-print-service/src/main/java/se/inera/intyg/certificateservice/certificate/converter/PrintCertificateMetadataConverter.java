@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.certificate.converter;
 
 import java.io.ByteArrayOutputStream;
@@ -22,8 +40,8 @@ public class PrintCertificateMetadataConverter {
   private static final String APPLICATION_ORIGIN_1177_INTYG = "1177 intyg";
   private static final String APPLICATION_ORIGIN_WEBCERT = "Webcert";
 
-  public PrintCertificateMetadataDTO convert(Certificate certificate,
-      boolean isCitizenFormat, String fileName) {
+  public PrintCertificateMetadataDTO convert(
+      Certificate certificate, boolean isCitizenFormat, String fileName) {
     final var metadata = certificate.getMetadataForPrint();
 
     return PrintCertificateMetadataDTO.builder()
@@ -31,28 +49,22 @@ public class PrintCertificateMetadataConverter {
         .typeId(certificate.certificateModel().type().code())
         .version(certificate.certificateModel().id().version().version())
         .signingDate(
-            certificate.isDraft()
-                ? null
-                : certificate.signed().format(DateTimeFormatter.ISO_DATE)
-        )
+            certificate.isDraft() ? null : certificate.signed().format(DateTimeFormatter.ISO_DATE))
         .certificateId(certificate.id().id())
         .recipientLogo(convertLogo(certificate.certificateModel().recipient().logo()))
         .recipientName(certificate.certificateModel().recipient().name())
         .recipientId(certificate.certificateModel().recipient().id().id())
-        .applicationOrigin(isCitizenFormat
-            ? APPLICATION_ORIGIN_1177_INTYG
-            : APPLICATION_ORIGIN_WEBCERT)
+        .applicationOrigin(
+            isCitizenFormat ? APPLICATION_ORIGIN_1177_INTYG : APPLICATION_ORIGIN_WEBCERT)
         .personId(metadata.patient().id().idWithDash())
-        .description(
-            getDescription(certificate)
-        )
+        .description(getDescription(certificate))
         .issuerName(metadata.issuer().name().fullName())
         .issuingUnit(metadata.issuingUnit().name().name())
         .sentDate(
-            (certificate.sent() != null && certificate.sent().sentAt() != null) ? certificate.sent()
-                .sentAt().toString() : null)
-        .unitInformation(
-            printCertificateUnitInformationConverter.convert(certificate))
+            (certificate.sent() != null && certificate.sent().sentAt() != null)
+                ? certificate.sent().sentAt().toString()
+                : null)
+        .unitInformation(printCertificateUnitInformationConverter.convert(certificate))
         .fileName(fileName)
         .canSendElectronically(certificate.certificateModel().recipient().canSendElectronically())
         .generalPrintText(convertGeneralPrintText(certificate.getGeneralPrintText()))
@@ -64,21 +76,21 @@ public class PrintCertificateMetadataConverter {
       return certificate.certificateModel().description();
     }
 
-    if (certificate.certificateModel()
-        .pdfSpecification() instanceof GeneralPdfSpecification generalPdfSpecification) {
+    if (certificate.certificateModel().pdfSpecification()
+        instanceof GeneralPdfSpecification generalPdfSpecification) {
       return generalPdfSpecification.description();
     }
 
     throw new IllegalStateException(
-        String.format("Unknown PDF specification type: %s cannot convert metadata",
+        String.format(
+            "Unknown PDF specification type: %s cannot convert metadata",
             certificate.certificateModel().pdfSpecification().getClass()));
   }
 
   private static GeneralPrintTextDTO convertGeneralPrintText(
       Optional<CertificateGeneralPrintText> text) {
     if (text.isEmpty()) {
-      return GeneralPrintTextDTO.builder()
-          .build();
+      return GeneralPrintTextDTO.builder().build();
     }
     return GeneralPrintTextDTO.builder()
         .leftMarginInfoText(text.get().leftMarginInfoText())

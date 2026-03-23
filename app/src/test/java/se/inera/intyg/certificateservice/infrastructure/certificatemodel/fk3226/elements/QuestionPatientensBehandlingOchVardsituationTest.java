@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -24,90 +42,84 @@ class QuestionPatientensBehandlingOchVardsituationTest {
 
   @Test
   void shallIncludeId() {
-    final var element = QuestionPatientensBehandlingOchVardsituation.questionPatientBehandlingOchVardsituation();
+    final var element =
+        QuestionPatientensBehandlingOchVardsituation.questionPatientBehandlingOchVardsituation();
 
     assertEquals(ELEMENT_ID, element.id());
   }
 
   @Test
   void shallIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationRadioMultipleCode.builder()
-        .id(new FieldId("52.1"))
-        .name("Patientens behandling och vårdsituation")
-        .elementLayout(ElementLayout.ROWS)
-        .list(
-            List.of(
-                new ElementConfigurationCode(
-                    new FieldId("ENDAST_PALLIATIV"),
-                    "Endast palliativ vård ges och all aktiv behandling mot sjukdomstillståndet har avslutats",
-                    CodeSystemKvFkmu0009.ENDAST_PALLIATIV
-                ),
-                new ElementConfigurationCode(
-                    new FieldId("AKUT_LIVSHOTANDE"),
-                    "Akut livshotande tillstånd (till exempel vård på intensivvårdsavdelning)",
-                    CodeSystemKvFkmu0009.AKUT_LIVSHOTANDE
-                ),
-                new ElementConfigurationCode(
-                    new FieldId("ANNAT"),
-                    "Annat",
-                    CodeSystemKvFkmu0009.ANNAT
-                )
-            )
-        )
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationRadioMultipleCode.builder()
+            .id(new FieldId("52.1"))
+            .name("Patientens behandling och vårdsituation")
+            .elementLayout(ElementLayout.ROWS)
+            .list(
+                List.of(
+                    new ElementConfigurationCode(
+                        new FieldId("ENDAST_PALLIATIV"),
+                        "Endast palliativ vård ges och all aktiv behandling mot sjukdomstillståndet har avslutats",
+                        CodeSystemKvFkmu0009.ENDAST_PALLIATIV),
+                    new ElementConfigurationCode(
+                        new FieldId("AKUT_LIVSHOTANDE"),
+                        "Akut livshotande tillstånd (till exempel vård på intensivvårdsavdelning)",
+                        CodeSystemKvFkmu0009.AKUT_LIVSHOTANDE),
+                    new ElementConfigurationCode(
+                        new FieldId("ANNAT"), "Annat", CodeSystemKvFkmu0009.ANNAT)))
+            .build();
 
-    final var element = QuestionPatientensBehandlingOchVardsituation.questionPatientBehandlingOchVardsituation();
+    final var element =
+        QuestionPatientensBehandlingOchVardsituation.questionPatientBehandlingOchVardsituation();
 
     assertEquals(expectedConfiguration, element.configuration());
   }
 
   @Test
   void shallIncludeRules() {
-    final var expectedRules = List.of(
-        ElementRuleExpression.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.MANDATORY)
-            .expression(
-                new RuleExpression(
-                    "exists($ENDAST_PALLIATIV) || exists($AKUT_LIVSHOTANDE) || exists($ANNAT)"
-                )
-            )
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleExpression.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.MANDATORY)
+                .expression(
+                    new RuleExpression(
+                        "exists($ENDAST_PALLIATIV) || exists($AKUT_LIVSHOTANDE) || exists($ANNAT)"))
+                .build());
 
-    final var element = QuestionPatientensBehandlingOchVardsituation.questionPatientBehandlingOchVardsituation();
+    final var element =
+        QuestionPatientensBehandlingOchVardsituation.questionPatientBehandlingOchVardsituation();
 
     assertEquals(expectedRules, element.rules());
   }
 
   @Test
   void shallIncludeValidations() {
-    final var expectedValidations = List.of(
-        ElementValidationCode.builder()
-            .mandatory(true)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationCode.builder().mandatory(true).build());
 
-    final var element = QuestionPatientensBehandlingOchVardsituation.questionPatientBehandlingOchVardsituation();
+    final var element =
+        QuestionPatientensBehandlingOchVardsituation.questionPatientBehandlingOchVardsituation();
 
     assertEquals(expectedValidations, element.validations());
   }
 
   @Test
   void shallIncludePdfConfiguration() {
-    final var expected = PdfConfigurationCode.builder()
-        .codes(
-            Map.of(
-                new FieldId("ENDAST_PALLIATIV"),
-                new PdfFieldId("form1[0].#subform[1].ksr_PalliativVard[0]"),
-                new FieldId("AKUT_LIVSHOTANDE"),
-                new PdfFieldId("form1[0].#subform[1].ksr_AkutLivshotande[0]"),
-                new FieldId("ANNAT"), new PdfFieldId("form1[0].#subform[1].ksr_Annat2[0]")
-            )
-        )
-        .build();
+    final var expected =
+        PdfConfigurationCode.builder()
+            .codes(
+                Map.of(
+                    new FieldId("ENDAST_PALLIATIV"),
+                    new PdfFieldId("form1[0].#subform[1].ksr_PalliativVard[0]"),
+                    new FieldId("AKUT_LIVSHOTANDE"),
+                    new PdfFieldId("form1[0].#subform[1].ksr_AkutLivshotande[0]"),
+                    new FieldId("ANNAT"),
+                    new PdfFieldId("form1[0].#subform[1].ksr_Annat2[0]")))
+            .build();
 
-    final var element = QuestionPatientensBehandlingOchVardsituation.questionPatientBehandlingOchVardsituation();
+    final var element =
+        QuestionPatientensBehandlingOchVardsituation.questionPatientBehandlingOchVardsituation();
 
     assertEquals(expected, element.pdfConfiguration());
   }

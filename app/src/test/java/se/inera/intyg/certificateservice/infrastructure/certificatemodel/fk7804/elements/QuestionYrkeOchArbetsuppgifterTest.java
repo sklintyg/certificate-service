@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7804.elements;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,10 +56,11 @@ class QuestionYrkeOchArbetsuppgifterTest {
 
   @Test
   void shouldIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationTextArea.builder()
-        .id(QUESTION_YRKE_ARBETSUPPGIFTER_FIELD_ID)
-        .name("Ange yrke och arbetsuppgifter")
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationTextArea.builder()
+            .id(QUESTION_YRKE_ARBETSUPPGIFTER_FIELD_ID)
+            .name("Ange yrke och arbetsuppgifter")
+            .build();
 
     final var element = QuestionYrkeOchArbetsuppgifter.questionYrkeOchArbetsuppgifter();
 
@@ -50,11 +69,13 @@ class QuestionYrkeOchArbetsuppgifterTest {
 
   @Test
   void shouldIncludePdfConfiguration() {
-    final var expectedPdfConfiguration = PdfConfigurationText.builder()
-        .pdfFieldId(new PdfFieldId("form1[0].#subform[0].flt_txtYrkeArbetsuppgifter[0]"))
-        .overflowSheetFieldId(new PdfFieldId("form1[0].#subform[4].flt_txtFortsattningsblad[0]"))
-        .maxLength(3 * PDF_TEXT_FIELD_ROW_LENGTH)
-        .build();
+    final var expectedPdfConfiguration =
+        PdfConfigurationText.builder()
+            .pdfFieldId(new PdfFieldId("form1[0].#subform[0].flt_txtYrkeArbetsuppgifter[0]"))
+            .overflowSheetFieldId(
+                new PdfFieldId("form1[0].#subform[4].flt_txtFortsattningsblad[0]"))
+            .maxLength(3 * PDF_TEXT_FIELD_ROW_LENGTH)
+            .build();
 
     final var element = QuestionYrkeOchArbetsuppgifter.questionYrkeOchArbetsuppgifter();
 
@@ -64,34 +85,31 @@ class QuestionYrkeOchArbetsuppgifterTest {
   @Test
   void shouldIncludeValidation() {
     final var element = QuestionYrkeOchArbetsuppgifter.questionYrkeOchArbetsuppgifter();
-    final var expectedValidations = List.of(
-        ElementValidationText.builder()
-            .mandatory(true)
-            .limit(4000)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationText.builder().mandatory(true).limit(4000).build());
     assertEquals(expectedValidations, element.validations());
   }
 
   @Test
   void shouldIncludeRules() {
-    final var expectedRules = List.of(
-        ElementRuleExpression.builder()
-            .type(ElementRuleType.SHOW)
-            .expression(new RuleExpression("$NUVARANDE_ARBETE"))
-            .id(QUESTION_SYSSELSATTNING_ID)
-            .build(),
-        ElementRuleExpression.builder()
-            .type(ElementRuleType.MANDATORY)
-            .id(QUESTION_YRKE_ARBETSUPPGIFTER_ID)
-            .expression(new RuleExpression("$" + QUESTION_YRKE_ARBETSUPPGIFTER_FIELD_ID.value()))
-            .build(),
-        ElementRuleLimit.builder()
-            .type(ElementRuleType.TEXT_LIMIT)
-            .id(QUESTION_YRKE_ARBETSUPPGIFTER_ID)
-            .limit(new RuleLimit((short) 4000))
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleExpression.builder()
+                .type(ElementRuleType.SHOW)
+                .expression(new RuleExpression("$NUVARANDE_ARBETE"))
+                .id(QUESTION_SYSSELSATTNING_ID)
+                .build(),
+            ElementRuleExpression.builder()
+                .type(ElementRuleType.MANDATORY)
+                .id(QUESTION_YRKE_ARBETSUPPGIFTER_ID)
+                .expression(
+                    new RuleExpression("$" + QUESTION_YRKE_ARBETSUPPGIFTER_FIELD_ID.value()))
+                .build(),
+            ElementRuleLimit.builder()
+                .type(ElementRuleType.TEXT_LIMIT)
+                .id(QUESTION_YRKE_ARBETSUPPGIFTER_ID)
+                .limit(new RuleLimit((short) 4000))
+                .build());
 
     final var element = QuestionYrkeOchArbetsuppgifter.questionYrkeOchArbetsuppgifter();
 
@@ -103,23 +121,20 @@ class QuestionYrkeOchArbetsuppgifterTest {
 
     @Test
     void shallReturnTrueIfCodeIsNuvarandeArbete() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("28"))
-              .value(
-                  ElementValueCodeList.builder()
-                      .list(
-                          List.of(
-                              ElementValueCode.builder()
-                                  .codeId(new FieldId(NUVARANDE_ARBETE.code()))
-                                  .code(NUVARANDE_ARBETE.code())
-                                  .build()
-                          )
-                      )
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("28"))
+                  .value(
+                      ElementValueCodeList.builder()
+                          .list(
+                              List.of(
+                                  ElementValueCode.builder()
+                                      .codeId(new FieldId(NUVARANDE_ARBETE.code()))
+                                      .code(NUVARANDE_ARBETE.code())
+                                      .build()))
+                          .build())
+                  .build());
 
       final var element = QuestionYrkeOchArbetsuppgifter.questionYrkeOchArbetsuppgifter();
 
@@ -130,23 +145,20 @@ class QuestionYrkeOchArbetsuppgifterTest {
 
     @Test
     void shallReturnFalseIfElementCodeIsNotNuvarandeArbete() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("28"))
-              .value(
-                  ElementValueCodeList.builder()
-                      .list(
-                          List.of(
-                              ElementValueCode.builder()
-                                  .codeId(new FieldId(STUDIER.code()))
-                                  .code(STUDIER.code())
-                                  .build()
-                          )
-                      )
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("28"))
+                  .value(
+                      ElementValueCodeList.builder()
+                          .list(
+                              List.of(
+                                  ElementValueCode.builder()
+                                      .codeId(new FieldId(STUDIER.code()))
+                                      .code(STUDIER.code())
+                                      .build()))
+                          .build())
+                  .build());
 
       final var element = QuestionYrkeOchArbetsuppgifter.questionYrkeOchArbetsuppgifter();
 

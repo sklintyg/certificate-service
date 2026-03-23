@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.common;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,13 +49,14 @@ class QuestionEpilepsiMedicinTest {
 
   @Test
   void shallIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationRadioBoolean.builder()
-        .name(
-            "Har eller har personen haft någon krampförebyggande läkemedelsbehandling mot epilepsi?")
-        .id(new FieldId("14.5"))
-        .selectedText("Ja")
-        .unselectedText("Nej")
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationRadioBoolean.builder()
+            .name(
+                "Har eller har personen haft någon krampförebyggande läkemedelsbehandling mot epilepsi?")
+            .id(new FieldId("14.5"))
+            .selectedText("Ja")
+            .unselectedText("Nej")
+            .build();
 
     final var element = QuestionEpilepsiMedicin.questionEpilepsiMedicin();
 
@@ -46,35 +65,23 @@ class QuestionEpilepsiMedicinTest {
 
   @Test
   void shallIncludeRules() {
-    final var expectedRule = List.of(
-        ElementRuleExpression.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.MANDATORY)
-            .expression(
-                new RuleExpression(
-                    "exists($14.5)"
-                )
-            )
-            .build(),
-        ElementRuleExpression.builder()
-            .id(new ElementId("14"))
-            .type(ElementRuleType.SHOW)
-            .expression(
-                new RuleExpression(
-                    "$14.1"
-                )
-            )
-            .build(),
-        ElementRuleExpression.builder()
-            .id(new ElementId("14.3"))
-            .type(ElementRuleType.SHOW)
-            .expression(
-                new RuleExpression(
-                    "$14.3"
-                )
-            )
-            .build()
-    );
+    final var expectedRule =
+        List.of(
+            ElementRuleExpression.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.MANDATORY)
+                .expression(new RuleExpression("exists($14.5)"))
+                .build(),
+            ElementRuleExpression.builder()
+                .id(new ElementId("14"))
+                .type(ElementRuleType.SHOW)
+                .expression(new RuleExpression("$14.1"))
+                .build(),
+            ElementRuleExpression.builder()
+                .id(new ElementId("14.3"))
+                .type(ElementRuleType.SHOW)
+                .expression(new RuleExpression("$14.3"))
+                .build());
 
     final var element = QuestionEpilepsiMedicin.questionEpilepsiMedicin();
 
@@ -83,11 +90,8 @@ class QuestionEpilepsiMedicinTest {
 
   @Test
   void shallIncludeValidation() {
-    final var expectedValidations = List.of(
-        ElementValidationBoolean.builder()
-            .mandatory(true)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationBoolean.builder().mandatory(true).build());
 
     final var element = QuestionEpilepsiMedicin.questionEpilepsiMedicin();
 
@@ -99,16 +103,12 @@ class QuestionEpilepsiMedicinTest {
 
     @Test
     void shallReturnTrueIfOneOfQuestionsIsTrue() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("14.3"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(true)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("14.3"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
 
       final var element = QuestionEpilepsiMedicin.questionEpilepsiMedicin();
 
@@ -119,16 +119,12 @@ class QuestionEpilepsiMedicinTest {
 
     @Test
     void shallReturnFalseIfBothQuestionsAreMissing() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("7.1"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(true)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("7.1"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
 
       final var element = QuestionEpilepsiMedicin.questionEpilepsiMedicin();
 
@@ -139,16 +135,12 @@ class QuestionEpilepsiMedicinTest {
 
     @Test
     void shallReturnFalseIfOneQuestionIsFalseAndOneMissing() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("14.3"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(false)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("14.3"))
+                  .value(ElementValueBoolean.builder().value(false).build())
+                  .build());
 
       final var element = QuestionEpilepsiMedicin.questionEpilepsiMedicin();
 
@@ -159,24 +151,16 @@ class QuestionEpilepsiMedicinTest {
 
     @Test
     void shallReturnTrueIfOneQuestionIsFalseAndOneTrue() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("14.3"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(false)
-                      .build()
-              )
-              .build(),
-          ElementData.builder()
-              .id(new ElementId("14"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(true)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("14.3"))
+                  .value(ElementValueBoolean.builder().value(false).build())
+                  .build(),
+              ElementData.builder()
+                  .id(new ElementId("14"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
 
       final var element = QuestionEpilepsiMedicin.questionEpilepsiMedicin();
 
@@ -187,24 +171,16 @@ class QuestionEpilepsiMedicinTest {
 
     @Test
     void shallReturnTrueIfBothQuestionsAreTrue() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("14.3"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(true)
-                      .build()
-              )
-              .build(),
-          ElementData.builder()
-              .id(new ElementId("14"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(true)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("14.3"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build(),
+              ElementData.builder()
+                  .id(new ElementId("14"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
 
       final var element = QuestionEpilepsiMedicin.questionEpilepsiMedicin();
 

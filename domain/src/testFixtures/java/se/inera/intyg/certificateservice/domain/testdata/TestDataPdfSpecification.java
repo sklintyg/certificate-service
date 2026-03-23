@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.testdata;
 
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataCertificateModelConstants.FK3226_PDF_PATH;
@@ -72,18 +90,19 @@ public class TestDataPdfSpecification {
 
   public static PdfSpecification fk7210PdfSpecification() {
     return TemplatePdfSpecification.builder()
-        .signature(PdfSignature.builder()
-            .signaturePageIndex(FK7210_PDF_SIGNATURE_PAGE_INDEX)
-            .signatureWithAddressTagIndex(FK7210_PDF_SIGNATURE_WITH_ADDRESS_TAG_INDEX)
-            .signatureWithoutAddressTagIndex(FK7210_PDF_SIGNATURE_WITHOUT_ADDRESS_TAG_INDEX)
-            .signedDateFieldId(FK7210_PDF_SIGNED_DATE_FIELD_ID)
-            .signedByNameFieldId(FK7210_PDF_SIGNED_BY_NAME_FIELD_ID)
-            .paTitleFieldId(FK7210_PDF_PA_TITLE_FIELD_ID)
-            .specialtyFieldId(FK7210_PDF_SPECIALTY_FIELD_ID)
-            .hsaIdFieldId(FK7210_PDF_HSA_ID_FIELD_ID)
-            .workplaceCodeFieldId(FK7210_PDF_WORKPLACE_CODE_FIELD_ID)
-            .contactInformation(FK7210_PDF_CONTACT_INFORMATION)
-            .build())
+        .signature(
+            PdfSignature.builder()
+                .signaturePageIndex(FK7210_PDF_SIGNATURE_PAGE_INDEX)
+                .signatureWithAddressTagIndex(FK7210_PDF_SIGNATURE_WITH_ADDRESS_TAG_INDEX)
+                .signatureWithoutAddressTagIndex(FK7210_PDF_SIGNATURE_WITHOUT_ADDRESS_TAG_INDEX)
+                .signedDateFieldId(FK7210_PDF_SIGNED_DATE_FIELD_ID)
+                .signedByNameFieldId(FK7210_PDF_SIGNED_BY_NAME_FIELD_ID)
+                .paTitleFieldId(FK7210_PDF_PA_TITLE_FIELD_ID)
+                .specialtyFieldId(FK7210_PDF_SPECIALTY_FIELD_ID)
+                .hsaIdFieldId(FK7210_PDF_HSA_ID_FIELD_ID)
+                .workplaceCodeFieldId(FK7210_PDF_WORKPLACE_CODE_FIELD_ID)
+                .contactInformation(FK7210_PDF_CONTACT_INFORMATION)
+                .build())
         .pdfTemplatePath(FK7210_PDF_PATH)
         .pdfNoAddressTemplatePath(FK7210_PDF_PATH_NO_ADDRESS)
         .patientIdFieldIds(List.of(FK7210_PDF_PATIENT_ID_FIELD_ID))
@@ -93,18 +112,19 @@ public class TestDataPdfSpecification {
 
   public static PdfSpecification fk3226PdfSpecification() {
     return TemplatePdfSpecification.builder()
-        .signature(PdfSignature.builder()
-            .signaturePageIndex(FK3226_PDF_SIGNATURE_PAGE_INDEX)
-            .signatureWithAddressTagIndex(FK3226_PDF_SIGNATURE_WITH_ADDRESS_TAG_INDEX)
-            .signatureWithoutAddressTagIndex(FK3226_PDF_SIGNATURE_WITHOUT_ADDRESS_TAG_INDEX)
-            .signedDateFieldId(FK3226_PDF_SIGNED_DATE_FIELD_ID)
-            .signedByNameFieldId(FK3226_PDF_SIGNED_BY_NAME_FIELD_ID)
-            .paTitleFieldId(FK3226_PDF_SIGNED_BY_PA_TITLE)
-            .specialtyFieldId(FK3226_PDF_SIGNED_BY_SPECIALTY)
-            .hsaIdFieldId(FK3226_PDF_HSA_ID_FIELD_ID)
-            .workplaceCodeFieldId(FK3226_PDF_WORKPLACE_CODE_FIELD_ID)
-            .contactInformation(FK3226_PDF_CONTACT_INFORMATION)
-            .build())
+        .signature(
+            PdfSignature.builder()
+                .signaturePageIndex(FK3226_PDF_SIGNATURE_PAGE_INDEX)
+                .signatureWithAddressTagIndex(FK3226_PDF_SIGNATURE_WITH_ADDRESS_TAG_INDEX)
+                .signatureWithoutAddressTagIndex(FK3226_PDF_SIGNATURE_WITHOUT_ADDRESS_TAG_INDEX)
+                .signedDateFieldId(FK3226_PDF_SIGNED_DATE_FIELD_ID)
+                .signedByNameFieldId(FK3226_PDF_SIGNED_BY_NAME_FIELD_ID)
+                .paTitleFieldId(FK3226_PDF_SIGNED_BY_PA_TITLE)
+                .specialtyFieldId(FK3226_PDF_SIGNED_BY_SPECIALTY)
+                .hsaIdFieldId(FK3226_PDF_HSA_ID_FIELD_ID)
+                .workplaceCodeFieldId(FK3226_PDF_WORKPLACE_CODE_FIELD_ID)
+                .contactInformation(FK3226_PDF_CONTACT_INFORMATION)
+                .build())
         .pdfTemplatePath(FK3226_PDF_PATH)
         .pdfNoAddressTemplatePath(FK3226_PDF_PATH_NO_ADDRESS)
         .patientIdFieldIds(List.of(FK3226_PDF_PATIENT_ID_FIELD_ID))
@@ -114,18 +134,19 @@ public class TestDataPdfSpecification {
 
   public static PdfSpecification fk7472PdfSpecification() {
     return TemplatePdfSpecification.builder()
-        .signature(PdfSignature.builder()
-            .signaturePageIndex(FK7472_PDF_SIGNATURE_PAGE_INDEX)
-            .signatureWithAddressTagIndex(FK7472_PDF_SIGNATURE_WITH_ADDRESS_TAG_INDEX)
-            .signatureWithoutAddressTagIndex(FK7472_PDF_SIGNATURE_WITHOUT_ADDRESS_TAG_INDEX)
-            .signedDateFieldId(FK7472_PDF_SIGNED_DATE_FIELD_ID)
-            .signedByNameFieldId(FK7472_PDF_SIGNED_BY_NAME_FIELD_ID)
-            .paTitleFieldId(FK7472_PDF_PA_TITLE_FIELD_ID)
-            .specialtyFieldId(FK7472_PDF_SPECIALTY_FIELD_ID)
-            .hsaIdFieldId(FK7472_PDF_HSA_ID_FIELD_ID)
-            .workplaceCodeFieldId(FK7472_PDF_WORKPLACE_CODE_FIELD_ID)
-            .contactInformation(FK7472_PDF_CONTACT_INFORMATION)
-            .build())
+        .signature(
+            PdfSignature.builder()
+                .signaturePageIndex(FK7472_PDF_SIGNATURE_PAGE_INDEX)
+                .signatureWithAddressTagIndex(FK7472_PDF_SIGNATURE_WITH_ADDRESS_TAG_INDEX)
+                .signatureWithoutAddressTagIndex(FK7472_PDF_SIGNATURE_WITHOUT_ADDRESS_TAG_INDEX)
+                .signedDateFieldId(FK7472_PDF_SIGNED_DATE_FIELD_ID)
+                .signedByNameFieldId(FK7472_PDF_SIGNED_BY_NAME_FIELD_ID)
+                .paTitleFieldId(FK7472_PDF_PA_TITLE_FIELD_ID)
+                .specialtyFieldId(FK7472_PDF_SPECIALTY_FIELD_ID)
+                .hsaIdFieldId(FK7472_PDF_HSA_ID_FIELD_ID)
+                .workplaceCodeFieldId(FK7472_PDF_WORKPLACE_CODE_FIELD_ID)
+                .contactInformation(FK7472_PDF_CONTACT_INFORMATION)
+                .build())
         .pdfTemplatePath(FK7472_PDF_PATH)
         .pdfNoAddressTemplatePath(FK7472_PDF_PATH_NO_ADDRESS)
         .patientIdFieldIds(List.of(FK7472_PDF_PATIENT_ID_FIELD_ID))
@@ -135,18 +156,19 @@ public class TestDataPdfSpecification {
 
   public static PdfSpecification fk7809PdfSpecification() {
     return TemplatePdfSpecification.builder()
-        .signature(PdfSignature.builder()
-            .signaturePageIndex(FK7809_PDF_SIGNATURE_PAGE_INDEX)
-            .signatureWithAddressTagIndex(FK7809_PDF_SIGNATURE_WITH_ADDRESS_TAG_INDEX)
-            .signatureWithoutAddressTagIndex(FK7809_PDF_SIGNATURE_WITHOUT_ADDRESS_TAG_INDEX)
-            .signedDateFieldId(FK7809_PDF_SIGNED_DATE_FIELD_ID)
-            .signedByNameFieldId(FK7809_PDF_SIGNED_BY_NAME_FIELD_ID)
-            .paTitleFieldId(FK7809_PDF_SIGNED_BY_PA_TITLE)
-            .specialtyFieldId(FK7809_PDF_SIGNED_BY_SPECIALTY)
-            .hsaIdFieldId(FK7809_PDF_HSA_ID_FIELD_ID)
-            .workplaceCodeFieldId(FK7809_PDF_WORKPLACE_CODE_FIELD_ID)
-            .contactInformation(FK7809_PDF_CONTACT_INFORMATION)
-            .build())
+        .signature(
+            PdfSignature.builder()
+                .signaturePageIndex(FK7809_PDF_SIGNATURE_PAGE_INDEX)
+                .signatureWithAddressTagIndex(FK7809_PDF_SIGNATURE_WITH_ADDRESS_TAG_INDEX)
+                .signatureWithoutAddressTagIndex(FK7809_PDF_SIGNATURE_WITHOUT_ADDRESS_TAG_INDEX)
+                .signedDateFieldId(FK7809_PDF_SIGNED_DATE_FIELD_ID)
+                .signedByNameFieldId(FK7809_PDF_SIGNED_BY_NAME_FIELD_ID)
+                .paTitleFieldId(FK7809_PDF_SIGNED_BY_PA_TITLE)
+                .specialtyFieldId(FK7809_PDF_SIGNED_BY_SPECIALTY)
+                .hsaIdFieldId(FK7809_PDF_HSA_ID_FIELD_ID)
+                .workplaceCodeFieldId(FK7809_PDF_WORKPLACE_CODE_FIELD_ID)
+                .contactInformation(FK7809_PDF_CONTACT_INFORMATION)
+                .build())
         .pdfTemplatePath(FK7809_PDF_PATH)
         .pdfNoAddressTemplatePath(FK7809_PDF_PATH_NO_ADDRESS)
         .patientIdFieldIds(List.of(FK7809_PDF_PATIENT_ID_FIELD_ID))

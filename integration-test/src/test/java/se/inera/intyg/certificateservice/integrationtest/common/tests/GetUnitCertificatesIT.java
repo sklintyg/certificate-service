@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.integrationtest.common.tests;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -45,532 +63,534 @@ public abstract class GetUnitCertificatesIT extends BaseIntegrationIT {
   @Test
   @DisplayName("Returnera lista med utkast som har sparats på mottagning")
   void shallReturnCertificatesOnTheSameSubUnit() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion())
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion()));
 
-    final var response = api().getUnitCertificates(
-        defaultGetUnitCertificatesRequest()
-    );
+    final var response = api().getUnitCertificates(defaultGetUnitCertificatesRequest());
 
     assertAll(
-        () -> assertTrue(
-            () -> exists(certificates(response.getBody()), certificate(testCertificates)),
-            () -> "Expected '%s' in result: '%s'".formatted(certificateId(testCertificates),
-                certificates(response.getBody()))),
-        () -> assertEquals(1, certificates(response.getBody()).size())
-    );
+        () ->
+            assertTrue(
+                () -> exists(certificates(response.getBody()), certificate(testCertificates)),
+                () ->
+                    "Expected '%s' in result: '%s'"
+                        .formatted(
+                            certificateId(testCertificates), certificates(response.getBody()))),
+        () -> assertEquals(1, certificates(response.getBody()).size()));
   }
 
   @Test
   @DisplayName("Returnera lista med utkast som har sparats på vårdenhet")
   void shallReturnCertificatesOnTheSameCareUnit() {
-    final var testCertificates = testabilityApi().addCertificates(
-        customTestabilityCertificateRequest(type(), typeVersion())
-            .unit(ALFA_MEDICINCENTRUM_DTO)
-            .build()
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(
+                customTestabilityCertificateRequest(type(), typeVersion())
+                    .unit(ALFA_MEDICINCENTRUM_DTO)
+                    .build());
 
-    final var response = api().getUnitCertificates(
-        customGetUnitCertificatesRequest()
-            .unit(ALFA_MEDICINCENTRUM_DTO)
-            .build()
-    );
+    final var response =
+        api()
+            .getUnitCertificates(
+                customGetUnitCertificatesRequest().unit(ALFA_MEDICINCENTRUM_DTO).build());
 
     assertAll(
-        () -> assertTrue(
-            () -> exists(certificates(response.getBody()), certificate(testCertificates)),
-            () -> "Expected '%s' in result: '%s'".formatted(certificateId(testCertificates),
-                certificates(response.getBody()))),
-        () -> assertEquals(1, certificates(response.getBody()).size())
-    );
+        () ->
+            assertTrue(
+                () -> exists(certificates(response.getBody()), certificate(testCertificates)),
+                () ->
+                    "Expected '%s' in result: '%s'"
+                        .formatted(
+                            certificateId(testCertificates), certificates(response.getBody()))),
+        () -> assertEquals(1, certificates(response.getBody()).size()));
   }
 
   @Test
   @DisplayName("Returnera lista med utkast som har sparats på mottagning inom vårdenhet")
   void shallReturnCertificatesIssuedOnSubUnitOnTheSameCareUnit() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion())
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion()));
 
-    final var response = api().getUnitCertificates(
-        customGetUnitCertificatesRequest()
-            .unit(ALFA_MEDICINCENTRUM_DTO)
-            .build()
-    );
+    final var response =
+        api()
+            .getUnitCertificates(
+                customGetUnitCertificatesRequest().unit(ALFA_MEDICINCENTRUM_DTO).build());
 
     assertAll(
-        () -> assertTrue(
-            () -> exists(certificates(response.getBody()), certificate(testCertificates)),
-            () -> "Expected '%s' in result: '%s'".formatted(certificateId(testCertificates),
-                certificates(response.getBody()))),
-        () -> assertEquals(1, certificates(response.getBody()).size())
-    );
+        () ->
+            assertTrue(
+                () -> exists(certificates(response.getBody()), certificate(testCertificates)),
+                () ->
+                    "Expected '%s' in result: '%s'"
+                        .formatted(
+                            certificateId(testCertificates), certificates(response.getBody()))),
+        () -> assertEquals(1, certificates(response.getBody()).size()));
   }
 
   @Test
   @DisplayName("Ej returnera utkast som sparats på annan mottagning")
   void shallNotReturnCertificatesOnDifferentSubUnit() {
-    testabilityApi().addCertificates(
-        customTestabilityCertificateRequest(type(), typeVersion())
-            .unit(ALFA_HUDMOTTAGNINGEN_DTO)
-            .build()
-    );
+    testabilityApi()
+        .addCertificates(
+            customTestabilityCertificateRequest(type(), typeVersion())
+                .unit(ALFA_HUDMOTTAGNINGEN_DTO)
+                .build());
 
-    final var response = api().getUnitCertificates(
-        defaultGetUnitCertificatesRequest()
-    );
+    final var response = api().getUnitCertificates(defaultGetUnitCertificatesRequest());
 
-    assertEquals(0, certificates(response.getBody()).size(),
-        "Expect list to be empty but contains: '%s'".formatted(certificates(response.getBody()))
-    );
+    assertEquals(
+        0,
+        certificates(response.getBody()).size(),
+        "Expect list to be empty but contains: '%s'".formatted(certificates(response.getBody())));
   }
 
   @Test
   @DisplayName("Ej returnera utkast som sparats på annan vårdenhet")
   void shallNotReturnCertificatesOnDifferentCareUnit() {
-    testabilityApi().addCertificates(
-        customTestabilityCertificateRequest(type(), typeVersion())
-            .unit(ALFA_VARDCENTRAL_DTO)
-            .careUnit(ALFA_VARDCENTRAL_DTO)
-            .build()
-    );
+    testabilityApi()
+        .addCertificates(
+            customTestabilityCertificateRequest(type(), typeVersion())
+                .unit(ALFA_VARDCENTRAL_DTO)
+                .careUnit(ALFA_VARDCENTRAL_DTO)
+                .build());
 
-    final var response = api().getUnitCertificates(
-        customGetUnitCertificatesRequest()
-            .unit(ALFA_MEDICINCENTRUM_DTO)
-            .build()
-    );
+    final var response =
+        api()
+            .getUnitCertificates(
+                customGetUnitCertificatesRequest().unit(ALFA_MEDICINCENTRUM_DTO).build());
 
-    assertEquals(0, certificates(response.getBody()).size(),
-        "Expect list to be empty but contains: '%s'".formatted(certificates(response.getBody()))
-    );
+    assertEquals(
+        0,
+        certificates(response.getBody()).size(),
+        "Expect list to be empty but contains: '%s'".formatted(certificates(response.getBody())));
   }
 
   @Test
   @DisplayName("Ej returnera utkast som sparats på vårdenheten när man är på mottagningen")
   void shallNotReturnCertificatesOnCareUnitWhenOnSubUnit() {
-    testabilityApi().addCertificates(
-        customTestabilityCertificateRequest(type(), typeVersion())
-            .unit(ALFA_MEDICINCENTRUM_DTO)
-            .build()
-    );
+    testabilityApi()
+        .addCertificates(
+            customTestabilityCertificateRequest(type(), typeVersion())
+                .unit(ALFA_MEDICINCENTRUM_DTO)
+                .build());
 
-    final var response = api().getUnitCertificates(
-        customGetUnitCertificatesRequest()
-            .unit(ALFA_ALLERGIMOTTAGNINGEN_DTO)
-            .build()
-    );
+    final var response =
+        api()
+            .getUnitCertificates(
+                customGetUnitCertificatesRequest().unit(ALFA_ALLERGIMOTTAGNINGEN_DTO).build());
 
-    assertEquals(0, certificates(response.getBody()).size(),
-        "Expect list to be empty but contains: '%s'".formatted(certificates(response.getBody()))
-    );
+    assertEquals(
+        0,
+        certificates(response.getBody()).size(),
+        "Expect list to be empty but contains: '%s'".formatted(certificates(response.getBody())));
   }
 
   @Test
   @DisplayName("Returnera lista med utkast som har sparats datum efter från och med datum")
   void shallReturnCertificatesSavedAfterFrom() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion())
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion()));
 
-    final var response = api().getUnitCertificates(
-        customGetUnitCertificatesRequest()
-            .queryCriteria(
-                CertificatesQueryCriteriaDTO.builder()
-                    .from(LocalDateTime.now().minusDays(1))
-                    .statuses(List.of(CertificateStatusTypeDTO.UNSIGNED))
-                    .build()
-            )
-            .build()
-    );
+    final var response =
+        api()
+            .getUnitCertificates(
+                customGetUnitCertificatesRequest()
+                    .queryCriteria(
+                        CertificatesQueryCriteriaDTO.builder()
+                            .from(LocalDateTime.now().minusDays(1))
+                            .statuses(List.of(CertificateStatusTypeDTO.UNSIGNED))
+                            .build())
+                    .build());
 
     assertAll(
-        () -> assertTrue(
-            () -> exists(certificates(response.getBody()), certificate(testCertificates)),
-            () -> "Expected '%s' in result: '%s'".formatted(certificateId(testCertificates),
-                certificates(response.getBody()))),
-        () -> assertEquals(1, certificates(response.getBody()).size())
-    );
+        () ->
+            assertTrue(
+                () -> exists(certificates(response.getBody()), certificate(testCertificates)),
+                () ->
+                    "Expected '%s' in result: '%s'"
+                        .formatted(
+                            certificateId(testCertificates), certificates(response.getBody()))),
+        () -> assertEquals(1, certificates(response.getBody()).size()));
   }
 
   @Test
   @DisplayName("Ej returnera utkast som har sparats datum före från och med datum")
   void shallNotReturnCertificatesSavedBeforeFrom() {
-    testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion())
-    );
+    testabilityApi().addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion()));
 
-    final var response = api().getUnitCertificates(
-        customGetUnitCertificatesRequest()
-            .queryCriteria(
-                CertificatesQueryCriteriaDTO.builder()
-                    .from(LocalDateTime.now().plusDays(1))
-                    .statuses(List.of(CertificateStatusTypeDTO.UNSIGNED))
-                    .build()
-            )
-            .build()
-    );
+    final var response =
+        api()
+            .getUnitCertificates(
+                customGetUnitCertificatesRequest()
+                    .queryCriteria(
+                        CertificatesQueryCriteriaDTO.builder()
+                            .from(LocalDateTime.now().plusDays(1))
+                            .statuses(List.of(CertificateStatusTypeDTO.UNSIGNED))
+                            .build())
+                    .build());
 
-    assertEquals(0, certificates(response.getBody()).size(),
-        "Expect list to be empty but contains: '%s'".formatted(certificates(response.getBody()))
-    );
+    assertEquals(
+        0,
+        certificates(response.getBody()).size(),
+        "Expect list to be empty but contains: '%s'".formatted(certificates(response.getBody())));
   }
 
   @Test
   @DisplayName("Returnera lista med utkast som har sparat datum före till och med datum")
   void shallReturnCertificatesSavedBeforeTo() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion())
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion()));
 
-    final var response = api().getUnitCertificates(
-        customGetUnitCertificatesRequest()
-            .queryCriteria(
-                CertificatesQueryCriteriaDTO.builder()
-                    .to(LocalDateTime.now().plusDays(1))
-                    .statuses(List.of(CertificateStatusTypeDTO.UNSIGNED))
-                    .build()
-            )
-            .build()
-    );
+    final var response =
+        api()
+            .getUnitCertificates(
+                customGetUnitCertificatesRequest()
+                    .queryCriteria(
+                        CertificatesQueryCriteriaDTO.builder()
+                            .to(LocalDateTime.now().plusDays(1))
+                            .statuses(List.of(CertificateStatusTypeDTO.UNSIGNED))
+                            .build())
+                    .build());
 
     assertAll(
-        () -> assertTrue(
-            () -> exists(certificates(response.getBody()), certificate(testCertificates)),
-            () -> "Expected '%s' in result: '%s'".formatted(certificateId(testCertificates),
-                certificates(response.getBody()))),
-        () -> assertEquals(1, certificates(response.getBody()).size())
-    );
+        () ->
+            assertTrue(
+                () -> exists(certificates(response.getBody()), certificate(testCertificates)),
+                () ->
+                    "Expected '%s' in result: '%s'"
+                        .formatted(
+                            certificateId(testCertificates), certificates(response.getBody()))),
+        () -> assertEquals(1, certificates(response.getBody()).size()));
   }
 
   @Test
   @DisplayName("Ej returnera utkast som har sparats datum efter till och med datum")
   void shallNotReturnCertificatesSavedAfterTo() {
-    testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion())
-    );
+    testabilityApi().addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion()));
 
-    final var response = api().getUnitCertificates(
-        customGetUnitCertificatesRequest()
-            .queryCriteria(
-                CertificatesQueryCriteriaDTO.builder()
-                    .to(LocalDateTime.now().minusDays(1))
-                    .statuses(List.of(CertificateStatusTypeDTO.UNSIGNED))
-                    .build()
-            )
-            .build()
-    );
+    final var response =
+        api()
+            .getUnitCertificates(
+                customGetUnitCertificatesRequest()
+                    .queryCriteria(
+                        CertificatesQueryCriteriaDTO.builder()
+                            .to(LocalDateTime.now().minusDays(1))
+                            .statuses(List.of(CertificateStatusTypeDTO.UNSIGNED))
+                            .build())
+                    .build());
 
-    assertEquals(0, certificates(response.getBody()).size(),
-        "Expect list to be empty but contains: '%s'".formatted(certificates(response.getBody()))
-    );
+    assertEquals(
+        0,
+        certificates(response.getBody()).size(),
+        "Expect list to be empty but contains: '%s'".formatted(certificates(response.getBody())));
   }
 
   @Test
   @DisplayName("Returnera lista med utkast som har sparats på patienten")
   void shallReturnCertificatesSavedOnPatient() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion())
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion()));
 
-    final var response = api().getUnitCertificates(
-        customGetUnitCertificatesRequest()
-            .queryCriteria(
-                CertificatesQueryCriteriaDTO.builder()
-                    .personId(
-                        PersonIdDTO.builder()
-                            .id(ATHENA_REACT_ANDERSSON_DTO.getId().getId())
-                            .type(ATHENA_REACT_ANDERSSON_DTO.getId().getType().name())
-                            .build()
-                    )
-                    .statuses(List.of(CertificateStatusTypeDTO.UNSIGNED))
-                    .build()
-            )
-            .build()
-    );
+    final var response =
+        api()
+            .getUnitCertificates(
+                customGetUnitCertificatesRequest()
+                    .queryCriteria(
+                        CertificatesQueryCriteriaDTO.builder()
+                            .personId(
+                                PersonIdDTO.builder()
+                                    .id(ATHENA_REACT_ANDERSSON_DTO.getId().getId())
+                                    .type(ATHENA_REACT_ANDERSSON_DTO.getId().getType().name())
+                                    .build())
+                            .statuses(List.of(CertificateStatusTypeDTO.UNSIGNED))
+                            .build())
+                    .build());
 
     assertAll(
-        () -> assertTrue(
-            () -> exists(certificates(response.getBody()), certificate(testCertificates)),
-            () -> "Expected '%s' in result: '%s'".formatted(certificateId(testCertificates),
-                certificates(response.getBody()))),
-        () -> assertEquals(1, certificates(response.getBody()).size())
-    );
+        () ->
+            assertTrue(
+                () -> exists(certificates(response.getBody()), certificate(testCertificates)),
+                () ->
+                    "Expected '%s' in result: '%s'"
+                        .formatted(
+                            certificateId(testCertificates), certificates(response.getBody()))),
+        () -> assertEquals(1, certificates(response.getBody()).size()));
   }
 
   @Test
   @DisplayName("Ej returnera utkast som har sparats på annan patient")
   void shallNotReturnCertificatesSavedOnDifferentPatient() {
-    testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion())
-    );
+    testabilityApi().addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion()));
 
-    final var response = api().getUnitCertificates(
-        customGetUnitCertificatesRequest()
-            .queryCriteria(
-                CertificatesQueryCriteriaDTO.builder()
-                    .personId(
-                        PersonIdDTO.builder()
-                            .id(ALVE_REACT_ALFREDSSON_DTO.getId().getId())
-                            .type(ALVE_REACT_ALFREDSSON_DTO.getId().getType().name())
-                            .build()
-                    )
-                    .statuses(List.of(CertificateStatusTypeDTO.UNSIGNED))
-                    .build()
-            )
-            .build()
-    );
+    final var response =
+        api()
+            .getUnitCertificates(
+                customGetUnitCertificatesRequest()
+                    .queryCriteria(
+                        CertificatesQueryCriteriaDTO.builder()
+                            .personId(
+                                PersonIdDTO.builder()
+                                    .id(ALVE_REACT_ALFREDSSON_DTO.getId().getId())
+                                    .type(ALVE_REACT_ALFREDSSON_DTO.getId().getType().name())
+                                    .build())
+                            .statuses(List.of(CertificateStatusTypeDTO.UNSIGNED))
+                            .build())
+                    .build());
 
-    assertEquals(0, certificates(response.getBody()).size(),
-        "Expect list to be empty but contains: '%s'".formatted(certificates(response.getBody()))
-    );
+    assertEquals(
+        0,
+        certificates(response.getBody()).size(),
+        "Expect list to be empty but contains: '%s'".formatted(certificates(response.getBody())));
   }
 
   @Test
   @DisplayName("Returnera lista med utkast som har sparats av vald användare")
   void shallReturnCertificatesSavedBySameStaff() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion())
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion()));
 
-    final var response = api().getUnitCertificates(
-        customGetUnitCertificatesRequest()
-            .queryCriteria(
-                CertificatesQueryCriteriaDTO.builder()
-                    .issuedByStaffId(AJLA_DOCTOR_DTO.getId())
-                    .statuses(List.of(CertificateStatusTypeDTO.UNSIGNED))
-                    .build()
-            )
-            .build()
-    );
+    final var response =
+        api()
+            .getUnitCertificates(
+                customGetUnitCertificatesRequest()
+                    .queryCriteria(
+                        CertificatesQueryCriteriaDTO.builder()
+                            .issuedByStaffId(AJLA_DOCTOR_DTO.getId())
+                            .statuses(List.of(CertificateStatusTypeDTO.UNSIGNED))
+                            .build())
+                    .build());
 
     assertAll(
-        () -> assertTrue(
-            () -> exists(certificates(response.getBody()), certificate(testCertificates)),
-            () -> "Expected '%s' in result: '%s'".formatted(certificateId(testCertificates),
-                certificates(response.getBody()))),
-        () -> assertEquals(1, certificates(response.getBody()).size())
-    );
+        () ->
+            assertTrue(
+                () -> exists(certificates(response.getBody()), certificate(testCertificates)),
+                () ->
+                    "Expected '%s' in result: '%s'"
+                        .formatted(
+                            certificateId(testCertificates), certificates(response.getBody()))),
+        () -> assertEquals(1, certificates(response.getBody()).size()));
   }
 
   @Test
   @DisplayName("Ej returnera utkast som har sparats av annan användare")
   void shallNotReturnCertificatesSavedByDifferentStaff() {
-    testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion())
-    );
+    testabilityApi().addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion()));
 
-    final var response = api().getUnitCertificates(
-        customGetUnitCertificatesRequest()
-            .queryCriteria(
-                CertificatesQueryCriteriaDTO.builder()
-                    .issuedByStaffId(ALVA_VARDADMINISTRATOR_DTO.getId())
-                    .statuses(List.of(CertificateStatusTypeDTO.UNSIGNED))
-                    .build()
-            )
-            .build()
-    );
+    final var response =
+        api()
+            .getUnitCertificates(
+                customGetUnitCertificatesRequest()
+                    .queryCriteria(
+                        CertificatesQueryCriteriaDTO.builder()
+                            .issuedByStaffId(ALVA_VARDADMINISTRATOR_DTO.getId())
+                            .statuses(List.of(CertificateStatusTypeDTO.UNSIGNED))
+                            .build())
+                    .build());
 
-    assertEquals(0, certificates(response.getBody()).size(),
-        "Expect list to be empty but contains: '%s'".formatted(certificates(response.getBody()))
-    );
+    assertEquals(
+        0,
+        certificates(response.getBody()).size(),
+        "Expect list to be empty but contains: '%s'".formatted(certificates(response.getBody())));
   }
 
   @Test
   @DisplayName("Ej returnera utkast som har annan status")
   void shallNotReturnCertificatesWithDifferentStatus() {
-    testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion())
-    );
+    testabilityApi().addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion()));
 
-    final var response = api().getUnitCertificates(
-        customGetUnitCertificatesRequest()
-            .queryCriteria(
-                CertificatesQueryCriteriaDTO.builder()
-                    .statuses(List.of(CertificateStatusTypeDTO.LOCKED))
-                    .build()
-            )
-            .build()
-    );
+    final var response =
+        api()
+            .getUnitCertificates(
+                customGetUnitCertificatesRequest()
+                    .queryCriteria(
+                        CertificatesQueryCriteriaDTO.builder()
+                            .statuses(List.of(CertificateStatusTypeDTO.LOCKED))
+                            .build())
+                    .build());
 
-    assertEquals(0, certificates(response.getBody()).size(),
-        "Expect list to be empty but contains: '%s'".formatted(certificates(response.getBody()))
-    );
+    assertEquals(
+        0,
+        certificates(response.getBody()).size(),
+        "Expect list to be empty but contains: '%s'".formatted(certificates(response.getBody())));
   }
 
   @Test
   @DisplayName("Ej returnera utkast som har signerad status")
   void shallNotReturnCertificatesWithSignedStatus() {
-    final var testCertificates = testabilityApi().addCertificates(
-        customTestabilityCertificateRequest(type(), typeVersion())
-            .fillType(TestabilityFillTypeDTO.MAXIMAL)
-            .build()
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(
+                customTestabilityCertificateRequest(type(), typeVersion())
+                    .fillType(TestabilityFillTypeDTO.MAXIMAL)
+                    .build());
 
-    api().signCertificate(
-        defaultSignCertificateRequest(),
-        certificateId(testCertificates),
-        version(testCertificates)
-    );
+    api()
+        .signCertificate(
+            defaultSignCertificateRequest(),
+            certificateId(testCertificates),
+            version(testCertificates));
 
-    final var response = api().getUnitCertificates(
-        customGetUnitCertificatesRequest()
-            .queryCriteria(
-                CertificatesQueryCriteriaDTO.builder()
-                    .statuses(List.of(CertificateStatusTypeDTO.UNSIGNED))
-                    .build()
-            )
-            .build()
-    );
+    final var response =
+        api()
+            .getUnitCertificates(
+                customGetUnitCertificatesRequest()
+                    .queryCriteria(
+                        CertificatesQueryCriteriaDTO.builder()
+                            .statuses(List.of(CertificateStatusTypeDTO.UNSIGNED))
+                            .build())
+                    .build());
 
-    assertEquals(0, certificates(response.getBody()).size(),
-        "Expect list to be empty but contains: '%s'".formatted(certificates(response.getBody()))
-    );
+    assertEquals(
+        0,
+        certificates(response.getBody()).size(),
+        "Expect list to be empty but contains: '%s'".formatted(certificates(response.getBody())));
   }
 
   @Test
   @DisplayName("Returnera utkast som inte är färdiga för signering när man söker på ej färdiga")
   void shallReturnDraftsWhichAreNotValid() {
-    final var testCertificates = testabilityApi().addCertificates(
-        customTestabilityCertificateRequest(type(), typeVersion())
-            .fillType(TestabilityFillTypeDTO.EMPTY)
-            .build()
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(
+                customTestabilityCertificateRequest(type(), typeVersion())
+                    .fillType(TestabilityFillTypeDTO.EMPTY)
+                    .build());
 
-    final var response = api().getUnitCertificates(
-        customGetUnitCertificatesRequest()
-            .queryCriteria(
-                CertificatesQueryCriteriaDTO.builder()
-                    .statuses(List.of(CertificateStatusTypeDTO.UNSIGNED))
-                    .validForSign(Boolean.FALSE)
-                    .build()
-            )
-            .build()
-    );
+    final var response =
+        api()
+            .getUnitCertificates(
+                customGetUnitCertificatesRequest()
+                    .queryCriteria(
+                        CertificatesQueryCriteriaDTO.builder()
+                            .statuses(List.of(CertificateStatusTypeDTO.UNSIGNED))
+                            .validForSign(Boolean.FALSE)
+                            .build())
+                    .build());
 
     assertAll(
-        () -> assertTrue(
-            () -> exists(certificates(response.getBody()), certificate(testCertificates)),
-            () -> "Expected '%s' in result: '%s'".formatted(certificateId(testCertificates),
-                certificates(response.getBody()))),
-        () -> assertEquals(1, certificates(response.getBody()).size())
-    );
+        () ->
+            assertTrue(
+                () -> exists(certificates(response.getBody()), certificate(testCertificates)),
+                () ->
+                    "Expected '%s' in result: '%s'"
+                        .formatted(
+                            certificateId(testCertificates), certificates(response.getBody()))),
+        () -> assertEquals(1, certificates(response.getBody()).size()));
   }
 
   @Test
   @DisplayName("Ej returnera utkast som är färdiga för signering när man söker på ej färdiga")
   void shallNotReturnDraftsWhichAreValidWhenQueryingInvalid() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion())
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion()));
 
     final var expectedValue = value();
     final var certificate = certificate(testCertificates);
 
     Objects.requireNonNull(
-        certificate.getData().put(
-            element().id(),
-            updateValue(certificate, element().id(), expectedValue)
-        )
-    );
+        certificate
+            .getData()
+            .put(element().id(), updateValue(certificate, element().id(), expectedValue)));
 
-    api().updateCertificate(
-        customUpdateCertificateRequest()
-            .user(AJLA_DOCTOR_DTO)
-            .certificate(certificate)
-            .build(),
-        certificateId(testCertificates)
-    );
+    api()
+        .updateCertificate(
+            customUpdateCertificateRequest().user(AJLA_DOCTOR_DTO).certificate(certificate).build(),
+            certificateId(testCertificates));
 
-    final var response = api().getUnitCertificates(
-        customGetUnitCertificatesRequest()
-            .queryCriteria(
-                CertificatesQueryCriteriaDTO.builder()
-                    .statuses(List.of(CertificateStatusTypeDTO.UNSIGNED))
-                    .validForSign(Boolean.FALSE)
-                    .build()
-            )
-            .build()
-    );
+    final var response =
+        api()
+            .getUnitCertificates(
+                customGetUnitCertificatesRequest()
+                    .queryCriteria(
+                        CertificatesQueryCriteriaDTO.builder()
+                            .statuses(List.of(CertificateStatusTypeDTO.UNSIGNED))
+                            .validForSign(Boolean.FALSE)
+                            .build())
+                    .build());
 
-    assertEquals(0, certificates(response.getBody()).size(),
-        "Expect list to be empty but contains: '%s'".formatted(certificates(response.getBody()))
-    );
+    assertEquals(
+        0,
+        certificates(response.getBody()).size(),
+        "Expect list to be empty but contains: '%s'".formatted(certificates(response.getBody())));
   }
 
   @Test
   @DisplayName("Returnera utkast som är färdiga för signering när man söker på färdiga")
   void shallReturnDraftsWhichAreValid() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion())
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion()));
 
     final var expectedValue = value();
     final var certificate = certificate(testCertificates);
 
     Objects.requireNonNull(
-        certificate.getData().put(
-            element().id(),
-            updateValue(certificate, element().id(), expectedValue)
-        )
-    );
+        certificate
+            .getData()
+            .put(element().id(), updateValue(certificate, element().id(), expectedValue)));
 
-    api().updateCertificate(
-        customUpdateCertificateRequest()
-            .user(AJLA_DOCTOR_DTO)
-            .certificate(certificate)
-            .build(),
-        certificateId(testCertificates)
-    );
+    api()
+        .updateCertificate(
+            customUpdateCertificateRequest().user(AJLA_DOCTOR_DTO).certificate(certificate).build(),
+            certificateId(testCertificates));
 
-    final var response = api().getUnitCertificates(
-        customGetUnitCertificatesRequest()
-            .queryCriteria(
-                CertificatesQueryCriteriaDTO.builder()
-                    .statuses(List.of(CertificateStatusTypeDTO.UNSIGNED))
-                    .validForSign(Boolean.TRUE)
-                    .build()
-            )
-            .build()
-    );
+    final var response =
+        api()
+            .getUnitCertificates(
+                customGetUnitCertificatesRequest()
+                    .queryCriteria(
+                        CertificatesQueryCriteriaDTO.builder()
+                            .statuses(List.of(CertificateStatusTypeDTO.UNSIGNED))
+                            .validForSign(Boolean.TRUE)
+                            .build())
+                    .build());
 
     assertAll(
-        () -> assertTrue(
-            () -> exists(certificates(response.getBody()), certificate(testCertificates)),
-            () -> "Expected '%s' in result: '%s'".formatted(certificateId(testCertificates),
-                certificates(response.getBody()))),
-        () -> assertEquals(1, certificates(response.getBody()).size())
-    );
+        () ->
+            assertTrue(
+                () -> exists(certificates(response.getBody()), certificate(testCertificates)),
+                () ->
+                    "Expected '%s' in result: '%s'"
+                        .formatted(
+                            certificateId(testCertificates), certificates(response.getBody()))),
+        () -> assertEquals(1, certificates(response.getBody()).size()));
   }
 
   @Test
   @DisplayName("Ej returnera utkast som är inte är färdig för signering när man söker på färdiga")
   void shallNotReturnDraftsWhichAreInvalidWhenQueryingValid() {
-    testabilityApi().addCertificates(
-        customTestabilityCertificateRequest(type(), typeVersion())
-            .fillType(TestabilityFillTypeDTO.EMPTY)
-            .build()
-    );
+    testabilityApi()
+        .addCertificates(
+            customTestabilityCertificateRequest(type(), typeVersion())
+                .fillType(TestabilityFillTypeDTO.EMPTY)
+                .build());
 
-    final var response = api().getUnitCertificates(
-        customGetUnitCertificatesRequest()
-            .queryCriteria(
-                CertificatesQueryCriteriaDTO.builder()
-                    .statuses(List.of(CertificateStatusTypeDTO.UNSIGNED))
-                    .validForSign(Boolean.TRUE)
-                    .build()
-            )
-            .build()
-    );
+    final var response =
+        api()
+            .getUnitCertificates(
+                customGetUnitCertificatesRequest()
+                    .queryCriteria(
+                        CertificatesQueryCriteriaDTO.builder()
+                            .statuses(List.of(CertificateStatusTypeDTO.UNSIGNED))
+                            .validForSign(Boolean.TRUE)
+                            .build())
+                    .build());
 
-    assertEquals(0, certificates(response.getBody()).size(),
-        "Expect list to be empty but contains: '%s'".formatted(certificates(response.getBody()))
-    );
+    assertEquals(
+        0,
+        certificates(response.getBody()).size(),
+        "Expect list to be empty but contains: '%s'".formatted(certificates(response.getBody())));
   }
 
-  private CertificateDataElement updateValue(CertificateDTO certificate, String id,
-      Object expectedValue) {
+  private CertificateDataElement updateValue(
+      CertificateDTO certificate, String id, Object expectedValue) {
     if (expectedValue instanceof String expectedText) {
       return updateTextValue(certificate, id, expectedText);
     }
@@ -581,7 +601,7 @@ public abstract class GetUnitCertificatesIT extends BaseIntegrationIT {
       return updateBooleanValue(certificate, id, expectedBoolean);
     }
 
-    throw new IllegalStateException("No update function available for type %s"
-        .formatted(expectedValue.getClass()));
+    throw new IllegalStateException(
+        "No update function available for type %s".formatted(expectedValue.getClass()));
   }
 }

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.common;
 
 import java.util.List;
@@ -25,85 +43,89 @@ public class ElementDataPredicateFactory {
     return radioBooleans(elementIds, true);
   }
 
-  public static Predicate<List<ElementData>> valueBoolean(ElementId elementId,
-      boolean expectedValue) {
+  public static Predicate<List<ElementData>> valueBoolean(
+      ElementId elementId, boolean expectedValue) {
     return radioBooleans(List.of(elementId), expectedValue);
   }
 
-  public static Predicate<List<ElementData>> checkboxBoolean(ElementId elementId,
-      final boolean expectedValue) {
+  public static Predicate<List<ElementData>> checkboxBoolean(
+      ElementId elementId, final boolean expectedValue) {
     return elementData -> {
-      final var matches = elementData.stream()
-          .filter(data -> elementId.equals(data.id()))
-          .filter(element -> element.value() != null)
-          .map(element -> (ElementValueBoolean) element.value())
-          .filter(elementValueBoolean -> elementValueBoolean.value() != null)
-          .toList();
+      final var matches =
+          elementData.stream()
+              .filter(data -> elementId.equals(data.id()))
+              .filter(element -> element.value() != null)
+              .map(element -> (ElementValueBoolean) element.value())
+              .filter(elementValueBoolean -> elementValueBoolean.value() != null)
+              .toList();
 
       if (!expectedValue && matches.isEmpty()) {
         return true;
       }
 
-      return matches.stream().anyMatch(
-          value -> value != null && value.value() != null && value.value() == expectedValue
-      );
+      return matches.stream()
+          .anyMatch(
+              value -> value != null && value.value() != null && value.value() == expectedValue);
     };
   }
 
-  public static Predicate<List<ElementData>> radioBooleans(final List<ElementId> elementIds,
-      final boolean expectedValue) {
-    return elementData -> elementData.stream()
-        .filter(data -> elementIds.contains(data.id()))
-        .map(element -> (ElementValueBoolean) element.value())
-        .anyMatch(
-            value -> value != null && value.value() != null && value.value() == expectedValue
-        );
+  public static Predicate<List<ElementData>> radioBooleans(
+      final List<ElementId> elementIds, final boolean expectedValue) {
+    return elementData ->
+        elementData.stream()
+            .filter(data -> elementIds.contains(data.id()))
+            .map(element -> (ElementValueBoolean) element.value())
+            .anyMatch(
+                value -> value != null && value.value() != null && value.value() == expectedValue);
   }
 
   public static Predicate<List<ElementData>> codes(ElementId elementId, List<FieldId> fieldIds) {
-    return elementData -> elementData.stream()
-        .filter(data -> data.id().equals(elementId))
-        .map(element -> (ElementValueCode) element.value())
-        .anyMatch(value -> fieldIds.contains(value.codeId()));
+    return elementData ->
+        elementData.stream()
+            .filter(data -> data.id().equals(elementId))
+            .map(element -> (ElementValueCode) element.value())
+            .anyMatch(value -> fieldIds.contains(value.codeId()));
   }
 
   public static Predicate<List<ElementData>> codeList(ElementId elementId, List<FieldId> fieldIds) {
-    return elementData -> elementData.stream()
-        .filter(data -> data.id().equals(elementId))
-        .map(element -> (ElementValueCodeList) element.value())
-        .map(ElementValueCodeList::list)
-        .flatMap(List::stream)
-        .anyMatch(value -> fieldIds.contains(value.codeId()));
+    return elementData ->
+        elementData.stream()
+            .filter(data -> data.id().equals(elementId))
+            .map(element -> (ElementValueCodeList) element.value())
+            .map(ElementValueCodeList::list)
+            .flatMap(List::stream)
+            .anyMatch(value -> fieldIds.contains(value.codeId()));
   }
 
-  public static Predicate<List<ElementData>> dateRangeList(ElementId elementId,
-      List<FieldId> fieldIds) {
-    return elementData -> elementData.stream()
-        .filter(data -> data.id().equals(elementId))
-        .map(element -> (ElementValueDateRangeList) element.value())
-        .anyMatch(value -> value.dateRangeList().stream().anyMatch(
-            valueDate -> fieldIds.contains(valueDate.dateRangeId()))
-        );
+  public static Predicate<List<ElementData>> dateRangeList(
+      ElementId elementId, List<FieldId> fieldIds) {
+    return elementData ->
+        elementData.stream()
+            .filter(data -> data.id().equals(elementId))
+            .map(element -> (ElementValueDateRangeList) element.value())
+            .anyMatch(
+                value ->
+                    value.dateRangeList().stream()
+                        .anyMatch(valueDate -> fieldIds.contains(valueDate.dateRangeId())));
   }
 
-  public static Predicate<List<ElementData>> visualAcuities(ElementId elementId, double upperLimit,
-      double lowerLimit) {
-    return elementData -> elementData.stream()
-        .filter(data -> data.id().equals(elementId))
-        .map(data -> (ElementValueVisualAcuities) data.value())
-        .anyMatch(
-            visualAcuities ->
-                (visualAcuities.rightEye().withoutCorrection().value() != null
-                    && visualAcuities.rightEye().withoutCorrection().value() < upperLimit
-                    && visualAcuities.leftEye().withoutCorrection().value() != null
-                    && visualAcuities.leftEye().withoutCorrection().value() < upperLimit) ||
-                    (
-                        (visualAcuities.rightEye().withoutCorrection().value() != null
-                            && visualAcuities.rightEye().withoutCorrection().value() < lowerLimit)
+  public static Predicate<List<ElementData>> visualAcuities(
+      ElementId elementId, double upperLimit, double lowerLimit) {
+    return elementData ->
+        elementData.stream()
+            .filter(data -> data.id().equals(elementId))
+            .map(data -> (ElementValueVisualAcuities) data.value())
+            .anyMatch(
+                visualAcuities ->
+                    (visualAcuities.rightEye().withoutCorrection().value() != null
+                            && visualAcuities.rightEye().withoutCorrection().value() < upperLimit
+                            && visualAcuities.leftEye().withoutCorrection().value() != null
+                            && visualAcuities.leftEye().withoutCorrection().value() < upperLimit)
+                        || ((visualAcuities.rightEye().withoutCorrection().value() != null
+                                && visualAcuities.rightEye().withoutCorrection().value()
+                                    < lowerLimit)
                             || (visualAcuities.leftEye().withoutCorrection().value() != null
-                            && visualAcuities.leftEye().withoutCorrection().value() < lowerLimit)
-                    )
-        );
+                                && visualAcuities.leftEye().withoutCorrection().value()
+                                    < lowerLimit)));
   }
-
 }

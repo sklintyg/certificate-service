@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7426;
 
 import se.inera.intyg.certificateservice.domain.action.certificate.model.ActionEvaluation;
@@ -10,12 +28,12 @@ import se.inera.intyg.certificateservice.domain.certificatemodel.model.MessageLe
 import se.inera.intyg.certificateservice.domain.common.model.AccessScope;
 import se.inera.intyg.certificateservice.domain.patient.model.Patient;
 
-public class FK7426CertificateConfirmationModalProvider implements
-    CertificateConfirmationModalProvider {
+public class FK7426CertificateConfirmationModalProvider
+    implements CertificateConfirmationModalProvider {
 
   @Override
-  public CertificateConfirmationModal of(Certificate certificate,
-      ActionEvaluation actionEvaluation) {
+  public CertificateConfirmationModal of(
+      Certificate certificate, ActionEvaluation actionEvaluation) {
     if (actionEvaluation == null || !isEnabled(certificate, actionEvaluation)) {
       return null;
     }
@@ -32,22 +50,20 @@ public class FK7426CertificateConfirmationModalProvider implements
                     """
                         <p>Du är på väg att utfärda Läkarutlåtande tillfällig föräldrapenning för ett allvarligt sjukt barn som inte har fyllt 18 år för</p>
                         <b>%s - %s</b>
-                        """.formatted(
-                        patient.name().fullName(),
-                        patient.id().idWithDash())
-                ).build()
-        ).text(
+                        """
+                        .formatted(patient.name().fullName(), patient.id().idWithDash()))
+                .build())
+        .text(
             """
                 <p>Läkarutlåtande tillfällig föräldrapenning för ett allvarligt sjukt barn som inte har fyllt 18 år ska endast användas om barnet har eller misstänks ha en sjukdom som innebär påtaglig fara för barnets liv, eller om barnet behandlas efter ett sådant tillstånd och det finns fara för barnets liv utan denna behandling.</p>
-                """
-        )
+                """)
         .checkboxText(
             "Jag är säker på att jag vill utfärda Läkarutlåtande tillfällig föräldrapenning för ett allvarligt sjukt barn som inte har fyllt 18 år")
         .primaryAction(CertificateModalActionType.READ)
-        .secondaryAction(hasStrictestAccessScope
-            ? CertificateModalActionType.CANCEL
-            : CertificateModalActionType.DELETE
-        )
+        .secondaryAction(
+            hasStrictestAccessScope
+                ? CertificateModalActionType.CANCEL
+                : CertificateModalActionType.DELETE)
         .build();
   }
 

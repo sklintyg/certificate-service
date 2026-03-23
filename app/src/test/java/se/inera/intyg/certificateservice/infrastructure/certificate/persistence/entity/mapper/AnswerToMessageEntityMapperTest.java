@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificate.persistence.entity.mapper;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -43,15 +61,13 @@ class AnswerToMessageEntityMapperTest {
   private static final LocalDateTime SENT = LocalDateTime.now();
   private static final MessageStatus STATUS = MessageStatus.HANDLED;
   private static final MessageType TYPE = MessageType.COMPLEMENT;
-  private static final MessageContactInfo CONTACT_INFO = new MessageContactInfo(
-      List.of("CONTACT INFO")
-  );
+  private static final MessageContactInfo CONTACT_INFO =
+      new MessageContactInfo(List.of("CONTACT INFO"));
   private static final boolean FORWARDED = true;
   private static final CertificateEntity CERTIFICATE = CertificateEntity.builder().build();
   private static final int KEY = 1;
   private AnswerToMessageEntityMapper answerToMessageEntityMapper;
-  @Mock
-  private StaffRepository staffRepository;
+  @Mock private StaffRepository staffRepository;
 
   @BeforeEach
   void setUp() {
@@ -78,19 +94,20 @@ class AnswerToMessageEntityMapperTest {
   void shallUseIdFromAnswerInclude() {
     final var expectedId = "expectedId";
     final var originalEntity = createOriginalEntity();
-    final var answer = Answer.builder()
-        .id(new MessageId(expectedId))
-        .reference(new SenderReference(REFERENCE))
-        .subject(new Subject(SUBJECT))
-        .content(new Content(CONTENT))
-        .author(new Author(AUTHOR))
-        .created(CREATED)
-        .modified(MODIFIED)
-        .sent(SENT)
-        .status(STATUS)
-        .type(TYPE)
-        .contactInfo(CONTACT_INFO)
-        .build();
+    final var answer =
+        Answer.builder()
+            .id(new MessageId(expectedId))
+            .reference(new SenderReference(REFERENCE))
+            .subject(new Subject(SUBJECT))
+            .content(new Content(CONTENT))
+            .author(new Author(AUTHOR))
+            .created(CREATED)
+            .modified(MODIFIED)
+            .sent(SENT)
+            .status(STATUS)
+            .type(TYPE)
+            .contactInfo(CONTACT_INFO)
+            .build();
     final var result = answerToMessageEntityMapper.toEntity(originalEntity, answer, KEY);
     assertEquals(expectedId, result.getId());
   }
@@ -106,17 +123,18 @@ class AnswerToMessageEntityMapperTest {
   @Test
   void shallExcludeReference() {
     final var originalEntity = createOriginalEntity();
-    final var answer = Answer.builder()
-        .subject(new Subject(SUBJECT))
-        .content(new Content(CONTENT))
-        .author(new Author(AUTHOR))
-        .created(CREATED)
-        .modified(MODIFIED)
-        .sent(SENT)
-        .status(STATUS)
-        .type(TYPE)
-        .contactInfo(CONTACT_INFO)
-        .build();
+    final var answer =
+        Answer.builder()
+            .subject(new Subject(SUBJECT))
+            .content(new Content(CONTENT))
+            .author(new Author(AUTHOR))
+            .created(CREATED)
+            .modified(MODIFIED)
+            .sent(SENT)
+            .status(STATUS)
+            .type(TYPE)
+            .contactInfo(CONTACT_INFO)
+            .build();
 
     final var result = answerToMessageEntityMapper.toEntity(originalEntity, answer, KEY);
     assertNull(result.getReference());
@@ -210,9 +228,7 @@ class AnswerToMessageEntityMapperTest {
 
     final var originalEntity = createOriginalEntity();
     final var authoredStaff = Staff.create(AJLA_DOKTOR);
-    final var answer = createAnswerBuilder()
-        .authoredStaff(authoredStaff)
-        .build();
+    final var answer = createAnswerBuilder().authoredStaff(authoredStaff).build();
 
     doReturn(expectedStaff).when(staffRepository).staff(authoredStaff);
 
@@ -223,9 +239,7 @@ class AnswerToMessageEntityMapperTest {
   @Test
   void shallExcludeAuthoredByStaff() {
     final var originalEntity = createOriginalEntity();
-    final var answer = createAnswerBuilder()
-        .authoredStaff(null)
-        .build();
+    final var answer = createAnswerBuilder().authoredStaff(null).build();
 
     final var result = answerToMessageEntityMapper.toEntity(originalEntity, answer, KEY);
     assertNull(result.getAuthoredByStaff());
@@ -238,16 +252,13 @@ class AnswerToMessageEntityMapperTest {
     final var result = answerToMessageEntityMapper.toEntity(originalEntity, answer, KEY);
     assertAll(
         () -> assertEquals(CONTACT_INFO.lines().size(), result.getContactInfo().size()),
-        () -> assertEquals(CONTACT_INFO.lines().getFirst(),
-            result.getContactInfo().getFirst().getInfo())
-    );
+        () ->
+            assertEquals(
+                CONTACT_INFO.lines().getFirst(), result.getContactInfo().getFirst().getInfo()));
   }
 
   private MessageEntity createOriginalEntity() {
-    return MessageEntity.builder()
-        .certificate(CERTIFICATE)
-        .forwarded(FORWARDED)
-        .build();
+    return MessageEntity.builder().certificate(CERTIFICATE).forwarded(FORWARDED).build();
   }
 
   private Answer createAnswer() {

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.testdata;
 
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataCareProviderConstants.ALFA_REGIONEN_ID;
@@ -51,15 +69,14 @@ public class TestDataCommonUnitDTO {
 
   public static final UnitDTO ALFA_REGIONEN_DTO = alfaRegionenDtoBuilder().build();
   public static final UnitDTO ALFA_MEDICINCENTRUM_DTO = alfaMedicincentrumDtoBuilder().build();
-  public static final UnitDTO ALFA_ALLERGIMOTTAGNINGEN_DTO = alfaAllergimottagningenDtoBuilder().build();
+  public static final UnitDTO ALFA_ALLERGIMOTTAGNINGEN_DTO =
+      alfaAllergimottagningenDtoBuilder().build();
   public static final UnitDTO ALFA_HUDMOTTAGNINGEN_DTO = alfaHudmottagningenDtoBuilder().build();
   public static final UnitDTO ALFA_VARDCENTRAL_DTO = alfaVardcentralDtoBuilder().build();
   public static final UnitDTO BETA_REGIONEN_DTO = betaRegionenDtoBuilder().build();
 
   public static UnitDTO.UnitDTOBuilder alfaRegionenDtoBuilder() {
-    return UnitDTO.builder()
-        .id(ALFA_REGIONEN_ID)
-        .name(ALFA_REGIONEN_NAME);
+    return UnitDTO.builder().id(ALFA_REGIONEN_ID).name(ALFA_REGIONEN_NAME);
   }
 
   public static UnitDTO.UnitDTOBuilder alfaMedicincentrumDtoBuilder() {
@@ -115,8 +132,6 @@ public class TestDataCommonUnitDTO {
   }
 
   public static UnitDTO.UnitDTOBuilder betaRegionenDtoBuilder() {
-    return UnitDTO.builder()
-        .id(BETA_REGIONEN_ID)
-        .name(BETA_REGIONEN_NAME);
+    return UnitDTO.builder().id(BETA_REGIONEN_ID).name(BETA_REGIONEN_NAME);
   }
 }

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -83,66 +101,39 @@ class CertificateControllerTest {
   private static final String CERTIFICATE_ID = "certificateId";
   private static final String CANDICATE_CERTIFICATE_ID = "candidateCertificateId";
   private static final Long VERSION = 0L;
-  @Mock
-  private CreateDraftFromCertificateService createDraftFromCertificateService;
-  @Mock
-  private AnswerComplementService answerComplementService;
-  @Mock
-  private ValidateCertificateService validateCertificateService;
-  @Mock
-  private UpdateCertificateService updateCertificateService;
-  @Mock
-  private GetCertificateService getCertificateService;
-  @Mock
-  private CertificateExistsService certificateExistsService;
-  @Mock
-  private CreateCertificateService createCertificateService;
-  @Mock
-  private DeleteCertificateService deleteCertificateService;
-  @Mock
-  private GetCertificateXmlService getCertificateXmlService;
-  @Mock
-  private SignCertificateService signCertificateService;
-  @Mock
-  private SendCertificateService sendCertificateService;
-  @Mock
-  private SignCertificateWithoutSignatureService signCertificateWithoutSignatureService;
-  @Mock
-  private GetCertificatePdfService getCertificatePdfService;
-  @Mock
-  private RevokeCertificateService revokeCertificateService;
-  @Mock
-  private ReplaceCertificateService replaceCertificateService;
-  @Mock
-  private RenewCertificateService renewCertificateService;
-  @Mock
-  private RenewExternalCertificateService renewExternalCertificateService;
-  @Mock
-  private ComplementCertificateService complementCertificateService;
-  @Mock
-  private ForwardCertificateService forwardCertificateService;
-  @Mock
-  private GetCertificateEventsService getCertificateEventsService;
-  @Mock
-  private SetCertificateReadyForSignService setCertificateReadyForSignService;
-  @Mock
-  private GetCertificateCandidateService getCertificateCandidateService;
-  @Mock
-  private UpdateWithCertificateCandidateService updateWithCertificateCandidateService;
-  @InjectMocks
-  private CertificateController certificateController;
+  @Mock private CreateDraftFromCertificateService createDraftFromCertificateService;
+  @Mock private AnswerComplementService answerComplementService;
+  @Mock private ValidateCertificateService validateCertificateService;
+  @Mock private UpdateCertificateService updateCertificateService;
+  @Mock private GetCertificateService getCertificateService;
+  @Mock private CertificateExistsService certificateExistsService;
+  @Mock private CreateCertificateService createCertificateService;
+  @Mock private DeleteCertificateService deleteCertificateService;
+  @Mock private GetCertificateXmlService getCertificateXmlService;
+  @Mock private SignCertificateService signCertificateService;
+  @Mock private SendCertificateService sendCertificateService;
+  @Mock private SignCertificateWithoutSignatureService signCertificateWithoutSignatureService;
+  @Mock private GetCertificatePdfService getCertificatePdfService;
+  @Mock private RevokeCertificateService revokeCertificateService;
+  @Mock private ReplaceCertificateService replaceCertificateService;
+  @Mock private RenewCertificateService renewCertificateService;
+  @Mock private RenewExternalCertificateService renewExternalCertificateService;
+  @Mock private ComplementCertificateService complementCertificateService;
+  @Mock private ForwardCertificateService forwardCertificateService;
+  @Mock private GetCertificateEventsService getCertificateEventsService;
+  @Mock private SetCertificateReadyForSignService setCertificateReadyForSignService;
+  @Mock private GetCertificateCandidateService getCertificateCandidateService;
+  @Mock private UpdateWithCertificateCandidateService updateWithCertificateCandidateService;
+  @InjectMocks private CertificateController certificateController;
 
   @Test
   void shallReturnCreateCertificateResponse() {
-    final var expectedResult = CreateCertificateResponse.builder()
-        .certificate(CertificateDTO.builder().build())
-        .build();
+    final var expectedResult =
+        CreateCertificateResponse.builder().certificate(CertificateDTO.builder().build()).build();
 
     final var request = CreateCertificateRequest.builder().build();
 
-    doReturn(expectedResult).when(createCertificateService).create(
-        request
-    );
+    doReturn(expectedResult).when(createCertificateService).create(request);
 
     final var actualResult = certificateController.createCertificate(request);
 
@@ -151,9 +142,7 @@ class CertificateControllerTest {
 
   @Test
   void shallReturnTrueIfCertificateExists() {
-    final var expectedResult = CertificateExistsResponse.builder()
-        .exists(true)
-        .build();
+    final var expectedResult = CertificateExistsResponse.builder().exists(true).build();
 
     doReturn(expectedResult).when(certificateExistsService).exist(CERTIFICATE_ID);
 
@@ -164,9 +153,7 @@ class CertificateControllerTest {
 
   @Test
   void shallReturnFalseIfCertificateDontExists() {
-    final var expectedResult = CertificateExistsResponse.builder()
-        .exists(false)
-        .build();
+    final var expectedResult = CertificateExistsResponse.builder().exists(false).build();
 
     doReturn(expectedResult).when(certificateExistsService).exist(CERTIFICATE_ID);
 
@@ -177,15 +164,12 @@ class CertificateControllerTest {
 
   @Test
   void shallReturnGetCertificateResponse() {
-    final var expectedResult = GetCertificateResponse.builder()
-        .certificate(CertificateDTO.builder().build())
-        .build();
+    final var expectedResult =
+        GetCertificateResponse.builder().certificate(CertificateDTO.builder().build()).build();
 
     final var request = GetCertificateRequest.builder().build();
 
-    doReturn(expectedResult).when(getCertificateService).get(
-        request,
-        CERTIFICATE_ID);
+    doReturn(expectedResult).when(getCertificateService).get(request, CERTIFICATE_ID);
 
     final var actualResult = certificateController.getCertificate(request, CERTIFICATE_ID);
 
@@ -194,16 +178,14 @@ class CertificateControllerTest {
 
   @Test
   void shallReturnUpdateCertificateResponse() {
-    final var expectedResult = UpdateCertificateResponse.builder()
-        .certificate(CertificateDTO.builder().build())
-        .build();
+    final var expectedResult =
+        UpdateCertificateResponse.builder().certificate(CertificateDTO.builder().build()).build();
 
     final var request = UpdateCertificateRequest.builder().build();
 
     doReturn(expectedResult).when(updateCertificateService).update(request, CERTIFICATE_ID);
 
-    final var actualResult = certificateController.updateCertificate(request,
-        CERTIFICATE_ID);
+    final var actualResult = certificateController.updateCertificate(request, CERTIFICATE_ID);
 
     assertEquals(expectedResult, actualResult);
   }
@@ -211,14 +193,14 @@ class CertificateControllerTest {
   @Test
   void shallReturnDeleteCertificateResponse() {
     final var request = DeleteCertificateRequest.builder().build();
-    final var expectedResult = DeleteCertificateResponse.builder()
-        .certificate(CertificateDTO.builder().build())
-        .build();
-    doReturn(expectedResult).when(deleteCertificateService)
+    final var expectedResult =
+        DeleteCertificateResponse.builder().certificate(CertificateDTO.builder().build()).build();
+    doReturn(expectedResult)
+        .when(deleteCertificateService)
         .delete(request, CERTIFICATE_ID, VERSION);
 
-    final var actualResult = certificateController.deleteCertificate(request, CERTIFICATE_ID,
-        VERSION);
+    final var actualResult =
+        certificateController.deleteCertificate(request, CERTIFICATE_ID, VERSION);
 
     assertEquals(expectedResult, actualResult);
   }
@@ -226,14 +208,12 @@ class CertificateControllerTest {
   @Test
   void shallReturnValidateCertificateResponse() {
     final var request = ValidateCertificateRequest.builder().build();
-    final var expectedResult = ValidateCertificateResponse.builder()
-        .validationErrors(Collections.emptyList())
-        .build();
+    final var expectedResult =
+        ValidateCertificateResponse.builder().validationErrors(Collections.emptyList()).build();
 
     doReturn(expectedResult).when(validateCertificateService).validate(request, CERTIFICATE_ID);
 
-    final var actualResult = certificateController.validateCertificate(request,
-        CERTIFICATE_ID);
+    final var actualResult = certificateController.validateCertificate(request, CERTIFICATE_ID);
 
     assertEquals(expectedResult, actualResult);
   }
@@ -241,9 +221,7 @@ class CertificateControllerTest {
   @Test
   void shallReturnGetCertificateXmlResponse() {
     final var request = GetCertificateXmlRequest.builder().build();
-    final var expectedResult = GetCertificateXmlResponse.builder()
-        .xml("XML")
-        .build();
+    final var expectedResult = GetCertificateXmlResponse.builder().xml("XML").build();
     doReturn(expectedResult).when(getCertificateXmlService).get(request, CERTIFICATE_ID);
 
     final var actualResult = certificateController.getCertificateXml(request, CERTIFICATE_ID);
@@ -254,13 +232,12 @@ class CertificateControllerTest {
   @Test
   void shallReturnSignCertificateResponse() {
     final var request = SignCertificateRequest.builder().build();
-    final var expectedResult = SignCertificateResponse.builder()
-        .certificate(CertificateDTO.builder().build())
-        .build();
+    final var expectedResult =
+        SignCertificateResponse.builder().certificate(CertificateDTO.builder().build()).build();
     doReturn(expectedResult).when(signCertificateService).sign(request, CERTIFICATE_ID, VERSION);
 
-    final var actualResult = certificateController.signCertificate(request, CERTIFICATE_ID,
-        VERSION);
+    final var actualResult =
+        certificateController.signCertificate(request, CERTIFICATE_ID, VERSION);
 
     assertEquals(expectedResult, actualResult);
   }
@@ -268,14 +245,14 @@ class CertificateControllerTest {
   @Test
   void shallReturnSignCertificateResponseWhenSigningWithoutSignature() {
     final var request = SignCertificateWithoutSignatureRequest.builder().build();
-    final var expectedResult = SignCertificateResponse.builder()
-        .certificate(CertificateDTO.builder().build())
-        .build();
-    doReturn(expectedResult).when(signCertificateWithoutSignatureService)
+    final var expectedResult =
+        SignCertificateResponse.builder().certificate(CertificateDTO.builder().build()).build();
+    doReturn(expectedResult)
+        .when(signCertificateWithoutSignatureService)
         .sign(request, CERTIFICATE_ID, VERSION);
 
-    final var actualResult = certificateController.signCertificateWithoutSignature(request,
-        CERTIFICATE_ID, VERSION);
+    final var actualResult =
+        certificateController.signCertificateWithoutSignature(request, CERTIFICATE_ID, VERSION);
 
     assertEquals(expectedResult, actualResult);
   }
@@ -283,9 +260,8 @@ class CertificateControllerTest {
   @Test
   void shallReturnSendCertificateResponse() {
     final var request = SendCertificateRequest.builder().build();
-    final var expectedResult = SendCertificateResponse.builder()
-        .certificate(CertificateDTO.builder().build())
-        .build();
+    final var expectedResult =
+        SendCertificateResponse.builder().certificate(CertificateDTO.builder().build()).build();
 
     doReturn(expectedResult).when(sendCertificateService).send(request, CERTIFICATE_ID);
     final var actualResult = certificateController.sendCertificate(request, CERTIFICATE_ID);
@@ -296,10 +272,8 @@ class CertificateControllerTest {
   @Test
   void shallReturnGetCertificatePdfResponse() {
     final var request = GetCertificatePdfRequest.builder().build();
-    final var expectedResult = GetCertificatePdfResponse.builder()
-        .pdfData("pdf".getBytes())
-        .fileName("fileName")
-        .build();
+    final var expectedResult =
+        GetCertificatePdfResponse.builder().pdfData("pdf".getBytes()).fileName("fileName").build();
     doReturn(expectedResult).when(getCertificatePdfService).get(request, CERTIFICATE_ID);
 
     final var actualResult = certificateController.getCertificatePdf(request, CERTIFICATE_ID);
@@ -346,8 +320,8 @@ class CertificateControllerTest {
     final var expectedResult = RenewCertificateResponse.builder().build();
     doReturn(expectedResult).when(renewExternalCertificateService).renew(request, CERTIFICATE_ID);
 
-    final var actualResult = certificateController.renewExternalCertificate(request,
-        CERTIFICATE_ID);
+    final var actualResult =
+        certificateController.renewExternalCertificate(request, CERTIFICATE_ID);
 
     assertEquals(expectedResult, actualResult);
   }
@@ -402,8 +376,8 @@ class CertificateControllerTest {
     final var expectedResult = CertificateReadyForSignResponse.builder().build();
     doReturn(expectedResult).when(setCertificateReadyForSignService).set(request, CERTIFICATE_ID);
 
-    final var actualResult = certificateController.setCertificateReadyForSign(request,
-        CERTIFICATE_ID);
+    final var actualResult =
+        certificateController.setCertificateReadyForSign(request, CERTIFICATE_ID);
 
     assertEquals(expectedResult, actualResult);
   }
@@ -413,11 +387,12 @@ class CertificateControllerTest {
     final var request = CreateDraftFromCertificateRequest.builder().build();
     final var expectedResult = CreateDraftFromCertificateResponse.builder().build();
 
-    doReturn(expectedResult).when(createDraftFromCertificateService)
+    doReturn(expectedResult)
+        .when(createDraftFromCertificateService)
         .create(request, CERTIFICATE_ID);
 
-    final var actualResult = certificateController.createDraftFromCertificate(request,
-        CERTIFICATE_ID);
+    final var actualResult =
+        certificateController.createDraftFromCertificate(request, CERTIFICATE_ID);
     assertEquals(expectedResult, actualResult);
   }
 
@@ -426,8 +401,7 @@ class CertificateControllerTest {
     final var request = GetCertificateCandidateRequest.builder().build();
     final var expectedResult = GetCertificateCandidateResponse.builder().build();
 
-    doReturn(expectedResult).when(getCertificateCandidateService)
-        .get(request, CERTIFICATE_ID);
+    doReturn(expectedResult).when(getCertificateCandidateService).get(request, CERTIFICATE_ID);
 
     final var actualResult = certificateController.getCertificateCandidate(request, CERTIFICATE_ID);
     assertEquals(expectedResult, actualResult);
@@ -438,11 +412,13 @@ class CertificateControllerTest {
     final var request = UpdateWithCertificateCandidateRequest.builder().build();
     final var expectedResult = UpdateWithCertificateCandidateResponse.builder().build();
 
-    doReturn(expectedResult).when(updateWithCertificateCandidateService)
+    doReturn(expectedResult)
+        .when(updateWithCertificateCandidateService)
         .update(request, CERTIFICATE_ID, CANDICATE_CERTIFICATE_ID);
 
-    final var actualResult = certificateController.updateWithCertificateCandidate(request,
-        CERTIFICATE_ID, CANDICATE_CERTIFICATE_ID);
+    final var actualResult =
+        certificateController.updateWithCertificateCandidate(
+            request, CERTIFICATE_ID, CANDICATE_CERTIFICATE_ID);
     assertEquals(expectedResult, actualResult);
   }
 }

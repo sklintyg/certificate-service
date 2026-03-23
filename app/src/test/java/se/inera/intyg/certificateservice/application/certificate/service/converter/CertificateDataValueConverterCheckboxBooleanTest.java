@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service.converter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -23,44 +41,37 @@ class CertificateDataValueConverterCheckboxBooleanTest {
 
   private static final String ELEMENT_ID = "elementId";
   private static final FieldId FIELD_ID = new FieldId("fieldId");
-  private final CertificateDataValueConverterCheckboxBoolean converter = new CertificateDataValueConverterCheckboxBoolean();
+  private final CertificateDataValueConverterCheckboxBoolean converter =
+      new CertificateDataValueConverterCheckboxBoolean();
   private ElementConfigurationCheckboxBoolean elementConfigurationCheckboxBoolean;
 
   @BeforeEach
   void setUp() {
-    elementConfigurationCheckboxBoolean = ElementConfigurationCheckboxBoolean.builder()
-        .id(FIELD_ID)
-        .build();
+    elementConfigurationCheckboxBoolean =
+        ElementConfigurationCheckboxBoolean.builder().id(FIELD_ID).build();
   }
 
   @Test
   void shouldThrowExceptionIfWrongClassOfValueIfElementValueNotNull() {
-    final var configuration = ElementSpecification.builder()
-        .id(new ElementId(ELEMENT_ID))
-        .configuration(
-            ElementConfigurationCheckboxBoolean.builder()
-                .id(FIELD_ID)
-                .build()
-        )
-        .build();
+    final var configuration =
+        ElementSpecification.builder()
+            .id(new ElementId(ELEMENT_ID))
+            .configuration(ElementConfigurationCheckboxBoolean.builder().id(FIELD_ID).build())
+            .build();
 
     final var elementValueText = ElementValueText.builder().build();
 
-    assertThrows(IllegalStateException.class,
-        () -> converter.convert(configuration, elementValueText)
-    );
+    assertThrows(
+        IllegalStateException.class, () -> converter.convert(configuration, elementValueText));
   }
 
   @Test
   void shouldNotThrowExceptionIfWrongClassOfValueIfElementValueIsNull() {
-    final var configuration = ElementSpecification.builder()
-        .id(new ElementId(ELEMENT_ID))
-        .configuration(
-            ElementConfigurationCheckboxBoolean.builder()
-                .id(FIELD_ID)
-                .build()
-        )
-        .build();
+    final var configuration =
+        ElementSpecification.builder()
+            .id(new ElementId(ELEMENT_ID))
+            .configuration(ElementConfigurationCheckboxBoolean.builder().id(FIELD_ID).build())
+            .build();
 
     final var result = converter.convert(configuration, null);
     assertNull(((CertificateDataValueBoolean) result).getSelected());
@@ -68,19 +79,15 @@ class CertificateDataValueConverterCheckboxBooleanTest {
 
   @Test
   void shouldThrowExceptionIfWrongClassOfConfig() {
-    final var configuration = ElementSpecification.builder()
-        .configuration(
-            ElementConfigurationTextArea.builder()
-                .id(FIELD_ID)
-                .build()
-        )
-        .build();
+    final var configuration =
+        ElementSpecification.builder()
+            .configuration(ElementConfigurationTextArea.builder().id(FIELD_ID).build())
+            .build();
 
     final var elementValueDate = ElementValueDate.builder().build();
 
-    assertThrows(IllegalStateException.class,
-        () -> converter.convert(configuration, elementValueDate)
-    );
+    assertThrows(
+        IllegalStateException.class, () -> converter.convert(configuration, elementValueDate));
   }
 
   @Test
@@ -90,10 +97,11 @@ class CertificateDataValueConverterCheckboxBooleanTest {
 
   @Test
   void shallCreateCertificateDataValueBoolean() {
-    final var configuration = ElementSpecification.builder()
-        .id(new ElementId(ELEMENT_ID))
-        .configuration(elementConfigurationCheckboxBoolean)
-        .build();
+    final var configuration =
+        ElementSpecification.builder()
+            .id(new ElementId(ELEMENT_ID))
+            .configuration(elementConfigurationCheckboxBoolean)
+            .build();
 
     final var elementValueBoolean = ElementValueBoolean.builder().build();
 
@@ -104,11 +112,8 @@ class CertificateDataValueConverterCheckboxBooleanTest {
 
   @Test
   void shallSetIdFromConfiguration() {
-    final var configuration = ElementSpecification.builder()
-        .configuration(
-            elementConfigurationCheckboxBoolean
-        )
-        .build();
+    final var configuration =
+        ElementSpecification.builder().configuration(elementConfigurationCheckboxBoolean).build();
 
     final var elementValueBoolean = ElementValueBoolean.builder().build();
 
@@ -119,20 +124,16 @@ class CertificateDataValueConverterCheckboxBooleanTest {
 
   @Test
   void shallSetCorrectSelectedValue() {
-    final var configuration = ElementSpecification.builder()
-        .id(new ElementId(ELEMENT_ID))
-        .configuration(
-            elementConfigurationCheckboxBoolean
-        )
-        .build();
+    final var configuration =
+        ElementSpecification.builder()
+            .id(new ElementId(ELEMENT_ID))
+            .configuration(elementConfigurationCheckboxBoolean)
+            .build();
 
-    final var elementValueBoolean = ElementValueBoolean.builder()
-        .value(true)
-        .build();
+    final var elementValueBoolean = ElementValueBoolean.builder().value(true).build();
 
     final var result = converter.convert(configuration, elementValueBoolean);
 
     assertTrue(((CertificateDataValueBoolean) result).getSelected());
   }
 }
-

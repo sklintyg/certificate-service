@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.certificatemodel.model;
 
 import java.time.Period;
@@ -21,12 +39,16 @@ public class ElementConfigurationCheckboxDateRangeList implements ElementConfigu
 
   @Getter(onMethod = @__(@Override))
   String name;
+
   @Getter(onMethod = @__(@Override))
   String description;
+
   @Getter(onMethod = @__(@Override))
   String label;
+
   @Getter(onMethod = @__(@Override))
   ElementType type = ElementType.CHECKBOX_DATE_RANGE_LIST;
+
   @Getter(onMethod = @__(@Override))
   ElementMessage message;
 
@@ -49,19 +71,17 @@ public class ElementConfigurationCheckboxDateRangeList implements ElementConfigu
       return Optional.empty();
     }
 
-    return dateRanges.stream()
-        .filter(dateRange -> dateRange.id().equals(id))
-        .findFirst();
+    return dateRanges.stream().filter(dateRange -> dateRange.id().equals(id)).findFirst();
   }
 
   public Code code(DateRange dateRange) {
     return dateRanges.stream()
         .filter(configurationCode -> configurationCode.id().equals(dateRange.dateRangeId()))
         .findFirst()
-        .orElseThrow(() -> new IllegalArgumentException(
-                "Cannot find matching code for dateId '%s'".formatted(dateRange.dateRangeId())
-            )
-        )
+        .orElseThrow(
+            () ->
+                new IllegalArgumentException(
+                    "Cannot find matching code for dateId '%s'".formatted(dateRange.dateRangeId())))
         .code();
   }
 
@@ -71,27 +91,33 @@ public class ElementConfigurationCheckboxDateRangeList implements ElementConfigu
       throw new IllegalStateException("Wrong value type");
     }
     if (elementValue.isEmpty()) {
-      return Optional.of(ElementSimplifiedValueText.builder()
-          .text("Ej angivet")
-          .build());
+      return Optional.of(ElementSimplifiedValueText.builder().text("Ej angivet").build());
     }
     return Optional.of(
         ElementSimplifiedValueTable.builder()
             .headings(List.of("Nedsättningsgrad", "Från och med", "Till och med"))
-            .values(elementValue.dateRangeList().stream()
-                .map(dateRange -> List.of(
-                    dateRanges.stream()
-                        .filter(
-                            config -> config.id().value().equals(dateRange.dateRangeId().value()))
-                        .findFirst()
-                        .orElseThrow(
-                            () -> new IllegalStateException("No matching date range code")).code()
-                        .displayName(),
-                    dateRange.from() != null ? dateRange.from().toString() : "",
-                    dateRange.to() != null ? dateRange.to().toString() : ""
-                ))
-                .toList())
-            .build()
-    );
+            .values(
+                elementValue.dateRangeList().stream()
+                    .map(
+                        dateRange ->
+                            List.of(
+                                dateRanges.stream()
+                                    .filter(
+                                        config ->
+                                            config
+                                                .id()
+                                                .value()
+                                                .equals(dateRange.dateRangeId().value()))
+                                    .findFirst()
+                                    .orElseThrow(
+                                        () ->
+                                            new IllegalStateException(
+                                                "No matching date range code"))
+                                    .code()
+                                    .displayName(),
+                                dateRange.from() != null ? dateRange.from().toString() : "",
+                                dateRange.to() != null ? dateRange.to().toString() : ""))
+                    .toList())
+            .build());
   }
 }

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.v2;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,25 +56,18 @@ class QuestionHorselhjalpmedelPositionV2Test {
 
   @Test
   void shouldIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationCheckboxMultipleCode.builder()
-        .name("Om personen behöver använda hörapparat, ange på vilket öra")
-        .id(new FieldId("9.3"))
-        .elementLayout(ElementLayout.INLINE)
-        .list(
-            List.of(
-                new ElementConfigurationCode(
-                    new FieldId(HOGER.code()),
-                    HOGER.displayName(),
-                    HOGER
-                ),
-                new ElementConfigurationCode(
-                    new FieldId(VANSTER.code()),
-                    VANSTER.displayName(),
-                    VANSTER
-                )
-            )
-        )
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationCheckboxMultipleCode.builder()
+            .name("Om personen behöver använda hörapparat, ange på vilket öra")
+            .id(new FieldId("9.3"))
+            .elementLayout(ElementLayout.INLINE)
+            .list(
+                List.of(
+                    new ElementConfigurationCode(
+                        new FieldId(HOGER.code()), HOGER.displayName(), HOGER),
+                    new ElementConfigurationCode(
+                        new FieldId(VANSTER.code()), VANSTER.displayName(), VANSTER)))
+            .build();
 
     final var element = QuestionHorselhjalpmedelPositionV2.questionHorselhjalpmedelPositionV2();
 
@@ -65,19 +76,20 @@ class QuestionHorselhjalpmedelPositionV2Test {
 
   @Test
   void shouldIncludeRules() {
-    final var expectedRules = List.of(
-        ElementRuleExpression.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.MANDATORY)
-            .expression(new RuleExpression(
-                String.format("exists($%s) || exists($%s)", HOGER.code(), VANSTER.code())))
-            .build(),
-        ElementRuleExpression.builder()
-            .id(QUESTION_HORSELHJALPMEDEL_V2_ID)
-            .type(ElementRuleType.SHOW)
-            .expression(new RuleExpression("$" + QUESTION_HORSELHJALPMEDEL_V2_FIELD_ID.value()))
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleExpression.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.MANDATORY)
+                .expression(
+                    new RuleExpression(
+                        String.format("exists($%s) || exists($%s)", HOGER.code(), VANSTER.code())))
+                .build(),
+            ElementRuleExpression.builder()
+                .id(QUESTION_HORSELHJALPMEDEL_V2_ID)
+                .type(ElementRuleType.SHOW)
+                .expression(new RuleExpression("$" + QUESTION_HORSELHJALPMEDEL_V2_FIELD_ID.value()))
+                .build());
 
     final var element = QuestionHorselhjalpmedelPositionV2.questionHorselhjalpmedelPositionV2();
 
@@ -86,11 +98,8 @@ class QuestionHorselhjalpmedelPositionV2Test {
 
   @Test
   void shouldIncludeValidations() {
-    final var expectedValidations = List.of(
-        ElementValidationCodeList.builder()
-            .mandatory(true)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationCodeList.builder().mandatory(true).build());
 
     final var element = QuestionHorselhjalpmedelPositionV2.questionHorselhjalpmedelPositionV2();
 
@@ -109,16 +118,12 @@ class QuestionHorselhjalpmedelPositionV2Test {
 
     @Test
     void shouldReturnTrueIfBooleanIsTrue() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("9.2"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(true)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("9.2"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
 
       final var element = QuestionHorselhjalpmedelPositionV2.questionHorselhjalpmedelPositionV2();
 
@@ -129,16 +134,12 @@ class QuestionHorselhjalpmedelPositionV2Test {
 
     @Test
     void shouldReturnFalseIfElementMissing() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("9.1"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(true)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("9.1"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
 
       final var element = QuestionHorselhjalpmedelPositionV2.questionHorselhjalpmedelPositionV2();
 
@@ -149,16 +150,12 @@ class QuestionHorselhjalpmedelPositionV2Test {
 
     @Test
     void shouldReturnFalseIfElementFalse() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("9.2"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(false)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("9.2"))
+                  .value(ElementValueBoolean.builder().value(false).build())
+                  .build());
 
       final var element = QuestionHorselhjalpmedelPositionV2.questionHorselhjalpmedelPositionV2();
 
@@ -168,4 +165,3 @@ class QuestionHorselhjalpmedelPositionV2Test {
     }
   }
 }
-

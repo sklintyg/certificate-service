@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service;
 
 import jakarta.transaction.Transactional;
@@ -19,47 +37,45 @@ import se.inera.intyg.certificateservice.domain.certificate.service.SignCertific
 public class SignCertificateWithoutSignatureService {
 
   private final ActionEvaluationFactory actionEvaluationFactory;
-  private final SignCertificateWithoutSignatureRequestValidator signCertificateWithoutSignatureRequestValidator;
+  private final SignCertificateWithoutSignatureRequestValidator
+      signCertificateWithoutSignatureRequestValidator;
   private final CertificateConverter certificateConverter;
   private final ResourceLinkConverter resourceLinkConverter;
-  private final SignCertificateWithoutSignatureDomainService signCertificateWithoutSignatureDomainService;
+  private final SignCertificateWithoutSignatureDomainService
+      signCertificateWithoutSignatureDomainService;
 
   @Transactional
-  public SignCertificateResponse sign(SignCertificateWithoutSignatureRequest signCertificateRequest,
-      String certificateId, Long version) {
+  public SignCertificateResponse sign(
+      SignCertificateWithoutSignatureRequest signCertificateRequest,
+      String certificateId,
+      Long version) {
     signCertificateWithoutSignatureRequestValidator.validate(
-        signCertificateRequest, certificateId, version
-    );
+        signCertificateRequest, certificateId, version);
 
-    final var actionEvaluation = actionEvaluationFactory.create(
-        signCertificateRequest.getUser(),
-        signCertificateRequest.getUnit(),
-        signCertificateRequest.getCareUnit(),
-        signCertificateRequest.getCareProvider()
-    );
+    final var actionEvaluation =
+        actionEvaluationFactory.create(
+            signCertificateRequest.getUser(),
+            signCertificateRequest.getUnit(),
+            signCertificateRequest.getCareUnit(),
+            signCertificateRequest.getCareProvider());
 
-    final var signedCertificate = signCertificateWithoutSignatureDomainService.sign(
-        new CertificateId(certificateId),
-        new Revision(version),
-        actionEvaluation
-    );
+    final var signedCertificate =
+        signCertificateWithoutSignatureDomainService.sign(
+            new CertificateId(certificateId), new Revision(version), actionEvaluation);
 
     return SignCertificateResponse.builder()
         .certificate(
             certificateConverter.convert(
                 signedCertificate,
                 signedCertificate.actionsInclude(Optional.of(actionEvaluation)).stream()
-                    .map(certificateAction ->
-                        resourceLinkConverter.convert(
-                            certificateAction,
-                            Optional.of(signedCertificate),
-                            actionEvaluation
-                        )
-                    )
+                    .map(
+                        certificateAction ->
+                            resourceLinkConverter.convert(
+                                certificateAction,
+                                Optional.of(signedCertificate),
+                                actionEvaluation))
                     .toList(),
-                actionEvaluation
-            )
-        )
+                actionEvaluation))
         .build();
   }
 }

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.v2;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.v2.QuestionHorselV2.QUESTION_HORSEL_V2_ID;
@@ -20,10 +38,8 @@ import se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.
 
 public class QuestionHorselhjalpmedelPositionV2 {
 
-  public static final ElementId QUESTION_HORSELHJALPMEDEL_POSITION_V2_ID = new ElementId(
-      "9.3");
-  public static final FieldId QUESTION_HORSELHJALPMEDEL_POSITION_V2_FIELD_ID = new FieldId(
-      "9.3");
+  public static final ElementId QUESTION_HORSELHJALPMEDEL_POSITION_V2_ID = new ElementId("9.3");
+  public static final FieldId QUESTION_HORSELHJALPMEDEL_POSITION_V2_FIELD_ID = new FieldId("9.3");
 
   private QuestionHorselhjalpmedelPositionV2() {
     throw new IllegalStateException("Utility class");
@@ -31,10 +47,11 @@ public class QuestionHorselhjalpmedelPositionV2 {
 
   public static ElementSpecification questionHorselhjalpmedelPositionV2(
       ElementSpecification... children) {
-    final var checkboxes = List.of(
-        CodeFactory.elementConfigurationCode(CodeSystemKvAnatomiskLokalisationHorapparat.HOGER),
-        CodeFactory.elementConfigurationCode(CodeSystemKvAnatomiskLokalisationHorapparat.VANSTER)
-    );
+    final var checkboxes =
+        List.of(
+            CodeFactory.elementConfigurationCode(CodeSystemKvAnatomiskLokalisationHorapparat.HOGER),
+            CodeFactory.elementConfigurationCode(
+                CodeSystemKvAnatomiskLokalisationHorapparat.VANSTER));
 
     return ElementSpecification.builder()
         .id(QUESTION_HORSELHJALPMEDEL_POSITION_V2_ID)
@@ -44,31 +61,18 @@ public class QuestionHorselhjalpmedelPositionV2 {
                 .name("Om personen behöver använda hörapparat, ange på vilket öra")
                 .elementLayout(ElementLayout.INLINE)
                 .list(checkboxes)
-                .build()
-        )
+                .build())
         .rules(
             List.of(
                 CertificateElementRuleFactory.mandatoryOrExist(
                     QUESTION_HORSELHJALPMEDEL_POSITION_V2_ID,
-                    checkboxes.stream().map(ElementConfigurationCode::id).toList()
-                ),
+                    checkboxes.stream().map(ElementConfigurationCode::id).toList()),
                 CertificateElementRuleFactory.show(
-                    QUESTION_HORSELHJALPMEDEL_V2_ID,
-                    QUESTION_HORSELHJALPMEDEL_V2_FIELD_ID
-                )
-            )
-        )
-        .validations(
-            List.of(
-                ElementValidationCodeList.builder()
-                    .mandatory(true)
-                    .build()
-            )
-        )
+                    QUESTION_HORSELHJALPMEDEL_V2_ID, QUESTION_HORSELHJALPMEDEL_V2_FIELD_ID)))
+        .validations(List.of(ElementValidationCodeList.builder().mandatory(true).build()))
         .shouldValidate(ElementDataPredicateFactory.valueBoolean(QUESTION_HORSELHJALPMEDEL_V2_ID))
         .mapping(new ElementMapping(QUESTION_HORSEL_V2_ID, null))
         .children(List.of(children))
         .build();
   }
 }
-

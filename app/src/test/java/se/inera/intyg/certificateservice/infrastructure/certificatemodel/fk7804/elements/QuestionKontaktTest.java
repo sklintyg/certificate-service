@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7804.elements;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -27,15 +45,16 @@ class QuestionKontaktTest {
 
   @Test
   void shouldIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationCheckboxBoolean.builder()
-        .id(QUESTION_KONTAKT_FIELD_ID)
-        .name("Kontakt med Försäkringskassan")
-        .description(
-            "Försäkringskassans handläggare tar kontakt med dig när underlagen har kommit in och handläggningen kan påbörjas.")
-        .label("Jag önskar att Försäkringskassan kontaktar mig")
-        .selectedText("Ja")
-        .unselectedText("Ej angivet")
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationCheckboxBoolean.builder()
+            .id(QUESTION_KONTAKT_FIELD_ID)
+            .name("Kontakt med Försäkringskassan")
+            .description(
+                "Försäkringskassans handläggare tar kontakt med dig när underlagen har kommit in och handläggningen kan påbörjas.")
+            .label("Jag önskar att Försäkringskassan kontaktar mig")
+            .selectedText("Ja")
+            .unselectedText("Ej angivet")
+            .build();
 
     final var element = QuestionKontakt.questionKontakt();
 
@@ -45,20 +64,18 @@ class QuestionKontaktTest {
   @Test
   void shouldIncludeValidation() {
     final var element = QuestionKontakt.questionKontakt();
-    final var expectedValidations = List.of(
-        ElementValidationBoolean.builder()
-            .mandatory(false)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationBoolean.builder().mandatory(false).build());
     assertEquals(expectedValidations, element.validations());
   }
 
   @Test
   void shouldHaveCorrectPdfConfiguration() {
     final var element = QuestionKontakt.questionKontakt();
-    final var expected = PdfConfigurationBoolean.builder()
-        .checkboxTrue(new PdfFieldId("form1[0].Sida4[0].ksr_ForsakringskassanKontakar[0]"))
-        .build();
+    final var expected =
+        PdfConfigurationBoolean.builder()
+            .checkboxTrue(new PdfFieldId("form1[0].Sida4[0].ksr_ForsakringskassanKontakar[0]"))
+            .build();
     assertEquals(expected, element.pdfConfiguration());
   }
 
@@ -69,23 +86,23 @@ class QuestionKontaktTest {
     void shouldAlwaysReturnTrue() {
       final var element = QuestionKontakt.questionKontakt();
       final var shouldValidate = element.elementSpecification(QUESTION_KONTAKT_ID).shouldValidate();
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("26"))
-              .value(ElementValueBoolean.builder().value(true).build())
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("26"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
       assertTrue(shouldValidate.test(elementData));
     }
 
     @Test
     void shouldReturnTrueIfBooleanIsFalse() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("27"))
-              .value(ElementValueBoolean.builder().value(false).build())
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("27"))
+                  .value(ElementValueBoolean.builder().value(false).build())
+                  .build());
       final var element = QuestionKontakt.questionKontakt();
       final var shouldValidate = element.elementSpecification(QUESTION_KONTAKT_ID).shouldValidate();
       assertTrue(shouldValidate.test(elementData));
@@ -93,12 +110,12 @@ class QuestionKontaktTest {
 
     @Test
     void shouldReturnTrueIfElementMissing() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("8.1"))
-              .value(ElementValueBoolean.builder().value(true).build())
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("8.1"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
       final var element = QuestionKontakt.questionKontakt();
       final var shouldValidate = element.elementSpecification(QUESTION_KONTAKT_ID).shouldValidate();
       assertTrue(shouldValidate.test(elementData));
@@ -106,12 +123,12 @@ class QuestionKontaktTest {
 
     @Test
     void shouldReturnFalseIfBooleanIsTrue() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("27"))
-              .value(ElementValueBoolean.builder().value(true).build())
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("27"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
       final var element = QuestionKontakt.questionKontakt();
       final var shouldValidate = element.elementSpecification(QUESTION_KONTAKT_ID).shouldValidate();
       assertFalse(shouldValidate.test(elementData));

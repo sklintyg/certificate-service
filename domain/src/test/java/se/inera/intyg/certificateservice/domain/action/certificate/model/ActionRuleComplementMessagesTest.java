@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.action.certificate.model;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -19,101 +37,91 @@ class ActionRuleComplementMessagesTest {
 
   @Test
   void shouldReturnTrueIfMessageIsComplementAndNotAnsweredOrHandled() {
-    final var result = actionRule.evaluate(
-        Optional.of(
-            MedicalCertificate.builder()
-                .messages(List.of(
-                    Message.builder()
-                        .type(MessageType.COMPLEMENT)
-                        .status(MessageStatus.SENT)
-                        .build()
-                ))
-                .build()
-        ),
-        Optional.empty()
-    );
+    final var result =
+        actionRule.evaluate(
+            Optional.of(
+                MedicalCertificate.builder()
+                    .messages(
+                        List.of(
+                            Message.builder()
+                                .type(MessageType.COMPLEMENT)
+                                .status(MessageStatus.SENT)
+                                .build()))
+                    .build()),
+            Optional.empty());
 
     assertTrue(result);
   }
 
   @Test
   void shouldReturnFalseIfNoComplement() {
-    final var result = actionRule.evaluate(
-        Optional.of(
-            MedicalCertificate.builder()
-                .messages(List.of(
-                    Message.builder()
-                        .type(MessageType.REMINDER)
-                        .status(MessageStatus.SENT)
-                        .build()
-                )).build()
-        ),
-        Optional.empty()
-    );
+    final var result =
+        actionRule.evaluate(
+            Optional.of(
+                MedicalCertificate.builder()
+                    .messages(
+                        List.of(
+                            Message.builder()
+                                .type(MessageType.REMINDER)
+                                .status(MessageStatus.SENT)
+                                .build()))
+                    .build()),
+            Optional.empty());
 
     assertFalse(result);
   }
 
   @Test
   void shouldReturnFalseIfNoMessages() {
-    final var result = actionRule.evaluate(
-        Optional.of(
-            MedicalCertificate.builder()
-                .messages(Collections.emptyList())
-                .build()
-        ),
-        Optional.empty()
-    );
+    final var result =
+        actionRule.evaluate(
+            Optional.of(MedicalCertificate.builder().messages(Collections.emptyList()).build()),
+            Optional.empty());
 
     assertFalse(result);
   }
 
   @Test
   void shouldReturnFalseIfNullMessages() {
-    final var result = actionRule.evaluate(
-        Optional.of(
-            MedicalCertificate.builder()
-                .build()
-        ),
-        Optional.empty()
-    );
+    final var result =
+        actionRule.evaluate(Optional.of(MedicalCertificate.builder().build()), Optional.empty());
 
     assertFalse(result);
   }
 
   @Test
   void shouldReturnFalseIfHandledComplement() {
-    final var result = actionRule.evaluate(
-        Optional.of(
-            MedicalCertificate.builder()
-                .messages(List.of(
-                    Message.builder()
-                        .type(MessageType.COMPLEMENT)
-                        .status(MessageStatus.HANDLED)
-                        .build()
-                )).build()
-        ),
-        Optional.empty()
-    );
+    final var result =
+        actionRule.evaluate(
+            Optional.of(
+                MedicalCertificate.builder()
+                    .messages(
+                        List.of(
+                            Message.builder()
+                                .type(MessageType.COMPLEMENT)
+                                .status(MessageStatus.HANDLED)
+                                .build()))
+                    .build()),
+            Optional.empty());
 
     assertFalse(result);
   }
 
   @Test
   void shouldReturnFalseIfAnsweredComplement() {
-    final var result = actionRule.evaluate(
-        Optional.of(
-            MedicalCertificate.builder()
-                .messages(List.of(
-                    Message.builder()
-                        .type(MessageType.COMPLEMENT)
-                        .status(MessageStatus.SENT)
-                        .answer(Answer.builder().build())
-                        .build()
-                )).build()
-        ),
-        Optional.empty()
-    );
+    final var result =
+        actionRule.evaluate(
+            Optional.of(
+                MedicalCertificate.builder()
+                    .messages(
+                        List.of(
+                            Message.builder()
+                                .type(MessageType.COMPLEMENT)
+                                .status(MessageStatus.SENT)
+                                .answer(Answer.builder().build())
+                                .build()))
+                    .build()),
+            Optional.empty());
 
     assertFalse(result);
   }

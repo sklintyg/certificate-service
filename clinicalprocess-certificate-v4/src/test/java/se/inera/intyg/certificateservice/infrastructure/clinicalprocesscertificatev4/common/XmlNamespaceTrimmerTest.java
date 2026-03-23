@@ -1,5 +1,22 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.common;
-
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -15,7 +32,8 @@ import org.junit.jupiter.api.Test;
 
 class XmlNamespaceTrimmerTest {
 
-  private static final String INPUT_XML = """
+  private static final String INPUT_XML =
+      """
       <?xml version="1.0" encoding="UTF-8"?>
       <ns4:Root xmlns:ns4="https://example.com/root" xmlns:ns5="https://example.com/unusedRoot">
         <ns4:Child xmlns:ns6="https://example.com/usedChild" xmlns:ns7="https://example.com/unusedChild">
@@ -53,11 +71,12 @@ class XmlNamespaceTrimmerTest {
   void shouldReturnWellFormedXml() {
     final var trimmedXml = XmlNamespaceTrimmer.trim(INPUT_XML);
 
-    assertDoesNotThrow(() -> {
-      final var factory = DocumentBuilderFactory.newInstance();
-      final var builder = factory.newDocumentBuilder();
-      builder.parse(new java.io.ByteArrayInputStream(trimmedXml.getBytes()));
-    });
+    assertDoesNotThrow(
+        () -> {
+          final var factory = DocumentBuilderFactory.newInstance();
+          final var builder = factory.newDocumentBuilder();
+          builder.parse(new java.io.ByteArrayInputStream(trimmedXml.getBytes()));
+        });
   }
 
   @Test
@@ -73,22 +92,24 @@ class XmlNamespaceTrimmerTest {
     final int iterations = 10;
     final var latch = new CountDownLatch(threadCount);
     final var errors = new ConcurrentLinkedQueue<String>();
-    final var excpectedXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><ns4:Root xmlns:ns4=\"https://example.com/root\"><ns4:Child xmlns:ns6=\"https://example.com/usedChild\"><ns4:Element>Value</ns4:Element><ns6:SubElement>SubValue</ns6:SubElement></ns4:Child></ns4:Root>";
+    final var excpectedXml =
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?><ns4:Root xmlns:ns4=\"https://example.com/root\"><ns4:Child xmlns:ns6=\"https://example.com/usedChild\"><ns4:Element>Value</ns4:Element><ns6:SubElement>SubValue</ns6:SubElement></ns4:Child></ns4:Root>";
 
     try (final var executorService = Executors.newFixedThreadPool(threadCount)) {
       for (int i = 0; i < threadCount; i++) {
-        executorService.submit(() -> {
-          try {
-            for (int j = 0; j < iterations; j++) {
-              final var result = XmlNamespaceTrimmer.trim(INPUT_XML);
-              if (!result.equals(excpectedXml)) {
-                errors.add("Inconsistent result detected");
+        executorService.submit(
+            () -> {
+              try {
+                for (int j = 0; j < iterations; j++) {
+                  final var result = XmlNamespaceTrimmer.trim(INPUT_XML);
+                  if (!result.equals(excpectedXml)) {
+                    errors.add("Inconsistent result detected");
+                  }
+                }
+              } finally {
+                latch.countDown();
               }
-            }
-          } finally {
-            latch.countDown();
-          }
-        });
+            });
       }
       latch.await();
     }

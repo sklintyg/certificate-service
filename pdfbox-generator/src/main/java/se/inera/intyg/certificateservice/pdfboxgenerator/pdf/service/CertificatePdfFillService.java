@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.pdfboxgenerator.pdf.service;
 
 import java.io.IOException;
@@ -21,7 +39,6 @@ import se.inera.intyg.certificateservice.pdfboxgenerator.pdf.PdfField;
 import se.inera.intyg.certificateservice.pdfboxgenerator.pdf.TextFieldAppearance;
 import se.inera.intyg.certificateservice.pdfboxgenerator.pdf.text.PdfAdditionalInformationTextGenerator;
 
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -33,7 +50,6 @@ public class CertificatePdfFillService {
   private final PdfAdditionalInformationTextGenerator pdfAdditionalInformationTextGenerator;
   private final PdfOverflowPageFillService pdfOverflowPageFillService;
 
-
   public PDDocument fillDocument(CertificatePdfContext context) {
     try {
       setFields(context);
@@ -44,8 +60,8 @@ public class CertificatePdfFillService {
     }
   }
 
-  private static PdfTagIndex getSignatureTagIndex(TemplatePdfSpecification templatePdfSpecification,
-      boolean includeAddress) {
+  private static PdfTagIndex getSignatureTagIndex(
+      TemplatePdfSpecification templatePdfSpecification, boolean includeAddress) {
     final var signature = templatePdfSpecification.signature();
 
     return includeAddress
@@ -65,10 +81,9 @@ public class CertificatePdfFillService {
     final var document = context.getDocument();
     final var templatePdfSpecification = context.getTemplatePdfSpecification();
 
-    context.getPdfFields()
-        .addAll(
-            context.sanitizePdfFields(pdfFieldGeneratorService.generatePdfFields(context))
-        );
+    context
+        .getPdfFields()
+        .addAll(context.sanitizePdfFields(pdfFieldGeneratorService.generatePdfFields(context)));
 
     final var appendedFields = context.getPdfFields(PdfField::getAppend);
 
@@ -77,12 +92,10 @@ public class CertificatePdfFillService {
     }
 
     pdfOverflowPageFillService.setFieldValuesAppendix(context, appendedFields);
-    setFieldValues(document, context.getPdfFields(field -> !field.getAppend())
-    );
+    setFieldValues(document, context.getPdfFields(field -> !field.getAppend()));
   }
 
-  private void addTexts(CertificatePdfContext context)
-      throws IOException {
+  private void addTexts(CertificatePdfContext context) throws IOException {
     final var document = context.getDocument();
 
     setDraftWatermark(context);
@@ -100,71 +113,54 @@ public class CertificatePdfFillService {
       throws IOException {
     if (!context.getTemplatePdfSpecification().hasPageNbr()) {
       pdfAdditionalInformationTextGenerator.setPageNumber(
-          context.getDocument(),
-          pageIndex,
-          nbrOfPages,
-          context.nextMcid()
-      );
+          context.getDocument(), pageIndex, nbrOfPages, context.nextMcid());
     }
   }
 
   private void setFieldValues(PDDocument document, List<PdfField> fields) {
     final var acroForm = document.getDocumentCatalog().getAcroForm();
-    fields
-        .stream()
+    fields.stream()
         .filter(Objects::nonNull)
-        .forEach(field -> {
-          try {
-            setFieldValue(acroForm, field);
-          } catch (IOException e) {
-            throw new IllegalStateException(e);
-          }
-        });
+        .forEach(
+            field -> {
+              try {
+                setFieldValue(acroForm, field);
+              } catch (IOException e) {
+                throw new IllegalStateException(e);
+              }
+            });
   }
 
-  private void setSentText(CertificatePdfContext context)
-      throws IOException {
+  private void setSentText(CertificatePdfContext context) throws IOException {
     final var certificate = context.getCertificate();
     final var document = context.getDocument();
 
     if (certificate.sent() != null && certificate.sent().sentAt() != null) {
-      pdfAdditionalInformationTextGenerator.addSentText(document, certificate,
-          context.nextMcid()
-      );
+      pdfAdditionalInformationTextGenerator.addSentText(document, certificate, context.nextMcid());
       if (Boolean.TRUE.equals(certificate.certificateModel().availableForCitizen())) {
-        pdfAdditionalInformationTextGenerator.addSentVisibilityText(document,
-            context.nextMcid()
-        );
+        pdfAdditionalInformationTextGenerator.addSentVisibilityText(document, context.nextMcid());
       }
     }
   }
 
-  private void setMarginText(CertificatePdfContext context, int pageIndex)
-      throws IOException {
+  private void setMarginText(CertificatePdfContext context, int pageIndex) throws IOException {
     final var certificate = context.getCertificate();
     final var document = context.getDocument();
     final var additionalInfoText = context.getAdditionalInfoText();
 
     if (certificate.status() == Status.SIGNED) {
       pdfAdditionalInformationTextGenerator.addMarginAdditionalInfoText(
-          document,
-          certificate.id().id(),
-          additionalInfoText,
-          context.nextMcid(),
-          pageIndex
-      );
+          document, certificate.id().id(), additionalInfoText, context.nextMcid(), pageIndex);
     }
   }
 
-  private void setSignatureText(CertificatePdfContext context)
-      throws IOException {
+  private void setSignatureText(CertificatePdfContext context) throws IOException {
     final var certificate = context.getCertificate();
     final var document = context.getDocument();
     final var isCitizenFormat = context.isCitizenFormat();
     final var templatePdfSpecification = context.getTemplatePdfSpecification();
     final var acroForm = document.getDocumentCatalog().getAcroForm();
-    final var pageIndex = templatePdfSpecification.signature()
-        .signaturePageIndex();
+    final var pageIndex = templatePdfSpecification.signature().signaturePageIndex();
 
     if (certificate.status() == Status.SIGNED) {
       pdfAdditionalInformationTextGenerator.addDigitalSignatureText(
@@ -172,15 +168,14 @@ public class CertificatePdfFillService {
           getSignatureOffsetX(acroForm, templatePdfSpecification),
           getSignatureOffsetY(acroForm, templatePdfSpecification),
           context.nextMcid(),
-          getSignatureTagIndex(templatePdfSpecification,
-              includeAddress(certificate, isCitizenFormat)).value(),
-          pageIndex
-      );
+          getSignatureTagIndex(
+                  templatePdfSpecification, includeAddress(certificate, isCitizenFormat))
+              .value(),
+          pageIndex);
     }
   }
 
-  private void setDraftWatermark(CertificatePdfContext context)
-      throws IOException {
+  private void setDraftWatermark(CertificatePdfContext context) throws IOException {
     final var certificate = context.getCertificate();
     final var document = context.getDocument();
 
@@ -189,27 +184,26 @@ public class CertificatePdfFillService {
     }
   }
 
-  private float getSignatureOffsetY(PDAcroForm acroForm,
-      TemplatePdfSpecification templatePdfSpecification) {
+  private float getSignatureOffsetY(
+      PDAcroForm acroForm, TemplatePdfSpecification templatePdfSpecification) {
     final var rectangle = getSignedDateRectangle(acroForm, templatePdfSpecification);
     return rectangle.getLowerLeftY() + SIGNATURE_Y_PADDING;
   }
 
-  private float getSignatureOffsetX(PDAcroForm acroForm,
-      TemplatePdfSpecification templatePdfSpecification) {
+  private float getSignatureOffsetX(
+      PDAcroForm acroForm, TemplatePdfSpecification templatePdfSpecification) {
     final var rectangle = getSignedDateRectangle(acroForm, templatePdfSpecification);
     return rectangle.getUpperRightX() + SIGNATURE_X_PADDING;
   }
 
-  private static PDRectangle getSignedDateRectangle(PDAcroForm acroForm,
-      TemplatePdfSpecification templatePdfSpecification) {
-    final var signedDate = acroForm.getField(
-        templatePdfSpecification.signature().signedDateFieldId().id());
+  private static PDRectangle getSignedDateRectangle(
+      PDAcroForm acroForm, TemplatePdfSpecification templatePdfSpecification) {
+    final var signedDate =
+        acroForm.getField(templatePdfSpecification.signature().signedDateFieldId().id());
     return signedDate.getWidgets().getFirst().getRectangle();
   }
 
-  private void setFieldValue(PDAcroForm acroForm, PdfField field)
-      throws IOException {
+  private void setFieldValue(PDAcroForm acroForm, PdfField field) throws IOException {
     if (field.getValue() != null) {
       final var extractedField = acroForm.getField(field.getId());
       validateField(field.getId(), extractedField);
@@ -229,12 +223,10 @@ public class CertificatePdfFillService {
     }
   }
 
-
   private static void validateField(String fieldId, PDField field) {
     if (field == null) {
       throw new IllegalStateException(
-          String.format("Field is null when getting field of id '%s'", fieldId)
-      );
+          String.format("Field is null when getting field of id '%s'", fieldId));
     }
   }
 }

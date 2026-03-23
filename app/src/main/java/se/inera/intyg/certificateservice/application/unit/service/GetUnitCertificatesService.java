@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.unit.service;
 
 import java.util.Optional;
@@ -25,41 +43,38 @@ public class GetUnitCertificatesService {
   public GetUnitCertificatesResponse get(GetUnitCertificatesRequest getUnitCertificatesRequest) {
     getUnitCertificatesRequestValidator.validate(getUnitCertificatesRequest);
 
-    final var actionEvaluation = actionEvaluationFactory.create(
-        getUnitCertificatesRequest.getPatient(),
-        getUnitCertificatesRequest.getUser(),
-        getUnitCertificatesRequest.getUnit(),
-        getUnitCertificatesRequest.getCareUnit(),
-        getUnitCertificatesRequest.getCareProvider()
-    );
+    final var actionEvaluation =
+        actionEvaluationFactory.create(
+            getUnitCertificatesRequest.getPatient(),
+            getUnitCertificatesRequest.getUser(),
+            getUnitCertificatesRequest.getUnit(),
+            getUnitCertificatesRequest.getCareUnit(),
+            getUnitCertificatesRequest.getCareProvider());
 
-    final var certificatesRequest = CertificatesRequestFactory.create(
-        getUnitCertificatesRequest.getCertificatesQueryCriteria()
-    );
+    final var certificatesRequest =
+        CertificatesRequestFactory.create(
+            getUnitCertificatesRequest.getCertificatesQueryCriteria());
 
-    final var certificates = getUnitCertificatesDomainService.get(
-        certificatesRequest,
-        actionEvaluation
-    );
+    final var certificates =
+        getUnitCertificatesDomainService.get(certificatesRequest, actionEvaluation);
 
     return GetUnitCertificatesResponse.builder()
-        .certificates(certificates.stream()
-            .map(certificate -> certificateConverter.convert(
-                    certificate,
-                    certificate.actionsInclude(Optional.of(actionEvaluation)).stream()
-                        .map(certificateAction ->
-                            resourceLinkConverter.convert(
-                                certificateAction,
-                                Optional.of(certificate),
-                                actionEvaluation
-                            )
-                        )
-                        .toList(),
-                    actionEvaluation
-                )
-            )
-            .toList()
-        )
+        .certificates(
+            certificates.stream()
+                .map(
+                    certificate ->
+                        certificateConverter.convert(
+                            certificate,
+                            certificate.actionsInclude(Optional.of(actionEvaluation)).stream()
+                                .map(
+                                    certificateAction ->
+                                        resourceLinkConverter.convert(
+                                            certificateAction,
+                                            Optional.of(certificate),
+                                            actionEvaluation))
+                                .toList(),
+                            actionEvaluation))
+                .toList())
         .build();
   }
 }

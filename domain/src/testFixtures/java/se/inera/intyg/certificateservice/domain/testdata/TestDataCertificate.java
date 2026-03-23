@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.testdata;
 
 import static se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementConfigurationUnitContactInformation.UNIT_CONTACT_INFORMATION;
@@ -70,41 +88,38 @@ public class TestDataCertificate {
   public static final ExternalReference EXTERNAL_REFERENCE = new ExternalReference(EXTERNAL_REF);
   public static final CertificateMetaData CERTIFICATE_META_DATA = metaDataBuilder().build();
 
-  private TestDataCertificate() {
-
-  }
+  private TestDataCertificate() {}
 
   public static final CertificateId CERTIFICATE_ID = new CertificateId("CERTIFICATE_ID");
-  public static final CertificateId PARENT_CERTIFICATE_ID = new CertificateId(
-      "PARENT_CERTIFICATE_ID");
+  public static final CertificateId PARENT_CERTIFICATE_ID =
+      new CertificateId("PARENT_CERTIFICATE_ID");
   public static final Revision REVISION = new Revision(0L);
   public static final Xml XML = new Xml("xml");
-  public static final Recipient RECIPIENT = new Recipient(
-      new RecipientId("recipientId"),
-      "Recipient",
-      "LOGICAL_ADDRESS"
-  );
-  public static final List<CertificateMessageType> CERTIFICATE_MESSAGE_TYPES = List.of(
-      CertificateMessageType.builder()
-          .type(MessageType.CONTACT)
-          .subject(new Subject(SUBJECT))
-          .build()
-  );
-  public static final Sent SENT = Sent.builder()
-      .recipient(RECIPIENT)
-      .sentAt(LocalDateTime.now(ZoneId.systemDefault()))
-      .sentBy(AJLA_DOKTOR)
-      .build();
+  public static final Recipient RECIPIENT =
+      new Recipient(new RecipientId("recipientId"), "Recipient", "LOGICAL_ADDRESS");
+  public static final List<CertificateMessageType> CERTIFICATE_MESSAGE_TYPES =
+      List.of(
+          CertificateMessageType.builder()
+              .type(MessageType.CONTACT)
+              .subject(new Subject(SUBJECT))
+              .build());
+  public static final Sent SENT =
+      Sent.builder()
+          .recipient(RECIPIENT)
+          .sentAt(LocalDateTime.now(ZoneId.systemDefault()))
+          .sentBy(AJLA_DOKTOR)
+          .build();
 
   private static final String REASON = "INCORRECT_PATIENT";
   private static final String MESSAGE = "REVOKED_MESSAGE";
-  public static final RevokedInformation REVOKED_INFORMATION = new RevokedInformation(REASON,
-      MESSAGE);
-  public static final Revoked REVOKED = Revoked.builder()
-      .revokedBy(AJLA_DOKTOR)
-      .revokedAt(LocalDateTime.now(ZoneId.systemDefault()))
-      .revokedInformation(REVOKED_INFORMATION)
-      .build();
+  public static final RevokedInformation REVOKED_INFORMATION =
+      new RevokedInformation(REASON, MESSAGE);
+  public static final Revoked REVOKED =
+      Revoked.builder()
+          .revokedBy(AJLA_DOKTOR)
+          .revokedAt(LocalDateTime.now(ZoneId.systemDefault()))
+          .revokedInformation(REVOKED_INFORMATION)
+          .build();
   public static final MedicalCertificate FK7210_CERTIFICATE = fk7210CertificateBuilder().build();
   public static final Certificate FK3226_CERTIFICATE = fk3226CertificateBuilder().build();
 
@@ -127,8 +142,8 @@ public class TestDataCertificate {
                         ElementValueDate.builder()
                             .dateId(new FieldId("54.1"))
                             .date(LocalDate.now())
-                            .build()
-                    ).build(),
+                            .build())
+                    .build(),
                 ElementData.builder()
                     .id(UNIT_CONTACT_INFORMATION)
                     .value(
@@ -137,11 +152,8 @@ public class TestDataCertificate {
                             .city(ALFA_ALLERGIMOTTAGNINGEN_CITY)
                             .zipCode(ALFA_ALLERGIMOTTAGNINGEN_ZIP_CODE)
                             .phoneNumber(ALFA_ALLERGIMOTTAGNINGEN_PHONENUMBER)
-                            .build()
-                    )
-                    .build()
-            )
-        )
+                            .build())
+                    .build()))
         .certificateMetaData(CERTIFICATE_META_DATA);
   }
 
@@ -167,11 +179,8 @@ public class TestDataCertificate {
                                     ElementValueDate.builder()
                                         .dateId(new FieldId("undersokningAvPatienten"))
                                         .date(LocalDate.now())
-                                        .build()
-                                )
-                            )
-                            .build()
-                    )
+                                        .build()))
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("52"))
@@ -179,8 +188,7 @@ public class TestDataCertificate {
                         ElementValueCode.builder()
                             .codeId(new FieldId("ENDAST_PALLIATIV"))
                             .code("ENDAST_PALLIATIV")
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("52.2"))
@@ -188,8 +196,7 @@ public class TestDataCertificate {
                         ElementValueDate.builder()
                             .dateId(new FieldId("52.2"))
                             .date(LocalDate.now())
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("53"))
@@ -197,8 +204,7 @@ public class TestDataCertificate {
                         ElementValueBoolean.builder()
                             .booleanId(new FieldId("53.1"))
                             .value(true)
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("58"))
@@ -210,17 +216,11 @@ public class TestDataCertificate {
                                         .code("A013")
                                         .description("Paratyfoidfeber C")
                                         .terminology("ICD_10_SE")
-                                        .build()
-                                )
-                            )
-                            .build()
-                    )
-                    .build()
-            )
-        )
+                                        .build()))
+                            .build())
+                    .build()))
         .certificateMetaData(CERTIFICATE_META_DATA);
   }
-
 
   public static final Certificate FK7472_CERTIFICATE = fk7472CertificateBuilder().build();
 
@@ -238,11 +238,7 @@ public class TestDataCertificate {
                 ElementData.builder()
                     .id(new ElementId("2"))
                     .value(
-                        ElementValueText.builder()
-                            .textId(new FieldId("2.1"))
-                            .text("text")
-                            .build()
-                    )
+                        ElementValueText.builder().textId(new FieldId("2.1")).text("text").build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("3"))
@@ -254,9 +250,7 @@ public class TestDataCertificate {
                                         .dateRangeId(new FieldId("EN_ATTONDEL"))
                                         .from(LocalDate.now())
                                         .to(LocalDate.now().plusDays(1))
-                                        .build()
-                                )
-                            )
+                                        .build()))
                             .dateRangeListId(new FieldId("3.2"))
                             .build())
                     .build(),
@@ -268,11 +262,8 @@ public class TestDataCertificate {
                             .city(ALFA_ALLERGIMOTTAGNINGEN_CITY)
                             .zipCode(ALFA_ALLERGIMOTTAGNINGEN_ZIP_CODE)
                             .phoneNumber(ALFA_ALLERGIMOTTAGNINGEN_PHONENUMBER)
-                            .build()
-                    )
-                    .build()
-            )
-        )
+                            .build())
+                    .build()))
         .certificateMetaData(
             CertificateMetaData.builder()
                 .creator(ALF_DOKTOR)
@@ -281,8 +272,7 @@ public class TestDataCertificate {
                 .issuingUnit(ALFA_ALLERGIMOTTAGNINGEN)
                 .careUnit(ALFA_MEDICINCENTRUM)
                 .careProvider(ALFA_REGIONEN)
-                .build()
-        );
+                .build());
   }
 
   public static MedicalCertificate.MedicalCertificateBuilder fk7809CertificateBuilder() {
@@ -307,11 +297,8 @@ public class TestDataCertificate {
                                     ElementValueDate.builder()
                                         .dateId(new FieldId("undersokningAvPatienten"))
                                         .date(LocalDate.now())
-                                        .build()
-                                )
-                            )
-                            .build()
-                    )
+                                        .build()))
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("3"))
@@ -319,8 +306,7 @@ public class TestDataCertificate {
                         ElementValueBoolean.builder()
                             .booleanId(new FieldId("3.1"))
                             .value(true)
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("4"))
@@ -333,28 +319,25 @@ public class TestDataCertificate {
                                         .id(new FieldId("medicalInvestigation1"))
                                         .informationSource(
                                             ElementValueText.builder()
-                                                .textId(new FieldId(
-                                                    "medicalInvestigation1_INFORMATION_SOURCE"))
+                                                .textId(
+                                                    new FieldId(
+                                                        "medicalInvestigation1_INFORMATION_SOURCE"))
                                                 .text("Example text")
-                                                .build()
-                                        )
+                                                .build())
                                         .investigationType(
                                             ElementValueCode.builder()
-                                                .codeId(new FieldId(
-                                                    "medicalInvestigation1_INVESTIGATION_TYPE"))
+                                                .codeId(
+                                                    new FieldId(
+                                                        "medicalInvestigation1_INVESTIGATION_TYPE"))
                                                 .code("LOGOPED")
-                                                .build()
-                                        )
+                                                .build())
                                         .date(
                                             ElementValueDate.builder()
                                                 .dateId(new FieldId("medicalInvestigation1_DATE"))
                                                 .date(LocalDate.now())
                                                 .build())
-                                        .build()
-                                )
-                            )
-                            .build()
-                    )
+                                        .build()))
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("58"))
@@ -366,41 +349,24 @@ public class TestDataCertificate {
                                         .code("A013")
                                         .description("Paratyfoidfeber C")
                                         .terminology("ICD_10_SE")
-                                        .build()
-                                )
-                            )
-                            .build()
-                    )
+                                        .build()))
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("5"))
                     .value(
-                        ElementValueText.builder()
-                            .textId(new FieldId("5.1"))
-                            .text("TEXT")
-                            .build()
-                    )
+                        ElementValueText.builder().textId(new FieldId("5.1")).text("TEXT").build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("9"))
                     .value(
-                        ElementValueText.builder()
-                            .textId(new FieldId("9.1"))
-                            .text("TEXT")
-                            .build()
-                    )
+                        ElementValueText.builder().textId(new FieldId("9.1")).text("TEXT").build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("51"))
                     .value(
-                        ElementValueText.builder()
-                            .textId(new FieldId("51.1"))
-                            .text("TEXT")
-                            .build()
-                    )
-                    .build()
-            )
-        )
+                        ElementValueText.builder().textId(new FieldId("51.1")).text("TEXT").build())
+                    .build()))
         .certificateMetaData(CERTIFICATE_META_DATA);
   }
 
@@ -428,19 +394,12 @@ public class TestDataCertificate {
                                     ElementValueDate.builder()
                                         .dateId(new FieldId("fysisktMote"))
                                         .date(LocalDate.now())
-                                        .build()
-                                )
-                            )
-                            .build()
-                    )
+                                        .build()))
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("1.3"))
-                    .value(
-                        ElementValueText.builder()
-                            .textId(new FieldId("1.3"))
-                            .build()
-                    )
+                    .value(ElementValueText.builder().textId(new FieldId("1.3")).build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("58"))
@@ -452,11 +411,8 @@ public class TestDataCertificate {
                                         .code("A013")
                                         .description("Paratyfoidfeber C")
                                         .terminology("ICD_10_SE")
-                                        .build()
-                                )
-                            )
-                            .build()
-                    )
+                                        .build()))
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("55"))
@@ -464,8 +420,7 @@ public class TestDataCertificate {
                         ElementValueText.builder()
                             .textId(new FieldId("55.1"))
                             .text("Barnets symtom")
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("59"))
@@ -473,8 +428,7 @@ public class TestDataCertificate {
                         ElementValueText.builder()
                             .textId(new FieldId("59.1"))
                             .text("Barnets aktuella hälsotillstånd")
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("62"))
@@ -482,8 +436,7 @@ public class TestDataCertificate {
                         ElementValueText.builder()
                             .textId(new FieldId("62.5"))
                             .text("Stort behov av vård och tillsyn")
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("62.6"))
@@ -492,8 +445,7 @@ public class TestDataCertificate {
                             .id(new FieldId("62.6"))
                             .fromDate(LocalDate.now())
                             .toDate(LocalDate.now().plusDays(14))
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("62.1"))
@@ -501,8 +453,7 @@ public class TestDataCertificate {
                         ElementValueBoolean.builder()
                             .booleanId(new FieldId("62.1"))
                             .value(true)
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("62.2"))
@@ -511,19 +462,12 @@ public class TestDataCertificate {
                             .id(new FieldId("62.2"))
                             .fromDate(LocalDate.now())
                             .toDate(LocalDate.now().plusDays(14))
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("19"))
-                    .value(
-                        ElementValueText.builder()
-                            .textId(new FieldId("19.1"))
-                            .build()
-                    )
-                    .build()
-            )
-        )
+                    .value(ElementValueText.builder().textId(new FieldId("19.1")).build())
+                    .build()))
         .certificateMetaData(CERTIFICATE_META_DATA);
   }
 
@@ -549,11 +493,8 @@ public class TestDataCertificate {
                                     ElementValueDate.builder()
                                         .dateId(new FieldId("fysisktMote"))
                                         .date(LocalDate.now())
-                                        .build()
-                                )
-                            )
-                            .build()
-                    )
+                                        .build()))
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(UNIT_CONTACT_INFORMATION)
@@ -563,8 +504,7 @@ public class TestDataCertificate {
                             .city(ALFA_ALLERGIMOTTAGNINGEN_CITY)
                             .zipCode(ALFA_ALLERGIMOTTAGNINGEN_ZIP_CODE)
                             .phoneNumber(ALFA_ALLERGIMOTTAGNINGEN_PHONENUMBER)
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("58"))
@@ -576,11 +516,8 @@ public class TestDataCertificate {
                                         .code("A013")
                                         .description("Paratyfoidfeber C")
                                         .terminology("ICD_10_SE")
-                                        .build()
-                                )
-                            )
-                            .build()
-                    )
+                                        .build()))
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("55"))
@@ -588,8 +525,7 @@ public class TestDataCertificate {
                         ElementValueText.builder()
                             .textId(new FieldId("55.1"))
                             .text("Example symptom description")
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("71"))
@@ -597,8 +533,7 @@ public class TestDataCertificate {
                         ElementValueText.builder()
                             .textId(new FieldId("71.1"))
                             .text("Example health condition")
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("72"))
@@ -606,8 +541,7 @@ public class TestDataCertificate {
                         ElementValueText.builder()
                             .textId(new FieldId("72.1"))
                             .text("Additional health details")
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("60"))
@@ -615,8 +549,7 @@ public class TestDataCertificate {
                         ElementValueText.builder()
                             .textId(new FieldId("60.1"))
                             .text("Care and supervision needs")
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("19"))
@@ -624,8 +557,7 @@ public class TestDataCertificate {
                         ElementValueText.builder()
                             .textId(new FieldId("19.1"))
                             .text("Additional notes")
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("20"))
@@ -633,8 +565,7 @@ public class TestDataCertificate {
                         ElementValueText.builder()
                             .textId(new FieldId("20.1"))
                             .text("Further observations")
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("61"))
@@ -643,8 +574,7 @@ public class TestDataCertificate {
                             .id(new FieldId("61.1"))
                             .fromDate(LocalDate.now())
                             .toDate(LocalDate.now().plusDays(7))
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("61.2"))
@@ -652,8 +582,7 @@ public class TestDataCertificate {
                         ElementValueText.builder()
                             .textId(new FieldId("61.2"))
                             .text("Date range description")
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("62"))
@@ -661,8 +590,7 @@ public class TestDataCertificate {
                         ElementValueBoolean.builder()
                             .booleanId(new FieldId("62.1"))
                             .value(true)
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("62.2"))
@@ -671,8 +599,7 @@ public class TestDataCertificate {
                             .id(new FieldId("62.2"))
                             .fromDate(LocalDate.now())
                             .toDate(LocalDate.now().plusDays(14))
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("62.3"))
@@ -680,8 +607,7 @@ public class TestDataCertificate {
                         ElementValueBoolean.builder()
                             .booleanId(new FieldId("62.3"))
                             .value(false)
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("62.4"))
@@ -690,14 +616,10 @@ public class TestDataCertificate {
                             .id(new FieldId("62.4"))
                             .fromDate(LocalDate.now().minusDays(3))
                             .toDate(LocalDate.now().plusDays(10))
-                            .build()
-                    )
-                    .build()
-            )
-        )
+                            .build())
+                    .build()))
         .certificateMetaData(CERTIFICATE_META_DATA);
   }
-
 
   public static MedicalCertificate.MedicalCertificateBuilder fk3221CertificateBuilder() {
     return MedicalCertificate.builder()
@@ -721,11 +643,8 @@ public class TestDataCertificate {
                                     ElementValueDate.builder()
                                         .dateId(new FieldId("fysisktMote"))
                                         .date(LocalDate.now())
-                                        .build()
-                                )
-                            )
-                            .build()
-                    )
+                                        .build()))
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("3"))
@@ -733,8 +652,7 @@ public class TestDataCertificate {
                         ElementValueBoolean.builder()
                             .booleanId(new FieldId("3.1"))
                             .value(true)
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("4"))
@@ -747,28 +665,25 @@ public class TestDataCertificate {
                                         .id(new FieldId("medicalInvestigation1"))
                                         .informationSource(
                                             ElementValueText.builder()
-                                                .textId(new FieldId(
-                                                    "medicalInvestigation1_INFORMATION_SOURCE"))
+                                                .textId(
+                                                    new FieldId(
+                                                        "medicalInvestigation1_INFORMATION_SOURCE"))
                                                 .text("Example text")
-                                                .build()
-                                        )
+                                                .build())
                                         .investigationType(
                                             ElementValueCode.builder()
-                                                .codeId(new FieldId(
-                                                    "medicalInvestigation1_INVESTIGATION_TYPE"))
+                                                .codeId(
+                                                    new FieldId(
+                                                        "medicalInvestigation1_INVESTIGATION_TYPE"))
                                                 .code("LOGOPED")
-                                                .build()
-                                        )
+                                                .build())
                                         .date(
                                             ElementValueDate.builder()
                                                 .dateId(new FieldId("medicalInvestigation1_DATE"))
                                                 .date(LocalDate.now())
                                                 .build())
-                                        .build()
-                                )
-                            )
-                            .build()
-                    )
+                                        .build()))
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("58"))
@@ -780,50 +695,29 @@ public class TestDataCertificate {
                                         .code("A013")
                                         .description("Paratyfoidfeber C")
                                         .terminology("ICD_10_SE")
-                                        .build()
-                                )
-                            )
-                            .build()
-                    )
+                                        .build()))
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("5"))
                     .value(
-                        ElementValueText.builder()
-                            .textId(new FieldId("5.1"))
-                            .text("TEXT")
-                            .build()
-                    )
+                        ElementValueText.builder().textId(new FieldId("5.1")).text("TEXT").build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("8"))
                     .value(
-                        ElementValueText.builder()
-                            .textId(new FieldId("8.1"))
-                            .text("TEXT")
-                            .build()
-                    )
+                        ElementValueText.builder().textId(new FieldId("8.1")).text("TEXT").build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("17"))
                     .value(
-                        ElementValueText.builder()
-                            .textId(new FieldId("17.1"))
-                            .text("TEXT")
-                            .build()
-                    )
+                        ElementValueText.builder().textId(new FieldId("17.1")).text("TEXT").build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("39"))
                     .value(
-                        ElementValueText.builder()
-                            .textId(new FieldId("39.2"))
-                            .text("TEXT")
-                            .build()
-                    )
-                    .build()
-            )
-        )
+                        ElementValueText.builder().textId(new FieldId("39.2")).text("TEXT").build())
+                    .build()))
         .certificateMetaData(CERTIFICATE_META_DATA);
   }
 
@@ -851,11 +745,8 @@ public class TestDataCertificate {
                                     ElementValueDate.builder()
                                         .dateId(new FieldId("fysisktMote"))
                                         .date(LocalDate.now())
-                                        .build()
-                                )
-                            )
-                            .build()
-                    )
+                                        .build()))
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("2"))
@@ -863,8 +754,7 @@ public class TestDataCertificate {
                         ElementValueCode.builder()
                             .codeId(new FieldId("MINDRE_AN_ETT_AR"))
                             .code("MINDRE_AN_ETT_AR")
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("3"))
@@ -872,8 +762,7 @@ public class TestDataCertificate {
                         ElementValueBoolean.builder()
                             .booleanId(new FieldId("3.1"))
                             .value(true)
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("4"))
@@ -886,28 +775,25 @@ public class TestDataCertificate {
                                         .id(new FieldId("medicalInvestigation1"))
                                         .informationSource(
                                             ElementValueText.builder()
-                                                .textId(new FieldId(
-                                                    "medicalInvestigation1_INFORMATION_SOURCE"))
+                                                .textId(
+                                                    new FieldId(
+                                                        "medicalInvestigation1_INFORMATION_SOURCE"))
                                                 .text("Example text")
-                                                .build()
-                                        )
+                                                .build())
                                         .investigationType(
                                             ElementValueCode.builder()
-                                                .codeId(new FieldId(
-                                                    "medicalInvestigation1_INVESTIGATION_TYPE"))
+                                                .codeId(
+                                                    new FieldId(
+                                                        "medicalInvestigation1_INVESTIGATION_TYPE"))
                                                 .code("LOGOPED")
-                                                .build()
-                                        )
+                                                .build())
                                         .date(
                                             ElementValueDate.builder()
                                                 .dateId(new FieldId("medicalInvestigation1_DATE"))
                                                 .date(LocalDate.now())
                                                 .build())
-                                        .build()
-                                )
-                            )
-                            .build()
-                    )
+                                        .build()))
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("58"))
@@ -919,47 +805,28 @@ public class TestDataCertificate {
                                         .code("A013")
                                         .description("Paratyfoidfeber C")
                                         .terminology("ICD_10_SE")
-                                        .build()
-                                )
-                            )
-                            .build()
-                    )
+                                        .build()))
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("5"))
                     .value(
-                        ElementValueText.builder()
-                            .textId(new FieldId("5.1"))
-                            .text("TEXT")
-                            .build()
-                    )
+                        ElementValueText.builder().textId(new FieldId("5.1")).text("TEXT").build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("8"))
                     .value(
-                        ElementValueText.builder()
-                            .textId(new FieldId("8.1"))
-                            .text("TEXT")
-                            .build()
-                    )
+                        ElementValueText.builder().textId(new FieldId("8.1")).text("TEXT").build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("65"))
                     .value(
-                        ElementValueText.builder()
-                            .textId(new FieldId("65.1"))
-                            .text("TEXT")
-                            .build()
-                    )
+                        ElementValueText.builder().textId(new FieldId("65.1")).text("TEXT").build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("39"))
                     .value(
-                        ElementValueText.builder()
-                            .textId(new FieldId("39.2"))
-                            .text("TEXT")
-                            .build()
-                    )
+                        ElementValueText.builder().textId(new FieldId("39.2")).text("TEXT").build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("70"))
@@ -967,17 +834,12 @@ public class TestDataCertificate {
                         ElementValueBoolean.builder()
                             .booleanId(new FieldId("70.1"))
                             .value(true)
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("70.2"))
                     .value(
-                        ElementValueText.builder()
-                            .textId(new FieldId("70.2"))
-                            .text("TEXT")
-                            .build()
-                    )
+                        ElementValueText.builder().textId(new FieldId("70.2")).text("TEXT").build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("70.3"))
@@ -985,20 +847,13 @@ public class TestDataCertificate {
                         ElementValueBoolean.builder()
                             .booleanId(new FieldId("70.3"))
                             .value(true)
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("70.4"))
                     .value(
-                        ElementValueText.builder()
-                            .textId(new FieldId("70.4"))
-                            .text("TEXT")
-                            .build()
-                    )
-                    .build()
-            )
-        )
+                        ElementValueText.builder().textId(new FieldId("70.4")).text("TEXT").build())
+                    .build()))
         .certificateMetaData(CERTIFICATE_META_DATA);
   }
 
@@ -1026,11 +881,8 @@ public class TestDataCertificate {
                                     ElementValueDate.builder()
                                         .dateId(new FieldId("FYSISKUNDERSOKNING"))
                                         .date(LocalDate.now())
-                                        .build()
-                                )
-                            )
-                            .build()
-                    )
+                                        .build()))
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("6"))
@@ -1042,11 +894,8 @@ public class TestDataCertificate {
                                         .code("A013")
                                         .description("Paratyfoidfeber C")
                                         .terminology("ICD_10_SE")
-                                        .build()
-                                )
-                            )
-                            .build()
-                    )
+                                        .build()))
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("35"))
@@ -1054,8 +903,7 @@ public class TestDataCertificate {
                         ElementValueIcf.builder()
                             .id(new FieldId("35.1"))
                             .text("Funktionsnedsättning")
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("17"))
@@ -1063,8 +911,7 @@ public class TestDataCertificate {
                         ElementValueIcf.builder()
                             .id(new FieldId("17.1"))
                             .text("Aktivitetsbegräsning")
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("27"))
@@ -1072,22 +919,20 @@ public class TestDataCertificate {
                         ElementValueBoolean.builder()
                             .booleanId(new FieldId("27.1"))
                             .value(false)
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("28"))
                     .value(
                         ElementValueCodeList.builder()
                             .id(new FieldId("28.1"))
-                            .list(List.of(
+                            .list(
+                                List.of(
                                     ElementValueCode.builder()
                                         .code("NUVARANDE_ARBETE")
                                         .codeId(new FieldId("NUVARANDE_ARBETE"))
-                                        .build()
-                                )
-                            ).build()
-                    )
+                                        .build()))
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("29"))
@@ -1095,8 +940,7 @@ public class TestDataCertificate {
                         ElementValueText.builder()
                             .textId(new FieldId("29.1"))
                             .text("Butikssäljare, ansvarar för kassa och varuplock.")
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("19"))
@@ -1104,23 +948,21 @@ public class TestDataCertificate {
                         ElementValueText.builder()
                             .textId(new FieldId("19.1"))
                             .text("Rehabövningar under 10 dagar hemifrån.")
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("32"))
                     .value(
                         ElementValueDateRangeList.builder()
                             .dateRangeListId(new FieldId("32.1"))
-                            .dateRangeList(List.of(
-                                DateRange.builder()
-                                    .dateRangeId(new FieldId(("EN_FJARDEDEL")))
-                                    .from(LocalDate.now())
-                                    .to(LocalDate.now().plusDays(30))
-                                    .build()
-                            ))
-                            .build()
-                    )
+                            .dateRangeList(
+                                List.of(
+                                    DateRange.builder()
+                                        .dateRangeId(new FieldId(("EN_FJARDEDEL")))
+                                        .from(LocalDate.now())
+                                        .to(LocalDate.now().plusDays(30))
+                                        .build()))
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("33"))
@@ -1128,8 +970,7 @@ public class TestDataCertificate {
                         ElementValueBoolean.builder()
                             .booleanId(new FieldId("33.1"))
                             .value(true)
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("33.2"))
@@ -1137,8 +978,7 @@ public class TestDataCertificate {
                         ElementValueText.builder()
                             .textId(new FieldId("33.2"))
                             .text("Behöver regelbundna vilopauser och kan inte arbeta heltid.")
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("34"))
@@ -1146,8 +986,7 @@ public class TestDataCertificate {
                         ElementValueBoolean.builder()
                             .booleanId(new FieldId("34.1"))
                             .value(false)
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("37"))
@@ -1156,8 +995,7 @@ public class TestDataCertificate {
                             .textId(new FieldId("37.1"))
                             .text(
                                 "Patienten har långvariga besvär och tidigare behandlingar har haft begränsad effekt.")
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("39"))
@@ -1165,8 +1003,7 @@ public class TestDataCertificate {
                         ElementValueCode.builder()
                             .code("ATER_X_ANTAL_MANADER")
                             .codeId(new FieldId("ATER_X_ANTAL_MANADER"))
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("39.4"))
@@ -1174,8 +1011,7 @@ public class TestDataCertificate {
                         ElementValueInteger.builder()
                             .integerId(new FieldId("39.4"))
                             .value(6)
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("44"))
@@ -1184,8 +1020,7 @@ public class TestDataCertificate {
                             .textId(new FieldId("44.1"))
                             .text(
                                 "Arbetsanpassning med höj- och sänkbart skrivbord och flexibla arbetstider.")
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("25"))
@@ -1194,8 +1029,7 @@ public class TestDataCertificate {
                             .textId(new FieldId("25.1"))
                             .text(
                                 "Patienten har svårt att ta sig till arbetsplatsen med kollektivtrafik.")
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("26"))
@@ -1203,8 +1037,7 @@ public class TestDataCertificate {
                         ElementValueBoolean.builder()
                             .booleanId(new FieldId("26.1"))
                             .value(true)
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("26.2"))
@@ -1212,11 +1045,8 @@ public class TestDataCertificate {
                         ElementValueText.builder()
                             .textId(new FieldId("26.2"))
                             .text("Behöver diskutera kompletterande intyg med handläggare.")
-                            .build()
-                    )
-                    .build()
-            )
-        )
+                            .build())
+                    .build()))
         .certificateMetaData(CERTIFICATE_META_DATA);
   }
 
@@ -1237,9 +1067,7 @@ public class TestDataCertificate {
         .id(CERTIFICATE_ID)
         .revision(REVISION)
         .created(LocalDateTime.now(ZoneId.systemDefault()))
-        .certificateModel(
-            ag7804certificateModelBuilder().build()
-        )
+        .certificateModel(ag7804certificateModelBuilder().build())
         .xml(XML)
         .externalReference(EXTERNAL_REFERENCE)
         .elementData(
@@ -1254,11 +1082,8 @@ public class TestDataCertificate {
                                     ElementValueDate.builder()
                                         .dateId(new FieldId("FYSISKUNDERSOKNING"))
                                         .date(LocalDate.now())
-                                        .build()
-                                )
-                            )
-                            .build()
-                    )
+                                        .build()))
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("6"))
@@ -1270,11 +1095,8 @@ public class TestDataCertificate {
                                         .code("A013")
                                         .description("Paratyfoidfeber C")
                                         .terminology("ICD_10_SE")
-                                        .build()
-                                )
-                            )
-                            .build()
-                    )
+                                        .build()))
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("35"))
@@ -1282,8 +1104,7 @@ public class TestDataCertificate {
                         ElementValueIcf.builder()
                             .id(new FieldId("35.1"))
                             .text("Funktionsnedsättning")
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("17"))
@@ -1291,8 +1112,7 @@ public class TestDataCertificate {
                         ElementValueIcf.builder()
                             .id(new FieldId("17.1"))
                             .text("Aktivitetsbegräsning")
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("27"))
@@ -1300,22 +1120,20 @@ public class TestDataCertificate {
                         ElementValueBoolean.builder()
                             .booleanId(new FieldId("27.1"))
                             .value(false)
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("28"))
                     .value(
                         ElementValueCodeList.builder()
                             .id(new FieldId("28.1"))
-                            .list(List.of(
+                            .list(
+                                List.of(
                                     ElementValueCode.builder()
                                         .code("NUVARANDE_ARBETE")
                                         .codeId(new FieldId("NUVARANDE_ARBETE"))
-                                        .build()
-                                )
-                            ).build()
-                    )
+                                        .build()))
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("29"))
@@ -1323,8 +1141,7 @@ public class TestDataCertificate {
                         ElementValueText.builder()
                             .textId(new FieldId("29.1"))
                             .text("Butikssäljare, ansvarar för kassa och varuplock.")
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("19"))
@@ -1332,23 +1149,21 @@ public class TestDataCertificate {
                         ElementValueText.builder()
                             .textId(new FieldId("19.1"))
                             .text("Rehabövningar under 10 dagar hemifrån.")
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("32"))
                     .value(
                         ElementValueDateRangeList.builder()
                             .dateRangeListId(new FieldId("32.1"))
-                            .dateRangeList(List.of(
-                                DateRange.builder()
-                                    .dateRangeId(new FieldId(("EN_FJARDEDEL")))
-                                    .from(LocalDate.now())
-                                    .to(LocalDate.now().plusDays(30))
-                                    .build()
-                            ))
-                            .build()
-                    )
+                            .dateRangeList(
+                                List.of(
+                                    DateRange.builder()
+                                        .dateRangeId(new FieldId(("EN_FJARDEDEL")))
+                                        .from(LocalDate.now())
+                                        .to(LocalDate.now().plusDays(30))
+                                        .build()))
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("33"))
@@ -1356,8 +1171,7 @@ public class TestDataCertificate {
                         ElementValueBoolean.builder()
                             .booleanId(new FieldId("33.1"))
                             .value(true)
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("33.2"))
@@ -1365,8 +1179,7 @@ public class TestDataCertificate {
                         ElementValueText.builder()
                             .textId(new FieldId("33.2"))
                             .text("Behöver regelbundna vilopauser och kan inte arbeta heltid.")
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("34"))
@@ -1374,8 +1187,7 @@ public class TestDataCertificate {
                         ElementValueBoolean.builder()
                             .booleanId(new FieldId("34.1"))
                             .value(false)
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("37"))
@@ -1384,8 +1196,7 @@ public class TestDataCertificate {
                             .textId(new FieldId("37.1"))
                             .text(
                                 "Patienten har långvariga besvär och tidigare behandlingar har haft begränsad effekt.")
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("39"))
@@ -1393,8 +1204,7 @@ public class TestDataCertificate {
                         ElementValueCode.builder()
                             .code("ATER_X_ANTAL_MANADER")
                             .codeId(new FieldId("ATER_X_ANTAL_MANADER"))
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("39.4"))
@@ -1402,8 +1212,7 @@ public class TestDataCertificate {
                         ElementValueInteger.builder()
                             .integerId(new FieldId("39.4"))
                             .value(6)
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("44"))
@@ -1412,8 +1221,7 @@ public class TestDataCertificate {
                             .textId(new FieldId("44.1"))
                             .text(
                                 "Arbetsanpassning med höj- och sänkbart skrivbord och flexibla arbetstider.")
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("25"))
@@ -1422,8 +1230,7 @@ public class TestDataCertificate {
                             .textId(new FieldId("25.1"))
                             .text(
                                 "Patienten har svårt att ta sig till arbetsplatsen med kollektivtrafik.")
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("26"))
@@ -1431,8 +1238,7 @@ public class TestDataCertificate {
                         ElementValueBoolean.builder()
                             .booleanId(new FieldId("26.1"))
                             .value(true)
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("26.2"))
@@ -1440,11 +1246,8 @@ public class TestDataCertificate {
                         ElementValueText.builder()
                             .textId(new FieldId("26.2"))
                             .text("Behöver diskutera kompletterande intyg med handläggare.")
-                            .build()
-                    )
-                    .build()
-            )
-        )
+                            .build())
+                    .build()))
         .certificateMetaData(
             CertificateMetaData.builder()
                 .issuer(AJLA_DOKTOR)
@@ -1453,8 +1256,7 @@ public class TestDataCertificate {
                 .issuingUnit(ALFA_ALLERGIMOTTAGNINGEN)
                 .careUnit(ALFA_MEDICINCENTRUM)
                 .careProvider(ALFA_REGIONEN)
-                .build()
-        );
+                .build());
   }
 
   public static final MedicalCertificate AG114_CERTIFICATE = ag114CertificateBuilder().build();
@@ -1477,8 +1279,7 @@ public class TestDataCertificate {
                         ElementValueText.builder()
                             .textId(new FieldId("1.1"))
                             .text("Svarstext för sysselsättning")
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("4"))
@@ -1490,11 +1291,8 @@ public class TestDataCertificate {
                                         .code("A013")
                                         .description("Paratyfoidfeber C")
                                         .terminology("ICD_10_SE")
-                                        .build()
-                                )
-                            )
-                            .build()
-                    )
+                                        .build()))
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("7"))
@@ -1502,8 +1300,7 @@ public class TestDataCertificate {
                         ElementValueInteger.builder()
                             .integerId(new FieldId("7.1"))
                             .value(70)
-                            .build()
-                    )
+                            .build())
                     .build(),
                 ElementData.builder()
                     .id(new ElementId("7.2"))
@@ -1512,11 +1309,8 @@ public class TestDataCertificate {
                             .id(new FieldId("7.2"))
                             .fromDate(LocalDate.now())
                             .toDate(LocalDate.now().plusDays(30))
-                            .build()
-                    )
-                    .build()
-            )
-        )
+                            .build())
+                    .build()))
         .certificateMetaData(
             CertificateMetaData.builder()
                 .issuer(AJLA_DOKTOR)
@@ -1525,7 +1319,6 @@ public class TestDataCertificate {
                 .issuingUnit(ALFA_ALLERGIMOTTAGNINGEN)
                 .careUnit(ALFA_MEDICINCENTRUM)
                 .careProvider(ALFA_REGIONEN)
-                .build()
-        );
+                .build());
   }
 }

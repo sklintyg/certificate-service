@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service.converter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,22 +46,20 @@ class CertificateDataValueConverterCheckboxMultipleCodeTest {
 
   @BeforeEach
   void setUp() {
-    configuration = ElementSpecification.builder()
-        .configuration(
-            ElementConfigurationCheckboxMultipleCode.builder()
-                .id(new FieldId(CODE_LIST_ID))
-                .build()
-        )
-        .build();
+    configuration =
+        ElementSpecification.builder()
+            .configuration(
+                ElementConfigurationCheckboxMultipleCode.builder()
+                    .id(new FieldId(CODE_LIST_ID))
+                    .build())
+            .build();
   }
 
   @Test
   void shallThrowExceptionIfWrongClassOfValue() {
     final var elementValue = ElementValueText.builder().build();
 
-    assertThrows(IllegalStateException.class,
-        () -> converter.convert(configuration, elementValue)
-    );
+    assertThrows(IllegalStateException.class, () -> converter.convert(configuration, elementValue));
   }
 
   @Test
@@ -77,42 +93,34 @@ class CertificateDataValueConverterCheckboxMultipleCodeTest {
 
   @Test
   void shallSetCorrectIdForCodeValue() {
-    final var elementValue = ElementValueCodeList.builder()
-        .list(
-            List.of(
-                ElementValueCode.builder()
-                    .codeId(new FieldId("CODE_ID"))
-                    .code("code")
-                    .build()
-            )
-        )
-        .build();
+    final var elementValue =
+        ElementValueCodeList.builder()
+            .list(
+                List.of(
+                    ElementValueCode.builder().codeId(new FieldId("CODE_ID")).code("code").build()))
+            .build();
 
     final var result = converter.convert(configuration, elementValue);
 
-    assertEquals(elementValue.list().get(0).codeId().value(),
-        ((CertificateDataValueCodeList) result).getList().get(0).getId()
-    );
+    assertEquals(
+        elementValue.list().get(0).codeId().value(),
+        ((CertificateDataValueCodeList) result).getList().get(0).getId());
   }
 
   @Test
   void shallSetCorrectCodeForCodeValue() {
-    final var elementValue = ElementValueCodeList.builder()
-        .list(
-            List.of(
-                ElementValueCode.builder()
-                    .codeId(new FieldId("CODE_ID"))
-                    .code("code")
-                    .build()
-            )
-        )
-        .build();
+    final var elementValue =
+        ElementValueCodeList.builder()
+            .list(
+                List.of(
+                    ElementValueCode.builder().codeId(new FieldId("CODE_ID")).code("code").build()))
+            .build();
 
     final var result = converter.convert(configuration, elementValue);
 
-    assertEquals(elementValue.list().get(0).code(),
-        ((CertificateDataValueCodeList) result).getList().get(0).getCode()
-    );
+    assertEquals(
+        elementValue.list().get(0).code(),
+        ((CertificateDataValueCodeList) result).getList().get(0).getCode());
   }
 
   @Test
@@ -121,7 +129,8 @@ class CertificateDataValueConverterCheckboxMultipleCodeTest {
 
     final var result = converter.convert(configuration, elementValue);
 
-    assertTrue(((CertificateDataValueCodeList) result).getList().isEmpty(),
+    assertTrue(
+        ((CertificateDataValueCodeList) result).getList().isEmpty(),
         "If no value is provided value should be empty list");
   }
 }

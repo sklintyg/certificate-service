@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.testdata;
 
 import java.util.Collections;
@@ -27,24 +45,22 @@ public class TestDataUserConstants {
   public static final String AJLA_DOCTOR_LAST_NAME = "Doktor";
   public static final String AJLA_DOCTOR_FULLNAME = "Ajla Doktor";
   public static final Role AJLA_DOCTOR_ROLE = Role.DOCTOR;
-  public static final List<PaTitle> AJLA_DOCTOR_PA_TITLES = List.of(
-      new PaTitle("203090", "Läkare legitimerad, annan"),
-      new PaTitle("601010", "Kock")
-  );
-  public static final List<Speciality> AJLA_DOCTOR_SPECIALITIES = List.of(
-      new Speciality("Allmänmedicin"),
-      new Speciality("Psykiatri")
-  );
+  public static final List<PaTitle> AJLA_DOCTOR_PA_TITLES =
+      List.of(new PaTitle("203090", "Läkare legitimerad, annan"), new PaTitle("601010", "Kock"));
+  public static final List<Speciality> AJLA_DOCTOR_SPECIALITIES =
+      List.of(new Speciality("Allmänmedicin"), new Speciality("Psykiatri"));
   public static final Blocked AJLA_DOCTOR_BLOCKED = BLOCKED_FALSE;
   public static final AllowCopy AJLA_DOCTOR_ALLOW_COPY = ALLOW_COPY_TRUE;
   public static final Agreement AJLA_DOCTOR_AGREEMENT = AGREEMENT_TRUE;
   public static final AccessScope AJLA_DOCTOR_ACCESS_SCOPE = AccessScope.WITHIN_CARE_UNIT;
-  public static final List<HealthCareProfessionalLicence> AJLA_DOCTOR_HEALTH_CARE_PROFESSIONAL_LICENCES = List.of(
-      new HealthCareProfessionalLicence("Läkare"));
-  public static final List<HealthCareProfessionalLicence> ALF_DOCTOR_HEALTH_CARE_PROFESSIONAL_LICENCES = List.of(
-      new HealthCareProfessionalLicence("Läkare"));
-  public static final ResponsibleIssuer AJLA_DOCTOR_RESPONSIBLE_ISSUER = new ResponsibleIssuer(
-      "Ajla Doktor");
+  public static final List<HealthCareProfessionalLicence>
+      AJLA_DOCTOR_HEALTH_CARE_PROFESSIONAL_LICENCES =
+          List.of(new HealthCareProfessionalLicence("Läkare"));
+  public static final List<HealthCareProfessionalLicence>
+      ALF_DOCTOR_HEALTH_CARE_PROFESSIONAL_LICENCES =
+          List.of(new HealthCareProfessionalLicence("Läkare"));
+  public static final ResponsibleIssuer AJLA_DOCTOR_RESPONSIBLE_ISSUER =
+      new ResponsibleIssuer("Ajla Doktor");
   public static final SrsActive AJLA_DOCTOR_SRS_ACTIVE = new SrsActive(true);
 
   public static final String ALF_DOKTOR_HSA_ID = "TSTNMT2321000156-DRAF";
@@ -53,17 +69,14 @@ public class TestDataUserConstants {
   public static final String ALF_DOKTOR_LAST_NAME = "Doktor";
   public static final String ALF_DOKTOR_FULLNAME = "Alf Doktor";
   public static final Role ALF_DOKTOR_ROLE = Role.DOCTOR;
-  public static final List<PaTitle> ALF_DOKTOR_PA_TITLES = List.of(
-      new PaTitle("203090", "Läkare legitimerad, annan")
-  );
-  public static final List<Speciality> ALF_DOKTOR_SPECIALITIES = List.of(
-      new Speciality("Allmänmedicin")
-  );
+  public static final List<PaTitle> ALF_DOKTOR_PA_TITLES =
+      List.of(new PaTitle("203090", "Läkare legitimerad, annan"));
+  public static final List<Speciality> ALF_DOKTOR_SPECIALITIES =
+      List.of(new Speciality("Allmänmedicin"));
   public static final Blocked ALF_DOKTOR_BLOCKED = BLOCKED_FALSE;
   public static final Agreement ALF_DOKTOR_AGREEMENT = AGREEMENT_TRUE;
   public static final AllowCopy ALF_DOKTOR_ALLOW_COPY = ALLOW_COPY_TRUE;
   public static final SrsActive ALF_DOKTOR_SRS_ACTIVE = new SrsActive(false);
-
 
   public static final String ALVA_VARDADMINISTRATOR_HSA_ID = "TSTNMT2321000156-VAAA";
   public static final String ALVA_VARDADMINISTRATOR_FIRST_NAME = "Alva";
@@ -72,7 +85,8 @@ public class TestDataUserConstants {
   public static final String ALVA_VARDADMINISTRATOR_FULL_NAME = "Alva Vardadministrator";
   public static final Role ALVA_VARDADMINISTRATOR_ROLE = Role.CARE_ADMIN;
   public static final List<PaTitle> ALVA_VARDADMINISTRATOR_PA_TITLES = Collections.emptyList();
-  public static final List<Speciality> ALVA_VARDADMINISTRATOR_SPECIALITIES = Collections.emptyList();
+  public static final List<Speciality> ALVA_VARDADMINISTRATOR_SPECIALITIES =
+      Collections.emptyList();
   public static final Blocked ALVA_VARDADMINISTRATOR_BLOCKED = BLOCKED_FALSE;
   public static final Agreement ALVA_VARDADMINISTRATOR_AGREEMENT = AGREEMENT_TRUE;
   public static final AllowCopy ALVA_VARDADMINISTRATOR_ALLOW_COPY = ALLOW_COPY_TRUE;
@@ -84,16 +98,15 @@ public class TestDataUserConstants {
   public static final String ANNA_SJUKSKOTERSKA_LAST_NAME = "Sjuksköterska";
   public static final String ANNA_SJUKSKOTERSKA_FULL_NAME = "Anna Sjuksköterska";
   public static final Role ANNA_SJUKSKOTERSKA_ROLE = Role.NURSE;
-  public static final List<HealthCareProfessionalLicence> ANNA_SJUKSKOTERSKA_HEALTH_CARE_PROFESSIONAL_LICENCES = List.of(
-      new HealthCareProfessionalLicence("Sjuksköterska")
-  );
+  public static final List<HealthCareProfessionalLicence>
+      ANNA_SJUKSKOTERSKA_HEALTH_CARE_PROFESSIONAL_LICENCES =
+          List.of(new HealthCareProfessionalLicence("Sjuksköterska"));
   public static final List<PaTitle> ANNA_SJUKSKOTERSKA_PA_TITLES = Collections.emptyList();
   public static final List<Speciality> ANNA_SJUKSKOTERSKA_SPECIALITIES = Collections.emptyList();
   public static final Blocked ANNA_SJUKSKOTERSKA_BLOCKED = BLOCKED_FALSE;
   public static final Agreement ANNA_SJUKSKOTERSKA_AGREEMENT = AGREEMENT_TRUE;
   public static final AllowCopy ANNA_SJUKSKOTERSKA_ALLOW_COPY = ALLOW_COPY_TRUE;
   public static final SrsActive ANNA_SJUKSKOTERSKA_SRS_ACTIVE = new SrsActive(false);
-
 
   public static final String BERTIL_BARNMORSKA_HSA_ID = "TSTNMT2321000156-BMBL";
   public static final String BERTIL_BARNMORSKA_FIRST_NAME = "Bertil";
@@ -106,12 +119,12 @@ public class TestDataUserConstants {
   public static final Blocked BERTIL_BARNMORSKA_BLOCKED = BLOCKED_FALSE;
   public static final Agreement BERTIL_BARNMORSKA_AGREEMENT = AGREEMENT_TRUE;
   public static final AllowCopy BERTIL_BARNMORSKA_ALLOW_COPY = ALLOW_COPY_TRUE;
-  public static final List<HealthCareProfessionalLicence> BERTIL_BARNMORSKA_HEALTH_CARE_PROFESSIONAL_LICENCES = List.of(
-      new HealthCareProfessionalLicence("Sjuksköterska"),
-      new HealthCareProfessionalLicence("Barnmorska")
-  );
+  public static final List<HealthCareProfessionalLicence>
+      BERTIL_BARNMORSKA_HEALTH_CARE_PROFESSIONAL_LICENCES =
+          List.of(
+              new HealthCareProfessionalLicence("Sjuksköterska"),
+              new HealthCareProfessionalLicence("Barnmorska"));
   public static final SrsActive BERTIL_BARNMORSKA_SRS_ACTIVE = new SrsActive(false);
-
 
   public static final String DAN_DENTIST_HSA_ID = "TSTNMT2321000156-BMBL";
   public static final String DAN_DENTIST_FIRST_NAME = "Dan";
@@ -124,9 +137,8 @@ public class TestDataUserConstants {
   public static final Blocked DAN_DENTIST_BLOCKED = BLOCKED_FALSE;
   public static final AllowCopy DAN_DENTIST_ALLOW_COPY = ALLOW_COPY_TRUE;
   public static final Agreement DAN_DENTIST_AGREEMENT = AGREEMENT_TRUE;
-  public static final List<HealthCareProfessionalLicence> DAN_DENTIST_HEALTH_CARE_PROFESSIONAL_LICENCES = List.of(
-      new HealthCareProfessionalLicence("Tandläkare")
-  );
+  public static final List<HealthCareProfessionalLicence>
+      DAN_DENTIST_HEALTH_CARE_PROFESSIONAL_LICENCES =
+          List.of(new HealthCareProfessionalLicence("Tandläkare"));
   public static final SrsActive DAN_DENTIST_SRS_ACTIVE = new SrsActive(false);
-
 }

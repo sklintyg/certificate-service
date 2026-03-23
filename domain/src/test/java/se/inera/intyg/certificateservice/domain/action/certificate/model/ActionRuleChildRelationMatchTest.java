@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.action.certificate.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,89 +44,68 @@ class ActionRuleChildRelationMatchTest {
 
   @BeforeEach
   void setUp() {
-    certificateBuilder = MedicalCertificate.builder()
-        .status(Status.SIGNED)
-        .sent(null)
-        .certificateMetaData(
-            CertificateMetaData.builder()
-                .issuingUnit(ALFA_ALLERGIMOTTAGNINGEN)
-                .careUnit(ALFA_MEDICINCENTRUM)
-                .careProvider(ALFA_REGIONEN)
-                .patient(ATHENA_REACT_ANDERSSON)
-                .build()
-        );
+    certificateBuilder =
+        MedicalCertificate.builder()
+            .status(Status.SIGNED)
+            .sent(null)
+            .certificateMetaData(
+                CertificateMetaData.builder()
+                    .issuingUnit(ALFA_ALLERGIMOTTAGNINGEN)
+                    .careUnit(ALFA_MEDICINCENTRUM)
+                    .careProvider(ALFA_REGIONEN)
+                    .patient(ATHENA_REACT_ANDERSSON)
+                    .build());
   }
 
   @Test
   void shallReturnTrueIfRelationTypeMatchesAndIsDraft() {
-    final var actionRuleChildRelation = new ActionRuleChildRelationMatch(
-        List.of(RelationType.REPLACE));
+    final var actionRuleChildRelation =
+        new ActionRuleChildRelationMatch(List.of(RelationType.REPLACE));
 
-    final var certificate = certificateBuilder
-        .children(
-            List.of(
-                relationReplaceBuilder()
-                    .build()
-            )
-        )
-        .build();
+    final var certificate =
+        certificateBuilder.children(List.of(relationReplaceBuilder().build())).build();
 
     assertTrue(
-        actionRuleChildRelation.evaluate(Optional.of(certificate), Optional.of(ACTION_EVALUATION))
-    );
+        actionRuleChildRelation.evaluate(Optional.of(certificate), Optional.of(ACTION_EVALUATION)));
   }
 
   @Test
   void shallReturnFalseIfRelationTypeMatchesAndIsSigned() {
-    final var actionRuleChildRelation = new ActionRuleChildRelationMatch(
-        List.of(RelationType.REPLACE));
+    final var actionRuleChildRelation =
+        new ActionRuleChildRelationMatch(List.of(RelationType.REPLACE));
 
-    final var certificate = certificateBuilder
-        .children(
-            List.of(
-                relationReplaceBuilder()
-                    .certificate(
-                        fk7210CertificateBuilder()
-                            .status(Status.SIGNED)
-                            .build()
-                    )
-                    .build()
-            )
-        )
-        .build();
+    final var certificate =
+        certificateBuilder
+            .children(
+                List.of(
+                    relationReplaceBuilder()
+                        .certificate(fk7210CertificateBuilder().status(Status.SIGNED).build())
+                        .build()))
+            .build();
 
     assertFalse(
-        actionRuleChildRelation.evaluate(Optional.of(certificate), Optional.of(ACTION_EVALUATION))
-    );
+        actionRuleChildRelation.evaluate(Optional.of(certificate), Optional.of(ACTION_EVALUATION)));
   }
 
   @Test
   void shallReturnFalseIfRelationTypeDoesntMatch() {
-    final var actionRuleChildRelation = new ActionRuleChildRelationMatch(
-        List.of(RelationType.RENEW));
+    final var actionRuleChildRelation =
+        new ActionRuleChildRelationMatch(List.of(RelationType.RENEW));
 
-    final var certificate = certificateBuilder
-        .children(
-            List.of(
-                relationReplaceBuilder()
-                    .build()
-            )
-        )
-        .build();
+    final var certificate =
+        certificateBuilder.children(List.of(relationReplaceBuilder().build())).build();
 
     assertFalse(
-        actionRuleChildRelation.evaluate(Optional.of(certificate), Optional.of(ACTION_EVALUATION))
-    );
+        actionRuleChildRelation.evaluate(Optional.of(certificate), Optional.of(ACTION_EVALUATION)));
   }
 
   @Test
   void shallReturnReason() {
-    final var actionRuleChildRelation = new ActionRuleChildRelationMatch(
-        List.of(RelationType.REPLACE));
+    final var actionRuleChildRelation =
+        new ActionRuleChildRelationMatch(List.of(RelationType.REPLACE));
 
     assertEquals(
         "Du saknar behörighet för den begärda åtgärden eftersom intyget saknar utkast med relation med typ: [REPLACE]",
-        actionRuleChildRelation.getReasonForPermissionDenied()
-    );
+        actionRuleChildRelation.getReasonForPermissionDenied());
   }
 }

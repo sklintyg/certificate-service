@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.pdfboxgenerator.pdf.value;
 
 import java.util.Collections;
@@ -19,8 +37,8 @@ public class PdfIcfValueGenerator implements PdfElementValue<ElementValueIcf> {
   }
 
   @Override
-  public List<PdfField> generate(ElementSpecification elementSpecification,
-      ElementValueIcf elementValueIcf) {
+  public List<PdfField> generate(
+      ElementSpecification elementSpecification, ElementValueIcf elementValueIcf) {
     if (elementValueIcf.text() == null && elementValueIcf.icfCodes().isEmpty()) {
       return Collections.emptyList();
     }
@@ -33,12 +51,13 @@ public class PdfIcfValueGenerator implements PdfElementValue<ElementValueIcf> {
     final var simplifiedValueText = (ElementSimplifiedValueText) simplifiedValue.get();
 
     if (hasOverflow(simplifiedValueText, pdfConfiguration)) {
-      final var splitIcf = PdfValueGeneratorUtil.splitByLimit(
-          TextSplitRenderSpec.builder()
-              .limit(pdfConfiguration.maxLength())
-              .fieldText(simplifiedValueText.text())
-              .shouldRemoveLineBreaks(false)
-              .build());
+      final var splitIcf =
+          PdfValueGeneratorUtil.splitByLimit(
+              TextSplitRenderSpec.builder()
+                  .limit(pdfConfiguration.maxLength())
+                  .fieldText(simplifiedValueText.text())
+                  .shouldRemoveLineBreaks(false)
+                  .build());
       if (hasOverFlowSheet(pdfConfiguration)) {
         return getFieldsWithOverflowSheet(elementSpecification, pdfConfiguration, splitIcf);
       }
@@ -49,11 +68,11 @@ public class PdfIcfValueGenerator implements PdfElementValue<ElementValueIcf> {
         PdfField.builder()
             .id(pdfConfiguration.pdfFieldId().id())
             .value(simplifiedValueText.text())
-            .build()
-    );
+            .build());
   }
 
-  private static boolean hasOverflow(ElementSimplifiedValueText elementSimplifiedValueText,
+  private static boolean hasOverflow(
+      ElementSimplifiedValueText elementSimplifiedValueText,
       PdfConfigurationText pdfConfiguration) {
     return pdfConfiguration.maxLength() != null
         && pdfConfiguration.maxLength() < elementSimplifiedValueText.text().length();
@@ -73,20 +92,16 @@ public class PdfIcfValueGenerator implements PdfElementValue<ElementValueIcf> {
                             .shouldRemoveLineBreaks(false)
                             .informationMessage("...")
                             .build())
-                    .getFirst()
-            )
-            .build()
-    );
+                    .getFirst())
+            .build());
   }
 
   private static List<PdfField> getFieldsWithOverflowSheet(
       ElementSpecification elementSpecification,
-      PdfConfigurationText pdfConfiguration, List<String> splitIcf) {
+      PdfConfigurationText pdfConfiguration,
+      List<String> splitIcf) {
     return List.of(
-        PdfField.builder()
-            .id(pdfConfiguration.pdfFieldId().id())
-            .value(splitIcf.get(0))
-            .build(),
+        PdfField.builder().id(pdfConfiguration.pdfFieldId().id()).value(splitIcf.get(0)).build(),
         PdfField.builder()
             .id(pdfConfiguration.overflowSheetFieldId().id())
             .value(elementSpecification.configuration().name())
@@ -96,8 +111,7 @@ public class PdfIcfValueGenerator implements PdfElementValue<ElementValueIcf> {
             .id(pdfConfiguration.overflowSheetFieldId().id())
             .value(splitIcf.get(1) + "\n")
             .append(true)
-            .build()
-    );
+            .build());
   }
 
   private static boolean hasOverFlowSheet(PdfConfigurationText pdfConfiguration) {

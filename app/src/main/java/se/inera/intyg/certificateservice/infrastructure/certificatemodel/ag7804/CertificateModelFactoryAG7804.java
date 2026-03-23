@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ag7804;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.ag7804.elements.CategoryAktivitetsbegransning.categoryAktivitetsbegransning;
@@ -71,13 +89,15 @@ public class CertificateModelFactoryAG7804 implements CertificateModelFactory {
   private static final String VERSION = "2.0";
   private static final CertificateTypeName AG7804_TYPE_NAME = new CertificateTypeName("AG7804");
   private static final String NAME = "Läkarintyg om arbetsförmåga – arbetsgivaren";
-  private static final String DESCRIPTION = """
+  private static final String DESCRIPTION =
+      """
       Läkarintyg om arbetsförmåga – arbetsgivaren skapas från Försäkringskassans läkarintyg för sjukpenning (FK 7804) och används i följande situationer:
-      
+
       <ul><li>När patienten har en anställning och behöver ett läkarintyg i förhållande till sin arbetsgivare.</li><li>När patienten varit frånvarande från arbetet i fler än 14 dagar.</li><li>När intygsutfärdande läkaren bedömer att patienten behöver vara sjukfrånvarande längre tid än 14 dagar och att sjukfrånvaron därmed kommer att överstiga sjuklöneperioden. <em>Läkarintyg om arbetsförmåga – arbetsgivaren</em> kan utfärdas för att undvika ett återbesök efter dag 14 och fyller då funktionen som intyg till arbetsgivare både <em>under</em> sjuklöneperioden och <em>efter</em> sjuklöneperioden.</li></ul>
       """;
 
-  private static final String DETAILED_DESCRIPTION = """
+  private static final String DETAILED_DESCRIPTION =
+      """
       <p><b>Utfärdare</b><br/>Läkarintyget får utfärdas av läkare eller tandläkare. I intyget omfattar begreppet läkare båda professionerna. Det är inte möjligt att delegera rätten att utfärda läkarintyget till annan profession, till exempel sjuksköterska eller fysioterapeut. Se även Socialstyrelsens föreskrifter om intyg (HSLF-FS 2018:54).</p>
       <p><b>Syften med läkarintyget</b></p>
       <ul>
@@ -97,14 +117,16 @@ public class CertificateModelFactoryAG7804 implements CertificateModelFactory {
       </ul>
       """;
 
-  private static final String PREAMBLE_TEXT = """
+  private static final String PREAMBLE_TEXT =
+      """
       Det här är ditt intyg. Intyget innehåller all information som vården fyllt i. Du kan inte ändra något i ditt intyg. Har du frågor kontaktar du den som skrivit ditt intyg. Det här intyget behöver du skriva ut och skicka själv.
       """;
 
-  public static final CertificateModelId AG7804_V2_0 = CertificateModelId.builder()
-      .type(new CertificateType(AG_7804))
-      .version(new CertificateVersion(VERSION))
-      .build();
+  public static final CertificateModelId AG7804_V2_0 =
+      CertificateModelId.builder()
+          .type(new CertificateType(AG_7804))
+          .version(new CertificateVersion(VERSION))
+          .build();
 
   @Override
   public CertificateModel create() {
@@ -117,73 +139,41 @@ public class CertificateModelFactoryAG7804 implements CertificateModelFactory {
         .detailedDescription(DETAILED_DESCRIPTION.replaceAll("\\R", ""))
         .activeFrom(activeFrom)
         .availableForCitizen(true)
-        .texts(List.of(
-            CertificateText.builder()
-                .text(PREAMBLE_TEXT)
-                .type(CertificateTextType.PREAMBLE_TEXT)
-                .build()
-        ))
+        .texts(
+            List.of(
+                CertificateText.builder()
+                    .text(PREAMBLE_TEXT)
+                    .type(CertificateTextType.PREAMBLE_TEXT)
+                    .build()))
         .ableToCreateDraftForModel(FK7804_V2_0)
         .summaryProvider(new AG7804CertificateSummaryProvider())
         .citizenAvailableFunctionsProvider(new AG7804CitizenAvailableFunctionsProvider())
         .certificateActionSpecifications(AG7804CertificateActionSpecification.create())
         .messageActionSpecifications(List.of())
-        .elementSpecifications(List.of(
-            categorySmittbararpenning(
-                questionSmittbararpenning()
-            ),
-            categoryGrundForMedicinsktUnderlag(
-                questionGrundForMedicinsktUnderlag(
-                    questionAnnanGrundForMedicinsktUnderlag()
-                )
-            ),
-            categorySysselsattning(
-                questionSysselsattning(
-                    questionYrkeOchArbetsuppgifter()
-                )
-            ),
-            categoryDiagnos(
-                questionFormedlaInfoOmDiagnosTillAG(),
-                questionDiagnos(diagnosisCodeRepository)
-            ),
-            categoryFunktionsnedsattning(
-                questionFunktionsnedsattningar()
-            ),
-            categoryAktivitetsbegransning(
-                questionAktivitetsbegransningar()
-            ),
-            categoryMedicinskBehandling(
-                questionMedicinskBehandling()
-            ),
-            categoryBedomning(
-                questionNedsattningArbetsformaga(
-                    messageStartDateInfo()
-                ),
-                questionArbetsformagaLangreAnBeslutsstod(),
-                questionTransportstod(),
-                questionSvarareAtergangVidOjamnArbetstid(
-                    questionMedicinskaSkalForSvarareAtergang()
-                )
-            ),
-            categoryPrognos(
-                questionPrognos(
-                    questionAntalManader(),
-                    questionGrundForBedomning()
-                )
-            ),
-            categoryAtgarderSomKanFramjaAttergang(
-                questionAtgarderSomKanFramjaAtergang()
-            ),
-            categoryOvrigt(
-                questionOvrigt()
-            ),
-            categoryKontakt(
-                questionKontakt(
-                    questionAngeVarforDuVillHaKontakt()
-                )
-            ),
-            issuingUnitContactInfo()
-        ))
+        .elementSpecifications(
+            List.of(
+                categorySmittbararpenning(questionSmittbararpenning()),
+                categoryGrundForMedicinsktUnderlag(
+                    questionGrundForMedicinsktUnderlag(questionAnnanGrundForMedicinsktUnderlag())),
+                categorySysselsattning(questionSysselsattning(questionYrkeOchArbetsuppgifter())),
+                categoryDiagnos(
+                    questionFormedlaInfoOmDiagnosTillAG(),
+                    questionDiagnos(diagnosisCodeRepository)),
+                categoryFunktionsnedsattning(questionFunktionsnedsattningar()),
+                categoryAktivitetsbegransning(questionAktivitetsbegransningar()),
+                categoryMedicinskBehandling(questionMedicinskBehandling()),
+                categoryBedomning(
+                    questionNedsattningArbetsformaga(messageStartDateInfo()),
+                    questionArbetsformagaLangreAnBeslutsstod(),
+                    questionTransportstod(),
+                    questionSvarareAtergangVidOjamnArbetstid(
+                        questionMedicinskaSkalForSvarareAtergang())),
+                categoryPrognos(
+                    questionPrognos(questionAntalManader(), questionGrundForBedomning())),
+                categoryAtgarderSomKanFramjaAttergang(questionAtgarderSomKanFramjaAtergang()),
+                categoryOvrigt(questionOvrigt()),
+                categoryKontakt(questionKontakt(questionAngeVarforDuVillHaKontakt())),
+                issuingUnitContactInfo()))
         .certificateActionFactory(certificateActionFactory)
         .recipient(CertificateRecipientFactory.skr())
         .sickLeaveProvider(new AG7804SickLeaveProvider())

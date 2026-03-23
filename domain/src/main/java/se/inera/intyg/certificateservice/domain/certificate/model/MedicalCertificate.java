@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.certificate.model;
 
 import static se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementConfigurationUnitContactInformation.UNIT_CONTACT_INFORMATION;
@@ -61,25 +79,22 @@ public class MedicalCertificate implements Certificate {
   private LocalDateTime locked;
   private ReadyForSign readyForSign;
   private CertificateMetaData certificateMetaData;
-  @Builder.Default
-  private List<ElementData> elementData = Collections.emptyList();
+  @Builder.Default private List<ElementData> elementData = Collections.emptyList();
   private Revision revision;
-  @Builder.Default
-  private Status status = Status.DRAFT;
+  @Builder.Default private Status status = Status.DRAFT;
   private Xml xml;
   private Sent sent;
   private Revoked revoked;
   private ExternalReference externalReference;
-  @With
-  private Relation parent;
-  @Builder.Default
-  private List<Relation> children = Collections.emptyList();
-  @Builder.Default
-  private List<Message> messages = Collections.emptyList();
+  @With private Relation parent;
+  @Builder.Default private List<Relation> children = Collections.emptyList();
+  @Builder.Default private List<Message> messages = Collections.emptyList();
   private Forwarded forwarded;
+
   @Getter(AccessLevel.NONE)
   @EqualsAndHashCode.Exclude
   private CertificateRepository certificateRepository;
+
   @Getter(AccessLevel.NONE)
   private CertificateMetaData metaDataFromSignInstance;
 
@@ -87,59 +102,59 @@ public class MedicalCertificate implements Certificate {
   public List<CertificateAction> actions(Optional<ActionEvaluation> actionEvaluation) {
     return certificateModel.actions().stream()
         .filter(
-            certificateAction -> certificateAction.evaluate(
-                Optional.of(this),
-                addPatientIfMissing(actionEvaluation)
-            )
-        )
+            certificateAction ->
+                certificateAction.evaluate(
+                    Optional.of(this), addPatientIfMissing(actionEvaluation)))
         .toList();
   }
 
   @Override
   public List<CertificateAction> actionsInclude(Optional<ActionEvaluation> actionEvaluation) {
     return certificateModel.actions().stream()
-        .filter(certificateAction -> certificateAction.include(Optional.of(this),
-            addPatientIfMissing(actionEvaluation)))
+        .filter(
+            certificateAction ->
+                certificateAction.include(Optional.of(this), addPatientIfMissing(actionEvaluation)))
         .toList();
   }
 
   @Override
-  public boolean allowTo(CertificateActionType certificateActionType,
-      Optional<ActionEvaluation> actionEvaluation) {
+  public boolean allowTo(
+      CertificateActionType certificateActionType, Optional<ActionEvaluation> actionEvaluation) {
     return certificateModel.actions().stream()
         .filter(certificateAction -> certificateActionType.equals(certificateAction.getType()))
         .findFirst()
-        .map(certificateAction ->
-            certificateAction.evaluate(
-                Optional.of(this),
-                addPatientIfMissing(actionEvaluation)
-            )
-        )
+        .map(
+            certificateAction ->
+                certificateAction.evaluate(
+                    Optional.of(this), addPatientIfMissing(actionEvaluation)))
         .orElse(false);
   }
 
   @Override
-  public List<String> reasonNotAllowed(CertificateActionType certificateActionType,
-      Optional<ActionEvaluation> actionEvaluation) {
+  public List<String> reasonNotAllowed(
+      CertificateActionType certificateActionType, Optional<ActionEvaluation> actionEvaluation) {
     return certificateModel.actions().stream()
         .filter(certificateAction -> certificateActionType.equals(certificateAction.getType()))
         .findFirst()
-        .map(certificateAction -> certificateAction.reasonNotAllowed(Optional.of(this),
-            addPatientIfMissing(actionEvaluation)))
+        .map(
+            certificateAction ->
+                certificateAction.reasonNotAllowed(
+                    Optional.of(this), addPatientIfMissing(actionEvaluation)))
         .orElse(Collections.emptyList());
   }
 
   @Override
   public void updateMetadata(ActionEvaluation actionEvaluation) {
     if (certificateMetaData == null) {
-      certificateMetaData = CertificateMetaData.builder()
-          .patient(actionEvaluation.patient())
-          .issuer(Staff.create(actionEvaluation.user()))
-          .careUnit(actionEvaluation.careUnit())
-          .careProvider(actionEvaluation.careProvider())
-          .issuingUnit(actionEvaluation.subUnit())
-          .responsibleIssuer(actionEvaluation.user().responsibleIssuer())
-          .build();
+      certificateMetaData =
+          CertificateMetaData.builder()
+              .patient(actionEvaluation.patient())
+              .issuer(Staff.create(actionEvaluation.user()))
+              .careUnit(actionEvaluation.careUnit())
+              .careProvider(actionEvaluation.careProvider())
+              .issuingUnit(actionEvaluation.subUnit())
+              .responsibleIssuer(actionEvaluation.user().responsibleIssuer())
+              .build();
       return;
     }
 
@@ -147,19 +162,20 @@ public class MedicalCertificate implements Certificate {
   }
 
   @Override
-  public void updateData(List<ElementData> newData, Revision revision,
-      ActionEvaluation actionEvaluation) {
+  public void updateData(
+      List<ElementData> newData, Revision revision, ActionEvaluation actionEvaluation) {
     throwIfConcurrentModification(revision, "update", actionEvaluation);
-    final var missingIds = newData.stream()
-        .filter(newDataElement -> !certificateModel.elementSpecificationExists(newDataElement.id()))
-        .map(newDataElement -> newDataElement.id().id())
-        .reduce("", (s, s2) -> s.isBlank() ? s2 : s.concat(", " + s2));
+    final var missingIds =
+        newData.stream()
+            .filter(
+                newDataElement -> !certificateModel.elementSpecificationExists(newDataElement.id()))
+            .map(newDataElement -> newDataElement.id().id())
+            .reduce("", (s, s2) -> s.isBlank() ? s2 : s.concat(", " + s2));
 
     if (!missingIds.isEmpty()) {
       throw new IllegalArgumentException(
           "ElementIds '%s' are missing from certificateModelId '%s'"
-              .formatted(missingIds, certificateModel.id())
-      );
+              .formatted(missingIds, certificateModel.id()));
     }
     this.revision = this.revision.increment();
     this.elementData = newData.stream().toList();
@@ -170,9 +186,8 @@ public class MedicalCertificate implements Certificate {
     throwIfConcurrentModification(revision, "delete", actionEvaluation);
     if (this.status != Status.DRAFT) {
       throw new IllegalStateException(
-          "Incorrect status '%s' - required status is '%s' to delete".formatted(this.status,
-              Status.DRAFT)
-      );
+          "Incorrect status '%s' - required status is '%s' to delete"
+              .formatted(this.status, Status.DRAFT));
     }
     this.status = Status.DELETED_DRAFT;
     this.revision = this.revision.increment();
@@ -188,12 +203,11 @@ public class MedicalCertificate implements Certificate {
     return ValidationResult.builder()
         .errors(
             certificateModel.elementSpecifications().stream()
-                .map(elementSpecification ->
-                    elementSpecification.validate(elementData, Optional.empty())
-                )
+                .map(
+                    elementSpecification ->
+                        elementSpecification.validate(elementData, Optional.empty()))
                 .flatMap(List::stream)
-                .toList()
-        )
+                .toList())
         .build();
   }
 
@@ -203,40 +217,39 @@ public class MedicalCertificate implements Certificate {
   }
 
   @Override
-  public void sign(XmlGenerator xmlGenerator, Revision revision,
-      ActionEvaluation actionEvaluation) {
+  public void sign(
+      XmlGenerator xmlGenerator, Revision revision, ActionEvaluation actionEvaluation) {
     sign(revision, actionEvaluation);
     this.xml = xmlGenerator.generate(this, true);
   }
 
   @Override
-  public void sign(XmlGenerator xmlGenerator, Signature signature, Revision revision,
+  public void sign(
+      XmlGenerator xmlGenerator,
+      Signature signature,
+      Revision revision,
       ActionEvaluation actionEvaluation) {
     if (signature == null || signature.isEmpty()) {
       throw new IllegalArgumentException(
-          "Incorrect signature '%s' - signature required to sign".formatted(signature)
-      );
+          "Incorrect signature '%s' - signature required to sign".formatted(signature));
     }
 
     sign(revision, actionEvaluation);
     this.xml = xmlGenerator.generate(this, signature);
   }
 
-
   private void sign(Revision revision, ActionEvaluation actionEvaluation) {
     throwIfConcurrentModification(revision, "sign", actionEvaluation);
     if (this.status != Status.DRAFT) {
       throw new IllegalStateException(
-          "Incorrect status '%s' - required status is '%s' to sign".formatted(this.status,
-              Status.DRAFT)
-      );
+          "Incorrect status '%s' - required status is '%s' to sign"
+              .formatted(this.status, Status.DRAFT));
     }
 
     final var validationResult = validate();
     if (validationResult.isInvalid()) {
       throw new IllegalArgumentException(
-          "Certificate '%s' cannot be signed as it is not valid".formatted(id())
-      );
+          "Certificate '%s' cannot be signed as it is not valid".formatted(id()));
     }
 
     this.status = Status.SIGNED;
@@ -252,55 +265,52 @@ public class MedicalCertificate implements Certificate {
     if (actionEvaluation.get().patient() != null) {
       return actionEvaluation;
     }
-    return Optional.of(
-        actionEvaluation.get().withPatient(certificateMetaData.patient())
-    );
+    return Optional.of(actionEvaluation.get().withPatient(certificateMetaData.patient()));
   }
 
-  private void throwIfConcurrentModification(Revision revision, String operation,
-      ActionEvaluation actionEvaluation) {
+  private void throwIfConcurrentModification(
+      Revision revision, String operation, ActionEvaluation actionEvaluation) {
     if (!this.revision.equals(revision)) {
       throw new ConcurrentModificationException(
-          "Incorrect revision '%s' != '%s' - unable to %s".formatted(revision, this.revision,
-              operation),
+          "Incorrect revision '%s' != '%s' - unable to %s"
+              .formatted(revision, this.revision, operation),
           actionEvaluation.user(),
-          actionEvaluation.subUnit()
-      );
+          actionEvaluation.subUnit());
     }
   }
 
   @Override
   public void send(ActionEvaluation actionEvaluation) {
     validateCertificateValidToSend();
-    this.sent = Sent.builder()
-        .recipient(certificateModel.recipient())
-        .sentBy(Staff.create(actionEvaluation.user()))
-        .sentAt(LocalDateTime.now(ZoneId.systemDefault()))
-        .build();
+    this.sent =
+        Sent.builder()
+            .recipient(certificateModel.recipient())
+            .sentBy(Staff.create(actionEvaluation.user()))
+            .sentAt(LocalDateTime.now(ZoneId.systemDefault()))
+            .build();
   }
 
   @Override
   public void sendByCitizen() {
     validateCertificateValidToSend();
-    this.sent = Sent.builder()
-        .recipient(certificateModel.recipient())
-        .sentAt(LocalDateTime.now(ZoneId.systemDefault()))
-        .build();
+    this.sent =
+        Sent.builder()
+            .recipient(certificateModel.recipient())
+            .sentAt(LocalDateTime.now(ZoneId.systemDefault()))
+            .build();
   }
 
   private void validateCertificateValidToSend() {
     if (this.status != Status.SIGNED) {
       throw new IllegalStateException(
-          "Incorrect status '%s' - required status is '%s' to send".formatted(this.status,
-              Status.SIGNED)
-      );
+          "Incorrect status '%s' - required status is '%s' to send"
+              .formatted(this.status, Status.SIGNED));
     }
 
     if (this.sent != null) {
       throw new IllegalStateException(
-          "Certificate with id '%s' has already been sent to '%s'.".formatted(id(),
-              this.sent.recipient().name())
-      );
+          "Certificate with id '%s' has already been sent to '%s'."
+              .formatted(id(), this.sent.recipient().name()));
     }
   }
 
@@ -308,45 +318,42 @@ public class MedicalCertificate implements Certificate {
   public void revoke(ActionEvaluation actionEvaluation, RevokedInformation revokedInformation) {
     if (this.status != Status.SIGNED) {
       throw new IllegalStateException(
-          "Incorrect status '%s' - required status is '%s' or '%s' to revoke".formatted(this.status,
-              Status.SIGNED, Status.LOCKED_DRAFT)
-      );
+          "Incorrect status '%s' - required status is '%s' or '%s' to revoke"
+              .formatted(this.status, Status.SIGNED, Status.LOCKED_DRAFT));
     }
 
     if (this.revoked != null) {
       throw new IllegalStateException(
-          "Certificate with id '%s' has already been revoked".formatted(id().id())
-      );
+          "Certificate with id '%s' has already been revoked".formatted(id().id()));
     }
 
     this.status = Status.REVOKED;
-    this.revoked = Revoked.builder()
-        .revokedInformation(revokedInformation)
-        .revokedBy(Staff.create(actionEvaluation.user()))
-        .revokedAt(LocalDateTime.now(ZoneId.systemDefault()))
-        .build();
+    this.revoked =
+        Revoked.builder()
+            .revokedInformation(revokedInformation)
+            .revokedBy(Staff.create(actionEvaluation.user()))
+            .revokedAt(LocalDateTime.now(ZoneId.systemDefault()))
+            .build();
   }
 
   @Override
   public void readyForSign(ActionEvaluation actionEvaluation) {
     if (this.status != Status.DRAFT) {
       throw new IllegalStateException(
-          "Incorrect status '%s' - required status is '%s' to set ready for sign.".formatted(
-              this.status,
-              Status.DRAFT)
-      );
+          "Incorrect status '%s' - required status is '%s' to set ready for sign."
+              .formatted(this.status, Status.DRAFT));
     }
 
     if (this.readyForSign != null) {
       throw new IllegalStateException(
-          "Certificate with id '%s' has already been marked as ready for sign.".formatted(id())
-      );
+          "Certificate with id '%s' has already been marked as ready for sign.".formatted(id()));
     }
 
-    this.readyForSign = ReadyForSign.builder()
-        .readyForSignAt(LocalDateTime.now(ZoneId.systemDefault()))
-        .readyForSignBy(Staff.create(actionEvaluation.user()))
-        .build();
+    this.readyForSign =
+        ReadyForSign.builder()
+            .readyForSignAt(LocalDateTime.now(ZoneId.systemDefault()))
+            .readyForSignBy(Staff.create(actionEvaluation.user()))
+            .build();
   }
 
   @Override
@@ -360,23 +367,23 @@ public class MedicalCertificate implements Certificate {
 
   @Override
   public Optional<ElementData> getElementDataById(ElementId id) {
-    return elementData.stream()
-        .filter(data -> id.id().equals(data.id().id()))
-        .findFirst();
+    return elementData.stream().filter(data -> id.id().equals(data.id().id())).findFirst();
   }
 
   @Override
   public Certificate replace(ActionEvaluation actionEvaluation) {
     final var newCertificate = createCertificate(actionEvaluation, RelationType.REPLACE);
 
-    newCertificate.elementData = this.elementData().stream()
-        .filter(data -> !UNIT_CONTACT_INFORMATION.equals(data.id()))
-        .toList();
+    newCertificate.elementData =
+        this.elementData().stream()
+            .filter(data -> !UNIT_CONTACT_INFORMATION.equals(data.id()))
+            .toList();
 
-    newCertificate.elementData = Stream.concat(
-        newCertificate.elementData.stream(),
-        handleUnitContactInformation(actionEvaluation.subUnit()).stream()
-    ).toList();
+    newCertificate.elementData =
+        Stream.concat(
+                newCertificate.elementData.stream(),
+                handleUnitContactInformation(actionEvaluation.subUnit()).stream())
+            .toList();
 
     return newCertificate;
   }
@@ -385,14 +392,16 @@ public class MedicalCertificate implements Certificate {
   public Certificate complement(ActionEvaluation actionEvaluation) {
     final var newCertificate = createCertificate(actionEvaluation, RelationType.COMPLEMENT);
 
-    newCertificate.elementData = this.elementData().stream()
-        .filter(data -> !UNIT_CONTACT_INFORMATION.equals(data.id()))
-        .toList();
+    newCertificate.elementData =
+        this.elementData().stream()
+            .filter(data -> !UNIT_CONTACT_INFORMATION.equals(data.id()))
+            .toList();
 
-    newCertificate.elementData = Stream.concat(
-        newCertificate.elementData.stream(),
-        handleUnitContactInformation(actionEvaluation.subUnit()).stream()
-    ).toList();
+    newCertificate.elementData =
+        Stream.concat(
+                newCertificate.elementData.stream(),
+                handleUnitContactInformation(actionEvaluation.subUnit()).stream())
+            .toList();
 
     return newCertificate;
   }
@@ -401,18 +410,20 @@ public class MedicalCertificate implements Certificate {
   public Certificate renew(ActionEvaluation actionEvaluation) {
     final var newCertificate = createCertificate(actionEvaluation, RelationType.RENEW);
 
-    newCertificate.elementData = this.elementData().stream()
-        .filter(data -> !UNIT_CONTACT_INFORMATION.equals(data.id()))
-        .filter(data ->
-            !certificateModel.elementSpecificationExists(data.id())
-                || certificateModel.elementSpecification(data.id()).includeWhenRenewing()
-        )
-        .toList();
+    newCertificate.elementData =
+        this.elementData().stream()
+            .filter(data -> !UNIT_CONTACT_INFORMATION.equals(data.id()))
+            .filter(
+                data ->
+                    !certificateModel.elementSpecificationExists(data.id())
+                        || certificateModel.elementSpecification(data.id()).includeWhenRenewing())
+            .toList();
 
-    newCertificate.elementData = Stream.concat(
-        newCertificate.elementData.stream(),
-        handleUnitContactInformation(actionEvaluation.subUnit()).stream()
-    ).toList();
+    newCertificate.elementData =
+        Stream.concat(
+                newCertificate.elementData.stream(),
+                handleUnitContactInformation(actionEvaluation.subUnit()).stream())
+            .toList();
 
     return newCertificate;
   }
@@ -426,42 +437,45 @@ public class MedicalCertificate implements Certificate {
         .filter(data -> data.id().equals(UNIT_CONTACT_INFORMATION))
         .map(data -> (ElementValueUnitContactInformation) data.value())
         .map(elementValue -> elementValue.copy(issuingUnit))
-        .map(updatedElementValue -> ElementData.builder()
-            .id(UNIT_CONTACT_INFORMATION)
-            .value(updatedElementValue)
-            .build()
-        )
+        .map(
+            updatedElementValue ->
+                ElementData.builder()
+                    .id(UNIT_CONTACT_INFORMATION)
+                    .value(updatedElementValue)
+                    .build())
         .findFirst();
   }
 
-  private MedicalCertificate createCertificate(ActionEvaluation actionEvaluation,
-      RelationType relationType) {
-    final var newCertificate = MedicalCertificate.builder()
-        .id(new CertificateId(UUID.randomUUID().toString()))
-        .created(LocalDateTime.now(ZoneId.systemDefault()))
-        .certificateModel(this.certificateModel())
-        .revision(new Revision(0))
-        .certificateRepository(this.certificateRepository)
-        .build();
+  private MedicalCertificate createCertificate(
+      ActionEvaluation actionEvaluation, RelationType relationType) {
+    final var newCertificate =
+        MedicalCertificate.builder()
+            .id(new CertificateId(UUID.randomUUID().toString()))
+            .created(LocalDateTime.now(ZoneId.systemDefault()))
+            .certificateModel(this.certificateModel())
+            .revision(new Revision(0))
+            .certificateRepository(this.certificateRepository)
+            .build();
 
     newCertificate.updateMetadata(actionEvaluation);
 
-    newCertificate.parent = Relation.builder()
-        .certificate(this)
-        .type(relationType)
-        .created(newCertificate.created())
-        .build();
+    newCertificate.parent =
+        Relation.builder()
+            .certificate(this)
+            .type(relationType)
+            .created(newCertificate.created())
+            .build();
 
-    this.children = Stream.concat(
-        this.children().stream(),
-        Stream.of(
-            Relation.builder()
-                .certificate(newCertificate)
-                .type(relationType)
-                .created(newCertificate.parent().created())
-                .build()
-        )
-    ).toList();
+    this.children =
+        Stream.concat(
+                this.children().stream(),
+                Stream.of(
+                    Relation.builder()
+                        .certificate(newCertificate)
+                        .type(relationType)
+                        .created(newCertificate.parent().created())
+                        .build()))
+            .toList();
 
     return newCertificate;
   }
@@ -481,14 +495,18 @@ public class MedicalCertificate implements Certificate {
     }
 
     return this.children().stream()
-        .noneMatch(relation -> relation.type() == RelationType.REPLACE
-            && relation.certificate().status() == Status.SIGNED
-        );
+        .noneMatch(
+            relation ->
+                relation.type() == RelationType.REPLACE
+                    && relation.certificate().status() == Status.SIGNED);
   }
 
   @Override
   public boolean isCertificateIssuedOnPatient(PersonId citizen) {
-    return this.certificateMetaData().patient().id().idWithoutDash()
+    return this.certificateMetaData()
+        .patient()
+        .id()
+        .idWithoutDash()
         .equals(citizen.idWithoutDash());
   }
 
@@ -509,59 +527,59 @@ public class MedicalCertificate implements Certificate {
 
   @Override
   public List<Message> messages(MessageType type) {
-    return messages.stream()
-        .filter(message -> message.type().equals(type))
-        .toList();
+    return messages.stream().filter(message -> message.type().equals(type)).toList();
   }
 
   @Override
   public boolean isReplaced() {
     return this.children().stream()
-        .anyMatch(relation -> relation.type() == RelationType.REPLACE
-            && relation.certificate().status() == Status.SIGNED
-        );
+        .anyMatch(
+            relation ->
+                relation.type() == RelationType.REPLACE
+                    && relation.certificate().status() == Status.SIGNED);
   }
 
   @Override
   public boolean isComplemented() {
     return this.children().stream()
-        .anyMatch(relation -> relation.type() == RelationType.COMPLEMENT
-            && relation.certificate().status() == Status.SIGNED
-        );
+        .anyMatch(
+            relation ->
+                relation.type() == RelationType.COMPLEMENT
+                    && relation.certificate().status() == Status.SIGNED);
   }
 
   @Override
   public void answerComplement(ActionEvaluation actionEvaluation, Content content) {
-    this.messages = this.messages.stream()
-        .peek(message -> {
-              if (message.type().equals(MessageType.COMPLEMENT)) {
-                message.answer(
-                    Answer.builder()
-                        .id(new MessageId(UUID.randomUUID().toString()))
-                        .reference(message.reference())
-                        .type(message.type())
-                        .created(LocalDateTime.now())
-                        .subject(message.subject())
-                        .content(content)
-                        .modified(LocalDateTime.now())
-                        .sent(LocalDateTime.now())
-                        .status(MessageStatus.HANDLED)
-                        .author(new Author(actionEvaluation.user().name().fullName()))
-                        .authoredStaff(Staff.create(actionEvaluation.user()))
-                        .build()
-                );
-              }
-            }
-        )
-        .toList();
+    this.messages =
+        this.messages.stream()
+            .peek(
+                message -> {
+                  if (message.type().equals(MessageType.COMPLEMENT)) {
+                    message.answer(
+                        Answer.builder()
+                            .id(new MessageId(UUID.randomUUID().toString()))
+                            .reference(message.reference())
+                            .type(message.type())
+                            .created(LocalDateTime.now())
+                            .subject(message.subject())
+                            .content(content)
+                            .modified(LocalDateTime.now())
+                            .sent(LocalDateTime.now())
+                            .status(MessageStatus.HANDLED)
+                            .author(new Author(actionEvaluation.user().name().fullName()))
+                            .authoredStaff(Staff.create(actionEvaluation.user()))
+                            .build());
+                  }
+                })
+            .toList();
   }
 
   @Override
   public void forwardMessages() {
     if (!status.equals(Status.SIGNED)) {
       throw new IllegalStateException(
-          "Cannot forward messages for certificate with status '%s'. Required status '%s'".formatted(
-              status, Status.SIGNED));
+          "Cannot forward messages for certificate with status '%s'. Required status '%s'"
+              .formatted(status, Status.SIGNED));
     }
 
     if (messages.isEmpty()) {
@@ -575,8 +593,8 @@ public class MedicalCertificate implements Certificate {
   public void forward() {
     if (!status.equals(Status.DRAFT)) {
       throw new IllegalStateException(
-          "Cannot forward certificate with status '%s'. Required status '%s'".formatted(
-              status, Status.DRAFT));
+          "Cannot forward certificate with status '%s'. Required status '%s'"
+              .formatted(status, Status.DRAFT));
     }
 
     this.forwarded = new Forwarded(true);
@@ -600,28 +618,23 @@ public class MedicalCertificate implements Certificate {
       return isIssuingUnitMatchingSubUnit(actionEvaluation)
           || isCareUnitMatchingSubUnit(actionEvaluation);
     }
-    return certificateMetaData.careUnit().hsaId().equals(
-        actionEvaluation.careUnit().hsaId()
-    );
+    return certificateMetaData.careUnit().hsaId().equals(actionEvaluation.careUnit().hsaId());
   }
 
   @Override
   public boolean isWithinCareProvider(ActionEvaluation actionEvaluation) {
-    return certificateMetaData.careProvider().hsaId().equals(
-        actionEvaluation.careProvider().hsaId()
-    );
+    return certificateMetaData
+        .careProvider()
+        .hsaId()
+        .equals(actionEvaluation.careProvider().hsaId());
   }
 
   private boolean isCareUnitMatchingSubUnit(ActionEvaluation actionEvaluation) {
-    return certificateMetaData.careUnit().hsaId().equals(
-        actionEvaluation.subUnit().hsaId()
-    );
+    return certificateMetaData.careUnit().hsaId().equals(actionEvaluation.subUnit().hsaId());
   }
 
   private boolean isIssuingUnitMatchingSubUnit(ActionEvaluation actionEvaluation) {
-    return certificateMetaData.issuingUnit().hsaId().equals(
-        actionEvaluation.subUnit().hsaId()
-    );
+    return certificateMetaData.issuingUnit().hsaId().equals(actionEvaluation.subUnit().hsaId());
   }
 
   @Override
@@ -635,9 +648,8 @@ public class MedicalCertificate implements Certificate {
   @Override
   public void prefill(Xml prefillXml, PrefillProcessor prefillProcessor) {
     try {
-      final var prefill = new ArrayList<>(
-          prefillProcessor.prefill(certificateModel, prefillXml, id)
-      );
+      final var prefill =
+          new ArrayList<>(prefillProcessor.prefill(certificateModel, prefillXml, id));
       prefill.add(
           ElementData.builder()
               .id(UNIT_CONTACT_INFORMATION)
@@ -647,17 +659,17 @@ public class MedicalCertificate implements Certificate {
                       .city(certificateMetaData.issuingUnit().address().city())
                       .zipCode(certificateMetaData.issuingUnit().address().zipCode())
                       .phoneNumber(certificateMetaData.issuingUnit().contactInfo().phoneNumber())
-                      .build()
-              )
-              .build()
-      );
+                      .build())
+              .build());
 
       final var filterOnIncludeWhenRenewing =
           parent() != null && parent().type() == RelationType.RENEW;
       if (filterOnIncludeWhenRenewing) {
-        this.elementData = prefill.stream()
-            .filter(data -> certificateModel.elementSpecification(data.id()).includeWhenRenewing())
-            .toList();
+        this.elementData =
+            prefill.stream()
+                .filter(
+                    data -> certificateModel.elementSpecification(data.id()).includeWhenRenewing())
+                .toList();
       } else {
         this.elementData = prefill;
       }
@@ -670,25 +682,28 @@ public class MedicalCertificate implements Certificate {
   public void fillFromCertificate(Certificate certificate) {
     if (this.revision.value() != 0) {
       throw new IllegalStateException(
-          "Unable to fill certificate '%s' since revision is greater than 0".formatted(
-              this.id.id())
-      );
+          "Unable to fill certificate '%s' since revision is greater than 0"
+              .formatted(this.id.id()));
     }
 
-    this.elementData = certificate.elementData().stream()
-        .filter(data -> this.certificateModel.elementSpecificationExists(data.id()))
-        .map(convertElementDataWithModelSpecification(certificate))
-        .filter(Optional::isPresent)
-        .map(Optional::get)
-        .toList();
+    this.elementData =
+        certificate.elementData().stream()
+            .filter(data -> this.certificateModel.elementSpecificationExists(data.id()))
+            .map(convertElementDataWithModelSpecification(certificate))
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .toList();
 
     this.revision = this.revision.increment();
   }
 
   private Function<ElementData, Optional<ElementData>> convertElementDataWithModelSpecification(
       Certificate certificate) {
-    return data -> this.certificateModel.elementSpecification(data.id()).configuration()
-        .convert(data, certificate.certificateModel().elementSpecification(data.id()));
+    return data ->
+        this.certificateModel
+            .elementSpecification(data.id())
+            .configuration()
+            .convert(data, certificate.certificateModel().elementSpecification(data.id()));
   }
 
   @Override
@@ -701,19 +716,16 @@ public class MedicalCertificate implements Certificate {
       return Optional.empty();
     }
 
-    final var certificates = certificateRepository.findByCertificatesRequest(
-        CertificatesRequest.builder()
-            .personId(certificateMetaData().patient().id())
-            .careUnitId(certificateMetaData().careUnit().hsaId())
-            .types(
-                List.of(certificateModel().ableToCreateDraftForModel().type())
-            )
-            .statuses(List.of(Status.SIGNED))
-            .build()
-    );
+    final var certificates =
+        certificateRepository.findByCertificatesRequest(
+            CertificatesRequest.builder()
+                .personId(certificateMetaData().patient().id())
+                .careUnitId(certificateMetaData().careUnit().hsaId())
+                .types(List.of(certificateModel().ableToCreateDraftForModel().type()))
+                .statuses(List.of(Status.SIGNED))
+                .build());
 
-    return certificates.stream()
-        .max(Comparator.comparing(Certificate::signed));
+    return certificates.stream().max(Comparator.comparing(Certificate::signed));
   }
 
   public CertificateMetaData getMetadataForPrint() {
@@ -725,15 +737,15 @@ public class MedicalCertificate implements Certificate {
       return metaDataFromSignInstance;
     }
 
-    return this.certificateRepository.getMetadataFromSignInstance(this.certificateMetaData,
-        this.signed);
+    return this.certificateRepository.getMetadataFromSignInstance(
+        this.certificateMetaData, this.signed);
   }
 
   @Override
   public Optional<CertificateGeneralPrintText> getGeneralPrintText() {
-    return certificateModel.generalPrintProvider() != null ? Optional.of(
-        certificateModel.generalPrintProvider()
-            .generalPrintText()) : Optional.empty();
+    return certificateModel.generalPrintProvider() != null
+        ? Optional.of(certificateModel.generalPrintProvider().generalPrintText())
+        : Optional.empty();
   }
 
   @Override
@@ -759,14 +771,18 @@ public class MedicalCertificate implements Certificate {
     if (!this.certificateMetaData.issuer().hsaId().equals(metaData.issuer().hsaId())) {
       throw new IllegalArgumentException(
           "Cannot update metadata with CertificateMetaData having different issuer HSA-ID");
-    } else if (!this.certificateMetaData.careProvider().hsaId()
+    } else if (!this.certificateMetaData
+        .careProvider()
+        .hsaId()
         .equals(metaData.careProvider().hsaId())) {
       throw new IllegalArgumentException(
           "Cannot update metadata with CertificateMetaData having different careProvider HSA-ID");
     } else if (!this.certificateMetaData.careUnit().hsaId().equals(metaData.careUnit().hsaId())) {
       throw new IllegalArgumentException(
           "Cannot update metadata with CertificateMetaData having different careUnit HSA-ID");
-    } else if (!this.certificateMetaData.issuingUnit().hsaId()
+    } else if (!this.certificateMetaData
+        .issuingUnit()
+        .hsaId()
         .equals(metaData.issuingUnit().hsaId())) {
       throw new IllegalArgumentException(
           "Cannot update metadata with CertificateMetaData having different issuingUnit HSA-ID");
@@ -774,5 +790,4 @@ public class MedicalCertificate implements Certificate {
 
     certificateMetaData = metaData;
   }
-
 }

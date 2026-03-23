@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7804.elements;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7804.elements.QuestionGrundForMedicinsktUnderlag.QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID;
@@ -17,10 +35,10 @@ import se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.
 
 public class QuestionAnnanGrundForMedicinsktUnderlag {
 
-  public static final ElementId QUESTION_ANNAN_GRUND_FOR_MEDICINSKT_UNDERLAG_ID = new ElementId(
-      "1.3");
-  public static final FieldId QUESTION_ANNAN_GRUND_FOR_MEDICINSKT_UNDERLAG_FIELD_ID = new FieldId(
-      "1.3");
+  public static final ElementId QUESTION_ANNAN_GRUND_FOR_MEDICINSKT_UNDERLAG_ID =
+      new ElementId("1.3");
+  public static final FieldId QUESTION_ANNAN_GRUND_FOR_MEDICINSKT_UNDERLAG_FIELD_ID =
+      new FieldId("1.3");
   private static final FieldId ANNAT_FIELD_ID = new FieldId(CodeSystemKvFkmu0001.ANNAT.code());
 
   private QuestionAnnanGrundForMedicinsktUnderlag() {
@@ -34,52 +52,35 @@ public class QuestionAnnanGrundForMedicinsktUnderlag {
             ElementConfigurationTextField.builder()
                 .id(QUESTION_ANNAN_GRUND_FOR_MEDICINSKT_UNDERLAG_FIELD_ID)
                 .name("Ange vad annat är")
-                .build()
-        )
+                .build())
         .rules(
             List.of(
                 CertificateElementRuleFactory.mandatory(
                     QUESTION_ANNAN_GRUND_FOR_MEDICINSKT_UNDERLAG_ID,
-                    QUESTION_ANNAN_GRUND_FOR_MEDICINSKT_UNDERLAG_FIELD_ID
-                ),
+                    QUESTION_ANNAN_GRUND_FOR_MEDICINSKT_UNDERLAG_FIELD_ID),
                 CertificateElementRuleFactory.limit(
-                    QUESTION_ANNAN_GRUND_FOR_MEDICINSKT_UNDERLAG_ID,
-                    (short) 50),
+                    QUESTION_ANNAN_GRUND_FOR_MEDICINSKT_UNDERLAG_ID, (short) 50),
                 CertificateElementRuleFactory.show(
-                    QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID,
-                    ANNAT_FIELD_ID
-                )
-            )
-        )
-        .validations(
-            List.of(
-                ElementValidationText.builder()
-                    .limit(50)
-                    .mandatory(true)
-                    .build()
-            )
-        )
+                    QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID, ANNAT_FIELD_ID)))
+        .validations(List.of(ElementValidationText.builder().limit(50).mandatory(true).build()))
         .mapping(
             new ElementMapping(
-                QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID,
-                CodeSystemKvFkmu0001.ANNAT
-            )
-        )
+                QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID, CodeSystemKvFkmu0001.ANNAT))
         .shouldValidate(
-            elementData -> elementData.stream()
-                .filter(data -> data.id().equals(QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID))
-                .map(element -> (ElementValueDateList) element.value())
-                .anyMatch(value -> value.dateList().stream().anyMatch(
-                    valueDate -> valueDate.dateId().equals(ANNAT_FIELD_ID))
-                )
-        )
+            elementData ->
+                elementData.stream()
+                    .filter(data -> data.id().equals(QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID))
+                    .map(element -> (ElementValueDateList) element.value())
+                    .anyMatch(
+                        value ->
+                            value.dateList().stream()
+                                .anyMatch(valueDate -> valueDate.dateId().equals(ANNAT_FIELD_ID))))
         .pdfConfiguration(
             PdfConfigurationText.builder()
                 .pdfFieldId(new PdfFieldId("form1[0].#subform[0].flt_txtAnnatAngeVad[0]"))
                 .overflowSheetFieldId(
                     new PdfFieldId("form1[0].#subform[4].flt_txtFortsattningsblad[0]"))
-                .build()
-        )
+                .build())
         .includeWhenRenewing(false)
         .build();
   }

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.QuestionUtlatandeBaseratPa.QUESTION_UTLATANDE_BASERAT_PA_ID;
@@ -20,8 +38,8 @@ public class QuestionUtlatandeBaseratPaAnnat {
 
   public static final ElementId QUESTION_UTLATANDE_BASERAT_PA_ANNAT_ID = new ElementId("1.3");
   public static final FieldId QUESTION_UTLATANDE_BASERAT_PA_ANNAT_FIELD_ID = new FieldId("1.3");
-  private static final PdfFieldId PDF_STATEMENT_BASED_ON_OTHER_FIELD_ID = new PdfFieldId(
-      "form1[0].#subform[0].flt_txtAnnatAngeVad[0]");
+  private static final PdfFieldId PDF_STATEMENT_BASED_ON_OTHER_FIELD_ID =
+      new PdfFieldId("form1[0].#subform[0].flt_txtAnnatAngeVad[0]");
 
   private QuestionUtlatandeBaseratPaAnnat() {
     throw new IllegalStateException("Utility class");
@@ -33,52 +51,36 @@ public class QuestionUtlatandeBaseratPaAnnat {
         .configuration(
             ElementConfigurationTextField.builder()
                 .id(QUESTION_UTLATANDE_BASERAT_PA_ANNAT_FIELD_ID)
-                .name(
-                    "Ange vad annat är")
-                .build()
-        )
+                .name("Ange vad annat är")
+                .build())
         .rules(
             List.of(
                 CertificateElementRuleFactory.mandatory(
                     QUESTION_UTLATANDE_BASERAT_PA_ANNAT_ID,
-                    QUESTION_UTLATANDE_BASERAT_PA_ANNAT_FIELD_ID
-                ),
+                    QUESTION_UTLATANDE_BASERAT_PA_ANNAT_FIELD_ID),
                 CertificateElementRuleFactory.limit(
-                    QUESTION_UTLATANDE_BASERAT_PA_ANNAT_ID,
-                    (short) 50),
+                    QUESTION_UTLATANDE_BASERAT_PA_ANNAT_ID, (short) 50),
                 CertificateElementRuleFactory.show(
-                    QUESTION_UTLATANDE_BASERAT_PA_ID,
-                    UTLATANDE_BASERAT_PA_ANNAT_FIELD_ID
-                )
-            )
-        )
-        .validations(
-            List.of(
-                ElementValidationText.builder()
-                    .mandatory(true)
-                    .limit(50)
-                    .build()
-            )
-        )
-        .mapping(
-            new ElementMapping(
-                QUESTION_UTLATANDE_BASERAT_PA_ID,
-                CodeSystemKvFkmu0001.ANNAT
-            )
-        )
+                    QUESTION_UTLATANDE_BASERAT_PA_ID, UTLATANDE_BASERAT_PA_ANNAT_FIELD_ID)))
+        .validations(List.of(ElementValidationText.builder().mandatory(true).limit(50).build()))
+        .mapping(new ElementMapping(QUESTION_UTLATANDE_BASERAT_PA_ID, CodeSystemKvFkmu0001.ANNAT))
         .shouldValidate(
-            elementData -> elementData.stream()
-                .filter(data -> data.id().equals(QUESTION_UTLATANDE_BASERAT_PA_ID))
-                .map(element -> (ElementValueDateList) element.value())
-                .anyMatch(value -> value.dateList().stream().anyMatch(
-                    valueDate -> valueDate.dateId().equals(UTLATANDE_BASERAT_PA_ANNAT_FIELD_ID))
-                )
-        )
+            elementData ->
+                elementData.stream()
+                    .filter(data -> data.id().equals(QUESTION_UTLATANDE_BASERAT_PA_ID))
+                    .map(element -> (ElementValueDateList) element.value())
+                    .anyMatch(
+                        value ->
+                            value.dateList().stream()
+                                .anyMatch(
+                                    valueDate ->
+                                        valueDate
+                                            .dateId()
+                                            .equals(UTLATANDE_BASERAT_PA_ANNAT_FIELD_ID))))
         .pdfConfiguration(
             PdfConfigurationText.builder()
                 .pdfFieldId(PDF_STATEMENT_BASED_ON_OTHER_FIELD_ID)
-                .build()
-        )
+                .build())
         .includeWhenRenewing(false)
         .build();
   }

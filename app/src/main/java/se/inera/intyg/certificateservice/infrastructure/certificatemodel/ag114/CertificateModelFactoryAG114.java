@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ag114;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.ag114.elements.CategoryArbetsformaga.categoryArbetsformaga;
@@ -56,20 +74,24 @@ public class CertificateModelFactoryAG114 implements CertificateModelFactory {
   private static final CertificateTypeName AG114_TYPE_NAME = new CertificateTypeName("AG1-14");
   private static final String NAME = "Läkarintyg om arbetsförmåga – sjuklöneperioden";
   private static final String VERSION = "2.0";
-  private static final String DESCRIPTION = """
+  private static final String DESCRIPTION =
+      """
       Läkarintyg om arbetsförmåga – sjuklöneperioden ska användas när patienten har en anställning och behöver ett läkarintyg i förhållande till sin arbetsgivare. Intyget används under sjuklöneperioden, det vill säga under de 14 första dagarna i sjukfallet.
       """;
 
-  private static final String PREAMBLE_TEXT = """
+  private static final String PREAMBLE_TEXT =
+      """
       Det här är ditt intyg. Intyget innehåller all information som vården fyllt i. Du kan inte ändra något i ditt intyg. Har du frågor kontaktar du den som skrivit ditt intyg. Det här intyget behöver du skriva ut och skicka själv.
       """;
 
-  public static final CertificateModelId AG114_V2_0 = CertificateModelId.builder()
-      .type(new CertificateType(AG114))
-      .version(new CertificateVersion(VERSION))
-      .build();
+  public static final CertificateModelId AG114_V2_0 =
+      CertificateModelId.builder()
+          .type(new CertificateType(AG114))
+          .version(new CertificateVersion(VERSION))
+          .build();
 
-  private static final String DETAILED_DESCRIPTION = """
+  private static final String DETAILED_DESCRIPTION =
+      """
       <p><b>Utfärdare</b><br/>Läkarintyget får utfärdas av läkare eller tandläkare. I intyget omfattar begreppet läkare båda professionerna. Det är inte möjligt att delegera rätten att utfärda läkarintyget till annan profession, till exempel sjuksköterska eller fysioterapeut. Se även Socialstyrelsens föreskrifter om intyg (HSLF-FS 2018:54).</p>
       <p><b>Syften med läkarintyget</b></p>
       <ul>
@@ -104,50 +126,33 @@ public class CertificateModelFactoryAG114 implements CertificateModelFactory {
         .activeFrom(activeFrom)
         .availableForCitizen(true)
         .recipient(CertificateRecipientFactory.skr())
-        .texts(List.of(
-            CertificateText.builder()
-                .text(PREAMBLE_TEXT)
-                .type(CertificateTextType.PREAMBLE_TEXT)
-                .build()
-        ))
+        .texts(
+            List.of(
+                CertificateText.builder()
+                    .text(PREAMBLE_TEXT)
+                    .type(CertificateTextType.PREAMBLE_TEXT)
+                    .build()))
         .summaryProvider(new AG114CertificateSummaryProvider())
         .certificateActionSpecifications(AG114CertificateActionSpecification.create())
         .citizenAvailableFunctionsProvider(new AG114CitizenAvailableFunctionsProvider())
         .messageActionSpecifications(List.of())
-        .elementSpecifications(List.of(
-            categoryGrundForMedicinsktUnderlag(
-                questionGrundForMedicinsktUnderlag(
-                    questionAngeVadAnnatAr()
-                )
-            ),
-            categorySysselsattning(
-                questionSysselsattning()
-            ),
-            categoryDiagnos(
-                questionFormedlaDiagnos(),
-                questionDiagnos(diagnosisCodeRepository)
-            ),
-            categoryArbetsformaga(
-                questionArbetsformaga(),
-                questionFinnsArbetsformaga(
-                    questionBeskrivArbetsformagan()
-                )
-            ),
-            categoryBedomning(
-                questionPeriodProcentBedomning(),
-                questionPeriodBedomning(),
-                messageArbetsformagaAlert()
-            ),
-            categoryOvrigt(
-                questionOvrigt()
-            ),
-            categoryKontakt(
-                questionKontakt(
-                    questionKontaktBeskrivning()
-                )
-            ),
-            issuingUnitContactInfo()
-        ))
+        .elementSpecifications(
+            List.of(
+                categoryGrundForMedicinsktUnderlag(
+                    questionGrundForMedicinsktUnderlag(questionAngeVadAnnatAr())),
+                categorySysselsattning(questionSysselsattning()),
+                categoryDiagnos(
+                    questionFormedlaDiagnos(), questionDiagnos(diagnosisCodeRepository)),
+                categoryArbetsformaga(
+                    questionArbetsformaga(),
+                    questionFinnsArbetsformaga(questionBeskrivArbetsformagan())),
+                categoryBedomning(
+                    questionPeriodProcentBedomning(),
+                    questionPeriodBedomning(),
+                    messageArbetsformagaAlert()),
+                categoryOvrigt(questionOvrigt()),
+                categoryKontakt(questionKontakt(questionKontaktBeskrivning())),
+                issuingUnitContactInfo()))
         .certificateActionFactory(certificateActionFactory)
         .sickLeaveProvider(new AG114SickLeaveProvider())
         .generalPrintProvider(new AG114CertificateGeneralPrintProvider())

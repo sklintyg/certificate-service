@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7804.elements;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -32,10 +50,11 @@ class QuestionAngeVarforDuVillHaKontaktTest {
 
   @Test
   void shouldIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationTextArea.builder()
-        .id(QUESTION_VARFOR_KONTAKT_FIELD_ID)
-        .name("Ange gärna varför du vill ha kontakt")
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationTextArea.builder()
+            .id(QUESTION_VARFOR_KONTAKT_FIELD_ID)
+            .name("Ange gärna varför du vill ha kontakt")
+            .build();
 
     final var element = QuestionAngeVarforDuVillHaKontakt.questionAngeVarforDuVillHaKontakt();
 
@@ -45,24 +64,20 @@ class QuestionAngeVarforDuVillHaKontaktTest {
   @Test
   void shouldIncludeValidation() {
     final var element = QuestionAngeVarforDuVillHaKontakt.questionAngeVarforDuVillHaKontakt();
-    final var expectedValidations = List.of(
-        ElementValidationText.builder()
-            .mandatory(false)
-            .limit(4000)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationText.builder().mandatory(false).limit(4000).build());
     assertEquals(expectedValidations, element.validations());
   }
 
   @Test
   void shouldIncludeRules() {
-    final var expectedRules = List.of(
-        ElementRuleExpression.builder()
-            .type(ElementRuleType.SHOW)
-            .id(QUESTION_KONTAKT_ID)
-            .expression(new RuleExpression("$" + QUESTION_KONTAKT_FIELD_ID.value()))
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleExpression.builder()
+                .type(ElementRuleType.SHOW)
+                .id(QUESTION_KONTAKT_ID)
+                .expression(new RuleExpression("$" + QUESTION_KONTAKT_FIELD_ID.value()))
+                .build());
 
     final var element = QuestionAngeVarforDuVillHaKontakt.questionAngeVarforDuVillHaKontakt();
 
@@ -74,63 +89,51 @@ class QuestionAngeVarforDuVillHaKontaktTest {
 
     @Test
     void shallReturnTrueIfBooleanIsTrue() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("26"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(true)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("26"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
 
       final var element = QuestionAngeVarforDuVillHaKontakt.questionAngeVarforDuVillHaKontakt();
 
-      final var shouldValidate = element.elementSpecification(new ElementId("26.2"))
-          .shouldValidate();
+      final var shouldValidate =
+          element.elementSpecification(new ElementId("26.2")).shouldValidate();
 
       assertTrue(shouldValidate.test(elementData));
     }
 
     @Test
     void shallReturnFalseIfElementMissing() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("8.1"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(true)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("8.1"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
 
       final var element = QuestionAngeVarforDuVillHaKontakt.questionAngeVarforDuVillHaKontakt();
 
-      final var shouldValidate = element.elementSpecification(new ElementId("26.2"))
-          .shouldValidate();
+      final var shouldValidate =
+          element.elementSpecification(new ElementId("26.2")).shouldValidate();
 
       assertFalse(shouldValidate.test(elementData));
     }
 
     @Test
     void shallReturnFalseIfElementFalse() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("26"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(false)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("26"))
+                  .value(ElementValueBoolean.builder().value(false).build())
+                  .build());
 
       final var element = QuestionAngeVarforDuVillHaKontakt.questionAngeVarforDuVillHaKontakt();
 
-      final var shouldValidate = element.elementSpecification(new ElementId("26.2"))
-          .shouldValidate();
+      final var shouldValidate =
+          element.elementSpecification(new ElementId("26.2")).shouldValidate();
 
       assertFalse(shouldValidate.test(elementData));
     }
@@ -138,21 +141,24 @@ class QuestionAngeVarforDuVillHaKontaktTest {
 
   @Test
   void shouldContainCorrectPdfConfiguration() {
-    final var expected = PdfConfigurationText.builder()
-        .pdfFieldId(new PdfFieldId("form1[0].Sida4[0].flt_txtForsakringskassanKontaktar[0]"))
-        .overflowSheetFieldId(new PdfFieldId("form1[0].#subform[4].flt_txtFortsattningsblad[0]"))
-        .maxLength(106)
-        .build();
+    final var expected =
+        PdfConfigurationText.builder()
+            .pdfFieldId(new PdfFieldId("form1[0].Sida4[0].flt_txtForsakringskassanKontaktar[0]"))
+            .overflowSheetFieldId(
+                new PdfFieldId("form1[0].#subform[4].flt_txtFortsattningsblad[0]"))
+            .maxLength(106)
+            .build();
 
-    final var elementSpecification = QuestionAngeVarforDuVillHaKontakt.questionAngeVarforDuVillHaKontakt();
+    final var elementSpecification =
+        QuestionAngeVarforDuVillHaKontakt.questionAngeVarforDuVillHaKontakt();
 
     assertEquals(expected, elementSpecification.pdfConfiguration());
   }
 
   @Test
   void shouldNotIncludeWhenRenewing() {
-    final var elementSpecification = QuestionAngeVarforDuVillHaKontakt.questionAngeVarforDuVillHaKontakt();
+    final var elementSpecification =
+        QuestionAngeVarforDuVillHaKontakt.questionAngeVarforDuVillHaKontakt();
     assertFalse(elementSpecification.includeWhenRenewing());
   }
 }
-

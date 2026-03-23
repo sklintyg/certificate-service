@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.certificatemodel.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,14 +52,14 @@ class ElementConfigurationCheckboxMultipleDateTest {
 
   @Test
   void shallReturnEmptyValue() {
-    final var emptyValue = ElementValueDateList.builder()
-        .dateListId(new FieldId(FIELD_ID))
-        .dateList(Collections.emptyList())
-        .build();
+    final var emptyValue =
+        ElementValueDateList.builder()
+            .dateListId(new FieldId(FIELD_ID))
+            .dateList(Collections.emptyList())
+            .build();
 
-    final var configuration = ElementConfigurationCheckboxMultipleDate.builder()
-        .id(new FieldId(FIELD_ID))
-        .build();
+    final var configuration =
+        ElementConfigurationCheckboxMultipleDate.builder().id(new FieldId(FIELD_ID)).build();
 
     assertEquals(emptyValue, configuration.emptyValue());
   }
@@ -50,54 +68,45 @@ class ElementConfigurationCheckboxMultipleDateTest {
   void shallReturnMatchingCode() {
     final var expectedCode = new Code(CODE_TWO, CODE_SYSTEM, DISPLAY_NAME_TWO);
 
-    final var configuration = ElementConfigurationCheckboxMultipleDate.builder()
-        .id(new FieldId(FIELD_ID))
-        .dates(
-            List.of(
-                CheckboxDate.builder()
-                    .id(new FieldId(DATE_FIELD_ID))
-                    .label(LABEL)
-                    .code(new Code(CODE, CODE_SYSTEM, DISPLAY_NAME))
-                    .build(),
-                CheckboxDate.builder()
-                    .id(new FieldId(DATE_FIELD_ID_TWO))
-                    .label(LABEL_TWO)
-                    .code(new Code(CODE_TWO, CODE_SYSTEM, DISPLAY_NAME_TWO))
-                    .build()
-            )
-        )
-        .build();
+    final var configuration =
+        ElementConfigurationCheckboxMultipleDate.builder()
+            .id(new FieldId(FIELD_ID))
+            .dates(
+                List.of(
+                    CheckboxDate.builder()
+                        .id(new FieldId(DATE_FIELD_ID))
+                        .label(LABEL)
+                        .code(new Code(CODE, CODE_SYSTEM, DISPLAY_NAME))
+                        .build(),
+                    CheckboxDate.builder()
+                        .id(new FieldId(DATE_FIELD_ID_TWO))
+                        .label(LABEL_TWO)
+                        .code(new Code(CODE_TWO, CODE_SYSTEM, DISPLAY_NAME_TWO))
+                        .build()))
+            .build();
 
-    final var dateValue = ElementValueDate.builder()
-        .dateId(new FieldId(DATE_FIELD_ID_TWO))
-        .build();
+    final var dateValue = ElementValueDate.builder().dateId(new FieldId(DATE_FIELD_ID_TWO)).build();
 
     assertEquals(expectedCode, configuration.code(dateValue));
   }
 
   @Test
   void shallThrowIfNoMatchingCode() {
-    final var configuration = ElementConfigurationCheckboxMultipleDate.builder()
-        .id(new FieldId(FIELD_ID))
-        .dates(Collections.emptyList())
-        .build();
+    final var configuration =
+        ElementConfigurationCheckboxMultipleDate.builder()
+            .id(new FieldId(FIELD_ID))
+            .dates(Collections.emptyList())
+            .build();
 
-    final var dateValue = ElementValueDate.builder()
-        .dateId(new FieldId(DATE_FIELD_ID_TWO))
-        .build();
+    final var dateValue = ElementValueDate.builder().dateId(new FieldId(DATE_FIELD_ID_TWO)).build();
 
-    assertThrows(IllegalArgumentException.class,
-        () -> configuration.code(dateValue)
-    );
+    assertThrows(IllegalArgumentException.class, () -> configuration.code(dateValue));
   }
 
   @Test
   void shouldReturnSimplifiedValueIfEmpty() {
-    final var expected = Optional.of(
-        ElementSimplifiedValueText.builder()
-            .text("Ej angivet")
-            .build()
-    );
+    final var expected =
+        Optional.of(ElementSimplifiedValueText.builder().text("Ej angivet").build());
     final var config = ElementConfigurationCheckboxMultipleDate.builder().build();
     final var value = ElementValueDateList.builder().dateList(List.of()).build();
 
@@ -111,44 +120,39 @@ class ElementConfigurationCheckboxMultipleDateTest {
     final var date1 = LocalDate.now();
     final var date2 = LocalDate.now().plusDays(1);
 
-    final var configuration = ElementConfigurationCheckboxMultipleDate.builder()
-        .id(new FieldId(FIELD_ID))
-        .dates(
-            List.of(
-                CheckboxDate.builder()
-                    .id(new FieldId(DATE_FIELD_ID))
-                    .label(LABEL)
-                    .code(new Code(CODE, CODE_SYSTEM, DISPLAY_NAME))
-                    .build(),
-                CheckboxDate.builder()
-                    .id(new FieldId(DATE_FIELD_ID_TWO))
-                    .label(LABEL_TWO)
-                    .code(new Code(CODE_TWO, CODE_SYSTEM, DISPLAY_NAME_TWO))
-                    .build(),
-                CheckboxDate.builder()
-                    .id(new FieldId(DATE_FIELD_ID_THREE))
-                    .label(LABEL_THREE)
-                    .code(new Code(CODE_THREE, CODE_SYSTEM, DISPLAY_NAME_THREE))
-                    .build()
-            )
-        )
-        .build();
+    final var configuration =
+        ElementConfigurationCheckboxMultipleDate.builder()
+            .id(new FieldId(FIELD_ID))
+            .dates(
+                List.of(
+                    CheckboxDate.builder()
+                        .id(new FieldId(DATE_FIELD_ID))
+                        .label(LABEL)
+                        .code(new Code(CODE, CODE_SYSTEM, DISPLAY_NAME))
+                        .build(),
+                    CheckboxDate.builder()
+                        .id(new FieldId(DATE_FIELD_ID_TWO))
+                        .label(LABEL_TWO)
+                        .code(new Code(CODE_TWO, CODE_SYSTEM, DISPLAY_NAME_TWO))
+                        .build(),
+                    CheckboxDate.builder()
+                        .id(new FieldId(DATE_FIELD_ID_THREE))
+                        .label(LABEL_THREE)
+                        .code(new Code(CODE_THREE, CODE_SYSTEM, DISPLAY_NAME_THREE))
+                        .build()))
+            .build();
 
-    final var dateValueOne = ElementValueDate.builder()
-        .dateId(new FieldId(DATE_FIELD_ID))
-        .date(date1)
-        .build();
-    final var dateValueTwo = ElementValueDate.builder()
-        .dateId(new FieldId(DATE_FIELD_ID_TWO))
-        .date(date2)
-        .build();
-    final var value = ElementValueDateList.builder()
-        .dateList(List.of(dateValueOne, dateValueTwo))
-        .build();
+    final var dateValueOne =
+        ElementValueDate.builder().dateId(new FieldId(DATE_FIELD_ID)).date(date1).build();
+    final var dateValueTwo =
+        ElementValueDate.builder().dateId(new FieldId(DATE_FIELD_ID_TWO)).date(date2).build();
+    final var value =
+        ElementValueDateList.builder().dateList(List.of(dateValueOne, dateValueTwo)).build();
 
     final var result = configuration.simplified(value);
 
-    assertEquals(Optional.of(
+    assertEquals(
+        Optional.of(
             ElementSimplifiedValueLabeledList.builder()
                 .list(
                     List.of(
@@ -163,11 +167,8 @@ class ElementConfigurationCheckboxMultipleDateTest {
                         ElementSimplifiedValueLabeledText.builder()
                             .label(LABEL_THREE)
                             .text("Ej angivet")
-                            .build()
-                    )
-                )
+                            .build()))
                 .build()),
-        result
-    );
+        result);
   }
 }

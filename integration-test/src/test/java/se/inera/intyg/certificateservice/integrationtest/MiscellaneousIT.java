@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.integrationtest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,8 +40,7 @@ import se.inera.intyg.certificateservice.integrationtest.common.util.Testability
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 class MiscellaneousIT {
 
-  @LocalServerPort
-  private int port;
+  @LocalServerPort private int port;
 
   private final TestRestTemplate restTemplate;
   private ApiUtil api;
@@ -54,9 +71,8 @@ class MiscellaneousIT {
   @Test
   @DisplayName("Om testability inte är aktiverat skall felkod 404 (NOT_FOUND) returneras")
   void shallReturn() {
-    final var response = testabilityApi.addCertificate(
-        defaultTestablilityCertificateRequest("fk7210", "1.0")
-    );
+    final var response =
+        testabilityApi.addCertificate(defaultTestablilityCertificateRequest("fk7210", "1.0"));
 
     assertEquals(404, response.getStatusCode().value());
   }

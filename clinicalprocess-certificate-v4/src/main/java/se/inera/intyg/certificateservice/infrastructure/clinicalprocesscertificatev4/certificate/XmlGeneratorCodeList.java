@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.certificate;
 
 import java.util.Collections;
@@ -30,18 +48,18 @@ public class XmlGeneratorCodeList implements XmlGeneratorElementValue {
       return Collections.emptyList();
     }
 
-    if (!(specification.configuration() instanceof ElementConfigurationCheckboxMultipleCode configuration)) {
+    if (!(specification.configuration()
+        instanceof ElementConfigurationCheckboxMultipleCode configuration)) {
       throw new IllegalArgumentException(
           "Cannot generate xml for configuration of type '%s'"
-              .formatted(specification.configuration().getClass())
-      );
+              .formatted(specification.configuration().getClass()));
     }
 
     final var objectFactory = new ObjectFactory();
 
     return codeListValue.list().stream()
-        .map(codeValue -> {
-
+        .map(
+            codeValue -> {
               final var codeAnswer = new Svar();
               codeAnswer.setId(data.id().id());
               codeAnswer.setInstans(codeListValue.list().indexOf(codeValue) + 1);
@@ -61,8 +79,7 @@ public class XmlGeneratorCodeList implements XmlGeneratorElementValue {
               codeAnswer.getDelsvar().add(subAnswerCode);
 
               return codeAnswer;
-            }
-        )
+            })
         .toList();
   }
 }

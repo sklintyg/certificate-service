@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.action.certificate.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -11,14 +29,14 @@ import se.inera.intyg.certificateservice.domain.certificatemodel.model.Certifica
 @ExtendWith(MockitoExtension.class)
 class CertificateActionFactoryTest {
 
-  @InjectMocks
-  CertificateActionFactory certificateActionFactory;
+  @InjectMocks CertificateActionFactory certificateActionFactory;
 
   @Test
   void shallReturnCertificateActionCreateIfExistInSpecification() {
-    final var certificateActionSpecification = CertificateActionSpecification.builder()
-        .certificateActionType(CertificateActionType.CREATE)
-        .build();
+    final var certificateActionSpecification =
+        CertificateActionSpecification.builder()
+            .certificateActionType(CertificateActionType.CREATE)
+            .build();
 
     final var certificateAction = certificateActionFactory.create(certificateActionSpecification);
 
@@ -28,9 +46,10 @@ class CertificateActionFactoryTest {
 
   @Test
   void shallReturnCertificateActionReadIfExistInSpecification() {
-    final var certificateActionSpecification = CertificateActionSpecification.builder()
-        .certificateActionType(CertificateActionType.READ)
-        .build();
+    final var certificateActionSpecification =
+        CertificateActionSpecification.builder()
+            .certificateActionType(CertificateActionType.READ)
+            .build();
 
     final var certificateAction = certificateActionFactory.create(certificateActionSpecification);
 
@@ -40,9 +59,10 @@ class CertificateActionFactoryTest {
 
   @Test
   void shallReturnCertificateActionUpdateIfExistInSpecification() {
-    final var certificateActionSpecification = CertificateActionSpecification.builder()
-        .certificateActionType(CertificateActionType.UPDATE)
-        .build();
+    final var certificateActionSpecification =
+        CertificateActionSpecification.builder()
+            .certificateActionType(CertificateActionType.UPDATE)
+            .build();
 
     final var certificateAction = certificateActionFactory.create(certificateActionSpecification);
 
@@ -52,9 +72,10 @@ class CertificateActionFactoryTest {
 
   @Test
   void shallReturnCertificateActionDeleteIfExistInSpecification() {
-    final var certificateActionSpecification = CertificateActionSpecification.builder()
-        .certificateActionType(CertificateActionType.DELETE)
-        .build();
+    final var certificateActionSpecification =
+        CertificateActionSpecification.builder()
+            .certificateActionType(CertificateActionType.DELETE)
+            .build();
 
     final var certificateAction = certificateActionFactory.create(certificateActionSpecification);
 
@@ -64,9 +85,10 @@ class CertificateActionFactoryTest {
 
   @Test
   void shallReturnCertificateActionSignIfExistInSpecification() {
-    final var certificateActionSpecification = CertificateActionSpecification.builder()
-        .certificateActionType(CertificateActionType.SIGN)
-        .build();
+    final var certificateActionSpecification =
+        CertificateActionSpecification.builder()
+            .certificateActionType(CertificateActionType.SIGN)
+            .build();
 
     final var certificateAction = certificateActionFactory.create(certificateActionSpecification);
 
@@ -76,9 +98,10 @@ class CertificateActionFactoryTest {
 
   @Test
   void shallReturnCertificateActionPrintIfExistInSpecification() {
-    final var certificateActionSpecification = CertificateActionSpecification.builder()
-        .certificateActionType(CertificateActionType.PRINT)
-        .build();
+    final var certificateActionSpecification =
+        CertificateActionSpecification.builder()
+            .certificateActionType(CertificateActionType.PRINT)
+            .build();
 
     final var certificateAction = certificateActionFactory.create(certificateActionSpecification);
 
@@ -88,9 +111,10 @@ class CertificateActionFactoryTest {
 
   @Test
   void shallReturnCertificateActionSendIfExistInSpecification() {
-    final var certificateActionSpecification = CertificateActionSpecification.builder()
-        .certificateActionType(CertificateActionType.SEND)
-        .build();
+    final var certificateActionSpecification =
+        CertificateActionSpecification.builder()
+            .certificateActionType(CertificateActionType.SEND)
+            .build();
 
     final var certificateAction = certificateActionFactory.create(certificateActionSpecification);
 
@@ -100,9 +124,10 @@ class CertificateActionFactoryTest {
 
   @Test
   void shallReturnCertificateActionRevokeIfExistInSpecification() {
-    final var certificateActionSpecification = CertificateActionSpecification.builder()
-        .certificateActionType(CertificateActionType.REVOKE)
-        .build();
+    final var certificateActionSpecification =
+        CertificateActionSpecification.builder()
+            .certificateActionType(CertificateActionType.REVOKE)
+            .build();
 
     final var certificateAction = certificateActionFactory.create(certificateActionSpecification);
 
@@ -112,9 +137,10 @@ class CertificateActionFactoryTest {
 
   @Test
   void shallReturnCertificateActionSendPostSignIfExistInSpecification() {
-    final var certificateActionSpecification = CertificateActionSpecification.builder()
-        .certificateActionType(CertificateActionType.SEND_AFTER_SIGN)
-        .build();
+    final var certificateActionSpecification =
+        CertificateActionSpecification.builder()
+            .certificateActionType(CertificateActionType.SEND_AFTER_SIGN)
+            .build();
 
     final var certificateAction = certificateActionFactory.create(certificateActionSpecification);
 
@@ -124,9 +150,10 @@ class CertificateActionFactoryTest {
 
   @Test
   void shallReturnCertificateActionSendAfterComplementIfExistInSpecification() {
-    final var certificateActionSpecification = CertificateActionSpecification.builder()
-        .certificateActionType(CertificateActionType.SEND_AFTER_COMPLEMENT)
-        .build();
+    final var certificateActionSpecification =
+        CertificateActionSpecification.builder()
+            .certificateActionType(CertificateActionType.SEND_AFTER_COMPLEMENT)
+            .build();
 
     final var certificateAction = certificateActionFactory.create(certificateActionSpecification);
 
@@ -136,9 +163,10 @@ class CertificateActionFactoryTest {
 
   @Test
   void shallReturnCertificateActionComplementIfExistInSpecification() {
-    final var certificateActionSpecification = CertificateActionSpecification.builder()
-        .certificateActionType(CertificateActionType.COMPLEMENT)
-        .build();
+    final var certificateActionSpecification =
+        CertificateActionSpecification.builder()
+            .certificateActionType(CertificateActionType.COMPLEMENT)
+            .build();
 
     final var certificateAction = certificateActionFactory.create(certificateActionSpecification);
 
@@ -148,9 +176,10 @@ class CertificateActionFactoryTest {
 
   @Test
   void shallReturnCertificateActionReplaceIfExistInSpecification() {
-    final var certificateActionSpecification = CertificateActionSpecification.builder()
-        .certificateActionType(CertificateActionType.REPLACE)
-        .build();
+    final var certificateActionSpecification =
+        CertificateActionSpecification.builder()
+            .certificateActionType(CertificateActionType.REPLACE)
+            .build();
 
     final var certificateAction = certificateActionFactory.create(certificateActionSpecification);
 
@@ -160,9 +189,10 @@ class CertificateActionFactoryTest {
 
   @Test
   void shallReturnCertificateActionReplaceContinueIfExistInSpecification() {
-    final var certificateActionSpecification = CertificateActionSpecification.builder()
-        .certificateActionType(CertificateActionType.REPLACE_CONTINUE)
-        .build();
+    final var certificateActionSpecification =
+        CertificateActionSpecification.builder()
+            .certificateActionType(CertificateActionType.REPLACE_CONTINUE)
+            .build();
 
     final var certificateAction = certificateActionFactory.create(certificateActionSpecification);
 
@@ -172,9 +202,10 @@ class CertificateActionFactoryTest {
 
   @Test
   void shallReturnCertificateActionRenewIfExistInSpecification() {
-    final var certificateActionSpecification = CertificateActionSpecification.builder()
-        .certificateActionType(CertificateActionType.RENEW)
-        .build();
+    final var certificateActionSpecification =
+        CertificateActionSpecification.builder()
+            .certificateActionType(CertificateActionType.RENEW)
+            .build();
 
     final var certificateAction = certificateActionFactory.create(certificateActionSpecification);
 
@@ -184,9 +215,10 @@ class CertificateActionFactoryTest {
 
   @Test
   void shallReturnCertificateActionRecieveComplementIfExistInSpecification() {
-    final var certificateActionSpecification = CertificateActionSpecification.builder()
-        .certificateActionType(CertificateActionType.RECEIVE_COMPLEMENT)
-        .build();
+    final var certificateActionSpecification =
+        CertificateActionSpecification.builder()
+            .certificateActionType(CertificateActionType.RECEIVE_COMPLEMENT)
+            .build();
 
     final var certificateAction = certificateActionFactory.create(certificateActionSpecification);
 
@@ -196,9 +228,10 @@ class CertificateActionFactoryTest {
 
   @Test
   void shallReturnCertificateActionRecieveQuestionIfExistInSpecification() {
-    final var certificateActionSpecification = CertificateActionSpecification.builder()
-        .certificateActionType(CertificateActionType.RECEIVE_QUESTION)
-        .build();
+    final var certificateActionSpecification =
+        CertificateActionSpecification.builder()
+            .certificateActionType(CertificateActionType.RECEIVE_QUESTION)
+            .build();
 
     final var certificateAction = certificateActionFactory.create(certificateActionSpecification);
 
@@ -208,9 +241,10 @@ class CertificateActionFactoryTest {
 
   @Test
   void shallReturnCertificateActionCannotComplementIfExistInSpecification() {
-    final var certificateActionSpecification = CertificateActionSpecification.builder()
-        .certificateActionType(CertificateActionType.CANNOT_COMPLEMENT)
-        .build();
+    final var certificateActionSpecification =
+        CertificateActionSpecification.builder()
+            .certificateActionType(CertificateActionType.CANNOT_COMPLEMENT)
+            .build();
 
     final var certificateAction = certificateActionFactory.create(certificateActionSpecification);
 
@@ -220,9 +254,10 @@ class CertificateActionFactoryTest {
 
   @Test
   void shallReturnCertificateActionMessagesIfExistInSpecification() {
-    final var certificateActionSpecification = CertificateActionSpecification.builder()
-        .certificateActionType(CertificateActionType.MESSAGES)
-        .build();
+    final var certificateActionSpecification =
+        CertificateActionSpecification.builder()
+            .certificateActionType(CertificateActionType.MESSAGES)
+            .build();
 
     final var certificateAction = certificateActionFactory.create(certificateActionSpecification);
 
@@ -232,9 +267,10 @@ class CertificateActionFactoryTest {
 
   @Test
   void shallReturnCertificateActionMessagesAdministrativeIfExistInSpecification() {
-    final var certificateActionSpecification = CertificateActionSpecification.builder()
-        .certificateActionType(CertificateActionType.MESSAGES_ADMINISTRATIVE)
-        .build();
+    final var certificateActionSpecification =
+        CertificateActionSpecification.builder()
+            .certificateActionType(CertificateActionType.MESSAGES_ADMINISTRATIVE)
+            .build();
 
     final var certificateAction = certificateActionFactory.create(certificateActionSpecification);
 
@@ -244,9 +280,10 @@ class CertificateActionFactoryTest {
 
   @Test
   void shallReturnCertificateActionForwardMessageIfExistInSpecification() {
-    final var certificateActionSpecification = CertificateActionSpecification.builder()
-        .certificateActionType(CertificateActionType.FORWARD_MESSAGE)
-        .build();
+    final var certificateActionSpecification =
+        CertificateActionSpecification.builder()
+            .certificateActionType(CertificateActionType.FORWARD_MESSAGE)
+            .build();
 
     final var certificateAction = certificateActionFactory.create(certificateActionSpecification);
 
@@ -256,9 +293,10 @@ class CertificateActionFactoryTest {
 
   @Test
   void shallReturnCertificateActionForwardIfExistInSpecification() {
-    final var certificateActionSpecification = CertificateActionSpecification.builder()
-        .certificateActionType(CertificateActionType.FORWARD_CERTIFICATE)
-        .build();
+    final var certificateActionSpecification =
+        CertificateActionSpecification.builder()
+            .certificateActionType(CertificateActionType.FORWARD_CERTIFICATE)
+            .build();
 
     final var certificateAction = certificateActionFactory.create(certificateActionSpecification);
 
@@ -268,9 +306,10 @@ class CertificateActionFactoryTest {
 
   @Test
   void shallReturnCertificateActionHandleComplementIfExistInSpecification() {
-    final var certificateActionSpecification = CertificateActionSpecification.builder()
-        .certificateActionType(CertificateActionType.HANDLE_COMPLEMENT)
-        .build();
+    final var certificateActionSpecification =
+        CertificateActionSpecification.builder()
+            .certificateActionType(CertificateActionType.HANDLE_COMPLEMENT)
+            .build();
 
     final var certificateAction = certificateActionFactory.create(certificateActionSpecification);
 
@@ -280,9 +319,10 @@ class CertificateActionFactoryTest {
 
   @Test
   void shallReturnCertificateActionRecieveAnswerIfExistInSpecification() {
-    final var certificateActionSpecification = CertificateActionSpecification.builder()
-        .certificateActionType(CertificateActionType.RECEIVE_ANSWER)
-        .build();
+    final var certificateActionSpecification =
+        CertificateActionSpecification.builder()
+            .certificateActionType(CertificateActionType.RECEIVE_ANSWER)
+            .build();
 
     final var certificateAction = certificateActionFactory.create(certificateActionSpecification);
 
@@ -292,9 +332,10 @@ class CertificateActionFactoryTest {
 
   @Test
   void shallReturnCertificateActionRecieveReminderIfExistInSpecification() {
-    final var certificateActionSpecification = CertificateActionSpecification.builder()
-        .certificateActionType(CertificateActionType.RECEIVE_REMINDER)
-        .build();
+    final var certificateActionSpecification =
+        CertificateActionSpecification.builder()
+            .certificateActionType(CertificateActionType.RECEIVE_REMINDER)
+            .build();
 
     final var certificateAction = certificateActionFactory.create(certificateActionSpecification);
 
@@ -304,9 +345,10 @@ class CertificateActionFactoryTest {
 
   @Test
   void shallReturnCertificateActionCreateMessageIfExistInSpecification() {
-    final var certificateActionSpecification = CertificateActionSpecification.builder()
-        .certificateActionType(CertificateActionType.CREATE_MESSAGE)
-        .build();
+    final var certificateActionSpecification =
+        CertificateActionSpecification.builder()
+            .certificateActionType(CertificateActionType.CREATE_MESSAGE)
+            .build();
 
     final var certificateAction = certificateActionFactory.create(certificateActionSpecification);
 
@@ -316,9 +358,10 @@ class CertificateActionFactoryTest {
 
   @Test
   void shallReturnCertificateActionAnswerMessageIfExistInSpecification() {
-    final var certificateActionSpecification = CertificateActionSpecification.builder()
-        .certificateActionType(CertificateActionType.ANSWER_MESSAGE)
-        .build();
+    final var certificateActionSpecification =
+        CertificateActionSpecification.builder()
+            .certificateActionType(CertificateActionType.ANSWER_MESSAGE)
+            .build();
 
     final var certificateAction = certificateActionFactory.create(certificateActionSpecification);
 
@@ -328,9 +371,10 @@ class CertificateActionFactoryTest {
 
   @Test
   void shallReturnCertificateActionSaveMessageIfExistInSpecification() {
-    final var certificateActionSpecification = CertificateActionSpecification.builder()
-        .certificateActionType(CertificateActionType.SAVE_MESSAGE)
-        .build();
+    final var certificateActionSpecification =
+        CertificateActionSpecification.builder()
+            .certificateActionType(CertificateActionType.SAVE_MESSAGE)
+            .build();
 
     final var certificateAction = certificateActionFactory.create(certificateActionSpecification);
 
@@ -340,9 +384,10 @@ class CertificateActionFactoryTest {
 
   @Test
   void shallReturnCertificateActionDeleteMessageIfExistInSpecification() {
-    final var certificateActionSpecification = CertificateActionSpecification.builder()
-        .certificateActionType(CertificateActionType.DELETE_MESSAGE)
-        .build();
+    final var certificateActionSpecification =
+        CertificateActionSpecification.builder()
+            .certificateActionType(CertificateActionType.DELETE_MESSAGE)
+            .build();
 
     final var certificateAction = certificateActionFactory.create(certificateActionSpecification);
 
@@ -352,9 +397,10 @@ class CertificateActionFactoryTest {
 
   @Test
   void shallReturnCertificateActionSendMessageIfExistInSpecification() {
-    final var certificateActionSpecification = CertificateActionSpecification.builder()
-        .certificateActionType(CertificateActionType.SEND_MESSAGE)
-        .build();
+    final var certificateActionSpecification =
+        CertificateActionSpecification.builder()
+            .certificateActionType(CertificateActionType.SEND_MESSAGE)
+            .build();
 
     final var certificateAction = certificateActionFactory.create(certificateActionSpecification);
 
@@ -364,9 +410,10 @@ class CertificateActionFactoryTest {
 
   @Test
   void shallReturnCertificateActionHandleMessageIfExistInSpecification() {
-    final var certificateActionSpecification = CertificateActionSpecification.builder()
-        .certificateActionType(CertificateActionType.HANDLE_MESSAGE)
-        .build();
+    final var certificateActionSpecification =
+        CertificateActionSpecification.builder()
+            .certificateActionType(CertificateActionType.HANDLE_MESSAGE)
+            .build();
 
     final var certificateAction = certificateActionFactory.create(certificateActionSpecification);
 
@@ -376,9 +423,10 @@ class CertificateActionFactoryTest {
 
   @Test
   void shallReturnCertificateActionSaveAnswerIfExistInSpecification() {
-    final var certificateActionSpecification = CertificateActionSpecification.builder()
-        .certificateActionType(CertificateActionType.SAVE_ANSWER)
-        .build();
+    final var certificateActionSpecification =
+        CertificateActionSpecification.builder()
+            .certificateActionType(CertificateActionType.SAVE_ANSWER)
+            .build();
 
     final var certificateAction = certificateActionFactory.create(certificateActionSpecification);
 
@@ -388,9 +436,10 @@ class CertificateActionFactoryTest {
 
   @Test
   void shallReturnCertificateActionDeleteAnswerIfExistInSpecification() {
-    final var certificateActionSpecification = CertificateActionSpecification.builder()
-        .certificateActionType(CertificateActionType.DELETE_ANSWER)
-        .build();
+    final var certificateActionSpecification =
+        CertificateActionSpecification.builder()
+            .certificateActionType(CertificateActionType.DELETE_ANSWER)
+            .build();
 
     final var certificateAction = certificateActionFactory.create(certificateActionSpecification);
 
@@ -400,9 +449,10 @@ class CertificateActionFactoryTest {
 
   @Test
   void shallReturnCertificateActionSendAnswerIfExistInSpecification() {
-    final var certificateActionSpecification = CertificateActionSpecification.builder()
-        .certificateActionType(CertificateActionType.SEND_ANSWER)
-        .build();
+    final var certificateActionSpecification =
+        CertificateActionSpecification.builder()
+            .certificateActionType(CertificateActionType.SEND_ANSWER)
+            .build();
 
     final var certificateAction = certificateActionFactory.create(certificateActionSpecification);
 
@@ -412,9 +462,10 @@ class CertificateActionFactoryTest {
 
   @Test
   void shallReturnCertificateActionAccessForRolesIfExistInSpecification() {
-    final var certificateActionSpecification = CertificateActionSpecification.builder()
-        .certificateActionType(CertificateActionType.LIST_CERTIFICATE_TYPE)
-        .build();
+    final var certificateActionSpecification =
+        CertificateActionSpecification.builder()
+            .certificateActionType(CertificateActionType.LIST_CERTIFICATE_TYPE)
+            .build();
 
     final var certificateAction = certificateActionFactory.create(certificateActionSpecification);
 
@@ -424,9 +475,10 @@ class CertificateActionFactoryTest {
 
   @Test
   void shallReturnCertificateActionForwardCertificateFromListIfExistInSpecification() {
-    final var certificateActionSpecification = CertificateActionSpecification.builder()
-        .certificateActionType(CertificateActionType.FORWARD_CERTIFICATE_FROM_LIST)
-        .build();
+    final var certificateActionSpecification =
+        CertificateActionSpecification.builder()
+            .certificateActionType(CertificateActionType.FORWARD_CERTIFICATE_FROM_LIST)
+            .build();
 
     final var certificateAction = certificateActionFactory.create(certificateActionSpecification);
 
@@ -436,9 +488,10 @@ class CertificateActionFactoryTest {
 
   @Test
   void shallReturnCertificateActionFMBFromListIfExistInSpecification() {
-    final var certificateActionSpecification = CertificateActionSpecification.builder()
-        .certificateActionType(CertificateActionType.FMB)
-        .build();
+    final var certificateActionSpecification =
+        CertificateActionSpecification.builder()
+            .certificateActionType(CertificateActionType.FMB)
+            .build();
 
     final var certificateAction = certificateActionFactory.create(certificateActionSpecification);
 
@@ -448,9 +501,10 @@ class CertificateActionFactoryTest {
 
   @Test
   void shallReturnCertificateActionSrsDraftFromListIfExistInSpecification() {
-    final var certificateActionSpecification = CertificateActionSpecification.builder()
-        .certificateActionType(CertificateActionType.SRS_DRAFT)
-        .build();
+    final var certificateActionSpecification =
+        CertificateActionSpecification.builder()
+            .certificateActionType(CertificateActionType.SRS_DRAFT)
+            .build();
 
     final var certificateAction = certificateActionFactory.create(certificateActionSpecification);
 
@@ -460,9 +514,10 @@ class CertificateActionFactoryTest {
 
   @Test
   void shallReturnCertificateActionSrsSignedFromListIfExistInSpecification() {
-    final var certificateActionSpecification = CertificateActionSpecification.builder()
-        .certificateActionType(CertificateActionType.SRS_SIGNED)
-        .build();
+    final var certificateActionSpecification =
+        CertificateActionSpecification.builder()
+            .certificateActionType(CertificateActionType.SRS_SIGNED)
+            .build();
 
     final var certificateAction = certificateActionFactory.create(certificateActionSpecification);
 
@@ -472,9 +527,10 @@ class CertificateActionFactoryTest {
 
   @Test
   void shallReturnCertificateActionTemplateFromListIfExistInSpecification() {
-    final var certificateActionSpecification = CertificateActionSpecification.builder()
-        .certificateActionType(CertificateActionType.CREATE_DRAFT_FROM_CERTIFICATE)
-        .build();
+    final var certificateActionSpecification =
+        CertificateActionSpecification.builder()
+            .certificateActionType(CertificateActionType.CREATE_DRAFT_FROM_CERTIFICATE)
+            .build();
 
     final var certificateAction = certificateActionFactory.create(certificateActionSpecification);
 
@@ -482,12 +538,12 @@ class CertificateActionFactoryTest {
     assertEquals(CertificateActionCreateDraftFromCertificate.class, certificateAction.getClass());
   }
 
-
   @Test
   void shallReturnCertificateActionUpdateDraftFromCertificateIfExistInSpecification() {
-    final var certificateActionSpecification = CertificateActionSpecification.builder()
-        .certificateActionType(CertificateActionType.UPDATE_DRAFT_FROM_CERTIFICATE)
-        .build();
+    final var certificateActionSpecification =
+        CertificateActionSpecification.builder()
+            .certificateActionType(CertificateActionType.UPDATE_DRAFT_FROM_CERTIFICATE)
+            .build();
 
     final var certificateAction = certificateActionFactory.create(certificateActionSpecification);
 
@@ -497,9 +553,10 @@ class CertificateActionFactoryTest {
 
   @Test
   void shallReturnCertificateActionInactiveCertificateModelIfExistInSpecification() {
-    final var certificateActionSpecification = CertificateActionSpecification.builder()
-        .certificateActionType(CertificateActionType.INACTIVE_CERTIFICATE_MODEL)
-        .build();
+    final var certificateActionSpecification =
+        CertificateActionSpecification.builder()
+            .certificateActionType(CertificateActionType.INACTIVE_CERTIFICATE_MODEL)
+            .build();
 
     final var certificateAction = certificateActionFactory.create(certificateActionSpecification);
 

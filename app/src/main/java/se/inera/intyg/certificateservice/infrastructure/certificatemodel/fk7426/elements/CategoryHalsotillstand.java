@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7426.elements;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7426.elements.QuestionHalsotillstandPsykiska.QUESTION_HALSOTILLSTAND_PSYKISKA_FIELD_ID;
@@ -23,18 +41,12 @@ public class CategoryHalsotillstand {
     throw new IllegalStateException("Utility class");
   }
 
-  public static ElementSpecification categoryHalsotillstand(
-      ElementSpecification... children) {
+  public static ElementSpecification categoryHalsotillstand(ElementSpecification... children) {
     return ElementSpecification.builder()
         .id(HALSOTILLSTAND_CATEGORY_ID)
         .configuration(
-            ElementConfigurationCategory.builder()
-                .name("Barnets hälsotillstånd")
-                .build()
-        )
-        .children(
-            List.of(children)
-        )
+            ElementConfigurationCategory.builder().name("Barnets hälsotillstånd").build())
+        .children(List.of(children))
         .rules(
             List.of(
                 ElementRuleMandatoryCategory.builder()
@@ -44,26 +56,20 @@ public class CategoryHalsotillstand {
                         List.of(
                             CertificateElementRuleFactory.mandatory(
                                 QUESTION_HALSOTILLSTAND_PSYKISKA_ID,
-                                QUESTION_HALSOTILLSTAND_PSYKISKA_FIELD_ID
-                            ),
+                                QUESTION_HALSOTILLSTAND_PSYKISKA_FIELD_ID),
                             CertificateElementRuleFactory.mandatory(
                                 QUESTION_HALSOTILLSTAND_SOMATISKA_ID,
-                                QUESTION_HALSOTILLSTAND_SOMATISKA_FIELD_ID
-                            )
-                        )
-                    )
-                    .build()
-            )
-        )
+                                QUESTION_HALSOTILLSTAND_SOMATISKA_FIELD_ID)))
+                    .build()))
         .validations(
             List.of(
                 ElementValidationCategory.builder()
                     .mandatory(true)
-                    .elements(List.of(QUESTION_HALSOTILLSTAND_PSYKISKA_ID,
-                        QUESTION_HALSOTILLSTAND_SOMATISKA_ID))
-                    .build()
-            )
-        )
+                    .elements(
+                        List.of(
+                            QUESTION_HALSOTILLSTAND_PSYKISKA_ID,
+                            QUESTION_HALSOTILLSTAND_SOMATISKA_ID))
+                    .build()))
         .build();
   }
 }

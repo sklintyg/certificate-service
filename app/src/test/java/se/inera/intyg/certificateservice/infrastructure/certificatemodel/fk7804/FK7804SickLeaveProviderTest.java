@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7804;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -27,19 +45,14 @@ class FK7804SickLeaveProviderTest {
 
   @Test
   void shallReturnEmptyWhenSmittbararpenningIsTrue() {
-    final var element = ElementData.builder()
-        .id(QuestionSmittbararpenning.QUESTION_SMITTBARARPENNING_ID)
-        .value(
-            ElementValueBoolean.builder()
-                .booleanId(new FieldId("smitt"))
-                .value(true)
-                .build()
-        )
-        .build();
+    final var element =
+        ElementData.builder()
+            .id(QuestionSmittbararpenning.QUESTION_SMITTBARARPENNING_ID)
+            .value(
+                ElementValueBoolean.builder().booleanId(new FieldId("smitt")).value(true).build())
+            .build();
 
-    final var certificate = MedicalCertificate.builder()
-        .elementData(List.of(element))
-        .build();
+    final var certificate = MedicalCertificate.builder().elementData(List.of(element)).build();
 
     final var result = provider.build(certificate, false);
     assertTrue(result.isEmpty());
@@ -54,49 +67,55 @@ class FK7804SickLeaveProviderTest {
   @Test
   void shallMapCareGiverId() {
     final var sickLeaveCertificate = provider.build(FK7804_CERTIFICATE, false);
-    assertEquals(FK7804_CERTIFICATE.certificateMetaData().careProvider().hsaId(),
+    assertEquals(
+        FK7804_CERTIFICATE.certificateMetaData().careProvider().hsaId(),
         sickLeaveCertificate.orElseThrow().careGiverId());
   }
 
   @Test
   void shallMapCareUnitId() {
     final var sickLeaveCertificate = provider.build(FK7804_CERTIFICATE, false);
-    assertEquals(FK7804_CERTIFICATE.certificateMetaData().issuingUnit().hsaId(),
+    assertEquals(
+        FK7804_CERTIFICATE.certificateMetaData().issuingUnit().hsaId(),
         sickLeaveCertificate.orElseThrow().issuingUnitId());
   }
 
   @Test
   void shallMapCareUnitName() {
     final var sickLeaveCertificate = provider.build(FK7804_CERTIFICATE, false);
-    assertEquals(FK7804_CERTIFICATE.certificateMetaData().issuingUnit().name(),
+    assertEquals(
+        FK7804_CERTIFICATE.certificateMetaData().issuingUnit().name(),
         sickLeaveCertificate.orElseThrow().issuingUnitName());
   }
 
   @Test
   void shallMapType() {
     final var sickLeaveCertificate = provider.build(FK7804_CERTIFICATE, false);
-    assertEquals(FK7804_CERTIFICATE.certificateModel().type(),
-        sickLeaveCertificate.orElseThrow().type());
+    assertEquals(
+        FK7804_CERTIFICATE.certificateModel().type(), sickLeaveCertificate.orElseThrow().type());
   }
 
   @Test
   void shallMapCivicRegistrationNumber() {
     final var sickLeaveCertificate = provider.build(FK7804_CERTIFICATE, false);
-    assertEquals(FK7804_CERTIFICATE.certificateMetaData().patient().id(),
+    assertEquals(
+        FK7804_CERTIFICATE.certificateMetaData().patient().id(),
         sickLeaveCertificate.orElseThrow().civicRegistrationNumber());
   }
 
   @Test
   void shallMapSigningDoctorName() {
     final var sickLeaveCertificate = provider.build(FK7804_CERTIFICATE, false);
-    assertEquals(FK7804_CERTIFICATE.certificateMetaData().issuer().name(),
+    assertEquals(
+        FK7804_CERTIFICATE.certificateMetaData().issuer().name(),
         sickLeaveCertificate.orElseThrow().signingDoctorName());
   }
 
   @Test
   void shallMapPatientName() {
     final var sickLeaveCertificate = provider.build(FK7804_CERTIFICATE, false);
-    assertEquals(FK7804_CERTIFICATE.certificateMetaData().patient().name(),
+    assertEquals(
+        FK7804_CERTIFICATE.certificateMetaData().patient().name(),
         sickLeaveCertificate.orElseThrow().patientName());
   }
 
@@ -118,11 +137,11 @@ class FK7804SickLeaveProviderTest {
     assertNull(sickLeaveCertificate.orElseThrow().biDiagnoseCode2());
   }
 
-
   @Test
   void shallMapSigningDoctorId() {
     final var sickLeaveCertificate = provider.build(FK7804_CERTIFICATE, false);
-    assertEquals(FK7804_CERTIFICATE.certificateMetaData().issuer().hsaId(),
+    assertEquals(
+        FK7804_CERTIFICATE.certificateMetaData().issuer().hsaId(),
         sickLeaveCertificate.orElseThrow().signingDoctorId());
   }
 
@@ -140,11 +159,12 @@ class FK7804SickLeaveProviderTest {
 
   @Test
   void shallMapWorkCapacities() {
-    final var expectedDateRange = DateRange.builder()
-        .dateRangeId(new FieldId(("EN_FJARDEDEL")))
-        .from(LocalDate.now())
-        .to(LocalDate.now().plusDays(30))
-        .build();
+    final var expectedDateRange =
+        DateRange.builder()
+            .dateRangeId(new FieldId(("EN_FJARDEDEL")))
+            .from(LocalDate.now())
+            .to(LocalDate.now().plusDays(30))
+            .build();
 
     final var sickLeaveCertificate = provider.build(FK7804_CERTIFICATE, false);
     assertEquals(List.of(expectedDateRange), sickLeaveCertificate.orElseThrow().workCapacities());
@@ -152,12 +172,12 @@ class FK7804SickLeaveProviderTest {
 
   @Test
   void shallMapEmployment() {
-    final var expectedEmployment = List.of(
-        ElementValueCode.builder()
-            .code("NUVARANDE_ARBETE")
-            .codeId(new FieldId("NUVARANDE_ARBETE"))
-            .build()
-    );
+    final var expectedEmployment =
+        List.of(
+            ElementValueCode.builder()
+                .code("NUVARANDE_ARBETE")
+                .codeId(new FieldId("NUVARANDE_ARBETE"))
+                .build());
 
     final var sickLeaveCertificate = provider.build(FK7804_CERTIFICATE, false);
     assertEquals(expectedEmployment, sickLeaveCertificate.orElseThrow().employment());
@@ -172,20 +192,27 @@ class FK7804SickLeaveProviderTest {
     assertTrue(result.isPresent());
     assertEquals(FK7804_CERTIFICATE.id(), sickLeaveCertificate.id());
     assertEquals(FK7804_CERTIFICATE.certificateModel().type(), sickLeaveCertificate.type());
-    assertEquals(FK7804_CERTIFICATE.certificateMetaData().issuer().hsaId(),
+    assertEquals(
+        FK7804_CERTIFICATE.certificateMetaData().issuer().hsaId(),
         sickLeaveCertificate.signingDoctorId());
-    assertEquals(FK7804_CERTIFICATE.certificateMetaData().issuer().name(),
+    assertEquals(
+        FK7804_CERTIFICATE.certificateMetaData().issuer().name(),
         sickLeaveCertificate.signingDoctorName());
     assertEquals(FK7804_CERTIFICATE.signed(), sickLeaveCertificate.signingDateTime());
-    assertEquals(FK7804_CERTIFICATE.certificateMetaData().issuingUnit().hsaId(),
+    assertEquals(
+        FK7804_CERTIFICATE.certificateMetaData().issuingUnit().hsaId(),
         sickLeaveCertificate.issuingUnitId());
-    assertEquals(FK7804_CERTIFICATE.certificateMetaData().issuingUnit().name(),
+    assertEquals(
+        FK7804_CERTIFICATE.certificateMetaData().issuingUnit().name(),
         sickLeaveCertificate.issuingUnitName());
-    assertEquals(FK7804_CERTIFICATE.certificateMetaData().careProvider().hsaId(),
+    assertEquals(
+        FK7804_CERTIFICATE.certificateMetaData().careProvider().hsaId(),
         sickLeaveCertificate.careGiverId());
-    assertEquals(FK7804_CERTIFICATE.certificateMetaData().patient().id(),
+    assertEquals(
+        FK7804_CERTIFICATE.certificateMetaData().patient().id(),
         sickLeaveCertificate.civicRegistrationNumber());
-    assertEquals(FK7804_CERTIFICATE.certificateMetaData().patient().name(),
+    assertEquals(
+        FK7804_CERTIFICATE.certificateMetaData().patient().name(),
         sickLeaveCertificate.patientName());
     assertEquals(FK7804_CERTIFICATE.revoked(), sickLeaveCertificate.deleted());
     assertTrue(sickLeaveCertificate.partOfSickLeaveChain());
@@ -213,20 +240,27 @@ class FK7804SickLeaveProviderTest {
     assertTrue(result.isPresent());
     assertEquals(FK7804_CERTIFICATE.id(), sickLeaveCertificate.id());
     assertEquals(FK7804_CERTIFICATE.certificateModel().type(), sickLeaveCertificate.type());
-    assertEquals(FK7804_CERTIFICATE.certificateMetaData().issuer().hsaId(),
+    assertEquals(
+        FK7804_CERTIFICATE.certificateMetaData().issuer().hsaId(),
         sickLeaveCertificate.signingDoctorId());
-    assertEquals(FK7804_CERTIFICATE.certificateMetaData().issuer().name(),
+    assertEquals(
+        FK7804_CERTIFICATE.certificateMetaData().issuer().name(),
         sickLeaveCertificate.signingDoctorName());
     assertEquals(FK7804_CERTIFICATE.signed(), sickLeaveCertificate.signingDateTime());
-    assertEquals(FK7804_CERTIFICATE.certificateMetaData().issuingUnit().hsaId(),
+    assertEquals(
+        FK7804_CERTIFICATE.certificateMetaData().issuingUnit().hsaId(),
         sickLeaveCertificate.issuingUnitId());
-    assertEquals(FK7804_CERTIFICATE.certificateMetaData().issuingUnit().name(),
+    assertEquals(
+        FK7804_CERTIFICATE.certificateMetaData().issuingUnit().name(),
         sickLeaveCertificate.issuingUnitName());
-    assertEquals(FK7804_CERTIFICATE.certificateMetaData().careProvider().hsaId(),
+    assertEquals(
+        FK7804_CERTIFICATE.certificateMetaData().careProvider().hsaId(),
         sickLeaveCertificate.careGiverId());
-    assertEquals(FK7804_CERTIFICATE.certificateMetaData().patient().id(),
+    assertEquals(
+        FK7804_CERTIFICATE.certificateMetaData().patient().id(),
         sickLeaveCertificate.civicRegistrationNumber());
-    assertEquals(FK7804_CERTIFICATE.certificateMetaData().patient().name(),
+    assertEquals(
+        FK7804_CERTIFICATE.certificateMetaData().patient().name(),
         sickLeaveCertificate.patientName());
     assertEquals(FK7804_CERTIFICATE.revoked(), sickLeaveCertificate.deleted());
     assertTrue(sickLeaveCertificate.partOfSickLeaveChain());
@@ -241,72 +275,97 @@ class FK7804SickLeaveProviderTest {
 
   @Test
   void shallThrowNoSuchElementExceptionWhenEmploymentIsMissingAndIgnoreModuleRulesIsFalse() {
-    final var certificate = MedicalCertificate.builder()
-        .elementData(
-            FK7804_CERTIFICATE.elementData().stream()
-                .filter(elementData -> !elementData.id().equals(
-                    se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7804.elements.QuestionSysselsattning.QUESTION_SYSSELSATTNING_ID))
-                .toList()
-        )
-        .certificateMetaData(FK7804_CERTIFICATE.certificateMetaData())
-        .certificateModel(FK7804_CERTIFICATE.certificateModel())
-        .id(FK7804_CERTIFICATE.id())
-        .signed(FK7804_CERTIFICATE.signed())
-        .build();
+    final var certificate =
+        MedicalCertificate.builder()
+            .elementData(
+                FK7804_CERTIFICATE.elementData().stream()
+                    .filter(
+                        elementData ->
+                            !elementData
+                                .id()
+                                .equals(
+                                    se.inera.intyg.certificateservice.infrastructure
+                                        .certificatemodel.fk7804.elements.QuestionSysselsattning
+                                        .QUESTION_SYSSELSATTNING_ID))
+                    .toList())
+            .certificateMetaData(FK7804_CERTIFICATE.certificateMetaData())
+            .certificateModel(FK7804_CERTIFICATE.certificateModel())
+            .id(FK7804_CERTIFICATE.id())
+            .signed(FK7804_CERTIFICATE.signed())
+            .build();
 
     assertThrows(NoSuchElementException.class, () -> provider.build(certificate, false));
   }
 
   @Test
   void shallThrowNoSuchElementExceptionWhenWorkCapacitiesIsMissingAndIgnoreModuleRulesIsFalse() {
-    final var certificate = MedicalCertificate.builder()
-        .elementData(
-            FK7804_CERTIFICATE.elementData().stream()
-                .filter(elementData -> !elementData.id().equals(
-                    se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7804.elements.QuestionNedsattningArbetsformaga.QUESTION_NEDSATTNING_ARBETSFORMAGA_ID))
-                .toList()
-        )
-        .certificateMetaData(FK7804_CERTIFICATE.certificateMetaData())
-        .certificateModel(FK7804_CERTIFICATE.certificateModel())
-        .id(FK7804_CERTIFICATE.id())
-        .signed(FK7804_CERTIFICATE.signed())
-        .build();
+    final var certificate =
+        MedicalCertificate.builder()
+            .elementData(
+                FK7804_CERTIFICATE.elementData().stream()
+                    .filter(
+                        elementData ->
+                            !elementData
+                                .id()
+                                .equals(
+                                    se.inera.intyg.certificateservice.infrastructure
+                                        .certificatemodel.fk7804.elements
+                                        .QuestionNedsattningArbetsformaga
+                                        .QUESTION_NEDSATTNING_ARBETSFORMAGA_ID))
+                    .toList())
+            .certificateMetaData(FK7804_CERTIFICATE.certificateMetaData())
+            .certificateModel(FK7804_CERTIFICATE.certificateModel())
+            .id(FK7804_CERTIFICATE.id())
+            .signed(FK7804_CERTIFICATE.signed())
+            .build();
 
     assertThrows(NoSuchElementException.class, () -> provider.build(certificate, false));
   }
 
   @Test
   void shallThrowNoSuchElementExceptionWhenDiagnoseCodeIsMissingAndIgnoreModuleRulesIsFalse() {
-    final var certificate = MedicalCertificate.builder()
-        .elementData(
-            FK7804_CERTIFICATE.elementData().stream()
-                .filter(elementData -> !elementData.id().equals(
-                    se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7804.elements.QuestionDiagnos.QUESTION_DIAGNOS_ID))
-                .toList()
-        )
-        .certificateMetaData(FK7804_CERTIFICATE.certificateMetaData())
-        .certificateModel(FK7804_CERTIFICATE.certificateModel())
-        .id(FK7804_CERTIFICATE.id())
-        .signed(FK7804_CERTIFICATE.signed())
-        .build();
+    final var certificate =
+        MedicalCertificate.builder()
+            .elementData(
+                FK7804_CERTIFICATE.elementData().stream()
+                    .filter(
+                        elementData ->
+                            !elementData
+                                .id()
+                                .equals(
+                                    se.inera.intyg.certificateservice.infrastructure
+                                        .certificatemodel.fk7804.elements.QuestionDiagnos
+                                        .QUESTION_DIAGNOS_ID))
+                    .toList())
+            .certificateMetaData(FK7804_CERTIFICATE.certificateMetaData())
+            .certificateModel(FK7804_CERTIFICATE.certificateModel())
+            .id(FK7804_CERTIFICATE.id())
+            .signed(FK7804_CERTIFICATE.signed())
+            .build();
 
     assertThrows(NoSuchElementException.class, () -> provider.build(certificate, false));
   }
 
   @Test
   void shallReturnEmptyListForEmploymentWhenMissingAndIgnoreModuleRulesIsTrue() {
-    final var certificate = MedicalCertificate.builder()
-        .elementData(
-            FK7804_CERTIFICATE.elementData().stream()
-                .filter(elementData -> !elementData.id().equals(
-                    se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7804.elements.QuestionSysselsattning.QUESTION_SYSSELSATTNING_ID))
-                .toList()
-        )
-        .certificateMetaData(FK7804_CERTIFICATE.certificateMetaData())
-        .certificateModel(FK7804_CERTIFICATE.certificateModel())
-        .id(FK7804_CERTIFICATE.id())
-        .signed(FK7804_CERTIFICATE.signed())
-        .build();
+    final var certificate =
+        MedicalCertificate.builder()
+            .elementData(
+                FK7804_CERTIFICATE.elementData().stream()
+                    .filter(
+                        elementData ->
+                            !elementData
+                                .id()
+                                .equals(
+                                    se.inera.intyg.certificateservice.infrastructure
+                                        .certificatemodel.fk7804.elements.QuestionSysselsattning
+                                        .QUESTION_SYSSELSATTNING_ID))
+                    .toList())
+            .certificateMetaData(FK7804_CERTIFICATE.certificateMetaData())
+            .certificateModel(FK7804_CERTIFICATE.certificateModel())
+            .id(FK7804_CERTIFICATE.id())
+            .signed(FK7804_CERTIFICATE.signed())
+            .build();
 
     final var result = provider.build(certificate, true);
 
@@ -316,18 +375,25 @@ class FK7804SickLeaveProviderTest {
 
   @Test
   void shallReturnEmptyListForWorkCapacitiesWhenMissingAndIgnoreModuleRulesIsTrue() {
-    final var certificate = MedicalCertificate.builder()
-        .elementData(
-            FK7804_CERTIFICATE.elementData().stream()
-                .filter(elementData -> !elementData.id().equals(
-                    se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7804.elements.QuestionNedsattningArbetsformaga.QUESTION_NEDSATTNING_ARBETSFORMAGA_ID))
-                .toList()
-        )
-        .certificateMetaData(FK7804_CERTIFICATE.certificateMetaData())
-        .certificateModel(FK7804_CERTIFICATE.certificateModel())
-        .id(FK7804_CERTIFICATE.id())
-        .signed(FK7804_CERTIFICATE.signed())
-        .build();
+    final var certificate =
+        MedicalCertificate.builder()
+            .elementData(
+                FK7804_CERTIFICATE.elementData().stream()
+                    .filter(
+                        elementData ->
+                            !elementData
+                                .id()
+                                .equals(
+                                    se.inera.intyg.certificateservice.infrastructure
+                                        .certificatemodel.fk7804.elements
+                                        .QuestionNedsattningArbetsformaga
+                                        .QUESTION_NEDSATTNING_ARBETSFORMAGA_ID))
+                    .toList())
+            .certificateMetaData(FK7804_CERTIFICATE.certificateMetaData())
+            .certificateModel(FK7804_CERTIFICATE.certificateModel())
+            .id(FK7804_CERTIFICATE.id())
+            .signed(FK7804_CERTIFICATE.signed())
+            .build();
 
     final var result = provider.build(certificate, true);
 
@@ -337,24 +403,28 @@ class FK7804SickLeaveProviderTest {
 
   @Test
   void shallReturnNullForDiagnoseCodeWhenMissingAndIgnoreModuleRulesIsTrue() {
-    final var certificate = MedicalCertificate.builder()
-        .elementData(
-            FK7804_CERTIFICATE.elementData().stream()
-                .filter(elementData -> !elementData.id().equals(
-                    se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7804.elements.QuestionDiagnos.QUESTION_DIAGNOS_ID))
-                .toList()
-        )
-        .certificateMetaData(FK7804_CERTIFICATE.certificateMetaData())
-        .certificateModel(FK7804_CERTIFICATE.certificateModel())
-        .id(FK7804_CERTIFICATE.id())
-        .signed(FK7804_CERTIFICATE.signed())
-        .build();
+    final var certificate =
+        MedicalCertificate.builder()
+            .elementData(
+                FK7804_CERTIFICATE.elementData().stream()
+                    .filter(
+                        elementData ->
+                            !elementData
+                                .id()
+                                .equals(
+                                    se.inera.intyg.certificateservice.infrastructure
+                                        .certificatemodel.fk7804.elements.QuestionDiagnos
+                                        .QUESTION_DIAGNOS_ID))
+                    .toList())
+            .certificateMetaData(FK7804_CERTIFICATE.certificateMetaData())
+            .certificateModel(FK7804_CERTIFICATE.certificateModel())
+            .id(FK7804_CERTIFICATE.id())
+            .signed(FK7804_CERTIFICATE.signed())
+            .build();
 
     final var result = provider.build(certificate, true);
 
     assertTrue(result.isPresent());
     assertNull(result.orElseThrow().diagnoseCode());
   }
-
-
 }

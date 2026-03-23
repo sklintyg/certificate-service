@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.certificate.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,30 +46,25 @@ import se.inera.intyg.certificateservice.domain.common.exception.CertificateActi
 class GetCertificateEventsDomainServiceTest {
 
   private static final CertificateId CERTIFICATE_ID = new CertificateId("C_ID");
-  public static final List<CertificateEvent> EVENT = List.of(
-      CertificateEvent.builder()
-          .certificateId(CERTIFICATE_ID)
-          .timestamp(LocalDateTime.now())
-          .build()
-  );
+  public static final List<CertificateEvent> EVENT =
+      List.of(
+          CertificateEvent.builder()
+              .certificateId(CERTIFICATE_ID)
+              .timestamp(LocalDateTime.now())
+              .build());
   private static final ActionEvaluation ACTION_EVALUATION = ActionEvaluation.builder().build();
 
-  @Mock
-  private CertificateRepository certificateRepository;
+  @Mock private CertificateRepository certificateRepository;
 
-  @Mock
-  private GetCertificateEventsOfTypeDomainService getCertificateEventsOfTypeDomainService;
+  @Mock private GetCertificateEventsOfTypeDomainService getCertificateEventsOfTypeDomainService;
 
-  @Mock
-  private Certificate certificate;
+  @Mock private Certificate certificate;
 
-  @InjectMocks
-  GetCertificateEventsDomainService getCertificateEventsDomainService;
+  @InjectMocks GetCertificateEventsDomainService getCertificateEventsDomainService;
 
   @BeforeEach
   void setup() {
-    when(certificateRepository.getById(CERTIFICATE_ID))
-        .thenReturn(certificate);
+    when(certificateRepository.getById(CERTIFICATE_ID)).thenReturn(certificate);
   }
 
   @Nested
@@ -62,9 +75,8 @@ class GetCertificateEventsDomainServiceTest {
       when(certificate.allowTo(CertificateActionType.READ, Optional.of(ACTION_EVALUATION)))
           .thenReturn(true);
       when(getCertificateEventsOfTypeDomainService.events(
-          any(Certificate.class),
-          any(CertificateEventType.class))
-      ).thenReturn(EVENT);
+              any(Certificate.class), any(CertificateEventType.class)))
+          .thenReturn(EVENT);
     }
 
     @Test
@@ -73,7 +85,6 @@ class GetCertificateEventsDomainServiceTest {
 
       assertEquals(CertificateEventType.values().length, result.size());
     }
-
   }
 
   @Nested
@@ -89,8 +100,7 @@ class GetCertificateEventsDomainServiceTest {
     void shouldThrowException() {
       assertThrows(
           CertificateActionForbidden.class,
-          () -> getCertificateEventsDomainService.get(CERTIFICATE_ID, ACTION_EVALUATION)
-      );
+          () -> getCertificateEventsDomainService.get(CERTIFICATE_ID, ACTION_EVALUATION));
     }
   }
 }

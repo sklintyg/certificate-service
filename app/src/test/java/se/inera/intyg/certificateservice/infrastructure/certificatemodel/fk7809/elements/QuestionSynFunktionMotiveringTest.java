@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7809.elements;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,23 +56,24 @@ class QuestionSynFunktionMotiveringTest {
 
   @Test
   void shallIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationTextArea.builder()
-        .name("Synfunktion")
-        .label("Beskriv funktionsnedsättningen och undersökningsfynd.")
-        .description(
-            """
+    final var expectedConfiguration =
+        ElementConfigurationTextArea.builder()
+            .name("Synfunktion")
+            .label("Beskriv funktionsnedsättningen och undersökningsfynd.")
+            .description(
+                """
                 Synfunktion handlar om förmågan att förnimma närvaro av ljus och synintryckets form, storlek, utformning och färg. För att Försäkringskassan ska kunna bedöma om det finns rätt till garanterad nivå av merkostnadsersättning är följande information viktig.
-                
+
                 Beskriv nedsättningen av synen:
                 <ul>
-                <li>synskärpa på långt håll med bästa korrektion</li><li>synfält – du kan skicka in en kopia av perimetri eller beskriva synfältet på annat sätt till exempel enligt Donders metod.</li><li>andra synfunktioner som till exempel förmåga till samsyn, dubbelseende, nystagmus, mörkerseende, färgseende, kontrastseende, bländningskänslighet och perception.</li></ul>                                          
+                <li>synskärpa på långt håll med bästa korrektion</li><li>synfält – du kan skicka in en kopia av perimetri eller beskriva synfältet på annat sätt till exempel enligt Donders metod.</li><li>andra synfunktioner som till exempel förmåga till samsyn, dubbelseende, nystagmus, mörkerseende, färgseende, kontrastseende, bländningskänslighet och perception.</li></ul>
                 Beskriv:
                 <ul>
                 <li>personens förmåga att orientera sig och förflytta sig med hjälp av synen</li><li>hur stora svårigheter personen har att orientera sig och förflytta sig i en främmande miljö.</li></ul>
-                Bedöm sambandet mellan svårigheterna och den nedsatta synfunktionen. Ange den ledsagning eller hjälpmedel som personen behöver när hen ska förflytta sig. Det kan till exempel vara markeringskäpp, teknikkäpp eller ledarhund.                       
+                Bedöm sambandet mellan svårigheterna och den nedsatta synfunktionen. Ange den ledsagning eller hjälpmedel som personen behöver när hen ska förflytta sig. Det kan till exempel vara markeringskäpp, teknikkäpp eller ledarhund.
                 """)
-        .id(new FieldId("49.1"))
-        .build();
+            .id(new FieldId("49.1"))
+            .build();
 
     final var element = QuestionSynfunktionMotivering.questionSynfunktionMotivering();
 
@@ -63,23 +82,23 @@ class QuestionSynFunktionMotiveringTest {
 
   @Test
   void shallIncludeRules() {
-    final var expectedRules = List.of(
-        ElementRuleLimit.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.TEXT_LIMIT)
-            .limit(new RuleLimit((short) 4000))
-            .build(),
-        ElementRuleExpression.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.MANDATORY)
-            .expression(new RuleExpression("$49.1"))
-            .build(),
-        ElementRuleExpression.builder()
-            .id(new ElementId("funktionsnedsattning"))
-            .type(ElementRuleType.SHOW)
-            .expression(new RuleExpression("$49.2"))
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleLimit.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.TEXT_LIMIT)
+                .limit(new RuleLimit((short) 4000))
+                .build(),
+            ElementRuleExpression.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.MANDATORY)
+                .expression(new RuleExpression("$49.1"))
+                .build(),
+            ElementRuleExpression.builder()
+                .id(new ElementId("funktionsnedsattning"))
+                .type(ElementRuleType.SHOW)
+                .expression(new RuleExpression("$49.2"))
+                .build());
 
     final var element = QuestionSynfunktionMotivering.questionSynfunktionMotivering();
 
@@ -88,12 +107,8 @@ class QuestionSynFunktionMotiveringTest {
 
   @Test
   void shallIncludeValidations() {
-    final var expectedValidations = List.of(
-        ElementValidationText.builder()
-            .mandatory(true)
-            .limit(4000)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationText.builder().mandatory(true).limit(4000).build());
 
     final var element = QuestionSynfunktionMotivering.questionSynfunktionMotivering();
 
@@ -102,11 +117,13 @@ class QuestionSynFunktionMotiveringTest {
 
   @Test
   void shallIncludePdfConfiguration() {
-    final var expected = PdfConfigurationText.builder()
-        .pdfFieldId(new PdfFieldId("form1[0].#subform[1].flt_txtIntellektuellFunktion[2]"))
-        .maxLength(265)
-        .overflowSheetFieldId(new PdfFieldId(("form1[0].#subform[4].flt_txtFortsattningsblad[0]")))
-        .build();
+    final var expected =
+        PdfConfigurationText.builder()
+            .pdfFieldId(new PdfFieldId("form1[0].#subform[1].flt_txtIntellektuellFunktion[2]"))
+            .maxLength(265)
+            .overflowSheetFieldId(
+                new PdfFieldId(("form1[0].#subform[4].flt_txtFortsattningsblad[0]")))
+            .build();
 
     final var element = QuestionUppmarksamhetMotivering.questionUppmarksamhetMotivering();
 
@@ -118,22 +135,17 @@ class QuestionSynFunktionMotiveringTest {
 
     @Test
     void shallReturnTrueIfElementPresent() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("funktionsnedsattning"))
-              .value(
-                  ElementValueCodeList.builder()
-                      .list(
-                          List.of(
-                              ElementValueCode.builder()
-                                  .codeId(new FieldId("49.2"))
-                                  .build()
-                          )
-                      )
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("funktionsnedsattning"))
+                  .value(
+                      ElementValueCodeList.builder()
+                          .list(
+                              List.of(
+                                  ElementValueCode.builder().codeId(new FieldId("49.2")).build()))
+                          .build())
+                  .build());
 
       final var element = QuestionSynfunktionMotivering.questionSynfunktionMotivering();
 
@@ -144,22 +156,19 @@ class QuestionSynFunktionMotiveringTest {
 
     @Test
     void shallReturnFalseIfElementPresent() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("funktionsnedsattning"))
-              .value(
-                  ElementValueCodeList.builder()
-                      .list(
-                          List.of(
-                              ElementValueCode.builder()
-                                  .codeId(new FieldId("missing"))
-                                  .build()
-                          )
-                      )
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("funktionsnedsattning"))
+                  .value(
+                      ElementValueCodeList.builder()
+                          .list(
+                              List.of(
+                                  ElementValueCode.builder()
+                                      .codeId(new FieldId("missing"))
+                                      .build()))
+                          .build())
+                  .build());
 
       final var element = QuestionSynfunktionMotivering.questionSynfunktionMotivering();
 
@@ -171,10 +180,11 @@ class QuestionSynFunktionMotiveringTest {
 
   @Test
   void shallIncludeVisibilityConfiguration() {
-    final var expectedVisibilityConfiguration = ElementVisibilityConfigurationsCheckboxMultipleCode.builder()
-        .elementId(FUNKTIONSNEDSATTNING_ID)
-        .fieldId(FUNKTIONSNEDSATTNING_SYNFUNKTION_ID)
-        .build();
+    final var expectedVisibilityConfiguration =
+        ElementVisibilityConfigurationsCheckboxMultipleCode.builder()
+            .elementId(FUNKTIONSNEDSATTNING_ID)
+            .fieldId(FUNKTIONSNEDSATTNING_SYNFUNKTION_ID)
+            .build();
 
     final var element = QuestionSynfunktionMotivering.questionSynfunktionMotivering();
 

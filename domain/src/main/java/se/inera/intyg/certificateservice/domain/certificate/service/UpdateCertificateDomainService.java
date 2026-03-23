@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.certificate.service;
 
 import java.time.LocalDateTime;
@@ -24,16 +42,20 @@ public class UpdateCertificateDomainService {
   private final CertificateRepository certificateRepository;
   private final CertificateEventDomainService certificateEventDomainService;
 
-  public Certificate update(CertificateId certificateId, List<ElementData> elementData,
-      ActionEvaluation actionEvaluation, Revision revision, ExternalReference externalReference) {
+  public Certificate update(
+      CertificateId certificateId,
+      List<ElementData> elementData,
+      ActionEvaluation actionEvaluation,
+      Revision revision,
+      ExternalReference externalReference) {
     final var start = LocalDateTime.now(ZoneId.systemDefault());
 
     final var certificate = certificateRepository.getById(certificateId);
     if (!certificate.allowTo(CertificateActionType.UPDATE, Optional.of(actionEvaluation))) {
       throw new CertificateActionForbidden(
           "Not allowed to update certificate for %s".formatted(certificateId),
-          certificate.reasonNotAllowed(CertificateActionType.UPDATE, Optional.of(actionEvaluation))
-      );
+          certificate.reasonNotAllowed(
+              CertificateActionType.UPDATE, Optional.of(actionEvaluation)));
     }
 
     certificate.updateData(elementData, revision, actionEvaluation);
@@ -52,8 +74,7 @@ public class UpdateCertificateDomainService {
             .end(LocalDateTime.now(ZoneId.systemDefault()))
             .certificate(updatedCertificate)
             .actionEvaluation(actionEvaluation)
-            .build()
-    );
+            .build());
 
     return updatedCertificate;
   }

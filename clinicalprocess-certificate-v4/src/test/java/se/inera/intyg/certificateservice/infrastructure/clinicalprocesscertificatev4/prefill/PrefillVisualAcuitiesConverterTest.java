@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.prefill;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,96 +49,86 @@ class PrefillVisualAcuitiesConverterTest {
   private static final String LEFT_EYE_WITH_CORRECTION_ID = "5.5";
   private static final String BINOCULAR_WITHOUT_CORRECTION_ID = "5.3";
   private static final String BINOCULAR_WITH_CORRECTION_ID = "5.6";
-  private static final ElementSpecification SPECIFICATION = ElementSpecification.builder()
-      .id(ELEMENT_ID)
-      .configuration(
-          ElementConfigurationVisualAcuities.builder()
-              .id(FIELD_ID)
-              .rightEye(
-                  ElementVisualAcuity.builder()
-                      .label("Höger öga")
-                      .withoutCorrectionId(RIGHT_EYE_WITHOUT_CORRECTION_ID)
-                      .withCorrectionId(RIGHT_EYE_WITH_CORRECTION_ID)
-                      .build()
-              )
-              .leftEye(
-                  ElementVisualAcuity.builder()
-                      .label("Vänster öga")
-                      .withoutCorrectionId(LEFT_EYE_WITHOUT_CORRECTION_ID)
-                      .withCorrectionId(LEFT_EYE_WITH_CORRECTION_ID)
-                      .build()
-              )
-              .binocular(
-                  ElementVisualAcuity.builder()
-                      .label("Binokulärt")
-                      .withoutCorrectionId(BINOCULAR_WITHOUT_CORRECTION_ID)
-                      .withCorrectionId(BINOCULAR_WITH_CORRECTION_ID)
-                      .build()
-              )
-              .build()
-      )
-      .build();
-  private static final ElementData EXPECTED_ELEMENT_DATA = ElementData.builder()
-      .id(ELEMENT_ID)
-      .value(
-          ElementValueVisualAcuities.builder()
-              .rightEye(
-                  VisualAcuity.builder()
-                      .withCorrection(
-                          Correction.builder()
-                              .id(new FieldId(RIGHT_EYE_WITH_CORRECTION_ID))
-                              .value(1.1)
-                              .build()
-                      )
-                      .withoutCorrection(
-                          Correction.builder()
-                              .id(new FieldId(RIGHT_EYE_WITHOUT_CORRECTION_ID))
-                              .value(1.2)
-                              .build()
-                      )
-                      .build()
-              )
-              .leftEye(
-                  VisualAcuity.builder()
-                      .withCorrection(
-                          Correction.builder()
-                              .id(new FieldId(LEFT_EYE_WITH_CORRECTION_ID))
-                              .value(1.3)
-                              .build()
-                      )
-                      .withoutCorrection(
-                          Correction.builder()
-                              .id(new FieldId(LEFT_EYE_WITHOUT_CORRECTION_ID))
-                              .value(1.4)
-                              .build()
-                      )
-                      .build()
-              )
-              .binocular(
-                  VisualAcuity.builder()
-                      .withCorrection(
-                          Correction.builder()
-                              .id(new FieldId(BINOCULAR_WITH_CORRECTION_ID))
-                              .value(1.5)
-                              .build()
-                      )
-                      .withoutCorrection(
-                          Correction.builder()
-                              .id(new FieldId(BINOCULAR_WITHOUT_CORRECTION_ID))
-                              .value(1.6)
-                              .build()
-                      )
-                      .build()
-              )
-              .build()
-      ).build();
+  private static final ElementSpecification SPECIFICATION =
+      ElementSpecification.builder()
+          .id(ELEMENT_ID)
+          .configuration(
+              ElementConfigurationVisualAcuities.builder()
+                  .id(FIELD_ID)
+                  .rightEye(
+                      ElementVisualAcuity.builder()
+                          .label("Höger öga")
+                          .withoutCorrectionId(RIGHT_EYE_WITHOUT_CORRECTION_ID)
+                          .withCorrectionId(RIGHT_EYE_WITH_CORRECTION_ID)
+                          .build())
+                  .leftEye(
+                      ElementVisualAcuity.builder()
+                          .label("Vänster öga")
+                          .withoutCorrectionId(LEFT_EYE_WITHOUT_CORRECTION_ID)
+                          .withCorrectionId(LEFT_EYE_WITH_CORRECTION_ID)
+                          .build())
+                  .binocular(
+                      ElementVisualAcuity.builder()
+                          .label("Binokulärt")
+                          .withoutCorrectionId(BINOCULAR_WITHOUT_CORRECTION_ID)
+                          .withCorrectionId(BINOCULAR_WITH_CORRECTION_ID)
+                          .build())
+                  .build())
+          .build();
+  private static final ElementData EXPECTED_ELEMENT_DATA =
+      ElementData.builder()
+          .id(ELEMENT_ID)
+          .value(
+              ElementValueVisualAcuities.builder()
+                  .rightEye(
+                      VisualAcuity.builder()
+                          .withCorrection(
+                              Correction.builder()
+                                  .id(new FieldId(RIGHT_EYE_WITH_CORRECTION_ID))
+                                  .value(1.1)
+                                  .build())
+                          .withoutCorrection(
+                              Correction.builder()
+                                  .id(new FieldId(RIGHT_EYE_WITHOUT_CORRECTION_ID))
+                                  .value(1.2)
+                                  .build())
+                          .build())
+                  .leftEye(
+                      VisualAcuity.builder()
+                          .withCorrection(
+                              Correction.builder()
+                                  .id(new FieldId(LEFT_EYE_WITH_CORRECTION_ID))
+                                  .value(1.3)
+                                  .build())
+                          .withoutCorrection(
+                              Correction.builder()
+                                  .id(new FieldId(LEFT_EYE_WITHOUT_CORRECTION_ID))
+                                  .value(1.4)
+                                  .build())
+                          .build())
+                  .binocular(
+                      VisualAcuity.builder()
+                          .withCorrection(
+                              Correction.builder()
+                                  .id(new FieldId(BINOCULAR_WITH_CORRECTION_ID))
+                                  .value(1.5)
+                                  .build())
+                          .withoutCorrection(
+                              Correction.builder()
+                                  .id(new FieldId(BINOCULAR_WITHOUT_CORRECTION_ID))
+                                  .value(1.6)
+                                  .build())
+                          .build())
+                  .build())
+          .build();
 
-  private final PrefillVisualAcuitiesConverter prefillVisualAcuitiesConverter = new PrefillVisualAcuitiesConverter();
+  private final PrefillVisualAcuitiesConverter prefillVisualAcuitiesConverter =
+      new PrefillVisualAcuitiesConverter();
 
   @Test
   void shouldReturnSupportsConfigurationVisualAcuities() {
-    assertEquals(ElementConfigurationVisualAcuities.class,
-        prefillVisualAcuitiesConverter.supports());
+    assertEquals(
+        ElementConfigurationVisualAcuities.class, prefillVisualAcuitiesConverter.supports());
   }
 
   @Nested
@@ -130,10 +138,7 @@ class PrefillVisualAcuitiesConverterTest {
     void shouldReturnNullIfNoAnswerExists() {
       Forifyllnad prefill = new Forifyllnad();
 
-      PrefillAnswer result = prefillVisualAcuitiesConverter.prefillAnswer(
-          SPECIFICATION,
-          prefill
-      );
+      PrefillAnswer result = prefillVisualAcuitiesConverter.prefillAnswer(SPECIFICATION, prefill);
 
       assertNull(result);
     }
@@ -141,17 +146,15 @@ class PrefillVisualAcuitiesConverterTest {
     @Test
     void shouldReturnErrorIfWrongConfigurationType() {
       final var prefill = new Forifyllnad();
-      final var wrongSpec = ElementSpecification.builder()
-          .id(ELEMENT_ID)
-          .configuration(ElementConfigurationCategory.builder().build())
-          .build();
+      final var wrongSpec =
+          ElementSpecification.builder()
+              .id(ELEMENT_ID)
+              .configuration(ElementConfigurationCategory.builder().build())
+              .build();
 
       final var result = prefillVisualAcuitiesConverter.prefillAnswer(wrongSpec, prefill);
 
-      assertEquals(
-          PrefillErrorType.TECHNICAL_ERROR,
-          result.getErrors().getFirst().type()
-      );
+      assertEquals(PrefillErrorType.TECHNICAL_ERROR, result.getErrors().getFirst().type());
     }
 
     @Test
@@ -161,13 +164,9 @@ class PrefillVisualAcuitiesConverterTest {
       svar.setId(ELEMENT_ID.id());
       prefill.getSvar().add(svar);
 
-      final var result = prefillVisualAcuitiesConverter.prefillAnswer(SPECIFICATION,
-          prefill);
+      final var result = prefillVisualAcuitiesConverter.prefillAnswer(SPECIFICATION, prefill);
 
-      assertEquals(
-          PrefillErrorType.WRONG_NUMBER_OF_ANSWERS,
-          result.getErrors().getFirst().type()
-      );
+      assertEquals(PrefillErrorType.WRONG_NUMBER_OF_ANSWERS, result.getErrors().getFirst().type());
     }
 
     @Test
@@ -187,13 +186,9 @@ class PrefillVisualAcuitiesConverterTest {
       prefill.getSvar().add(svar1);
       prefill.getSvar().add(svar2);
 
-      final var result = prefillVisualAcuitiesConverter.prefillAnswer(SPECIFICATION,
-          prefill);
+      final var result = prefillVisualAcuitiesConverter.prefillAnswer(SPECIFICATION, prefill);
 
-      assertEquals(
-          PrefillErrorType.WRONG_NUMBER_OF_ANSWERS,
-          result.getErrors().getFirst().type()
-      );
+      assertEquals(PrefillErrorType.WRONG_NUMBER_OF_ANSWERS, result.getErrors().getFirst().type());
     }
 
     @Test
@@ -232,49 +227,42 @@ class PrefillVisualAcuitiesConverterTest {
 
       final var result = prefillVisualAcuitiesConverter.prefillAnswer(SPECIFICATION, prefill);
 
-      final var expected = PrefillAnswer.builder()
-          .elementData(EXPECTED_ELEMENT_DATA)
-          .build();
+      final var expected = PrefillAnswer.builder().elementData(EXPECTED_ELEMENT_DATA).build();
 
       assertEquals(expected, result);
     }
 
     @Test
     void shouldReturnPrefillAnswerWithPartialElementData() {
-      final var expectedElementData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(
-              ElementValueVisualAcuities.builder()
-                  .rightEye(
-                      VisualAcuity.builder()
-                          .withCorrection(
-                              Correction.builder()
-                                  .id(new FieldId(RIGHT_EYE_WITH_CORRECTION_ID))
-                                  .value(1.1)
-                                  .build()
-                          )
-                          .withoutCorrection(
-                              Correction.builder()
-                                  .id(new FieldId(RIGHT_EYE_WITHOUT_CORRECTION_ID))
-                                  .value(1.2)
-                                  .build()
-                          )
-                          .build()
-                  )
-                  .leftEye(
-                      VisualAcuity.builder()
-                          .withCorrection(
-                              Correction.builder()
-                                  .id(new FieldId(LEFT_EYE_WITH_CORRECTION_ID))
-                                  .value(1.3)
-                                  .build()
-                          )
-                          .withoutCorrection(null)
-                          .build()
-                  )
-                  .build()
-          )
-          .build();
+      final var expectedElementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueVisualAcuities.builder()
+                      .rightEye(
+                          VisualAcuity.builder()
+                              .withCorrection(
+                                  Correction.builder()
+                                      .id(new FieldId(RIGHT_EYE_WITH_CORRECTION_ID))
+                                      .value(1.1)
+                                      .build())
+                              .withoutCorrection(
+                                  Correction.builder()
+                                      .id(new FieldId(RIGHT_EYE_WITHOUT_CORRECTION_ID))
+                                      .value(1.2)
+                                      .build())
+                              .build())
+                      .leftEye(
+                          VisualAcuity.builder()
+                              .withCorrection(
+                                  Correction.builder()
+                                      .id(new FieldId(LEFT_EYE_WITH_CORRECTION_ID))
+                                      .value(1.3)
+                                      .build())
+                              .withoutCorrection(null)
+                              .build())
+                      .build())
+              .build();
       final var prefill = new Forifyllnad();
       final var svar = new Svar();
       svar.setId(ELEMENT_ID.id());
@@ -297,9 +285,7 @@ class PrefillVisualAcuitiesConverterTest {
 
       final var result = prefillVisualAcuitiesConverter.prefillAnswer(SPECIFICATION, prefill);
 
-      final var expected = PrefillAnswer.builder()
-          .elementData(expectedElementData)
-          .build();
+      final var expected = PrefillAnswer.builder().elementData(expectedElementData).build();
 
       assertEquals(expected, result);
     }
@@ -320,10 +306,7 @@ class PrefillVisualAcuitiesConverterTest {
 
       final var result = prefillVisualAcuitiesConverter.prefillAnswer(SPECIFICATION, prefill);
 
-      assertEquals(
-          PrefillErrorType.INVALID_FORMAT,
-          result.getErrors().getFirst().type()
-      );
+      assertEquals(PrefillErrorType.INVALID_FORMAT, result.getErrors().getFirst().type());
     }
   }
 }

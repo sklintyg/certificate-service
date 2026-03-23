@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service.converter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -46,167 +64,150 @@ class CertificateDataDiagnosisListConfigConverterTest {
 
   @Test
   void shallThrowExceptionIfWrongClass() {
-    final var elementSpecification = ElementSpecification.builder()
-        .configuration(
-            ElementConfigurationDate.builder().build()
-        )
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .configuration(ElementConfigurationDate.builder().build())
+            .build();
 
-    assertThrows(IllegalStateException.class,
-        () -> certificateDataDiagnosisListConfigConverter.convert(elementSpecification,
-            FK7210_CERTIFICATE)
-    );
+    assertThrows(
+        IllegalStateException.class,
+        () ->
+            certificateDataDiagnosisListConfigConverter.convert(
+                elementSpecification, FK7210_CERTIFICATE));
   }
 
   @Test
   void shallConvertToCertificateDataConfigDiagnosesWithMessage() {
-    final var expectedMessage = Message.builder()
-        .content(EXPECTED_CONTENT)
-        .level(
-            se.inera.intyg.certificateservice.application.certificate.dto.config.MessageLevel.INFO)
-        .build();
+    final var expectedMessage =
+        Message.builder()
+            .content(EXPECTED_CONTENT)
+            .level(
+                se.inera.intyg.certificateservice.application.certificate.dto.config.MessageLevel
+                    .INFO)
+            .build();
 
-    final var elementSpecification = ElementSpecification.builder()
-        .configuration(
-            ElementConfigurationDiagnosis.builder()
-                .message(
-                    ElementMessage.builder()
-                        .content(EXPECTED_CONTENT)
-                        .level(MessageLevel.INFO)
-                        .includedForStatuses(List.of(Status.DRAFT))
-                        .build()
-                )
-                .build()
-        )
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .configuration(
+                ElementConfigurationDiagnosis.builder()
+                    .message(
+                        ElementMessage.builder()
+                            .content(EXPECTED_CONTENT)
+                            .level(MessageLevel.INFO)
+                            .includedForStatuses(List.of(Status.DRAFT))
+                            .build())
+                    .build())
+            .build();
 
-    final var certificate = fk3226CertificateBuilder()
-        .status(Status.DRAFT)
-        .build();
+    final var certificate = fk3226CertificateBuilder().status(Status.DRAFT).build();
 
-    final var certificateDataConfig = certificateDataDiagnosisListConfigConverter.convert(
-        elementSpecification, certificate);
+    final var certificateDataConfig =
+        certificateDataDiagnosisListConfigConverter.convert(elementSpecification, certificate);
     assertEquals(expectedMessage, certificateDataConfig.getMessage());
   }
 
   @Test
   void shallConvertToCertificateDataConfigDiagnosesWithExcludedMessageIfNull() {
-    final var elementSpecification = ElementSpecification.builder()
-        .configuration(
-            ElementConfigurationDiagnosis.builder()
-                .build()
-        )
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .configuration(ElementConfigurationDiagnosis.builder().build())
+            .build();
 
-    final var certificateDataConfig = certificateDataDiagnosisListConfigConverter.convert(
-        elementSpecification, FK3226_CERTIFICATE);
+    final var certificateDataConfig =
+        certificateDataDiagnosisListConfigConverter.convert(
+            elementSpecification, FK3226_CERTIFICATE);
     assertNull(certificateDataConfig.getMessage());
   }
 
   @Test
   void shallConvertToCertificateDataConfigDiagnosesWithExcludedMessageIfCertificateIsSigned() {
-    final var elementSpecification = ElementSpecification.builder()
-        .configuration(
-            ElementConfigurationDiagnosis.builder()
-                .message(
-                    ElementMessage.builder()
-                        .content(EXPECTED_CONTENT)
-                        .level(MessageLevel.INFO)
-                        .includedForStatuses(List.of(Status.DRAFT))
-                        .build()
-                )
-                .build()
-        )
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .configuration(
+                ElementConfigurationDiagnosis.builder()
+                    .message(
+                        ElementMessage.builder()
+                            .content(EXPECTED_CONTENT)
+                            .level(MessageLevel.INFO)
+                            .includedForStatuses(List.of(Status.DRAFT))
+                            .build())
+                    .build())
+            .build();
 
-    final var certificate = fk3226CertificateBuilder()
-        .status(Status.SIGNED)
-        .build();
+    final var certificate = fk3226CertificateBuilder().status(Status.SIGNED).build();
 
-    final var certificateDataConfig = certificateDataDiagnosisListConfigConverter.convert(
-        elementSpecification, certificate);
+    final var certificateDataConfig =
+        certificateDataDiagnosisListConfigConverter.convert(elementSpecification, certificate);
     assertNull(certificateDataConfig.getMessage());
   }
 
   @Test
   void shallConvertToCertificateDataConfigDiagnosesWithListOfDiagnosesTerminology() {
-    final var expectedTerminlogy = List.of(
-        DiagnosesTerminology.builder()
-            .id(EXPECTED_ID)
-            .label(EXPECTED_LABEL)
-            .build()
-    );
+    final var expectedTerminlogy =
+        List.of(DiagnosesTerminology.builder().id(EXPECTED_ID).label(EXPECTED_LABEL).build());
 
-    final var elementSpecification = ElementSpecification.builder()
-        .configuration(
-            ElementConfigurationDiagnosis.builder()
-                .terminology(
-                    List.of(
-                        new ElementDiagnosisTerminology(EXPECTED_ID, EXPECTED_LABEL, CODE_SYSTEM,
-                            List.of())
-                    )
-                )
-                .build()
-        )
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .configuration(
+                ElementConfigurationDiagnosis.builder()
+                    .terminology(
+                        List.of(
+                            new ElementDiagnosisTerminology(
+                                EXPECTED_ID, EXPECTED_LABEL, CODE_SYSTEM, List.of())))
+                    .build())
+            .build();
 
-    final var certificateDataConfig = (CertificateDataConfigDiagnoses) certificateDataDiagnosisListConfigConverter.convert(
-        elementSpecification, FK3226_CERTIFICATE);
+    final var certificateDataConfig =
+        (CertificateDataConfigDiagnoses)
+            certificateDataDiagnosisListConfigConverter.convert(
+                elementSpecification, FK3226_CERTIFICATE);
     assertEquals(expectedTerminlogy, certificateDataConfig.getTerminology());
   }
 
   @Test
   void shallConvertToCertificateDataConfigDiagnosesWithListOfDiagnosesListItem() {
-    final var expectedDiagnosesListItem = List.of(
-        DiagnosesListItem.builder()
-            .id(EXPECTED_ID)
-            .build()
-    );
+    final var expectedDiagnosesListItem =
+        List.of(DiagnosesListItem.builder().id(EXPECTED_ID).build());
 
-    final var elementSpecification = ElementSpecification.builder()
-        .configuration(
-            ElementConfigurationDiagnosis.builder()
-                .list(
-                    List.of(
-                        new ElementDiagnosisListItem(new FieldId(EXPECTED_ID))
-                    )
-                )
-                .build()
-        )
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .configuration(
+                ElementConfigurationDiagnosis.builder()
+                    .list(List.of(new ElementDiagnosisListItem(new FieldId(EXPECTED_ID))))
+                    .build())
+            .build();
 
-    final var certificateDataConfig = (CertificateDataConfigDiagnoses) certificateDataDiagnosisListConfigConverter.convert(
-        elementSpecification, FK3226_CERTIFICATE);
+    final var certificateDataConfig =
+        (CertificateDataConfigDiagnoses)
+            certificateDataDiagnosisListConfigConverter.convert(
+                elementSpecification, FK3226_CERTIFICATE);
     assertEquals(expectedDiagnosesListItem, certificateDataConfig.getList());
   }
 
   @Test
   void shallConvertToCertificateDataConfigDiagnosesWithText() {
-    final var elementSpecification = ElementSpecification.builder()
-        .configuration(
-            ElementConfigurationDiagnosis.builder()
-                .name(EXPECTED_TEXT)
-                .build()
-        )
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .configuration(ElementConfigurationDiagnosis.builder().name(EXPECTED_TEXT).build())
+            .build();
 
-    final var certificateDataConfig = certificateDataDiagnosisListConfigConverter.convert(
-        elementSpecification, FK3226_CERTIFICATE);
+    final var certificateDataConfig =
+        certificateDataDiagnosisListConfigConverter.convert(
+            elementSpecification, FK3226_CERTIFICATE);
     assertEquals(EXPECTED_TEXT, certificateDataConfig.getText());
   }
 
   @Test
   void shallConvertToCertificateDataConfigDiagnosesWithDescription() {
-    final var elementSpecification = ElementSpecification.builder()
-        .configuration(
-            ElementConfigurationDiagnosis.builder()
-                .description(EXPECTED_TEXT)
-                .build()
-        )
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .configuration(
+                ElementConfigurationDiagnosis.builder().description(EXPECTED_TEXT).build())
+            .build();
 
-    final var certificateDataConfig = certificateDataDiagnosisListConfigConverter.convert(
-        elementSpecification, FK3226_CERTIFICATE);
+    final var certificateDataConfig =
+        certificateDataDiagnosisListConfigConverter.convert(
+            elementSpecification, FK3226_CERTIFICATE);
     assertEquals(EXPECTED_TEXT, certificateDataConfig.getDescription());
   }
 }

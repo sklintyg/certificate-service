@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.integrationtest.common.setup;
 
 import static se.inera.intyg.certificateservice.testability.common.TestabilityConstants.TESTABILITY_PROFILE;
@@ -27,11 +45,9 @@ import se.inera.intyg.certificateservice.patient.dto.PersonsResponseDTO;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public abstract class InActiveCertificatesIT {
 
-  @LocalServerPort
-  protected int port;
+  @LocalServerPort protected int port;
 
-  @Autowired
-  protected TestRestTemplate restTemplate;
+  @Autowired protected TestRestTemplate restTemplate;
 
   protected ApiUtil api;
   protected InternalApiUtil internalApi;
@@ -65,10 +81,10 @@ public abstract class InActiveCertificatesIT {
     this.api = new ApiUtil(restTemplate, port);
     this.internalApi = new InternalApiUtil(restTemplate, port);
     this.testabilityApi = new TestabilityApiUtil(restTemplate, port);
-    final var mockServerClient = new MockServerClient(
-        Containers.MOCK_SERVER_CONTAINER.getHost(),
-        Containers.MOCK_SERVER_CONTAINER.getServerPort()
-    );
+    final var mockServerClient =
+        new MockServerClient(
+            Containers.MOCK_SERVER_CONTAINER.getHost(),
+            Containers.MOCK_SERVER_CONTAINER.getServerPort());
     mockIntygProxyService(mockServerClient);
   }
 
@@ -80,19 +96,17 @@ public abstract class InActiveCertificatesIT {
 
   private void mockIntygProxyService(MockServerClient mockServerClient) {
     try {
-      mockServerClient.when(HttpRequest.request("/api/v1/persons"))
+      mockServerClient
+          .when(HttpRequest.request("/api/v1/persons"))
           .respond(
-              HttpResponse
-                  .response(
-                      new ObjectMapper().writeValueAsString(
-                          PersonsResponseDTO.builder()
-                              .persons(Collections.emptyList())
-                              .build()
-                      )
-                  )
+              HttpResponse.response(
+                      new ObjectMapper()
+                          .writeValueAsString(
+                              PersonsResponseDTO.builder()
+                                  .persons(Collections.emptyList())
+                                  .build()))
                   .withStatusCode(200)
-                  .withContentType(MediaType.APPLICATION_JSON)
-          );
+                  .withContentType(MediaType.APPLICATION_JSON));
     } catch (Exception ex) {
       throw new IllegalStateException(ex);
     }

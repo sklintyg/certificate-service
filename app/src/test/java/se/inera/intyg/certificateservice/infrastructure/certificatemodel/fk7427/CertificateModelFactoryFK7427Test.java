@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7427;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -25,24 +43,22 @@ import se.inera.intyg.certificateservice.domain.diagnosiscode.repository.Diagnos
 
 class CertificateModelFactoryFK7427Test {
 
-  @Mock
-  private CertificateActionFactory certificateActionFactory;
+  @Mock private CertificateActionFactory certificateActionFactory;
   private static final String TYPE = "fk7427";
   private static final String VERSION = "1.0";
   private CertificateModelFactoryFK7427 certificateModelFactoryFK7427;
 
   private static final String LOGICAL_ADDRESS = "L-A";
 
-  @Mock
-  private DiagnosisCodeRepository diagnosisCodeRepository;
+  @Mock private DiagnosisCodeRepository diagnosisCodeRepository;
 
   @BeforeEach
   void setUp() {
-    certificateModelFactoryFK7427 = new CertificateModelFactoryFK7427(certificateActionFactory,
-        diagnosisCodeRepository);
+    certificateModelFactoryFK7427 =
+        new CertificateModelFactoryFK7427(certificateActionFactory, diagnosisCodeRepository);
 
-    ReflectionTestUtils.setField(certificateModelFactoryFK7427, "fkLogicalAddress",
-        LOGICAL_ADDRESS);
+    ReflectionTestUtils.setField(
+        certificateModelFactoryFK7427, "fkLogicalAddress", LOGICAL_ADDRESS);
   }
 
   @Test
@@ -93,11 +109,7 @@ class CertificateModelFactoryFK7427Test {
   @Test
   void shallIncludeActiveFrom() {
     final var expectedActiveFrom = LocalDateTime.now(ZoneId.systemDefault());
-    ReflectionTestUtils.setField(
-        certificateModelFactoryFK7427,
-        "activeFrom",
-        expectedActiveFrom
-    );
+    ReflectionTestUtils.setField(certificateModelFactoryFK7427, "activeFrom", expectedActiveFrom);
 
     final var certificateModel = certificateModelFactoryFK7427.create();
 
@@ -113,11 +125,8 @@ class CertificateModelFactoryFK7427Test {
 
   @Test
   void shallIncludeRecipient() {
-    final var expectedRecipient = new Recipient(
-        new RecipientId("FKASSA"),
-        "Försäkringskassan",
-        LOGICAL_ADDRESS
-    );
+    final var expectedRecipient =
+        new Recipient(new RecipientId("FKASSA"), "Försäkringskassan", LOGICAL_ADDRESS);
 
     final var certificateModel = certificateModelFactoryFK7427.create();
 
@@ -130,8 +139,7 @@ class CertificateModelFactoryFK7427Test {
 
     assertAll(
         () -> assertNotNull(certificateModel.certificateActionSpecifications()),
-        () -> assertFalse(certificateModel.certificateActionSpecifications().isEmpty())
-    );
+        () -> assertFalse(certificateModel.certificateActionSpecifications().isEmpty()));
   }
 
   @Test
@@ -140,10 +148,8 @@ class CertificateModelFactoryFK7427Test {
 
     assertAll(
         () -> assertNotNull(certificateModel.messageActionSpecifications()),
-        () -> assertFalse(certificateModel.messageActionSpecifications().isEmpty())
-    );
+        () -> assertFalse(certificateModel.messageActionSpecifications().isEmpty()));
   }
-
 
   @Test
   void shallIncludeCertificateActionFactory() {
@@ -156,8 +162,8 @@ class CertificateModelFactoryFK7427Test {
   void shallIncludeSchematronPath() {
     final var certificateModel = certificateModelFactoryFK7427.create();
 
-    assertEquals("fk7427/schematron/lu_tfp_b12_16.v1.sch",
-        certificateModel.schematronPath().value());
+    assertEquals(
+        "fk7427/schematron/lu_tfp_b12_16.v1.sch", certificateModel.schematronPath().value());
   }
 
   @Nested
@@ -167,33 +173,30 @@ class CertificateModelFactoryFK7427Test {
     void shallIncludeCategoryGrundForMedicinsktUnderlag() {
       final var certificateModel = certificateModelFactoryFK7427.create();
 
-      assertTrue(certificateModel.elementSpecificationExists(new ElementId("KAT_1")),
-          "Expected elementId: '%s' to exists in elementSpecifications '%s'".formatted(
-              new ElementId("KAT_1"),
-              certificateModel.elementSpecifications())
-      );
+      assertTrue(
+          certificateModel.elementSpecificationExists(new ElementId("KAT_1")),
+          "Expected elementId: '%s' to exists in elementSpecifications '%s'"
+              .formatted(new ElementId("KAT_1"), certificateModel.elementSpecifications()));
     }
 
     @Test
     void shallIncludeQuestionGrundForMedicinsktUnderlag() {
       final var certificateModel = certificateModelFactoryFK7427.create();
 
-      assertTrue(certificateModel.elementSpecificationExists(new ElementId("1")),
-          "Expected elementId: '%s' to exists in elementSpecifications '%s'".formatted(
-              new ElementId("1"),
-              certificateModel.elementSpecifications())
-      );
+      assertTrue(
+          certificateModel.elementSpecificationExists(new ElementId("1")),
+          "Expected elementId: '%s' to exists in elementSpecifications '%s'"
+              .formatted(new ElementId("1"), certificateModel.elementSpecifications()));
     }
 
     @Test
     void shallIncludeQuestionAnnanGrundForMedicinsktUnderlag() {
       final var certificateModel = certificateModelFactoryFK7427.create();
 
-      assertTrue(certificateModel.elementSpecificationExists(new ElementId("1.3")),
-          "Expected elementId: '%s' to exists in elementSpecifications '%s'".formatted(
-              new ElementId("1.3"),
-              certificateModel.elementSpecifications())
-      );
+      assertTrue(
+          certificateModel.elementSpecificationExists(new ElementId("1.3")),
+          "Expected elementId: '%s' to exists in elementSpecifications '%s'"
+              .formatted(new ElementId("1.3"), certificateModel.elementSpecifications()));
     }
 
     @Test
@@ -203,120 +206,109 @@ class CertificateModelFactoryFK7427Test {
       assertTrue(
           certificateModel.elementSpecificationExists(new ElementId("UNIT_CONTACT_INFORMATION")),
           "Expected elementId: '%s' to exists in elementSpecifications '%s'"
-              .formatted(new ElementId("UNIT_CONTACT_INFORMATION"),
-                  certificateModel.elementSpecifications())
-      );
+              .formatted(
+                  new ElementId("UNIT_CONTACT_INFORMATION"),
+                  certificateModel.elementSpecifications()));
     }
 
     @Test
     void shallIncludeCategoryDiagnos() {
       final var certificateModel = certificateModelFactoryFK7427.create();
 
-      assertTrue(certificateModel.elementSpecificationExists(new ElementId("KAT_2")),
-          "Expected elementId: '%s' to exists in elementSpecifications '%s'".formatted(
-              new ElementId("KAT_2"),
-              certificateModel.elementSpecifications())
-      );
+      assertTrue(
+          certificateModel.elementSpecificationExists(new ElementId("KAT_2")),
+          "Expected elementId: '%s' to exists in elementSpecifications '%s'"
+              .formatted(new ElementId("KAT_2"), certificateModel.elementSpecifications()));
     }
 
     @Test
     void shallIncludeQuestionDiagnos() {
       final var certificateModel = certificateModelFactoryFK7427.create();
 
-      assertTrue(certificateModel.elementSpecificationExists(new ElementId("58")),
-          "Expected elementId: '%s' to exists in elementSpecifications '%s'".formatted(
-              new ElementId("58"),
-              certificateModel.elementSpecifications())
-      );
+      assertTrue(
+          certificateModel.elementSpecificationExists(new ElementId("58")),
+          "Expected elementId: '%s' to exists in elementSpecifications '%s'"
+              .formatted(new ElementId("58"), certificateModel.elementSpecifications()));
     }
 
     @Test
     void shallIncludeQuestionSymptom() {
       final var certificateModel = certificateModelFactoryFK7427.create();
 
-      assertTrue(certificateModel.elementSpecificationExists(new ElementId("55")),
-          "Expected elementId: '%s' to exists in elementSpecifications '%s'".formatted(
-              new ElementId("55"),
-              certificateModel.elementSpecifications())
-      );
+      assertTrue(
+          certificateModel.elementSpecificationExists(new ElementId("55")),
+          "Expected elementId: '%s' to exists in elementSpecifications '%s'"
+              .formatted(new ElementId("55"), certificateModel.elementSpecifications()));
     }
 
     @Test
     void shallIncludeCategoryHalsotillstand() {
       final var certificateModel = certificateModelFactoryFK7427.create();
 
-      assertTrue(certificateModel.elementSpecificationExists(new ElementId("KAT_3")),
-          "Expected elementId: '%s' to exists in elementSpecifications '%s'".formatted(
-              new ElementId("KAT_3"),
-              certificateModel.elementSpecifications())
-      );
+      assertTrue(
+          certificateModel.elementSpecificationExists(new ElementId("KAT_3")),
+          "Expected elementId: '%s' to exists in elementSpecifications '%s'"
+              .formatted(new ElementId("KAT_3"), certificateModel.elementSpecifications()));
     }
 
     @Test
     void shallIncludeQuestionHalsotillstand() {
       final var certificateModel = certificateModelFactoryFK7427.create();
 
-      assertTrue(certificateModel.elementSpecificationExists(new ElementId("59")),
-          "Expected elementId: '%s' to exists in elementSpecifications '%s'".formatted(
-              new ElementId("59"),
-              certificateModel.elementSpecifications())
-      );
+      assertTrue(
+          certificateModel.elementSpecificationExists(new ElementId("59")),
+          "Expected elementId: '%s' to exists in elementSpecifications '%s'"
+              .formatted(new ElementId("59"), certificateModel.elementSpecifications()));
     }
 
     @Test
     void shallIncludeCategoryVardEllerTillsyn() {
       final var certificateModel = certificateModelFactoryFK7427.create();
 
-      assertTrue(certificateModel.elementSpecificationExists(new ElementId("KAT_4")),
-          "Expected elementId: '%s' to exists in elementSpecifications '%s'".formatted(
-              new ElementId("KAT_3"),
-              certificateModel.elementSpecifications())
-      );
+      assertTrue(
+          certificateModel.elementSpecificationExists(new ElementId("KAT_4")),
+          "Expected elementId: '%s' to exists in elementSpecifications '%s'"
+              .formatted(new ElementId("KAT_3"), certificateModel.elementSpecifications()));
     }
 
     @Test
     void shallIncludeQuestionVardEllerTillsyn() {
       final var certificateModel = certificateModelFactoryFK7427.create();
 
-      assertTrue(certificateModel.elementSpecificationExists(new ElementId("62")),
-          "Expected elementId: '%s' to exists in elementSpecifications '%s'".formatted(
-              new ElementId("62"),
-              certificateModel.elementSpecifications())
-      );
+      assertTrue(
+          certificateModel.elementSpecificationExists(new ElementId("62")),
+          "Expected elementId: '%s' to exists in elementSpecifications '%s'"
+              .formatted(new ElementId("62"), certificateModel.elementSpecifications()));
     }
 
     @Test
     void shallIncludeQuestionVardasBarnetInneliggandePaSjukhus() {
       final var certificateModel = certificateModelFactoryFK7427.create();
 
-      assertTrue(certificateModel.elementSpecificationExists(new ElementId("62.1")),
-          "Expected elementId: '%s' to exists in elementSpecifications '%s'".formatted(
-              new ElementId("62.1"),
-              certificateModel.elementSpecifications())
-      );
+      assertTrue(
+          certificateModel.elementSpecificationExists(new ElementId("62.1")),
+          "Expected elementId: '%s' to exists in elementSpecifications '%s'"
+              .formatted(new ElementId("62.1"), certificateModel.elementSpecifications()));
     }
 
     @Test
     void shallIncludeCategoryBehandling() {
       final var certificateModel = certificateModelFactoryFK7427.create();
 
-      assertTrue(certificateModel.elementSpecificationExists(new ElementId("KAT_5")),
-          "Expected elementId: '%s' to exists in elementSpecifications '%s'".formatted(
-              new ElementId("KAT_3"),
-              certificateModel.elementSpecifications())
-      );
+      assertTrue(
+          certificateModel.elementSpecificationExists(new ElementId("KAT_5")),
+          "Expected elementId: '%s' to exists in elementSpecifications '%s'"
+              .formatted(new ElementId("KAT_3"), certificateModel.elementSpecifications()));
     }
 
     @Test
     void shallIncludeQuestionPagaendeOchPlaneradeBehandlingar() {
       final var certificateModel = certificateModelFactoryFK7427.create();
 
-      assertTrue(certificateModel.elementSpecificationExists(new ElementId("19")),
-          "Expected elementId: '%s' to exists in elementSpecifications '%s'".formatted(
-              new ElementId("62"),
-              certificateModel.elementSpecifications())
-      );
+      assertTrue(
+          certificateModel.elementSpecificationExists(new ElementId("19")),
+          "Expected elementId: '%s' to exists in elementSpecifications '%s'"
+              .formatted(new ElementId("62"), certificateModel.elementSpecifications()));
     }
-
   }
 }

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.certificatemodel.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -35,10 +53,8 @@ import se.inera.intyg.certificateservice.domain.certificatemodel.repository.Cert
 @ExtendWith(MockitoExtension.class)
 class CertificateModelTest {
 
-  @Mock
-  CertificateActionConfigurationRepository certificateActionConfigurationRepository;
-  @Mock
-  CertificateActionFactory certificateActionFactory;
+  @Mock CertificateActionConfigurationRepository certificateActionConfigurationRepository;
+  @Mock CertificateActionFactory certificateActionFactory;
 
   @Nested
   class TestActions {
@@ -49,16 +65,14 @@ class CertificateModelTest {
       final var certificateAction = mock(CertificateAction.class);
       final var expectedActions = List.of(certificateAction);
 
-      final var certificateModel = CertificateModel.builder()
-          .certificateActionSpecifications(
-              List.of(
-                  certificateActionSpecification
-              )
-          )
-          .certificateActionFactory(certificateActionFactory)
-          .build();
+      final var certificateModel =
+          CertificateModel.builder()
+              .certificateActionSpecifications(List.of(certificateActionSpecification))
+              .certificateActionFactory(certificateActionFactory)
+              .build();
 
-      doReturn(certificateAction).when(certificateActionFactory)
+      doReturn(certificateAction)
+          .when(certificateActionFactory)
           .create(certificateActionSpecification);
 
       final var actualActions = certificateModel.actions();
@@ -71,17 +85,13 @@ class CertificateModelTest {
       final var certificateActionSpecification = CertificateActionSpecification.builder().build();
       final var expectedActions = Collections.emptyList();
 
-      final var certificateModel = CertificateModel.builder()
-          .certificateActionSpecifications(
-              List.of(
-                  certificateActionSpecification
-              )
-          )
-          .certificateActionFactory(certificateActionFactory)
-          .build();
+      final var certificateModel =
+          CertificateModel.builder()
+              .certificateActionSpecifications(List.of(certificateActionSpecification))
+              .certificateActionFactory(certificateActionFactory)
+              .build();
 
-      doReturn(null).when(certificateActionFactory)
-          .create(certificateActionSpecification);
+      doReturn(null).when(certificateActionFactory).create(certificateActionSpecification);
 
       final var actualActions = certificateModel.actions();
 
@@ -92,12 +102,11 @@ class CertificateModelTest {
     void shallReturnEmptyActionsIfNoActionsExistInSpecification() {
       final var expectedActions = Collections.emptyList();
 
-      final var certificateModel = CertificateModel.builder()
-          .certificateActionSpecifications(
-              Collections.emptyList()
-          )
-          .certificateActionFactory(certificateActionFactory)
-          .build();
+      final var certificateModel =
+          CertificateModel.builder()
+              .certificateActionSpecifications(Collections.emptyList())
+              .certificateActionFactory(certificateActionFactory)
+              .build();
 
       final var actualActions = certificateModel.actions();
 
@@ -114,17 +123,14 @@ class CertificateModelTest {
       final var messageAction = mock(MessageAction.class);
       final var expectedActions = List.of(messageAction);
 
-      final var certificateModel = CertificateModel.builder()
-          .messageActionSpecifications(
-              List.of(
-                  messageActionSpecification
-              )
-          )
-          .certificateActionFactory(certificateActionFactory)
-          .build();
+      final var certificateModel =
+          CertificateModel.builder()
+              .messageActionSpecifications(List.of(messageActionSpecification))
+              .certificateActionFactory(certificateActionFactory)
+              .build();
 
-      try (MockedStatic<MessageActionFactory> messageActionFactory = mockStatic(
-          MessageActionFactory.class)) {
+      try (MockedStatic<MessageActionFactory> messageActionFactory =
+          mockStatic(MessageActionFactory.class)) {
 
         messageActionFactory
             .when(() -> MessageActionFactory.create(messageActionSpecification))
@@ -141,16 +147,13 @@ class CertificateModelTest {
       final var messageActionSpecification = MessageActionSpecification.builder().build();
       final var expectedActions = Collections.emptyList();
 
-      final var certificateModel = CertificateModel.builder()
-          .messageActionSpecifications(
-              List.of(
-                  messageActionSpecification
-              )
-          )
-          .build();
+      final var certificateModel =
+          CertificateModel.builder()
+              .messageActionSpecifications(List.of(messageActionSpecification))
+              .build();
 
-      try (MockedStatic<MessageActionFactory> messageActionFactory = mockStatic(
-          MessageActionFactory.class)) {
+      try (MockedStatic<MessageActionFactory> messageActionFactory =
+          mockStatic(MessageActionFactory.class)) {
 
         messageActionFactory
             .when(() -> MessageActionFactory.create(messageActionSpecification))
@@ -166,11 +169,10 @@ class CertificateModelTest {
     void shallReturnEmptyActionsIfNoActionsExistInSpecification() {
       final var expectedActions = Collections.emptyList();
 
-      final var certificateModel = CertificateModel.builder()
-          .certificateActionSpecifications(
-              Collections.emptyList()
-          )
-          .build();
+      final var certificateModel =
+          CertificateModel.builder()
+              .certificateActionSpecifications(Collections.emptyList())
+              .build();
 
       final var actualActions = certificateModel.messageActions();
 
@@ -188,19 +190,18 @@ class CertificateModelTest {
       final var certificateAction = mock(CertificateAction.class);
       final var expectedActions = List.of(certificateAction);
 
-      final var certificateModel = CertificateModel.builder()
-          .certificateActionSpecifications(
-              List.of(
-                  certificateActionSpecification
-              )
-          )
-          .certificateActionFactory(certificateActionFactory)
-          .build();
+      final var certificateModel =
+          CertificateModel.builder()
+              .certificateActionSpecifications(List.of(certificateActionSpecification))
+              .certificateActionFactory(certificateActionFactory)
+              .build();
 
-      doReturn(certificateAction).when(certificateActionFactory)
+      doReturn(certificateAction)
+          .when(certificateActionFactory)
           .create(certificateActionSpecification);
 
-      doReturn(true).when(certificateAction)
+      doReturn(true)
+          .when(certificateAction)
           .evaluate(Optional.empty(), Optional.of(actionEvaluation));
 
       final var actualActions = certificateModel.actions(Optional.of(actionEvaluation));
@@ -215,19 +216,18 @@ class CertificateModelTest {
       final var certificateAction = mock(CertificateAction.class);
       final var expectedActions = Collections.emptyList();
 
-      final var certificateModel = CertificateModel.builder()
-          .certificateActionSpecifications(
-              List.of(
-                  certificateActionSpecification
-              )
-          )
-          .certificateActionFactory(certificateActionFactory)
-          .build();
+      final var certificateModel =
+          CertificateModel.builder()
+              .certificateActionSpecifications(List.of(certificateActionSpecification))
+              .certificateActionFactory(certificateActionFactory)
+              .build();
 
-      doReturn(certificateAction).when(certificateActionFactory)
+      doReturn(certificateAction)
+          .when(certificateActionFactory)
           .create(certificateActionSpecification);
 
-      doReturn(false).when(certificateAction)
+      doReturn(false)
+          .when(certificateAction)
           .evaluate(Optional.empty(), Optional.of(actionEvaluation));
 
       final var actualActions = certificateModel.actions(Optional.of(actionEvaluation));
@@ -241,17 +241,13 @@ class CertificateModelTest {
       final var actionEvaluation = ActionEvaluation.builder().build();
       final var expectedActions = Collections.emptyList();
 
-      final var certificateModel = CertificateModel.builder()
-          .certificateActionSpecifications(
-              List.of(
-                  certificateActionSpecification
-              )
-          )
-          .certificateActionFactory(certificateActionFactory)
-          .build();
+      final var certificateModel =
+          CertificateModel.builder()
+              .certificateActionSpecifications(List.of(certificateActionSpecification))
+              .certificateActionFactory(certificateActionFactory)
+              .build();
 
-      doReturn(null).when(certificateActionFactory)
-          .create(certificateActionSpecification);
+      doReturn(null).when(certificateActionFactory).create(certificateActionSpecification);
 
       final var actualActions = certificateModel.actions(Optional.of(actionEvaluation));
 
@@ -263,12 +259,11 @@ class CertificateModelTest {
       final var expectedActions = Collections.emptyList();
       final var actionEvaluation = ActionEvaluation.builder().build();
 
-      final var certificateModel = CertificateModel.builder()
-          .certificateActionSpecifications(
-              Collections.emptyList()
-          )
-          .certificateActionFactory(certificateActionFactory)
-          .build();
+      final var certificateModel =
+          CertificateModel.builder()
+              .certificateActionSpecifications(Collections.emptyList())
+              .certificateActionFactory(certificateActionFactory)
+              .build();
 
       final var actualActions = certificateModel.actions(Optional.of(actionEvaluation));
 
@@ -286,19 +281,18 @@ class CertificateModelTest {
       final var certificateAction = mock(CertificateAction.class);
       final var expectedActions = List.of(certificateAction);
 
-      final var certificateModel = CertificateModel.builder()
-          .certificateActionSpecifications(
-              List.of(
-                  certificateActionSpecification
-              )
-          )
-          .certificateActionFactory(certificateActionFactory)
-          .build();
+      final var certificateModel =
+          CertificateModel.builder()
+              .certificateActionSpecifications(List.of(certificateActionSpecification))
+              .certificateActionFactory(certificateActionFactory)
+              .build();
 
-      doReturn(certificateAction).when(certificateActionFactory)
+      doReturn(certificateAction)
+          .when(certificateActionFactory)
           .create(certificateActionSpecification);
 
-      doReturn(true).when(certificateAction)
+      doReturn(true)
+          .when(certificateAction)
           .include(Optional.empty(), Optional.of(actionEvaluation));
 
       final var actualActions = certificateModel.actionsInclude(Optional.of(actionEvaluation));
@@ -313,19 +307,18 @@ class CertificateModelTest {
       final var certificateAction = mock(CertificateAction.class);
       final var expectedActions = Collections.emptyList();
 
-      final var certificateModel = CertificateModel.builder()
-          .certificateActionSpecifications(
-              List.of(
-                  certificateActionSpecification
-              )
-          )
-          .certificateActionFactory(certificateActionFactory)
-          .build();
+      final var certificateModel =
+          CertificateModel.builder()
+              .certificateActionSpecifications(List.of(certificateActionSpecification))
+              .certificateActionFactory(certificateActionFactory)
+              .build();
 
-      doReturn(certificateAction).when(certificateActionFactory)
+      doReturn(certificateAction)
+          .when(certificateActionFactory)
           .create(certificateActionSpecification);
 
-      doReturn(false).when(certificateAction)
+      doReturn(false)
+          .when(certificateAction)
           .include(Optional.empty(), Optional.of(actionEvaluation));
 
       final var actualActions = certificateModel.actionsInclude(Optional.of(actionEvaluation));
@@ -339,17 +332,13 @@ class CertificateModelTest {
       final var actionEvaluation = ActionEvaluation.builder().build();
       final var expectedActions = Collections.emptyList();
 
-      final var certificateModel = CertificateModel.builder()
-          .certificateActionSpecifications(
-              List.of(
-                  certificateActionSpecification
-              )
-          )
-          .certificateActionFactory(certificateActionFactory)
-          .build();
+      final var certificateModel =
+          CertificateModel.builder()
+              .certificateActionSpecifications(List.of(certificateActionSpecification))
+              .certificateActionFactory(certificateActionFactory)
+              .build();
 
-      doReturn(null).when(certificateActionFactory)
-          .create(certificateActionSpecification);
+      doReturn(null).when(certificateActionFactory).create(certificateActionSpecification);
 
       final var actualActions = certificateModel.actionsInclude(Optional.of(actionEvaluation));
 
@@ -361,12 +350,11 @@ class CertificateModelTest {
       final var expectedActions = Collections.emptyList();
       final var actionEvaluation = ActionEvaluation.builder().build();
 
-      final var certificateModel = CertificateModel.builder()
-          .certificateActionSpecifications(
-              Collections.emptyList()
-          )
-          .certificateActionFactory(certificateActionFactory)
-          .build();
+      final var certificateModel =
+          CertificateModel.builder()
+              .certificateActionSpecifications(Collections.emptyList())
+              .certificateActionFactory(certificateActionFactory)
+              .build();
 
       final var actualActions = certificateModel.actionsInclude(Optional.of(actionEvaluation));
 
@@ -383,24 +371,23 @@ class CertificateModelTest {
       final var actionEvaluation = ActionEvaluation.builder().build();
       final var certificateAction = mock(CertificateAction.class);
 
-      final var certificateModel = CertificateModel.builder()
-          .certificateActionSpecifications(
-              List.of(
-                  certificateActionSpecification
-              )
-          )
-          .certificateActionFactory(certificateActionFactory)
-          .build();
+      final var certificateModel =
+          CertificateModel.builder()
+              .certificateActionSpecifications(List.of(certificateActionSpecification))
+              .certificateActionFactory(certificateActionFactory)
+              .build();
 
-      doReturn(certificateAction).when(certificateActionFactory)
+      doReturn(certificateAction)
+          .when(certificateActionFactory)
           .create(certificateActionSpecification);
 
       doReturn(CertificateActionType.CREATE).when(certificateAction).getType();
-      doReturn(true).when(certificateAction)
+      doReturn(true)
+          .when(certificateAction)
           .evaluate(Optional.empty(), Optional.of(actionEvaluation));
 
-      final var actualResult = certificateModel.allowTo(CertificateActionType.CREATE,
-          Optional.of(actionEvaluation));
+      final var actualResult =
+          certificateModel.allowTo(CertificateActionType.CREATE, Optional.of(actionEvaluation));
 
       assertTrue(actualResult, "Expected allowTo to return 'true'");
     }
@@ -411,24 +398,23 @@ class CertificateModelTest {
       final var actionEvaluation = ActionEvaluation.builder().build();
       final var certificateAction = mock(CertificateAction.class);
 
-      final var certificateModel = CertificateModel.builder()
-          .certificateActionSpecifications(
-              List.of(
-                  certificateActionSpecification
-              )
-          )
-          .certificateActionFactory(certificateActionFactory)
-          .build();
+      final var certificateModel =
+          CertificateModel.builder()
+              .certificateActionSpecifications(List.of(certificateActionSpecification))
+              .certificateActionFactory(certificateActionFactory)
+              .build();
 
-      doReturn(certificateAction).when(certificateActionFactory)
+      doReturn(certificateAction)
+          .when(certificateActionFactory)
           .create(certificateActionSpecification);
 
       doReturn(CertificateActionType.CREATE).when(certificateAction).getType();
-      doReturn(false).when(certificateAction)
+      doReturn(false)
+          .when(certificateAction)
           .evaluate(Optional.empty(), Optional.of(actionEvaluation));
 
-      final var actualResult = certificateModel.allowTo(CertificateActionType.CREATE,
-          Optional.of(actionEvaluation));
+      final var actualResult =
+          certificateModel.allowTo(CertificateActionType.CREATE, Optional.of(actionEvaluation));
 
       assertFalse(actualResult, "Expected allowTo to return 'false'");
     }
@@ -439,23 +425,20 @@ class CertificateModelTest {
       final var actionEvaluation = ActionEvaluation.builder().build();
       final var certificateAction = mock(CertificateAction.class);
 
-      final var certificateModel = CertificateModel.builder()
-          .certificateActionSpecifications(
-              List.of(
-                  certificateActionSpecification
-              )
-          )
-          .certificateActionFactory(certificateActionFactory)
-          .build();
+      final var certificateModel =
+          CertificateModel.builder()
+              .certificateActionSpecifications(List.of(certificateActionSpecification))
+              .certificateActionFactory(certificateActionFactory)
+              .build();
 
-      doReturn(certificateAction).when(certificateActionFactory)
+      doReturn(certificateAction)
+          .when(certificateActionFactory)
           .create(certificateActionSpecification);
 
-      final var actualResult = certificateModel.allowTo(CertificateActionType.CREATE,
-          Optional.of(actionEvaluation));
+      final var actualResult =
+          certificateModel.allowTo(CertificateActionType.CREATE, Optional.of(actionEvaluation));
 
       assertFalse(actualResult, "Expected allowTo to return 'false'");
-
     }
   }
 
@@ -468,24 +451,24 @@ class CertificateModelTest {
       final var actionEvaluation = ActionEvaluation.builder().build();
       final var certificateAction = mock(CertificateAction.class);
 
-      final var certificateModel = CertificateModel.builder()
-          .certificateActionSpecifications(
-              List.of(
-                  certificateActionSpecification
-              )
-          )
-          .certificateActionFactory(certificateActionFactory)
-          .build();
+      final var certificateModel =
+          CertificateModel.builder()
+              .certificateActionSpecifications(List.of(certificateActionSpecification))
+              .certificateActionFactory(certificateActionFactory)
+              .build();
 
-      doReturn(certificateAction).when(certificateActionFactory)
+      doReturn(certificateAction)
+          .when(certificateActionFactory)
           .create(certificateActionSpecification);
 
       doReturn(CertificateActionType.CREATE).when(certificateAction).getType();
-      doReturn(Collections.emptyList()).when(certificateAction)
+      doReturn(Collections.emptyList())
+          .when(certificateAction)
           .reasonNotAllowed(Optional.empty(), Optional.of(actionEvaluation));
 
-      final var actualResult = certificateModel.reasonNotAllowed(CertificateActionType.CREATE,
-          Optional.of(actionEvaluation));
+      final var actualResult =
+          certificateModel.reasonNotAllowed(
+              CertificateActionType.CREATE, Optional.of(actionEvaluation));
 
       assertTrue(actualResult.isEmpty(), "Expected reasonNotAllowed to return empty list");
     }
@@ -497,24 +480,24 @@ class CertificateModelTest {
       final var actionEvaluation = ActionEvaluation.builder().build();
       final var certificateAction = mock(CertificateAction.class);
 
-      final var certificateModel = CertificateModel.builder()
-          .certificateActionSpecifications(
-              List.of(
-                  certificateActionSpecification
-              )
-          )
-          .certificateActionFactory(certificateActionFactory)
-          .build();
+      final var certificateModel =
+          CertificateModel.builder()
+              .certificateActionSpecifications(List.of(certificateActionSpecification))
+              .certificateActionFactory(certificateActionFactory)
+              .build();
 
-      doReturn(certificateAction).when(certificateActionFactory)
+      doReturn(certificateAction)
+          .when(certificateActionFactory)
           .create(certificateActionSpecification);
 
       doReturn(CertificateActionType.CREATE).when(certificateAction).getType();
-      doReturn(expectedReasons).when(certificateAction)
+      doReturn(expectedReasons)
+          .when(certificateAction)
           .reasonNotAllowed(Optional.empty(), Optional.of(actionEvaluation));
 
-      final var actualResult = certificateModel.reasonNotAllowed(CertificateActionType.CREATE,
-          Optional.of(actionEvaluation));
+      final var actualResult =
+          certificateModel.reasonNotAllowed(
+              CertificateActionType.CREATE, Optional.of(actionEvaluation));
 
       assertEquals(expectedReasons, actualResult);
     }
@@ -525,76 +508,72 @@ class CertificateModelTest {
 
     @Test
     void shallReturnTrueIfElementExitsOnRootLevel() {
-      final var certificateModel = CertificateModel.builder()
-          .elementSpecifications(
-              List.of(DATE_ELEMENT_SPECIFICATION)
-          )
-          .build();
+      final var certificateModel =
+          CertificateModel.builder()
+              .elementSpecifications(List.of(DATE_ELEMENT_SPECIFICATION))
+              .build();
 
-      assertTrue(certificateModel.elementSpecificationExists(new ElementId(DATE_ELEMENT_ID)),
-          "Expected to find '%s' among specifications '%s'".formatted(DATE_ELEMENT_ID,
-              certificateModel.elementSpecifications())
-      );
+      assertTrue(
+          certificateModel.elementSpecificationExists(new ElementId(DATE_ELEMENT_ID)),
+          "Expected to find '%s' among specifications '%s'"
+              .formatted(DATE_ELEMENT_ID, certificateModel.elementSpecifications()));
     }
 
     @Test
     void shallReturnTrueIfElementExitsOnRootLevelAsSecond() {
-      final var certificateModel = CertificateModel.builder()
-          .elementSpecifications(
-              List.of(
-                  dateElementSpecificationBuilder()
-                      .id(new ElementId("ANOTHER_ELEMENT_ID"))
-                      .build(),
-                  DATE_ELEMENT_SPECIFICATION
-              )
-          )
-          .build();
+      final var certificateModel =
+          CertificateModel.builder()
+              .elementSpecifications(
+                  List.of(
+                      dateElementSpecificationBuilder()
+                          .id(new ElementId("ANOTHER_ELEMENT_ID"))
+                          .build(),
+                      DATE_ELEMENT_SPECIFICATION))
+              .build();
 
-      assertTrue(certificateModel.elementSpecificationExists(new ElementId(DATE_ELEMENT_ID)),
-          "Expected to find '%s' among specifications '%s'".formatted(DATE_ELEMENT_ID,
-              certificateModel.elementSpecifications())
-      );
+      assertTrue(
+          certificateModel.elementSpecificationExists(new ElementId(DATE_ELEMENT_ID)),
+          "Expected to find '%s' among specifications '%s'"
+              .formatted(DATE_ELEMENT_ID, certificateModel.elementSpecifications()));
     }
 
     @Test
     void shallReturnTrueIfElementExitsOnNextLevel() {
-      final var certificateModel = CertificateModel.builder()
-          .elementSpecifications(
-              List.of(
-                  dateElementSpecificationBuilder()
-                      .id(new ElementId("ANOTHER_ELEMENT_ID"))
-                      .children(List.of(DATE_ELEMENT_SPECIFICATION))
-                      .build()
-              )
-          )
-          .build();
+      final var certificateModel =
+          CertificateModel.builder()
+              .elementSpecifications(
+                  List.of(
+                      dateElementSpecificationBuilder()
+                          .id(new ElementId("ANOTHER_ELEMENT_ID"))
+                          .children(List.of(DATE_ELEMENT_SPECIFICATION))
+                          .build()))
+              .build();
 
-      assertTrue(certificateModel.elementSpecificationExists(new ElementId(DATE_ELEMENT_ID)),
-          "Expected to find '%s' among specifications '%s'".formatted(DATE_ELEMENT_ID,
-              certificateModel.elementSpecifications())
-      );
+      assertTrue(
+          certificateModel.elementSpecificationExists(new ElementId(DATE_ELEMENT_ID)),
+          "Expected to find '%s' among specifications '%s'"
+              .formatted(DATE_ELEMENT_ID, certificateModel.elementSpecifications()));
     }
 
     @Test
     void shallReturnTrueIfElementExitsOnNextLevelOnSecondRoot() {
-      final var certificateModel = CertificateModel.builder()
-          .elementSpecifications(
-              List.of(
-                  dateElementSpecificationBuilder()
-                      .id(new ElementId("ANOTHER_ELEMENT_ID"))
-                      .build(),
-                  dateElementSpecificationBuilder()
-                      .id(new ElementId("ANOTHER_ELEMENT_ID"))
-                      .children(List.of(DATE_ELEMENT_SPECIFICATION))
-                      .build()
-              )
-          )
-          .build();
+      final var certificateModel =
+          CertificateModel.builder()
+              .elementSpecifications(
+                  List.of(
+                      dateElementSpecificationBuilder()
+                          .id(new ElementId("ANOTHER_ELEMENT_ID"))
+                          .build(),
+                      dateElementSpecificationBuilder()
+                          .id(new ElementId("ANOTHER_ELEMENT_ID"))
+                          .children(List.of(DATE_ELEMENT_SPECIFICATION))
+                          .build()))
+              .build();
 
-      assertTrue(certificateModel.elementSpecificationExists(new ElementId(DATE_ELEMENT_ID)),
-          "Expected to find '%s' among specifications '%s'".formatted(DATE_ELEMENT_ID,
-              certificateModel.elementSpecifications())
-      );
+      assertTrue(
+          certificateModel.elementSpecificationExists(new ElementId(DATE_ELEMENT_ID)),
+          "Expected to find '%s' among specifications '%s'"
+              .formatted(DATE_ELEMENT_ID, certificateModel.elementSpecifications()));
     }
   }
 
@@ -603,90 +582,84 @@ class CertificateModelTest {
 
     @Test
     void shallReturnElementIfElementExitsOnRootLevel() {
-      final var certificateModel = CertificateModel.builder()
-          .elementSpecifications(
-              List.of(DATE_ELEMENT_SPECIFICATION)
-          )
-          .build();
+      final var certificateModel =
+          CertificateModel.builder()
+              .elementSpecifications(List.of(DATE_ELEMENT_SPECIFICATION))
+              .build();
 
-      assertEquals(DATE_ELEMENT_SPECIFICATION,
-          certificateModel.elementSpecification(DATE_ELEMENT_SPECIFICATION.id())
-      );
+      assertEquals(
+          DATE_ELEMENT_SPECIFICATION,
+          certificateModel.elementSpecification(DATE_ELEMENT_SPECIFICATION.id()));
     }
 
     @Test
     void shallReturnElementIfElementExitsOnRootLevelAsSecond() {
-      final var certificateModel = CertificateModel.builder()
-          .elementSpecifications(
-              List.of(
-                  dateElementSpecificationBuilder()
-                      .id(new ElementId("ANOTHER_ELEMENT_ID"))
-                      .build(),
-                  DATE_ELEMENT_SPECIFICATION
-              )
-          )
-          .build();
+      final var certificateModel =
+          CertificateModel.builder()
+              .elementSpecifications(
+                  List.of(
+                      dateElementSpecificationBuilder()
+                          .id(new ElementId("ANOTHER_ELEMENT_ID"))
+                          .build(),
+                      DATE_ELEMENT_SPECIFICATION))
+              .build();
 
-      assertEquals(DATE_ELEMENT_SPECIFICATION,
-          certificateModel.elementSpecification(DATE_ELEMENT_SPECIFICATION.id())
-      );
+      assertEquals(
+          DATE_ELEMENT_SPECIFICATION,
+          certificateModel.elementSpecification(DATE_ELEMENT_SPECIFICATION.id()));
     }
 
     @Test
     void shallReturnElementIfElementExitsOnNextLevel() {
-      final var certificateModel = CertificateModel.builder()
-          .elementSpecifications(
-              List.of(
-                  dateElementSpecificationBuilder()
-                      .id(new ElementId("ANOTHER_ELEMENT_ID"))
-                      .children(List.of(DATE_ELEMENT_SPECIFICATION))
-                      .build()
-              )
-          )
-          .build();
+      final var certificateModel =
+          CertificateModel.builder()
+              .elementSpecifications(
+                  List.of(
+                      dateElementSpecificationBuilder()
+                          .id(new ElementId("ANOTHER_ELEMENT_ID"))
+                          .children(List.of(DATE_ELEMENT_SPECIFICATION))
+                          .build()))
+              .build();
 
-      assertEquals(DATE_ELEMENT_SPECIFICATION,
-          certificateModel.elementSpecification(DATE_ELEMENT_SPECIFICATION.id())
-      );
+      assertEquals(
+          DATE_ELEMENT_SPECIFICATION,
+          certificateModel.elementSpecification(DATE_ELEMENT_SPECIFICATION.id()));
     }
 
     @Test
     void shallReturnElementIfElementExitsOnNextLevelOnSecondRoot() {
-      final var certificateModel = CertificateModel.builder()
-          .elementSpecifications(
-              List.of(
-                  dateElementSpecificationBuilder()
-                      .id(new ElementId("ANOTHER_ELEMENT_ID"))
-                      .build(),
-                  dateElementSpecificationBuilder()
-                      .id(new ElementId("ANOTHER_ELEMENT_ID"))
-                      .children(List.of(DATE_ELEMENT_SPECIFICATION))
-                      .build()
-              )
-          )
-          .build();
+      final var certificateModel =
+          CertificateModel.builder()
+              .elementSpecifications(
+                  List.of(
+                      dateElementSpecificationBuilder()
+                          .id(new ElementId("ANOTHER_ELEMENT_ID"))
+                          .build(),
+                      dateElementSpecificationBuilder()
+                          .id(new ElementId("ANOTHER_ELEMENT_ID"))
+                          .children(List.of(DATE_ELEMENT_SPECIFICATION))
+                          .build()))
+              .build();
 
-      assertEquals(DATE_ELEMENT_SPECIFICATION,
-          certificateModel.elementSpecification(DATE_ELEMENT_SPECIFICATION.id())
-      );
+      assertEquals(
+          DATE_ELEMENT_SPECIFICATION,
+          certificateModel.elementSpecification(DATE_ELEMENT_SPECIFICATION.id()));
     }
 
     @Test
     void shallThrowExceptionIfElementDoesntExists() {
-      final var certificateModel = CertificateModel.builder()
-          .elementSpecifications(
-              List.of(
-                  dateElementSpecificationBuilder()
-                      .id(new ElementId("ANOTHER_ELEMENT_ID"))
-                      .build()
-              )
-          )
-          .build();
+      final var certificateModel =
+          CertificateModel.builder()
+              .elementSpecifications(
+                  List.of(
+                      dateElementSpecificationBuilder()
+                          .id(new ElementId("ANOTHER_ELEMENT_ID"))
+                          .build()))
+              .build();
 
       final var elementId = DATE_ELEMENT_SPECIFICATION.id();
-      assertThrows(IllegalArgumentException.class,
-          () -> certificateModel.elementSpecification(elementId)
-      );
+      assertThrows(
+          IllegalArgumentException.class, () -> certificateModel.elementSpecification(elementId));
     }
   }
 
@@ -695,26 +668,28 @@ class CertificateModelTest {
 
     @Test
     void shouldReturnTrueIfCertificateActionTypeExists() {
-      final var certificateModel = CertificateModel.builder()
-          .certificateActionSpecifications(
-              List.of(CertificateActionSpecification.builder()
-                  .certificateActionType(CertificateActionType.CREATE)
-                  .build())
-          )
-          .build();
+      final var certificateModel =
+          CertificateModel.builder()
+              .certificateActionSpecifications(
+                  List.of(
+                      CertificateActionSpecification.builder()
+                          .certificateActionType(CertificateActionType.CREATE)
+                          .build()))
+              .build();
 
       assertTrue(certificateModel.certificateActionExists(CertificateActionType.CREATE));
     }
 
     @Test
     void shouldReturnFalseIfCertificateActionTypeDontExists() {
-      final var certificateModel = CertificateModel.builder()
-          .certificateActionSpecifications(
-              List.of(CertificateActionSpecification.builder()
-                  .certificateActionType(CertificateActionType.SIGN)
-                  .build())
-          )
-          .build();
+      final var certificateModel =
+          CertificateModel.builder()
+              .certificateActionSpecifications(
+                  List.of(
+                      CertificateActionSpecification.builder()
+                          .certificateActionType(CertificateActionType.SIGN)
+                          .build()))
+              .build();
 
       assertFalse(certificateModel.certificateActionExists(CertificateActionType.CREATE));
     }
@@ -727,18 +702,13 @@ class CertificateModelTest {
     void shouldReturnMinusOneIfFirstElementIsBeforeSecondElement() {
       final var firstElement = new ElementId("FIRST_ELEMENT");
       final var secondElement = new ElementId("SECOND_ELEMENT");
-      final var certificateModel = CertificateModel.builder()
-          .elementSpecifications(
-              List.of(
-                  dateElementSpecificationBuilder()
-                      .id(firstElement)
-                      .build(),
-                  dateElementSpecificationBuilder()
-                      .id(secondElement)
-                      .build()
-              )
-          )
-          .build();
+      final var certificateModel =
+          CertificateModel.builder()
+              .elementSpecifications(
+                  List.of(
+                      dateElementSpecificationBuilder().id(firstElement).build(),
+                      dateElementSpecificationBuilder().id(secondElement).build()))
+              .build();
 
       assertEquals(-1, certificateModel.compare(firstElement, secondElement));
     }
@@ -747,18 +717,13 @@ class CertificateModelTest {
     void shouldReturnPlusOneIfFirstElementIsAfterSecondElement() {
       final var firstElement = new ElementId("FIRST_ELEMENT");
       final var secondElement = new ElementId("SECOND_ELEMENT");
-      final var certificateModel = CertificateModel.builder()
-          .elementSpecifications(
-              List.of(
-                  dateElementSpecificationBuilder()
-                      .id(secondElement)
-                      .build(),
-                  dateElementSpecificationBuilder()
-                      .id(firstElement)
-                      .build()
-              )
-          )
-          .build();
+      final var certificateModel =
+          CertificateModel.builder()
+              .elementSpecifications(
+                  List.of(
+                      dateElementSpecificationBuilder().id(secondElement).build(),
+                      dateElementSpecificationBuilder().id(firstElement).build()))
+              .build();
 
       assertEquals(1, certificateModel.compare(firstElement, secondElement));
     }
@@ -767,23 +732,16 @@ class CertificateModelTest {
     void shouldReturnMinusOneIfFirstElementIsBeforeSecondElementThatIsAChildElement() {
       final var firstElement = new ElementId("FIRST_ELEMENT");
       final var secondElement = new ElementId("SECOND_ELEMENT");
-      final var certificateModel = CertificateModel.builder()
-          .elementSpecifications(
-              List.of(
-                  dateElementSpecificationBuilder()
-                      .id(firstElement)
-                      .children(
-                          List.of(
-                              dateElementSpecificationBuilder()
-                                  .id(secondElement)
-                                  .build()
-                          )
-                      )
-                      .build()
-
-              )
-          )
-          .build();
+      final var certificateModel =
+          CertificateModel.builder()
+              .elementSpecifications(
+                  List.of(
+                      dateElementSpecificationBuilder()
+                          .id(firstElement)
+                          .children(
+                              List.of(dateElementSpecificationBuilder().id(secondElement).build()))
+                          .build()))
+              .build();
 
       assertEquals(-1, certificateModel.compare(firstElement, secondElement));
     }
@@ -793,23 +751,16 @@ class CertificateModelTest {
   void shouldReturnPlusOneIfFirstElementIsAfterSecondElementThatIsAParentElement() {
     final var firstElement = new ElementId("FIRST_ELEMENT");
     final var secondElement = new ElementId("SECOND_ELEMENT");
-    final var certificateModel = CertificateModel.builder()
-        .elementSpecifications(
-            List.of(
-                dateElementSpecificationBuilder()
-                    .id(secondElement)
-                    .children(
-                        List.of(
-                            dateElementSpecificationBuilder()
-                                .id(firstElement)
-                                .build()
-                        )
-                    )
-                    .build()
-
-            )
-        )
-        .build();
+    final var certificateModel =
+        CertificateModel.builder()
+            .elementSpecifications(
+                List.of(
+                    dateElementSpecificationBuilder()
+                        .id(secondElement)
+                        .children(
+                            List.of(dateElementSpecificationBuilder().id(firstElement).build()))
+                        .build()))
+            .build();
 
     assertEquals(1, certificateModel.compare(firstElement, secondElement));
   }
@@ -822,9 +773,8 @@ class CertificateModelTest {
   @Test
   void shouldReturnCitizenAvailableFunctionsProvider() {
     final var provider = mock(CitizenAvailableFunctionsProvider.class);
-    final var certificateModel = CertificateModel.builder()
-        .citizenAvailableFunctionsProvider(provider)
-        .build();
+    final var certificateModel =
+        CertificateModel.builder().citizenAvailableFunctionsProvider(provider).build();
 
     assertEquals(provider, certificateModel.citizenAvailableFunctionsProvider());
   }
@@ -833,25 +783,25 @@ class CertificateModelTest {
   void shouldReturnDefaultCitizenAvailableFunctionsProviderIfNotSet() {
     final var certificateModel = CertificateModel.builder().build();
 
-    assertInstanceOf(DefaultCitizenAvailableFunctionsProvider.class,
+    assertInstanceOf(
+        DefaultCitizenAvailableFunctionsProvider.class,
         certificateModel.citizenAvailableFunctionsProvider());
   }
-
 
   @Nested
   class IsLatestActiveVersionTests {
 
     @Test
     void shouldReturnTrueIfVersionIsLatestActiveVersion() {
-      final var model = CertificateModel.builder()
-          .id(
-              CertificateModelId.builder()
-                  .type(new CertificateType("type"))
-                  .version(new CertificateVersion("1.0"))
-                  .build()
-          )
-          .activeFrom(LocalDateTime.now().minusDays(1))
-          .build();
+      final var model =
+          CertificateModel.builder()
+              .id(
+                  CertificateModelId.builder()
+                      .type(new CertificateType("type"))
+                      .version(new CertificateVersion("1.0"))
+                      .build())
+              .activeFrom(LocalDateTime.now().minusDays(1))
+              .build();
 
       final var certificateModel = model.withVersions(List.of(model));
 
@@ -860,25 +810,25 @@ class CertificateModelTest {
 
     @Test
     void shouldReturnTrueIfVersionMatchesWithMultipleMajorVersionsAndIsLatestActiveVersion() {
-      final var modelOne = CertificateModel.builder()
-          .id(
-              CertificateModelId.builder()
-                  .type(new CertificateType("type"))
-                  .version(new CertificateVersion("1.0"))
-                  .build()
-          )
-          .activeFrom(LocalDateTime.now().minusDays(1))
-          .build();
+      final var modelOne =
+          CertificateModel.builder()
+              .id(
+                  CertificateModelId.builder()
+                      .type(new CertificateType("type"))
+                      .version(new CertificateVersion("1.0"))
+                      .build())
+              .activeFrom(LocalDateTime.now().minusDays(1))
+              .build();
 
-      final var modelTwo = CertificateModel.builder()
-          .id(
-              CertificateModelId.builder()
-                  .type(new CertificateType("type"))
-                  .version(new CertificateVersion("2.0"))
-                  .build()
-          )
-          .activeFrom(LocalDateTime.now().minusDays(1))
-          .build();
+      final var modelTwo =
+          CertificateModel.builder()
+              .id(
+                  CertificateModelId.builder()
+                      .type(new CertificateType("type"))
+                      .version(new CertificateVersion("2.0"))
+                      .build())
+              .activeFrom(LocalDateTime.now().minusDays(1))
+              .build();
 
       final var certificateModel = modelTwo.withVersions(List.of(modelOne, modelTwo));
 
@@ -887,44 +837,44 @@ class CertificateModelTest {
 
     @Test
     void shouldReturnTrueIfVersionMatchesWithMultipleMinorVersions() {
-      final var modelOne = CertificateModel.builder()
-          .id(
-              CertificateModelId.builder()
-                  .type(new CertificateType("type"))
-                  .version(new CertificateVersion("1.0"))
-                  .build()
-          )
-          .activeFrom(LocalDateTime.now().minusDays(1))
-          .build();
+      final var modelOne =
+          CertificateModel.builder()
+              .id(
+                  CertificateModelId.builder()
+                      .type(new CertificateType("type"))
+                      .version(new CertificateVersion("1.0"))
+                      .build())
+              .activeFrom(LocalDateTime.now().minusDays(1))
+              .build();
 
-      final var modelTwo = CertificateModel.builder()
-          .id(
-              CertificateModelId.builder()
-                  .type(new CertificateType("type"))
-                  .version(new CertificateVersion("1.3"))
-                  .build()
-          )
-          .activeFrom(LocalDateTime.now().minusDays(1))
-          .build();
+      final var modelTwo =
+          CertificateModel.builder()
+              .id(
+                  CertificateModelId.builder()
+                      .type(new CertificateType("type"))
+                      .version(new CertificateVersion("1.3"))
+                      .build())
+              .activeFrom(LocalDateTime.now().minusDays(1))
+              .build();
 
-      final var modelThree = CertificateModel.builder()
-          .id(
-              CertificateModelId.builder()
-                  .type(new CertificateType("type"))
-                  .version(new CertificateVersion("1.8"))
-                  .build()
-          )
-          .activeFrom(LocalDateTime.now().minusDays(1))
-          .build();
+      final var modelThree =
+          CertificateModel.builder()
+              .id(
+                  CertificateModelId.builder()
+                      .type(new CertificateType("type"))
+                      .version(new CertificateVersion("1.8"))
+                      .build())
+              .activeFrom(LocalDateTime.now().minusDays(1))
+              .build();
 
-      final var model = CertificateModel.builder()
-          .id(
-              CertificateModelId.builder()
-                  .type(new CertificateType("type"))
-                  .version(new CertificateVersion("1.8"))
-                  .build()
-          )
-          .build();
+      final var model =
+          CertificateModel.builder()
+              .id(
+                  CertificateModelId.builder()
+                      .type(new CertificateType("type"))
+                      .version(new CertificateVersion("1.8"))
+                      .build())
+              .build();
 
       final var certificateModel = model.withVersions(List.of(modelOne, modelTwo, modelThree));
 
@@ -933,34 +883,34 @@ class CertificateModelTest {
 
     @Test
     void shallReturnTrueIfLastActiveVersionIfNextVersionIsInactive() {
-      final var modelOne = CertificateModel.builder()
-          .id(
-              CertificateModelId.builder()
-                  .type(new CertificateType("type"))
-                  .version(new CertificateVersion("1.0"))
-                  .build()
-          )
-          .activeFrom(LocalDateTime.now().minusDays(1))
-          .build();
+      final var modelOne =
+          CertificateModel.builder()
+              .id(
+                  CertificateModelId.builder()
+                      .type(new CertificateType("type"))
+                      .version(new CertificateVersion("1.0"))
+                      .build())
+              .activeFrom(LocalDateTime.now().minusDays(1))
+              .build();
 
-      final var modelTwo = CertificateModel.builder()
-          .id(
-              CertificateModelId.builder()
-                  .type(new CertificateType("type"))
-                  .version(new CertificateVersion("2.0"))
-                  .build()
-          )
-          .activeFrom(LocalDateTime.now().plusDays(1))
-          .build();
+      final var modelTwo =
+          CertificateModel.builder()
+              .id(
+                  CertificateModelId.builder()
+                      .type(new CertificateType("type"))
+                      .version(new CertificateVersion("2.0"))
+                      .build())
+              .activeFrom(LocalDateTime.now().plusDays(1))
+              .build();
 
-      final var model = CertificateModel.builder()
-          .id(
-              CertificateModelId.builder()
-                  .type(new CertificateType("type"))
-                  .version(new CertificateVersion("1.0"))
-                  .build()
-          )
-          .build();
+      final var model =
+          CertificateModel.builder()
+              .id(
+                  CertificateModelId.builder()
+                      .type(new CertificateType("type"))
+                      .version(new CertificateVersion("1.0"))
+                      .build())
+              .build();
 
       final var certificateModel = model.withVersions(List.of(modelOne, modelTwo));
 
@@ -974,9 +924,7 @@ class CertificateModelTest {
     @Test
     void shouldReturnTrueIfActiveFromIsInThePast() {
       final var pastDate = LocalDateTime.now().minusDays(1);
-      final var certificateModel = fk7804certificateModelBuilder()
-          .activeFrom(pastDate)
-          .build();
+      final var certificateModel = fk7804certificateModelBuilder().activeFrom(pastDate).build();
 
       assertTrue(certificateModel.isActive());
     }
@@ -984,9 +932,7 @@ class CertificateModelTest {
     @Test
     void shouldReturnFalseIfActiveFromIsInTheFuture() {
       final var futureDate = LocalDateTime.now().plusDays(1);
-      final var certificateModel = fk7804certificateModelBuilder()
-          .activeFrom(futureDate)
-          .build();
+      final var certificateModel = fk7804certificateModelBuilder().activeFrom(futureDate).build();
 
       assertFalse(certificateModel.isActive());
     }
@@ -998,9 +944,7 @@ class CertificateModelTest {
     @Test
     void shouldReturnFalseIfActiveFromIsInThePast() {
       final var pastDate = LocalDateTime.now().minusDays(1);
-      final var certificateModel = fk7804certificateModelBuilder()
-          .activeFrom(pastDate)
-          .build();
+      final var certificateModel = fk7804certificateModelBuilder().activeFrom(pastDate).build();
 
       assertFalse(certificateModel.isInactive());
     }
@@ -1008,9 +952,7 @@ class CertificateModelTest {
     @Test
     void shouldReturnTrueIfActiveFromIsInTheFuture() {
       final var futureDate = LocalDateTime.now().plusDays(1);
-      final var certificateModel = fk7804certificateModelBuilder()
-          .activeFrom(futureDate)
-          .build();
+      final var certificateModel = fk7804certificateModelBuilder().activeFrom(futureDate).build();
 
       assertTrue(certificateModel.isInactive());
     }

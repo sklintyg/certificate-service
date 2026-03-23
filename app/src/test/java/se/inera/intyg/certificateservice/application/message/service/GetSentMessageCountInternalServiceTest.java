@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.message.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -27,10 +45,8 @@ import se.inera.intyg.certificateservice.domain.message.repository.MessageReposi
 @ExtendWith(MockitoExtension.class)
 class GetSentMessageCountInternalServiceTest {
 
-  @Mock
-  private MessageRepository messageRepository;
-  @InjectMocks
-  private GetSentMessageCountInternalService getSentMessageCountInternalService;
+  @Mock private MessageRepository messageRepository;
+  @InjectMocks private GetSentMessageCountInternalService getSentMessageCountInternalService;
 
   private static final Integer MAX_DAYS = 7;
 
@@ -55,9 +71,8 @@ class GetSentMessageCountInternalServiceTest {
     void shallNotCallRepositoriesWhenPatientIdsIsNull() {
       getSentMessageCountInternalService.get(null, MAX_DAYS);
 
-      verify(messageRepository,
-          never()).findCertificateMessageCountByPatientKeyAndStatusSentAndCreatedAfter(
-          anyList(), anyInt());
+      verify(messageRepository, never())
+          .findCertificateMessageCountByPatientKeyAndStatusSentAndCreatedAfter(anyList(), anyInt());
     }
   }
 
@@ -68,7 +83,8 @@ class GetSentMessageCountInternalServiceTest {
     void shallReturnEmptyMapWhenPatientNotFound() {
       final var patientIds = List.of(ATHENA_REACT_ANDERSSON_ID);
 
-      doReturn(Collections.emptyList()).when(messageRepository)
+      doReturn(Collections.emptyList())
+          .when(messageRepository)
           .findCertificateMessageCountByPatientKeyAndStatusSentAndCreatedAfter(
               List.of(PersonId.builder().id(ATHENA_REACT_ANDERSSON_ID_WITHOUT_DASH).build()),
               MAX_DAYS);
@@ -89,12 +105,10 @@ class GetSentMessageCountInternalServiceTest {
       final var patientIds = List.of(validPatientId.id(), invalidPatientId.id());
       final var certId = "certC";
 
-      doReturn(List.of(
-          new CertificateMessageCount(new CertificateId(certId), 1, 1)
-      )).when(messageRepository)
+      doReturn(List.of(new CertificateMessageCount(new CertificateId(certId), 1, 1)))
+          .when(messageRepository)
           .findCertificateMessageCountByPatientKeyAndStatusSentAndCreatedAfter(
-              List.of(validPatientId, invalidPatientId),
-              MAX_DAYS);
+              List.of(validPatientId, invalidPatientId), MAX_DAYS);
 
       final var result = getSentMessageCountInternalService.get(patientIds, MAX_DAYS);
 
@@ -108,13 +122,13 @@ class GetSentMessageCountInternalServiceTest {
       final var patientId2 = PersonId.builder().id("181818181818").build();
       final var patientIds = List.of(patientId1.id(), patientId2.id());
 
-      doReturn(List.of(
-          new CertificateMessageCount(new CertificateId("cert1"), 1, 1),
-          new CertificateMessageCount(new CertificateId("cert2"), 2, 1)
-      )).when(messageRepository)
+      doReturn(
+              List.of(
+                  new CertificateMessageCount(new CertificateId("cert1"), 1, 1),
+                  new CertificateMessageCount(new CertificateId("cert2"), 2, 1)))
+          .when(messageRepository)
           .findCertificateMessageCountByPatientKeyAndStatusSentAndCreatedAfter(
-              List.of(patientId1, patientId2),
-              MAX_DAYS);
+              List.of(patientId1, patientId2), MAX_DAYS);
 
       final var result = getSentMessageCountInternalService.get(patientIds, MAX_DAYS);
 
@@ -130,7 +144,8 @@ class GetSentMessageCountInternalServiceTest {
       final var patientIds = List.of(ATHENA_REACT_ANDERSSON_ID);
 
       final var message1 = new CertificateMessageCount(new CertificateId("certX"), 1, 1);
-      doReturn(List.of(message1)).when(messageRepository)
+      doReturn(List.of(message1))
+          .when(messageRepository)
           .findCertificateMessageCountByPatientKeyAndStatusSentAndCreatedAfter(
               List.of(PersonId.builder().id(ATHENA_REACT_ANDERSSON_ID_WITHOUT_DASH).build()),
               MAX_DAYS);
@@ -149,12 +164,13 @@ class GetSentMessageCountInternalServiceTest {
     @Test
     void shallReturnMessagesForSinglePatient() {
       final var patientIds = List.of(ATHENA_REACT_ANDERSSON_ID);
-      final var messages = List.of(
-          new CertificateMessageCount(new CertificateId("certY"), 2, 1),
-          new CertificateMessageCount(new CertificateId("certY"), 2, 1)
-      );
+      final var messages =
+          List.of(
+              new CertificateMessageCount(new CertificateId("certY"), 2, 1),
+              new CertificateMessageCount(new CertificateId("certY"), 2, 1));
 
-      doReturn(messages).when(messageRepository)
+      doReturn(messages)
+          .when(messageRepository)
           .findCertificateMessageCountByPatientKeyAndStatusSentAndCreatedAfter(
               List.of(PersonId.builder().id(ATHENA_REACT_ANDERSSON_ID_WITHOUT_DASH).build()),
               MAX_DAYS);
@@ -173,7 +189,8 @@ class GetSentMessageCountInternalServiceTest {
       final var message1 = new CertificateMessageCount(new CertificateId("certZ"), 3, 1);
       final var message2 = new CertificateMessageCount(new CertificateId("certZ"), 3, 1);
       final var message3 = new CertificateMessageCount(new CertificateId("certZ"), 3, 1);
-      doReturn(List.of(message1, message2, message3)).when(messageRepository)
+      doReturn(List.of(message1, message2, message3))
+          .when(messageRepository)
           .findCertificateMessageCountByPatientKeyAndStatusSentAndCreatedAfter(
               List.of(PersonId.builder().id(ATHENA_REACT_ANDERSSON_ID_WITHOUT_DASH).build()),
               MAX_DAYS);
@@ -189,7 +206,8 @@ class GetSentMessageCountInternalServiceTest {
     void shallRemoveDashesFromPatientId() {
       final var patientIds = List.of(ATHENA_REACT_ANDERSSON_ID);
 
-      doReturn(Collections.emptyList()).when(messageRepository)
+      doReturn(Collections.emptyList())
+          .when(messageRepository)
           .findCertificateMessageCountByPatientKeyAndStatusSentAndCreatedAfter(
               List.of(PersonId.builder().id(ATHENA_REACT_ANDERSSON_ID_WITHOUT_DASH).build()),
               MAX_DAYS);

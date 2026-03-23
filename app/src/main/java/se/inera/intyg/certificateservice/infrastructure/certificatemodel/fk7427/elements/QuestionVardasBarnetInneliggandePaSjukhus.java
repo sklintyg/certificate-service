@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7427.elements;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7427.elements.QuestionVardEllerTillsyn.QUESTION_VARD_ELLER_TILLSYN_ID;
@@ -16,13 +34,13 @@ import se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.
 
 public class QuestionVardasBarnetInneliggandePaSjukhus {
 
-  public static final ElementId QUESTION_VARDAS_BARNET_INNELIGGANDE_PA_SJUKHUS_ID = new ElementId(
-      "62.1");
-  public static final FieldId QUESTION_VARDAS_BARNET_INNELIGGANDE_PA_SJUKHUS_FIELD_ID = new FieldId(
-      "62.1");
+  public static final ElementId QUESTION_VARDAS_BARNET_INNELIGGANDE_PA_SJUKHUS_ID =
+      new ElementId("62.1");
+  public static final FieldId QUESTION_VARDAS_BARNET_INNELIGGANDE_PA_SJUKHUS_FIELD_ID =
+      new FieldId("62.1");
 
-  private static final PdfFieldId PDF_VARDAS_BARNET_FIELD_ID = new PdfFieldId(
-      "form1[0].#subform[2].RadioButtonList_2[0]");
+  private static final PdfFieldId PDF_VARDAS_BARNET_FIELD_ID =
+      new PdfFieldId("form1[0].#subform[2].RadioButtonList_2[0]");
   private static final PdfRadioOption PDF_VARDAS_BARNET_OPTION_TRUE = new PdfRadioOption("1");
   private static final PdfRadioOption PDF_VARDAS_BARNET_OPTION_FALSE = new PdfRadioOption("2");
 
@@ -39,33 +57,21 @@ public class QuestionVardasBarnetInneliggandePaSjukhus {
                 .id(QUESTION_VARDAS_BARNET_INNELIGGANDE_PA_SJUKHUS_FIELD_ID)
                 .selectedText("Ja")
                 .unselectedText("Nej")
-                .name(
-                    "Vårdas barnet inneliggande på sjukhus?")
-                .build()
-        )
-        .validations(
-            List.of(
-                ElementValidationBoolean.builder()
-                    .mandatory(true)
-                    .build()
-            )
-        )
+                .name("Vårdas barnet inneliggande på sjukhus?")
+                .build())
+        .validations(List.of(ElementValidationBoolean.builder().mandatory(true).build()))
         .rules(
             List.of(
                 CertificateElementRuleFactory.mandatoryExist(
                     QUESTION_VARDAS_BARNET_INNELIGGANDE_PA_SJUKHUS_ID,
-                    QUESTION_VARDAS_BARNET_INNELIGGANDE_PA_SJUKHUS_FIELD_ID
-                )
-            )
-        )
+                    QUESTION_VARDAS_BARNET_INNELIGGANDE_PA_SJUKHUS_FIELD_ID)))
         .mapping(new ElementMapping(QUESTION_VARD_ELLER_TILLSYN_ID, null))
         .pdfConfiguration(
             PdfConfigurationRadioBoolean.builder()
                 .pdfFieldId(PDF_VARDAS_BARNET_FIELD_ID)
                 .optionTrue(PDF_VARDAS_BARNET_OPTION_TRUE)
                 .optionFalse(PDF_VARDAS_BARNET_OPTION_FALSE)
-                .build()
-        )
+                .build())
         .includeWhenRenewing(false)
         .children(List.of(children))
         .build();

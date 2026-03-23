@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ag7804.elements;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -33,16 +51,16 @@ class QuestionFormedlaInfoOmDiagnosTillAGTest {
 
   @Test
   void shouldHaveCorrectConfiguration() {
-    final var expectedConfiguration = ElementConfigurationRadioBoolean
-        .builder()
-        .id(FORMEDLA_DIAGNOSIS_FIELD_ID)
-        .selectedText("Ja")
-        .unselectedText("Nej")
-        .name(
-            "Önskar patienten förmedla information om diagnos/diagnoser till sin arbetsgivare?")
-        .description(
-            "Information om diagnos kan vara viktig för patientens arbetsgivare. Det kan underlätta anpassning av patientens arbetssituation. Det kan också göra att patienten snabbare kommer tillbaka till arbetet.")
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationRadioBoolean.builder()
+            .id(FORMEDLA_DIAGNOSIS_FIELD_ID)
+            .selectedText("Ja")
+            .unselectedText("Nej")
+            .name(
+                "Önskar patienten förmedla information om diagnos/diagnoser till sin arbetsgivare?")
+            .description(
+                "Information om diagnos kan vara viktig för patientens arbetsgivare. Det kan underlätta anpassning av patientens arbetssituation. Det kan också göra att patienten snabbare kommer tillbaka till arbetet.")
+            .build();
 
     final var element = QuestionFormedlaInfoOmDiagnosTillAG.questionFormedlaInfoOmDiagnosTillAG();
     assertEquals(expectedConfiguration, element.configuration());
@@ -51,42 +69,39 @@ class QuestionFormedlaInfoOmDiagnosTillAGTest {
   @Test
   void shouldIncludeRules() {
     final var element = QuestionFormedlaInfoOmDiagnosTillAG.questionFormedlaInfoOmDiagnosTillAG();
-    final var expectedRules = List.of(
-        ElementRuleExpression.builder()
-            .id(QUESTION_FORMEDLA_DIAGNOS_ID)
-            .type(ElementRuleType.MANDATORY)
-            .expression(new RuleExpression("exists($100.1)"))
-            .build(),
-        ElementRuleAutofill.builder()
-            .id(QUESTION_SMITTBARARPENNING_ID)
-            .type(ElementRuleType.AUTO_FILL)
-            .expression(
-                new RuleExpression(singleExpression(QUESTION_SMITTBARARPENNING_FIELD_ID.value())))
-            .fillValue(ElementValueBoolean.builder()
-                .booleanId(FORMEDLA_DIAGNOSIS_FIELD_ID)
-                .value(true)
-                .build()
-            ).build(),
-        ElementRuleExpression.builder()
-            .id(QUESTION_SMITTBARARPENNING_ID)
-            .type(ElementRuleType.DISABLE)
-            .expression(
-                new RuleExpression(
-                    singleExpression(QUESTION_SMITTBARARPENNING_FIELD_ID.value())
-                )
-            )
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleExpression.builder()
+                .id(QUESTION_FORMEDLA_DIAGNOS_ID)
+                .type(ElementRuleType.MANDATORY)
+                .expression(new RuleExpression("exists($100.1)"))
+                .build(),
+            ElementRuleAutofill.builder()
+                .id(QUESTION_SMITTBARARPENNING_ID)
+                .type(ElementRuleType.AUTO_FILL)
+                .expression(
+                    new RuleExpression(
+                        singleExpression(QUESTION_SMITTBARARPENNING_FIELD_ID.value())))
+                .fillValue(
+                    ElementValueBoolean.builder()
+                        .booleanId(FORMEDLA_DIAGNOSIS_FIELD_ID)
+                        .value(true)
+                        .build())
+                .build(),
+            ElementRuleExpression.builder()
+                .id(QUESTION_SMITTBARARPENNING_ID)
+                .type(ElementRuleType.DISABLE)
+                .expression(
+                    new RuleExpression(
+                        singleExpression(QUESTION_SMITTBARARPENNING_FIELD_ID.value())))
+                .build());
     assertEquals(expectedRules, element.rules());
   }
 
   @Test
   void shallIncludeValidations() {
-    final var expectedValidations = List.of(
-        ElementValidationBoolean.builder()
-            .mandatory(true)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationBoolean.builder().mandatory(true).build());
 
     final var element = questionFormedlaInfoOmDiagnosTillAG();
 
@@ -102,11 +117,11 @@ class QuestionFormedlaInfoOmDiagnosTillAGTest {
     assertAll(
         () -> assertEquals(QUESTION_DIAGNOS_ID, pdfConfig.hiddenBy()),
         () -> assertNotNull(pdfConfig.shouldHide()),
-        () -> assertEquals(
-            ElementSimplifiedValueText.builder()
-                .text("På patientens begäran uppges inte diagnos")
-                .build(), pdfConfig.replacementValue()
-        )
-    );
+        () ->
+            assertEquals(
+                ElementSimplifiedValueText.builder()
+                    .text("På patientens begäran uppges inte diagnos")
+                    .build(),
+                pdfConfig.replacementValue()));
   }
 }

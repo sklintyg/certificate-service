@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.action.certificate.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -44,30 +62,29 @@ class CertificateActionPrintTest {
           .certificateActionType(CertificateActionType.PRINT)
           .build();
 
-  @Mock
-  CertificateActionConfigurationRepository certificateActionConfigurationRepository;
-  @InjectMocks
-  CertificateActionFactory certificateActionFactory;
+  @Mock CertificateActionConfigurationRepository certificateActionConfigurationRepository;
+  @InjectMocks CertificateActionFactory certificateActionFactory;
 
   @BeforeEach
   void setUp() {
-    certificateActionPrint = (CertificateActionPrint) certificateActionFactory.create(
-        CERTIFICATE_ACTION_SPECIFICATION);
-    certificateBuilder = MedicalCertificate.builder()
-        .certificateMetaData(
-            CertificateMetaData.builder()
-                .issuingUnit(ALFA_ALLERGIMOTTAGNINGEN)
-                .careUnit(ALFA_MEDICINCENTRUM)
-                .careProvider(ALFA_REGIONEN)
-                .patient(ATHENA_REACT_ANDERSSON)
-                .build()
-        );
-    actionEvaluationBuilder = ActionEvaluation.builder()
-        .user(AJLA_DOKTOR)
-        .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
-        .patient(ATHENA_REACT_ANDERSSON)
-        .careProvider(ALFA_REGIONEN)
-        .careUnit(ALFA_MEDICINCENTRUM);
+    certificateActionPrint =
+        (CertificateActionPrint) certificateActionFactory.create(CERTIFICATE_ACTION_SPECIFICATION);
+    certificateBuilder =
+        MedicalCertificate.builder()
+            .certificateMetaData(
+                CertificateMetaData.builder()
+                    .issuingUnit(ALFA_ALLERGIMOTTAGNINGEN)
+                    .careUnit(ALFA_MEDICINCENTRUM)
+                    .careProvider(ALFA_REGIONEN)
+                    .patient(ATHENA_REACT_ANDERSSON)
+                    .build());
+    actionEvaluationBuilder =
+        ActionEvaluation.builder()
+            .user(AJLA_DOKTOR)
+            .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
+            .patient(ATHENA_REACT_ANDERSSON)
+            .careProvider(ALFA_REGIONEN)
+            .careUnit(ALFA_MEDICINCENTRUM);
   }
 
   @Test
@@ -82,52 +99,47 @@ class CertificateActionPrintTest {
 
     assertFalse(
         certificateActionPrint.evaluate(certificate, Optional.of(actionEvaluation)),
-        () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate)
-    );
+        () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate));
   }
 
   @Test
   void shallReturnFalseIfUserIsCareAdminAndPatientIsProtectedPerson() {
-    final var actionEvaluation = actionEvaluationBuilder
-        .user(ALVA_VARDADMINISTRATOR)
-        .build();
+    final var actionEvaluation = actionEvaluationBuilder.user(ALVA_VARDADMINISTRATOR).build();
 
-    final var certificate = certificateBuilder
-        .certificateMetaData(
-            CertificateMetaData.builder()
-                .issuingUnit(ALFA_ALLERGIMOTTAGNINGEN)
-                .careUnit(ALFA_MEDICINCENTRUM)
-                .careProvider(ALFA_REGIONEN)
-                .patient(ANONYMA_REACT_ATTILA)
-                .build()
-        )
-        .build();
+    final var certificate =
+        certificateBuilder
+            .certificateMetaData(
+                CertificateMetaData.builder()
+                    .issuingUnit(ALFA_ALLERGIMOTTAGNINGEN)
+                    .careUnit(ALFA_MEDICINCENTRUM)
+                    .careProvider(ALFA_REGIONEN)
+                    .patient(ANONYMA_REACT_ATTILA)
+                    .build())
+            .build();
 
     assertFalse(
         certificateActionPrint.evaluate(Optional.of(certificate), Optional.of(actionEvaluation)),
-        () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate)
-    );
+        () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate));
   }
 
   @Test
   void shallReturnTrueIfUserIsDoctorAndPatientIsProtectedPerson() {
     final var actionEvaluation = actionEvaluationBuilder.build();
 
-    final var certificate = certificateBuilder
-        .certificateMetaData(
-            CertificateMetaData.builder()
-                .issuingUnit(ALFA_ALLERGIMOTTAGNINGEN)
-                .careUnit(ALFA_MEDICINCENTRUM)
-                .careProvider(ALFA_REGIONEN)
-                .patient(ANONYMA_REACT_ATTILA)
-                .build()
-        )
-        .build();
+    final var certificate =
+        certificateBuilder
+            .certificateMetaData(
+                CertificateMetaData.builder()
+                    .issuingUnit(ALFA_ALLERGIMOTTAGNINGEN)
+                    .careUnit(ALFA_MEDICINCENTRUM)
+                    .careProvider(ALFA_REGIONEN)
+                    .patient(ANONYMA_REACT_ATTILA)
+                    .build())
+            .build();
 
     assertTrue(
         certificateActionPrint.evaluate(Optional.of(certificate), Optional.of(actionEvaluation)),
-        () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate)
-    );
+        () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate));
   }
 
   @Test
@@ -137,9 +149,7 @@ class CertificateActionPrintTest {
 
   @Test
   void shallReturnDescriptionForDraft() {
-    final var certificate = certificateBuilder
-        .status(Status.DRAFT)
-        .build();
+    final var certificate = certificateBuilder.status(Status.DRAFT).build();
 
     assertEquals(
         "Öppnar ett fönster där du kan välja att skriva ut eller spara intygsutkastet som PDF.",
@@ -148,9 +158,7 @@ class CertificateActionPrintTest {
 
   @Test
   void shallReturnDescriptionForSignedCertificate() {
-    final var certificate = certificateBuilder
-        .status(Status.SIGNED)
-        .build();
+    final var certificate = certificateBuilder.status(Status.SIGNED).build();
 
     assertEquals(
         "Öppnar ett fönster där du kan välja att skriva ut eller spara intyget som PDF.",
@@ -161,62 +169,51 @@ class CertificateActionPrintTest {
   void shallReturnTrueIfSigned() {
     final var actionEvaluation = actionEvaluationBuilder.build();
 
-    final var certificate = certificateBuilder
-        .status(Status.SIGNED)
-        .build();
+    final var certificate = certificateBuilder.status(Status.SIGNED).build();
 
     assertTrue(
         certificateActionPrint.evaluate(Optional.of(certificate), Optional.of(actionEvaluation)),
-        () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate)
-    );
+        () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate));
   }
 
   @Test
   void shallReturnTrueIfDraft() {
     final var actionEvaluation = actionEvaluationBuilder.build();
 
-    final var certificate = certificateBuilder
-        .status(Status.DRAFT)
-        .build();
+    final var certificate = certificateBuilder.status(Status.DRAFT).build();
 
     assertTrue(
         certificateActionPrint.evaluate(Optional.of(certificate), Optional.of(actionEvaluation)),
-        () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate)
-    );
+        () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate));
   }
 
   @Test
   void shallReturnFalseIfDeletedDraft() {
     final var actionEvaluation = actionEvaluationBuilder.build();
 
-    final var certificate = certificateBuilder
-        .status(Status.DELETED_DRAFT)
-        .build();
+    final var certificate = certificateBuilder.status(Status.DELETED_DRAFT).build();
 
     assertFalse(
         certificateActionPrint.evaluate(Optional.of(certificate), Optional.of(actionEvaluation)),
-        () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate)
-    );
+        () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate));
   }
 
   @Test
   void shallReturnFalseIfRevoked() {
     final var actionEvaluation = actionEvaluationBuilder.build();
 
-    final var certificate = certificateBuilder
-        .status(Status.REVOKED)
-        .build();
+    final var certificate = certificateBuilder.status(Status.REVOKED).build();
 
     assertFalse(
         certificateActionPrint.evaluate(Optional.of(certificate), Optional.of(actionEvaluation)),
-        () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate)
-    );
+        () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate));
   }
 
   @Test
   void shallReturnReasonNotAllowedIfEvaluateReturnsFalse() {
-    final var actualResult = certificateActionPrint.reasonNotAllowed(
-        Optional.of(certificateBuilder.build()), Optional.empty());
+    final var actualResult =
+        certificateActionPrint.reasonNotAllowed(
+            Optional.of(certificateBuilder.build()), Optional.empty());
 
     assertFalse(actualResult.isEmpty());
   }
@@ -225,12 +222,11 @@ class CertificateActionPrintTest {
   void shallReturnEmptyListIfEvaluateReturnsTrue() {
     final var actionEvaluation = actionEvaluationBuilder.build();
 
-    final var certificate = certificateBuilder
-        .status(Status.DRAFT)
-        .build();
+    final var certificate = certificateBuilder.status(Status.DRAFT).build();
 
-    final var actualResult = certificateActionPrint.reasonNotAllowed(Optional.of(certificate),
-        Optional.of(actionEvaluation));
+    final var actualResult =
+        certificateActionPrint.reasonNotAllowed(
+            Optional.of(certificate), Optional.of(actionEvaluation));
 
     assertTrue(actualResult.isEmpty());
   }
@@ -242,23 +238,25 @@ class CertificateActionPrintTest {
 
     @BeforeEach
     void setUp() {
-      certificateActionPrint = (CertificateActionPrint) certificateActionFactory.create(
-          CERTIFICATE_ACTION_SPECIFICATION);
-      certificateBuilder = MedicalCertificate.builder()
-          .status(Status.DRAFT)
-          .certificateMetaData(
-              CertificateMetaData.builder()
-                  .issuingUnit(ALFA_ALLERGIMOTTAGNINGEN)
-                  .careUnit(ALFA_MEDICINCENTRUM)
-                  .careProvider(ALFA_REGIONEN)
-                  .patient(ATHENA_REACT_ANDERSSON)
-                  .build()
-          );
-      actionEvaluationBuilder = ActionEvaluation.builder()
-          .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
-          .patient(ATHENA_REACT_ANDERSSON)
-          .careProvider(ALFA_REGIONEN)
-          .careUnit(ALFA_MEDICINCENTRUM);
+      certificateActionPrint =
+          (CertificateActionPrint)
+              certificateActionFactory.create(CERTIFICATE_ACTION_SPECIFICATION);
+      certificateBuilder =
+          MedicalCertificate.builder()
+              .status(Status.DRAFT)
+              .certificateMetaData(
+                  CertificateMetaData.builder()
+                      .issuingUnit(ALFA_ALLERGIMOTTAGNINGEN)
+                      .careUnit(ALFA_MEDICINCENTRUM)
+                      .careProvider(ALFA_REGIONEN)
+                      .patient(ATHENA_REACT_ANDERSSON)
+                      .build());
+      actionEvaluationBuilder =
+          ActionEvaluation.builder()
+              .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
+              .patient(ATHENA_REACT_ANDERSSON)
+              .careProvider(ALFA_REGIONEN)
+              .careUnit(ALFA_MEDICINCENTRUM);
     }
 
     @Nested
@@ -266,42 +264,39 @@ class CertificateActionPrintTest {
 
       @BeforeEach
       void setUp() {
-        userAccessScope = se.inera.intyg.certificateservice.domain.common.model.AccessScope.WITHIN_CARE_UNIT;
+        userAccessScope =
+            se.inera.intyg.certificateservice.domain.common.model.AccessScope.WITHIN_CARE_UNIT;
       }
 
       @Test
       void shallReturnTrueIfWithinCareUnit() {
-        final var actionEvaluation = actionEvaluationBuilder
-            .user(ajlaDoctorBuilder()
-                .accessScope(userAccessScope)
-                .build())
-            .build();
+        final var actionEvaluation =
+            actionEvaluationBuilder
+                .user(ajlaDoctorBuilder().accessScope(userAccessScope).build())
+                .build();
 
         final var certificate = certificateBuilder.build();
 
         assertTrue(
-            certificateActionPrint.evaluate(Optional.of(certificate),
-                Optional.of(actionEvaluation)),
-            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate)
-        );
+            certificateActionPrint.evaluate(
+                Optional.of(certificate), Optional.of(actionEvaluation)),
+            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate));
       }
 
       @Test
       void shallReturnFalseIfNotWithinCareUnit() {
-        final var actionEvaluation = actionEvaluationBuilder
-            .subUnit(ALFA_HUDMOTTAGNINGEN)
-            .user(ajlaDoctorBuilder()
-                .accessScope(userAccessScope)
-                .build())
-            .build();
+        final var actionEvaluation =
+            actionEvaluationBuilder
+                .subUnit(ALFA_HUDMOTTAGNINGEN)
+                .user(ajlaDoctorBuilder().accessScope(userAccessScope).build())
+                .build();
 
         final var certificate = certificateBuilder.build();
 
         assertFalse(
-            certificateActionPrint.evaluate(Optional.of(certificate),
-                Optional.of(actionEvaluation)),
-            () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate)
-        );
+            certificateActionPrint.evaluate(
+                Optional.of(certificate), Optional.of(actionEvaluation)),
+            () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate));
       }
     }
 
@@ -310,42 +305,39 @@ class CertificateActionPrintTest {
 
       @BeforeEach
       void setUp() {
-        userAccessScope = se.inera.intyg.certificateservice.domain.common.model.AccessScope.WITHIN_CARE_PROVIDER;
+        userAccessScope =
+            se.inera.intyg.certificateservice.domain.common.model.AccessScope.WITHIN_CARE_PROVIDER;
       }
 
       @Test
       void shallReturnTrueIfWithinCareUnit() {
-        final var actionEvaluation = actionEvaluationBuilder
-            .user(ajlaDoctorBuilder()
-                .accessScope(userAccessScope)
-                .build())
-            .build();
+        final var actionEvaluation =
+            actionEvaluationBuilder
+                .user(ajlaDoctorBuilder().accessScope(userAccessScope).build())
+                .build();
 
         final var certificate = certificateBuilder.build();
 
         assertTrue(
-            certificateActionPrint.evaluate(Optional.of(certificate),
-                Optional.of(actionEvaluation)),
-            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate)
-        );
+            certificateActionPrint.evaluate(
+                Optional.of(certificate), Optional.of(actionEvaluation)),
+            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate));
       }
 
       @Test
       void shallReturnTrueIfWithinCareProvider() {
-        final var actionEvaluation = actionEvaluationBuilder
-            .subUnit(ALFA_HUDMOTTAGNINGEN)
-            .user(ajlaDoctorBuilder()
-                .accessScope(userAccessScope)
-                .build())
-            .build();
+        final var actionEvaluation =
+            actionEvaluationBuilder
+                .subUnit(ALFA_HUDMOTTAGNINGEN)
+                .user(ajlaDoctorBuilder().accessScope(userAccessScope).build())
+                .build();
 
         final var certificate = certificateBuilder.build();
 
         assertTrue(
-            certificateActionPrint.evaluate(Optional.of(certificate),
-                Optional.of(actionEvaluation)),
-            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate)
-        );
+            certificateActionPrint.evaluate(
+                Optional.of(certificate), Optional.of(actionEvaluation)),
+            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate));
       }
     }
 
@@ -354,62 +346,57 @@ class CertificateActionPrintTest {
 
       @BeforeEach
       void setUp() {
-        userAccessScope = se.inera.intyg.certificateservice.domain.common.model.AccessScope.ALL_CARE_PROVIDERS;
+        userAccessScope =
+            se.inera.intyg.certificateservice.domain.common.model.AccessScope.ALL_CARE_PROVIDERS;
       }
 
       @Test
       void shallReturnTrueIfWithinCareUnit() {
-        final var actionEvaluation = actionEvaluationBuilder
-            .user(ajlaDoctorBuilder()
-                .accessScope(userAccessScope)
-                .build())
-            .build();
+        final var actionEvaluation =
+            actionEvaluationBuilder
+                .user(ajlaDoctorBuilder().accessScope(userAccessScope).build())
+                .build();
 
         final var certificate = certificateBuilder.build();
 
         assertTrue(
-            certificateActionPrint.evaluate(Optional.of(certificate),
-                Optional.of(actionEvaluation)),
-            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate)
-        );
+            certificateActionPrint.evaluate(
+                Optional.of(certificate), Optional.of(actionEvaluation)),
+            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate));
       }
 
       @Test
       void shallReturnTrueIfWithinCareProvider() {
-        final var actionEvaluation = actionEvaluationBuilder
-            .subUnit(ALFA_HUDMOTTAGNINGEN)
-            .user(ajlaDoctorBuilder()
-                .accessScope(userAccessScope)
-                .build())
-            .build();
+        final var actionEvaluation =
+            actionEvaluationBuilder
+                .subUnit(ALFA_HUDMOTTAGNINGEN)
+                .user(ajlaDoctorBuilder().accessScope(userAccessScope).build())
+                .build();
 
         final var certificate = certificateBuilder.build();
 
         assertTrue(
-            certificateActionPrint.evaluate(Optional.of(certificate),
-                Optional.of(actionEvaluation)),
-            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate)
-        );
+            certificateActionPrint.evaluate(
+                Optional.of(certificate), Optional.of(actionEvaluation)),
+            () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate));
       }
 
       @Test
       void shallReturnFalseIfNotWithinCareProvider() {
-        final var actionEvaluation = actionEvaluationBuilder
-            .careUnit(BETA_VARDCENTRAL)
-            .subUnit(BETA_HUDMOTTAGNINGEN)
-            .careProvider(BETA_REGIONEN)
-            .user(ajlaDoctorBuilder()
-                .accessScope(userAccessScope)
-                .build())
-            .build();
+        final var actionEvaluation =
+            actionEvaluationBuilder
+                .careUnit(BETA_VARDCENTRAL)
+                .subUnit(BETA_HUDMOTTAGNINGEN)
+                .careProvider(BETA_REGIONEN)
+                .user(ajlaDoctorBuilder().accessScope(userAccessScope).build())
+                .build();
 
         final var certificate = certificateBuilder.build();
 
         assertFalse(
-            certificateActionPrint.evaluate(Optional.of(certificate),
-                Optional.of(actionEvaluation)),
-            () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate)
-        );
+            certificateActionPrint.evaluate(
+                Optional.of(certificate), Optional.of(actionEvaluation)),
+            () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate));
       }
     }
   }
@@ -419,37 +406,33 @@ class CertificateActionPrintTest {
 
     @Test
     void shallReturnNullIfPatientNotFoundOnCertificate() {
-      final var certificate = certificateBuilder
-          .certificateMetaData(CertificateMetaData.builder().build())
-          .build();
+      final var certificate =
+          certificateBuilder.certificateMetaData(CertificateMetaData.builder().build()).build();
 
       assertNull(certificateActionPrint.getBody(Optional.of(certificate), Optional.empty()));
     }
 
     @Test
     void shallReturnNullIfPatientIsNotProtectedPerson() {
-      final var certificate = certificateBuilder
-          .build();
+      final var certificate = certificateBuilder.build();
 
       assertNull(certificateActionPrint.getBody(Optional.of(certificate), Optional.empty()));
     }
 
-
     @Test
     void shallReturnBodyIfPatientIsProtectedPerson() {
-      final var certificate = certificateBuilder
-          .certificateMetaData(
-              CertificateMetaData.builder()
-                  .patient(ANONYMA_REACT_ATTILA)
-                  .build()
-          )
-          .build();
+      final var certificate =
+          certificateBuilder
+              .certificateMetaData(
+                  CertificateMetaData.builder().patient(ANONYMA_REACT_ATTILA).build())
+              .build();
 
-      final var expectedBody = "<div class='ic-alert ic-alert--status ic-alert--info'>\n"
-          + "<i class='ic-alert__icon ic-info-icon'></i><p>Patienten har skyddade personuppgifter. Hantera utskriften varsamt.</p></div>";
+      final var expectedBody =
+          "<div class='ic-alert ic-alert--status ic-alert--info'>\n"
+              + "<i class='ic-alert__icon ic-info-icon'></i><p>Patienten har skyddade personuppgifter. Hantera utskriften varsamt.</p></div>";
 
-      assertEquals(expectedBody,
-          certificateActionPrint.getBody(Optional.of(certificate), Optional.empty()));
+      assertEquals(
+          expectedBody, certificateActionPrint.getBody(Optional.of(certificate), Optional.empty()));
     }
   }
 }

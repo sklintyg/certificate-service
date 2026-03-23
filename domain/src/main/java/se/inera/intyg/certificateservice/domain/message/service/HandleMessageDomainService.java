@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.message.service;
 
 import java.util.Optional;
@@ -15,8 +33,8 @@ public class HandleMessageDomainService {
 
   private final MessageRepository messageRepository;
 
-  public Message handle(Message message, boolean handle, Certificate certificate,
-      ActionEvaluation actionEvaluation) {
+  public Message handle(
+      Message message, boolean handle, Certificate certificate, ActionEvaluation actionEvaluation) {
     if (message.type() == MessageType.COMPLEMENT) {
       return handleComplementMessage(message, handle, certificate, actionEvaluation);
     }
@@ -24,18 +42,13 @@ public class HandleMessageDomainService {
     return handleAdministrativeMessage(message, handle, certificate, actionEvaluation);
   }
 
-  private Message handleAdministrativeMessage(Message message, boolean handle,
-      Certificate certificate,
-      ActionEvaluation actionEvaluation) {
-    if (!certificate.allowTo(
-        CertificateActionType.HANDLE_MESSAGE,
-        Optional.of(actionEvaluation)
-    )) {
+  private Message handleAdministrativeMessage(
+      Message message, boolean handle, Certificate certificate, ActionEvaluation actionEvaluation) {
+    if (!certificate.allowTo(CertificateActionType.HANDLE_MESSAGE, Optional.of(actionEvaluation))) {
       throw new CertificateActionForbidden(
           "Not allowed to handle administrative message on certificate for %s"
               .formatted(certificate.id().id()),
-          certificate.reasonNotAllowed(CertificateActionType.HANDLE_MESSAGE, Optional.empty())
-      );
+          certificate.reasonNotAllowed(CertificateActionType.HANDLE_MESSAGE, Optional.empty()));
     }
 
     if (handle) {
@@ -54,17 +67,13 @@ public class HandleMessageDomainService {
     }
   }
 
-  private Message handleComplementMessage(Message message, boolean handle, Certificate certificate,
-      ActionEvaluation actionEvaluation) {
+  private Message handleComplementMessage(
+      Message message, boolean handle, Certificate certificate, ActionEvaluation actionEvaluation) {
     if (!certificate.allowTo(
-        CertificateActionType.HANDLE_COMPLEMENT,
-        Optional.of(actionEvaluation)
-    )) {
+        CertificateActionType.HANDLE_COMPLEMENT, Optional.of(actionEvaluation))) {
       throw new CertificateActionForbidden(
-          "Not allowed to handle complement on certificate for %s"
-              .formatted(certificate.id().id()),
-          certificate.reasonNotAllowed(CertificateActionType.HANDLE_COMPLEMENT, Optional.empty())
-      );
+          "Not allowed to handle complement on certificate for %s".formatted(certificate.id().id()),
+          certificate.reasonNotAllowed(CertificateActionType.HANDLE_COMPLEMENT, Optional.empty()));
     }
 
     if (handle && message.type() == MessageType.COMPLEMENT) {

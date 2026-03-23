@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ag7804.elements;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.ag7804.elements.QuestionSmittbararpenning.QUESTION_SMITTBARARPENNING_FIELD_ID;
@@ -28,12 +46,12 @@ public class QuestionSysselsattning {
   }
 
   public static ElementSpecification questionSysselsattning(ElementSpecification... children) {
-    final var checkboxes = List.of(
-        CodeFactory.elementConfigurationCode(NUVARANDE_ARBETE),
-        CodeFactory.elementConfigurationCode(ARBETSSOKANDE),
-        CodeFactory.elementConfigurationCode(FORALDRALEDIG),
-        CodeFactory.elementConfigurationCode(STUDIER)
-    );
+    final var checkboxes =
+        List.of(
+            CodeFactory.elementConfigurationCode(NUVARANDE_ARBETE),
+            CodeFactory.elementConfigurationCode(ARBETSSOKANDE),
+            CodeFactory.elementConfigurationCode(FORALDRALEDIG),
+            CodeFactory.elementConfigurationCode(STUDIER));
 
     return ElementSpecification.builder()
         .id(QUESTION_SYSSELSATTNING_ID)
@@ -45,8 +63,7 @@ public class QuestionSysselsattning {
                     "Om du kryssar i flera val är det viktigt att du tydliggör under \"Övriga upplysningar\" om sjukskrivningens omfattning eller period skiljer sig åt mellan olika sysselsättningar.")
                 .elementLayout(ElementLayout.ROWS)
                 .list(checkboxes)
-                .build()
-        )
+                .build())
         .rules(
             List.of(
                 CertificateElementRuleFactory.mandatoryOrExist(
@@ -55,29 +72,13 @@ public class QuestionSysselsattning {
                         new FieldId(ARBETSSOKANDE.code()),
                         new FieldId(FORALDRALEDIG.code()),
                         new FieldId(NUVARANDE_ARBETE.code()),
-                        new FieldId(STUDIER.code()
-                        )
-                    )
-                ),
+                        new FieldId(STUDIER.code()))),
                 CertificateElementRuleFactory.hide(
-                    QUESTION_SMITTBARARPENNING_ID,
-                    QUESTION_SMITTBARARPENNING_FIELD_ID
-                )
-            )
-        )
-        .validations(
-            List.of(
-                ElementValidationCodeList.builder()
-                    .mandatory(true)
-                    .build()
-            )
-        )
+                    QUESTION_SMITTBARARPENNING_ID, QUESTION_SMITTBARARPENNING_FIELD_ID)))
+        .validations(List.of(ElementValidationCodeList.builder().mandatory(true).build()))
         .shouldValidate(
-            ElementDataPredicateFactory.checkboxBoolean(QUESTION_SMITTBARARPENNING_ID, false)
-        )
-        .children(
-            List.of(children)
-        )
+            ElementDataPredicateFactory.checkboxBoolean(QUESTION_SMITTBARARPENNING_ID, false))
+        .children(List.of(children))
         .build();
   }
 }

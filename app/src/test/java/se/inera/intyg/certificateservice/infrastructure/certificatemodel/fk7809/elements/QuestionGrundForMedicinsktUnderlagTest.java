@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7809.elements;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,62 +51,45 @@ class QuestionGrundForMedicinsktUnderlagTest {
 
   @Test
   void shallIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationCheckboxMultipleDate.builder()
-        .name("Utlåtandet är baserat på")
-        .id(new FieldId("1.1"))
-        .dates(
-            List.of(
-                CheckboxDate.builder()
-                    .id(new FieldId("undersokningAvPatienten"))
-                    .label("min undersökning av patienten")
-                    .code(
-                        new Code(
-                            "UNDERSOKNING",
-                            "KV_FKMU_0001",
-                            "min undersökning av patienten"
-                        )
-                    )
-                    .max(Period.ZERO)
-                    .build(),
-                CheckboxDate.builder()
-                    .id(new FieldId("journaluppgifter"))
-                    .label("journaluppgifter från och med")
-                    .code(
-                        new Code(
-                            "JOURNALUPPGIFTER",
-                            "KV_FKMU_0001",
-                            "journaluppgifter från den"
-                        )
-                    )
-                    .max(Period.ZERO)
-                    .build(),
-                CheckboxDate.builder()
-                    .id(new FieldId("anhorig"))
-                    .label("anhörig eller annans beskrivning av patienten")
-                    .code(
-                        new Code(
-                            "ANHORIG",
-                            "KV_FKMU_0001",
-                            "anhörig eller annans beskrivning av patienten"
-                        )
-                    )
-                    .max(Period.ZERO)
-                    .build(),
-                CheckboxDate.builder()
-                    .id(new FieldId("annat"))
-                    .label("annat")
-                    .code(
-                        new Code(
-                            "ANNAT",
-                            "KV_FKMU_0001",
-                            "annat"
-                        )
-                    )
-                    .max(Period.ZERO)
-                    .build()
-            )
-        )
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationCheckboxMultipleDate.builder()
+            .name("Utlåtandet är baserat på")
+            .id(new FieldId("1.1"))
+            .dates(
+                List.of(
+                    CheckboxDate.builder()
+                        .id(new FieldId("undersokningAvPatienten"))
+                        .label("min undersökning av patienten")
+                        .code(
+                            new Code(
+                                "UNDERSOKNING", "KV_FKMU_0001", "min undersökning av patienten"))
+                        .max(Period.ZERO)
+                        .build(),
+                    CheckboxDate.builder()
+                        .id(new FieldId("journaluppgifter"))
+                        .label("journaluppgifter från och med")
+                        .code(
+                            new Code(
+                                "JOURNALUPPGIFTER", "KV_FKMU_0001", "journaluppgifter från den"))
+                        .max(Period.ZERO)
+                        .build(),
+                    CheckboxDate.builder()
+                        .id(new FieldId("anhorig"))
+                        .label("anhörig eller annans beskrivning av patienten")
+                        .code(
+                            new Code(
+                                "ANHORIG",
+                                "KV_FKMU_0001",
+                                "anhörig eller annans beskrivning av patienten"))
+                        .max(Period.ZERO)
+                        .build(),
+                    CheckboxDate.builder()
+                        .id(new FieldId("annat"))
+                        .label("annat")
+                        .code(new Code("ANNAT", "KV_FKMU_0001", "annat"))
+                        .max(Period.ZERO)
+                        .build()))
+            .build();
 
     final var element = QuestionGrundForMedicinsktUnderlag.questionGrundForMedicinsktUnderlag();
 
@@ -97,17 +98,15 @@ class QuestionGrundForMedicinsktUnderlagTest {
 
   @Test
   void shallIncludeRules() {
-    final var expectedRules = List.of(
-        ElementRuleExpression.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.MANDATORY)
-            .expression(
-                new RuleExpression(
-                    "$undersokningAvPatienten || $journaluppgifter || $anhorig || $annat"
-                )
-            )
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleExpression.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.MANDATORY)
+                .expression(
+                    new RuleExpression(
+                        "$undersokningAvPatienten || $journaluppgifter || $anhorig || $annat"))
+                .build());
 
     final var element = QuestionGrundForMedicinsktUnderlag.questionGrundForMedicinsktUnderlag();
 
@@ -116,12 +115,8 @@ class QuestionGrundForMedicinsktUnderlagTest {
 
   @Test
   void shallIncludeValidations() {
-    final var expectedValidations = List.of(
-        ElementValidationDateList.builder()
-            .mandatory(true)
-            .max(Period.ofDays(0))
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationDateList.builder().mandatory(true).max(Period.ofDays(0)).build());
 
     final var element = QuestionGrundForMedicinsktUnderlag.questionGrundForMedicinsktUnderlag();
 
@@ -130,38 +125,35 @@ class QuestionGrundForMedicinsktUnderlagTest {
 
   @Test
   void shallIncludePdfConfiguration() {
-    final var expected = PdfConfigurationDateList.builder()
-        .dateCheckboxes(
-            Map.of(
-                new FieldId("undersokningAvPatienten"),
-                PdfConfigurationDateCheckbox.builder()
-                    .checkboxFieldId(
-                        new PdfFieldId("form1[0].#subform[0].ksr_UndersokningPatienten[0]")
-                    )
-                    .dateFieldId(
-                        new PdfFieldId("form1[0].#subform[0].flt_datumUndersokningPatient[0]"))
-                    .build(),
-                new FieldId("journaluppgifter"),
-                PdfConfigurationDateCheckbox.builder()
-                    .checkboxFieldId(
-                        new PdfFieldId("form1[0].#subform[0].ksr_Journaluppgifter[0]")
-                    )
-                    .dateFieldId(
-                        new PdfFieldId("form1[0].#subform[0].flt_datumJournaluppgifter[0]"))
-                    .build(),
-                new FieldId("anhorig"),
-                PdfConfigurationDateCheckbox.builder()
-                    .checkboxFieldId(new PdfFieldId("form1[0].#subform[0].ksr_AnhorigAnnan[0]"))
-                    .dateFieldId(new PdfFieldId("form1[0].#subform[0].flt_datumAnhorig[0]"))
-                    .build(),
-                new FieldId("annat"),
-                PdfConfigurationDateCheckbox.builder()
-                    .checkboxFieldId(new PdfFieldId("form1[0].#subform[0].ksr_AnnatFyll[0]"))
-                    .dateFieldId(new PdfFieldId("form1[0].#subform[0].flt_datumAnnat[0]"))
-                    .build()
-            )
-        )
-        .build();
+    final var expected =
+        PdfConfigurationDateList.builder()
+            .dateCheckboxes(
+                Map.of(
+                    new FieldId("undersokningAvPatienten"),
+                    PdfConfigurationDateCheckbox.builder()
+                        .checkboxFieldId(
+                            new PdfFieldId("form1[0].#subform[0].ksr_UndersokningPatienten[0]"))
+                        .dateFieldId(
+                            new PdfFieldId("form1[0].#subform[0].flt_datumUndersokningPatient[0]"))
+                        .build(),
+                    new FieldId("journaluppgifter"),
+                    PdfConfigurationDateCheckbox.builder()
+                        .checkboxFieldId(
+                            new PdfFieldId("form1[0].#subform[0].ksr_Journaluppgifter[0]"))
+                        .dateFieldId(
+                            new PdfFieldId("form1[0].#subform[0].flt_datumJournaluppgifter[0]"))
+                        .build(),
+                    new FieldId("anhorig"),
+                    PdfConfigurationDateCheckbox.builder()
+                        .checkboxFieldId(new PdfFieldId("form1[0].#subform[0].ksr_AnhorigAnnan[0]"))
+                        .dateFieldId(new PdfFieldId("form1[0].#subform[0].flt_datumAnhorig[0]"))
+                        .build(),
+                    new FieldId("annat"),
+                    PdfConfigurationDateCheckbox.builder()
+                        .checkboxFieldId(new PdfFieldId("form1[0].#subform[0].ksr_AnnatFyll[0]"))
+                        .dateFieldId(new PdfFieldId("form1[0].#subform[0].flt_datumAnnat[0]"))
+                        .build()))
+            .build();
 
     final var element = QuestionGrundForMedicinsktUnderlag.questionGrundForMedicinsktUnderlag();
 

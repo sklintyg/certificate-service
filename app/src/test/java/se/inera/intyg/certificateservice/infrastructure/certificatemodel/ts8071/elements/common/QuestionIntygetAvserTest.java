@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.common;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,55 +49,49 @@ class QuestionIntygetAvserTest {
 
   @Test
   void shallIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationCheckboxMultipleCode.builder()
-        .name("Intyget avser")
-        .elementLayout(ElementLayout.ROWS)
-        .id(new FieldId("1.1"))
-        .message(ElementMessage.builder()
-            .level(MessageLevel.OBSERVE)
-            .includedForStatuses(List.of(Status.DRAFT))
-            .content(
-                "Välj \"ansökan om taxiförarlegitimation\" endast om personen saknar taxiförarlegitimation och ansöker om en sådan i samband med detta intyg.")
-            .build())
-        .list(
-            List.of(
-                new ElementConfigurationCode(
-                    new FieldId(CodeSystemKvIntygetGallerFor.GR_II.code()),
-                    CodeSystemKvIntygetGallerFor.GR_II.displayName(),
-                    CodeSystemKvIntygetGallerFor.GR_II
-                ),
-                new ElementConfigurationCode(
-                    new FieldId(CodeSystemKvIntygetGallerFor.GR_II_III.code()),
-                    CodeSystemKvIntygetGallerFor.GR_II_III.displayName(),
-                    CodeSystemKvIntygetGallerFor.GR_II_III
-                ),
-                new ElementConfigurationCode(
-                    new FieldId(CodeSystemKvIntygetGallerFor.FORLANG_GR_II.code()),
-                    CodeSystemKvIntygetGallerFor.FORLANG_GR_II.displayName(),
-                    CodeSystemKvIntygetGallerFor.FORLANG_GR_II
-                ),
-                new ElementConfigurationCode(
-                    new FieldId(CodeSystemKvIntygetGallerFor.FORLANG_GR_II_III.code()),
-                    CodeSystemKvIntygetGallerFor.FORLANG_GR_II_III.displayName(),
-                    CodeSystemKvIntygetGallerFor.FORLANG_GR_II_III
-                ),
-                new ElementConfigurationCode(
-                    new FieldId(CodeSystemKvIntygetGallerFor.UTLANDSKT.code()),
-                    CodeSystemKvIntygetGallerFor.UTLANDSKT.displayName(),
-                    CodeSystemKvIntygetGallerFor.UTLANDSKT
-                ),
-                new ElementConfigurationCode(
-                    new FieldId(CodeSystemKvIntygetGallerFor.TAXI.code()),
-                    CodeSystemKvIntygetGallerFor.TAXI.displayName(),
-                    CodeSystemKvIntygetGallerFor.TAXI
-                ),
-                new ElementConfigurationCode(
-                    new FieldId(CodeSystemKvIntygetGallerFor.ANNAT.code()),
-                    CodeSystemKvIntygetGallerFor.ANNAT.displayName(),
-                    CodeSystemKvIntygetGallerFor.ANNAT
-                )
-            )
-        ).build();
+    final var expectedConfiguration =
+        ElementConfigurationCheckboxMultipleCode.builder()
+            .name("Intyget avser")
+            .elementLayout(ElementLayout.ROWS)
+            .id(new FieldId("1.1"))
+            .message(
+                ElementMessage.builder()
+                    .level(MessageLevel.OBSERVE)
+                    .includedForStatuses(List.of(Status.DRAFT))
+                    .content(
+                        "Välj \"ansökan om taxiförarlegitimation\" endast om personen saknar taxiförarlegitimation och ansöker om en sådan i samband med detta intyg.")
+                    .build())
+            .list(
+                List.of(
+                    new ElementConfigurationCode(
+                        new FieldId(CodeSystemKvIntygetGallerFor.GR_II.code()),
+                        CodeSystemKvIntygetGallerFor.GR_II.displayName(),
+                        CodeSystemKvIntygetGallerFor.GR_II),
+                    new ElementConfigurationCode(
+                        new FieldId(CodeSystemKvIntygetGallerFor.GR_II_III.code()),
+                        CodeSystemKvIntygetGallerFor.GR_II_III.displayName(),
+                        CodeSystemKvIntygetGallerFor.GR_II_III),
+                    new ElementConfigurationCode(
+                        new FieldId(CodeSystemKvIntygetGallerFor.FORLANG_GR_II.code()),
+                        CodeSystemKvIntygetGallerFor.FORLANG_GR_II.displayName(),
+                        CodeSystemKvIntygetGallerFor.FORLANG_GR_II),
+                    new ElementConfigurationCode(
+                        new FieldId(CodeSystemKvIntygetGallerFor.FORLANG_GR_II_III.code()),
+                        CodeSystemKvIntygetGallerFor.FORLANG_GR_II_III.displayName(),
+                        CodeSystemKvIntygetGallerFor.FORLANG_GR_II_III),
+                    new ElementConfigurationCode(
+                        new FieldId(CodeSystemKvIntygetGallerFor.UTLANDSKT.code()),
+                        CodeSystemKvIntygetGallerFor.UTLANDSKT.displayName(),
+                        CodeSystemKvIntygetGallerFor.UTLANDSKT),
+                    new ElementConfigurationCode(
+                        new FieldId(CodeSystemKvIntygetGallerFor.TAXI.code()),
+                        CodeSystemKvIntygetGallerFor.TAXI.displayName(),
+                        CodeSystemKvIntygetGallerFor.TAXI),
+                    new ElementConfigurationCode(
+                        new FieldId(CodeSystemKvIntygetGallerFor.ANNAT.code()),
+                        CodeSystemKvIntygetGallerFor.ANNAT.displayName(),
+                        CodeSystemKvIntygetGallerFor.ANNAT)))
+            .build();
 
     final var element = QuestionIntygetAvser.questionIntygetAvser();
 
@@ -88,125 +100,87 @@ class QuestionIntygetAvserTest {
 
   @Test
   void shallIncludeRules() {
-    final var expectedRule = List.of(
-        ElementRuleExpression.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.MANDATORY)
-            .expression(
-                new RuleExpression(
-                    "exists($gr_II) || exists($gr_II_III) || exists($forlang_gr_II) || exists($forlang_gr_II_III) || exists($utbyt_utl_kk) || exists($tax_leg) || exists($int_begar_ts)"
-                )
-            )
-            .build(),
-        ElementRuleExpression.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.DISABLE_SUB_ELEMENT)
-            .expression(
-                new RuleExpression(
-                    "exists(gr_II)"
-                )
-            )
-            .affectedSubElements(
-                List.of(
-                    new FieldId(CodeSystemKvIntygetGallerFor.GR_II_III.code()),
-                    new FieldId(CodeSystemKvIntygetGallerFor.FORLANG_GR_II.code()),
-                    new FieldId(CodeSystemKvIntygetGallerFor.FORLANG_GR_II_III.code()),
-                    new FieldId(CodeSystemKvIntygetGallerFor.UTLANDSKT.code()),
-                    new FieldId(CodeSystemKvIntygetGallerFor.ANNAT.code())
-                )
-            )
-            .build(),
-        ElementRuleExpression.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.DISABLE_SUB_ELEMENT)
-            .expression(
-                new RuleExpression(
-                    "exists(gr_II_III)"
-                )
-            )
-            .affectedSubElements(
-                List.of(
-                    new FieldId(CodeSystemKvIntygetGallerFor.GR_II.code()),
-                    new FieldId(CodeSystemKvIntygetGallerFor.FORLANG_GR_II.code()),
-                    new FieldId(CodeSystemKvIntygetGallerFor.FORLANG_GR_II_III.code()),
-                    new FieldId(CodeSystemKvIntygetGallerFor.UTLANDSKT.code()),
-                    new FieldId(CodeSystemKvIntygetGallerFor.ANNAT.code())
-                )
-            )
-            .build(),
-        ElementRuleExpression.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.DISABLE_SUB_ELEMENT)
-            .expression(
-                new RuleExpression(
-                    "exists(forlang_gr_II)"
-                )
-            )
-            .affectedSubElements(
-                List.of(
-                    new FieldId(CodeSystemKvIntygetGallerFor.GR_II.code()),
-                    new FieldId(CodeSystemKvIntygetGallerFor.GR_II_III.code()),
-                    new FieldId(CodeSystemKvIntygetGallerFor.FORLANG_GR_II_III.code()),
-                    new FieldId(CodeSystemKvIntygetGallerFor.UTLANDSKT.code()),
-                    new FieldId(CodeSystemKvIntygetGallerFor.ANNAT.code())
-                )
-            )
-            .build(),
-        ElementRuleExpression.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.DISABLE_SUB_ELEMENT)
-            .expression(
-                new RuleExpression(
-                    "exists(forlang_gr_II_III)"
-                )
-            )
-            .affectedSubElements(
-                List.of(
-                    new FieldId(CodeSystemKvIntygetGallerFor.GR_II.code()),
-                    new FieldId(CodeSystemKvIntygetGallerFor.GR_II_III.code()),
-                    new FieldId(CodeSystemKvIntygetGallerFor.FORLANG_GR_II.code()),
-                    new FieldId(CodeSystemKvIntygetGallerFor.UTLANDSKT.code()),
-                    new FieldId(CodeSystemKvIntygetGallerFor.ANNAT.code())
-                )
-            )
-            .build(),
-        ElementRuleExpression.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.DISABLE_SUB_ELEMENT)
-            .expression(
-                new RuleExpression(
-                    "exists(utbyt_utl_kk)"
-                )
-            )
-            .affectedSubElements(
-                List.of(
-                    new FieldId(CodeSystemKvIntygetGallerFor.GR_II.code()),
-                    new FieldId(CodeSystemKvIntygetGallerFor.GR_II_III.code()),
-                    new FieldId(CodeSystemKvIntygetGallerFor.FORLANG_GR_II.code()),
-                    new FieldId(CodeSystemKvIntygetGallerFor.FORLANG_GR_II_III.code()),
-                    new FieldId(CodeSystemKvIntygetGallerFor.ANNAT.code())
-                )
-            )
-            .build(),
-        ElementRuleExpression.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.DISABLE_SUB_ELEMENT)
-            .expression(
-                new RuleExpression(
-                    "exists(int_begar_ts)"
-                )
-            )
-            .affectedSubElements(
-                List.of(
-                    new FieldId(CodeSystemKvIntygetGallerFor.GR_II.code()),
-                    new FieldId(CodeSystemKvIntygetGallerFor.GR_II_III.code()),
-                    new FieldId(CodeSystemKvIntygetGallerFor.FORLANG_GR_II.code()),
-                    new FieldId(CodeSystemKvIntygetGallerFor.FORLANG_GR_II_III.code()),
-                    new FieldId(CodeSystemKvIntygetGallerFor.UTLANDSKT.code())
-                )
-            )
-            .build()
-    );
+    final var expectedRule =
+        List.of(
+            ElementRuleExpression.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.MANDATORY)
+                .expression(
+                    new RuleExpression(
+                        "exists($gr_II) || exists($gr_II_III) || exists($forlang_gr_II) || exists($forlang_gr_II_III) || exists($utbyt_utl_kk) || exists($tax_leg) || exists($int_begar_ts)"))
+                .build(),
+            ElementRuleExpression.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.DISABLE_SUB_ELEMENT)
+                .expression(new RuleExpression("exists(gr_II)"))
+                .affectedSubElements(
+                    List.of(
+                        new FieldId(CodeSystemKvIntygetGallerFor.GR_II_III.code()),
+                        new FieldId(CodeSystemKvIntygetGallerFor.FORLANG_GR_II.code()),
+                        new FieldId(CodeSystemKvIntygetGallerFor.FORLANG_GR_II_III.code()),
+                        new FieldId(CodeSystemKvIntygetGallerFor.UTLANDSKT.code()),
+                        new FieldId(CodeSystemKvIntygetGallerFor.ANNAT.code())))
+                .build(),
+            ElementRuleExpression.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.DISABLE_SUB_ELEMENT)
+                .expression(new RuleExpression("exists(gr_II_III)"))
+                .affectedSubElements(
+                    List.of(
+                        new FieldId(CodeSystemKvIntygetGallerFor.GR_II.code()),
+                        new FieldId(CodeSystemKvIntygetGallerFor.FORLANG_GR_II.code()),
+                        new FieldId(CodeSystemKvIntygetGallerFor.FORLANG_GR_II_III.code()),
+                        new FieldId(CodeSystemKvIntygetGallerFor.UTLANDSKT.code()),
+                        new FieldId(CodeSystemKvIntygetGallerFor.ANNAT.code())))
+                .build(),
+            ElementRuleExpression.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.DISABLE_SUB_ELEMENT)
+                .expression(new RuleExpression("exists(forlang_gr_II)"))
+                .affectedSubElements(
+                    List.of(
+                        new FieldId(CodeSystemKvIntygetGallerFor.GR_II.code()),
+                        new FieldId(CodeSystemKvIntygetGallerFor.GR_II_III.code()),
+                        new FieldId(CodeSystemKvIntygetGallerFor.FORLANG_GR_II_III.code()),
+                        new FieldId(CodeSystemKvIntygetGallerFor.UTLANDSKT.code()),
+                        new FieldId(CodeSystemKvIntygetGallerFor.ANNAT.code())))
+                .build(),
+            ElementRuleExpression.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.DISABLE_SUB_ELEMENT)
+                .expression(new RuleExpression("exists(forlang_gr_II_III)"))
+                .affectedSubElements(
+                    List.of(
+                        new FieldId(CodeSystemKvIntygetGallerFor.GR_II.code()),
+                        new FieldId(CodeSystemKvIntygetGallerFor.GR_II_III.code()),
+                        new FieldId(CodeSystemKvIntygetGallerFor.FORLANG_GR_II.code()),
+                        new FieldId(CodeSystemKvIntygetGallerFor.UTLANDSKT.code()),
+                        new FieldId(CodeSystemKvIntygetGallerFor.ANNAT.code())))
+                .build(),
+            ElementRuleExpression.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.DISABLE_SUB_ELEMENT)
+                .expression(new RuleExpression("exists(utbyt_utl_kk)"))
+                .affectedSubElements(
+                    List.of(
+                        new FieldId(CodeSystemKvIntygetGallerFor.GR_II.code()),
+                        new FieldId(CodeSystemKvIntygetGallerFor.GR_II_III.code()),
+                        new FieldId(CodeSystemKvIntygetGallerFor.FORLANG_GR_II.code()),
+                        new FieldId(CodeSystemKvIntygetGallerFor.FORLANG_GR_II_III.code()),
+                        new FieldId(CodeSystemKvIntygetGallerFor.ANNAT.code())))
+                .build(),
+            ElementRuleExpression.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.DISABLE_SUB_ELEMENT)
+                .expression(new RuleExpression("exists(int_begar_ts)"))
+                .affectedSubElements(
+                    List.of(
+                        new FieldId(CodeSystemKvIntygetGallerFor.GR_II.code()),
+                        new FieldId(CodeSystemKvIntygetGallerFor.GR_II_III.code()),
+                        new FieldId(CodeSystemKvIntygetGallerFor.FORLANG_GR_II.code()),
+                        new FieldId(CodeSystemKvIntygetGallerFor.FORLANG_GR_II_III.code()),
+                        new FieldId(CodeSystemKvIntygetGallerFor.UTLANDSKT.code())))
+                .build());
 
     final var element = QuestionIntygetAvser.questionIntygetAvser();
 
@@ -215,11 +189,8 @@ class QuestionIntygetAvserTest {
 
   @Test
   void shallIncludeValidation() {
-    final var expectedValidations = List.of(
-        ElementValidationCodeList.builder()
-            .mandatory(true)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationCodeList.builder().mandatory(true).build());
 
     final var element = QuestionIntygetAvser.questionIntygetAvser();
 

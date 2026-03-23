@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -37,33 +55,31 @@ class GetCertificatePdfServiceTest {
   private static final Pdf PDF = new Pdf(PDF_DATA, FILE_NAME);
 
   private static final String ADDITIONAL_INFO_TEXT = "additionalInfoText";
-  private static final GetCertificatePdfRequest REQUEST = GetCertificatePdfRequest.builder()
-      .patient(ATHENA_REACT_ANDERSSON_DTO)
-      .careProvider(ALFA_REGIONEN_DTO)
-      .careUnit(ALFA_MEDICINCENTRUM_DTO)
-      .unit(ALFA_ALLERGIMOTTAGNINGEN_DTO)
-      .user(AJLA_DOCTOR_DTO)
-      .additionalInfoText(ADDITIONAL_INFO_TEXT)
-      .build();
+  private static final GetCertificatePdfRequest REQUEST =
+      GetCertificatePdfRequest.builder()
+          .patient(ATHENA_REACT_ANDERSSON_DTO)
+          .careProvider(ALFA_REGIONEN_DTO)
+          .careUnit(ALFA_MEDICINCENTRUM_DTO)
+          .unit(ALFA_ALLERGIMOTTAGNINGEN_DTO)
+          .user(AJLA_DOCTOR_DTO)
+          .additionalInfoText(ADDITIONAL_INFO_TEXT)
+          .build();
 
-  @Mock
-  private ActionEvaluationFactory actionEvaluationFactory;
-  @Mock
-  private GetCertificatePdfDomainService getCertificatePdfDomainService;
-  @Mock
-  private GetCertificatePdfRequestValidator getCertificatePdfRequestValidator;
-  @InjectMocks
-  GetCertificatePdfService getCertificatePdfService;
+  @Mock private ActionEvaluationFactory actionEvaluationFactory;
+  @Mock private GetCertificatePdfDomainService getCertificatePdfDomainService;
+  @Mock private GetCertificatePdfRequestValidator getCertificatePdfRequestValidator;
+  @InjectMocks GetCertificatePdfService getCertificatePdfService;
 
   @Test
   void shallThrowIfRequestIsInvalid() {
     final var request = GetCertificatePdfRequest.builder().build();
-    doThrow(IllegalArgumentException.class).when(getCertificatePdfRequestValidator)
+    doThrow(IllegalArgumentException.class)
+        .when(getCertificatePdfRequestValidator)
         .validate(request, CERTIFICATE_ID);
 
-    assertThrows(IllegalArgumentException.class,
-        () -> getCertificatePdfService.get(request, CERTIFICATE_ID)
-    );
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> getCertificatePdfService.get(request, CERTIFICATE_ID));
   }
 
   @Nested
@@ -71,36 +87,29 @@ class GetCertificatePdfServiceTest {
 
     @BeforeEach
     void setup() {
-      final var actionEvaluation = ActionEvaluation.builder()
-          .user(User.builder().role(Role.DOCTOR).build())
-          .build();
+      final var actionEvaluation =
+          ActionEvaluation.builder().user(User.builder().role(Role.DOCTOR).build()).build();
 
-      doReturn(actionEvaluation).when(actionEvaluationFactory).create(
-          ATHENA_REACT_ANDERSSON_DTO,
-          AJLA_DOCTOR_DTO,
-          ALFA_ALLERGIMOTTAGNINGEN_DTO,
-          ALFA_MEDICINCENTRUM_DTO,
-          ALFA_REGIONEN_DTO
-      );
+      doReturn(actionEvaluation)
+          .when(actionEvaluationFactory)
+          .create(
+              ATHENA_REACT_ANDERSSON_DTO,
+              AJLA_DOCTOR_DTO,
+              ALFA_ALLERGIMOTTAGNINGEN_DTO,
+              ALFA_MEDICINCENTRUM_DTO,
+              ALFA_REGIONEN_DTO);
 
-      doReturn(PDF).when(getCertificatePdfDomainService).get(
-          new CertificateId(CERTIFICATE_ID),
-          actionEvaluation,
-          ADDITIONAL_INFO_TEXT
-      );
+      doReturn(PDF)
+          .when(getCertificatePdfDomainService)
+          .get(new CertificateId(CERTIFICATE_ID), actionEvaluation, ADDITIONAL_INFO_TEXT);
     }
 
     @Test
     void shallReturnResponseWithPdf() {
-      final var expectedResponse = GetCertificatePdfResponse.builder()
-          .fileName(FILE_NAME)
-          .pdfData(PDF_DATA)
-          .build();
+      final var expectedResponse =
+          GetCertificatePdfResponse.builder().fileName(FILE_NAME).pdfData(PDF_DATA).build();
 
-      final var actualResult = getCertificatePdfService.get(
-          REQUEST,
-          CERTIFICATE_ID
-      );
+      final var actualResult = getCertificatePdfService.get(REQUEST, CERTIFICATE_ID);
 
       assertEquals(expectedResponse, actualResult);
     }

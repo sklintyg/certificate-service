@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.common;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -30,35 +48,33 @@ class QuestionSynskarpaTest {
 
   @Test
   void shallIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationVisualAcuities.builder()
-        .id(new FieldId("5"))
-        .name("Synskärpa")
-        .withCorrectionLabel("Med korrektion")
-        .withoutCorrectionLabel("Utan korrektion")
-        .min(0.0)
-        .max(2.0)
-        .rightEye(
-            ElementVisualAcuity.builder()
-                .label("Höger öga")
-                .withoutCorrectionId("5.1")
-                .withCorrectionId("5.4")
-                .build()
-        )
-        .leftEye(
-            ElementVisualAcuity.builder()
-                .label("Vänster öga")
-                .withoutCorrectionId("5.2")
-                .withCorrectionId("5.5")
-                .build()
-        )
-        .binocular(
-            ElementVisualAcuity.builder()
-                .label("Binokulärt")
-                .withoutCorrectionId("5.3")
-                .withCorrectionId("5.6")
-                .build()
-        )
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationVisualAcuities.builder()
+            .id(new FieldId("5"))
+            .name("Synskärpa")
+            .withCorrectionLabel("Med korrektion")
+            .withoutCorrectionLabel("Utan korrektion")
+            .min(0.0)
+            .max(2.0)
+            .rightEye(
+                ElementVisualAcuity.builder()
+                    .label("Höger öga")
+                    .withoutCorrectionId("5.1")
+                    .withCorrectionId("5.4")
+                    .build())
+            .leftEye(
+                ElementVisualAcuity.builder()
+                    .label("Vänster öga")
+                    .withoutCorrectionId("5.2")
+                    .withCorrectionId("5.5")
+                    .build())
+            .binocular(
+                ElementVisualAcuity.builder()
+                    .label("Binokulärt")
+                    .withoutCorrectionId("5.3")
+                    .withCorrectionId("5.6")
+                    .build())
+            .build();
 
     final var element = QuestionSynskarpa.questionSynskarpa();
 
@@ -67,20 +83,13 @@ class QuestionSynskarpaTest {
 
   @Test
   void shallIncludeRules() {
-    final var expectedRule = List.of(
-        CertificateElementRuleFactory.showIfNot(
-            QUESTION_SYNFUNKTIONER_ID,
-            QUESTION_SYNFUNKTIONER_FIELD_ID
-        ),
-        CertificateElementRuleFactory.mandatoryAndExist(
-            QUESTION_SYNSKARPA_ID,
-            List.of(
-                new FieldId("5.1"),
-                new FieldId("5.2"),
-                new FieldId("5.3")
-            )
-        )
-    );
+    final var expectedRule =
+        List.of(
+            CertificateElementRuleFactory.showIfNot(
+                QUESTION_SYNFUNKTIONER_ID, QUESTION_SYNFUNKTIONER_FIELD_ID),
+            CertificateElementRuleFactory.mandatoryAndExist(
+                QUESTION_SYNSKARPA_ID,
+                List.of(new FieldId("5.1"), new FieldId("5.2"), new FieldId("5.3"))));
 
     final var element = QuestionSynskarpa.questionSynskarpa();
 
@@ -92,16 +101,16 @@ class QuestionSynskarpaTest {
 
     @Test
     void shallIncludeValidation() {
-      final var validation = (ElementValidationVisualAcuities) QuestionSynskarpa.questionSynskarpa()
-          .validations().getFirst();
+      final var validation =
+          (ElementValidationVisualAcuities)
+              QuestionSynskarpa.questionSynskarpa().validations().getFirst();
 
       assertAll(
           () -> assertEquals(0.0, validation.min()),
           () -> assertEquals(2.0, validation.max()),
           () -> assertEquals(0.1, validation.minAllowedSightOneEye()),
           () -> assertEquals(0.8, validation.minAllowedSightOtherEye()),
-          () -> assertTrue(validation.mandatory())
-      );
+          () -> assertTrue(validation.mandatory()));
     }
   }
 }

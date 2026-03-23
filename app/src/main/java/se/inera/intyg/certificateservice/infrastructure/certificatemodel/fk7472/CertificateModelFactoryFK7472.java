@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7472;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.elements.ElementUnitContactInformation.issuingUnitContactInfo;
@@ -27,6 +45,7 @@ import se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.
 public class CertificateModelFactoryFK7472 implements CertificateModelFactory {
 
   private final CertificateActionFactory certificateActionFactory;
+
   @Value("${certificate.model.fk7472.v1_0.active.from}")
   private LocalDateTime activeFrom;
 
@@ -37,10 +56,12 @@ public class CertificateModelFactoryFK7472 implements CertificateModelFactory {
   private static final String VERSION = "1.0";
   private static final CertificateTypeName FK7472_TYPE_NAME = new CertificateTypeName("FK7472");
   private static final String NAME = "Intyg om tillfällig föräldrapenning";
-  private static final String DESCRIPTION = """
+  private static final String DESCRIPTION =
+      """
          När ett barn är sjukt kan den förälder som behöver avstå från sitt arbete för att vårda barnet få tillfällig föräldrapenning. Från och med den åttonde dagen i barnets vårdperiod behöver ett intyg från en läkare eller sjuksköterska skickas till Försäkringskassan.                                                                                                                                                         \s
       """;
-  private static final String DETAILED_DESCRIPTION = """
+  private static final String DETAILED_DESCRIPTION =
+      """
       <b className="iu-fw-heading">Vad är Intyg om tillfällig föräldrapenning?</b>
       <p>När ett barn är sjukt kan den förälder som behöver avstå från sitt arbete för att vårda barnet få tillfällig föräldrapenning. Vårdperioden räknas från och med den första dagen man får tillfällig föräldrapenning för barnet.</p>
       <b className="iu-fw-heading">Förutsättningar för att få tillfällig föräldrapenning:</b><br>
@@ -54,13 +75,14 @@ public class CertificateModelFactoryFK7472 implements CertificateModelFactory {
       Intyget behövs vid tillkommande sjukdom eller en försämring av grundsjukdomen.</p>
       """;
 
-  public static final CertificateModelId FK7472_V1_0 = CertificateModelId.builder()
-      .type(new CertificateType(TYPE))
-      .version(new CertificateVersion(VERSION))
-      .build();
+  public static final CertificateModelId FK7472_V1_0 =
+      CertificateModelId.builder()
+          .type(new CertificateType(TYPE))
+          .version(new CertificateVersion(VERSION))
+          .build();
 
-  public static final SchematronPath SCHEMATRON_PATH = new SchematronPath(
-      "fk7472/schematron/itfp.v1.sch");
+  public static final SchematronPath SCHEMATRON_PATH =
+      new SchematronPath("fk7472/schematron/itfp.v1.sch");
 
   @Override
   public CertificateModel create() {
@@ -80,15 +102,9 @@ public class CertificateModelFactoryFK7472 implements CertificateModelFactory {
         .pdfSpecification(FK7472PdfSpecification.create())
         .elementSpecifications(
             List.of(
-                categorySymptom(
-                    questionSymptom()
-                ),
-                categoryPeriod(
-                    questionPeriod()
-                ),
-                issuingUnitContactInfo()
-            )
-        )
+                categorySymptom(questionSymptom()),
+                categoryPeriod(questionPeriod()),
+                issuingUnitContactInfo()))
         .certificateActionFactory(certificateActionFactory)
         .build();
   }

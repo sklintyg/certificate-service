@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,50 +51,35 @@ class QuestionUtlatandeBaseratPaTest {
 
   @Test
   void shallIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationCheckboxMultipleDate.builder()
-        .name("Utlåtandet är baserat på")
-        .id(new FieldId("1.1"))
-        .dates(
-            List.of(
-                CheckboxDate.builder()
-                    .id(new FieldId("undersokningAvPatienten"))
-                    .label("min undersökning av patienten")
-                    .code(
-                        new Code(
-                            "UNDERSOKNING",
-                            "KV_FKMU_0001",
-                            "min undersökning av patienten"
-                        )
-                    )
-                    .max(Period.ZERO)
-                    .build(),
-                CheckboxDate.builder()
-                    .id(new FieldId("journaluppgifter"))
-                    .label("journaluppgifter från den")
-                    .code(
-                        new Code(
-                            "JOURNALUPPGIFTER",
-                            "KV_FKMU_0001",
-                            "journaluppgifter från den"
-                        )
-                    )
-                    .max(Period.ZERO)
-                    .build(),
-                CheckboxDate.builder()
-                    .id(new FieldId("annat"))
-                    .label("annat")
-                    .code(
-                        new Code(
-                            "ANNAT",
-                            "KV_FKMU_0001",
-                            "annat"
-                        )
-                    )
-                    .max(Period.ZERO)
-                    .build()
-            )
-        )
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationCheckboxMultipleDate.builder()
+            .name("Utlåtandet är baserat på")
+            .id(new FieldId("1.1"))
+            .dates(
+                List.of(
+                    CheckboxDate.builder()
+                        .id(new FieldId("undersokningAvPatienten"))
+                        .label("min undersökning av patienten")
+                        .code(
+                            new Code(
+                                "UNDERSOKNING", "KV_FKMU_0001", "min undersökning av patienten"))
+                        .max(Period.ZERO)
+                        .build(),
+                    CheckboxDate.builder()
+                        .id(new FieldId("journaluppgifter"))
+                        .label("journaluppgifter från den")
+                        .code(
+                            new Code(
+                                "JOURNALUPPGIFTER", "KV_FKMU_0001", "journaluppgifter från den"))
+                        .max(Period.ZERO)
+                        .build(),
+                    CheckboxDate.builder()
+                        .id(new FieldId("annat"))
+                        .label("annat")
+                        .code(new Code("ANNAT", "KV_FKMU_0001", "annat"))
+                        .max(Period.ZERO)
+                        .build()))
+            .build();
 
     final var element = QuestionUtlatandeBaseratPa.questionUtlatandeBaseratPa();
 
@@ -85,17 +88,14 @@ class QuestionUtlatandeBaseratPaTest {
 
   @Test
   void shallIncludeRules() {
-    final var expectedRules = List.of(
-        ElementRuleExpression.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.MANDATORY)
-            .expression(
-                new RuleExpression(
-                    "$undersokningAvPatienten || $journaluppgifter || $annat"
-                )
-            )
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleExpression.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.MANDATORY)
+                .expression(
+                    new RuleExpression("$undersokningAvPatienten || $journaluppgifter || $annat"))
+                .build());
 
     final var element = QuestionUtlatandeBaseratPa.questionUtlatandeBaseratPa();
 
@@ -104,12 +104,8 @@ class QuestionUtlatandeBaseratPaTest {
 
   @Test
   void shallIncludeValidations() {
-    final var expectedValidations = List.of(
-        ElementValidationDateList.builder()
-            .mandatory(true)
-            .max(Period.ofDays(0))
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationDateList.builder().mandatory(true).max(Period.ofDays(0)).build());
 
     final var element = QuestionUtlatandeBaseratPa.questionUtlatandeBaseratPa();
 
@@ -118,31 +114,28 @@ class QuestionUtlatandeBaseratPaTest {
 
   @Test
   void shallIncludePdfConfiguration() {
-    final var expected = PdfConfigurationDateList.builder()
-        .dateCheckboxes(
-            Map.of(
-                new FieldId("undersokningAvPatienten"),
-                PdfConfigurationDateCheckbox.builder()
-                    .checkboxFieldId(
-                        new PdfFieldId("form1[0].#subform[0].ksr_UndersokningPatient[0]")
-                    )
-                    .dateFieldId(new PdfFieldId("form1[0].#subform[0].flt_datUl_1[0]"))
-                    .build(),
-                new FieldId("journaluppgifter"),
-                PdfConfigurationDateCheckbox.builder()
-                    .checkboxFieldId(
-                        new PdfFieldId("form1[0].#subform[0].ksr_Journaluppgifter[0]")
-                    )
-                    .dateFieldId(new PdfFieldId("form1[0].#subform[0].flt_datUl_2[0]"))
-                    .build(),
-                new FieldId("annat"),
-                PdfConfigurationDateCheckbox.builder()
-                    .checkboxFieldId(new PdfFieldId("form1[0].#subform[0].ksr_Annat[0]"))
-                    .dateFieldId(new PdfFieldId("form1[0].#subform[0].flt_datUl_3[0]"))
-                    .build()
-            )
-        )
-        .build();
+    final var expected =
+        PdfConfigurationDateList.builder()
+            .dateCheckboxes(
+                Map.of(
+                    new FieldId("undersokningAvPatienten"),
+                    PdfConfigurationDateCheckbox.builder()
+                        .checkboxFieldId(
+                            new PdfFieldId("form1[0].#subform[0].ksr_UndersokningPatient[0]"))
+                        .dateFieldId(new PdfFieldId("form1[0].#subform[0].flt_datUl_1[0]"))
+                        .build(),
+                    new FieldId("journaluppgifter"),
+                    PdfConfigurationDateCheckbox.builder()
+                        .checkboxFieldId(
+                            new PdfFieldId("form1[0].#subform[0].ksr_Journaluppgifter[0]"))
+                        .dateFieldId(new PdfFieldId("form1[0].#subform[0].flt_datUl_2[0]"))
+                        .build(),
+                    new FieldId("annat"),
+                    PdfConfigurationDateCheckbox.builder()
+                        .checkboxFieldId(new PdfFieldId("form1[0].#subform[0].ksr_Annat[0]"))
+                        .dateFieldId(new PdfFieldId("form1[0].#subform[0].flt_datUl_3[0]"))
+                        .build()))
+            .build();
 
     final var element = QuestionUtlatandeBaseratPa.questionUtlatandeBaseratPa();
 

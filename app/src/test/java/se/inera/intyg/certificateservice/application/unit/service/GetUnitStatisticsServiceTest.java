@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.unit.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,16 +43,13 @@ import se.inera.intyg.certificateservice.domain.unit.service.GetUnitStatisticsDo
 class GetUnitStatisticsServiceTest {
 
   private static final List<String> AVAILABLE_UNIT_IDS = List.of("unit1", "unit2");
-  private static final List<HsaId> AVAILABLE_UNIT_HSA_IDS = List.of(new HsaId("unit1"),
-      new HsaId("unit2"));
+  private static final List<HsaId> AVAILABLE_UNIT_HSA_IDS =
+      List.of(new HsaId("unit1"), new HsaId("unit2"));
   private static final String UNIT_1 = "unit1";
   private static final String UNIT_2 = "unit2";
-  @Mock
-  private UnitStatisticsRequestValidator unitStatisticsRequestValidator;
-  @Mock
-  private GetUnitStatisticsDomainService getUnitStatisticsDomainService;
-  @InjectMocks
-  private GetUnitStatisticsService getUnitStatisticsService;
+  @Mock private UnitStatisticsRequestValidator unitStatisticsRequestValidator;
+  @Mock private GetUnitStatisticsDomainService getUnitStatisticsDomainService;
+  @InjectMocks private GetUnitStatisticsService getUnitStatisticsService;
 
   @Test
   void shallThrowIfRequestIsInvalid() {
@@ -46,38 +61,31 @@ class GetUnitStatisticsServiceTest {
 
   @Test
   void shallReturnUnitStatisticsResponse() {
-    final var expectedResult = UnitStatisticsResponse.builder()
-        .unitStatistics(
-            Map.of(
-                UNIT_1,
-                UnitStatisticsDTO.builder()
-                    .draftCount(5)
-                    .unhandledMessageCount(5)
-                    .build(),
-                UNIT_2,
-                UnitStatisticsDTO.builder()
-                    .draftCount(5)
-                    .unhandledMessageCount(5)
-                    .build()
-            )
-        )
-        .build();
+    final var expectedResult =
+        UnitStatisticsResponse.builder()
+            .unitStatistics(
+                Map.of(
+                    UNIT_1,
+                    UnitStatisticsDTO.builder().draftCount(5).unhandledMessageCount(5).build(),
+                    UNIT_2,
+                    UnitStatisticsDTO.builder().draftCount(5).unhandledMessageCount(5).build()))
+            .build();
 
-    final var statisticsMap = Map.of(
-        new HsaId(UNIT_1), new UnitStatistics(5, 5),
-        new HsaId(UNIT_2), new UnitStatistics(5, 5)
-    );
+    final var statisticsMap =
+        Map.of(
+            new HsaId(UNIT_1), new UnitStatistics(5, 5),
+            new HsaId(UNIT_2), new UnitStatistics(5, 5));
 
-    doReturn(statisticsMap).when(getUnitStatisticsDomainService).get(
-        AJLA_DOCTOR_DTO.getRole().toRole(),
-        AVAILABLE_UNIT_HSA_IDS);
+    doReturn(statisticsMap)
+        .when(getUnitStatisticsDomainService)
+        .get(AJLA_DOCTOR_DTO.getRole().toRole(), AVAILABLE_UNIT_HSA_IDS);
 
-    final var actualResult = getUnitStatisticsService.get(
-        UnitStatisticsRequest.builder()
-            .user(AJLA_DOCTOR_DTO)
-            .issuedByUnitIds(AVAILABLE_UNIT_IDS)
-            .build()
-    );
+    final var actualResult =
+        getUnitStatisticsService.get(
+            UnitStatisticsRequest.builder()
+                .user(AJLA_DOCTOR_DTO)
+                .issuedByUnitIds(AVAILABLE_UNIT_IDS)
+                .build());
 
     assertEquals(expectedResult, actualResult);
   }

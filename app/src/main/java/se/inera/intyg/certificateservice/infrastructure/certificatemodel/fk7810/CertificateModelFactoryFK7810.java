@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7810;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.elements.ElementUnitContactInformation.issuingUnitContactInfo;
@@ -69,6 +87,7 @@ import se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.
 public class CertificateModelFactoryFK7810 implements CertificateModelFactory {
 
   private final CertificateActionFactory certificateActionFactory;
+
   @Value("${certificate.model.fk7810.v1_0.active.from}")
   private LocalDateTime activeFrom;
 
@@ -81,15 +100,17 @@ public class CertificateModelFactoryFK7810 implements CertificateModelFactory {
   private static final String VERSION = "1.0";
   private static final CertificateTypeName FK7810_TYPE_NAME = new CertificateTypeName("FK7810");
   private static final String NAME = "Läkarutlåtande för assistansersättning";
-  private static final String DESCRIPTION = """
+  private static final String DESCRIPTION =
+      """
       Vem kan få assistansersättning?
-      
+
       Assistansersättning är till för personer med omfattande funktionsnedsättning som dels tillhör personkrets enligt lagen om stöd och service till vissa funktionshindrade (LSS) dels behöver personligt utformat stöd för sina grundläggande behov i mer än 20 timmar per vecka, i genomsnitt.\s
-      
+
       Ersättningen används till personlig assistans, för att kunna leva som andra och delta i samhällslivet. Både vuxna och barn kan få assistansersättning.
       """;
 
-  private static final String DETAILED_DESCRIPTION = """
+  private static final String DETAILED_DESCRIPTION =
+      """
       <b className="iu-fw-heading">Vem kan få assistansersättning?</b>
       <p>Assistansersättning är till för personer med omfattande funktionsnedsättning som dels tillhör personkrets enligt lagen om stöd och service till vissa funktionshindrade (LSS) dels behöver personligt utformat stöd för sina grundläggande behov i mer än 20 timmar per vecka, i genomsnitt.</p>
       <p>Ersättningen används till personlig assistans, för att kunna leva som andra och delta i samhällslivet. Både vuxna och barn kan få assistansersättning.</p></br>
@@ -117,13 +138,14 @@ public class CertificateModelFactoryFK7810 implements CertificateModelFactory {
       "Det här är ditt intyg. Intyget innehåller all information som vården fyllt i. Du kan inte ändra något i ditt intyg. "
           + "Har du frågor kontaktar du den som skrivit ditt intyg.";
 
-  public static final SchematronPath SCHEMATRON_PATH = new SchematronPath(
-      "fk7810/schematron/luas.v1.sch");
+  public static final SchematronPath SCHEMATRON_PATH =
+      new SchematronPath("fk7810/schematron/luas.v1.sch");
 
-  public static final CertificateModelId FK7810_V1_0 = CertificateModelId.builder()
-      .type(new CertificateType(FK_7810))
-      .version(new CertificateVersion(VERSION))
-      .build();
+  public static final CertificateModelId FK7810_V1_0 =
+      CertificateModelId.builder()
+          .type(new CertificateType(FK_7810))
+          .version(new CertificateVersion(VERSION))
+          .build();
 
   @Override
   public CertificateModel create() {
@@ -143,78 +165,61 @@ public class CertificateModelFactoryFK7810 implements CertificateModelFactory {
                     .text(PREAMBLE_TEXT)
                     .type(CertificateTextType.PREAMBLE_TEXT)
                     .links(Collections.emptyList())
-                    .build()
-            )
-        )
+                    .build()))
         .recipient(CertificateRecipientFactory.fkassa(fkLogicalAddress))
         .schematronPath(SCHEMATRON_PATH)
-        .messageTypes(List.of(
-            CertificateMessageType.builder()
-                .type(MessageType.MISSING)
-                .subject(new Subject(MessageType.MISSING.displayName()))
-                .build(),
-            CertificateMessageType.builder()
-                .type(MessageType.CONTACT)
-                .subject(new Subject(MessageType.CONTACT.displayName()))
-                .build(),
-            CertificateMessageType.builder()
-                .type(MessageType.OTHER)
-                .subject(new Subject(MessageType.OTHER.displayName()))
-                .build()
-        ))
+        .messageTypes(
+            List.of(
+                CertificateMessageType.builder()
+                    .type(MessageType.MISSING)
+                    .subject(new Subject(MessageType.MISSING.displayName()))
+                    .build(),
+                CertificateMessageType.builder()
+                    .type(MessageType.CONTACT)
+                    .subject(new Subject(MessageType.CONTACT.displayName()))
+                    .build(),
+                CertificateMessageType.builder()
+                    .type(MessageType.OTHER)
+                    .subject(new Subject(MessageType.OTHER.displayName()))
+                    .build()))
         .certificateActionSpecifications(FK7810CertificateActionSpecification.create())
         .messageActionSpecifications(FK7810MessageActionSpecification.create())
-        .elementSpecifications(List.of(
-            categoryGrundForMedicinsktUnderlag(
-                questionGrundForMedicinsktUnderlag(
-                    questionRelationTillPatienten(),
-                    questionAnnanGrundForMedicinsktUnderlag()
-                ),
-                questionKannedomOmPatienten(),
-                questionBaseratPaAnnatMedicinsktUnderlag(),
-                questionUtredningEllerUnderlag()
-            ),
-            categoryDiagnos(
-                questionDiagnos(diagnosisCodeRepository),
-                questionDiagnosHistorik()
-            ),
-            categoryFunktionsnedsattning(
-                questionFunktionsnedsattning(),
-                questionIntellektuellFunktionMotivering(),
-                questionKommunikationSocialInteraktionMotivering(),
-                questionUppmarksamhetMotivering(),
-                questionPsykiskFunktionMotivering(),
-                questionSinnesfunktionMotivering(),
-                questionKoordinationMotivering(),
-                questionAndningsFunktionMotivering(),
-                questionAnnanKroppsligFunktionMotivering()
-            ),
-            categoryAktivitetsbegransningar(
-                questionAktivitetsbegransning(),
-                questionLarandeBegransningMotivering(),
-                questionKommunikationBegransningMotivering(),
-                questionForflyttningBegransningMotivering(),
-                questionPersonligVardBegransningMotivering(),
-                questionOvrigaBegransningMotivering()
-            ),
-            categoryMedicinskBehandling(
-                questionPagaendeOchPlaneradeBehandlingar(
-                    questionVardenhetOchTidplan()
-                )
-            ),
-            categoryPrognos(
-                questionPrognos()
-            ),
-            categorySjukvardandeInsats(
-                questionSjukvardandeInsatsHSL(questionSjukvardandeInsatsHSLInsatser()),
-                questionSjukvardandeInsatsEgenvard(questionSjukvardandeInsatsEgenvardInsatser())
-
-            ),
-            categoryOvrigt(
-                questionOvrigt()
-            ),
-            issuingUnitContactInfo()
-        ))
+        .elementSpecifications(
+            List.of(
+                categoryGrundForMedicinsktUnderlag(
+                    questionGrundForMedicinsktUnderlag(
+                        questionRelationTillPatienten(), questionAnnanGrundForMedicinsktUnderlag()),
+                    questionKannedomOmPatienten(),
+                    questionBaseratPaAnnatMedicinsktUnderlag(),
+                    questionUtredningEllerUnderlag()),
+                categoryDiagnos(
+                    questionDiagnos(diagnosisCodeRepository), questionDiagnosHistorik()),
+                categoryFunktionsnedsattning(
+                    questionFunktionsnedsattning(),
+                    questionIntellektuellFunktionMotivering(),
+                    questionKommunikationSocialInteraktionMotivering(),
+                    questionUppmarksamhetMotivering(),
+                    questionPsykiskFunktionMotivering(),
+                    questionSinnesfunktionMotivering(),
+                    questionKoordinationMotivering(),
+                    questionAndningsFunktionMotivering(),
+                    questionAnnanKroppsligFunktionMotivering()),
+                categoryAktivitetsbegransningar(
+                    questionAktivitetsbegransning(),
+                    questionLarandeBegransningMotivering(),
+                    questionKommunikationBegransningMotivering(),
+                    questionForflyttningBegransningMotivering(),
+                    questionPersonligVardBegransningMotivering(),
+                    questionOvrigaBegransningMotivering()),
+                categoryMedicinskBehandling(
+                    questionPagaendeOchPlaneradeBehandlingar(questionVardenhetOchTidplan())),
+                categoryPrognos(questionPrognos()),
+                categorySjukvardandeInsats(
+                    questionSjukvardandeInsatsHSL(questionSjukvardandeInsatsHSLInsatser()),
+                    questionSjukvardandeInsatsEgenvard(
+                        questionSjukvardandeInsatsEgenvardInsatser())),
+                categoryOvrigt(questionOvrigt()),
+                issuingUnitContactInfo()))
         .certificateActionFactory(certificateActionFactory)
         .pdfSpecification(FK7810PdfSpecification.create())
         .build();

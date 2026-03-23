@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.integrationtest.common.tests;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -24,60 +42,50 @@ public abstract class ObsoleteDraftsIT extends BaseIntegrationIT {
   @Test
   @DisplayName("Om utkast är äldre än cutoff datum ska de listas")
   void shouldListObsoleteDrafts() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion())
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion()));
 
     final var certificateId = certificateId(testCertificates);
     final var cutoffDate = LocalDateTime.now(ZoneId.systemDefault()).plusDays(1);
 
-    final var request = ListObsoleteDraftsRequest.builder()
-        .cutoffDate(cutoffDate)
-        .build();
+    final var request = ListObsoleteDraftsRequest.builder().cutoffDate(cutoffDate).build();
 
     final var response = internalApi().listObsoleteDrafts(request);
 
     assertAll(
         () -> assertEquals(200, response.getStatusCode().value()),
         () -> assertNotNull(response.getBody()),
-        () -> assertTrue(response.getBody().getCertificateIds().contains(certificateId))
-    );
+        () -> assertTrue(response.getBody().getCertificateIds().contains(certificateId)));
   }
 
   @Test
   @DisplayName("Om utkast är nyare än cutoff datum ska de inte listas")
   void shouldNotListNewerDrafts() {
-    testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion())
-    );
+    testabilityApi().addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion()));
 
     final var cutoffDate = LocalDateTime.now(ZoneId.systemDefault()).minusDays(1);
 
-    final var request = ListObsoleteDraftsRequest.builder()
-        .cutoffDate(cutoffDate)
-        .build();
+    final var request = ListObsoleteDraftsRequest.builder().cutoffDate(cutoffDate).build();
 
     final var response = internalApi().listObsoleteDrafts(request);
 
     assertAll(
         () -> assertEquals(200, response.getStatusCode().value()),
         () -> assertNotNull(response.getBody()),
-        () -> assertTrue(response.getBody().getCertificateIds().isEmpty())
-    );
+        () -> assertTrue(response.getBody().getCertificateIds().isEmpty()));
   }
 
   @Test
   @DisplayName("Om gammalt utkast raderas via internt API ska det tas bort")
   void shouldDisposeObsoleteDraft() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion())
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion()));
 
     final var certificateId = certificateId(testCertificates);
 
-    final var request = DisposeObsoleteDraftsRequest.builder()
-        .certificateId(certificateId)
-        .build();
+    final var request = DisposeObsoleteDraftsRequest.builder().certificateId(certificateId).build();
 
     final var response = internalApi().disposeObsoleteDrafts(request);
 
@@ -85,12 +93,9 @@ public abstract class ObsoleteDraftsIT extends BaseIntegrationIT {
         () -> assertEquals(200, response.getStatusCode().value()),
         () -> assertNotNull(response.getBody()),
         () -> assertNotNull(response.getBody().getCertificate()),
-        () -> assertEquals(certificateId,
-            response.getBody().getCertificate().getMetadata().getId()),
-        () -> assertFalse(
-            exists(internalApi().certificateExists(certificateId).getBody())
-        )
-    );
+        () ->
+            assertEquals(certificateId, response.getBody().getCertificate().getMetadata().getId()),
+        () -> assertFalse(exists(internalApi().certificateExists(certificateId).getBody())));
   }
 
   @Test
@@ -98,107 +103,93 @@ public abstract class ObsoleteDraftsIT extends BaseIntegrationIT {
   void shouldReturnEmptyListWhenNoObsoleteDrafts() {
     final var cutoffDate = LocalDateTime.now(ZoneId.systemDefault()).minusYears(10);
 
-    final var request = ListObsoleteDraftsRequest.builder()
-        .cutoffDate(cutoffDate)
-        .build();
+    final var request = ListObsoleteDraftsRequest.builder().cutoffDate(cutoffDate).build();
 
     final var response = internalApi().listObsoleteDrafts(request);
 
     assertAll(
         () -> assertEquals(200, response.getStatusCode().value()),
         () -> assertNotNull(response.getBody()),
-        () -> assertTrue(response.getBody().getCertificateIds().isEmpty())
-    );
+        () -> assertTrue(response.getBody().getCertificateIds().isEmpty()));
   }
 
   @Test
   @DisplayName("Om låst utkast är äldre än cutoff datum ska det listas")
   void shouldListLockedDrafts() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(),
-            CertificateStatusTypeDTO.LOCKED)
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(
+                defaultTestablilityCertificateRequest(
+                    type(), typeVersion(), CertificateStatusTypeDTO.LOCKED));
 
     final var certificateId = certificateId(testCertificates);
     final var cutoffDate = LocalDateTime.now(ZoneId.systemDefault()).plusDays(1);
 
-    final var request = ListObsoleteDraftsRequest.builder()
-        .cutoffDate(cutoffDate)
-        .build();
+    final var request = ListObsoleteDraftsRequest.builder().cutoffDate(cutoffDate).build();
 
     final var response = internalApi().listObsoleteDrafts(request);
 
     assertAll(
         () -> assertEquals(200, response.getStatusCode().value()),
         () -> assertNotNull(response.getBody()),
-        () -> assertTrue(response.getBody().getCertificateIds().contains(certificateId))
-    );
+        () -> assertTrue(response.getBody().getCertificateIds().contains(certificateId)));
   }
 
   @Test
   @DisplayName("Om intyg är signerat ska det inte listas som ett gammalt utkast")
   void shouldNotListSignedCertificates() {
-    testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(),
-            CertificateStatusTypeDTO.SIGNED)
-    );
+    testabilityApi()
+        .addCertificates(
+            defaultTestablilityCertificateRequest(
+                type(), typeVersion(), CertificateStatusTypeDTO.SIGNED));
 
     final var cutoffDate = LocalDateTime.now(ZoneId.systemDefault()).plusDays(1);
 
-    final var request = ListObsoleteDraftsRequest.builder()
-        .cutoffDate(cutoffDate)
-        .build();
+    final var request = ListObsoleteDraftsRequest.builder().cutoffDate(cutoffDate).build();
 
     final var response = internalApi().listObsoleteDrafts(request);
 
     assertAll(
         () -> assertEquals(200, response.getStatusCode().value()),
         () -> assertNotNull(response.getBody()),
-        () -> assertTrue(response.getBody().getCertificateIds().isEmpty())
-    );
+        () -> assertTrue(response.getBody().getCertificateIds().isEmpty()));
   }
 
   @Test
   @DisplayName("Om intyg är makulerat ska det inte listas som ett gammalt utkast")
   void shouldNotListRevokedCertificates() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(),
-            CertificateStatusTypeDTO.SIGNED)
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(
+                defaultTestablilityCertificateRequest(
+                    type(), typeVersion(), CertificateStatusTypeDTO.SIGNED));
 
-    api().revokeCertificate(
-        defaultRevokeCertificateRequest(),
-        certificateId(testCertificates)
-    );
+    api().revokeCertificate(defaultRevokeCertificateRequest(), certificateId(testCertificates));
 
     final var cutoffDate = LocalDateTime.now(ZoneId.systemDefault()).plusDays(1);
 
-    final var request = ListObsoleteDraftsRequest.builder()
-        .cutoffDate(cutoffDate)
-        .build();
+    final var request = ListObsoleteDraftsRequest.builder().cutoffDate(cutoffDate).build();
 
     final var response = internalApi().listObsoleteDrafts(request);
 
     assertAll(
         () -> assertEquals(200, response.getStatusCode().value()),
         () -> assertNotNull(response.getBody()),
-        () -> assertTrue(response.getBody().getCertificateIds().isEmpty())
-    );
+        () -> assertTrue(response.getBody().getCertificateIds().isEmpty()));
   }
 
   @Test
   @DisplayName("Om låst utkast skickas till radering ska det tas bort")
   void shouldDeleteLockedDraft() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(),
-            CertificateStatusTypeDTO.LOCKED)
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(
+                defaultTestablilityCertificateRequest(
+                    type(), typeVersion(), CertificateStatusTypeDTO.LOCKED));
 
     final var certificateId = certificateId(testCertificates);
 
-    final var request = DisposeObsoleteDraftsRequest.builder()
-        .certificateId(certificateId)
-        .build();
+    final var request = DisposeObsoleteDraftsRequest.builder().certificateId(certificateId).build();
 
     final var response = internalApi().disposeObsoleteDrafts(request);
 
@@ -206,67 +197,52 @@ public abstract class ObsoleteDraftsIT extends BaseIntegrationIT {
         () -> assertEquals(200, response.getStatusCode().value()),
         () -> assertNotNull(response.getBody()),
         () -> assertNotNull(response.getBody().getCertificate()),
-        () -> assertEquals(certificateId,
-            response.getBody().getCertificate().getMetadata().getId()),
-        () -> assertFalse(
-            exists(internalApi().certificateExists(certificateId).getBody())
-        )
-    );
+        () ->
+            assertEquals(certificateId, response.getBody().getCertificate().getMetadata().getId()),
+        () -> assertFalse(exists(internalApi().certificateExists(certificateId).getBody())));
   }
 
   @Test
   @DisplayName("Om signerat intyg skickas till radering ska ett fel returneras")
   void shouldNotDeleteSignedCertificate() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(),
-            CertificateStatusTypeDTO.SIGNED)
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(
+                defaultTestablilityCertificateRequest(
+                    type(), typeVersion(), CertificateStatusTypeDTO.SIGNED));
 
     final var certificateId = certificateId(testCertificates);
 
-    final var request = DisposeObsoleteDraftsRequest.builder()
-        .certificateId(certificateId)
-        .build();
+    final var request = DisposeObsoleteDraftsRequest.builder().certificateId(certificateId).build();
 
     final var response = internalApi().disposeObsoleteDrafts(request);
 
     assertAll(
         () -> assertEquals(500, response.getStatusCode().value()),
         () -> assertNotNull(response.getBody()),
-        () -> assertTrue(
-            exists(internalApi().certificateExists(certificateId).getBody())
-        )
-    );
+        () -> assertTrue(exists(internalApi().certificateExists(certificateId).getBody())));
   }
 
   @Test
   @DisplayName("Om makulerat intyg skickas till radering ska ett fel returneras")
   void shouldNotDeleteRevokedCertificate() {
-    final var testCertificates = testabilityApi().addCertificates(
-        defaultTestablilityCertificateRequest(type(), typeVersion(),
-            CertificateStatusTypeDTO.SIGNED)
-    );
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(
+                defaultTestablilityCertificateRequest(
+                    type(), typeVersion(), CertificateStatusTypeDTO.SIGNED));
 
-    api().revokeCertificate(
-        defaultRevokeCertificateRequest(),
-        certificateId(testCertificates)
-    );
+    api().revokeCertificate(defaultRevokeCertificateRequest(), certificateId(testCertificates));
 
     final var certificateId = certificateId(testCertificates);
 
-    final var request = DisposeObsoleteDraftsRequest.builder()
-        .certificateId(certificateId)
-        .build();
+    final var request = DisposeObsoleteDraftsRequest.builder().certificateId(certificateId).build();
 
     final var response = internalApi().disposeObsoleteDrafts(request);
 
     assertAll(
         () -> assertEquals(500, response.getStatusCode().value()),
         () -> assertNotNull(response.getBody()),
-        () -> assertTrue(
-            exists(internalApi().certificateExists(certificateId).getBody())
-        )
-    );
+        () -> assertTrue(exists(internalApi().certificateExists(certificateId).getBody())));
   }
 }
-

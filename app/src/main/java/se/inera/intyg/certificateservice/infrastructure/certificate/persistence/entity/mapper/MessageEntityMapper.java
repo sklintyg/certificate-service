@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificate.persistence.entity.mapper;
 
 import java.time.LocalDateTime;
@@ -44,7 +62,6 @@ public class MessageEntityMapper {
   private final MessageRelationEntityRepository messageRelationEntityRepository;
   private final StaffRepository staffEntityRepository;
 
-
   public MessageEntity toEntity(Message message, Integer key) {
     final var messageStatusEnum = MessageStatusEnum.valueOf(message.status().name());
     final var messageTypeEnum = MessageTypeEnum.valueOf(message.type().name());
@@ -55,63 +72,61 @@ public class MessageEntityMapper {
         .subject(message.subject() != null ? message.subject().subject() : null)
         .content(message.content().content())
         .author(message.author().author())
-        .created(message.created() == null ? LocalDateTime.now(ZoneId.systemDefault())
-            : message.created())
-        .modified(message.modified() == null ? LocalDateTime.now(ZoneId.systemDefault())
-            : message.modified())
+        .created(
+            message.created() == null
+                ? LocalDateTime.now(ZoneId.systemDefault())
+                : message.created())
+        .modified(
+            message.modified() == null
+                ? LocalDateTime.now(ZoneId.systemDefault())
+                : message.modified())
         .sent(message.sent())
         .forwarded(message.forwarded().value())
         .lastDateToReply(message.lastDateToReply())
         .authoredByStaff(
-            message.authoredStaff() != null ? staffEntityRepository.staff(message.authoredStaff())
+            message.authoredStaff() != null
+                ? staffEntityRepository.staff(message.authoredStaff())
                 : null)
         .messageType(
             MessageTypeEntity.builder()
                 .key(messageTypeEnum.getKey())
                 .type(messageTypeEnum.name())
-                .build()
-        )
+                .build())
         .status(
             MessageStatusEntity.builder()
                 .key(messageStatusEnum.getKey())
                 .status(messageStatusEnum.name())
-                .build()
-        )
+                .build())
         .contactInfo(
-            message.contactInfo() != null ? message.contactInfo().lines().stream()
-                .map(info ->
-                    MessageContactInfoEmbeddable.builder()
-                        .info(info)
-                        .build()
-                )
-                .toList()
-                : null
-        )
+            message.contactInfo() != null
+                ? message.contactInfo().lines().stream()
+                    .map(info -> MessageContactInfoEmbeddable.builder().info(info).build())
+                    .toList()
+                : null)
         .complements(
             message.complements().stream()
-                .map(complement ->
-                    MessageComplementEmbeddable.builder()
-                        .elementId(complement.elementId().id())
-                        .fieldId(complement.fieldId() == null ? null : complement.fieldId().value())
-                        .content(complement.content().content())
-                        .build()
-                )
-                .toList()
-        )
+                .map(
+                    complement ->
+                        MessageComplementEmbeddable.builder()
+                            .elementId(complement.elementId().id())
+                            .fieldId(
+                                complement.fieldId() == null ? null : complement.fieldId().value())
+                            .content(complement.content().content())
+                            .build())
+                .toList())
         .certificate(
-            certificateEntityRepository.findByCertificateId(message.certificateId().id())
-                .orElseThrow(() -> new IllegalStateException(
-                        "Certificate with id '%s'not found!".formatted(message.certificateId().id())
-                    )
-                )
-        )
+            certificateEntityRepository
+                .findByCertificateId(message.certificateId().id())
+                .orElseThrow(
+                    () ->
+                        new IllegalStateException(
+                            "Certificate with id '%s'not found!"
+                                .formatted(message.certificateId().id()))))
         .build();
   }
 
   public Message toDomain(MessageEntity messageEntity) {
-    final var messageRelations = messageRelationEntityRepository.findByParentMessage(
-        messageEntity
-    );
+    final var messageRelations = messageRelationEntityRepository.findByParentMessage(messageEntity);
 
     return Message.builder()
         .id(new MessageId(messageEntity.getId()))
@@ -122,11 +137,8 @@ public class MessageEntityMapper {
                 .id(messageEntity.getCertificate().getPatient().getId())
                 .type(
                     PersonIdType.valueOf(
-                        messageEntity.getCertificate().getPatient().getType().getType()
-                    )
-                )
-                .build()
-        )
+                        messageEntity.getCertificate().getPatient().getType().getType()))
+                .build())
         .type(MessageType.valueOf(messageEntity.getMessageType().getType()))
         .status(MessageStatus.valueOf(messageEntity.getStatus().getStatus()))
         .subject(new Subject(messageEntity.getSubject()))
@@ -137,87 +149,96 @@ public class MessageEntityMapper {
         .sent(messageEntity.getSent())
         .forwarded(new Forwarded(messageEntity.isForwarded()))
         .lastDateToReply(messageEntity.getLastDateToReply())
-        .authoredStaff(messageEntity.getAuthoredByStaff() != null ? StaffEntityMapper.toDomain(
-            messageEntity.getAuthoredByStaff()) : null)
+        .authoredStaff(
+            messageEntity.getAuthoredByStaff() != null
+                ? StaffEntityMapper.toDomain(messageEntity.getAuthoredByStaff())
+                : null)
         .contactInfo(convertContactInfo(messageEntity))
         .complements(
             messageEntity.getComplements().stream()
-                .map(complement ->
-                    Complement.builder()
-                        .elementId(new ElementId(complement.getElementId()))
-                        .fieldId(complement.getFieldId() == null ? null
-                            : new FieldId(complement.getFieldId()))
-                        .content(new Content(complement.getContent()))
-                        .build()
-                )
-                .toList()
-        )
+                .map(
+                    complement ->
+                        Complement.builder()
+                            .elementId(new ElementId(complement.getElementId()))
+                            .fieldId(
+                                complement.getFieldId() == null
+                                    ? null
+                                    : new FieldId(complement.getFieldId()))
+                            .content(new Content(complement.getContent()))
+                            .build())
+                .toList())
         .answer(
             messageRelations.stream()
-                .filter(relation -> relation.getMessageRelationType().getType()
-                    .equals(MessageRelationType.ANSWER.name()))
+                .filter(
+                    relation ->
+                        relation
+                            .getMessageRelationType()
+                            .getType()
+                            .equals(MessageRelationType.ANSWER.name()))
                 .findFirst()
                 .map(MessageRelationEntity::getChildMessage)
-                .map(childMessage ->
-                    Answer.builder()
-                        .id(new MessageId(childMessage.getId()))
-                        .reference(
-                            childMessage.getReference() != null
-                                ? new SenderReference(childMessage.getReference())
-                                : null)
-                        .type(MessageType.valueOf(childMessage.getMessageType().getType()))
-                        .created(childMessage.getCreated())
-                        .subject(
-                            childMessage.getSubject() != null
-                                ? new Subject(childMessage.getSubject())
-                                : null)
-                        .content(new Content(childMessage.getContent()))
-                        .modified(childMessage.getModified())
-                        .sent(childMessage.getSent())
-                        .status(MessageStatus.valueOf(childMessage.getStatus().getStatus()))
-                        .author(new Author(childMessage.getAuthor()))
-                        .authoredStaff(
-                            childMessage.getAuthoredByStaff() != null
-                                ? StaffEntityMapper.toDomain(childMessage.getAuthoredByStaff())
-                                : null)
-                        .contactInfo(convertContactInfo(childMessage))
-                        .build()
-                )
-                .orElse(null)
-        )
+                .map(
+                    childMessage ->
+                        Answer.builder()
+                            .id(new MessageId(childMessage.getId()))
+                            .reference(
+                                childMessage.getReference() != null
+                                    ? new SenderReference(childMessage.getReference())
+                                    : null)
+                            .type(MessageType.valueOf(childMessage.getMessageType().getType()))
+                            .created(childMessage.getCreated())
+                            .subject(
+                                childMessage.getSubject() != null
+                                    ? new Subject(childMessage.getSubject())
+                                    : null)
+                            .content(new Content(childMessage.getContent()))
+                            .modified(childMessage.getModified())
+                            .sent(childMessage.getSent())
+                            .status(MessageStatus.valueOf(childMessage.getStatus().getStatus()))
+                            .author(new Author(childMessage.getAuthor()))
+                            .authoredStaff(
+                                childMessage.getAuthoredByStaff() != null
+                                    ? StaffEntityMapper.toDomain(childMessage.getAuthoredByStaff())
+                                    : null)
+                            .contactInfo(convertContactInfo(childMessage))
+                            .build())
+                .orElse(null))
         .reminders(
             messageRelations.stream()
-                .filter(relation -> relation.getMessageRelationType().getType()
-                    .equals(MessageRelationType.REMINDER.name()))
+                .filter(
+                    relation ->
+                        relation
+                            .getMessageRelationType()
+                            .getType()
+                            .equals(MessageRelationType.REMINDER.name()))
                 .map(MessageRelationEntity::getChildMessage)
-                .map(childMessage ->
-                    Reminder.builder()
-                        .id(new MessageId(childMessage.getId()))
-                        .reference(
-                            childMessage.getReference() != null
-                                ? new SenderReference(childMessage.getReference())
-                                : null)
-                        .created(childMessage.getCreated())
-                        .subject(
-                            childMessage.getSubject() != null
-                                ? new Subject(childMessage.getSubject())
-                                : null)
-                        .content(new Content(childMessage.getContent()))
-                        .sent(childMessage.getSent())
-                        .author(new Author(childMessage.getAuthor()))
-                        .build()
-                )
-                .toList()
-        )
+                .map(
+                    childMessage ->
+                        Reminder.builder()
+                            .id(new MessageId(childMessage.getId()))
+                            .reference(
+                                childMessage.getReference() != null
+                                    ? new SenderReference(childMessage.getReference())
+                                    : null)
+                            .created(childMessage.getCreated())
+                            .subject(
+                                childMessage.getSubject() != null
+                                    ? new Subject(childMessage.getSubject())
+                                    : null)
+                            .content(new Content(childMessage.getContent()))
+                            .sent(childMessage.getSent())
+                            .author(new Author(childMessage.getAuthor()))
+                            .build())
+                .toList())
         .build();
   }
 
   private static MessageContactInfo convertContactInfo(MessageEntity messageEntity) {
     return new MessageContactInfo(
-        messageEntity.getContactInfo() != null ? messageEntity.getContactInfo().stream()
-            .map(MessageContactInfoEmbeddable::getInfo)
-            .toList()
-            : Collections.emptyList()
-    );
+        messageEntity.getContactInfo() != null
+            ? messageEntity.getContactInfo().stream()
+                .map(MessageContactInfoEmbeddable::getInfo)
+                .toList()
+            : Collections.emptyList());
   }
 }

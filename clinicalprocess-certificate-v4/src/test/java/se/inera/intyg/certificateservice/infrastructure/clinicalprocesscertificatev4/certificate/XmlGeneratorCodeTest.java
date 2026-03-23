@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.certificate;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -34,21 +52,16 @@ class XmlGeneratorCodeTest {
   private static final String QUESTION_ID = "QUESTION_ID";
   private static final String ANSWER_ID = "ANSWER_ID";
 
-  @InjectMocks
-  private XmlGeneratorCode xmlGeneratorCode;
+  @InjectMocks private XmlGeneratorCode xmlGeneratorCode;
 
   @ParameterizedTest
   @MethodSource("provideElementSpecifications")
   void shouldMapCode(ElementSpecification elementSpecification) {
-    final var data = ElementData.builder()
-        .id(new ElementId(QUESTION_ID))
-        .value(
-            ElementValueCode.builder()
-                .codeId(new FieldId("2"))
-                .code("CODE_TWO")
-                .build()
-        )
-        .build();
+    final var data =
+        ElementData.builder()
+            .id(new ElementId(QUESTION_ID))
+            .value(ElementValueCode.builder().codeId(new FieldId("2")).code("CODE_TWO").build())
+            .build();
 
     final var response = xmlGeneratorCode.generate(data, elementSpecification);
 
@@ -65,39 +78,31 @@ class XmlGeneratorCodeTest {
         () -> assertEquals(ANSWER_ID, delsvarCode.getId()),
         () -> assertEquals("CODE_TWO", cvType.getCode()),
         () -> assertEquals("CODE_SYSTEM", cvType.getCodeSystem()),
-        () -> assertEquals("DISPLAY_NAME_TWO", cvType.getDisplayName())
-    );
+        () -> assertEquals("DISPLAY_NAME_TWO", cvType.getDisplayName()));
   }
 
   @Test
   void shallThrowIfIncorrectConfiguration() {
-    final var data = ElementData.builder()
-        .id(new ElementId(QUESTION_ID))
-        .value(
-            ElementValueCode.builder()
-                .codeId(new FieldId("2"))
-                .code("CODE_TWO")
-                .build()
-        )
-        .build();
+    final var data =
+        ElementData.builder()
+            .id(new ElementId(QUESTION_ID))
+            .value(ElementValueCode.builder().codeId(new FieldId("2")).code("CODE_TWO").build())
+            .build();
 
-    final var elementSpecification = ElementSpecification.builder()
-        .configuration(
-            ElementConfigurationDate.builder().build()
-        )
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .configuration(ElementConfigurationDate.builder().build())
+            .build();
 
-    assertThrows(IllegalArgumentException.class,
-        () -> xmlGeneratorCode.generate(data, elementSpecification)
-    );
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> xmlGeneratorCode.generate(data, elementSpecification));
   }
 
   @ParameterizedTest
   @MethodSource("provideElementSpecifications")
   void shouldMapEmptyIfNoValue(ElementSpecification elementSpecification) {
-    final var data = ElementData.builder()
-        .id(new ElementId(QUESTION_ID))
-        .build();
+    final var data = ElementData.builder().id(new ElementId(QUESTION_ID)).build();
 
     final var response = xmlGeneratorCode.generate(data, elementSpecification);
 
@@ -107,15 +112,11 @@ class XmlGeneratorCodeTest {
   @ParameterizedTest
   @MethodSource("provideElementSpecifications")
   void shouldMapEmptyIfValueIEmpty(ElementSpecification elementSpecification) {
-    final var data = ElementData.builder()
-        .id(new ElementId(QUESTION_ID))
-        .value(
-            ElementValueCode.builder()
-                .codeId(new FieldId("2"))
-                .code("")
-                .build()
-        )
-        .build();
+    final var data =
+        ElementData.builder()
+            .id(new ElementId(QUESTION_ID))
+            .value(ElementValueCode.builder().codeId(new FieldId("2")).code("").build())
+            .build();
 
     final var response = xmlGeneratorCode.generate(data, elementSpecification);
 
@@ -125,12 +126,11 @@ class XmlGeneratorCodeTest {
   @ParameterizedTest
   @MethodSource("provideElementSpecifications")
   void shouldMapEmptyIfValueIsEmpty(ElementSpecification elementSpecification) {
-    final var data = ElementData.builder()
-        .value(ElementValueUnitContactInformation.builder()
-            .build()
-        )
-        .id(new ElementId(QUESTION_ID))
-        .build();
+    final var data =
+        ElementData.builder()
+            .value(ElementValueUnitContactInformation.builder().build())
+            .id(new ElementId(QUESTION_ID))
+            .build();
 
     final var response = xmlGeneratorCode.generate(data, elementSpecification);
 
@@ -138,35 +138,33 @@ class XmlGeneratorCodeTest {
   }
 
   static Stream<Arguments> provideElementSpecifications() {
-    final var codes = List.of(
-        new ElementConfigurationCode(
-            new FieldId("1"),
-            "LABEL_ONE",
-            new Code("CODE_ONE", "CODE_SYSTEM", "DISPLAY_NAME_ONE")
-        ),
-        new ElementConfigurationCode(
-            new FieldId("2"),
-            "LABEL_TWO",
-            new Code("CODE_TWO", "CODE_SYSTEM", "DISPLAY_NAME_TWO")
-        ));
+    final var codes =
+        List.of(
+            new ElementConfigurationCode(
+                new FieldId("1"),
+                "LABEL_ONE",
+                new Code("CODE_ONE", "CODE_SYSTEM", "DISPLAY_NAME_ONE")),
+            new ElementConfigurationCode(
+                new FieldId("2"),
+                "LABEL_TWO",
+                new Code("CODE_TWO", "CODE_SYSTEM", "DISPLAY_NAME_TWO")));
 
     return Stream.of(
-        Arguments.of(ElementSpecification.builder()
-            .configuration(
-                ElementConfigurationRadioMultipleCode.builder()
-                    .id(new FieldId(ANSWER_ID))
-                    .list(codes)
-                    .build()
-            )
-            .build()),
+        Arguments.of(
+            ElementSpecification.builder()
+                .configuration(
+                    ElementConfigurationRadioMultipleCode.builder()
+                        .id(new FieldId(ANSWER_ID))
+                        .list(codes)
+                        .build())
+                .build()),
         Arguments.of(
             ElementSpecification.builder()
                 .configuration(
                     ElementConfigurationDropdownCode.builder()
                         .id(new FieldId(ANSWER_ID))
                         .list(codes)
-                        .build()
-                )
+                        .build())
                 .build()));
   }
 }

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.certificate.service;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -41,19 +59,14 @@ class RevokeCertificateDomainServiceTest {
 
   private static final String REASON = "reason";
   private static final String MESSAGE = "message";
-  private static final RevokedInformation REVOKED_INFORMATION = new RevokedInformation(REASON,
-      MESSAGE);
+  private static final RevokedInformation REVOKED_INFORMATION =
+      new RevokedInformation(REASON, MESSAGE);
 
-  @Mock
-  private SetMessagesToUnhandledDomainService setMessagesToUnhandledDomainService;
-  @Mock
-  private CertificateRepository certificateRepository;
-  @Mock
-  private CertificateEventDomainService certificateEventDomainService;
-  @Mock
-  private SetMessagesToHandleDomainService setMessagesToHandleDomainService;
-  @InjectMocks
-  private RevokeCertificateDomainService revokeCertificateDomainService;
+  @Mock private SetMessagesToUnhandledDomainService setMessagesToUnhandledDomainService;
+  @Mock private CertificateRepository certificateRepository;
+  @Mock private CertificateEventDomainService certificateEventDomainService;
+  @Mock private SetMessagesToHandleDomainService setMessagesToHandleDomainService;
+  @InjectMocks private RevokeCertificateDomainService revokeCertificateDomainService;
 
   @Test
   void shallThrowExceptionIfUserHasNoAccessToRevoke() {
@@ -61,10 +74,11 @@ class RevokeCertificateDomainServiceTest {
     doReturn(certificate).when(certificateRepository).getById(CERTIFICATE_ID);
     doReturn(false).when(certificate).allowTo(REVOKE, Optional.of(ACTION_EVALUATION));
 
-    assertThrows(CertificateActionForbidden.class,
-        () -> revokeCertificateDomainService.revoke(CERTIFICATE_ID, ACTION_EVALUATION,
-            REVOKED_INFORMATION)
-    );
+    assertThrows(
+        CertificateActionForbidden.class,
+        () ->
+            revokeCertificateDomainService.revoke(
+                CERTIFICATE_ID, ACTION_EVALUATION, REVOKED_INFORMATION));
   }
 
   @Test
@@ -90,8 +104,9 @@ class RevokeCertificateDomainServiceTest {
     doReturn(true).when(certificate).allowTo(REVOKE, Optional.of(ACTION_EVALUATION));
     doReturn(expectedCertificate).when(certificateRepository).save(certificate);
 
-    final var actualCertificate = revokeCertificateDomainService.revoke(CERTIFICATE_ID,
-        ACTION_EVALUATION, REVOKED_INFORMATION);
+    final var actualCertificate =
+        revokeCertificateDomainService.revoke(
+            CERTIFICATE_ID, ACTION_EVALUATION, REVOKED_INFORMATION);
 
     assertEquals(expectedCertificate, actualCertificate);
   }
@@ -114,8 +129,7 @@ class RevokeCertificateDomainServiceTest {
         () -> assertEquals(CertificateEventType.REVOKED, certificateEventCaptor.getValue().type()),
         () -> assertEquals(expectedCertificate, certificateEventCaptor.getValue().certificate()),
         () -> assertEquals(ACTION_EVALUATION, certificateEventCaptor.getValue().actionEvaluation()),
-        () -> assertTrue(certificateEventCaptor.getValue().duration() >= 0)
-    );
+        () -> assertTrue(certificateEventCaptor.getValue().duration() >= 0));
   }
 
   @Test
@@ -123,14 +137,19 @@ class RevokeCertificateDomainServiceTest {
     final var certificate = mock(MedicalCertificate.class);
     final var expectedReason = List.of("expectedReason");
     doReturn(certificate).when(certificateRepository).getById(CERTIFICATE_ID);
-    doReturn(false).when(certificate)
+    doReturn(false)
+        .when(certificate)
         .allowTo(CertificateActionType.REVOKE, Optional.of(ACTION_EVALUATION));
-    doReturn(expectedReason).when(certificate)
+    doReturn(expectedReason)
+        .when(certificate)
         .reasonNotAllowed(CertificateActionType.REVOKE, Optional.of(ACTION_EVALUATION));
 
-    final var certificateActionForbidden = assertThrows(CertificateActionForbidden.class,
-        () -> revokeCertificateDomainService.revoke(CERTIFICATE_ID, ACTION_EVALUATION,
-            REVOKED_INFORMATION));
+    final var certificateActionForbidden =
+        assertThrows(
+            CertificateActionForbidden.class,
+            () ->
+                revokeCertificateDomainService.revoke(
+                    CERTIFICATE_ID, ACTION_EVALUATION, REVOKED_INFORMATION));
 
     assertEquals(expectedReason, certificateActionForbidden.reason());
   }
@@ -156,26 +175,22 @@ class RevokeCertificateDomainServiceTest {
 
   @Test
   void shallUnhandleMessagesOnParentIfRevokedCertificateHasParentWithComplementRelation() {
-    final var complementMessage = Message.builder()
-        .type(MessageType.COMPLEMENT)
-        .status(MessageStatus.HANDLED)
-        .build();
+    final var complementMessage =
+        Message.builder().type(MessageType.COMPLEMENT).status(MessageStatus.HANDLED).build();
 
-    final var parentCertificate = Relation.builder()
-        .certificate(
-            MedicalCertificate.builder()
-                .messages(
-                    List.of(
-                        complementMessage,
-                        Message.builder()
-                            .type(MessageType.ANSWER)
-                            .status(MessageStatus.HANDLED)
-                            .build()
-                    )
-                )
-                .build()
-        )
-        .build();
+    final var parentCertificate =
+        Relation.builder()
+            .certificate(
+                MedicalCertificate.builder()
+                    .messages(
+                        List.of(
+                            complementMessage,
+                            Message.builder()
+                                .type(MessageType.ANSWER)
+                                .status(MessageStatus.HANDLED)
+                                .build()))
+                    .build())
+            .build();
 
     final var revokedCertificate = mock(MedicalCertificate.class);
 

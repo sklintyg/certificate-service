@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.certificatemodel.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,13 +44,10 @@ class ElementConfigurationRadioMultipleCodeTest {
 
   @Test
   void shallReturnEmptyValue() {
-    final var emptyValue = ElementValueCode.builder()
-        .codeId(new FieldId(FIELD_ID))
-        .build();
+    final var emptyValue = ElementValueCode.builder().codeId(new FieldId(FIELD_ID)).build();
 
-    final var configuration = ElementConfigurationRadioMultipleCode.builder()
-        .id(new FieldId(FIELD_ID))
-        .build();
+    final var configuration =
+        ElementConfigurationRadioMultipleCode.builder().id(new FieldId(FIELD_ID)).build();
 
     assertEquals(emptyValue, configuration.emptyValue());
   }
@@ -41,92 +56,71 @@ class ElementConfigurationRadioMultipleCodeTest {
   void shallReturnMatchingCode() {
     final var expectedCode = new Code(CODE_TWO, CODE_SYSTEM, DISPLAY_NAME_TWO);
 
-    final var configuration = ElementConfigurationRadioMultipleCode.builder()
-        .id(new FieldId(FIELD_ID))
-        .list(
-            List.of(
-                new ElementConfigurationCode(
-                    new FieldId(CODE_FIELD_ID),
-                    LABEL,
-                    new Code(CODE, CODE_SYSTEM, DISPLAY_NAME)
-                ),
-                new ElementConfigurationCode(
-                    new FieldId(CODE_FIELD_ID_TWO),
-                    LABEL_TWO,
-                    new Code(CODE_TWO, CODE_SYSTEM, DISPLAY_NAME_TWO)
-                )
-            )
-        )
-        .build();
+    final var configuration =
+        ElementConfigurationRadioMultipleCode.builder()
+            .id(new FieldId(FIELD_ID))
+            .list(
+                List.of(
+                    new ElementConfigurationCode(
+                        new FieldId(CODE_FIELD_ID),
+                        LABEL,
+                        new Code(CODE, CODE_SYSTEM, DISPLAY_NAME)),
+                    new ElementConfigurationCode(
+                        new FieldId(CODE_FIELD_ID_TWO),
+                        LABEL_TWO,
+                        new Code(CODE_TWO, CODE_SYSTEM, DISPLAY_NAME_TWO))))
+            .build();
 
-    final var codeValue = ElementValueCode.builder()
-        .codeId(new FieldId(CODE_FIELD_ID_TWO))
-        .code(CODE_TWO)
-        .build();
+    final var codeValue =
+        ElementValueCode.builder().codeId(new FieldId(CODE_FIELD_ID_TWO)).code(CODE_TWO).build();
 
     assertEquals(expectedCode, configuration.code(codeValue));
   }
 
-
   @Test
   void shallReturnSimplifiedValue() {
-    final var configuration = ElementConfigurationRadioMultipleCode.builder()
-        .id(new FieldId(FIELD_ID))
-        .list(
-            List.of(
-                new ElementConfigurationCode(
-                    new FieldId(CODE_FIELD_ID),
-                    LABEL,
-                    new Code(CODE, CODE_SYSTEM, DISPLAY_NAME)
-                ),
-                new ElementConfigurationCode(
-                    new FieldId(CODE_FIELD_ID_TWO),
-                    LABEL_TWO,
-                    new Code(CODE_TWO, CODE_SYSTEM, DISPLAY_NAME_TWO)
-                )
-            )
-        )
-        .build();
+    final var configuration =
+        ElementConfigurationRadioMultipleCode.builder()
+            .id(new FieldId(FIELD_ID))
+            .list(
+                List.of(
+                    new ElementConfigurationCode(
+                        new FieldId(CODE_FIELD_ID),
+                        LABEL,
+                        new Code(CODE, CODE_SYSTEM, DISPLAY_NAME)),
+                    new ElementConfigurationCode(
+                        new FieldId(CODE_FIELD_ID_TWO),
+                        LABEL_TWO,
+                        new Code(CODE_TWO, CODE_SYSTEM, DISPLAY_NAME_TWO))))
+            .build();
 
-    final var codeValue = ElementValueCode.builder()
-        .codeId(new FieldId(CODE_FIELD_ID_TWO))
-        .code(CODE_TWO)
-        .build();
+    final var codeValue =
+        ElementValueCode.builder().codeId(new FieldId(CODE_FIELD_ID_TWO)).code(CODE_TWO).build();
 
     assertEquals(
-        ElementSimplifiedValueText.builder()
-            .text(DISPLAY_NAME_TWO)
-            .build(),
-        configuration.simplified(codeValue).get()
-    );
+        ElementSimplifiedValueText.builder().text(DISPLAY_NAME_TWO).build(),
+        configuration.simplified(codeValue).get());
   }
 
   @Test
   void shallThrowIfNoMatchingCode() {
-    final var configuration = ElementConfigurationRadioMultipleCode.builder()
-        .id(new FieldId(FIELD_ID))
-        .list(Collections.emptyList())
-        .build();
+    final var configuration =
+        ElementConfigurationRadioMultipleCode.builder()
+            .id(new FieldId(FIELD_ID))
+            .list(Collections.emptyList())
+            .build();
 
-    final var codeValue = ElementValueCode.builder()
-        .codeId(new FieldId(CODE_FIELD_ID_TWO))
-        .code(CODE_TWO)
-        .build();
+    final var codeValue =
+        ElementValueCode.builder().codeId(new FieldId(CODE_FIELD_ID_TWO)).code(CODE_TWO).build();
 
-    assertThrows(IllegalArgumentException.class,
-        () -> configuration.code(codeValue)
-    );
+    assertThrows(IllegalArgumentException.class, () -> configuration.code(codeValue));
   }
 
   @Test
   void shouldReturnSimplifiedValueForEmpty() {
-    final var expected = Optional.of(
-        ElementSimplifiedValueText.builder()
-            .text("Ej angivet")
-            .build()
-    );
-    final var config = ElementConfigurationRadioMultipleCode.builder()
-        .build();
+    final var expected =
+        Optional.of(ElementSimplifiedValueText.builder().text("Ej angivet").build());
+    final var config = ElementConfigurationRadioMultipleCode.builder().build();
 
     assertEquals(expected, config.simplified(config.emptyValue()));
   }

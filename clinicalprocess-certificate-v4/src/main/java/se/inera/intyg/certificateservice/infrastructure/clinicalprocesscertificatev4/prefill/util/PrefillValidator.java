@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.prefill.util;
 
 import java.util.ArrayList;
@@ -17,19 +35,16 @@ public class PrefillValidator {
     throw new IllegalStateException("Utility class");
   }
 
-  public static List<PrefillError> validateSingleAnswerOrSubAnswer(List<Svar> answers,
-      List<Delsvar> subAnswers,
-      ElementSpecification specification) {
+  public static List<PrefillError> validateSingleAnswerOrSubAnswer(
+      List<Svar> answers, List<Delsvar> subAnswers, ElementSpecification specification) {
     final var prefillErrors = new ArrayList<PrefillError>();
     if (answers.size() > 1) {
       prefillErrors.add(
-          PrefillError.wrongNumberOfAnswers(specification.id().id(), 1, answers.size())
-      );
+          PrefillError.wrongNumberOfAnswers(specification.id().id(), 1, answers.size()));
     }
     if (subAnswers.size() > 1) {
       prefillErrors.add(
-          PrefillError.wrongNumberOfSubAnswers(specification.id().id(), 1, subAnswers.size())
-      );
+          PrefillError.wrongNumberOfSubAnswers(specification.id().id(), 1, subAnswers.size()));
     }
     if (!answers.isEmpty() && !subAnswers.isEmpty()) {
       prefillErrors.add(PrefillError.duplicateAnswer(specification.id().id()));
@@ -38,81 +53,74 @@ public class PrefillValidator {
     return prefillErrors;
   }
 
-  public static List<PrefillError> validateMinimumNumberOfDelsvar(List<Svar> answers, int minimum,
-      ElementSpecification specification) {
+  public static List<PrefillError> validateMinimumNumberOfDelsvar(
+      List<Svar> answers, int minimum, ElementSpecification specification) {
     final var prefillErrors = new ArrayList<PrefillError>();
-    final var hasTooFewDelsvar = answers.stream()
-        .anyMatch(answer -> answer.getDelsvar().size() < minimum);
+    final var hasTooFewDelsvar =
+        answers.stream().anyMatch(answer -> answer.getDelsvar().size() < minimum);
 
     if (hasTooFewDelsvar) {
-      final var numberOfSubAnswers = answers.stream()
-          .map(Svar::getDelsvar)
-          .filter(delsvar -> delsvar.size() < minimum)
-          .findFirst()
-          .stream()
-          .mapToInt(List::size)
-          .sum();
+      final var numberOfSubAnswers =
+          answers.stream()
+              .map(Svar::getDelsvar)
+              .filter(delsvar -> delsvar.size() < minimum)
+              .findFirst()
+              .stream()
+              .mapToInt(List::size)
+              .sum();
 
       prefillErrors.add(
           PrefillError.wrongNumberOfSubAnswers(
-              specification.id().id(),
-              minimum,
-              numberOfSubAnswers
-          )
-      );
+              specification.id().id(), minimum, numberOfSubAnswers));
     }
 
     return prefillErrors;
   }
 
-  public static List<PrefillError> validateDiagnosisCode(List<CVType> cvTypes,
-      DiagnosisCodeRepository diagnosisCodeRepository) {
+  public static List<PrefillError> validateDiagnosisCode(
+      List<CVType> cvTypes, DiagnosisCodeRepository diagnosisCodeRepository) {
     final var prefillErrors = new ArrayList<PrefillError>();
-    final var diagnosisCodeIsInvalid = cvTypes.stream()
-        .map(CVType::getCode)
-        .anyMatch(code -> diagnosisCodeRepository.findByCode(new DiagnosisCode(code)).isEmpty());
+    final var diagnosisCodeIsInvalid =
+        cvTypes.stream()
+            .map(CVType::getCode)
+            .anyMatch(
+                code -> diagnosisCodeRepository.findByCode(new DiagnosisCode(code)).isEmpty());
 
     if (diagnosisCodeIsInvalid) {
       prefillErrors.add(
-          PrefillError.invalidDiagnosisCode(getCode(cvTypes, diagnosisCodeRepository))
-      );
+          PrefillError.invalidDiagnosisCode(getCode(cvTypes, diagnosisCodeRepository)));
     }
     return prefillErrors;
   }
 
-  private static String getCode(List<CVType> cvTypes,
-      DiagnosisCodeRepository diagnosisCodeRepository) {
+  private static String getCode(
+      List<CVType> cvTypes, DiagnosisCodeRepository diagnosisCodeRepository) {
     return cvTypes.stream()
         .map(CVType::getCode)
-        .filter(
-            code -> diagnosisCodeRepository.findByCode(new DiagnosisCode(code))
-                .isEmpty()
-        )
+        .filter(code -> diagnosisCodeRepository.findByCode(new DiagnosisCode(code)).isEmpty())
         .findFirst()
         .orElseThrow();
   }
 
-  public static List<PrefillError> validateMinimumNumberOfDelsvar(Svar s, int minimumSubAnswers,
-      ElementSpecification specification) {
+  public static List<PrefillError> validateMinimumNumberOfDelsvar(
+      Svar s, int minimumSubAnswers, ElementSpecification specification) {
     final var prefillErrors = new ArrayList<PrefillError>();
     if (s.getDelsvar().size() < minimumSubAnswers) {
-      prefillErrors.add(PrefillError.wrongNumberOfSubAnswers(
-              specification.id().id(),
-              minimumSubAnswers,
-              s.getDelsvar().size()
-          )
-      );
+      prefillErrors.add(
+          PrefillError.wrongNumberOfSubAnswers(
+              specification.id().id(), minimumSubAnswers, s.getDelsvar().size()));
     }
     return prefillErrors;
   }
 
-  public static List<PrefillError> validateDelsvarId(List<Delsvar> subAnswers,
-      ElementConfiguration configuration, ElementSpecification specification) {
+  public static List<PrefillError> validateDelsvarId(
+      List<Delsvar> subAnswers,
+      ElementConfiguration configuration,
+      ElementSpecification specification) {
     final var prefillErrors = new ArrayList<PrefillError>();
-    final var correctSubAnswer = subAnswers.stream()
-        .anyMatch(
-            subAnswer -> subAnswer.getId().equals(configuration.id().value())
-        );
+    final var correctSubAnswer =
+        subAnswers.stream()
+            .anyMatch(subAnswer -> subAnswer.getId().equals(configuration.id().value()));
 
     if (!correctSubAnswer) {
       prefillErrors.add(
@@ -122,9 +130,7 @@ public class PrefillValidator {
                   .map(Delsvar::getId)
                   .filter(id -> !id.equals(configuration.id().value()))
                   .toList(),
-              specification.id().id()
-          )
-      );
+              specification.id().id()));
     }
     return prefillErrors;
   }

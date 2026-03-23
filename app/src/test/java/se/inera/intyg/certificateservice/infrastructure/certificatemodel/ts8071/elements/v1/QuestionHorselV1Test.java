@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.v1;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -37,13 +55,14 @@ class QuestionHorselV1Test {
 
   @Test
   void shallIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationRadioBoolean.builder()
-        .name(
-            "Har personen svårt att uppfatta vanlig samtalsstämma på fyra meters avstånd? Hörapparat får användas.")
-        .id(new FieldId("9.1"))
-        .selectedText("Ja")
-        .unselectedText("Nej")
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationRadioBoolean.builder()
+            .name(
+                "Har personen svårt att uppfatta vanlig samtalsstämma på fyra meters avstånd? Hörapparat får användas.")
+            .id(new FieldId("9.1"))
+            .selectedText("Ja")
+            .unselectedText("Nej")
+            .build();
 
     final var element = QuestionHorselV1.questionHorselV1();
 
@@ -52,23 +71,20 @@ class QuestionHorselV1Test {
 
   @Test
   void shallIncludeRules() {
-    final var expectedRule = List.of(
-        ElementRuleExpression.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.MANDATORY)
-            .expression(
-                new RuleExpression(
-                    "exists($9.1)"
-                )
-            )
-            .build(),
-        ElementRuleExpression.builder()
-            .id(new ElementId("1"))
-            .type(ElementRuleType.SHOW)
-            .expression(new RuleExpression(
-                "exists(gr_II_III) || exists(forlang_gr_II_III) || exists(tax_leg) || exists(int_begar_ts) || exists(utbyt_utl_kk)"))
-            .build()
-    );
+    final var expectedRule =
+        List.of(
+            ElementRuleExpression.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.MANDATORY)
+                .expression(new RuleExpression("exists($9.1)"))
+                .build(),
+            ElementRuleExpression.builder()
+                .id(new ElementId("1"))
+                .type(ElementRuleType.SHOW)
+                .expression(
+                    new RuleExpression(
+                        "exists(gr_II_III) || exists(forlang_gr_II_III) || exists(tax_leg) || exists(int_begar_ts) || exists(utbyt_utl_kk)"))
+                .build());
 
     final var element = QuestionHorselV1.questionHorselV1();
 
@@ -77,11 +93,8 @@ class QuestionHorselV1Test {
 
   @Test
   void shallIncludeValidation() {
-    final var expectedValidations = List.of(
-        ElementValidationBoolean.builder()
-            .mandatory(true)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationBoolean.builder().mandatory(true).build());
 
     final var element = QuestionHorselV1.questionHorselV1();
 
@@ -93,23 +106,20 @@ class QuestionHorselV1Test {
 
     @Test
     void shallReturnTrueIfCodeIsGR23() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("1"))
-              .value(
-                  ElementValueCodeList.builder()
-                      .list(
-                          List.of(
-                              ElementValueCode.builder()
-                                  .codeId(new FieldId(GR_II_III.code()))
-                                  .code(GR_II_III.code())
-                                  .build()
-                          )
-                      )
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("1"))
+                  .value(
+                      ElementValueCodeList.builder()
+                          .list(
+                              List.of(
+                                  ElementValueCode.builder()
+                                      .codeId(new FieldId(GR_II_III.code()))
+                                      .code(GR_II_III.code())
+                                      .build()))
+                          .build())
+                  .build());
 
       final var element = QuestionHorselV1.questionHorselV1();
 
@@ -120,23 +130,20 @@ class QuestionHorselV1Test {
 
     @Test
     void shallReturnTrueIfCodeIsForlangGR23() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("1"))
-              .value(
-                  ElementValueCodeList.builder()
-                      .list(
-                          List.of(
-                              ElementValueCode.builder()
-                                  .codeId(new FieldId(FORLANG_GR_II_III.code()))
-                                  .code(FORLANG_GR_II_III.code())
-                                  .build()
-                          )
-                      )
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("1"))
+                  .value(
+                      ElementValueCodeList.builder()
+                          .list(
+                              List.of(
+                                  ElementValueCode.builder()
+                                      .codeId(new FieldId(FORLANG_GR_II_III.code()))
+                                      .code(FORLANG_GR_II_III.code())
+                                      .build()))
+                          .build())
+                  .build());
 
       final var element = QuestionHorselV1.questionHorselV1();
 
@@ -147,23 +154,20 @@ class QuestionHorselV1Test {
 
     @Test
     void shallReturnTrueIfCodeIsTaxi() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("1"))
-              .value(
-                  ElementValueCodeList.builder()
-                      .list(
-                          List.of(
-                              ElementValueCode.builder()
-                                  .codeId(new FieldId(TAXI.code()))
-                                  .code(TAXI.code())
-                                  .build()
-                          )
-                      )
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("1"))
+                  .value(
+                      ElementValueCodeList.builder()
+                          .list(
+                              List.of(
+                                  ElementValueCode.builder()
+                                      .codeId(new FieldId(TAXI.code()))
+                                      .code(TAXI.code())
+                                      .build()))
+                          .build())
+                  .build());
 
       final var element = QuestionHorselV1.questionHorselV1();
 
@@ -174,23 +178,20 @@ class QuestionHorselV1Test {
 
     @Test
     void shallReturnTrueIfCodeIsAnnat() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("1"))
-              .value(
-                  ElementValueCodeList.builder()
-                      .list(
-                          List.of(
-                              ElementValueCode.builder()
-                                  .codeId(new FieldId(ANNAT.code()))
-                                  .code(ANNAT.code())
-                                  .build()
-                          )
-                      )
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("1"))
+                  .value(
+                      ElementValueCodeList.builder()
+                          .list(
+                              List.of(
+                                  ElementValueCode.builder()
+                                      .codeId(new FieldId(ANNAT.code()))
+                                      .code(ANNAT.code())
+                                      .build()))
+                          .build())
+                  .build());
 
       final var element = QuestionHorselV1.questionHorselV1();
 
@@ -201,23 +202,20 @@ class QuestionHorselV1Test {
 
     @Test
     void shallReturnTrueIfCodeIsUtlandsk() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("1"))
-              .value(
-                  ElementValueCodeList.builder()
-                      .list(
-                          List.of(
-                              ElementValueCode.builder()
-                                  .codeId(new FieldId(UTLANDSKT.code()))
-                                  .code(UTLANDSKT.code())
-                                  .build()
-                          )
-                      )
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("1"))
+                  .value(
+                      ElementValueCodeList.builder()
+                          .list(
+                              List.of(
+                                  ElementValueCode.builder()
+                                      .codeId(new FieldId(UTLANDSKT.code()))
+                                      .code(UTLANDSKT.code())
+                                      .build()))
+                          .build())
+                  .build());
 
       final var element = QuestionHorselV1.questionHorselV1();
 
@@ -228,16 +226,12 @@ class QuestionHorselV1Test {
 
     @Test
     void shallReturnFalseIfElementMissing() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("7.1"))
-              .value(
-                  ElementValueBoolean.builder()
-                      .value(true)
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("7.1"))
+                  .value(ElementValueBoolean.builder().value(true).build())
+                  .build());
 
       final var element = QuestionHorselV1.questionHorselV1();
 
@@ -248,23 +242,20 @@ class QuestionHorselV1Test {
 
     @Test
     void shallReturnFalseIfElementCodeIsNotGR23OrTaxi() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("1"))
-              .value(
-                  ElementValueCodeList.builder()
-                      .list(
-                          List.of(
-                              ElementValueCode.builder()
-                                  .codeId(new FieldId("TEST"))
-                                  .code("TEST")
-                                  .build()
-                          )
-                      )
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("1"))
+                  .value(
+                      ElementValueCodeList.builder()
+                          .list(
+                              List.of(
+                                  ElementValueCode.builder()
+                                      .codeId(new FieldId("TEST"))
+                                      .code("TEST")
+                                      .build()))
+                          .build())
+                  .build());
 
       final var element = QuestionHorselV1.questionHorselV1();
 

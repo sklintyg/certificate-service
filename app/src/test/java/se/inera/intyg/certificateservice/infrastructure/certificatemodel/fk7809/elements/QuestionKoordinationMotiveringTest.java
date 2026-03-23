@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7809.elements;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,14 +56,15 @@ class QuestionKoordinationMotiveringTest {
 
   @Test
   void shallIncludeConfiguration() {
-    final var expectedConfiguration = ElementConfigurationTextArea.builder()
-        .name("Balans, koordination och motorik")
-        .label(
-            "Beskriv funktionsnedsättningen, om möjligt med grad. Ange även eventuella undersökningsfynd.")
-        .description(
-            "Med balans menas kroppens balansfunktion och förnimmelse av kroppsställning (positionsuppfattning). Med koordination menas till exempel ögahandkoordination, gångkoordination och att samordna rörelser av armar och ben. Med motorik menas fin- och grovmotorik eller till exempel munmotorik.")
-        .id(new FieldId("13.1"))
-        .build();
+    final var expectedConfiguration =
+        ElementConfigurationTextArea.builder()
+            .name("Balans, koordination och motorik")
+            .label(
+                "Beskriv funktionsnedsättningen, om möjligt med grad. Ange även eventuella undersökningsfynd.")
+            .description(
+                "Med balans menas kroppens balansfunktion och förnimmelse av kroppsställning (positionsuppfattning). Med koordination menas till exempel ögahandkoordination, gångkoordination och att samordna rörelser av armar och ben. Med motorik menas fin- och grovmotorik eller till exempel munmotorik.")
+            .id(new FieldId("13.1"))
+            .build();
 
     final var element = QuestionKoordinationMotivering.questionKoordinationMotivering();
 
@@ -54,23 +73,23 @@ class QuestionKoordinationMotiveringTest {
 
   @Test
   void shallIncludeRules() {
-    final var expectedRules = List.of(
-        ElementRuleLimit.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.TEXT_LIMIT)
-            .limit(new RuleLimit((short) 4000))
-            .build(),
-        ElementRuleExpression.builder()
-            .id(ELEMENT_ID)
-            .type(ElementRuleType.MANDATORY)
-            .expression(new RuleExpression("$13.1"))
-            .build(),
-        ElementRuleExpression.builder()
-            .id(new ElementId("funktionsnedsattning"))
-            .type(ElementRuleType.SHOW)
-            .expression(new RuleExpression("$13.2"))
-            .build()
-    );
+    final var expectedRules =
+        List.of(
+            ElementRuleLimit.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.TEXT_LIMIT)
+                .limit(new RuleLimit((short) 4000))
+                .build(),
+            ElementRuleExpression.builder()
+                .id(ELEMENT_ID)
+                .type(ElementRuleType.MANDATORY)
+                .expression(new RuleExpression("$13.1"))
+                .build(),
+            ElementRuleExpression.builder()
+                .id(new ElementId("funktionsnedsattning"))
+                .type(ElementRuleType.SHOW)
+                .expression(new RuleExpression("$13.2"))
+                .build());
 
     final var element = QuestionKoordinationMotivering.questionKoordinationMotivering();
 
@@ -79,12 +98,8 @@ class QuestionKoordinationMotiveringTest {
 
   @Test
   void shallIncludeValidations() {
-    final var expectedValidations = List.of(
-        ElementValidationText.builder()
-            .mandatory(true)
-            .limit(4000)
-            .build()
-    );
+    final var expectedValidations =
+        List.of(ElementValidationText.builder().mandatory(true).limit(4000).build());
 
     final var element = QuestionKoordinationMotivering.questionKoordinationMotivering();
 
@@ -93,11 +108,13 @@ class QuestionKoordinationMotiveringTest {
 
   @Test
   void shallIncludePdfConfiguration() {
-    final var expected = PdfConfigurationText.builder()
-        .pdfFieldId(new PdfFieldId("form1[0].#subform[2].flt_txtIntellektuellFunktion[7]"))
-        .maxLength(265)
-        .overflowSheetFieldId(new PdfFieldId(("form1[0].#subform[4].flt_txtFortsattningsblad[0]")))
-        .build();
+    final var expected =
+        PdfConfigurationText.builder()
+            .pdfFieldId(new PdfFieldId("form1[0].#subform[2].flt_txtIntellektuellFunktion[7]"))
+            .maxLength(265)
+            .overflowSheetFieldId(
+                new PdfFieldId(("form1[0].#subform[4].flt_txtFortsattningsblad[0]")))
+            .build();
 
     final var element = QuestionKoordinationMotivering.questionKoordinationMotivering();
 
@@ -109,22 +126,17 @@ class QuestionKoordinationMotiveringTest {
 
     @Test
     void shallReturnTrueIfElementPresent() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("funktionsnedsattning"))
-              .value(
-                  ElementValueCodeList.builder()
-                      .list(
-                          List.of(
-                              ElementValueCode.builder()
-                                  .codeId(new FieldId("13.2"))
-                                  .build()
-                          )
-                      )
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("funktionsnedsattning"))
+                  .value(
+                      ElementValueCodeList.builder()
+                          .list(
+                              List.of(
+                                  ElementValueCode.builder().codeId(new FieldId("13.2")).build()))
+                          .build())
+                  .build());
 
       final var element = QuestionKoordinationMotivering.questionKoordinationMotivering();
 
@@ -135,22 +147,19 @@ class QuestionKoordinationMotiveringTest {
 
     @Test
     void shallReturnFalseIfElementPresent() {
-      final var elementData = List.of(
-          ElementData.builder()
-              .id(new ElementId("funktionsnedsattning"))
-              .value(
-                  ElementValueCodeList.builder()
-                      .list(
-                          List.of(
-                              ElementValueCode.builder()
-                                  .codeId(new FieldId("missing"))
-                                  .build()
-                          )
-                      )
-                      .build()
-              )
-              .build()
-      );
+      final var elementData =
+          List.of(
+              ElementData.builder()
+                  .id(new ElementId("funktionsnedsattning"))
+                  .value(
+                      ElementValueCodeList.builder()
+                          .list(
+                              List.of(
+                                  ElementValueCode.builder()
+                                      .codeId(new FieldId("missing"))
+                                      .build()))
+                          .build())
+                  .build());
 
       final var element = QuestionKoordinationMotivering.questionKoordinationMotivering();
 
@@ -162,10 +171,11 @@ class QuestionKoordinationMotiveringTest {
 
   @Test
   void shallIncludeVisibilityConfiguration() {
-    final var expectedVisibilityConfiguration = ElementVisibilityConfigurationsCheckboxMultipleCode.builder()
-        .elementId(FUNKTIONSNEDSATTNING_ID)
-        .fieldId(FUNKTIONSNEDSATTNING_KOORDINATION_ID)
-        .build();
+    final var expectedVisibilityConfiguration =
+        ElementVisibilityConfigurationsCheckboxMultipleCode.builder()
+            .elementId(FUNKTIONSNEDSATTNING_ID)
+            .fieldId(FUNKTIONSNEDSATTNING_KOORDINATION_ID)
+            .build();
 
     final var element = QuestionKoordinationMotivering.questionKoordinationMotivering();
 

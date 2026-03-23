@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.certificate.converter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,73 +51,71 @@ class PrintCertificateMetadataConverterTest {
   private static final String FILE_NAME = "fileName";
   public static final List<String> CONTACT_INFO = List.of("TEST 123", "070 070");
 
-  @Mock
-  private PrintCertificateUnitInformationConverter printCertificateUnitInformationConverter;
+  @Mock private PrintCertificateUnitInformationConverter printCertificateUnitInformationConverter;
 
-  @InjectMocks
-  private PrintCertificateMetadataConverter printCertificateMetadataConverter;
+  @InjectMocks private PrintCertificateMetadataConverter printCertificateMetadataConverter;
 
-  private static final Certificate CERTIFICATE = ag7804CertificateBuilder()
-      .certificateModel(
-          ag7804certificateModelBuilder()
-              .recipient(
-                  new Recipient(new RecipientId("SKR"), "SKR", "SKR", "transportstyrelsen-logo.png",
-                      "SKR")
-              )
-              .build()
-      )
-      .status(Status.SIGNED)
-      .sent(
-          Sent.builder()
-              .sentAt(LocalDateTime.now())
-              .build()
-      )
-      .signed(LocalDateTime.now())
-      .metaDataFromSignInstance(CERTIFICATE_META_DATA)
-      .certificateMetaData(null)
-      .build();
+  private static final Certificate CERTIFICATE =
+      ag7804CertificateBuilder()
+          .certificateModel(
+              ag7804certificateModelBuilder()
+                  .recipient(
+                      new Recipient(
+                          new RecipientId("SKR"),
+                          "SKR",
+                          "SKR",
+                          "transportstyrelsen-logo.png",
+                          "SKR"))
+                  .build())
+          .status(Status.SIGNED)
+          .sent(Sent.builder().sentAt(LocalDateTime.now()).build())
+          .signed(LocalDateTime.now())
+          .metaDataFromSignInstance(CERTIFICATE_META_DATA)
+          .certificateMetaData(null)
+          .build();
 
-  private static final Certificate CERTIFICATE_SKR = ag7804CertificateBuilder()
-      .certificateModel(
-          ag7804certificateModelBuilder()
-              .generalPrintProvider(new AG7804CertificateGeneralPrintProvider())
-              .recipient(
-                  new Recipient(new RecipientId("SKR"), "SKR", "SKR", "transportstyrelsen-logo.png",
-                      "SKR")
-              )
-              .build()
-      )
-      .status(Status.SIGNED)
-      .sent(
-          Sent.builder()
-              .sentAt(LocalDateTime.now())
-              .build()
-      )
-      .signed(LocalDateTime.now())
-      .metaDataFromSignInstance(CERTIFICATE_META_DATA)
-      .certificateMetaData(null)
-      .build();
+  private static final Certificate CERTIFICATE_SKR =
+      ag7804CertificateBuilder()
+          .certificateModel(
+              ag7804certificateModelBuilder()
+                  .generalPrintProvider(new AG7804CertificateGeneralPrintProvider())
+                  .recipient(
+                      new Recipient(
+                          new RecipientId("SKR"),
+                          "SKR",
+                          "SKR",
+                          "transportstyrelsen-logo.png",
+                          "SKR"))
+                  .build())
+          .status(Status.SIGNED)
+          .sent(Sent.builder().sentAt(LocalDateTime.now()).build())
+          .signed(LocalDateTime.now())
+          .metaDataFromSignInstance(CERTIFICATE_META_DATA)
+          .certificateMetaData(null)
+          .build();
 
-  public static final Certificate DRAFT = ag7804CertificateBuilder()
-      .certificateModel(
-          ag7804certificateModelBuilder()
-              .recipient(
-                  new Recipient(new RecipientId("SKR"), "SKR", "SKR", "transportstyrelsen-logo.png",
-                      "SKR")
-              )
-              .build()
-      )
-      .signed(null)
-      .status(Status.DRAFT)
-      .build();
+  public static final Certificate DRAFT =
+      ag7804CertificateBuilder()
+          .certificateModel(
+              ag7804certificateModelBuilder()
+                  .recipient(
+                      new Recipient(
+                          new RecipientId("SKR"),
+                          "SKR",
+                          "SKR",
+                          "transportstyrelsen-logo.png",
+                          "SKR"))
+                  .build())
+          .signed(null)
+          .status(Status.DRAFT)
+          .build();
 
   public static final String APPLICATION_ORIGIN_WEBCERT = "Webcert";
   public static final String APPLICATION_ORIGIN_1177_INTYG = "1177 intyg";
 
   @BeforeEach
   void setUp() {
-    when(printCertificateUnitInformationConverter.convert(any()))
-        .thenReturn(CONTACT_INFO);
+    when(printCertificateUnitInformationConverter.convert(any())).thenReturn(CONTACT_INFO);
   }
 
   @Test
@@ -107,7 +123,6 @@ class PrintCertificateMetadataConverterTest {
     final var result = printCertificateMetadataConverter.convert(CERTIFICATE, false, FILE_NAME);
     assertEquals(CERTIFICATE.certificateModel().name(), result.getName());
   }
-
 
   @Test
   void shouldSetContactInfo() {
@@ -118,8 +133,7 @@ class PrintCertificateMetadataConverterTest {
   @Test
   void shouldSetVersion() {
     final var result = printCertificateMetadataConverter.convert(CERTIFICATE, false, FILE_NAME);
-    assertEquals(CERTIFICATE.certificateModel().id().version().version(),
-        result.getVersion());
+    assertEquals(CERTIFICATE.certificateModel().id().version().version(), result.getVersion());
   }
 
   @Test
@@ -155,15 +169,13 @@ class PrintCertificateMetadataConverterTest {
   @Test
   void shouldSetRecipientName() {
     final var result = printCertificateMetadataConverter.convert(CERTIFICATE, false, FILE_NAME);
-    assertEquals(CERTIFICATE.certificateModel().recipient().name(),
-        result.getRecipientName());
+    assertEquals(CERTIFICATE.certificateModel().recipient().name(), result.getRecipientName());
   }
 
   @Test
   void shouldSetRecipientId() {
     final var result = printCertificateMetadataConverter.convert(CERTIFICATE, false, FILE_NAME);
-    assertEquals(CERTIFICATE.certificateModel().recipient().id().id(),
-        result.getRecipientId());
+    assertEquals(CERTIFICATE.certificateModel().recipient().id().id(), result.getRecipientId());
   }
 
   @Test
@@ -176,9 +188,11 @@ class PrintCertificateMetadataConverterTest {
   @Test
   void shouldSetGeneralPrintText() {
     final var result = printCertificateMetadataConverter.convert(CERTIFICATE_SKR, false, FILE_NAME);
-    final var expect = GeneralPrintTextDTO.builder()
-        .leftMarginInfoText("%s %s %s - Fastställd av %s").draftAlertInfoText("arbetsgivaren")
-        .build();
+    final var expect =
+        GeneralPrintTextDTO.builder()
+            .leftMarginInfoText("%s %s %s - Fastställd av %s")
+            .draftAlertInfoText("arbetsgivaren")
+            .build();
     assertEquals(expect, result.getGeneralPrintText());
   }
 
@@ -197,46 +211,46 @@ class PrintCertificateMetadataConverterTest {
   @Test
   void shouldSetSPersonId() {
     final var result = printCertificateMetadataConverter.convert(CERTIFICATE, false, FILE_NAME);
-    assertEquals(CERTIFICATE.getMetadataForPrint().patient().id().idWithDash(),
-        result.getPersonId());
+    assertEquals(
+        CERTIFICATE.getMetadataForPrint().patient().id().idWithDash(), result.getPersonId());
   }
 
   @Test
   void shouldSetDescription() {
     final var result = printCertificateMetadataConverter.convert(CERTIFICATE, false, FILE_NAME);
-    assertEquals(CERTIFICATE.certificateModel().description(),
-        result.getDescription());
+    assertEquals(CERTIFICATE.certificateModel().description(), result.getDescription());
   }
 
   @Test
   void shouldUseGeneralPrintDescription() {
-    final var certificateWithLinkInDescription = ag7804CertificateBuilder()
-        .certificateModel(ag7804certificateModelBuilder()
-            .description("Not general print description.")
-            .pdfSpecification(GeneralPdfSpecification.builder()
-                .description("General print description.")
-                .build())
-            .recipient(
-                new Recipient(new RecipientId("SKR"), "SKR", "SKR", "transportstyrelsen-logo.png",
-                    "SKR")
-            ).build()
-        )
-        .status(Status.SIGNED)
-        .sent(
-            Sent.builder()
-                .sentAt(LocalDateTime.now())
-                .build()
-        )
-        .signed(LocalDateTime.now())
-        .metaDataFromSignInstance(CERTIFICATE_META_DATA)
-        .certificateMetaData(null)
-        .build();
+    final var certificateWithLinkInDescription =
+        ag7804CertificateBuilder()
+            .certificateModel(
+                ag7804certificateModelBuilder()
+                    .description("Not general print description.")
+                    .pdfSpecification(
+                        GeneralPdfSpecification.builder()
+                            .description("General print description.")
+                            .build())
+                    .recipient(
+                        new Recipient(
+                            new RecipientId("SKR"),
+                            "SKR",
+                            "SKR",
+                            "transportstyrelsen-logo.png",
+                            "SKR"))
+                    .build())
+            .status(Status.SIGNED)
+            .sent(Sent.builder().sentAt(LocalDateTime.now()).build())
+            .signed(LocalDateTime.now())
+            .metaDataFromSignInstance(CERTIFICATE_META_DATA)
+            .certificateMetaData(null)
+            .build();
 
-    final var result = printCertificateMetadataConverter.convert(certificateWithLinkInDescription,
-        false, FILE_NAME);
-    assertEquals(
-        "General print description.",
-        result.getDescription());
+    final var result =
+        printCertificateMetadataConverter.convert(
+            certificateWithLinkInDescription, false, FILE_NAME);
+    assertEquals("General print description.", result.getDescription());
   }
 
   @Test
@@ -248,21 +262,18 @@ class PrintCertificateMetadataConverterTest {
   @Test
   void shouldSetIssuerName() {
     final var result = printCertificateMetadataConverter.convert(CERTIFICATE, false, FILE_NAME);
-    assertEquals(CERTIFICATE_META_DATA.issuer().name().fullName(),
-        result.getIssuerName());
+    assertEquals(CERTIFICATE_META_DATA.issuer().name().fullName(), result.getIssuerName());
   }
 
   @Test
   void shouldSetIssuingUnit() {
     final var result = printCertificateMetadataConverter.convert(CERTIFICATE, false, FILE_NAME);
-    assertEquals(CERTIFICATE_META_DATA.issuingUnit().name().name(),
-        result.getIssuingUnit());
+    assertEquals(CERTIFICATE_META_DATA.issuingUnit().name().name(), result.getIssuingUnit());
   }
 
   @Test
   void shouldSetIsSent() {
     final var result = printCertificateMetadataConverter.convert(CERTIFICATE, false, FILE_NAME);
-    assertEquals(CERTIFICATE.sent().sentAt().toString(),
-        result.getSentDate());
+    assertEquals(CERTIFICATE.sent().sentAt().toString(), result.getSentDate());
   }
 }

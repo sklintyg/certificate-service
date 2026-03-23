@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service;
 
 import static se.inera.intyg.certificateservice.application.certificate.dto.CertificateStatusTypeDTO.toStatus;
@@ -41,45 +59,37 @@ public class RenewExternalCertificateService {
 
   @Transactional
   public RenewCertificateResponse renew(
-      RenewExternalCertificateRequest renewExternalCertificateRequest,
-      String certificateId) {
+      RenewExternalCertificateRequest renewExternalCertificateRequest, String certificateId) {
     renewExternalCertificateRequestValidator.validate(
-        renewExternalCertificateRequest,
-        certificateId
-    );
+        renewExternalCertificateRequest, certificateId);
 
-    final var actionEvaluation = actionEvaluationFactory.create(
-        renewExternalCertificateRequest.getPatient(),
-        renewExternalCertificateRequest.getUser(),
-        renewExternalCertificateRequest.getUnit(),
-        renewExternalCertificateRequest.getCareUnit(),
-        renewExternalCertificateRequest.getCareProvider()
-    );
+    final var actionEvaluation =
+        actionEvaluationFactory.create(
+            renewExternalCertificateRequest.getPatient(),
+            renewExternalCertificateRequest.getUser(),
+            renewExternalCertificateRequest.getUnit(),
+            renewExternalCertificateRequest.getCareUnit(),
+            renewExternalCertificateRequest.getCareProvider());
 
-    final var certificate = renewExternalCertificateDomainService.renew(
-        actionEvaluation,
-        renewExternalCertificateRequest.getExternalReference() != null
-            ? new ExternalReference(renewExternalCertificateRequest.getExternalReference())
-            : null,
-        getPlaceholderRequest(renewExternalCertificateRequest, certificateId)
-    );
+    final var certificate =
+        renewExternalCertificateDomainService.renew(
+            actionEvaluation,
+            renewExternalCertificateRequest.getExternalReference() != null
+                ? new ExternalReference(renewExternalCertificateRequest.getExternalReference())
+                : null,
+            getPlaceholderRequest(renewExternalCertificateRequest, certificateId));
 
     return RenewCertificateResponse.builder()
         .certificate(
             certificateConverter.convert(
                 certificate,
                 certificate.actionsInclude(Optional.of(actionEvaluation)).stream()
-                    .map(certificateAction ->
-                        resourceLinkConverter.convert(
-                            certificateAction,
-                            Optional.of(certificate),
-                            actionEvaluation
-                        )
-                    )
+                    .map(
+                        certificateAction ->
+                            resourceLinkConverter.convert(
+                                certificateAction, Optional.of(certificate), actionEvaluation))
                     .toList(),
-                actionEvaluation
-            )
-        )
+                actionEvaluation))
         .build();
   }
 
@@ -104,18 +114,15 @@ public class RenewExternalCertificateService {
                 .address(unit.getAddress())
                 .zipCode(unit.getZipCode())
                 .city(unit.getCity())
-                .build()
-        )
+                .build())
         .contactInfo(
             UnitContactInfo.builder()
                 .phoneNumber(unit.getPhoneNumber())
                 .email(unit.getEmail())
-                .build()
-        )
+                .build())
         .inactive(unit.getInactive() != null ? new Inactive(unit.getInactive()) : null)
         .workplaceCode(
-            unit.getWorkplaceCode() != null ? new WorkplaceCode(unit.getWorkplaceCode()) : null
-        )
+            unit.getWorkplaceCode() != null ? new WorkplaceCode(unit.getWorkplaceCode()) : null)
         .build();
   }
 
@@ -123,15 +130,10 @@ public class RenewExternalCertificateService {
       RenewExternalCertificateRequest renewExternalCertificateRequest) {
     return CertificateModelId.builder()
         .type(
-            new CertificateType(
-                renewExternalCertificateRequest.getCertificateModelId().getType()
-            )
-        )
+            new CertificateType(renewExternalCertificateRequest.getCertificateModelId().getType()))
         .version(
             new CertificateVersion(
-                renewExternalCertificateRequest.getCertificateModelId().getVersion()
-            )
-        )
+                renewExternalCertificateRequest.getCertificateModelId().getVersion()))
         .build();
   }
 }

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.common;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.common.QuestionArytmi.QUESTION_ARYTMI_FIELD_ID;
@@ -16,10 +34,8 @@ import se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.
 
 public class QuestionArytmiBeskrivning {
 
-  public static final ElementId QUESTION_ARYTMI_BESKRIVNING_ID = new ElementId(
-      "11.6");
-  public static final FieldId QUESTION_ARYTMI_BESKRIVNING_FIELD_ID = new FieldId(
-      "11.6");
+  public static final ElementId QUESTION_ARYTMI_BESKRIVNING_ID = new ElementId("11.6");
+  public static final FieldId QUESTION_ARYTMI_BESKRIVNING_FIELD_ID = new FieldId("11.6");
 
   private QuestionArytmiBeskrivning() {
     throw new IllegalStateException("Utility class");
@@ -32,35 +48,16 @@ public class QuestionArytmiBeskrivning {
             ElementConfigurationTextField.builder()
                 .id(QUESTION_ARYTMI_BESKRIVNING_FIELD_ID)
                 .name("Ange tidpunkt")
-                .build()
-        )
+                .build())
         .rules(
             List.of(
-                CertificateElementRuleFactory.show(
-                    QUESTION_ARYTMI_ID,
-                    QUESTION_ARYTMI_FIELD_ID
-                ),
+                CertificateElementRuleFactory.show(QUESTION_ARYTMI_ID, QUESTION_ARYTMI_FIELD_ID),
                 CertificateElementRuleFactory.mandatory(
-                    QUESTION_ARYTMI_BESKRIVNING_ID,
-                    QUESTION_ARYTMI_BESKRIVNING_FIELD_ID
-                ),
-                CertificateElementRuleFactory.limit(
-                    QUESTION_ARYTMI_BESKRIVNING_ID,
-                    (short) 50)
-            )
-        )
-        .shouldValidate(
-            ElementDataPredicateFactory.valueBoolean(QUESTION_ARYTMI_ID)
-        )
+                    QUESTION_ARYTMI_BESKRIVNING_ID, QUESTION_ARYTMI_BESKRIVNING_FIELD_ID),
+                CertificateElementRuleFactory.limit(QUESTION_ARYTMI_BESKRIVNING_ID, (short) 50)))
+        .shouldValidate(ElementDataPredicateFactory.valueBoolean(QUESTION_ARYTMI_ID))
         .mapping(new ElementMapping(QUESTION_HJARTSJUKDOM_ID, null))
-        .validations(
-            List.of(
-                ElementValidationText.builder()
-                    .mandatory(true)
-                    .limit(50)
-                    .build()
-            )
-        )
+        .validations(List.of(ElementValidationText.builder().mandatory(true).limit(50).build()))
         .build();
   }
 }

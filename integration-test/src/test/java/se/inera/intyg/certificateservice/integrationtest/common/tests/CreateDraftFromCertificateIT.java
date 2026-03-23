@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.integrationtest.common.tests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,82 +57,84 @@ public abstract class CreateDraftFromCertificateIT extends BaseIntegrationIT {
   @Test
   @DisplayName("Skall skapa ett AG7804 med intygsinnehåll från ett signerat FK7804")
   void shallCreateAG7804FromSignedFK7804() {
-    final var createCertificateResponse = testabilityApi().addCertificate(
-        customTestabilityCertificateRequest(
-            FK7804,
-            VERSION,
-            CertificateStatusTypeDTO.SIGNED
-        )
-            .fillType(TestabilityFillTypeDTO.MAXIMAL)
-            .build()
-    );
+    final var createCertificateResponse =
+        testabilityApi()
+            .addCertificate(
+                customTestabilityCertificateRequest(
+                        FK7804, VERSION, CertificateStatusTypeDTO.SIGNED)
+                    .fillType(TestabilityFillTypeDTO.MAXIMAL)
+                    .build());
 
-    final var response = api().createDraftFromCertificate(
-        defaultCreateDraftFromCertificateRequest(),
-        certificateId(createCertificateResponse.getBody())
-    );
+    final var response =
+        api()
+            .createDraftFromCertificate(
+                defaultCreateDraftFromCertificateRequest(),
+                certificateId(createCertificateResponse.getBody()));
 
     final var templateCertificate = certificate(createCertificateResponse.getBody());
     final var certificateData = Objects.requireNonNull(certificate(response.getBody())).getData();
 
     assertNotNull(templateCertificate);
 
-    templateCertificate.getData().entrySet().forEach(data -> {
-      if (excludeIcfAndQuestionKontakt(data)) {
-        return;
-      }
+    templateCertificate
+        .getData()
+        .entrySet()
+        .forEach(
+            data -> {
+              if (excludeIcfAndQuestionKontakt(data)) {
+                return;
+              }
 
-      final var certificateDataElement = certificateData.get(data.getKey());
+              final var certificateDataElement = certificateData.get(data.getKey());
 
-      assertEquals(data.getValue().getValue(), certificateDataElement.getValue());
-    });
+              assertEquals(data.getValue().getValue(), certificateDataElement.getValue());
+            });
   }
 
-  private static boolean excludeIcfAndQuestionKontakt(
-      Entry<String, CertificateDataElement> data) {
-    return data.getValue().getValue() == null || data.getValue().getValue().getType()
-        .equals(CertificateDataValueType.ICF) || data.getValue().getId().contains(
-        QUESTION_KONTAKT_ID);
+  private static boolean excludeIcfAndQuestionKontakt(Entry<String, CertificateDataElement> data) {
+    return data.getValue().getValue() == null
+        || data.getValue().getValue().getType().equals(CertificateDataValueType.ICF)
+        || data.getValue().getId().contains(QUESTION_KONTAKT_ID);
   }
 
   @Test
-  @DisplayName("Skall returnera felkod 403 om man försöker skapa ett AG7804 från ett osignerat FK7804")
+  @DisplayName(
+      "Skall returnera felkod 403 om man försöker skapa ett AG7804 från ett osignerat FK7804")
   void shallReturn403IfCreateAG7804FromUnsignedFK7804() {
-    final var createCertificateResponse = testabilityApi().addCertificate(
-        customTestabilityCertificateRequest(
-            FK7804,
-            VERSION,
-            CertificateStatusTypeDTO.UNSIGNED
-        )
-            .fillType(TestabilityFillTypeDTO.MAXIMAL)
-            .build()
-    );
+    final var createCertificateResponse =
+        testabilityApi()
+            .addCertificate(
+                customTestabilityCertificateRequest(
+                        FK7804, VERSION, CertificateStatusTypeDTO.UNSIGNED)
+                    .fillType(TestabilityFillTypeDTO.MAXIMAL)
+                    .build());
 
-    final var response = api().createDraftFromCertificate(
-        defaultCreateDraftFromCertificateRequest(),
-        certificateId(createCertificateResponse.getBody())
-    );
+    final var response =
+        api()
+            .createDraftFromCertificate(
+                defaultCreateDraftFromCertificateRequest(),
+                certificateId(createCertificateResponse.getBody()));
 
     assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
   }
 
   @Test
-  @DisplayName("Skall returnera felkod 403 om man försöker skapa ett AG7804 från ett makulerat FK7804")
+  @DisplayName(
+      "Skall returnera felkod 403 om man försöker skapa ett AG7804 från ett makulerat FK7804")
   void shallReturn403IfCreateAG7804FromRevokedFK7804() {
-    final var createCertificateResponse = testabilityApi().addCertificate(
-        customTestabilityCertificateRequest(
-            FK7804,
-            VERSION,
-            CertificateStatusTypeDTO.REVOKED
-        )
-            .fillType(TestabilityFillTypeDTO.MAXIMAL)
-            .build()
-    );
+    final var createCertificateResponse =
+        testabilityApi()
+            .addCertificate(
+                customTestabilityCertificateRequest(
+                        FK7804, VERSION, CertificateStatusTypeDTO.REVOKED)
+                    .fillType(TestabilityFillTypeDTO.MAXIMAL)
+                    .build());
 
-    final var response = api().createDraftFromCertificate(
-        defaultCreateDraftFromCertificateRequest(),
-        certificateId(createCertificateResponse.getBody())
-    );
+    final var response =
+        api()
+            .createDraftFromCertificate(
+                defaultCreateDraftFromCertificateRequest(),
+                certificateId(createCertificateResponse.getBody()));
 
     assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
   }
@@ -122,103 +142,101 @@ public abstract class CreateDraftFromCertificateIT extends BaseIntegrationIT {
   @Test
   @DisplayName("Skall returnera felkod 403 om man försöker skapa ett AG7804 från ett ersatt FK7804")
   void shallReturn403IfCreateAG7804FromReplacedAndSignedFK7804() {
-    final var createCertificateResponse = testabilityApi().addCertificate(
-        customTestabilityCertificateRequest(
-            FK7804,
-            VERSION,
-            CertificateStatusTypeDTO.SIGNED
-        )
-            .fillType(TestabilityFillTypeDTO.MAXIMAL)
-            .build()
-    );
+    final var createCertificateResponse =
+        testabilityApi()
+            .addCertificate(
+                customTestabilityCertificateRequest(
+                        FK7804, VERSION, CertificateStatusTypeDTO.SIGNED)
+                    .fillType(TestabilityFillTypeDTO.MAXIMAL)
+                    .build());
 
-    final var replaceCertificateResponse = api().replaceCertificate(
-        defaultReplaceCertificateRequest(),
-        certificateId(createCertificateResponse.getBody())
-    );
+    final var replaceCertificateResponse =
+        api()
+            .replaceCertificate(
+                defaultReplaceCertificateRequest(),
+                certificateId(createCertificateResponse.getBody()));
 
-    api().signCertificate(
-        defaultSignCertificateRequest(),
-        certificateId(replaceCertificateResponse.getBody()),
-        version(replaceCertificateResponse.getBody())
-    );
+    api()
+        .signCertificate(
+            defaultSignCertificateRequest(),
+            certificateId(replaceCertificateResponse.getBody()),
+            version(replaceCertificateResponse.getBody()));
 
-    final var response = api().createDraftFromCertificate(
-        defaultCreateDraftFromCertificateRequest(),
-        certificateId(createCertificateResponse.getBody())
-    );
+    final var response =
+        api()
+            .createDraftFromCertificate(
+                defaultCreateDraftFromCertificateRequest(),
+                certificateId(createCertificateResponse.getBody()));
 
     assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
   }
 
-
   @Test
-  @DisplayName("Skall returnera felkod 403 om man försöker skapa ett AG7804 från ett kompletterat FK7804")
+  @DisplayName(
+      "Skall returnera felkod 403 om man försöker skapa ett AG7804 från ett kompletterat FK7804")
   void shallReturn403IfCreateAG7804FromComplementedAndSignedFK7804() {
-    final var createCertificateResponse = testabilityApi().addCertificate(
-        customTestabilityCertificateRequest(
-            FK7804,
-            VERSION,
-            CertificateStatusTypeDTO.SIGNED
-        )
-            .fillType(TestabilityFillTypeDTO.MAXIMAL)
-            .build()
-    );
+    final var createCertificateResponse =
+        testabilityApi()
+            .addCertificate(
+                customTestabilityCertificateRequest(
+                        FK7804, VERSION, CertificateStatusTypeDTO.SIGNED)
+                    .fillType(TestabilityFillTypeDTO.MAXIMAL)
+                    .build());
 
-    api().sendCertificate(
-        defaultSendCertificateRequest(),
-        certificateId(createCertificateResponse.getBody())
-    );
+    api()
+        .sendCertificate(
+            defaultSendCertificateRequest(), certificateId(createCertificateResponse.getBody()));
 
-    api().receiveMessage(
-        incomingComplementMessageBuilder()
-            .certificateId(certificateId(createCertificateResponse.getBody()))
-            .complements(List.of(incomingComplementDTOBuilder()
-                .questionId(QUESTION_MEDICINSK_BEHANDLING_ID.id())
-                .build()))
-            .build()
-    );
+    api()
+        .receiveMessage(
+            incomingComplementMessageBuilder()
+                .certificateId(certificateId(createCertificateResponse.getBody()))
+                .complements(
+                    List.of(
+                        incomingComplementDTOBuilder()
+                            .questionId(QUESTION_MEDICINSK_BEHANDLING_ID.id())
+                            .build()))
+                .build());
 
-    final var complementCertificateResponse = api().complementCertificate(
-        defaultComplementCertificateRequest(),
-        certificateId(createCertificateResponse.getBody())
-    );
+    final var complementCertificateResponse =
+        api()
+            .complementCertificate(
+                defaultComplementCertificateRequest(),
+                certificateId(createCertificateResponse.getBody()));
 
-    api().signCertificate(
-        defaultSignCertificateRequest(),
-        certificateId(complementCertificateResponse.getBody()),
-        version(complementCertificateResponse.getBody())
-    );
+    api()
+        .signCertificate(
+            defaultSignCertificateRequest(),
+            certificateId(complementCertificateResponse.getBody()),
+            version(complementCertificateResponse.getBody()));
 
-    final var response = api().createDraftFromCertificate(
-        defaultCreateDraftFromCertificateRequest(),
-        certificateId(createCertificateResponse.getBody())
-    );
+    final var response =
+        api()
+            .createDraftFromCertificate(
+                defaultCreateDraftFromCertificateRequest(),
+                certificateId(createCertificateResponse.getBody()));
 
     assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
   }
 
-
   @Test
-  @DisplayName("Skall returnera felkod 403 om man försöker skapa ett AG7804 från ett FK7804 som är utfärdat på en patient med skyddade personuppgifter som vårdadmin")
+  @DisplayName(
+      "Skall returnera felkod 403 om man försöker skapa ett AG7804 från ett FK7804 som är utfärdat på en patient med skyddade personuppgifter som vårdadmin")
   void shallReturn403IfCreateAG7804FromFK7804OnCertificateWithProtectedPersonAsCareAdmin() {
-    final var createCertificateResponse = testabilityApi().addCertificate(
-        customTestabilityCertificateRequest(
-            FK7804,
-            VERSION,
-            CertificateStatusTypeDTO.SIGNED
-        )
-            .patient(ANONYMA_REACT_ATTILA_DTO)
-            .fillType(TestabilityFillTypeDTO.MAXIMAL)
-            .build()
-    );
+    final var createCertificateResponse =
+        testabilityApi()
+            .addCertificate(
+                customTestabilityCertificateRequest(
+                        FK7804, VERSION, CertificateStatusTypeDTO.SIGNED)
+                    .patient(ANONYMA_REACT_ATTILA_DTO)
+                    .fillType(TestabilityFillTypeDTO.MAXIMAL)
+                    .build());
 
-    final var response = api().createDraftFromCertificate(
-        customCreateDraftFromCertificateRequest()
-            .user(ALVA_VARDADMINISTRATOR_DTO)
-            .build(),
-        certificateId(createCertificateResponse.getBody())
-    );
+    final var response =
+        api()
+            .createDraftFromCertificate(
+                customCreateDraftFromCertificateRequest().user(ALVA_VARDADMINISTRATOR_DTO).build(),
+                certificateId(createCertificateResponse.getBody()));
 
     assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
   }

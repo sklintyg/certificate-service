@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificate.persistence.entity.mapper;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -23,30 +41,28 @@ import se.inera.intyg.certificateservice.infrastructure.certificate.persistence.
 
 class PatientVersionEntityMapperTest {
 
-  private static final PatientEntity PATIENT_ENTITY_PROTECTED = getPatientEntity(false, false,
-      true);
+  private static final PatientEntity PATIENT_ENTITY_PROTECTED =
+      getPatientEntity(false, false, true);
   private static final PatientEntity PATIENT_ENTITY_DECEASED = getPatientEntity(false, true, false);
   private static final PatientEntity PATIENT_ENTITY_TEST = getPatientEntity(true, false, false);
 
-  private static final PatientVersionEntity PATIENT_VERSION_ENTITY_PROTECTED = getPatientVersionEntity(
-      false, false, true);
-  private static final PatientVersionEntity PATIENT_VERSION_ENTITY_DECEASED = getPatientVersionEntity(
-      false, true, false);
-  private static final PatientVersionEntity PATIENT_VERSION_ENTITY_TEST = getPatientVersionEntity(
-      true, false, false);
-
+  private static final PatientVersionEntity PATIENT_VERSION_ENTITY_PROTECTED =
+      getPatientVersionEntity(false, false, true);
+  private static final PatientVersionEntity PATIENT_VERSION_ENTITY_DECEASED =
+      getPatientVersionEntity(false, true, false);
+  private static final PatientVersionEntity PATIENT_VERSION_ENTITY_TEST =
+      getPatientVersionEntity(true, false, false);
 
   @Test
   void shouldReturnPatientEntity() {
-    final var response = PatientVersionEntityMapper.toPatient(
-        ATHENA_REACT_ANDERSSON_VERSION_ENTITY);
+    final var response =
+        PatientVersionEntityMapper.toPatient(ATHENA_REACT_ANDERSSON_VERSION_ENTITY);
     assertEquals(ATHENA_REACT_ANDERSSON_ENTITY, response);
   }
 
   @Test
   void shouldReturnPatientVersionEntity() {
-    final var response =
-        PatientVersionEntityMapper.toPatientVersion(ATHENA_REACT_ANDERSSON_ENTITY);
+    final var response = PatientVersionEntityMapper.toPatientVersion(ATHENA_REACT_ANDERSSON_ENTITY);
 
     assertAll(
         () -> assertEquals(ATHENA_REACT_ANDERSSON_ID_WITHOUT_DASH, response.getId()),
@@ -56,12 +72,11 @@ class PatientVersionEntityMapperTest {
         () -> assertFalse(response.isProtectedPerson()),
         () -> assertFalse(response.isDeceased()),
         () -> assertFalse(response.isTestIndicated()),
-        () -> assertEquals(PersonEntityIdType.PERSONAL_IDENTITY_NUMBER.name(),
-            response.getType().getType()),
-        () -> assertNotNull(response.getPatient())
-    );
+        () ->
+            assertEquals(
+                PersonEntityIdType.PERSONAL_IDENTITY_NUMBER.name(), response.getType().getType()),
+        () -> assertNotNull(response.getPatient()));
   }
-
 
   @Nested
   class ToPatientVersion {
@@ -174,8 +189,8 @@ class PatientVersionEntityMapperTest {
     @Test
     void shouldMapProtectedPerson() {
       final var response = PatientVersionEntityMapper.toPatient(PATIENT_VERSION_ENTITY_PROTECTED);
-      assertEquals(PATIENT_VERSION_ENTITY_PROTECTED.isProtectedPerson(),
-          response.isProtectedPerson());
+      assertEquals(
+          PATIENT_VERSION_ENTITY_PROTECTED.isProtectedPerson(), response.isProtectedPerson());
     }
 
     @Test
@@ -191,36 +206,37 @@ class PatientVersionEntityMapperTest {
     }
   }
 
-  private static PatientEntity getPatientEntity(boolean testIndicated, boolean isDeceased,
-      boolean isProtectedPerson) {
+  private static PatientEntity getPatientEntity(
+      boolean testIndicated, boolean isDeceased, boolean isProtectedPerson) {
     return PatientEntity.builder()
         .id(ATHENA_REACT_ANDERSSON_ID_WITHOUT_DASH)
         .protectedPerson(isProtectedPerson)
         .testIndicated(testIndicated)
         .deceased(isDeceased)
-        .type(PatientIdTypeEntity.builder()
-            .type(PersonEntityIdType.PERSONAL_IDENTITY_NUMBER.name())
-            .key(PersonEntityIdType.PERSONAL_IDENTITY_NUMBER.getKey())
-            .build())
+        .type(
+            PatientIdTypeEntity.builder()
+                .type(PersonEntityIdType.PERSONAL_IDENTITY_NUMBER.name())
+                .key(PersonEntityIdType.PERSONAL_IDENTITY_NUMBER.getKey())
+                .build())
         .firstName(ATHENA_REACT_ANDERSSON_FIRST_NAME)
         .middleName(ATHENA_REACT_ANDERSSON_MIDDLE_NAME)
         .lastName(ATHENA_REACT_ANDERSSON_LAST_NAME)
         .build();
   }
 
-  private static PatientVersionEntity getPatientVersionEntity(boolean testIndicated,
-      boolean isDeceased,
-      boolean isProtectedPerson) {
+  private static PatientVersionEntity getPatientVersionEntity(
+      boolean testIndicated, boolean isDeceased, boolean isProtectedPerson) {
     return PatientVersionEntity.builder()
         .key(1)
         .id(ATHENA_REACT_ANDERSSON_ID_WITHOUT_DASH)
         .protectedPerson(isProtectedPerson)
         .testIndicated(testIndicated)
         .deceased(isDeceased)
-        .type(PatientIdTypeEntity.builder()
-            .type(PersonEntityIdType.PERSONAL_IDENTITY_NUMBER.name())
-            .key(PersonEntityIdType.PERSONAL_IDENTITY_NUMBER.getKey())
-            .build())
+        .type(
+            PatientIdTypeEntity.builder()
+                .type(PersonEntityIdType.PERSONAL_IDENTITY_NUMBER.name())
+                .key(PersonEntityIdType.PERSONAL_IDENTITY_NUMBER.getKey())
+                .build())
         .firstName(ATHENA_REACT_ANDERSSON_FIRST_NAME)
         .middleName(ATHENA_REACT_ANDERSSON_MIDDLE_NAME)
         .lastName(ATHENA_REACT_ANDERSSON_LAST_NAME)

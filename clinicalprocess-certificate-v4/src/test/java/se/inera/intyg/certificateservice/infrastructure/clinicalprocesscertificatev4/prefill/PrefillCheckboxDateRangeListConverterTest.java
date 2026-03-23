@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.prefill;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -45,88 +63,82 @@ class PrefillCheckboxDateRangeListConverterTest {
   private static final LocalDate START_DATE = LocalDate.of(2024, 1, 1);
   private static final LocalDate END_DATE = LocalDate.of(2024, 12, 31);
   private static final ObjectFactory factory = new ObjectFactory();
-  private static final List<ElementConfigurationCode> dateRanges = List.of(
-      new ElementConfigurationCode(
-          new FieldId(CodeSystemKvFkmu0008.EN_ATTONDEL.code()),
-          "LABEL",
-          new Code(
-              CodeSystemKvFkmu0008.EN_ATTONDEL.code(),
-              "KV_FKMU_0001",
-              "TEXT")
-      ),
-      new ElementConfigurationCode(
-          new FieldId(CodeSystemKvFkmu0008.EN_FJARDEDEL.code()),
-          "LABEL",
-          new Code(
-              CodeSystemKvFkmu0008.EN_FJARDEDEL.code(),
-              "KV_FKMU_0001",
-              "TEXT")
-      )
-  );
+  private static final List<ElementConfigurationCode> dateRanges =
+      List.of(
+          new ElementConfigurationCode(
+              new FieldId(CodeSystemKvFkmu0008.EN_ATTONDEL.code()),
+              "LABEL",
+              new Code(CodeSystemKvFkmu0008.EN_ATTONDEL.code(), "KV_FKMU_0001", "TEXT")),
+          new ElementConfigurationCode(
+              new FieldId(CodeSystemKvFkmu0008.EN_FJARDEDEL.code()),
+              "LABEL",
+              new Code(CodeSystemKvFkmu0008.EN_FJARDEDEL.code(), "KV_FKMU_0001", "TEXT")));
 
-  private static final ElementSpecification SPECIFICATION = ElementSpecification.builder()
-      .id(ELEMENT_ID)
-      .configuration(
-          ElementConfigurationCheckboxDateRangeList.builder()
-              .id(FIELD_ID)
-              .name("TEXT")
-              .label("LABEL")
-              .message(ElementMessage.builder()
-                  .content("CONTENT")
-                  .includedForStatuses(List.of())
-                  .level(MessageLevel.INFO)
-                  .build()
-              )
-              .hideWorkingHours(false)
-              .min(Period.of(2024, 1, 1))
-              .max(Period.of(2024, 12, 31))
-              .dateRanges(dateRanges)
-              .build()
-      )
-      .build();
+  private static final ElementSpecification SPECIFICATION =
+      ElementSpecification.builder()
+          .id(ELEMENT_ID)
+          .configuration(
+              ElementConfigurationCheckboxDateRangeList.builder()
+                  .id(FIELD_ID)
+                  .name("TEXT")
+                  .label("LABEL")
+                  .message(
+                      ElementMessage.builder()
+                          .content("CONTENT")
+                          .includedForStatuses(List.of())
+                          .level(MessageLevel.INFO)
+                          .build())
+                  .hideWorkingHours(false)
+                  .min(Period.of(2024, 1, 1))
+                  .max(Period.of(2024, 12, 31))
+                  .dateRanges(dateRanges)
+                  .build())
+          .build();
 
-  private static final ElementData EXPECTED_ELEMENT_DATA = ElementData.builder()
-      .id(ELEMENT_ID)
-      .value(
-          ElementValueDateRangeList.builder()
-              .dateRangeListId(FIELD_ID)
-              .dateRangeList(List.of(
-                  DateRange.builder()
-                      .dateRangeId(new FieldId(CodeSystemKvFkmu0008.EN_ATTONDEL.code()))
-                      .from(START_DATE)
-                      .to(END_DATE)
-                      .build()
-              ))
-              .build()
-      )
-      .build();
+  private static final ElementData EXPECTED_ELEMENT_DATA =
+      ElementData.builder()
+          .id(ELEMENT_ID)
+          .value(
+              ElementValueDateRangeList.builder()
+                  .dateRangeListId(FIELD_ID)
+                  .dateRangeList(
+                      List.of(
+                          DateRange.builder()
+                              .dateRangeId(new FieldId(CodeSystemKvFkmu0008.EN_ATTONDEL.code()))
+                              .from(START_DATE)
+                              .to(END_DATE)
+                              .build()))
+                  .build())
+          .build();
 
-  private static final ElementData EXPECTED_MULTIPLE_ELEMENT_DATA = ElementData.builder()
-      .id(ELEMENT_ID)
-      .value(
-          ElementValueDateRangeList.builder()
-              .dateRangeListId(FIELD_ID)
-              .dateRangeList(List.of(
-                  DateRange.builder()
-                      .dateRangeId(new FieldId(CodeSystemKvFkmu0008.EN_ATTONDEL.code()))
-                      .from(START_DATE)
-                      .to(END_DATE)
-                      .build(),
-                  DateRange.builder()
-                      .dateRangeId(new FieldId(CodeSystemKvFkmu0008.EN_FJARDEDEL.code()))
-                      .from(START_DATE)
-                      .to(END_DATE)
-                      .build()
-              ))
-              .build()
-      )
-      .build();
+  private static final ElementData EXPECTED_MULTIPLE_ELEMENT_DATA =
+      ElementData.builder()
+          .id(ELEMENT_ID)
+          .value(
+              ElementValueDateRangeList.builder()
+                  .dateRangeListId(FIELD_ID)
+                  .dateRangeList(
+                      List.of(
+                          DateRange.builder()
+                              .dateRangeId(new FieldId(CodeSystemKvFkmu0008.EN_ATTONDEL.code()))
+                              .from(START_DATE)
+                              .to(END_DATE)
+                              .build(),
+                          DateRange.builder()
+                              .dateRangeId(new FieldId(CodeSystemKvFkmu0008.EN_FJARDEDEL.code()))
+                              .from(START_DATE)
+                              .to(END_DATE)
+                              .build()))
+                  .build())
+          .build();
 
-  PrefillCheckboxDateRangeListConverter prefillCheckboxDateRangeListConverter = new PrefillCheckboxDateRangeListConverter();
+  PrefillCheckboxDateRangeListConverter prefillCheckboxDateRangeListConverter =
+      new PrefillCheckboxDateRangeListConverter();
 
   @Test
   void shouldReturnSupportsDateRange() {
-    assertEquals(ElementConfigurationCheckboxDateRangeList.class,
+    assertEquals(
+        ElementConfigurationCheckboxDateRangeList.class,
         prefillCheckboxDateRangeListConverter.supports());
   }
 
@@ -137,8 +149,8 @@ class PrefillCheckboxDateRangeListConverterTest {
     void shouldReturnNullIfNoAnswers() {
       Forifyllnad prefill = new Forifyllnad();
 
-      PrefillAnswer result = prefillCheckboxDateRangeListConverter.prefillAnswer(SPECIFICATION,
-          prefill);
+      PrefillAnswer result =
+          prefillCheckboxDateRangeListConverter.prefillAnswer(SPECIFICATION, prefill);
 
       assertNull(result);
     }
@@ -146,18 +158,15 @@ class PrefillCheckboxDateRangeListConverterTest {
     @Test
     void shouldReturnErrorIfWrongConfigurationType() {
       final var prefill = new Forifyllnad();
-      final var wrongSpec = ElementSpecification.builder()
-          .id(ELEMENT_ID)
-          .configuration(ElementConfigurationCategory.builder().build())
-          .build();
+      final var wrongSpec =
+          ElementSpecification.builder()
+              .id(ELEMENT_ID)
+              .configuration(ElementConfigurationCategory.builder().build())
+              .build();
 
-      final var result = prefillCheckboxDateRangeListConverter.prefillAnswer(wrongSpec,
-          prefill);
+      final var result = prefillCheckboxDateRangeListConverter.prefillAnswer(wrongSpec, prefill);
 
-      assertEquals(
-          PrefillErrorType.TECHNICAL_ERROR,
-          result.getErrors().getFirst().type()
-      );
+      assertEquals(PrefillErrorType.TECHNICAL_ERROR, result.getErrors().getFirst().type());
     }
 
     @Test
@@ -165,15 +174,12 @@ class PrefillCheckboxDateRangeListConverterTest {
 
       var prefill = createForifyllnad();
 
-      final var result = prefillCheckboxDateRangeListConverter.prefillAnswer(
-          SPECIFICATION, prefill);
+      final var result =
+          prefillCheckboxDateRangeListConverter.prefillAnswer(SPECIFICATION, prefill);
 
-      final var expected = PrefillAnswer.builder()
-          .elementData(EXPECTED_ELEMENT_DATA)
-          .build();
+      final var expected = PrefillAnswer.builder().elementData(EXPECTED_ELEMENT_DATA).build();
 
       assertEquals(expected, result);
-
     }
 
     @Test
@@ -181,15 +187,13 @@ class PrefillCheckboxDateRangeListConverterTest {
 
       var prefill = createForifyllnadWithMultipleSubAnswers();
 
-      final var result = prefillCheckboxDateRangeListConverter.prefillAnswer(
-          SPECIFICATION, prefill);
+      final var result =
+          prefillCheckboxDateRangeListConverter.prefillAnswer(SPECIFICATION, prefill);
 
-      final var expected = PrefillAnswer.builder()
-          .elementData(EXPECTED_MULTIPLE_ELEMENT_DATA)
-          .build();
+      final var expected =
+          PrefillAnswer.builder().elementData(EXPECTED_MULTIPLE_ELEMENT_DATA).build();
 
       assertEquals(expected, result);
-
     }
 
     @Test
@@ -198,31 +202,31 @@ class PrefillCheckboxDateRangeListConverterTest {
       final var forifyllnad = createForifyllnadWithMultipleSubAnswers();
       forifyllnad.getSvar().getFirst().getDelsvar().getFirst().getContent().clear();
 
-      final var result = prefillCheckboxDateRangeListConverter.prefillAnswer(
-          SPECIFICATION, forifyllnad);
+      final var result =
+          prefillCheckboxDateRangeListConverter.prefillAnswer(SPECIFICATION, forifyllnad);
 
-      final var expectedData = ElementData.builder()
-          .id(ELEMENT_ID)
-          .value(
-              ElementValueDateRangeList.builder()
-                  .dateRangeListId(FIELD_ID)
-                  .dateRangeList(List.of(
-                      DateRange.builder()
-                          .dateRangeId(new FieldId(CodeSystemKvFkmu0008.EN_FJARDEDEL.code()))
-                          .from(START_DATE)
-                          .to(END_DATE)
-                          .build()
-                  ))
-                  .build()
-          )
-          .build();
+      final var expectedData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueDateRangeList.builder()
+                      .dateRangeListId(FIELD_ID)
+                      .dateRangeList(
+                          List.of(
+                              DateRange.builder()
+                                  .dateRangeId(
+                                      new FieldId(CodeSystemKvFkmu0008.EN_FJARDEDEL.code()))
+                                  .from(START_DATE)
+                                  .to(END_DATE)
+                                  .build()))
+                      .build())
+              .build();
 
       assertAll(
           () -> assertEquals(expectedData, result.getElementData()),
           () -> assertEquals(1, result.getErrors().size()),
-          () -> assertEquals(PrefillErrorType.INVALID_FORMAT, result.getErrors().getFirst().type())
-      );
-
+          () ->
+              assertEquals(PrefillErrorType.INVALID_FORMAT, result.getErrors().getFirst().type()));
     }
   }
 
@@ -232,8 +236,7 @@ class PrefillCheckboxDateRangeListConverterTest {
       var forifyllnad = new Forifyllnad();
       var svar = new Svar();
       svar.setId(ELEMENT_ID.id());
-      svar.getDelsvar().add(createDelsvarCode(CodeSystemKvFkmu0008.EN_ATTONDEL.code(),
-          "TEXT"));
+      svar.getDelsvar().add(createDelsvarCode(CodeSystemKvFkmu0008.EN_ATTONDEL.code(), "TEXT"));
       svar.getDelsvar().add(createDelsvarDate());
       forifyllnad.getSvar().add(svar);
 
@@ -249,14 +252,12 @@ class PrefillCheckboxDateRangeListConverterTest {
       var forifyllnad = new Forifyllnad();
       var svar = new Svar();
       svar.setId(ELEMENT_ID.id());
-      svar.getDelsvar().add(createDelsvarCode(CodeSystemKvFkmu0008.EN_ATTONDEL.code(),
-          "TEXT"));
+      svar.getDelsvar().add(createDelsvarCode(CodeSystemKvFkmu0008.EN_ATTONDEL.code(), "TEXT"));
       svar.getDelsvar().add(createDelsvarDate());
 
       var svar2 = new Svar();
       svar2.setId(ELEMENT_ID.id());
-      svar2.getDelsvar().add(createDelsvarCode(CodeSystemKvFkmu0008.EN_FJARDEDEL.code(),
-          "TEXT"));
+      svar2.getDelsvar().add(createDelsvarCode(CodeSystemKvFkmu0008.EN_FJARDEDEL.code(), "TEXT"));
       svar2.getDelsvar().add(createDelsvarDate());
 
       forifyllnad.getSvar().add(svar);
@@ -302,8 +303,10 @@ class PrefillCheckboxDateRangeListConverterTest {
 
     final var docFactory = DocumentBuilderFactory.newInstance();
     docFactory.setNamespaceAware(true);
-    final var doc = docFactory.newDocumentBuilder()
-        .parse(new org.xml.sax.InputSource(new StringReader(writer.toString())));
+    final var doc =
+        docFactory
+            .newDocumentBuilder()
+            .parse(new org.xml.sax.InputSource(new StringReader(writer.toString())));
     return doc.getDocumentElement();
   }
 

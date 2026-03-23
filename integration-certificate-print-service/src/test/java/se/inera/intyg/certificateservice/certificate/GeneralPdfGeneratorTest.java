@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.certificate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -37,73 +55,65 @@ import se.inera.intyg.certificateservice.domain.common.model.RecipientId;
 @ExtendWith(MockitoExtension.class)
 class GeneralPdfGeneratorTest {
 
-  private static final PrintCertificateCategoryDTO PRINT_CERTIFICATE_CATEGORY_DTO = PrintCertificateCategoryDTO
-      .builder()
-      .questions(List.of())
-      .build();
-  private static final PrintCertificateMetadataDTO PRINT_CERTIFICATE_METADATA_DTO = PrintCertificateMetadataDTO
-      .builder()
-      .build();
-  public static final ElementSpecification ELEMENT_SPECIFICATION = ElementSpecification.builder()
-      .build();
+  private static final PrintCertificateCategoryDTO PRINT_CERTIFICATE_CATEGORY_DTO =
+      PrintCertificateCategoryDTO.builder().questions(List.of()).build();
+  private static final PrintCertificateMetadataDTO PRINT_CERTIFICATE_METADATA_DTO =
+      PrintCertificateMetadataDTO.builder().build();
+  public static final ElementSpecification ELEMENT_SPECIFICATION =
+      ElementSpecification.builder().build();
   private static final Boolean IS_CITIZEN = true;
   private static final String TEXT = "Text";
   private static final String CERTIFICATE_ID = "CertificateId";
   private static final byte[] PDF_DATA = "pdfData".getBytes();
-  private static final Certificate CERTIFICATE = MedicalCertificate.builder()
-      .id(new CertificateId(CERTIFICATE_ID))
-      .certificateModel(
-          CertificateModel.builder()
-              .name("åäö 123 test")
-              .elementSpecifications(
-                  List.of(ELEMENT_SPECIFICATION)
-              )
-              .recipient(
-                  new Recipient(new RecipientId("TS"), "TS", "LA", "logo",
-                      "Läkarintyg Transportstyrelsen")
-              )
-              .build()
-      )
-      .build();
+  private static final Certificate CERTIFICATE =
+      MedicalCertificate.builder()
+          .id(new CertificateId(CERTIFICATE_ID))
+          .certificateModel(
+              CertificateModel.builder()
+                  .name("åäö 123 test")
+                  .elementSpecifications(List.of(ELEMENT_SPECIFICATION))
+                  .recipient(
+                      new Recipient(
+                          new RecipientId("TS"),
+                          "TS",
+                          "LA",
+                          "logo",
+                          "Läkarintyg Transportstyrelsen"))
+                  .build())
+          .build();
 
-  private static final Certificate CERTIFICATE_NO_GENERAL_RECIPIENT_NAME = MedicalCertificate.builder()
-      .id(new CertificateId(CERTIFICATE_ID))
-      .certificateModel(
-          CertificateModel.builder()
-              .name("åäö 123 test")
-              .elementSpecifications(
-                  List.of(ELEMENT_SPECIFICATION)
-              )
-              .recipient(
-                  new Recipient(new RecipientId("TS"), "TS", "LA")
-              )
-              .build()
-      )
-      .build();
-  private static final PrintCertificateResponseDTO RESPONSE = PrintCertificateResponseDTO.builder()
-      .pdfData(PDF_DATA)
-      .build();
+  private static final Certificate CERTIFICATE_NO_GENERAL_RECIPIENT_NAME =
+      MedicalCertificate.builder()
+          .id(new CertificateId(CERTIFICATE_ID))
+          .certificateModel(
+              CertificateModel.builder()
+                  .name("åäö 123 test")
+                  .elementSpecifications(List.of(ELEMENT_SPECIFICATION))
+                  .recipient(new Recipient(new RecipientId("TS"), "TS", "LA"))
+                  .build())
+          .build();
+  private static final PrintCertificateResponseDTO RESPONSE =
+      PrintCertificateResponseDTO.builder().pdfData(PDF_DATA).build();
   private static final String FILE_NAME = "aao_123_test";
-  private static final PdfGeneratorOptions OPTIONS = PdfGeneratorOptions.builder()
-      .additionalInfoText(TEXT)
-      .citizenFormat(IS_CITIZEN)
-      .hiddenElements(List.of())
-      .build();
+  private static final PdfGeneratorOptions OPTIONS =
+      PdfGeneratorOptions.builder()
+          .additionalInfoText(TEXT)
+          .citizenFormat(IS_CITIZEN)
+          .hiddenElements(List.of())
+          .build();
 
-  @Mock
-  private PrintCertificateCategoryConverter printCertificateCategoryConverter;
+  @Mock private PrintCertificateCategoryConverter printCertificateCategoryConverter;
+
   @Mock
   private PrintCertificateFromCertificatePrintService printCertificateFromCertificatePrintService;
-  @Mock
-  private PrintCertificateMetadataConverter printCertificateMetadataConverter;
 
-  @InjectMocks
-  private GeneralPdfGenerator generalPdfGenerator;
+  @Mock private PrintCertificateMetadataConverter printCertificateMetadataConverter;
+
+  @InjectMocks private GeneralPdfGenerator generalPdfGenerator;
 
   @BeforeEach
   void setUp() {
-    when(printCertificateFromCertificatePrintService.print(any()))
-        .thenReturn(RESPONSE);
+    when(printCertificateFromCertificatePrintService.print(any())).thenReturn(RESPONSE);
   }
 
   @Nested
@@ -111,23 +121,22 @@ class GeneralPdfGeneratorTest {
 
     @BeforeEach
     void setup() {
-      when(printCertificateCategoryConverter.convert(CERTIFICATE_NO_GENERAL_RECIPIENT_NAME,
-          ELEMENT_SPECIFICATION, OPTIONS))
+      when(printCertificateCategoryConverter.convert(
+              CERTIFICATE_NO_GENERAL_RECIPIENT_NAME, ELEMENT_SPECIFICATION, OPTIONS))
           .thenReturn(PRINT_CERTIFICATE_CATEGORY_DTO);
-      when(
-          printCertificateMetadataConverter.convert(CERTIFICATE_NO_GENERAL_RECIPIENT_NAME,
-              IS_CITIZEN,
-              FILE_NAME))
+      when(printCertificateMetadataConverter.convert(
+              CERTIFICATE_NO_GENERAL_RECIPIENT_NAME, IS_CITIZEN, FILE_NAME))
           .thenReturn(PRINT_CERTIFICATE_METADATA_DTO);
     }
 
     @Test
     void shouldConvertRequest() {
       final var captor = ArgumentCaptor.forClass(PrintCertificateRequestDTO.class);
-      final var expected = PrintCertificateRequestDTO.builder()
-          .categories(List.of())
-          .metadata(PRINT_CERTIFICATE_METADATA_DTO)
-          .build();
+      final var expected =
+          PrintCertificateRequestDTO.builder()
+              .categories(List.of())
+              .metadata(PRINT_CERTIFICATE_METADATA_DTO)
+              .build();
 
       generalPdfGenerator.generate(CERTIFICATE_NO_GENERAL_RECIPIENT_NAME, OPTIONS);
       verify(printCertificateFromCertificatePrintService).print(captor.capture());
@@ -135,12 +144,11 @@ class GeneralPdfGeneratorTest {
       assertEquals(expected, captor.getValue());
     }
 
-
     @Test
     void shouldConvertResponseWhenNoGeneralFileName() {
       final var expectedResponse = new Pdf(PDF_DATA, FILE_NAME);
-      final var response = generalPdfGenerator.generate(CERTIFICATE_NO_GENERAL_RECIPIENT_NAME,
-          OPTIONS);
+      final var response =
+          generalPdfGenerator.generate(CERTIFICATE_NO_GENERAL_RECIPIENT_NAME, OPTIONS);
 
       assertEquals(expectedResponse, response);
     }
@@ -153,11 +161,10 @@ class GeneralPdfGeneratorTest {
     void setup() {
       when(printCertificateCategoryConverter.convert(CERTIFICATE, ELEMENT_SPECIFICATION, OPTIONS))
           .thenReturn(PRINT_CERTIFICATE_CATEGORY_DTO);
-      when(printCertificateMetadataConverter.convert(CERTIFICATE, IS_CITIZEN,
-          "lakarintyg_transportstyrelsen"))
+      when(printCertificateMetadataConverter.convert(
+              CERTIFICATE, IS_CITIZEN, "lakarintyg_transportstyrelsen"))
           .thenReturn(PRINT_CERTIFICATE_METADATA_DTO);
     }
-
 
     @Test
     void shouldConvertResponseWhenGeneralFileName() {
@@ -172,78 +179,65 @@ class GeneralPdfGeneratorTest {
   @Test
   void shouldNotConvertContactInfoToCategory() {
 
-    var certificateModel = CertificateModel.builder()
-        .name("åäö 123 test")
-        .recipient(
-            new Recipient(new RecipientId("TS"), "TS", "LA")
-        )
-        .elementSpecifications(
-            List.of(ElementSpecification.builder()
-                .id(new ElementId("UNIT_CONTACT_INFORMATION"))
-                .configuration(ElementConfigurationUnitContactInformation.builder()
-                    .build()
-                ).build()
-            )
-        )
-        .build();
+    var certificateModel =
+        CertificateModel.builder()
+            .name("åäö 123 test")
+            .recipient(new Recipient(new RecipientId("TS"), "TS", "LA"))
+            .elementSpecifications(
+                List.of(
+                    ElementSpecification.builder()
+                        .id(new ElementId("UNIT_CONTACT_INFORMATION"))
+                        .configuration(ElementConfigurationUnitContactInformation.builder().build())
+                        .build()))
+            .build();
 
-    final var cert = MedicalCertificate.builder()
-        .id(new CertificateId(CERTIFICATE_ID))
-        .certificateModel(certificateModel)
-        .build();
+    final var cert =
+        MedicalCertificate.builder()
+            .id(new CertificateId(CERTIFICATE_ID))
+            .certificateModel(certificateModel)
+            .build();
 
-    when(
-        printCertificateMetadataConverter.convert(cert,
-            IS_CITIZEN,
-            FILE_NAME))
+    when(printCertificateMetadataConverter.convert(cert, IS_CITIZEN, FILE_NAME))
         .thenReturn(PRINT_CERTIFICATE_METADATA_DTO);
 
     final var captor = ArgumentCaptor.forClass(PrintCertificateRequestDTO.class);
-    final var expected = PrintCertificateRequestDTO.builder()
-        .categories(List.of())
-        .metadata(PRINT_CERTIFICATE_METADATA_DTO)
-        .build();
+    final var expected =
+        PrintCertificateRequestDTO.builder()
+            .categories(List.of())
+            .metadata(PRINT_CERTIFICATE_METADATA_DTO)
+            .build();
 
     generalPdfGenerator.generate(cert, OPTIONS);
     verify(printCertificateFromCertificatePrintService).print(captor.capture());
 
     assertEquals(expected, captor.getValue());
-
   }
 
   @Test
   void shouldFilterCategoriesWithoutQuestions() {
 
-    var categoryWithQuestion = PrintCertificateCategoryDTO
-        .builder()
-        .questions(List.of(PrintCertificateQuestionDTO.builder()
-            .name("name")
-            .build()))
-        .build();
+    var categoryWithQuestion =
+        PrintCertificateCategoryDTO.builder()
+            .questions(List.of(PrintCertificateQuestionDTO.builder().name("name").build()))
+            .build();
 
-    var certWithMultipleElements = MedicalCertificate.builder()
-        .id(new CertificateId(CERTIFICATE_ID))
-        .certificateModel(
-            CertificateModel.builder()
-                .name("åäö 123 test")
-                .elementSpecifications(
-                    List.of(ELEMENT_SPECIFICATION, ELEMENT_SPECIFICATION)
-                )
-                .recipient(
-                    new Recipient(new RecipientId("TS"), "TS", "LA")
-                )
-                .build()
-        )
-        .build();
+    var certWithMultipleElements =
+        MedicalCertificate.builder()
+            .id(new CertificateId(CERTIFICATE_ID))
+            .certificateModel(
+                CertificateModel.builder()
+                    .name("åäö 123 test")
+                    .elementSpecifications(List.of(ELEMENT_SPECIFICATION, ELEMENT_SPECIFICATION))
+                    .recipient(new Recipient(new RecipientId("TS"), "TS", "LA"))
+                    .build())
+            .build();
 
-    when(printCertificateCategoryConverter.convert(certWithMultipleElements,
-        ELEMENT_SPECIFICATION, OPTIONS))
-        .thenReturn(PRINT_CERTIFICATE_CATEGORY_DTO).thenReturn(categoryWithQuestion);
+    when(printCertificateCategoryConverter.convert(
+            certWithMultipleElements, ELEMENT_SPECIFICATION, OPTIONS))
+        .thenReturn(PRINT_CERTIFICATE_CATEGORY_DTO)
+        .thenReturn(categoryWithQuestion);
 
-    when(
-        printCertificateMetadataConverter.convert(certWithMultipleElements,
-            IS_CITIZEN,
-            FILE_NAME))
+    when(printCertificateMetadataConverter.convert(certWithMultipleElements, IS_CITIZEN, FILE_NAME))
         .thenReturn(PRINT_CERTIFICATE_METADATA_DTO);
 
     final var captor = ArgumentCaptor.forClass(PrintCertificateRequestDTO.class);
@@ -252,6 +246,5 @@ class GeneralPdfGeneratorTest {
     verify(printCertificateFromCertificatePrintService).print(captor.capture());
 
     assertEquals(1, captor.getValue().getCategories().size());
-
   }
 }

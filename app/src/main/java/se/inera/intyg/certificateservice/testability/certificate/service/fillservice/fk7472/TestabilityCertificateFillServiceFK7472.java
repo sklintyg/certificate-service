@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.testability.certificate.service.fillservice.fk7472;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.codesystems.CodeSystemKvFkmu0008.EN_ATTONDEL;
@@ -31,8 +49,7 @@ import se.inera.intyg.certificateservice.testability.certificate.dto.Testability
 import se.inera.intyg.certificateservice.testability.certificate.service.fillservice.TestabilityCertificateFillService;
 
 @Component
-public class TestabilityCertificateFillServiceFK7472 implements
-    TestabilityCertificateFillService {
+public class TestabilityCertificateFillServiceFK7472 implements TestabilityCertificateFillService {
 
   @Override
   public List<CertificateModelId> certificateModelIds() {
@@ -40,16 +57,14 @@ public class TestabilityCertificateFillServiceFK7472 implements
   }
 
   @Override
-  public List<ElementData> fill(CertificateModel certificateModel,
-      TestabilityFillTypeDTO fillType) {
+  public List<ElementData> fill(
+      CertificateModel certificateModel, TestabilityFillTypeDTO fillType) {
 
-    return fillType == EMPTY
-        ? Collections.emptyList()
-        : fillWithValues(certificateModel, fillType);
+    return fillType == EMPTY ? Collections.emptyList() : fillWithValues(certificateModel, fillType);
   }
 
-  private static List<ElementData> fillWithValues(CertificateModel certificateModel,
-      TestabilityFillTypeDTO fillType) {
+  private static List<ElementData> fillWithValues(
+      CertificateModel certificateModel, TestabilityFillTypeDTO fillType) {
     final var elementData = new ArrayList<ElementData>();
     final var specSymptom = spec(QUESTION_SYMPTOM_ID, certificateModel);
     final var specPeriod = spec(QUESTION_PERIOD_ID, certificateModel);
@@ -67,18 +82,20 @@ public class TestabilityCertificateFillServiceFK7472 implements
     }
   }
 
-  private static void vardperiod(ElementSpecification spec, List<ElementData> list,
-      TestabilityFillTypeDTO fillType) {
+  private static void vardperiod(
+      ElementSpecification spec, List<ElementData> list, TestabilityFillTypeDTO fillType) {
     if (emptyValue(spec) instanceof ElementValueDateRangeList elementValueDateRangeList) {
-      final var ranges = List.of(
-          dateRange(new FieldId(HELA.code()), nowPlusDays(0L), nowPlusDays(6L)),
-          dateRange(new FieldId(TRE_FJARDEDELAR.code()), nowPlusDays(7L), nowPlusDays(13L)),
-          dateRange(new FieldId(HALVA.code()), nowPlusDays(14L), nowPlusDays(20L)),
-          dateRange(new FieldId(EN_FJARDEDEL.code()), nowPlusDays(21L), nowPlusDays(27L)),
-          dateRange(new FieldId(EN_ATTONDEL.code()), nowPlusDays(28L), nowPlusDays(34L)));
+      final var ranges =
+          List.of(
+              dateRange(new FieldId(HELA.code()), nowPlusDays(0L), nowPlusDays(6L)),
+              dateRange(new FieldId(TRE_FJARDEDELAR.code()), nowPlusDays(7L), nowPlusDays(13L)),
+              dateRange(new FieldId(HALVA.code()), nowPlusDays(14L), nowPlusDays(20L)),
+              dateRange(new FieldId(EN_FJARDEDEL.code()), nowPlusDays(21L), nowPlusDays(27L)),
+              dateRange(new FieldId(EN_ATTONDEL.code()), nowPlusDays(28L), nowPlusDays(34L)));
 
-      final var rangeList = elementValueDateRangeList.withDateRangeList(
-          fillType == MAXIMAL ? ranges : ranges.subList(0, 1));
+      final var rangeList =
+          elementValueDateRangeList.withDateRangeList(
+              fillType == MAXIMAL ? ranges : ranges.subList(0, 1));
       list.add(elementData(spec.id(), rangeList));
     }
   }

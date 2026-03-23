@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service.converter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -48,27 +66,22 @@ class CertificateDataConverterTest {
   private static final String ID_2 = "id2";
   private static final String CHILD_ID = "childId";
   private static final ElementId ELEMENT_ID = new ElementId(ID_1);
-  private static final ElementSpecification ELEMENT_SPECIFICATION = ElementSpecification.builder()
-      .configuration(
-          ElementConfigurationDate.builder().build()
-      )
-      .id(ELEMENT_ID)
-      .build();
-  private static final List<ElementSpecification> ELEMENT_SPECIFICATIONS = List.of(
-      ELEMENT_SPECIFICATION
-  );
+  private static final ElementSpecification ELEMENT_SPECIFICATION =
+      ElementSpecification.builder()
+          .configuration(ElementConfigurationDate.builder().build())
+          .id(ELEMENT_ID)
+          .build();
+  private static final List<ElementSpecification> ELEMENT_SPECIFICATIONS =
+      List.of(ELEMENT_SPECIFICATION);
   private static final String FIELD_ID = "fieldId";
 
-  @Mock
-  private CertificateDataDateConfigConverter certificateDataDateConfigConverter;
-  @Mock
-  private CertificateDataDateConfigConverter certificateDataDateConfigConverterDate;
+  @Mock private CertificateDataDateConfigConverter certificateDataDateConfigConverter;
+  @Mock private CertificateDataDateConfigConverter certificateDataDateConfigConverterDate;
 
   @Mock
   private CertificateDataValidationMandatoryConverter certificateDataValidationMandatoryConverter;
 
-  @Mock
-  private CertificateDataValueConverterDate certificateDataValueConverterDate;
+  @Mock private CertificateDataValueConverterDate certificateDataValueConverterDate;
 
   private CertificateDataConverter certificateDataConverter;
 
@@ -76,14 +89,13 @@ class CertificateDataConverterTest {
 
   @BeforeEach
   void setup() {
-    certificateBuilder = fk7210CertificateBuilder()
-        .elementData(Collections.emptyList());
+    certificateBuilder = fk7210CertificateBuilder().elementData(Collections.emptyList());
 
-    certificateDataConverter = new CertificateDataConverter(
-        List.of(certificateDataDateConfigConverter, certificateDataDateConfigConverterDate),
-        List.of(certificateDataValueConverterDate),
-        List.of(certificateDataValidationMandatoryConverter)
-    );
+    certificateDataConverter =
+        new CertificateDataConverter(
+            List.of(certificateDataDateConfigConverter, certificateDataDateConfigConverterDate),
+            List.of(certificateDataValueConverterDate),
+            List.of(certificateDataValidationMandatoryConverter));
   }
 
   @Nested
@@ -91,47 +103,35 @@ class CertificateDataConverterTest {
 
     @BeforeEach
     void setUp() {
-      when(certificateDataDateConfigConverter.getType())
-          .thenReturn(ElementType.DATE);
-      when(certificateDataValueConverterDate.getType())
-          .thenReturn(ElementType.DATE);
-      when(certificateDataDateConfigConverter.convert(any(ElementSpecification.class),
-          any(MedicalCertificate.class)))
-          .thenReturn(
-              CertificateDataConfigDate.builder().build()
-          );
+      when(certificateDataDateConfigConverter.getType()).thenReturn(ElementType.DATE);
+      when(certificateDataValueConverterDate.getType()).thenReturn(ElementType.DATE);
+      when(certificateDataDateConfigConverter.convert(
+              any(ElementSpecification.class), any(MedicalCertificate.class)))
+          .thenReturn(CertificateDataConfigDate.builder().build());
       when(certificateDataValueConverterDate.convert(any(), any()))
-          .thenReturn(
-              CertificateDataValueDate.builder().build()
-          );
+          .thenReturn(CertificateDataValueDate.builder().build());
     }
-
 
     @Test
     void shallReturnMapOfCertificateDataElements() {
-      final var certificateModel = CertificateModel.builder()
-          .elementSpecifications(ELEMENT_SPECIFICATIONS)
-          .build();
+      final var certificateModel =
+          CertificateModel.builder().elementSpecifications(ELEMENT_SPECIFICATIONS).build();
 
-      final var certificate = certificateBuilder
-          .certificateModel(certificateModel)
-          .build();
+      final var certificate = certificateBuilder.certificateModel(certificateModel).build();
 
       final var result = certificateDataConverter.convert(certificate, false);
-      assertInstanceOf(CertificateDataElement.class, result.get(ID_1),
-          "Should return map of CertificateDataElementDTO"
-      );
+      assertInstanceOf(
+          CertificateDataElement.class,
+          result.get(ID_1),
+          "Should return map of CertificateDataElementDTO");
     }
 
     @Test
     void shallConvertSingleElementData() {
-      final var certificateModel = CertificateModel.builder()
-          .elementSpecifications(ELEMENT_SPECIFICATIONS)
-          .build();
+      final var certificateModel =
+          CertificateModel.builder().elementSpecifications(ELEMENT_SPECIFICATIONS).build();
 
-      final var certificate = certificateBuilder
-          .certificateModel(certificateModel)
-          .build();
+      final var certificate = certificateBuilder.certificateModel(certificateModel).build();
 
       final var result = certificateDataConverter.convert(certificate, false);
 
@@ -143,33 +143,27 @@ class CertificateDataConverterTest {
       final var elementId1 = new ElementId(ID_1);
       final var elementId2 = new ElementId(ID_2);
 
-      final var elementSpecifications = List.of(
-          ElementSpecification.builder()
-              .id(elementId1)
-              .configuration(
-                  ElementConfigurationDate.builder().build()
-              )
-              .build(),
-          ElementSpecification.builder()
-              .id(elementId2)
-              .configuration(
-                  ElementConfigurationDate.builder().build()
-              )
-              .build()
-      );
+      final var elementSpecifications =
+          List.of(
+              ElementSpecification.builder()
+                  .id(elementId1)
+                  .configuration(ElementConfigurationDate.builder().build())
+                  .build(),
+              ElementSpecification.builder()
+                  .id(elementId2)
+                  .configuration(ElementConfigurationDate.builder().build())
+                  .build());
 
-      final var certificateModel = CertificateModel.builder()
-          .elementSpecifications(elementSpecifications)
-          .build();
+      final var certificateModel =
+          CertificateModel.builder().elementSpecifications(elementSpecifications).build();
 
-      final var certificate = certificateBuilder
-          .certificateModel(certificateModel)
-          .build();
+      final var certificate = certificateBuilder.certificateModel(certificateModel).build();
 
       final var result = certificateDataConverter.convert(certificate, false);
 
       assertEquals(2, result.size(), "Map should contain two entries");
-      assertTrue(result.containsKey(ID_1) && result.containsKey(ID_2),
+      assertTrue(
+          result.containsKey(ID_1) && result.containsKey(ID_2),
           "Map should contain keys 'id1' and 'id2'");
     }
 
@@ -178,30 +172,28 @@ class CertificateDataConverterTest {
       final var elementId1 = new ElementId(ID_1);
       final var elementId2 = new ElementId(ID_2);
 
-      final var elementSpecification1 = ElementSpecification.builder()
-          .id(elementId1)
-          .configuration(
-              ElementConfigurationDate.builder().build()
-          )
-          .build();
-      final var elementSpecification2 = ElementSpecification.builder()
-          .id(elementId2)
-          .configuration(
-              ElementConfigurationDate.builder().build()
-          )
-          .build();
+      final var elementSpecification1 =
+          ElementSpecification.builder()
+              .id(elementId1)
+              .configuration(ElementConfigurationDate.builder().build())
+              .build();
+      final var elementSpecification2 =
+          ElementSpecification.builder()
+              .id(elementId2)
+              .configuration(ElementConfigurationDate.builder().build())
+              .build();
 
-      final var certificateModel = CertificateModel.builder()
-          .elementSpecifications(List.of(elementSpecification1, elementSpecification2))
-          .build();
+      final var certificateModel =
+          CertificateModel.builder()
+              .elementSpecifications(List.of(elementSpecification1, elementSpecification2))
+              .build();
 
-      final var certificate = certificateBuilder
-          .certificateModel(certificateModel)
-          .build();
+      final var certificate = certificateBuilder.certificateModel(certificateModel).build();
 
       final var result = certificateDataConverter.convert(certificate, false);
 
-      assertTrue(result.get(ID_1).getIndex() < result.get(ID_2).getIndex(),
+      assertTrue(
+          result.get(ID_1).getIndex() < result.get(ID_2).getIndex(),
           "First element should have a lower index than the second element");
     }
 
@@ -211,35 +203,31 @@ class CertificateDataConverterTest {
       final var elementId2 = new ElementId(ID_2);
       final var elementId3 = new ElementId(CHILD_ID);
 
-      final var children = ElementSpecification.builder()
-          .id(elementId3)
-          .configuration(
-              ElementConfigurationDate.builder().build()
-          )
-          .build();
+      final var children =
+          ElementSpecification.builder()
+              .id(elementId3)
+              .configuration(ElementConfigurationDate.builder().build())
+              .build();
 
-      final var elementSpecification1 = ElementSpecification.builder()
-          .id(elementId1)
-          .configuration(
-              ElementConfigurationDate.builder().build()
-          )
-          .children(List.of(children))
-          .build();
+      final var elementSpecification1 =
+          ElementSpecification.builder()
+              .id(elementId1)
+              .configuration(ElementConfigurationDate.builder().build())
+              .children(List.of(children))
+              .build();
 
-      final var elementSpecification2 = ElementSpecification.builder()
-          .id(elementId2)
-          .configuration(
-              ElementConfigurationDate.builder().build()
-          )
-          .build();
+      final var elementSpecification2 =
+          ElementSpecification.builder()
+              .id(elementId2)
+              .configuration(ElementConfigurationDate.builder().build())
+              .build();
 
-      final var certificateModel = CertificateModel.builder()
-          .elementSpecifications(List.of(elementSpecification1, elementSpecification2))
-          .build();
+      final var certificateModel =
+          CertificateModel.builder()
+              .elementSpecifications(List.of(elementSpecification1, elementSpecification2))
+              .build();
 
-      final var certificate = certificateBuilder
-          .certificateModel(certificateModel)
-          .build();
+      final var certificate = certificateBuilder.certificateModel(certificateModel).build();
 
       final var result = certificateDataConverter.convert(certificate, false);
 
@@ -250,25 +238,23 @@ class CertificateDataConverterTest {
 
     @Test
     void shallSetParentAttributeToNullWhenNoParentExists() {
-      final var certificateModel = CertificateModel.builder()
-          .elementSpecifications(List.of(
-              ElementSpecification.builder()
-                  .configuration(
-                      ElementConfigurationDate.builder().build()
-                  )
-                  .id(new ElementId(ID_1))
-                  .build()
-          ))
-          .build();
+      final var certificateModel =
+          CertificateModel.builder()
+              .elementSpecifications(
+                  List.of(
+                      ElementSpecification.builder()
+                          .configuration(ElementConfigurationDate.builder().build())
+                          .id(new ElementId(ID_1))
+                          .build()))
+              .build();
 
-      final var certificate = certificateBuilder
-          .certificateModel(certificateModel)
-          .build();
+      final var certificate = certificateBuilder.certificateModel(certificateModel).build();
 
       final var result = certificateDataConverter.convert(certificate, false);
 
       final var certificateDataElement = result.get(ID_1);
-      assertNull(certificateDataElement.getParent(),
+      assertNull(
+          certificateDataElement.getParent(),
           "Parent attribute should be null when no parent exists.");
     }
 
@@ -277,28 +263,23 @@ class CertificateDataConverterTest {
       final var parentElementId = "parent1";
       final var childElementId = "child1";
 
-      final var childSpecification = ElementSpecification.builder()
-          .id(new ElementId(childElementId))
-          .configuration(
-              ElementConfigurationDate.builder().build()
-          )
-          .build();
+      final var childSpecification =
+          ElementSpecification.builder()
+              .id(new ElementId(childElementId))
+              .configuration(ElementConfigurationDate.builder().build())
+              .build();
 
-      final var parentSpecification = ElementSpecification.builder()
-          .id(new ElementId(parentElementId))
-          .configuration(
-              ElementConfigurationDate.builder().build()
-          )
-          .children(List.of(childSpecification))
-          .build();
+      final var parentSpecification =
+          ElementSpecification.builder()
+              .id(new ElementId(parentElementId))
+              .configuration(ElementConfigurationDate.builder().build())
+              .children(List.of(childSpecification))
+              .build();
 
-      final var certificateModel = CertificateModel.builder()
-          .elementSpecifications(List.of(parentSpecification))
-          .build();
+      final var certificateModel =
+          CertificateModel.builder().elementSpecifications(List.of(parentSpecification)).build();
 
-      final var certificate = certificateBuilder
-          .certificateModel(certificateModel)
-          .build();
+      final var certificate = certificateBuilder.certificateModel(certificateModel).build();
 
       final var result = certificateDataConverter.convert(certificate, false);
 
@@ -312,39 +293,31 @@ class CertificateDataConverterTest {
       final var childElementId = "child1";
       final var subQuestionId = "child2";
 
-      final var subChildSpecification = ElementSpecification.builder()
-          .id(new ElementId(subQuestionId))
-          .configuration(
-              ElementConfigurationDate.builder().build()
-          )
-          .children(List.of())
-          .build();
+      final var subChildSpecification =
+          ElementSpecification.builder()
+              .id(new ElementId(subQuestionId))
+              .configuration(ElementConfigurationDate.builder().build())
+              .children(List.of())
+              .build();
 
-      final var childSpecification = ElementSpecification.builder()
-          .id(new ElementId(childElementId))
-          .configuration(
-              ElementConfigurationDate.builder().build()
-          )
-          .children(List.of(subChildSpecification))
-          .build();
+      final var childSpecification =
+          ElementSpecification.builder()
+              .id(new ElementId(childElementId))
+              .configuration(ElementConfigurationDate.builder().build())
+              .children(List.of(subChildSpecification))
+              .build();
 
-      final var parentSpecification = ElementSpecification.builder()
-          .id(new ElementId(parentElementId))
-          .configuration(
-              ElementConfigurationDate.builder().build()
-          )
-          .children(List.of(childSpecification))
-          .build();
+      final var parentSpecification =
+          ElementSpecification.builder()
+              .id(new ElementId(parentElementId))
+              .configuration(ElementConfigurationDate.builder().build())
+              .children(List.of(childSpecification))
+              .build();
 
-      final var certificateModel = CertificateModel.builder()
-          .elementSpecifications(
-              List.of(parentSpecification)
-          )
-          .build();
+      final var certificateModel =
+          CertificateModel.builder().elementSpecifications(List.of(parentSpecification)).build();
 
-      final var certificate = certificateBuilder
-          .certificateModel(certificateModel)
-          .build();
+      final var certificate = certificateBuilder.certificateModel(certificateModel).build();
 
       final var result = certificateDataConverter.convert(certificate, false);
 
@@ -354,44 +327,32 @@ class CertificateDataConverterTest {
 
     @Test
     void shallConvertCertificateDataElementConfig() {
-      final var certificateModel = CertificateModel.builder()
-          .elementSpecifications(ELEMENT_SPECIFICATIONS)
-          .build();
+      final var certificateModel =
+          CertificateModel.builder().elementSpecifications(ELEMENT_SPECIFICATIONS).build();
 
-      final var certificate = certificateBuilder
-          .certificateModel(certificateModel)
-          .build();
+      final var certificate = certificateBuilder.certificateModel(certificateModel).build();
 
       final var result = certificateDataConverter.convert(certificate, false);
 
-      assertNotNull(result.get(ID_1).getConfig(),
-          "CertificateDataElementDTO should contain config");
+      assertNotNull(
+          result.get(ID_1).getConfig(), "CertificateDataElementDTO should contain config");
     }
 
     @Test
     void shallConvertCertificateDataElementValidation() {
       final var elementId = new ElementId(ID_1);
-      final var elementSpecification = ElementSpecification.builder()
-          .configuration(
-              ElementConfigurationDate.builder().build()
-          )
-          .rules(
-              List.of(
-                  ElementRuleExpression.builder()
-                      .type(ElementRuleType.MANDATORY)
-                      .build()
-              )
-          )
-          .id(elementId)
-          .build();
+      final var elementSpecification =
+          ElementSpecification.builder()
+              .configuration(ElementConfigurationDate.builder().build())
+              .rules(
+                  List.of(ElementRuleExpression.builder().type(ElementRuleType.MANDATORY).build()))
+              .id(elementId)
+              .build();
 
-      final var elementSpecifications = List.of(
-          elementSpecification
-      );
+      final var elementSpecifications = List.of(elementSpecification);
 
-      final var certificateModel = CertificateModel.builder()
-          .elementSpecifications(elementSpecifications)
-          .build();
+      final var certificateModel =
+          CertificateModel.builder().elementSpecifications(elementSpecifications).build();
 
       doReturn(CertificateDataValidationMandatory.builder().build())
           .when(certificateDataValidationMandatoryConverter)
@@ -399,211 +360,172 @@ class CertificateDataConverterTest {
       when(certificateDataValidationMandatoryConverter.getType())
           .thenReturn(ElementRuleType.MANDATORY);
 
-      final var certificate = certificateBuilder
-          .certificateModel(certificateModel)
-          .build();
+      final var certificate = certificateBuilder.certificateModel(certificateModel).build();
 
       final var result = certificateDataConverter.convert(certificate, false);
 
-      assertNotNull(result.get(ID_1).getValidation(),
-          "CertificateDataElementDTO should contain validation");
+      assertNotNull(
+          result.get(ID_1).getValidation(), "CertificateDataElementDTO should contain validation");
     }
 
     @Test
     void shallConvertCertificateDataElementValidationToEmptyArrayIfRulesIsEmpty() {
       final var elementId = new ElementId(ID_1);
-      final var elementSpecification = ElementSpecification.builder()
-          .configuration(
-              ElementConfigurationDate.builder().build()
-          )
-          .id(elementId)
-          .build();
+      final var elementSpecification =
+          ElementSpecification.builder()
+              .configuration(ElementConfigurationDate.builder().build())
+              .id(elementId)
+              .build();
 
-      final var elementSpecifications = List.of(
-          elementSpecification
-      );
+      final var elementSpecifications = List.of(elementSpecification);
 
-      final var certificateModel = CertificateModel.builder()
-          .elementSpecifications(elementSpecifications)
-          .build();
+      final var certificateModel =
+          CertificateModel.builder().elementSpecifications(elementSpecifications).build();
 
-      final var certificate = certificateBuilder
-          .certificateModel(certificateModel)
-          .build();
+      final var certificate = certificateBuilder.certificateModel(certificateModel).build();
 
       final var result = certificateDataConverter.convert(certificate, false);
 
-      assertEquals(0, result.get(ID_1).getValidation().length,
+      assertEquals(
+          0,
+          result.get(ID_1).getValidation().length,
           "CertificateDataElementDTO should contain empty validation");
     }
 
     @Test
     void shallConvertCertificateDataElementValue() {
       final var elementId = new ElementId(ID_1);
-      final var elementData = ElementData.builder()
-          .id(elementId)
-          .value(ElementValueDate.builder().build())
-          .build();
+      final var elementData =
+          ElementData.builder().id(elementId).value(ElementValueDate.builder().build()).build();
 
-      final var elementSpecification = ElementSpecification.builder()
-          .id(elementId)
-          .configuration(
-              ElementConfigurationDate.builder().build()
-          )
-          .build();
+      final var elementSpecification =
+          ElementSpecification.builder()
+              .id(elementId)
+              .configuration(ElementConfigurationDate.builder().build())
+              .build();
 
-      final var elementSpecifications = List.of(
-          elementSpecification
-      );
+      final var elementSpecifications = List.of(elementSpecification);
 
-      final var certificateModel = CertificateModel.builder()
-          .elementSpecifications(elementSpecifications)
-          .build();
+      final var certificateModel =
+          CertificateModel.builder().elementSpecifications(elementSpecifications).build();
 
-      final var certificate = certificateBuilder
-          .certificateModel(certificateModel)
-          .elementData(List.of(elementData))
-          .build();
+      final var certificate =
+          certificateBuilder
+              .certificateModel(certificateModel)
+              .elementData(List.of(elementData))
+              .build();
 
       final var result = certificateDataConverter.convert(certificate, false);
 
-      assertNotNull(result.get(ID_1).getValue(),
-          "CertificateDataElementDTO should contain value");
+      assertNotNull(result.get(ID_1).getValue(), "CertificateDataElementDTO should contain value");
     }
-
   }
 
   @Test
   void shallThrowIfNoConverterFoundForElementValue() {
     final var elementId = new ElementId(ID_1);
-    final var elementData = ElementData.builder()
-        .id(elementId)
-        .value(ElementValueDate.builder().build())
-        .build();
+    final var elementData =
+        ElementData.builder().id(elementId).value(ElementValueDate.builder().build()).build();
 
-    final var elementSpecification = ElementSpecification.builder()
-        .id(elementId)
-        .configuration(
-            ElementConfigurationTextArea.builder().build()
-        )
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .id(elementId)
+            .configuration(ElementConfigurationTextArea.builder().build())
+            .build();
 
-    final var elementSpecifications = List.of(
-        elementSpecification
-    );
+    final var elementSpecifications = List.of(elementSpecification);
 
-    final var certificateModel = CertificateModel.builder()
-        .elementSpecifications(elementSpecifications)
-        .build();
+    final var certificateModel =
+        CertificateModel.builder().elementSpecifications(elementSpecifications).build();
 
     final var elementDataList = List.of(elementData);
 
-    final var certificate = certificateBuilder
-        .certificateModel(certificateModel)
-        .elementData(elementDataList)
-        .build();
+    final var certificate =
+        certificateBuilder.certificateModel(certificateModel).elementData(elementDataList).build();
 
-    when(certificateDataDateConfigConverter.getType())
-        .thenReturn(ElementType.TEXT_AREA);
-    when(certificateDataValueConverterDate.getType())
-        .thenReturn(ElementType.DATE);
-    when(certificateDataDateConfigConverter.convert(any(ElementSpecification.class),
-        eq(certificate)))
-        .thenReturn(
-            CertificateDataConfigDate.builder().build()
-        );
+    when(certificateDataDateConfigConverter.getType()).thenReturn(ElementType.TEXT_AREA);
+    when(certificateDataValueConverterDate.getType()).thenReturn(ElementType.DATE);
+    when(certificateDataDateConfigConverter.convert(
+            any(ElementSpecification.class), eq(certificate)))
+        .thenReturn(CertificateDataConfigDate.builder().build());
 
-    final var illegalStateException = assertThrows(IllegalStateException.class,
-        () -> certificateDataConverter.convert(certificate, false));
+    final var illegalStateException =
+        assertThrows(
+            IllegalStateException.class,
+            () -> certificateDataConverter.convert(certificate, false));
 
-    assertTrue(illegalStateException.getMessage().contains("Could not find value converter"),
-        "Message was %s".formatted(illegalStateException.getMessage())
-    );
+    assertTrue(
+        illegalStateException.getMessage().contains("Could not find value converter"),
+        "Message was %s".formatted(illegalStateException.getMessage()));
   }
 
   @Test
   void shallReturnNullIfCategoryConfiguration() {
     final var elementId = new ElementId(ID_1);
-    final var elementData = ElementData.builder()
-        .id(elementId)
-        .value(ElementValueDate.builder().build())
-        .build();
+    final var elementData =
+        ElementData.builder().id(elementId).value(ElementValueDate.builder().build()).build();
 
-    final var elementSpecification = ElementSpecification.builder()
-        .id(elementId)
-        .configuration(
-            ElementConfigurationCategory.builder().build()
-        )
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .id(elementId)
+            .configuration(ElementConfigurationCategory.builder().build())
+            .build();
 
-    final var elementSpecifications = List.of(
-        elementSpecification
-    );
+    final var elementSpecifications = List.of(elementSpecification);
 
-    final var certificateModel = CertificateModel.builder()
-        .elementSpecifications(elementSpecifications)
-        .build();
+    final var certificateModel =
+        CertificateModel.builder().elementSpecifications(elementSpecifications).build();
 
-    final var certificate = certificateBuilder
-        .certificateModel(certificateModel)
-        .elementData(List.of(elementData))
-        .build();
+    final var certificate =
+        certificateBuilder
+            .certificateModel(certificateModel)
+            .elementData(List.of(elementData))
+            .build();
 
-    when(certificateDataDateConfigConverter.getType())
-        .thenReturn(ElementType.CATEGORY);
+    when(certificateDataDateConfigConverter.getType()).thenReturn(ElementType.CATEGORY);
 
-    when(certificateDataDateConfigConverter.convert(any(ElementSpecification.class),
-        eq(certificate)))
-        .thenReturn(
-            CertificateDataConfigDate.builder().build()
-        );
+    when(certificateDataDateConfigConverter.convert(
+            any(ElementSpecification.class), eq(certificate)))
+        .thenReturn(CertificateDataConfigDate.builder().build());
 
     final var result = certificateDataConverter.convert(certificate, false);
 
-    assertNull(result.get(ID_1).getValue(),
-        "CertificateDataElementDTO should be null if category");
+    assertNull(result.get(ID_1).getValue(), "CertificateDataElementDTO should be null if category");
   }
 
   @Test
   void shallReturnNullIfMessageConfiguration() {
     final var elementId = new ElementId(ID_1);
-    final var elementData = ElementData.builder()
-        .id(elementId)
-        .value(ElementValueDate.builder().build())
-        .build();
+    final var elementData =
+        ElementData.builder().id(elementId).value(ElementValueDate.builder().build()).build();
 
-    final var elementSpecification = ElementSpecification.builder()
-        .id(elementId)
-        .configuration(
-            ElementConfigurationMessage.builder().build()
-        )
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .id(elementId)
+            .configuration(ElementConfigurationMessage.builder().build())
+            .build();
 
-    final var elementSpecifications = List.of(
-        elementSpecification
-    );
+    final var elementSpecifications = List.of(elementSpecification);
 
-    final var certificateModel = CertificateModel.builder()
-        .elementSpecifications(elementSpecifications)
-        .build();
+    final var certificateModel =
+        CertificateModel.builder().elementSpecifications(elementSpecifications).build();
 
-    final var certificate = certificateBuilder
-        .certificateModel(certificateModel)
-        .elementData(List.of(elementData))
-        .build();
+    final var certificate =
+        certificateBuilder
+            .certificateModel(certificateModel)
+            .elementData(List.of(elementData))
+            .build();
 
-    when(certificateDataDateConfigConverter.getType())
-        .thenReturn(ElementType.MESSAGE);
+    when(certificateDataDateConfigConverter.getType()).thenReturn(ElementType.MESSAGE);
 
-    when(certificateDataDateConfigConverter.convert(any(ElementSpecification.class),
-        eq(certificate)))
-        .thenReturn(
-            CertificateDataConfigDate.builder().build()
-        );
+    when(certificateDataDateConfigConverter.convert(
+            any(ElementSpecification.class), eq(certificate)))
+        .thenReturn(CertificateDataConfigDate.builder().build());
 
     final var result = certificateDataConverter.convert(certificate, false);
 
-    assertNull(result.get(ID_1).getValue(),
+    assertNull(
+        result.get(ID_1).getValue(),
         "CertificateDataElementDTO should be null if message configuration");
   }
 
@@ -612,39 +534,30 @@ class CertificateDataConverterTest {
     final var elementId = new ElementId(ID_1);
     final var elementIdWithoutValue = new ElementId(ID_2);
 
-    final var elementSpecification = ElementSpecification.builder()
-        .id(elementId)
-        .configuration(
-            ElementConfigurationCategory.builder().build()
-        )
-        .children(
-            List.of(
-                ElementSpecification.builder()
-                    .id(elementIdWithoutValue)
-                    .configuration(
-                        ElementConfigurationDate.builder().build()
-                    )
-                    .build()
-            )
-        )
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .id(elementId)
+            .configuration(ElementConfigurationCategory.builder().build())
+            .children(
+                List.of(
+                    ElementSpecification.builder()
+                        .id(elementIdWithoutValue)
+                        .configuration(ElementConfigurationDate.builder().build())
+                        .build()))
+            .build();
 
-    final var elementSpecifications = List.of(
-        elementSpecification
-    );
+    final var elementSpecifications = List.of(elementSpecification);
 
-    final var certificateModel = CertificateModel.builder()
-        .elementSpecifications(elementSpecifications)
-        .build();
+    final var certificateModel =
+        CertificateModel.builder().elementSpecifications(elementSpecifications).build();
 
-    final var certificate = certificateBuilder
-        .certificateModel(certificateModel)
-        .status(Status.SIGNED)
-        .build();
+    final var certificate =
+        certificateBuilder.certificateModel(certificateModel).status(Status.SIGNED).build();
 
     final var result = certificateDataConverter.convert(certificate, false);
 
-    assertNull(result.get(ID_2),
+    assertNull(
+        result.get(ID_2),
         "Should not include CertificateDataElementDTO if certificate is signed and missing element data");
   }
 
@@ -653,67 +566,48 @@ class CertificateDataConverterTest {
     final var elementId = new ElementId(ID_1);
     final var elementIdWithoutValue = new ElementId(ID_2);
 
-    final var elementSpecification = ElementSpecification.builder()
-        .id(elementId)
-        .configuration(
-            ElementConfigurationCategory.builder().build()
-        )
-        .children(
-            List.of(
-                ElementSpecification.builder()
-                    .id(elementIdWithoutValue)
-                    .visibilityConfiguration(
-                        ElementVisibilityConfigurationsCheckboxMultipleCode.builder().build()
-                    )
-                    .configuration(
-                        ElementConfigurationDate.builder().build()
-                    )
-                    .build()
-            )
-        )
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .id(elementId)
+            .configuration(ElementConfigurationCategory.builder().build())
+            .children(
+                List.of(
+                    ElementSpecification.builder()
+                        .id(elementIdWithoutValue)
+                        .visibilityConfiguration(
+                            ElementVisibilityConfigurationsCheckboxMultipleCode.builder().build())
+                        .configuration(ElementConfigurationDate.builder().build())
+                        .build()))
+            .build();
 
-    final var elementSpecifications = List.of(
-        elementSpecification
-    );
+    final var elementSpecifications = List.of(elementSpecification);
 
-    final var certificateModel = CertificateModel.builder()
-        .elementSpecifications(elementSpecifications)
-        .build();
+    final var certificateModel =
+        CertificateModel.builder().elementSpecifications(elementSpecifications).build();
 
-    final var certificate = certificateBuilder
-        .certificateModel(certificateModel)
-        .status(Status.SIGNED)
-        .build();
+    final var certificate =
+        certificateBuilder.certificateModel(certificateModel).status(Status.SIGNED).build();
 
-    when(certificateDataDateConfigConverter.getType())
-        .thenReturn(ElementType.CATEGORY);
-    when(certificateDataDateConfigConverterDate.getType())
-        .thenReturn(ElementType.DATE);
+    when(certificateDataDateConfigConverter.getType()).thenReturn(ElementType.CATEGORY);
+    when(certificateDataDateConfigConverterDate.getType()).thenReturn(ElementType.DATE);
 
-    when(certificateDataDateConfigConverter.convert(any(ElementSpecification.class),
-        eq(certificate)))
-        .thenReturn(
-            CertificateDataConfigDate.builder().build()
-        );
+    when(certificateDataDateConfigConverter.convert(
+            any(ElementSpecification.class), eq(certificate)))
+        .thenReturn(CertificateDataConfigDate.builder().build());
 
-    when(certificateDataDateConfigConverterDate.convert(any(ElementSpecification.class),
-        eq(certificate)))
-        .thenReturn(
-            CertificateDataConfigDate.builder().build()
-        );
+    when(certificateDataDateConfigConverterDate.convert(
+            any(ElementSpecification.class), eq(certificate)))
+        .thenReturn(CertificateDataConfigDate.builder().build());
 
-    when(certificateDataValueConverterDate.getType())
-        .thenReturn(ElementType.DATE);
+    when(certificateDataValueConverterDate.getType()).thenReturn(ElementType.DATE);
 
     when(certificateDataValueConverterDate.convert(any(), any()))
-        .thenReturn(
-            CertificateDataValueDate.builder().build()
-        );
+        .thenReturn(CertificateDataValueDate.builder().build());
 
     final var result = certificateDataConverter.convert(certificate, false);
 
-    assertNotNull(result.get(ID_2),
+    assertNotNull(
+        result.get(ID_2),
         "Should include CertificateDataElementDTO if certificate is signed and missing element data if visibility configuration is present");
   }
 
@@ -722,118 +616,86 @@ class CertificateDataConverterTest {
     final var elementId = new ElementId(ID_1);
     final var elementIdWithoutValue = new ElementId(ID_2);
 
-    final var elementSpecification = ElementSpecification.builder()
-        .id(elementId)
-        .configuration(
-            ElementConfigurationCategory.builder().build()
-        )
-        .children(
-            List.of(
-                ElementSpecification.builder()
-                    .id(elementIdWithoutValue)
-                    .configuration(
-                        ElementConfigurationDate.builder().build()
-                    )
-                    .build()
-            )
-        )
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .id(elementId)
+            .configuration(ElementConfigurationCategory.builder().build())
+            .children(
+                List.of(
+                    ElementSpecification.builder()
+                        .id(elementIdWithoutValue)
+                        .configuration(ElementConfigurationDate.builder().build())
+                        .build()))
+            .build();
 
-    final var elementSpecifications = List.of(
-        elementSpecification
-    );
+    final var elementSpecifications = List.of(elementSpecification);
 
-    final var certificateModel = CertificateModel.builder()
-        .elementSpecifications(elementSpecifications)
-        .build();
+    final var certificateModel =
+        CertificateModel.builder().elementSpecifications(elementSpecifications).build();
 
-    final var certificate = certificateBuilder
-        .certificateModel(certificateModel)
-        .status(Status.DRAFT)
-        .build();
+    final var certificate =
+        certificateBuilder.certificateModel(certificateModel).status(Status.DRAFT).build();
 
-    when(certificateDataDateConfigConverter.getType())
-        .thenReturn(ElementType.CATEGORY);
-    when(certificateDataDateConfigConverterDate.getType())
-        .thenReturn(ElementType.DATE);
+    when(certificateDataDateConfigConverter.getType()).thenReturn(ElementType.CATEGORY);
+    when(certificateDataDateConfigConverterDate.getType()).thenReturn(ElementType.DATE);
 
-    when(certificateDataDateConfigConverter.convert(any(ElementSpecification.class),
-        eq(certificate)))
-        .thenReturn(
-            CertificateDataConfigDate.builder().build()
-        );
+    when(certificateDataDateConfigConverter.convert(
+            any(ElementSpecification.class), eq(certificate)))
+        .thenReturn(CertificateDataConfigDate.builder().build());
 
-    when(certificateDataDateConfigConverterDate.convert(any(ElementSpecification.class),
-        eq(certificate)))
-        .thenReturn(
-            CertificateDataConfigDate.builder().build()
-        );
+    when(certificateDataDateConfigConverterDate.convert(
+            any(ElementSpecification.class), eq(certificate)))
+        .thenReturn(CertificateDataConfigDate.builder().build());
 
-    when(certificateDataValueConverterDate.getType())
-        .thenReturn(ElementType.DATE);
+    when(certificateDataValueConverterDate.getType()).thenReturn(ElementType.DATE);
 
     when(certificateDataValueConverterDate.convert(any(), any()))
-        .thenReturn(
-            CertificateDataValueDate.builder().build()
-        );
+        .thenReturn(CertificateDataValueDate.builder().build());
 
     final var result = certificateDataConverter.convert(certificate, false);
 
-    assertNotNull(result.get(ID_2),
+    assertNotNull(
+        result.get(ID_2),
         "Should include CertificateDataElementDTO if certificate is draft and missing element data");
   }
 
   @Test
   void shallNotConvertSpecificationsOfIssuingUnitTypeConfiguration() {
-    final var elementSpecification = ElementSpecification.builder()
-        .configuration(
-            ElementConfigurationUnitContactInformation.builder().build()
-        )
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .configuration(ElementConfigurationUnitContactInformation.builder().build())
+            .build();
 
-    final var elementSpecifications = List.of(
-        elementSpecification
-    );
+    final var elementSpecifications = List.of(elementSpecification);
 
-    final var certificateModel = CertificateModel.builder()
-        .elementSpecifications(elementSpecifications)
-        .build();
+    final var certificateModel =
+        CertificateModel.builder().elementSpecifications(elementSpecifications).build();
 
-    final var certificate = certificateBuilder
-        .certificateModel(certificateModel)
-        .build();
+    final var certificate = certificateBuilder.certificateModel(certificateModel).build();
 
     final var result = certificateDataConverter.convert(certificate, false);
 
-    assertTrue(result.isEmpty(),
-        "Should not convert ElementConfigurationMetaData");
+    assertTrue(result.isEmpty(), "Should not convert ElementConfigurationMetaData");
   }
 
   @Test
   void shallNotConvertSpecificationsOfMessageConfigurationIfNotUnsigned() {
-    final var elementSpecification = ElementSpecification.builder()
-        .configuration(
-            ElementConfigurationMessage.builder().build()
-        )
-        .build();
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .configuration(ElementConfigurationMessage.builder().build())
+            .build();
 
-    final var elementSpecifications = List.of(
-        elementSpecification
-    );
+    final var elementSpecifications = List.of(elementSpecification);
 
-    final var certificateModel = CertificateModel.builder()
-        .elementSpecifications(elementSpecifications)
-        .build();
+    final var certificateModel =
+        CertificateModel.builder().elementSpecifications(elementSpecifications).build();
 
-    final var certificate = certificateBuilder
-        .status(Status.SIGNED)
-        .certificateModel(certificateModel)
-        .build();
+    final var certificate =
+        certificateBuilder.status(Status.SIGNED).certificateModel(certificateModel).build();
 
     final var result = certificateDataConverter.convert(certificate, false);
 
-    assertTrue(result.isEmpty(),
-        "Should not convert message");
+    assertTrue(result.isEmpty(), "Should not convert message");
   }
 
   @Nested
@@ -841,93 +703,75 @@ class CertificateDataConverterTest {
 
     @BeforeEach
     void setUp() {
-      when(certificateDataDateConfigConverter.getType())
-          .thenReturn(ElementType.DATE);
-      when(certificateDataValueConverterDate.getType())
-          .thenReturn(ElementType.DATE);
-      when(certificateDataDateConfigConverter.convert(any(ElementSpecification.class),
-          any(MedicalCertificate.class)))
-          .thenReturn(
-              CertificateDataConfigDate.builder().build()
-          );
+      when(certificateDataDateConfigConverter.getType()).thenReturn(ElementType.DATE);
+      when(certificateDataValueConverterDate.getType()).thenReturn(ElementType.DATE);
+      when(certificateDataDateConfigConverter.convert(
+              any(ElementSpecification.class), any(MedicalCertificate.class)))
+          .thenReturn(CertificateDataConfigDate.builder().build());
       when(certificateDataValueConverterDate.convert(any(), any()))
-          .thenReturn(
-              CertificateDataValueDate.builder().build()
-          );
+          .thenReturn(CertificateDataValueDate.builder().build());
     }
 
     @Test
-    void shallRemoveChildElementSpecificationIfIncludeForCitizenIsFalseAndCertificateIsForCitizen() {
+    void
+        shallRemoveChildElementSpecificationIfIncludeForCitizenIsFalseAndCertificateIsForCitizen() {
       final var elementId1 = new ElementId(ID_1);
       final var elementId2 = new ElementId(ID_2);
 
-      final var elementSpecifications = List.of(
-          ElementSpecification.builder()
-              .id(elementId1)
-              .includeForCitizen(true)
-              .configuration(
-                  ElementConfigurationDate.builder().build()
-              )
-              .children(List.of(ElementSpecification.builder()
+      final var elementSpecifications =
+          List.of(
+              ElementSpecification.builder()
+                  .id(elementId1)
+                  .includeForCitizen(true)
+                  .configuration(ElementConfigurationDate.builder().build())
+                  .children(
+                      List.of(
+                          ElementSpecification.builder()
+                              .includeForCitizen(false)
+                              .id(elementId2)
+                              .configuration(ElementConfigurationDate.builder().build())
+                              .build()))
+                  .build());
+
+      final var certificateModel =
+          CertificateModel.builder().elementSpecifications(elementSpecifications).build();
+
+      final var certificate = certificateBuilder.certificateModel(certificateModel).build();
+
+      final var result = certificateDataConverter.convert(certificate, true);
+
+      assertEquals(1, result.size(), "Map should contain one entry");
+      assertTrue(result.containsKey(ID_1), "Map should only contain key 'id1'");
+    }
+
+    @Test
+    void
+        shallRemoveParentElementSpecificationIfIncludeForCitizenIsFalseAndCertificateIsForCitizen() {
+      final var elementId1 = new ElementId(ID_1);
+      final var elementId2 = new ElementId(ID_2);
+
+      final var elementSpecifications =
+          List.of(
+              ElementSpecification.builder()
+                  .id(elementId1)
+                  .includeForCitizen(true)
+                  .configuration(ElementConfigurationDate.builder().build())
+                  .build(),
+              ElementSpecification.builder()
                   .includeForCitizen(false)
                   .id(elementId2)
-                  .configuration(
-                      ElementConfigurationDate.builder().build()
-                  )
-                  .build()))
-              .build()
-      );
+                  .configuration(ElementConfigurationDate.builder().build())
+                  .build());
 
-      final var certificateModel = CertificateModel.builder()
-          .elementSpecifications(elementSpecifications)
-          .build();
+      final var certificateModel =
+          CertificateModel.builder().elementSpecifications(elementSpecifications).build();
 
-      final var certificate = certificateBuilder
-          .certificateModel(certificateModel)
-          .build();
+      final var certificate = certificateBuilder.certificateModel(certificateModel).build();
 
       final var result = certificateDataConverter.convert(certificate, true);
 
       assertEquals(1, result.size(), "Map should contain one entry");
-      assertTrue(result.containsKey(ID_1),
-          "Map should only contain key 'id1'");
-    }
-
-    @Test
-    void shallRemoveParentElementSpecificationIfIncludeForCitizenIsFalseAndCertificateIsForCitizen() {
-      final var elementId1 = new ElementId(ID_1);
-      final var elementId2 = new ElementId(ID_2);
-
-      final var elementSpecifications = List.of(
-          ElementSpecification.builder()
-              .id(elementId1)
-              .includeForCitizen(true)
-              .configuration(
-                  ElementConfigurationDate.builder().build()
-              )
-              .build(),
-          ElementSpecification.builder()
-              .includeForCitizen(false)
-              .id(elementId2)
-              .configuration(
-                  ElementConfigurationDate.builder().build()
-              )
-              .build()
-      );
-
-      final var certificateModel = CertificateModel.builder()
-          .elementSpecifications(elementSpecifications)
-          .build();
-
-      final var certificate = certificateBuilder
-          .certificateModel(certificateModel)
-          .build();
-
-      final var result = certificateDataConverter.convert(certificate, true);
-
-      assertEquals(1, result.size(), "Map should contain one entry");
-      assertTrue(result.containsKey(ID_1),
-          "Map should only contain key 'id1'");
+      assertTrue(result.containsKey(ID_1), "Map should only contain key 'id1'");
     }
 
     @Test
@@ -935,149 +779,116 @@ class CertificateDataConverterTest {
       final var elementId1 = new ElementId(ID_1);
       final var elementId2 = new ElementId(ID_2);
 
-      final var elementSpecifications = List.of(
-          ElementSpecification.builder()
-              .id(elementId1)
-              .includeForCitizen(true)
-              .configuration(
-                  ElementConfigurationDate.builder().build()
-              )
-              .build(),
-          ElementSpecification.builder()
-              .id(elementId2)
-              .includeForCitizen(false)
-              .configuration(
-                  ElementConfigurationDate.builder().build()
-              )
-              .build()
-      );
+      final var elementSpecifications =
+          List.of(
+              ElementSpecification.builder()
+                  .id(elementId1)
+                  .includeForCitizen(true)
+                  .configuration(ElementConfigurationDate.builder().build())
+                  .build(),
+              ElementSpecification.builder()
+                  .id(elementId2)
+                  .includeForCitizen(false)
+                  .configuration(ElementConfigurationDate.builder().build())
+                  .build());
 
-      final var certificateModel = CertificateModel.builder()
-          .elementSpecifications(elementSpecifications)
-          .build();
+      final var certificateModel =
+          CertificateModel.builder().elementSpecifications(elementSpecifications).build();
 
-      final var certificate = certificateBuilder
-          .certificateModel(certificateModel)
-          .build();
+      final var certificate = certificateBuilder.certificateModel(certificateModel).build();
 
       final var result = certificateDataConverter.convert(certificate, false);
 
       assertEquals(2, result.size(), "Map should contain two entries");
-      assertTrue(result.containsKey(ID_1) && result.containsKey(ID_2),
+      assertTrue(
+          result.containsKey(ID_1) && result.containsKey(ID_2),
           "Map should contain keys 'id1' and 'id2' ");
     }
-
   }
 
   @Nested
   class FilterCategoriesWithChildrenWithoutElementValueTests {
 
     @Test
-    void shallNotReturnCertificateElementIfCertificateIsSignedAndElementIsCategoryWhenChildrenElementDataIsNull() {
+    void
+        shallNotReturnCertificateElementIfCertificateIsSignedAndElementIsCategoryWhenChildrenElementDataIsNull() {
       final var elementId = new ElementId(ID_1);
       final var elementIdWithoutValue = new ElementId(ID_2);
 
-      final var elementSpecification = ElementSpecification.builder()
-          .id(elementId)
-          .configuration(
-              ElementConfigurationCategory.builder().build()
-          )
-          .children(
-              List.of(
-                  ElementSpecification.builder()
-                      .id(elementIdWithoutValue)
-                      .configuration(
-                          ElementConfigurationDate.builder().build()
-                      )
-                      .build()
-              )
-          )
-          .build();
+      final var elementSpecification =
+          ElementSpecification.builder()
+              .id(elementId)
+              .configuration(ElementConfigurationCategory.builder().build())
+              .children(
+                  List.of(
+                      ElementSpecification.builder()
+                          .id(elementIdWithoutValue)
+                          .configuration(ElementConfigurationDate.builder().build())
+                          .build()))
+              .build();
 
-      final var elementSpecifications = List.of(
-          elementSpecification
-      );
+      final var elementSpecifications = List.of(elementSpecification);
 
-      final var certificateModel = CertificateModel.builder()
-          .elementSpecifications(elementSpecifications)
-          .build();
+      final var certificateModel =
+          CertificateModel.builder().elementSpecifications(elementSpecifications).build();
 
-      final var certificate = certificateBuilder
-          .certificateModel(certificateModel)
-          .status(Status.SIGNED)
-          .build();
+      final var certificate =
+          certificateBuilder.certificateModel(certificateModel).status(Status.SIGNED).build();
 
       final var result = certificateDataConverter.convert(certificate, false);
 
-      assertNull(result.get(ID_2),
+      assertNull(
+          result.get(ID_2),
           "Should not include CertificateDataElementDTO if certificate is signed and no element value found for children");
       assertTrue(result.isEmpty(), "Map should not contain any entries");
     }
 
     @Test
-    void shallReturnCertificateElementIfCertificateIsDraftAndElementIsCategoryWhenChildrenElementDataIsNull() {
+    void
+        shallReturnCertificateElementIfCertificateIsDraftAndElementIsCategoryWhenChildrenElementDataIsNull() {
       final var elementId = new ElementId(ID_1);
       final var elementIdWithoutValue = new ElementId(ID_2);
 
-      final var elementSpecification = ElementSpecification.builder()
-          .id(elementId)
-          .configuration(
-              ElementConfigurationCategory.builder()
-                  .build()
-          )
-          .children(
-              List.of(
-                  ElementSpecification.builder()
-                      .id(elementIdWithoutValue)
-                      .configuration(
-                          ElementConfigurationDate.builder().build()
-                      )
-                      .build()
-              )
-          )
-          .build();
+      final var elementSpecification =
+          ElementSpecification.builder()
+              .id(elementId)
+              .configuration(ElementConfigurationCategory.builder().build())
+              .children(
+                  List.of(
+                      ElementSpecification.builder()
+                          .id(elementIdWithoutValue)
+                          .configuration(ElementConfigurationDate.builder().build())
+                          .build()))
+              .build();
 
-      final var elementSpecifications = List.of(
-          elementSpecification
-      );
+      final var elementSpecifications = List.of(elementSpecification);
 
-      final var certificateModel = CertificateModel.builder()
-          .elementSpecifications(elementSpecifications)
-          .build();
+      final var certificateModel =
+          CertificateModel.builder().elementSpecifications(elementSpecifications).build();
 
-      final var certificate = certificateBuilder
-          .certificateModel(certificateModel)
-          .status(Status.DRAFT)
-          .build();
+      final var certificate =
+          certificateBuilder.certificateModel(certificateModel).status(Status.DRAFT).build();
 
-      when(certificateDataDateConfigConverter.getType())
-          .thenReturn(ElementType.CATEGORY);
-      when(certificateDataDateConfigConverterDate.getType())
-          .thenReturn(ElementType.DATE);
+      when(certificateDataDateConfigConverter.getType()).thenReturn(ElementType.CATEGORY);
+      when(certificateDataDateConfigConverterDate.getType()).thenReturn(ElementType.DATE);
 
-      when(certificateDataDateConfigConverter.convert(any(ElementSpecification.class),
-          eq(certificate)))
-          .thenReturn(
-              CertificateDataConfigDate.builder().build()
-          );
+      when(certificateDataDateConfigConverter.convert(
+              any(ElementSpecification.class), eq(certificate)))
+          .thenReturn(CertificateDataConfigDate.builder().build());
 
-      when(certificateDataDateConfigConverterDate.convert(any(ElementSpecification.class),
-          eq(certificate)))
-          .thenReturn(
-              CertificateDataConfigDate.builder().build()
-          );
+      when(certificateDataDateConfigConverterDate.convert(
+              any(ElementSpecification.class), eq(certificate)))
+          .thenReturn(CertificateDataConfigDate.builder().build());
 
-      when(certificateDataValueConverterDate.getType())
-          .thenReturn(ElementType.DATE);
+      when(certificateDataValueConverterDate.getType()).thenReturn(ElementType.DATE);
 
       when(certificateDataValueConverterDate.convert(any(), any()))
-          .thenReturn(
-              CertificateDataValueDate.builder().build()
-          );
+          .thenReturn(CertificateDataValueDate.builder().build());
 
       final var result = certificateDataConverter.convert(certificate, false);
 
-      assertNotNull(result.get(ID_2),
+      assertNotNull(
+          result.get(ID_2),
           "Should include CertificateDataElementDTO if certificate is draft and no element value found for children");
       assertEquals(2, result.size(), "Map should contain two entries");
     }

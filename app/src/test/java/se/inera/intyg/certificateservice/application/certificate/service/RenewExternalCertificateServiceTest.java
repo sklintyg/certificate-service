@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.application.certificate.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -53,125 +71,115 @@ import se.inera.intyg.certificateservice.domain.unit.model.WorkplaceCode;
 @ExtendWith(MockitoExtension.class)
 class RenewExternalCertificateServiceTest {
 
-  @Mock
-  private RenewExternalCertificateRequestValidator renewExternalCertificateRequestValidator;
-  @Mock
-  private ActionEvaluationFactory actionEvaluationFactory;
-  @Mock
-  private RenewExternalCertificateDomainService renewExternalCertificateDomainService;
-  @Mock
-  private CertificateConverter certificateConverter;
-  @Mock
-  private ResourceLinkConverter resourceLinkConverter;
-  @InjectMocks
-  private RenewExternalCertificateService renewExternalCertificateService;
+  @Mock private RenewExternalCertificateRequestValidator renewExternalCertificateRequestValidator;
+  @Mock private ActionEvaluationFactory actionEvaluationFactory;
+  @Mock private RenewExternalCertificateDomainService renewExternalCertificateDomainService;
+  @Mock private CertificateConverter certificateConverter;
+  @Mock private ResourceLinkConverter resourceLinkConverter;
+  @InjectMocks private RenewExternalCertificateService renewExternalCertificateService;
 
   private static final String TYPE = "type";
   private static final String CERTIFICATE_ID = "certificateId";
   private static final String VERSION = "version";
-  private static final RenewExternalCertificateRequest RENEW_EXTERNAL_CERTIFICATE_REQUEST = RenewExternalCertificateRequest.builder()
-      .certificateModelId(
-          CertificateModelIdDTO.builder()
-              .type(TYPE)
-              .version(VERSION)
-              .build()
-      )
-      .user(AJLA_DOCTOR_DTO)
-      .careProvider(ALFA_REGIONEN_DTO)
-      .careUnit(ALFA_MEDICINCENTRUM_DTO)
-      .unit(ALFA_ALLERGIMOTTAGNINGEN_DTO)
-      .patient(ATHENA_REACT_ANDERSSON_DTO)
-      .externalReference(EXTERNAL_REF)
-      .status(CertificateStatusTypeDTO.SIGNED)
-      .issuingUnit(ALFA_MEDICINCENTRUM_DTO)
-      .prefillXml(new PrefillXmlDTO("xml"))
-      .build();
+  private static final RenewExternalCertificateRequest RENEW_EXTERNAL_CERTIFICATE_REQUEST =
+      RenewExternalCertificateRequest.builder()
+          .certificateModelId(CertificateModelIdDTO.builder().type(TYPE).version(VERSION).build())
+          .user(AJLA_DOCTOR_DTO)
+          .careProvider(ALFA_REGIONEN_DTO)
+          .careUnit(ALFA_MEDICINCENTRUM_DTO)
+          .unit(ALFA_ALLERGIMOTTAGNINGEN_DTO)
+          .patient(ATHENA_REACT_ANDERSSON_DTO)
+          .externalReference(EXTERNAL_REF)
+          .status(CertificateStatusTypeDTO.SIGNED)
+          .issuingUnit(ALFA_MEDICINCENTRUM_DTO)
+          .prefillXml(new PrefillXmlDTO("xml"))
+          .build();
 
   @Test
   void shallThrowIfRequestIsInvalid() {
     final var request = RenewExternalCertificateRequest.builder().build();
 
-    doThrow(IllegalArgumentException.class).when(renewExternalCertificateRequestValidator)
+    doThrow(IllegalArgumentException.class)
+        .when(renewExternalCertificateRequestValidator)
         .validate(request, CERTIFICATE_ID);
 
-    assertThrows(IllegalArgumentException.class,
-        () -> renewExternalCertificateService.renew(request, CERTIFICATE_ID)
-    );
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> renewExternalCertificateService.renew(request, CERTIFICATE_ID));
   }
 
   @Test
   void shallReturnResponseWithRenewedCertificate() {
     final var resourceLinkDTO = ResourceLinkDTO.builder().build();
-    final var expectedReponse = RenewCertificateResponse.builder()
-        .certificate(
-            CertificateDTO.builder()
-                .links(List.of(resourceLinkDTO))
-                .build()
-        )
-        .build();
+    final var expectedReponse =
+        RenewCertificateResponse.builder()
+            .certificate(CertificateDTO.builder().links(List.of(resourceLinkDTO)).build())
+            .build();
 
     final var actionEvaluation = ActionEvaluation.builder().build();
-    doReturn(actionEvaluation).when(actionEvaluationFactory).create(
-        RENEW_EXTERNAL_CERTIFICATE_REQUEST.getPatient(),
-        RENEW_EXTERNAL_CERTIFICATE_REQUEST.getUser(),
-        RENEW_EXTERNAL_CERTIFICATE_REQUEST.getUnit(),
-        RENEW_EXTERNAL_CERTIFICATE_REQUEST.getCareUnit(),
-        RENEW_EXTERNAL_CERTIFICATE_REQUEST.getCareProvider()
-    );
-    final var placeHolderRequest = PlaceholderCertificateRequest.builder()
-        .certificateId(new CertificateId(CERTIFICATE_ID))
-        .status(Status.SIGNED)
-        .certificateModelId(
-            CertificateModelId.builder()
-                .type(new CertificateType(
-                    RENEW_EXTERNAL_CERTIFICATE_REQUEST.getCertificateModelId().getType()))
-                .version(new CertificateVersion(
-                    RENEW_EXTERNAL_CERTIFICATE_REQUEST.getCertificateModelId().getVersion()))
-                .build()
-        )
-        .prefillXml(new Xml("xml"))
-        .issuingUnit(
-            SubUnit.builder()
-                .hsaId(new HsaId(ALFA_MEDICINCENTRUM_DTO.getId()))
-                .name(new UnitName(ALFA_MEDICINCENTRUM_DTO.getName()))
-                .address(
-                    UnitAddress.builder()
-                        .address(ALFA_MEDICINCENTRUM_DTO.getAddress())
-                        .zipCode(ALFA_MEDICINCENTRUM_DTO.getZipCode())
-                        .city(ALFA_MEDICINCENTRUM_DTO.getCity())
-                        .build()
-                )
-                .contactInfo(
-                    UnitContactInfo.builder()
-                        .phoneNumber(ALFA_MEDICINCENTRUM_DTO.getPhoneNumber())
-                        .email(ALFA_MEDICINCENTRUM_DTO.getEmail())
-                        .build()
-                )
-                .inactive(new Inactive(ALFA_MEDICINCENTRUM_DTO.getInactive()))
-                .workplaceCode(new WorkplaceCode(ALFA_MEDICINCENTRUM_DTO.getWorkplaceCode()))
-                .build()
-        )
-        .build();
+    doReturn(actionEvaluation)
+        .when(actionEvaluationFactory)
+        .create(
+            RENEW_EXTERNAL_CERTIFICATE_REQUEST.getPatient(),
+            RENEW_EXTERNAL_CERTIFICATE_REQUEST.getUser(),
+            RENEW_EXTERNAL_CERTIFICATE_REQUEST.getUnit(),
+            RENEW_EXTERNAL_CERTIFICATE_REQUEST.getCareUnit(),
+            RENEW_EXTERNAL_CERTIFICATE_REQUEST.getCareProvider());
+    final var placeHolderRequest =
+        PlaceholderCertificateRequest.builder()
+            .certificateId(new CertificateId(CERTIFICATE_ID))
+            .status(Status.SIGNED)
+            .certificateModelId(
+                CertificateModelId.builder()
+                    .type(
+                        new CertificateType(
+                            RENEW_EXTERNAL_CERTIFICATE_REQUEST.getCertificateModelId().getType()))
+                    .version(
+                        new CertificateVersion(
+                            RENEW_EXTERNAL_CERTIFICATE_REQUEST
+                                .getCertificateModelId()
+                                .getVersion()))
+                    .build())
+            .prefillXml(new Xml("xml"))
+            .issuingUnit(
+                SubUnit.builder()
+                    .hsaId(new HsaId(ALFA_MEDICINCENTRUM_DTO.getId()))
+                    .name(new UnitName(ALFA_MEDICINCENTRUM_DTO.getName()))
+                    .address(
+                        UnitAddress.builder()
+                            .address(ALFA_MEDICINCENTRUM_DTO.getAddress())
+                            .zipCode(ALFA_MEDICINCENTRUM_DTO.getZipCode())
+                            .city(ALFA_MEDICINCENTRUM_DTO.getCity())
+                            .build())
+                    .contactInfo(
+                        UnitContactInfo.builder()
+                            .phoneNumber(ALFA_MEDICINCENTRUM_DTO.getPhoneNumber())
+                            .email(ALFA_MEDICINCENTRUM_DTO.getEmail())
+                            .build())
+                    .inactive(new Inactive(ALFA_MEDICINCENTRUM_DTO.getInactive()))
+                    .workplaceCode(new WorkplaceCode(ALFA_MEDICINCENTRUM_DTO.getWorkplaceCode()))
+                    .build())
+            .build();
 
     final var certificate = mock(MedicalCertificate.class);
-    doReturn(certificate).when(renewExternalCertificateDomainService).renew(
-        actionEvaluation,
-        new ExternalReference(EXTERNAL_REF),
-        placeHolderRequest
-    );
+    doReturn(certificate)
+        .when(renewExternalCertificateDomainService)
+        .renew(actionEvaluation, new ExternalReference(EXTERNAL_REF), placeHolderRequest);
 
     final var certificateAction = mock(CertificateAction.class);
     final List<CertificateAction> certificateActions = List.of(certificateAction);
     doReturn(certificateActions).when(certificate).actionsInclude(Optional.of(actionEvaluation));
 
-    doReturn(resourceLinkDTO).when(resourceLinkConverter).convert(certificateAction,
-        Optional.of(certificate), actionEvaluation);
+    doReturn(resourceLinkDTO)
+        .when(resourceLinkConverter)
+        .convert(certificateAction, Optional.of(certificate), actionEvaluation);
 
-    doReturn(expectedReponse.getCertificate()).when(certificateConverter)
+    doReturn(expectedReponse.getCertificate())
+        .when(certificateConverter)
         .convert(certificate, List.of(resourceLinkDTO), actionEvaluation);
 
-    final var actualResponse = renewExternalCertificateService.renew(
-        RENEW_EXTERNAL_CERTIFICATE_REQUEST, CERTIFICATE_ID);
+    final var actualResponse =
+        renewExternalCertificateService.renew(RENEW_EXTERNAL_CERTIFICATE_REQUEST, CERTIFICATE_ID);
     assertEquals(expectedReponse, actualResponse);
   }
 }

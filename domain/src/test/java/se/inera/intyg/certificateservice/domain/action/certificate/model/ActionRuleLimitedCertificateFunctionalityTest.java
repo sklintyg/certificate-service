@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.domain.action.certificate.model;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -28,30 +46,30 @@ import se.inera.intyg.certificateservice.domain.configuration.limitedcertificate
 @ExtendWith(MockitoExtension.class)
 class ActionRuleLimitedCertificateFunctionalityTest {
 
-  @Mock
-  private CertificateActionConfigurationRepository certificateActionConfigurationRepository;
+  @Mock private CertificateActionConfigurationRepository certificateActionConfigurationRepository;
 
   private ActionRuleLimitedCertificateFunctionality actionRuleLimitedCertificateFunctionality;
 
   @BeforeEach
   void setUp() {
-    actionRuleLimitedCertificateFunctionality = new ActionRuleLimitedCertificateFunctionality(
-        certificateActionConfigurationRepository, SEND);
+    actionRuleLimitedCertificateFunctionality =
+        new ActionRuleLimitedCertificateFunctionality(
+            certificateActionConfigurationRepository, SEND);
   }
 
   @Test
   void shouldReturnFalseIfCertificateIsMissing() {
-    final var result = actionRuleLimitedCertificateFunctionality.evaluate(Optional.empty(),
-        Optional.empty());
+    final var result =
+        actionRuleLimitedCertificateFunctionality.evaluate(Optional.empty(), Optional.empty());
 
     assertFalse(result);
   }
 
   @Test
   void shouldReturnTrueWhenCertificateIsLatestMajorVersion() {
-    final var result = actionRuleLimitedCertificateFunctionality.evaluate(
-        Optional.of(AG7804_CERTIFICATE)
-        , Optional.empty());
+    final var result =
+        actionRuleLimitedCertificateFunctionality.evaluate(
+            Optional.of(AG7804_CERTIFICATE), Optional.empty());
 
     assertTrue(result);
   }
@@ -62,20 +80,18 @@ class ActionRuleLimitedCertificateFunctionalityTest {
         LimitedCertificateFunctionalityConfiguration.builder()
             .certificateType("type")
             .version(List.of("1.0"))
-            .configuration(
-                LimitedCertificateFunctionalityActionsConfiguration.builder()
-                    .build()
-            )
+            .configuration(LimitedCertificateFunctionalityActionsConfiguration.builder().build())
             .build();
 
     final var certificate = buildNotLatestMajorVersionCertificate();
 
     when(certificateActionConfigurationRepository.findLimitedCertificateFunctionalityConfiguration(
-        certificate.certificateModel().id()))
+            certificate.certificateModel().id()))
         .thenReturn(inactiveConfigurations);
 
-    final var result = actionRuleLimitedCertificateFunctionality.evaluate(Optional.of(certificate)
-        , Optional.empty());
+    final var result =
+        actionRuleLimitedCertificateFunctionality.evaluate(
+            Optional.of(certificate), Optional.empty());
     assertFalse(result);
   }
 
@@ -85,16 +101,18 @@ class ActionRuleLimitedCertificateFunctionalityTest {
     final var certificate = buildNotLatestMajorVersionCertificate();
 
     when(certificateActionConfigurationRepository.findLimitedCertificateFunctionalityConfiguration(
-        certificate.certificateModel().id()))
+            certificate.certificateModel().id()))
         .thenReturn(null);
 
-    final var result = actionRuleLimitedCertificateFunctionality.evaluate(Optional.of(certificate)
-        , Optional.empty());
+    final var result =
+        actionRuleLimitedCertificateFunctionality.evaluate(
+            Optional.of(certificate), Optional.empty());
     assertTrue(result);
   }
 
   @Test
-  void shouldReturnTrueWhenCertificateIsNotLatestMajorVersionAndHasConfigurationWithActionDateInFuture() {
+  void
+      shouldReturnTrueWhenCertificateIsNotLatestMajorVersionAndHasConfigurationWithActionDateInFuture() {
     final var limitedFunctionalityConfigurations =
         LimitedCertificateFunctionalityConfiguration.builder()
             .certificateType("type")
@@ -106,26 +124,25 @@ class ActionRuleLimitedCertificateFunctionalityTest {
                             LimitedActionConfiguration.builder()
                                 .type("SEND")
                                 .untilDateTime(LocalDateTime.now().plusDays(5))
-                                .build()
-                        )
-                    )
-                    .build()
-            )
+                                .build()))
+                    .build())
             .build();
 
     final var certificate = buildNotLatestMajorVersionCertificate();
 
     when(certificateActionConfigurationRepository.findLimitedCertificateFunctionalityConfiguration(
-        certificate.certificateModel().id()))
+            certificate.certificateModel().id()))
         .thenReturn(limitedFunctionalityConfigurations);
 
-    final var result = actionRuleLimitedCertificateFunctionality.evaluate(Optional.of(certificate)
-        , Optional.empty());
+    final var result =
+        actionRuleLimitedCertificateFunctionality.evaluate(
+            Optional.of(certificate), Optional.empty());
     assertTrue(result);
   }
 
   @Test
-  void shouldReturnFalseWhenCertificateIsNotLatestMajorVersionAndHasConfigurationWithActionDateInPast() {
+  void
+      shouldReturnFalseWhenCertificateIsNotLatestMajorVersionAndHasConfigurationWithActionDateInPast() {
     final var limitedFunctionalityConfigurations =
         LimitedCertificateFunctionalityConfiguration.builder()
             .certificateType("type")
@@ -137,20 +154,18 @@ class ActionRuleLimitedCertificateFunctionalityTest {
                             LimitedActionConfiguration.builder()
                                 .type("SEND")
                                 .untilDateTime(LocalDateTime.now().minusDays(5))
-                                .build()
-                        )
-                    )
-                    .build()
-            )
+                                .build()))
+                    .build())
             .build();
     final var certificate = buildNotLatestMajorVersionCertificate();
 
     when(certificateActionConfigurationRepository.findLimitedCertificateFunctionalityConfiguration(
-        certificate.certificateModel().id()))
+            certificate.certificateModel().id()))
         .thenReturn(limitedFunctionalityConfigurations);
 
-    final var result = actionRuleLimitedCertificateFunctionality.evaluate(Optional.of(certificate)
-        , Optional.empty());
+    final var result =
+        actionRuleLimitedCertificateFunctionality.evaluate(
+            Optional.of(certificate), Optional.empty());
     assertFalse(result);
   }
 
@@ -160,48 +175,44 @@ class ActionRuleLimitedCertificateFunctionalityTest {
         LimitedCertificateFunctionalityConfiguration.builder()
             .certificateType("type")
             .version(List.of("2.0"))
-            .configuration(
-                LimitedCertificateFunctionalityActionsConfiguration.builder()
-                    .build()
-            )
+            .configuration(LimitedCertificateFunctionalityActionsConfiguration.builder().build())
             .build();
 
     final var certificate = buildNotLatestMajorVersionCertificate();
 
     when(certificateActionConfigurationRepository.findLimitedCertificateFunctionalityConfiguration(
-        certificate.certificateModel().id()))
+            certificate.certificateModel().id()))
         .thenReturn(limitedFunctionalityConfigurations);
 
-    final var result = actionRuleLimitedCertificateFunctionality.evaluate(Optional.of(certificate)
-        , Optional.empty());
+    final var result =
+        actionRuleLimitedCertificateFunctionality.evaluate(
+            Optional.of(certificate), Optional.empty());
     assertFalse(result);
   }
 
   private static MedicalCertificate buildNotLatestMajorVersionCertificate() {
-    final var inactiveModel = CertificateModel.builder()
-        .id(
-            CertificateModelId.builder()
-                .type(new CertificateType("type"))
-                .version(new CertificateVersion("2.0"))
-                .build()
-        )
-        .activeFrom(LocalDateTime.now().minusDays(5))
-        .build();
+    final var inactiveModel =
+        CertificateModel.builder()
+            .id(
+                CertificateModelId.builder()
+                    .type(new CertificateType("type"))
+                    .version(new CertificateVersion("2.0"))
+                    .build())
+            .activeFrom(LocalDateTime.now().minusDays(5))
+            .build();
 
-    final var activeModel = CertificateModel.builder()
-        .id(
-            CertificateModelId.builder()
-                .type(new CertificateType("type"))
-                .version(new CertificateVersion("3.0"))
-                .build()
-        )
-        .activeFrom(LocalDateTime.now().minusDays(5))
-        .build();
+    final var activeModel =
+        CertificateModel.builder()
+            .id(
+                CertificateModelId.builder()
+                    .type(new CertificateType("type"))
+                    .version(new CertificateVersion("3.0"))
+                    .build())
+            .activeFrom(LocalDateTime.now().minusDays(5))
+            .build();
 
     final var certificateModel = inactiveModel.withVersions(List.of(inactiveModel, activeModel));
 
-    return ag7804CertificateBuilder()
-        .certificateModel(certificateModel)
-        .build();
+    return ag7804CertificateBuilder().certificateModel(certificateModel).build();
   }
 }

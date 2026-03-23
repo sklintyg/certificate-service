@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7427;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.elements.ElementUnitContactInformation.issuingUnitContactInfo;
@@ -39,6 +57,7 @@ import se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.
 public class CertificateModelFactoryFK7427 implements CertificateModelFactory {
 
   private final CertificateActionFactory certificateActionFactory;
+
   @Value("${certificate.model.fk7427.v1_0.active.from}")
   private LocalDateTime activeFrom;
 
@@ -51,10 +70,12 @@ public class CertificateModelFactoryFK7427 implements CertificateModelFactory {
   private static final String VERSION = "1.0";
   private static final CertificateTypeName FK7427_TYPE_NAME = new CertificateTypeName("FK7427");
   private static final String NAME = "Läkarutlåtande tillfällig föräldrapenning barn 12–16 år";
-  private static final String DESCRIPTION = """
+  private static final String DESCRIPTION =
+      """
       När ett barn mellan 12 och 16 år är sjukt kan den förälder som behöver avstå från sitt arbete för att vårda barnet få tillfällig föräldrapenning om barnet har ett särskilt behov av vård eller tillsyn. Läkarutlåtandet behövs från den första dagen i barnets vårdperiod.
       """;
-  private static final String DETAILED_DESCRIPTION = """
+  private static final String DETAILED_DESCRIPTION =
+      """
       <b className="iu-fw-heading">Vad är Läkarutlåtande tillfällig föräldrapenning barn 12 - 16 år?</b><br>
       <p>När en förälder behöver avstå från arbete för att vårda ett sjukt barn som fyllt 12 men inte 16 år behövs ett läkarutlåtande från och med den första ersättningsdagen i vårdperioden.</p>
       <b className="iu-fw-heading">Förutsättningar för att få tillfällig föräldrapenning för barn 12 – 16 år</b><br>
@@ -67,13 +88,14 @@ public class CertificateModelFactoryFK7427 implements CertificateModelFactory {
       <p>Vid läkarbesök behövs ett intyg om att förälderns närvaro var nödvändig vid besöket. Intygandet behöver inte ha något särskilt format utan kan göras på ett läkarvårdskvitto eller liknande. Det går också bra att använda Läkarutlåtande tillfällig föräldrapenning barn 12–16 år vid läkarbesök.</p>
       """;
 
-  public static final CertificateModelId FK7427_V1_0 = CertificateModelId.builder()
-      .type(new CertificateType(FK_7427))
-      .version(new CertificateVersion(VERSION))
-      .build();
+  public static final CertificateModelId FK7427_V1_0 =
+      CertificateModelId.builder()
+          .type(new CertificateType(FK_7427))
+          .version(new CertificateVersion(VERSION))
+          .build();
 
-  public static final SchematronPath SCHEMATRON_PATH = new SchematronPath(
-      "fk7427/schematron/lu_tfp_b12_16.v1.sch");
+  public static final SchematronPath SCHEMATRON_PATH =
+      new SchematronPath("fk7427/schematron/lu_tfp_b12_16.v1.sch");
 
   public static final short TEXT_FIELD_LIMIT = 4000;
 
@@ -95,32 +117,16 @@ public class CertificateModelFactoryFK7427 implements CertificateModelFactory {
         .elementSpecifications(
             List.of(
                 categoryGrundForMedicinsktUnderlag(
-                    questionGrundForMedicinsktUnderlag(
-                        questionAnnanGrundForMedicinsktUnderlag()
-                    )
-                ),
-                categoryDiagnos(
-                    questionDiagnos(
-                        diagnosisCodeRepository
-                    ),
-                    questionSymtom()
-                ),
-                categoryHalsotillstand(
-                    questionHalsotillstand()
-                ),
+                    questionGrundForMedicinsktUnderlag(questionAnnanGrundForMedicinsktUnderlag())),
+                categoryDiagnos(questionDiagnos(diagnosisCodeRepository), questionSymtom()),
+                categoryHalsotillstand(questionHalsotillstand()),
                 categoryVardEllerTillsyn(
                     questionVardEllerTillsyn(),
                     questionPeriodVardEllerTillsyn(),
                     questionVardasBarnetInneliggandePaSjukhus(
-                        questionPeriodInneliggandePaSjukhus()
-                    )
-                ),
-                categoryBehandling(
-                    questionPagaendeOchPlaneradeBehandlingar()
-                ),
-                issuingUnitContactInfo()
-            )
-        )
+                        questionPeriodInneliggandePaSjukhus())),
+                categoryBehandling(questionPagaendeOchPlaneradeBehandlingar()),
+                issuingUnitContactInfo()))
         .certificateActionFactory(certificateActionFactory)
         .confirmationModalProvider(new FK7427CertificateConfirmationModalProvider())
         .pdfSpecification(FK7427PdfSpecification.create())

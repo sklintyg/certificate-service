@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2026 Inera AB (http://www.inera.se)
+ *
+ * This file is part of sklintyg (https://github.com/sklintyg).
+ *
+ * sklintyg is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sklintyg is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.v1;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.elements.v1.QuestionKorrigeringAvSynskarpaV1.QUESTION_KORRIGERING_AV_SYNSKARPA_V1_ID;
@@ -15,10 +33,10 @@ import se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.
 
 public class QuestionKorrigeringAvSynskarpaIngenStyrkaOverV1 {
 
-  public static final ElementId QUESTION_KORRIGERING_AV_SYNSKARPA_STRYKA_OVER_V1_ID = new ElementId(
-      "6.2");
-  public static final FieldId QUESTION_KORRIGERING_AV_SYNSKARPA_STRYKA_OVER_V1_FIELD_ID = new FieldId(
-      "6.2");
+  public static final ElementId QUESTION_KORRIGERING_AV_SYNSKARPA_STRYKA_OVER_V1_ID =
+      new ElementId("6.2");
+  public static final FieldId QUESTION_KORRIGERING_AV_SYNSKARPA_STRYKA_OVER_V1_FIELD_ID =
+      new FieldId("6.2");
 
   private QuestionKorrigeringAvSynskarpaIngenStyrkaOverV1() {
     throw new IllegalStateException("Utility class");
@@ -33,39 +51,27 @@ public class QuestionKorrigeringAvSynskarpaIngenStyrkaOverV1 {
                 .selectedText("Ja")
                 .unselectedText("Nej")
                 .name(
-                    "Glasögon, inget av glasen har en styrka över plus 8 dioptrier. Tolereras korrektionen väl?"
-                )
-                .build()
-        )
-        .validations(
-            List.of(
-                ElementValidationBoolean.builder()
-                    .mandatory(true)
-                    .build()
-            )
-        )
+                    "Glasögon, inget av glasen har en styrka över plus 8 dioptrier. Tolereras korrektionen väl?")
+                .build())
+        .validations(List.of(ElementValidationBoolean.builder().mandatory(true).build()))
         .rules(
             List.of(
                 CertificateElementRuleFactory.mandatoryExist(
                     QUESTION_KORRIGERING_AV_SYNSKARPA_STRYKA_OVER_V1_ID,
-                    QUESTION_KORRIGERING_AV_SYNSKARPA_STRYKA_OVER_V1_FIELD_ID
-                ),
+                    QUESTION_KORRIGERING_AV_SYNSKARPA_STRYKA_OVER_V1_FIELD_ID),
                 CertificateElementRuleFactory.show(
                     QUESTION_KORRIGERING_AV_SYNSKARPA_V1_ID,
                     new FieldId(
-                        CodeSystemKorrigeringAvSynskarpa.GLASOGON_INGEN_STYRKA_OVER_8_DIOPTRIER.code()
-                    )
-                )
-            )
-        )
+                        CodeSystemKorrigeringAvSynskarpa.GLASOGON_INGEN_STYRKA_OVER_8_DIOPTRIER
+                            .code()))))
         .shouldValidate(
-            ElementDataPredicateFactory.codeList(QUESTION_KORRIGERING_AV_SYNSKARPA_V1_ID, List.of(
-                new FieldId(
-                    CodeSystemKorrigeringAvSynskarpa.GLASOGON_INGEN_STYRKA_OVER_8_DIOPTRIER.code())))
-        )
-        .mapping(
-            new ElementMapping(QUESTION_KORRIGERING_AV_SYNSKARPA_V1_ID, null)
-        )
+            ElementDataPredicateFactory.codeList(
+                QUESTION_KORRIGERING_AV_SYNSKARPA_V1_ID,
+                List.of(
+                    new FieldId(
+                        CodeSystemKorrigeringAvSynskarpa.GLASOGON_INGEN_STYRKA_OVER_8_DIOPTRIER
+                            .code()))))
+        .mapping(new ElementMapping(QUESTION_KORRIGERING_AV_SYNSKARPA_V1_ID, null))
         .build();
   }
 }
