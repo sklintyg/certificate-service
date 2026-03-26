@@ -74,7 +74,7 @@ public abstract class ForwardCertificateMessageIT extends BaseIntegrationIT {
                 defaultGetCertificateMessageRequest(), certificateId(testCertificates));
 
     assertTrue(
-        questions(messagesForCertificate.getBody()).get(0).isForwarded(),
+        questions(messagesForCertificate.getBody()).getFirst().isForwarded(),
         "Should return true after message is forwarded!");
   }
 
@@ -128,7 +128,7 @@ public abstract class ForwardCertificateMessageIT extends BaseIntegrationIT {
                 defaultGetCertificateMessageRequest(), certificateId(testCertificates));
 
     assertTrue(
-        questions(messagesForCertificate.getBody()).get(0).isForwarded(),
+        questions(messagesForCertificate.getBody()).getFirst().isForwarded(),
         "Should return true after message is forwarded!");
   }
 
@@ -186,7 +186,7 @@ public abstract class ForwardCertificateMessageIT extends BaseIntegrationIT {
   }
 
   @Test
-  @DisplayName("Om användaren är blockerad skall felkod 403 (FORBIDDEN) returneras")
+  @DisplayName("Om användaren är blockerad skall meddelandet vidarebefordras")
   void shallReturnForbiddenIfUserIsBlocked() {
     final var testCertificates =
         testabilityApi()
@@ -196,15 +196,29 @@ public abstract class ForwardCertificateMessageIT extends BaseIntegrationIT {
 
     api().sendCertificate(defaultSendCertificateRequest(), certificateId(testCertificates));
 
-    final var response =
-        api()
-            .forwardCertificate(
-                certificateId(testCertificates),
-                customForwardCertificateMessageRequest()
-                    .user(ajlaDoktorDtoBuilder().blocked(Boolean.TRUE).build())
-                    .build());
+    api()
+        .receiveMessage(
+            incomingComplementMessageBuilder()
+                .certificateId(certificateId(testCertificates))
+                .complements(
+                    List.of(incomingComplementDTOBuilder().questionId(questionId()).build()))
+                .build());
 
-    assertEquals(403, response.getStatusCode().value());
+    api()
+        .forwardCertificate(
+            certificateId(testCertificates),
+            customForwardCertificateMessageRequest()
+                .user(ajlaDoktorDtoBuilder().blocked(Boolean.TRUE).build())
+                .build());
+
+    final var messagesForCertificate =
+        api()
+            .getMessagesForCertificate(
+                defaultGetCertificateMessageRequest(), certificateId(testCertificates));
+
+    assertTrue(
+        questions(messagesForCertificate.getBody()).getFirst().isForwarded(),
+        "Should return true after message is forwarded!");
   }
 
   @Test
@@ -237,7 +251,7 @@ public abstract class ForwardCertificateMessageIT extends BaseIntegrationIT {
                 defaultGetCertificateMessageRequest(), certificateId(testCertificates));
 
     assertTrue(
-        questions(messagesForCertificate.getBody()).get(0).isForwarded(),
+        questions(messagesForCertificate.getBody()).getFirst().isForwarded(),
         "Should return true after message is forwarded!");
   }
 
@@ -272,7 +286,7 @@ public abstract class ForwardCertificateMessageIT extends BaseIntegrationIT {
                 defaultGetCertificateMessageRequest(), certificateId(testCertificates));
 
     assertTrue(
-        questions(messagesForCertificate.getBody()).get(0).isForwarded(),
+        questions(messagesForCertificate.getBody()).getFirst().isForwarded(),
         "Should return true after message is forwarded!");
   }
 
@@ -307,7 +321,7 @@ public abstract class ForwardCertificateMessageIT extends BaseIntegrationIT {
                 defaultGetCertificateMessageRequest(), certificateId(testCertificates));
 
     assertTrue(
-        questions(messagesForCertificate.getBody()).get(0).isForwarded(),
+        questions(messagesForCertificate.getBody()).getFirst().isForwarded(),
         "Should return true after message is forwarded!");
   }
 

@@ -298,7 +298,6 @@ public class CertificateActionFactory {
                       new ActionRuleWithinAccessScope(AccessScope.WITHIN_CARE_UNIT),
                       new ActionRuleProtectedPerson(
                           actionSpecification.allowedRolesForProtectedPersons()),
-                      new ActionRuleUserNotBlocked(),
                       new ActionRuleUserAgreement()))
               .build();
       case ANSWER_MESSAGE ->
@@ -311,7 +310,6 @@ public class CertificateActionFactory {
                       new ActionRuleWithinAccessScope(AccessScope.WITHIN_CARE_UNIT),
                       new ActionRuleProtectedPerson(
                           actionSpecification.allowedRolesForProtectedPersons()),
-                      new ActionRuleUserNotBlocked(),
                       new ActionRuleUserAgreement()))
               .build();
       case MESSAGES_ADMINISTRATIVE ->
@@ -349,7 +347,6 @@ public class CertificateActionFactory {
                   List.of(
                       new ActionRuleStatus(List.of(Status.SIGNED)),
                       new ActionRuleSent(true),
-                      new ActionRuleUserNotBlocked(),
                       new ActionRuleWithinAccessScope(AccessScope.WITHIN_CARE_UNIT),
                       new ActionRuleProtectedPerson(
                           actionSpecification.allowedRolesForProtectedPersons()),
