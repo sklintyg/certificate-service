@@ -120,7 +120,7 @@ class CertificateActionForwardCertificateMessageTest {
   }
 
   @Test
-  void shallReturnFalseIfUserIsBlocked() {
+  void shallReturnTrueIfUserIsBlocked() {
     final var actionEvaluation =
         ActionEvaluation.builder()
             .patient(ATHENA_REACT_ANDERSSON)
@@ -133,7 +133,7 @@ class CertificateActionForwardCertificateMessageTest {
         certificateActionForwardMessage.evaluate(
             Optional.of(certificate), Optional.of(actionEvaluation));
 
-    assertFalse(actualResult);
+    assertTrue(actualResult);
   }
 
   @Test

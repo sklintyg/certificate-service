@@ -405,7 +405,7 @@ class CertificateActionAnswerMessageTest {
   }
 
   @Test
-  void shallReturnFalseIfUserIsBlocked() {
+  void shallReturnTrueIfUserIsBlocked() {
     final var actionEvaluation =
         ActionEvaluation.builder()
             .patient(ANONYMA_REACT_ATTILA)
@@ -415,10 +415,10 @@ class CertificateActionAnswerMessageTest {
 
     final var certificate = certificateBuilder.build();
 
-    assertFalse(
+    assertTrue(
         certificateActionAnswerMessage.evaluate(
             Optional.of(certificate), Optional.of(actionEvaluation)),
-        () -> "Expected false when passing %s and %s".formatted(actionEvaluation, certificate));
+        () -> "Expected true when passing %s and %s".formatted(actionEvaluation, certificate));
   }
 
   @Test

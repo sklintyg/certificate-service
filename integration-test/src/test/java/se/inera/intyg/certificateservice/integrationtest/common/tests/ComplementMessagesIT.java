@@ -660,7 +660,7 @@ public abstract class ComplementMessagesIT extends BaseIntegrationIT {
   }
 
   @Test
-  @DisplayName("Om användaren är blockerad ska inte hantering av frågor vara tillgänglig")
+  @DisplayName("Om användaren är blockerad ska vidarebefordra meddelande vara tillgänglig")
   void shallNotReturnComplementCertificateIfUserIsBlocked() {
     final var testCertificates =
         testabilityApi()
@@ -684,9 +684,14 @@ public abstract class ComplementMessagesIT extends BaseIntegrationIT {
                     .build(),
                 certificateId(testCertificates));
 
+    final var resourceLinkTypes =
+        questions(messagesForCertificate.getBody()).getFirst().getLinks().stream()
+            .map(ResourceLinkDTO::getType)
+            .toList();
+    assertEquals(1, resourceLinkTypes.size(), "Should contain one link!");
     assertTrue(
-        questions(messagesForCertificate.getBody()).getFirst().getLinks().isEmpty(),
-        "Should not return link!");
+        resourceLinkTypes.contains(ResourceLinkTypeDTO.FORWARD_QUESTION),
+        "Should return true if resource link forward question is included");
   }
 
   @Test
