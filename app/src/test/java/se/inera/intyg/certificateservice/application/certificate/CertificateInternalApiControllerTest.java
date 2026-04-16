@@ -36,6 +36,8 @@ import se.inera.intyg.certificateservice.application.certificate.dto.Certificate
 import se.inera.intyg.certificateservice.application.certificate.dto.CertificatesWithQAInternalResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.ExportCertificateInternalRequest;
 import se.inera.intyg.certificateservice.application.certificate.dto.ExportInternalResponse;
+import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateCountIssuedByRequest;
+import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateCountIssuedByResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateInternalMetadataResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateInternalResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateInternalXmlResponse;
@@ -49,6 +51,7 @@ import se.inera.intyg.certificateservice.application.certificate.dto.SickLeaveCe
 import se.inera.intyg.certificateservice.application.certificate.dto.TotalExportsInternalResponse;
 import se.inera.intyg.certificateservice.application.certificate.service.CertificateExistsService;
 import se.inera.intyg.certificateservice.application.certificate.service.EraseCertificateInternalForCareProviderService;
+import se.inera.intyg.certificateservice.application.certificate.service.GetCertificateCountIssuedByInternalService;
 import se.inera.intyg.certificateservice.application.certificate.service.GetCertificateExportsInternalForCareProviderService;
 import se.inera.intyg.certificateservice.application.certificate.service.GetCertificateInternalMetadataService;
 import se.inera.intyg.certificateservice.application.certificate.service.GetCertificateInternalService;
@@ -89,6 +92,10 @@ class CertificateInternalApiControllerTest {
   @Mock private GetCertificateInternalService getCertificateInternalService;
   @Mock private GetSickLeaveCertificateInternalService getSickLeaveCertificateInternalService;
   @Mock private GetCertificateInternalXmlService getCertificateInternalXmlService;
+
+  @Mock
+  private GetCertificateCountIssuedByInternalService getCertificateCountIssuedByInternalService;
+
   @InjectMocks private CertificateInternalApiController certificateInternalApiController;
 
   @Test
@@ -263,6 +270,17 @@ class CertificateInternalApiControllerTest {
 
     final var actualResult =
         certificateInternalApiController.getValidSickLeaveCertificateIds(request);
+    assertEquals(expectedResult, actualResult);
+  }
+
+  @Test
+  void shouldReturnGetCertificateCountIssuedByResponse() {
+    final var request = GetCertificateCountIssuedByRequest.builder().build();
+    final var expectedResult = GetCertificateCountIssuedByResponse.builder().build();
+
+    when(getCertificateCountIssuedByInternalService.get(request)).thenReturn(expectedResult);
+
+    final var actualResult = certificateInternalApiController.getCertificateCountIssuedBy(request);
     assertEquals(expectedResult, actualResult);
   }
 }
