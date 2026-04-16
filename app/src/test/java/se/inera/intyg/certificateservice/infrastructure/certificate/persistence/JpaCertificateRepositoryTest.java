@@ -1295,4 +1295,20 @@ class JpaCertificateRepositoryTest {
       assertNotNull(certificate.certificateMetaData().patient());
     }
   }
+
+  @Nested
+  class GetNumberOfSignedCertificatesIssuedByTests {
+
+    @Test
+    void shouldReturnNumberOfSignedCertificates() {
+      final var expected = 5L;
+      final var hsaId = new HsaId(ID);
+
+      when(certificateEntityRepository.getNumberOfSignedCertificatesIssuedBy(hsaId.id()))
+          .thenReturn(expected);
+
+      final var result = jpaCertificateRepository.getNumberOfSignedCertificatesIssuedBy(hsaId);
+      assertEquals(expected, result);
+    }
+  }
 }

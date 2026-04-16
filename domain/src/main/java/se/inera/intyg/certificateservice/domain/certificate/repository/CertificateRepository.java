@@ -68,4 +68,6 @@ public interface CertificateRepository {
   void updateCertificateMetadataFromSignInstances(List<Certificate> certificates);
 
   void remove(List<CertificateId> certificateIds);
+
+  Long getNumberOfSignedCertificatesIssuedBy(HsaId hsaId);
 }

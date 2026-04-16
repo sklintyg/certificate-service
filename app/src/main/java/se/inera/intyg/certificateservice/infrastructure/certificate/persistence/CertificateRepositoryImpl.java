@@ -148,6 +148,11 @@ public class CertificateRepositoryImpl implements TestabilityCertificateReposito
   }
 
   @Override
+  public Long getNumberOfSignedCertificatesIssuedBy(HsaId hsaId) {
+    return jpaCertificateRepository.getNumberOfSignedCertificatesIssuedBy(hsaId);
+  }
+
+  @Override
   public List<CertificateId> findValidSickLeavesCertificateIdsByIds(
       List<CertificateId> certificateId) {
     return jpaCertificateRepository.findValidSickLeavesByIds(certificateId);

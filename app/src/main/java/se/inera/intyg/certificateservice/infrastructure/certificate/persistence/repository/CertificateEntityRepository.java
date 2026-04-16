@@ -82,5 +82,7 @@ public interface CertificateEntityRepository
   List<String> findCertificateIdsByCreatedBeforeAndStatusIn(
       @Param("createdTo") LocalDateTime createdTo, @Param("statuses") List<Integer> statuses);
 
-  Optional<List<CertificateEntity>> findCertificateEntitiesByPatient_Key(Integer patientKey);
+  @Query(
+      "SELECT COUNT(c.certificateId) FROM CertificateEntity c INNER JOIN StaffEntity s ON c.issuedBy.hsaId = s.hsaId WHERE s.hsaId = :issuedBy AND c.signed IS NOT NULL")
+  Long getNumberOfSignedCertificatesIssuedBy(@Param("issuedBy") String issuedBy);
 }
