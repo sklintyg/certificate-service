@@ -361,4 +361,20 @@ class CertificateRepositoryImplTest {
       verify(jpaCertificateRepository).findValidSickLeavesByIds(certificateIds);
     }
   }
+
+  @Nested
+  class GetNumberOfSignedCertificatesIssuedByTests {
+
+    @Test
+    void shouldReturnNumberOfSignedCertificates() {
+      final var expected = 5L;
+      final var hsaId = new HsaId("id");
+
+      when(jpaCertificateRepository.getNumberOfSignedCertificatesIssuedBy(hsaId))
+          .thenReturn(expected);
+
+      final var result = certificateRepository.getNumberOfSignedCertificatesIssuedBy(hsaId);
+      assertEquals(expected, result);
+    }
+  }
 }

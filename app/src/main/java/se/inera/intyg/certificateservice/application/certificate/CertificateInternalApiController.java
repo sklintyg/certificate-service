@@ -35,6 +35,8 @@ import se.inera.intyg.certificateservice.application.certificate.dto.Certificate
 import se.inera.intyg.certificateservice.application.certificate.dto.CertificatesWithQAInternalResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.ExportCertificateInternalRequest;
 import se.inera.intyg.certificateservice.application.certificate.dto.ExportInternalResponse;
+import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateCountIssuedByRequest;
+import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateCountIssuedByResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateInternalMetadataResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateInternalResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateInternalXmlResponse;
@@ -47,6 +49,7 @@ import se.inera.intyg.certificateservice.application.certificate.dto.LockDraftsR
 import se.inera.intyg.certificateservice.application.certificate.dto.TotalExportsInternalResponse;
 import se.inera.intyg.certificateservice.application.certificate.service.CertificateExistsService;
 import se.inera.intyg.certificateservice.application.certificate.service.EraseCertificateInternalForCareProviderService;
+import se.inera.intyg.certificateservice.application.certificate.service.GetCertificateCountIssuedByInternalService;
 import se.inera.intyg.certificateservice.application.certificate.service.GetCertificateExportsInternalForCareProviderService;
 import se.inera.intyg.certificateservice.application.certificate.service.GetCertificateInternalMetadataService;
 import se.inera.intyg.certificateservice.application.certificate.service.GetCertificateInternalService;
@@ -83,6 +86,8 @@ public class CertificateInternalApiController {
   private final GetSickLeaveCertificateInternalService getSickLeaveCertificateInternalService;
   private final GetValidSickLeaveCertificatesInternalService
       getValidSickLeaveCertificatesInternalService;
+  private final GetCertificateCountIssuedByInternalService
+      getCertificateCountIssuedByInternalService;
 
   @GetMapping("/{certificateId}/exists")
   @PerformanceLogging(
@@ -197,5 +202,14 @@ public class CertificateInternalApiController {
   GetValidSickLeaveCertificateIdsInternalResponse getValidSickLeaveCertificateIds(
       @RequestBody GetValidSickLeaveCertificateIdsInternalRequest request) {
     return getValidSickLeaveCertificatesInternalService.get(request);
+  }
+
+  @PostMapping("/issuedBy")
+  @PerformanceLogging(
+      eventAction = "internal-certificate-count-issuedBy",
+      eventType = EVENT_TYPE_ACCESSED)
+  GetCertificateCountIssuedByResponse getCertificateCountIssuedBy(
+      @RequestBody GetCertificateCountIssuedByRequest request) {
+    return getCertificateCountIssuedByInternalService.get(request);
   }
 }

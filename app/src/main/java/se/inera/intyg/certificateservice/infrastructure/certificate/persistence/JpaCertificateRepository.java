@@ -470,6 +470,10 @@ public class JpaCertificateRepository {
         .toList();
   }
 
+  public Long getNumberOfSignedCertificatesIssuedBy(HsaId hsaId) {
+    return certificateEntityRepository.getNumberOfSignedCertificatesIssuedBy(hsaId.id());
+  }
+
   public void updateCertificateMetadataFromSignInstances(List<Certificate> certificates) {
     if (certificates == null || certificates.isEmpty()) {
       return;
