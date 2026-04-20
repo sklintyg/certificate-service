@@ -32,14 +32,14 @@ public class GetCertificateCountIssuedByInternalService {
   private final CertificateRepository certificateRepository;
 
   public GetCertificateCountIssuedByResponse get(GetCertificateCountIssuedByRequest request) {
-    if (request.getHsaId() == null || request.getHsaId().isBlank()) {
+    if (request.getIssuedByHsaId() == null || request.getIssuedByHsaId().isBlank()) {
       throw new IllegalArgumentException("HSA ID is required");
     }
 
     return GetCertificateCountIssuedByResponse.builder()
         .numberOfCertificates(
             certificateRepository.getNumberOfSignedCertificatesIssuedBy(
-                new HsaId(request.getHsaId())))
+                new HsaId(request.getIssuedByHsaId())))
         .build();
   }
 }

@@ -51,7 +51,7 @@ class GetCertificateCountIssuedByInternalServiceTest {
 
   @Test
   void shouldThrowIfHsaIdFromRequestIsBlank() {
-    final var request = GetCertificateCountIssuedByRequest.builder().hsaId("").build();
+    final var request = GetCertificateCountIssuedByRequest.builder().issuedByHsaId("").build();
     assertThrows(
         IllegalArgumentException.class,
         () -> getCertificateCountIssuedByInternalService.get(request));
@@ -65,7 +65,7 @@ class GetCertificateCountIssuedByInternalServiceTest {
         GetCertificateCountIssuedByResponse.builder()
             .numberOfCertificates(numberOfCertificates)
             .build();
-    final var request = GetCertificateCountIssuedByRequest.builder().hsaId(HSA_ID).build();
+    final var request = GetCertificateCountIssuedByRequest.builder().issuedByHsaId(HSA_ID).build();
 
     when(certificateRepository.getNumberOfSignedCertificatesIssuedBy(new HsaId(HSA_ID)))
         .thenReturn(numberOfCertificates);
