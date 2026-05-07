@@ -50,6 +50,12 @@ public class QuestionnaireToElementSpecificationMapper {
   /**
    * Maps all top-level items of a FHIR Questionnaire to ElementSpecifications.
    *
+   * <p>The certificate-service frontend organizes the form by categories: every question must
+   * belong to a category in order to be rendered. FHIR Questionnaires often expose questions
+   * directly at the top level (without a wrapping {@code group}), which would otherwise result in
+   * an empty form. To handle this we group consecutive top-level non-group items into a synthetic
+   * category so that all questions become visible.
+   *
    * @param questionnaire the FHIR Questionnaire resource
    * @return list of ElementSpecification representing the questionnaire structure
    */
@@ -58,7 +64,29 @@ public class QuestionnaireToElementSpecificationMapper {
       return Collections.emptyList();
     }
 
-    return questionnaire.getItem().stream()
+    final var topLevel = questionnaire.getItem();
+    final var hasAnyGroup = topLevel.stream()
+        .anyMatch(item -> item.getType() == QuestionnaireItemType.GROUP);
+
+    if (!hasAnyGroup) {
+      final var children = topLevel.stream()
+          .map(QuestionnaireToElementSpecificationMapper::mapItem)
+          .toList();
+
+      final var syntheticCategory = ElementSpecification.builder()
+          .id(new ElementId("category." + questionnaire.getIdPart()))
+          .configuration(
+              ElementConfigurationCategory.builder()
+                  .name(questionnaire.getTitle() != null ? questionnaire.getTitle() : "Frågor")
+                  .build()
+          )
+          .children(children)
+          .build();
+
+      return List.of(syntheticCategory);
+    }
+
+    return topLevel.stream()
         .map(QuestionnaireToElementSpecificationMapper::mapItem)
         .toList();
   }
