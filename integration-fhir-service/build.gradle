@@ -1,0 +1,18 @@
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+    implementation("ca.uhn.hapi.fhir:hapi-fhir-base:8.8.1")
+    implementation("ca.uhn.hapi.fhir:hapi-fhir-client:8.8.1")
+    implementation("ca.uhn.hapi.fhir:hapi-fhir-structures-r5:8.8.1")
+
+    implementation project(':domain')
+    implementation project(':logging')
+
+    annotationProcessor 'org.projectlombok:lombok'
+
+    testImplementation "org.mockito:mockito-junit-jupiter"
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation "org.springframework:spring-test"
+    testImplementation testFixtures(project(":domain"))
+}

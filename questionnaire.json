@@ -1,0 +1,835 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "705c2887-99c1-46b6-870d-0ff719b61760",
+  "meta": {
+    "profile": [
+      "https://electronichealth.se/fhir/shc/StructureDefinition/SHCQuestionnaire"
+    ]
+  },
+  "url": "http://example.org/fhir/Questionnaire/705c2887-99c1-46b6-870d-0ff719b61760/_history/2",
+  "identifier": [
+    {
+      "system": "http://example.org/questionnaire-identifiers",
+      "value": "FK7804"
+    }
+  ],
+  "version": "2",
+  "name": "Läkarintygförsjukpenning",
+  "title": "Läkarintyg för sjukpenning",
+  "status": "active",
+  "subjectType": [
+    "Patient"
+  ],
+  "publisher": "Försäkringskassan",
+  "contact": [
+    {
+      "name": "www.forsakringskassan.se"
+    }
+  ],
+  "description": "Sjukpenning kan betalas ut om patientens arbetsförmåga är nedsatt på grund av sjukdom. Detta intyg används när patienten ska ansöka om sjukpenning efter att läkaren bedömt att arbetsförmågan är nedsatt på grund av sjukdom och att det finns ett sjukskrivningsbehov. I Intyget efterfrågas information som Försäkringskassan behöver i handläggningen av ett sjukpenningärende.",
+  "useContext": [
+    {
+      "code": {
+        "system": "https://electronichealth.se/shc/CodeSystem/questionnaire-usage-context-type",
+        "code": "legislation"
+      },
+      "valueCodeableConcept": {
+        "text": "Socialförsäkringsbalken (SFB, 2010:110)"
+      }
+    },
+    {
+      "code": {
+        "system": "https://electronichealth.se/shc/CodeSystem/questionnaire-usage-context-type",
+        "code": "purpose"
+      },
+      "valueCodeableConcept": {
+        "text": "Sjukpenning kan betalas ut om patientens arbetsförmåga är nedsatt på grund av sjukdom. Detta intyg används när patienten ska ansöka om sjukpenning efter att läkaren har bedömt att arbetsförmågan är nedsatt på grund av sjukdom och att det finns ett sjukskrivningsbehov. I intyget efterfrågas information som Försäkringskassan behöver i handläggningen av ett sjukpenningärende."
+      }
+    },
+    {
+      "code": {
+        "code": "topic"
+      },
+      "valueCodeableConcept": {
+        "text": "Sjukintyg"
+      }
+    },
+    {
+      "code": {
+        "code": "category"
+      },
+      "valueCodeableConcept": {
+        "text": "Sjukintyg"
+      }
+    }
+  ],
+  "copyright": "Försäkringskassan",
+  "effectivePeriod": {
+    "start": "2026-04-01T00:00:00+02:00"
+  },
+  "item": [
+    {
+      "linkId": "bcb1cc19-83ce-410f-8551-79abd301e424",
+      "text": "Smittbärarpenning: Förhållningsregler enligt smittskyddslagen på grund av smitta.",
+      "_text": {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+            "valueMarkdown": "### **Smittbärarpenning:** \n\nFörhållningsregler enligt smittskyddslagen på grund av smitta."
+          }
+        ]
+      },
+      "type": "boolean",
+      "required": false
+    },
+    {
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "check-box"
+              }
+            ]
+          }
+        }
+      ],
+      "linkId": "ef8c4650-fb8a-4711-8fa2-be2b97d854d9",
+      "text": "Intyget är baserat på",
+      "type": "coding",
+      "enableWhen": [
+        {
+          "question": "bcb1cc19-83ce-410f-8551-79abd301e424",
+          "operator": "=",
+          "answerBoolean": false
+        }
+      ],
+      "required": false,
+      "answerConstraint": "optionsOnly",
+      "answerOption": [
+        {
+          "valueCoding": {
+            "id": "01b85874-ac30-482f-8795-e75b57a73632",
+            "system": "urn:uuid:1e86f8dd-7b78-47f8-d808-7b20199fd698",
+            "code": "min-undersökning-vid-fysiskt-vårdmöte",
+            "display": "Min undersökning vid fysiskt vårdmöte"
+          }
+        },
+        {
+          "valueCoding": {
+            "id": "76de6f4d-0fae-4096-848f-62101fd78927",
+            "system": "urn:uuid:1e86f8dd-7b78-47f8-d808-7b20199fd698",
+            "code": "min-undersökning-vid-digitalt-vårdmöte-",
+            "display": "Min undersökning vid digitalt vårdmöte "
+          }
+        },
+        {
+          "valueCoding": {
+            "id": "fc89ac90-f9d4-4347-8eac-16772439dc28",
+            "system": "urn:uuid:1e86f8dd-7b78-47f8-d808-7b20199fd698",
+            "code": "min-telefonkontakt-med-patienten",
+            "display": "Min telefonkontakt med patienten"
+          }
+        },
+        {
+          "valueCoding": {
+            "id": "78e870a5-8204-4ae3-8962-48c5725be15f",
+            "system": "urn:uuid:1e86f8dd-7b78-47f8-d808-7b20199fd698",
+            "code": "journaluppgifter-från-den",
+            "display": "Journaluppgifter från den"
+          }
+        },
+        {
+          "valueCoding": {
+            "id": "dfbfd435-c891-4085-975f-c02ee9f29cf0",
+            "system": "urn:uuid:1e86f8dd-7b78-47f8-d808-7b20199fd698",
+            "code": "annat",
+            "display": "Annat"
+          }
+        }
+      ],
+      "item": [
+        {
+          "linkId": "d466a561-9d81-40f4-ff66-93bdfa0a468e",
+          "text": "Ange datum",
+          "type": "date",
+          "enableWhen": [
+            {
+              "question": "ef8c4650-fb8a-4711-8fa2-be2b97d854d9",
+              "operator": "=",
+              "answerCoding": {
+                "system": "urn:uuid:1e86f8dd-7b78-47f8-d808-7b20199fd698",
+                "code": "min-undersökning-vid-fysiskt-vårdmöte"
+              }
+            }
+          ],
+          "required": false
+        },
+        {
+          "linkId": "94fea345-6349-4103-b5b7-da0a6ad8c63d",
+          "text": "Ange datum",
+          "type": "date",
+          "enableWhen": [
+            {
+              "question": "ef8c4650-fb8a-4711-8fa2-be2b97d854d9",
+              "operator": "=",
+              "answerCoding": {
+                "system": "urn:uuid:1e86f8dd-7b78-47f8-d808-7b20199fd698",
+                "code": "min-undersökning-vid-digitalt-vårdmöte-"
+              }
+            }
+          ],
+          "required": false
+        },
+        {
+          "linkId": "aef03e3c-81c1-4635-a9a7-823390a035d1",
+          "text": "Ange datum",
+          "type": "date",
+          "enableWhen": [
+            {
+              "question": "ef8c4650-fb8a-4711-8fa2-be2b97d854d9",
+              "operator": "=",
+              "answerCoding": {
+                "system": "urn:uuid:1e86f8dd-7b78-47f8-d808-7b20199fd698",
+                "code": "min-telefonkontakt-med-patienten"
+              }
+            }
+          ],
+          "required": false
+        },
+        {
+          "linkId": "15eb513e-c512-4003-a16d-4d3fe42d1d55",
+          "text": "Ange datum",
+          "type": "date",
+          "enableWhen": [
+            {
+              "question": "ef8c4650-fb8a-4711-8fa2-be2b97d854d9",
+              "operator": "=",
+              "answerCoding": {
+                "system": "urn:uuid:1e86f8dd-7b78-47f8-d808-7b20199fd698",
+                "code": "journaluppgifter-från-den"
+              }
+            }
+          ],
+          "required": false
+        },
+        {
+          "linkId": "947b42d9-6583-4de0-bd09-3acc4f0ebbf5",
+          "text": "Ange vad annat är",
+          "type": "string",
+          "enableWhen": [
+            {
+              "question": "ef8c4650-fb8a-4711-8fa2-be2b97d854d9",
+              "operator": "=",
+              "answerCoding": {
+                "system": "urn:uuid:1e86f8dd-7b78-47f8-d808-7b20199fd698",
+                "code": "annat"
+              }
+            }
+          ],
+          "required": false
+        },
+        {
+          "linkId": "55257f39-fffc-4c85-81eb-ab236e726084",
+          "text": "Ange datum",
+          "type": "date",
+          "enableWhen": [
+            {
+              "question": "ef8c4650-fb8a-4711-8fa2-be2b97d854d9",
+              "operator": "=",
+              "answerCoding": {
+                "system": "urn:uuid:1e86f8dd-7b78-47f8-d808-7b20199fd698",
+                "code": "annat"
+              }
+            }
+          ],
+          "required": false
+        }
+      ]
+    },
+    {
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "check-box"
+              }
+            ]
+          }
+        }
+      ],
+      "linkId": "30f23e47-eb8d-4a5e-8c59-7117f53ea577",
+      "text": " I relation till vilken sysselsättning bedömer du arbetsförmågan?",
+      "type": "coding",
+      "enableWhen": [
+        {
+          "question": "bcb1cc19-83ce-410f-8551-79abd301e424",
+          "operator": "=",
+          "answerBoolean": false
+        }
+      ],
+      "required": false,
+      "answerConstraint": "optionsOnly",
+      "answerOption": [
+        {
+          "valueCoding": {
+            "id": "8f29f0ef-faee-425c-be4b-4c0cef3dbd42",
+            "system": "urn:uuid:76f45869-e3ea-40a6-885c-e0915aad2577",
+            "code": "nuvarande---arbete",
+            "display": "Nuvarande arbete"
+          }
+        },
+        {
+          "valueCoding": {
+            "id": "479ad10a-6f86-4317-85db-552f485386e9",
+            "system": "urn:uuid:76f45869-e3ea-40a6-885c-e0915aad2577",
+            "code": "arbetssökande---att-utföra-sådant-arbete-som-är-normalt-förekommande-på-arbetsmarknaden",
+            "display": "Arbetssökande - att utföra sådant arbete som är normalt förekommande på arbetsmarknaden"
+          }
+        },
+        {
+          "valueCoding": {
+            "id": "69fba99e-1cd5-4e3f-b2b3-b2321d3f3b80",
+            "system": "urn:uuid:76f45869-e3ea-40a6-885c-e0915aad2577",
+            "code": "föräldraledighet-",
+            "display": "Föräldraledighet "
+          }
+        },
+        {
+          "valueCoding": {
+            "id": "1f22e119-8fbb-4f08-80a1-038c2a27341f",
+            "system": "urn:uuid:76f45869-e3ea-40a6-885c-e0915aad2577",
+            "code": "studier",
+            "display": "Studier"
+          }
+        }
+      ],
+      "item": [
+        {
+          "linkId": "6d6923b6-09c7-4076-80b6-8cae79c88b1c",
+          "text": "Ange yrke och arbetsuppgifter",
+          "type": "string",
+          "enableWhen": [
+            {
+              "question": "30f23e47-eb8d-4a5e-8c59-7117f53ea577",
+              "operator": "=",
+              "answerCoding": {
+                "system": "urn:uuid:76f45869-e3ea-40a6-885c-e0915aad2577",
+                "code": "nuvarande---arbete"
+              }
+            }
+          ],
+          "required": false
+        }
+      ]
+    },
+    {
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "drop-down"
+              }
+            ]
+          }
+        }
+      ],
+      "linkId": "9030f586-6c14-4254-8b86-23990636d3db",
+      "text": "Diagnos/diagnoser för sjukdom som orsakar nedsatt arbetsförmåga",
+      "type": "coding",
+      "required": false,
+      "repeats": true,
+      "answerConstraint": "optionsOnly",
+      "answerOption": [
+        {
+          "valueCoding": {
+            "id": "dd81bc57-ffd0-42ab-9e16-28a4a5f987d1",
+            "system": "urn:uuid:c165b0a2-6062-4ad2-da5b-bd6e38d30188",
+            "code": "E10",
+            "display": "Diabetes mellitus typ 1"
+          }
+        },
+        {
+          "valueCoding": {
+            "id": "2286ff46-489c-434c-b118-e5d2ae6291b7",
+            "system": "urn:uuid:c165b0a2-6062-4ad2-da5b-bd6e38d30188",
+            "code": "E11",
+            "display": "Diabetes mellitus typ 2"
+          }
+        }
+      ],
+      "item": [
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "help"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "868da072-2e09-4fde-86af-8ebcf185440c",
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                "valueMarkdown": "Ange vilken eller vilka sjukdomar som orsakar nedsatt arbetsförmåga. Den sjukdom som påverkar arbetsförmågan mest anges först."
+              }
+            ]
+          },
+          "type": "text",
+          "required": false,
+          "repeats": false,
+          "readOnly": true,
+          "maxLength": 250
+        }
+      ]
+    },
+    {
+      "extension": [
+        {
+          "url": "https://electronichealth.se/fhir/NDI/StructureDefinition/SHCSublabelExtension",
+          "valueMarkdown": "Ange vilken/vilka funktionsnedsättningar patienten har till följd av sjukdom och om möjligt svårighetsgrad. Ange även vad din bedömning av funktionsnedsättningar baseras på. Beskriv relevanta undersökningsfynd, testresultat, utredningssvar eller andra uppgifter (exempelvis anamnesuppgifter) och hur du bedömer dem."
+        }
+      ],
+      "linkId": "92642cf4-45f2-420f-8384-f3f62600049b",
+      "text": "Funktionsnedsättning",
+      "type": "text",
+      "required": false
+    },
+    {
+      "extension": [
+        {
+          "url": "https://electronichealth.se/fhir/NDI/StructureDefinition/SHCSublabelExtension",
+          "valueMarkdown": "Beskriv vad du bedömer att patienten har svårt att göra på grund av sin sjukdom. Ange exempel på sådana begränsningar relaterade till de arbetsuppgifter eller annan sysselsättning som du bedömer arbetsförmågan i förhållande till (i fråga 3). Ange om möjligt svårighetsgrad."
+        }
+      ],
+      "linkId": "bdd1ead7-639a-4c11-8934-0d7c1de78b04",
+      "text": "Aktivitetsbegränsning",
+      "type": "text",
+      "required": false
+    },
+    {
+      "extension": [
+        {
+          "url": "https://electronichealth.se/fhir/NDI/StructureDefinition/SHCSublabelExtension",
+          "valueMarkdown": "Här beskriver du pågående och planerade medicinska behandlingar/åtgärder som kan påverka arbetsförmågan. Ange vad syftet är och om möjligt tidplan samt ansvarig vårdenhet."
+        }
+      ],
+      "linkId": "628bbb1a-bc9b-4a4c-9a89-4cc10718e7b6",
+      "text": "Medicinsk behandling",
+      "type": "text",
+      "required": false
+    },
+    {
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "check-box"
+              }
+            ]
+          }
+        }
+      ],
+      "linkId": "3032f89c-ab11-4ebb-a592-81e4c9918133",
+      "text": " Min bedömning av patientens nedsättning av arbetsförmågan",
+      "type": "coding",
+      "required": false,
+      "answerConstraint": "optionsOnly",
+      "answerOption": [
+        {
+          "valueCoding": {
+            "id": "9d6f0003-e7bf-4f12-89b4-820976fa9a13",
+            "system": "urn:uuid:8dd049db-cdc2-498e-8c93-eabcf8ad4d6f",
+            "code": "100-procent",
+            "display": "100 procent"
+          }
+        },
+        {
+          "valueCoding": {
+            "id": "6195db64-ba67-4e4e-8299-33b641f181bc",
+            "system": "urn:uuid:8dd049db-cdc2-498e-8c93-eabcf8ad4d6f",
+            "code": "75-procent",
+            "display": "75 procent"
+          }
+        },
+        {
+          "valueCoding": {
+            "id": "b0d12365-6f79-4c73-f71a-bfaae853f492",
+            "system": "urn:uuid:8dd049db-cdc2-498e-8c93-eabcf8ad4d6f",
+            "code": "50-procent",
+            "display": "50 procent"
+          }
+        },
+        {
+          "valueCoding": {
+            "id": "eaa15def-38ed-4168-9917-34ab0e6db556",
+            "system": "urn:uuid:8dd049db-cdc2-498e-8c93-eabcf8ad4d6f",
+            "code": "25-procent",
+            "display": "25 procent"
+          }
+        }
+      ],
+      "item": [
+        {
+          "linkId": "bc119b74-cfe7-46d9-8848-97e450240fe5",
+          "text": "från och med",
+          "type": "date",
+          "enableWhen": [
+            {
+              "question": "3032f89c-ab11-4ebb-a592-81e4c9918133",
+              "operator": "=",
+              "answerCoding": {
+                "system": "urn:uuid:8dd049db-cdc2-498e-8c93-eabcf8ad4d6f",
+                "code": "100-procent"
+              }
+            }
+          ],
+          "required": false
+        },
+        {
+          "linkId": "eade6a5d-8895-46ea-9fae-9152647a5339",
+          "text": "till och med",
+          "type": "date",
+          "enableWhen": [
+            {
+              "question": "3032f89c-ab11-4ebb-a592-81e4c9918133",
+              "operator": "=",
+              "answerCoding": {
+                "system": "urn:uuid:8dd049db-cdc2-498e-8c93-eabcf8ad4d6f",
+                "code": "100-procent"
+              }
+            }
+          ],
+          "required": false
+        },
+        {
+          "linkId": "33bf0861-7e11-4d58-80a4-0c9e05b7ce3c",
+          "text": "från och med",
+          "type": "date",
+          "enableWhen": [
+            {
+              "question": "3032f89c-ab11-4ebb-a592-81e4c9918133",
+              "operator": "=",
+              "answerCoding": {
+                "system": "urn:uuid:8dd049db-cdc2-498e-8c93-eabcf8ad4d6f",
+                "code": "75-procent"
+              }
+            }
+          ],
+          "required": false
+        },
+        {
+          "linkId": "69cc5626-761e-4b8f-8b85-1c6e8cfe6cce",
+          "text": "till och med",
+          "type": "date",
+          "enableWhen": [
+            {
+              "question": "3032f89c-ab11-4ebb-a592-81e4c9918133",
+              "operator": "=",
+              "answerCoding": {
+                "system": "urn:uuid:8dd049db-cdc2-498e-8c93-eabcf8ad4d6f",
+                "code": "75-procent"
+              }
+            }
+          ],
+          "required": false
+        },
+        {
+          "linkId": "73e6a7e9-c0c9-43c2-9d57-f4f9ac305355",
+          "text": "från och med",
+          "type": "date",
+          "enableWhen": [
+            {
+              "question": "3032f89c-ab11-4ebb-a592-81e4c9918133",
+              "operator": "=",
+              "answerCoding": {
+                "system": "urn:uuid:8dd049db-cdc2-498e-8c93-eabcf8ad4d6f",
+                "code": "50-procent"
+              }
+            }
+          ],
+          "required": false
+        },
+        {
+          "linkId": "8dfbc613-0826-46b1-a5ad-dbe7ca426cf1",
+          "text": "till och med",
+          "type": "date",
+          "enableWhen": [
+            {
+              "question": "3032f89c-ab11-4ebb-a592-81e4c9918133",
+              "operator": "=",
+              "answerCoding": {
+                "system": "urn:uuid:8dd049db-cdc2-498e-8c93-eabcf8ad4d6f",
+                "code": "25-procent"
+              }
+            }
+          ],
+          "required": false
+        },
+        {
+          "linkId": "8b9c87f3-a6b9-448e-fbae-e8d57f7c142c",
+          "text": "från och med",
+          "type": "date",
+          "enableWhen": [
+            {
+              "question": "3032f89c-ab11-4ebb-a592-81e4c9918133",
+              "operator": "=",
+              "answerCoding": {
+                "system": "urn:uuid:8dd049db-cdc2-498e-8c93-eabcf8ad4d6f",
+                "code": "25-procent"
+              }
+            }
+          ],
+          "required": false
+        },
+        {
+          "linkId": "22635a1e-7fc9-4207-ccf6-abfbe1d17ac0",
+          "text": "till och med",
+          "type": "date",
+          "enableWhen": [
+            {
+              "question": "3032f89c-ab11-4ebb-a592-81e4c9918133",
+              "operator": "=",
+              "answerCoding": {
+                "system": "urn:uuid:8dd049db-cdc2-498e-8c93-eabcf8ad4d6f",
+                "code": "25-procent"
+              }
+            }
+          ],
+          "required": false
+        },
+        {
+          "linkId": "1d113389-d495-4825-87e9-b8975fcd8497",
+          "text": "Patientens arbetsförmåga bedöms nedsatt längre tid än den som Socialstyrelsens försäkringsmedicinska beslutsstöd anger, därför att",
+          "type": "text",
+          "required": false
+        },
+        {
+          "linkId": "fc385131-4935-4f16-c410-92665b6c04e7",
+          "text": "Patienten skulle kunna arbeta helt eller delvis vid hjälp med transport till och från arbetsplatsen",
+          "type": "boolean",
+          "required": false
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "check-box"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "8df11f41-2b3f-4a87-e1c3-c625d4e06b99",
+          "text": "Kommer möjligheterna till återgång i arbete försämras om arbetstiden förläggs ojämnt vid deltidssjukskrivning?",
+          "type": "coding",
+          "required": false,
+          "answerConstraint": "optionsOnly",
+          "answerOption": [
+            {
+              "valueCoding": {
+                "id": "6489a180-a28e-42d2-849d-e2f0ca97a554",
+                "system": "urn:uuid:7956eeea-35e4-4639-8fc1-67ec7f441930",
+                "code": "nej",
+                "display": "Nej"
+              }
+            },
+            {
+              "valueCoding": {
+                "id": "ba83f0c5-7548-4d54-affb-cda9998dbaca",
+                "system": "urn:uuid:7956eeea-35e4-4639-8fc1-67ec7f441930",
+                "code": "ja",
+                "display": "Ja"
+              }
+            }
+          ],
+          "item": [
+            {
+              "linkId": "cc91d31f-6c2d-476d-8898-92b039a79ca2",
+              "text": "Beskriv de medicinska skälen till att möjligheterna till återgång i arbete kan försämras",
+              "type": "string",
+              "enableWhen": [
+                {
+                  "question": "8df11f41-2b3f-4a87-e1c3-c625d4e06b99",
+                  "operator": "=",
+                  "answerCoding": {
+                    "system": "urn:uuid:7956eeea-35e4-4639-8fc1-67ec7f441930",
+                    "code": "ja"
+                  }
+                }
+              ],
+              "required": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "check-box"
+              }
+            ]
+          }
+        }
+      ],
+      "linkId": "494d1d31-a515-4d0f-9e1a-60dc6d1b153b",
+      "text": "Prognos för arbetsförmåga utifrån aktuellt undersökningstillfälle",
+      "type": "coding",
+      "required": false,
+      "answerConstraint": "optionsOnly",
+      "answerOption": [
+        {
+          "valueCoding": {
+            "id": "259fc1d9-5865-4810-c829-a20794041581",
+            "system": "urn:uuid:9c3c8aee-84ba-45a5-e8c1-d43fbabf7661",
+            "code": "patienten-förväntas-kunna-återgå-helt-i-nuvarande-sysselsättning-efter-detta-intygs-slutdatum.",
+            "display": "Patienten förväntas kunna återgå helt i nuvarande sysselsättning efter detta intygs slutdatum."
+          }
+        },
+        {
+          "valueCoding": {
+            "id": "dab1228e-5685-4e6a-f96a-6688ffb92786",
+            "system": "urn:uuid:9c3c8aee-84ba-45a5-e8c1-d43fbabf7661",
+            "code": "patienten-förväntas-kunna-återgå-helt-i-nuvarande-sysselsättning-efter-",
+            "display": "Patienten förväntas kunna återgå helt i nuvarande sysselsättning efter "
+          }
+        },
+        {
+          "valueCoding": {
+            "id": "6b1a5218-0b04-45a9-8754-f4bf3fe3c5e1",
+            "system": "urn:uuid:9c3c8aee-84ba-45a5-e8c1-d43fbabf7661",
+            "code": "patienten-förväntas-inte-kunna-återgå-helt-i-nuvarande-sysselsättning.",
+            "display": "Patienten förväntas inte kunna återgå helt i nuvarande sysselsättning."
+          }
+        },
+        {
+          "valueCoding": {
+            "id": "c5877421-a2e7-4032-dbc3-7bd0278383d8",
+            "system": "urn:uuid:9c3c8aee-84ba-45a5-e8c1-d43fbabf7661",
+            "code": "prognosen-för-återgång-i-nuvarande-sysselsättning-är-svårbedömd.",
+            "display": "Prognosen för återgång i nuvarande sysselsättning är svårbedömd."
+          }
+        }
+      ],
+      "item": [
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unitOption",
+              "valueCoding": {
+                "system": "http://unitsofmeasure.org",
+                "code": "mo",
+                "display": "månad"
+              }
+            }
+          ],
+          "linkId": "df6d5c66-af0b-45d6-8b5a-e7a61e92ed98",
+          "text": "antal månader",
+          "type": "quantity",
+          "enableWhen": [
+            {
+              "question": "494d1d31-a515-4d0f-9e1a-60dc6d1b153b",
+              "operator": "=",
+              "answerCoding": {
+                "system": "urn:uuid:9c3c8aee-84ba-45a5-e8c1-d43fbabf7661",
+                "code": "patienten-förväntas-kunna-återgå-helt-i-nuvarande-sysselsättning-efter-"
+              }
+            }
+          ],
+          "required": false
+        },
+        {
+          "linkId": "41b871bd-b516-4eae-8056-5f2fb2bf6ade",
+          "text": "Beskriv vad som ligger till grund för bedömningen",
+          "type": "string",
+          "enableWhen": [
+            {
+              "question": "494d1d31-a515-4d0f-9e1a-60dc6d1b153b",
+              "operator": "=",
+              "answerCoding": {
+                "system": "urn:uuid:9c3c8aee-84ba-45a5-e8c1-d43fbabf7661",
+                "code": "prognosen-för-återgång-i-nuvarande-sysselsättning-är-svårbedömd."
+              }
+            }
+          ],
+          "required": false
+        }
+      ]
+    },
+    {
+      "extension": [
+        {
+          "url": "https://electronichealth.se/fhir/NDI/StructureDefinition/SHCSublabelExtension",
+          "valueMarkdown": "Här kan du beskriva andra åtgärder än åtgärder inom hälso- och sjukvården som skulle kunna främja återgången i arbete. Beskriv gärna hur åtgärderna kan främja återgången i arbete eller annan aktuell sysselsättning."
+        }
+      ],
+      "linkId": "c569bf18-17fa-4538-8fb3-0db80e5b13fb",
+      "text": "Åtgärder som kan främja återgången i arbete",
+      "type": "text",
+      "required": false
+    },
+    {
+      "linkId": "e58b0dbb-0821-48d1-8914-c0cd7de9f662",
+      "text": "Övriga upplysningar",
+      "type": "text",
+      "required": false
+    },
+    {
+      "linkId": "9ef5a5fa-f04e-4cab-8969-c0f9728ada76",
+      "text": "Kontakt med Försäkringskassan Jag önskar att Försäkringskassan kontaktar mig",
+      "_text": {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+            "valueMarkdown": "### **Kontakt med Försäkringskassan**\n\n#### Jag önskar att Försäkringskassan kontaktar mig"
+          }
+        ]
+      },
+      "type": "boolean",
+      "required": false,
+      "item": [
+        {
+          "linkId": "bdad871e-6ef5-428e-8d17-ee2ae12976dc",
+          "text": "Ange gärna varför du vill ha kontakt",
+          "type": "string",
+          "enableWhen": [
+            {
+              "question": "9ef5a5fa-f04e-4cab-8969-c0f9728ada76",
+              "operator": "=",
+              "answerBoolean": true
+            }
+          ],
+          "required": false
+        }
+      ]
+    }
+  ]
+}

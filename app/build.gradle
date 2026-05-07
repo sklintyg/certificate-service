@@ -27,6 +27,7 @@ dependencies {
     runtimeOnly project(':pdfbox-generator')
     runtimeOnly project(':integration-certificate-print-service')
     runtimeOnly project(':integration-intyg-proxy-service')
+    runtimeOnly project(':integration-fhir-service')
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.boot:spring-boot-testcontainers'

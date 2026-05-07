@@ -56,8 +56,12 @@ public class InMemoryCertificateModelRepository
     certificateModelFactories.forEach(
         certificateModelFactory -> {
           final var certificateModel = certificateModelFactory.create();
-          certificateModelMap.put(certificateModel.id(), certificateModel);
-          log.info("Loaded certificate model '{}' to repository", certificateModel.id());
+          if (certificateModel == null) {
+            System.out.println("Questionnaire in action");
+          } else {
+            certificateModelMap.put(certificateModel.id(), certificateModel);
+            log.info("Loaded certificate model '{}' to repository", certificateModel.id());
+          }
         });
 
     final var certificateTypeToVersionReference =
