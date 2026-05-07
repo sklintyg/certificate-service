@@ -94,7 +94,7 @@ public class QuestionnaireToCertificateModelMapper {
   private static String resolveVersion(Questionnaire questionnaire) {
     return Optional.ofNullable(questionnaire.getVersion())
         .filter(v -> !v.isBlank())
-        .orElse("1.0");
+        .orElse("Unknown");
   }
 
   private static String resolveName(Questionnaire questionnaire) {

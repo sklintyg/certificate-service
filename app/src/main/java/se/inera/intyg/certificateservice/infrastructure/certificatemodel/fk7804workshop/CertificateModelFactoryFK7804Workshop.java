@@ -58,6 +58,7 @@ import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import se.inera.intyg.certificateservice.domain.action.certificate.model.CertificateActionFactory;
@@ -98,8 +99,9 @@ public class CertificateModelFactoryFK7804Workshop implements CertificateModelFa
   private String fkLogicalAddress;
 
   private final DiagnosisCodeRepository diagnosisCodeRepository;
+  private final FHIRClient fhirClient;
 
-  private static final String FK_7804 = "fk7804";
+  private static final String FK_7804 = "fk7804-workshop";
   private static final String VERSION = "2.0";
   private static final CertificateTypeName FK7804_TYPE_NAME = new CertificateTypeName("FK7804");
   private static final String NAME = "Läkarintyg för sjukpenning";
@@ -151,77 +153,6 @@ public class CertificateModelFactoryFK7804Workshop implements CertificateModelFa
 
   @Override
   public CertificateModel create() {
-    return CertificateModel.builder()
-        .id(FK7804_V2_0)
-        .type(CodeSystemKvIntygstyp.FK7804)
-        .typeName(FK7804_TYPE_NAME)
-        .name(NAME)
-        .description(DESCRIPTION)
-        .detailedDescription(DETAILED_DESCRIPTION.replaceAll("\\R", ""))
-        .activeFrom(activeFrom)
-        .availableForCitizen(true)
-        .recipient(CertificateRecipientFactory.fkassa(fkLogicalAddress))
-        .schematronPath(SCHEMATRON_PATH)
-        .sickLeaveProvider(new FK7804SickLeaveProvider())
-        .ableToCreateDraftForModel(AG7804_V2_0)
-        .messageTypes(
-            List.of(
-                CertificateMessageType.builder()
-                    .type(MessageType.MISSING)
-                    .subject(new Subject(MessageType.MISSING.displayName()))
-                    .build(),
-                CertificateMessageType.builder()
-                    .type(MessageType.COORDINATION)
-                    .subject(new Subject(MessageType.COORDINATION.displayName()))
-                    .build(),
-                CertificateMessageType.builder()
-                    .type(MessageType.CONTACT)
-                    .subject(new Subject(MessageType.CONTACT.displayName()))
-                    .build(),
-                CertificateMessageType.builder()
-                    .type(MessageType.OTHER)
-                    .subject(new Subject(MessageType.OTHER.displayName()))
-                    .build()))
-        .texts(
-            List.of(
-                CertificateText.builder()
-                    .text(PREAMBLE_TEXT)
-                    .type(CertificateTextType.PREAMBLE_TEXT)
-                    .links(
-                        List.of(
-                            CertificateLink.builder()
-                                .url(URL_FK)
-                                .id(LINK_FK_ID)
-                                .name(FK_NAME)
-                                .build()))
-                    .build()))
-        .summaryProvider(new FK7804CertificateSummaryProvider())
-        .certificateActionSpecifications(FK7804CertificateActionSpecification.create())
-        .messageActionSpecifications(FK7804MessageActionSpecification.create())
-        .elementSpecifications(
-            List.of(
-                categorySmittbararpenning(questionSmittbararpenning()),
-                categoryGrundForMedicinsktUnderlag(
-                    questionGrundForMedicinsktUnderlag(questionAnnanGrundForMedicinsktUnderlag())),
-                categorySysselsattning(questionSysselsattning(questionYrkeOchArbetsuppgifter())),
-                categoryDiagnos(questionDiagnos(diagnosisCodeRepository)),
-                categoryFunktionsnedsattning(questionFunktionsnedsattningar()),
-                categoryAktivitetsbegransning(questionAktivitetsbegransningar()),
-                categoryMedicinskBehandling(questionMedicinskBehandling()),
-                categoryBedomning(
-                    questionNedsattningArbetsformaga(messageStartDateInfo()),
-                    questionArbetsformagaLangreAnBeslutsstod(),
-                    questionTransportstod(),
-                    questionSvarareAtergangVidOjamnArbetstid(
-                        questionMedicinskaSkalForSvarareAtergang())),
-                categoryPrognos(
-                    questionPrognos(questionAntalManader(), questionGrundForBedomning())),
-                categoryAtgarderSomKanFramjaAttergang(questionAtgarderSomKanFramjaAtergang()),
-                categoryOvrigt(questionOvrigt()),
-                categoryKontakt(questionKontakt(questionAngeVarforDuVillHaKontakt())),
-                issuingUnitContactInfo()))
-        .pdfSpecification(FK7804PdfSpecification.create())
-        .certificateActionFactory(certificateActionFactory)
-        .build();
+    return QuestionnaireToCertificateModelMapper.map(fhirClient.getQuestionnaireForId("898089"));
   }
 }
