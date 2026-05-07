@@ -7,9 +7,10 @@ import java.net.URISyntaxException;
 import org.hl7.fhir.r5.model.Questionnaire;
 import org.hl7.fhir.r5.model.QuestionnaireResponse;
 
+
 public class Main {
 
-  static void main() throws URISyntaxException, IOException {
+  public static void main(String[] args) throws URISyntaxException, IOException {
     FhirContext ctx = FhirContext.forR5();
 
     IGenericClient client = ctx.newRestfulGenericClient("https://hapi.fhir.org/baseR5");
@@ -20,8 +21,22 @@ public class Main {
     Questionnaire questionnaire = client.read().resource(Questionnaire.class).withId("898089")
         .execute();
 
-    QuestionnaireResponse questionnaireResponse = client.read()
-        .resource(QuestionnaireResponse.class).withId("81661").execute();
+    // Map FHIR Questionnaire to internal CertificateModel representation
+    final var certificateModel = QuestionnaireToCertificateModelMapper.map(questionnaire);
+    System.out.println("Certificate Model ID: " + certificateModel.id().type().type()
+        + " v" + certificateModel.id().version().version());
+    System.out.println("Name: " + certificateModel.name());
+    System.out.println("Description: " + certificateModel.description());
+    System.out.println("Elements:");
+    certificateModel.elementSpecifications().forEach(spec -> {
+      System.out.println("  " + spec.id().id() + " - " + spec.configuration().name());
+      spec.children().forEach(child ->
+          System.out.println("    " + child.id().id() + " - " + child.configuration().name())
+      );
+    });
+
+    // QuestionnaireResponse questionnaireResponse = client.read()
+//        .resource(QuestionnaireResponse.class).withId("81661").execute();
 
     // MethodOutcome response = client.create().resource(Files.readString(
 //        Path.of(Main.class.getResource("/fk7804.json").getPath()))).execute();
@@ -30,12 +45,12 @@ public class Main {
     // System.out.println(questionnaireItemComponent.getText());
     // System.out.println(questionnaireItemComponent.getType());
 
-    questionnaireResponse.getItem().forEach(item -> {
+    /* questionnaireResponse.getItem().forEach(item -> {
       System.out.println(item.getAnswer().getFirst().getValue());
     });
 
     String string = ctx.newJsonParser().setPrettyPrint(true)
         .encodeResourceToString(questionnaire);
-    System.out.println(string);
+    System.out.println(string); */
   }
 }
