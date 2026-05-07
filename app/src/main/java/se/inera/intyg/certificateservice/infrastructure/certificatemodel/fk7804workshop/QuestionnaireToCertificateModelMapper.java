@@ -29,6 +29,7 @@ import se.inera.intyg.certificateservice.domain.certificatemodel.model.Certifica
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.CertificateType;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.CertificateTypeName;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.CertificateVersion;
+import se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7804.FK7804CertificateActionSpecification;
 
 /**
  * Maps a FHIR R5 Questionnaire to a CertificateModel, including metadata and element
@@ -66,7 +67,7 @@ public class QuestionnaireToCertificateModelMapper {
     return CertificateModel.builder()
         .id(
             CertificateModelId.builder()
-                .type(new CertificateType(type))
+                .type(new CertificateType("FK7804-WORKSHOP"))
                 .version(new CertificateVersion(version))
                 .build()
         )
@@ -74,10 +75,10 @@ public class QuestionnaireToCertificateModelMapper {
         .name(name)
         .description(description)
         .detailedDescription(resolvePurpose(questionnaire))
-        .activeFrom(LocalDateTime.now(ZoneId.systemDefault()))
+        .activeFrom(LocalDateTime.of(2021, 3, 3, 3, 0))
         .availableForCitizen(true)
         .elementSpecifications(elementSpecifications)
-        .certificateActionSpecifications(Collections.emptyList())
+        .certificateActionSpecifications(FK7804CertificateActionSpecification.create())
         .messageActionSpecifications(Collections.emptyList())
         .texts(Collections.emptyList())
         .messageTypes(Collections.emptyList())

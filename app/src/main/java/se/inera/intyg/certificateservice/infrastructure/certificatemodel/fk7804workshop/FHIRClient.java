@@ -18,6 +18,7 @@ public class FHIRClient {
   898089
    */
   public Questionnaire getQuestionnaireForId(String id) {
+    System.out.println("Fetching Questionnaire with ID: " + id);
     return client.read().resource(Questionnaire.class).withId(id)
         .execute();
   }

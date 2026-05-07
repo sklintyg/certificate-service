@@ -25,6 +25,7 @@ import org.hl7.fhir.r5.model.Questionnaire;
 import org.hl7.fhir.r5.model.Questionnaire.QuestionnaireItemComponent;
 import org.hl7.fhir.r5.model.Questionnaire.QuestionnaireItemType;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementConfigurationCategory;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementLayout;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementConfigurationCheckboxBoolean;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementConfigurationCode;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementConfigurationDate;
@@ -156,6 +157,7 @@ public class QuestionnaireToElementSpecificationMapper {
         .id(fieldId)
         .name(item.getText())
         .list(codes)
+        .elementLayout(ElementLayout.ROWS)
         .build();
   }
 }

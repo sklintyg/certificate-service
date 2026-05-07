@@ -153,6 +153,8 @@ public class CertificateModelFactoryFK7804Workshop implements CertificateModelFa
 
   @Override
   public CertificateModel create() {
-    return QuestionnaireToCertificateModelMapper.map(fhirClient.getQuestionnaireForId("898089"));
+    return QuestionnaireToCertificateModelMapper
+        .map(fhirClient.getQuestionnaireForId("898089"))
+        .withCertificateActionFactory(certificateActionFactory);
   }
 }
