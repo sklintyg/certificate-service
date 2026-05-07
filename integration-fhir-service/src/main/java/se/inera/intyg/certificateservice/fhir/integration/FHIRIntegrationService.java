@@ -18,36 +18,22 @@
  */
 package se.inera.intyg.certificateservice.fhir.integration;
 
-import static se.inera.intyg.certificateservice.logging.MdcHelper.LOG_SESSION_ID_HEADER;
-import static se.inera.intyg.certificateservice.logging.MdcHelper.LOG_TRACE_ID_HEADER;
 import static se.inera.intyg.certificateservice.logging.MdcLogConstants.EVENT_TYPE_ACCESSED;
-import static se.inera.intyg.certificateservice.logging.MdcLogConstants.SESSION_ID_KEY;
-import static se.inera.intyg.certificateservice.logging.MdcLogConstants.TRACE_ID_KEY;
 
+import ca.uhn.fhir.context.FhirContext;
 import org.hl7.fhir.r5.model.Questionnaire;
-import org.slf4j.MDC;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClient;
 import se.inera.intyg.certificateservice.logging.PerformanceLogging;
 
 @Service
 public class FHIRIntegrationService {
 
-  private final RestClient fhirRestClient;
-
-  public FHIRIntegrationService(@Qualifier("fhirRestClient") RestClient fhirRestClient) {
-    this.fhirRestClient = fhirRestClient;
-  }
-
   @PerformanceLogging(eventAction = "get-questionnaire", eventType = EVENT_TYPE_ACCESSED)
   public Questionnaire getQuestionnaire() {
-    return fhirRestClient
-        .get()
-        .uri("/api/fhir")
-        .header(LOG_TRACE_ID_HEADER, MDC.get(TRACE_ID_KEY))
-        .header(LOG_SESSION_ID_HEADER, MDC.get(SESSION_ID_KEY))
-        .retrieve()
-        .body(Questionnaire.class);
+    final var ctx = FhirContext.forR5();
+
+    final var client = ctx.newRestfulGenericClient("https://hapi.fhir.org/baseR5");
+
+    return client.read().resource(Questionnaire.class).withId("898089").execute();
   }
 }
