@@ -18,14 +18,16 @@
  */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7804workshop;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.r5.model.Questionnaire;
 import org.hl7.fhir.r5.model.Questionnaire.QuestionnaireItemComponent;
 import org.hl7.fhir.r5.model.Questionnaire.QuestionnaireItemType;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementConfigurationCategory;
-import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementLayout;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementConfigurationCheckboxBoolean;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementConfigurationCode;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementConfigurationDate;
@@ -33,8 +35,13 @@ import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementCo
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementConfigurationTextArea;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementConfigurationTextField;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementId;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementLayout;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementRule;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementRuleExpression;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementRuleType;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementSpecification;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.FieldId;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.RuleExpression;
 import se.inera.intyg.certificateservice.domain.common.model.Code;
 
 /**
@@ -106,6 +113,8 @@ public class QuestionnaireToElementSpecificationMapper {
         .map(QuestionnaireToElementSpecificationMapper::mapItem)
         .toList();
 
+    final var reparentedChildren = reparentByEnableWhen(children, item.getItem());
+
     return ElementSpecification.builder()
         .id(new ElementId(item.getLinkId()))
         .configuration(
@@ -113,7 +122,7 @@ public class QuestionnaireToElementSpecificationMapper {
                 .name(item.getText())
                 .build()
         )
-        .children(children)
+        .children(reparentedChildren)
         .build();
   }
 
@@ -148,7 +157,8 @@ public class QuestionnaireToElementSpecificationMapper {
           .name(item.getText())
           .build();
       default -> {
-        log.warn("Unsupported questionnaire item type '{}' for linkId '{}', defaulting to text field",
+        log.warn(
+            "Unsupported questionnaire item type '{}' for linkId '{}', defaulting to text field",
             item.getType(), item.getLinkId());
         yield ElementConfigurationTextField.builder()
             .id(fieldId)
@@ -161,11 +171,118 @@ public class QuestionnaireToElementSpecificationMapper {
         .map(QuestionnaireToElementSpecificationMapper::mapItem)
         .toList();
 
+    final var reparentedChildren = reparentByEnableWhen(children, item.getItem());
+
+    final var rules = buildRules(item, elementId, fieldId);
+
     return ElementSpecification.builder()
         .id(elementId)
         .configuration(configuration)
-        .children(children)
+        .children(reparentedChildren)
+        .rules(rules)
         .build();
+  }
+
+  /**
+   * Builds ElementRules from the FHIR item's enableWhen conditions and required flag.
+   *
+   * <p>FHIR enableWhen maps to SHOW rules - the item is only visible when the referenced
+   * question has a specific answer. The enableBehavior (all/any) determines if conditions are
+   * combined with AND (&&) or OR (||).
+   *
+   * <p>FHIR required maps to a MANDATORY rule on the item itself.
+   */
+  private static List<ElementRule> buildRules(QuestionnaireItemComponent item,
+      ElementId elementId, FieldId fieldId) {
+    final var rules = new ArrayList<ElementRule>();
+
+    if (item.hasEnableWhen()) {
+      final var enableWhen = item.getEnableWhen();
+      final var useAnd = item.hasEnableBehavior()
+          && item.getEnableBehavior() == Questionnaire.EnableWhenBehavior.ALL;
+
+      final var expressions = enableWhen.stream()
+          .map(condition -> buildEnableWhenExpression(condition))
+          .toList();
+
+      final var combinedExpression = useAnd
+          ? String.join(" && ", expressions)
+          : String.join(" || ", expressions);
+
+      // The SHOW rule references the element that the condition depends on.
+      // If multiple conditions exist, we use the first referenced element as the rule id.
+      final var referencedElementId = new ElementId(enableWhen.getFirst().getQuestion());
+
+      rules.add(
+          ElementRuleExpression.builder()
+              .id(referencedElementId)
+              .type(ElementRuleType.SHOW)
+              .expression(new RuleExpression(combinedExpression))
+              .build()
+      );
+    }
+
+    if (item.getRequired()) {
+      rules.add(
+          ElementRuleExpression.builder()
+              .id(elementId)
+              .type(ElementRuleType.MANDATORY)
+              .expression(new RuleExpression("$" + fieldId.value()))
+              .build()
+      );
+    }
+
+    return rules;
+  }
+
+  private static String buildEnableWhenExpression(
+      Questionnaire.QuestionnaireItemEnableWhenComponent condition) {
+    final var questionLinkId = condition.getQuestion();
+    final var operator = condition.getOperator();
+
+    return switch (operator) {
+      case EXISTS -> "$" + questionLinkId;
+      case EQUAL -> {
+        final var answer = resolveAnswerValue(condition);
+        yield "$" + questionLinkId + " == '" + answer + "'";
+      }
+      case NOT_EQUAL -> {
+        final var answer = resolveAnswerValue(condition);
+        yield "$" + questionLinkId + " != '" + answer + "'";
+      }
+      case GREATER_THAN -> {
+        final var answer = resolveAnswerValue(condition);
+        yield "$" + questionLinkId + " > '" + answer + "'";
+      }
+      case LESS_THAN -> {
+        final var answer = resolveAnswerValue(condition);
+        yield "$" + questionLinkId + " < '" + answer + "'";
+      }
+      case GREATER_OR_EQUAL -> {
+        final var answer = resolveAnswerValue(condition);
+        yield "$" + questionLinkId + " >= '" + answer + "'";
+      }
+      case LESS_OR_EQUAL -> {
+        final var answer = resolveAnswerValue(condition);
+        yield "$" + questionLinkId + " <= '" + answer + "'";
+      }
+      default -> "$" + questionLinkId;
+    };
+  }
+
+  private static String resolveAnswerValue(
+      Questionnaire.QuestionnaireItemEnableWhenComponent condition) {
+    final var answer = condition.getAnswer();
+    if (answer == null) {
+      return "";
+    }
+    if (answer.isBooleanPrimitive()) {
+      return answer.primitiveValue();
+    }
+    if (answer instanceof org.hl7.fhir.r5.model.Coding coding) {
+      return coding.getCode();
+    }
+    return answer.primitiveValue() != null ? answer.primitiveValue() : answer.toString();
   }
 
   private static ElementConfigurationRadioMultipleCode mapChoiceConfiguration(
@@ -188,5 +305,80 @@ public class QuestionnaireToElementSpecificationMapper {
         .elementLayout(ElementLayout.ROWS)
         .build();
   }
-}
 
+  /**
+   * Reparents items that have enableWhen conditions referencing a sibling item.
+   *
+   * <p>In FHIR, conditional items are expressed as flat siblings with enableWhen pointing to
+   * another sibling. In our internal model, these should be nested as children of the referenced
+   * element. This method moves such items from the sibling list into the children of the
+   * referenced element.
+   *
+   * @param mappedItems the already-mapped ElementSpecifications (flat siblings)
+   * @param sourceItems the original FHIR QuestionnaireItemComponents (for reading enableWhen)
+   * @return restructured list where enableWhen-dependent items are nested under their parent
+   */
+  private static List<ElementSpecification> reparentByEnableWhen(
+      List<ElementSpecification> mappedItems,
+      List<QuestionnaireItemComponent> sourceItems) {
+
+    if (mappedItems.isEmpty() || sourceItems.size() != mappedItems.size()) {
+      return mappedItems;
+    }
+
+    // Collect the linkIds of all siblings for quick lookup
+    final var siblingLinkIds = sourceItems.stream()
+        .map(QuestionnaireItemComponent::getLinkId)
+        .collect(Collectors.toSet());
+
+    // Build a map: parentLinkId -> list of child ElementSpecifications to reparent
+    final var reparentMap = new LinkedHashMap<String, List<ElementSpecification>>();
+    final var itemsToRemove = new java.util.HashSet<String>();
+
+    for (var i = 0; i < sourceItems.size(); i++) {
+      final var sourceItem = sourceItems.get(i);
+      if (sourceItem.hasEnableWhen()) {
+        final var enableWhen = sourceItem.getEnableWhen();
+        // Check if all enableWhen references point to a sibling
+        final var referencedSibling = enableWhen.getFirst().getQuestion();
+        if (siblingLinkIds.contains(referencedSibling)
+            && !referencedSibling.equals(sourceItem.getLinkId())) {
+          reparentMap
+              .computeIfAbsent(referencedSibling, k -> new ArrayList<>())
+              .add(mappedItems.get(i));
+          itemsToRemove.add(sourceItem.getLinkId());
+        }
+      }
+    }
+
+    if (reparentMap.isEmpty()) {
+      return mappedItems;
+    }
+
+    // Rebuild the list: for each item, attach reparented children and exclude moved items
+    return mappedItems.stream()
+        .filter(spec -> !itemsToRemove.contains(spec.id().id()))
+        .map(spec -> {
+          final var additionalChildren = reparentMap.get(spec.id().id());
+          if (additionalChildren == null) {
+            return spec;
+          }
+          final var mergedChildren = new ArrayList<>(spec.children());
+          mergedChildren.addAll(additionalChildren);
+          return ElementSpecification.builder()
+              .id(spec.id())
+              .configuration(spec.configuration())
+              .children(mergedChildren)
+              .rules(spec.rules())
+              .validations(spec.validations())
+              .mapping(spec.mapping())
+              .pdfConfiguration(spec.pdfConfiguration())
+              .shouldValidate(spec.shouldValidate())
+              .includeWhenRenewing(spec.includeWhenRenewing())
+              .includeInXml(spec.includeInXml())
+              .includeForCitizen(spec.includeForCitizen())
+              .build();
+        })
+        .toList();
+  }
+}
