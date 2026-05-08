@@ -73,6 +73,22 @@ public class QuestionnaireToCertificateModelMapper {
 
   private final CertificateActionFactory certificateActionFactory;
 
+  /**
+   * Creates a FieldId from a FHIR linkId, replacing hyphens with underscores so the value is a
+   * valid identifier in the client expression language.
+   */
+  private static FieldId toFieldId(String linkId) {
+    return new FieldId(linkId.replace("-", "_"));
+  }
+
+  /**
+   * Creates an ElementId from a FHIR linkId, replacing hyphens with underscores so the id matches
+   * the corresponding FieldId and expression references.
+   */
+  private static ElementId toElementId(String linkId) {
+    return new ElementId(linkId.replace("-", "_"));
+  }
+
   public CertificateModel map(Questionnaire questionnaire) {
     final var signingRoles = List.of(Role.DOCTOR, Role.PRIVATE_DOCTOR);
     final var nonSigningRoles = List.of(Role.CARE_ADMIN, Role.MIDWIFE, Role.NURSE);
@@ -278,7 +294,7 @@ public class QuestionnaireToCertificateModelMapper {
   private ElementSpecification mapGroupItem(
       QuestionnaireItemComponent item, Map<String, QuestionnaireItemComponent> itemIndex) {
     return ElementSpecification.builder()
-        .id(new ElementId(item.getLinkId()))
+        .id(toElementId(item.getLinkId()))
         .configuration(ElementConfigurationCategory.builder().name(item.getText()).build())
         .children(mapItems(item.getItem(), itemIndex))
         .build();
@@ -288,10 +304,10 @@ public class QuestionnaireToCertificateModelMapper {
       QuestionnaireItemComponent item, Map<String, QuestionnaireItemComponent> itemIndex) {
     final var linkId = item.getLinkId();
     return ElementSpecification.builder()
-        .id(new ElementId(linkId))
+        .id(toElementId(linkId))
         .configuration(
             ElementConfigurationCheckboxBoolean.builder()
-                .id(new FieldId(linkId))
+                .id(toFieldId(linkId))
                 .label(item.getText())
                 .selectedText("Ja")
                 .unselectedText("Ej angivet")
@@ -307,10 +323,10 @@ public class QuestionnaireToCertificateModelMapper {
       QuestionnaireItemComponent item, Map<String, QuestionnaireItemComponent> itemIndex) {
     final var linkId = item.getLinkId();
     return ElementSpecification.builder()
-        .id(new ElementId(linkId))
+        .id(toElementId(linkId))
         .configuration(
             ElementConfigurationTextArea.builder()
-                .id(new FieldId(linkId))
+                .id(toFieldId(linkId))
                 .name(item.getText())
                 .build())
         .rules(mapRulesFromItem(item, itemIndex))
@@ -323,10 +339,10 @@ public class QuestionnaireToCertificateModelMapper {
       QuestionnaireItemComponent item, Map<String, QuestionnaireItemComponent> itemIndex) {
     final var linkId = item.getLinkId();
     return ElementSpecification.builder()
-        .id(new ElementId(linkId))
+        .id(toElementId(linkId))
         .configuration(
             ElementConfigurationTextField.builder()
-                .id(new FieldId(linkId))
+                .id(toFieldId(linkId))
                 .name(item.getText())
                 .build())
         .rules(mapRulesFromItem(item, itemIndex))
@@ -342,10 +358,10 @@ public class QuestionnaireToCertificateModelMapper {
     final var isCheckBox = isCheckBoxControl(item);
     if (isCheckBox) {
       return ElementSpecification.builder()
-          .id(new ElementId(linkId))
+          .id(toElementId(linkId))
           .configuration(
               ElementConfigurationCheckboxMultipleCode.builder()
-                  .id(new FieldId(linkId))
+                  .id(toFieldId(linkId))
                   .elementLayout(ElementLayout.ROWS) // NOT COMMUNICATED FROM QUESTIONNAIRE
                   .name(item.getText())
                   .list(options)
@@ -357,10 +373,10 @@ public class QuestionnaireToCertificateModelMapper {
           .build();
     }
     return ElementSpecification.builder()
-        .id(new ElementId(linkId))
+        .id(toElementId(linkId))
         .configuration(
             ElementConfigurationDropdownCode.builder()
-                .id(new FieldId(linkId))
+                .id(toFieldId(linkId))
                 .name(item.getText())
                 .list(options)
                 .build())
@@ -374,9 +390,12 @@ public class QuestionnaireToCertificateModelMapper {
       QuestionnaireItemComponent item, Map<String, QuestionnaireItemComponent> itemIndex) {
     final var linkId = item.getLinkId();
     return ElementSpecification.builder()
-        .id(new ElementId(linkId))
+        .id(toElementId(linkId))
         .configuration(
-            ElementConfigurationDate.builder().id(new FieldId(linkId)).name(item.getText()).build())
+            ElementConfigurationDate.builder()
+                .id(toFieldId(linkId))
+                .name(item.getText())
+                .build())
         .rules(mapRulesFromItem(item, itemIndex))
         .validations(List.of(ElementValidationDate.builder().mandatory(item.getRequired()).build()))
         .children(mapItems(item.getItem(), itemIndex))
@@ -389,10 +408,10 @@ public class QuestionnaireToCertificateModelMapper {
     final var unitExt = item.getExtensionByUrl(UNIT_OPTION_URL);
     final var unit = unitExt != null ? unitExt.getValue().primitiveValue() : null;
     return ElementSpecification.builder()
-        .id(new ElementId(linkId))
+        .id(toElementId(linkId))
         .configuration(
             ElementConfigurationInteger.builder()
-                .id(new FieldId(linkId))
+                .id(toFieldId(linkId))
                 .name(item.getText())
                 .unitOfMeasurement(unit)
                 .build())
@@ -418,7 +437,7 @@ public class QuestionnaireToCertificateModelMapper {
             option -> {
               final var coding = option.getValueCoding();
               final var code = new Code(coding.getCode(), coding.getSystem(), coding.getDisplay());
-              final var fieldId = new FieldId(coding.hasId() ? coding.getId() : coding.getCode());
+              final var fieldId = toFieldId(coding.hasId() ? coding.getId() : coding.getCode());
               return new ElementConfigurationCode(fieldId, coding.getDisplay(), code);
             })
         .toList();
@@ -455,9 +474,9 @@ public class QuestionnaireToCertificateModelMapper {
       if (parentItem == null) {
         continue;
       }
-      final var parentId = new ElementId(parentLinkId);
+      final var parentId = toElementId(parentLinkId);
       if (enableWhen.hasAnswerBooleanType()) {
-        final var fieldId = new FieldId(parentLinkId);
+        final var fieldId = toFieldId(parentLinkId);
         rules.add(
             enableWhen.getAnswerBooleanType().booleanValue()
                 ? buildShowRule(parentId, fieldId)
@@ -472,12 +491,12 @@ public class QuestionnaireToCertificateModelMapper {
     }
 
     if (item.getRequired()) {
-      final var id = new ElementId(item.getLinkId());
+      final var id = toElementId(item.getLinkId());
       rules.add(buildMandatoryRule(item, id));
     }
 
     if (item.hasMaxLength() && item.getMaxLength() > 0) {
-      rules.add(buildLimitRule(new ElementId(item.getLinkId()), (short) item.getMaxLength()));
+      rules.add(buildLimitRule(toElementId(item.getLinkId()), (short) item.getMaxLength()));
     }
 
     return rules;
@@ -493,8 +512,8 @@ public class QuestionnaireToCertificateModelMapper {
         .map(
             enableWhen -> {
               final var parentLinkId = enableWhen.getQuestion();
-              final var parentId = new ElementId(parentLinkId);
-              final var fieldId = new FieldId(parentLinkId);
+              final var parentId = toElementId(parentLinkId);
+              final var fieldId = toFieldId(parentLinkId);
               return enableWhen.getAnswerBooleanType().booleanValue()
                   ? buildShowRule(parentId, fieldId)
                   : buildHideRule(parentId, fieldId);
@@ -503,12 +522,12 @@ public class QuestionnaireToCertificateModelMapper {
   }
 
   private ElementRule buildMandatoryRule(QuestionnaireItemComponent item, ElementId id) {
-    final var linkId = item.getLinkId();
+    final var fieldId = toFieldId(item.getLinkId()).value();
     if (item.getType() == QuestionnaireItemType.BOOLEAN) {
       return ElementRuleExpression.builder()
           .id(id)
           .type(ElementRuleType.MANDATORY)
-          .expression(new RuleExpression("exists($" + linkId + ")"))
+          .expression(new RuleExpression("exists($" + fieldId + ")"))
           .build();
     }
     if (item.getType() == QuestionnaireItemType.CODING && isCheckBoxControl(item)) {
@@ -525,7 +544,7 @@ public class QuestionnaireToCertificateModelMapper {
     return ElementRuleExpression.builder()
         .id(id)
         .type(ElementRuleType.MANDATORY)
-        .expression(new RuleExpression("$" + linkId))
+        .expression(new RuleExpression("$" + fieldId))
         .build();
   }
 
@@ -559,7 +578,7 @@ public class QuestionnaireToCertificateModelMapper {
         .map(
             opt -> {
               final var coding = opt.getValueCoding();
-              return new FieldId(coding.hasId() ? coding.getId() : coding.getCode());
+              return toFieldId(coding.hasId() ? coding.getId() : coding.getCode());
             })
         .findFirst()
         .orElse(null);
