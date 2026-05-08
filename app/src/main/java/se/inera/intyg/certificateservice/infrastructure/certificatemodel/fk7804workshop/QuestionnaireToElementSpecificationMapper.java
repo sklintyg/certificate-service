@@ -23,9 +23,9 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.hl7.fhir.r5.model.Questionnaire;
 import org.hl7.fhir.r5.model.Questionnaire.QuestionnaireItemComponent;
+import org.hl7.fhir.r5.model.Questionnaire.QuestionnaireItemEnableWhenComponent;
 import org.hl7.fhir.r5.model.Questionnaire.QuestionnaireItemType;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementConfigurationCategory;
-import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementLayout;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementConfigurationCheckboxBoolean;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementConfigurationCode;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementConfigurationDate;
@@ -33,8 +33,13 @@ import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementCo
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementConfigurationTextArea;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementConfigurationTextField;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementId;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementLayout;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementRule;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementRuleExpression;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementRuleType;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementSpecification;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.FieldId;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.RuleExpression;
 import se.inera.intyg.certificateservice.domain.common.model.Code;
 
 /**
@@ -64,31 +69,23 @@ public class QuestionnaireToElementSpecificationMapper {
       return Collections.emptyList();
     }
 
-    final var topLevel = questionnaire.getItem();
-    final var hasAnyGroup = topLevel.stream()
-        .anyMatch(item -> item.getType() == QuestionnaireItemType.GROUP);
-
-    if (!hasAnyGroup) {
-      final var children = topLevel.stream()
-          .map(QuestionnaireToElementSpecificationMapper::mapItem)
-          .toList();
-
-      final var syntheticCategory = ElementSpecification.builder()
-          .id(new ElementId("category." + questionnaire.getIdPart()))
-          .configuration(
-              ElementConfigurationCategory.builder()
-                  .name(questionnaire.getTitle() != null ? questionnaire.getTitle() : "Frågor")
-                  .build()
-          )
-          .children(children)
-          .build();
-
-      return List.of(syntheticCategory);
-    }
-
-    return topLevel.stream()
-        .map(QuestionnaireToElementSpecificationMapper::mapItem)
+    return questionnaire.getItem().stream()
+        .map(QuestionnaireToElementSpecificationMapper::wrapInCategory)
         .toList();
+  }
+
+  private static ElementSpecification wrapInCategory(QuestionnaireItemComponent item) {
+    final var inner = mapItem(item);
+    return ElementSpecification.builder()
+        .id(new ElementId("category." + item.getLinkId()))
+        .configuration(
+            ElementConfigurationCategory.builder()
+                .name(item.getText() != null ? item.getText() : "Frågor")
+                .build()
+        )
+        .rules(inner.rules())
+        .children(List.of(inner))
+        .build();
   }
 
   private static ElementSpecification mapItem(QuestionnaireItemComponent item) {
@@ -119,7 +116,7 @@ public class QuestionnaireToElementSpecificationMapper {
 
   private static ElementSpecification mapQuestion(QuestionnaireItemComponent item) {
     final var elementId = new ElementId(item.getLinkId());
-    final var fieldId = new FieldId(item.getLinkId());
+    final var fieldId = new FieldId(toSafeFieldId(item.getLinkId()));
 
     final var configuration = switch (item.getType()) {
       case STRING -> ElementConfigurationTextField.builder()
@@ -161,11 +158,37 @@ public class QuestionnaireToElementSpecificationMapper {
         .map(QuestionnaireToElementSpecificationMapper::mapItem)
         .toList();
 
+    final var rules = buildShowRules(item);
+
     return ElementSpecification.builder()
         .id(elementId)
         .configuration(configuration)
+        .rules(rules)
         .children(children)
         .build();
+  }
+
+  private static List<ElementRule> buildShowRules(QuestionnaireItemComponent item) {
+    return item.getEnableWhen().stream()
+        .filter(QuestionnaireItemEnableWhenComponent::hasAnswerBooleanType)
+        .map(ew -> {
+          final var questionLinkId = ew.getQuestion();
+          final var safeFieldId = toSafeFieldId(questionLinkId);
+          final var answerBoolean = ew.getAnswerBooleanType().getValue();
+          final var expression = Boolean.TRUE.equals(answerBoolean)
+              ? "$" + safeFieldId
+              : "!$" + safeFieldId + " && !empty($" + safeFieldId + ")";
+          return (ElementRule) ElementRuleExpression.builder()
+              .id(new ElementId(questionLinkId))
+              .type(ElementRuleType.SHOW)
+              .expression(new RuleExpression(expression))
+              .build();
+        })
+        .toList();
+  }
+
+  private static String toSafeFieldId(String linkId) {
+    return linkId.replace("-", "_");
   }
 
   private static ElementConfigurationRadioMultipleCode mapChoiceConfiguration(

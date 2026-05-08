@@ -29,6 +29,7 @@ import se.inera.intyg.certificateservice.domain.certificatemodel.model.Certifica
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.CertificateType;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.CertificateTypeName;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.CertificateVersion;
+import se.inera.intyg.certificateservice.domain.common.model.Code;
 import se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7804.FK7804CertificateActionSpecification;
 
 /**
@@ -73,6 +74,7 @@ public class QuestionnaireToCertificateModelMapper {
         )
         .typeName(new CertificateTypeName(typeName))
         .name(name)
+        .type(new Code("fk7804-workshop-code", "workshop-code-system", type))
         .description(description)
         .detailedDescription(resolvePurpose(questionnaire))
         .activeFrom(LocalDateTime.of(2021, 3, 3, 3, 0))
@@ -95,11 +97,16 @@ public class QuestionnaireToCertificateModelMapper {
   private static String resolveVersion(Questionnaire questionnaire) {
     return Optional.ofNullable(questionnaire.getVersion())
         .filter(v -> !v.isBlank())
-        .orElse("Unknown");
+        .orElse("unknown");
   }
 
   private static String resolveName(Questionnaire questionnaire) {
-    return Optional.ofNullable(questionnaire.getTitle())
+    StringBuilder titleAndIdentifier = new StringBuilder();
+    titleAndIdentifier
+        .append(questionnaire.getTitle())
+        .append(": ")
+        .append(questionnaire.getIdentifier().getFirst().getValue());
+    return Optional.ofNullable(titleAndIdentifier.toString())
         .filter(t -> !t.isBlank())
         .orElseGet(() -> Optional.ofNullable(questionnaire.getName())
             .orElse("Unnamed Questionnaire"));
@@ -118,7 +125,10 @@ public class QuestionnaireToCertificateModelMapper {
   }
 
   private static String resolvePurpose(Questionnaire questionnaire) {
-    return Optional.ofNullable(questionnaire.getPurpose())
+    String detailedDescription = "<i>"
+        + questionnaire.getDescription()
+        + "</i>";
+    return Optional.ofNullable(detailedDescription)
         .orElse("");
   }
 }
