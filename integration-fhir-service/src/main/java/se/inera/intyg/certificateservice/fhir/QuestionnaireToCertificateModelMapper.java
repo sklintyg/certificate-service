@@ -22,6 +22,7 @@ import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementCo
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementId;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementSpecification;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.FieldId;
+import se.inera.intyg.certificateservice.domain.common.model.Code;
 import se.inera.intyg.certificateservice.domain.common.model.Role;
 import se.inera.intyg.certificateservice.domain.validation.model.ElementValidationBoolean;
 
@@ -38,7 +39,9 @@ public class QuestionnaireToCertificateModelMapper {
         Stream.concat(signingRoles.stream(), nonSigningRoles.stream()).toList();
 
     return CertificateModel.builder()
+        .availableForCitizen(false)
         .id(mapModelId(questionnaire))
+        .type(mapType(questionnaire))
         .typeName(mapTypeName(questionnaire))
         .name(questionnaire.getTitle())
         .description(questionnaire.getDescription())
@@ -117,8 +120,13 @@ public class QuestionnaireToCertificateModelMapper {
     final var typeValue = questionnaire.getIdentifierFirstRep().getValue();
     return CertificateModelId.builder()
         .type(new CertificateType(typeValue.toLowerCase()))
-        .version(new CertificateVersion(questionnaire.getVersion()))
+        .version(new CertificateVersion("3.0"))
         .build();
+  }
+
+  private Code mapType(Questionnaire questionnaire) {
+    final var identifier = questionnaire.getIdentifierFirstRep();
+    return new Code(identifier.getValue(), identifier.getSystem(), questionnaire.getTitle());
   }
 
   private CertificateTypeName mapTypeName(Questionnaire questionnaire) {
