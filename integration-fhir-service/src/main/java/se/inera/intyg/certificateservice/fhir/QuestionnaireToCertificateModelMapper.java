@@ -16,7 +16,6 @@ import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.hl7.fhir.r5.model.Questionnaire;
 import org.hl7.fhir.r5.model.Questionnaire.QuestionnaireItemComponent;
-import org.hl7.fhir.r5.model.Questionnaire.QuestionnaireItemEnableWhenComponent;
 import org.hl7.fhir.r5.model.Questionnaire.QuestionnaireItemOperator;
 import org.hl7.fhir.r5.model.Questionnaire.QuestionnaireItemType;
 import org.springframework.stereotype.Component;
@@ -49,6 +48,8 @@ import se.inera.intyg.certificateservice.domain.certificatemodel.model.FieldId;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.RuleExpression;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.RuleLimit;
 import se.inera.intyg.certificateservice.domain.common.model.Code;
+import se.inera.intyg.certificateservice.domain.common.model.Recipient;
+import se.inera.intyg.certificateservice.domain.common.model.RecipientId;
 import se.inera.intyg.certificateservice.domain.common.model.Role;
 import se.inera.intyg.certificateservice.domain.validation.model.ElementValidationBoolean;
 import se.inera.intyg.certificateservice.domain.validation.model.ElementValidationCode;
@@ -77,19 +78,27 @@ public class QuestionnaireToCertificateModelMapper {
   private final CertificateActionFactory certificateActionFactory;
 
   /**
-   * Creates a FieldId from a FHIR linkId, replacing hyphens with underscores so the value is a
-   * valid identifier in the client expression language.
+   * Creates a FieldId from a FHIR linkId for answer option identifiers, replacing hyphens with
+   * underscores so the value is a valid identifier in the client expression language.
    */
   private static FieldId toFieldId(String linkId) {
     return new FieldId(linkId.replace("-", "_"));
   }
 
   /**
-   * Creates an ElementId from a FHIR linkId, replacing hyphens with underscores so the id matches
-   * the corresponding FieldId and expression references.
+   * Creates a numeric ElementId for a question item using its pre-assigned sequential index. The
+   * resulting value matches the XSD pattern [0-9]+ required for svar.id.
    */
-  private static ElementId toElementId(String linkId) {
-    return new ElementId(linkId.replace("-", "_"));
+  private static ElementId questionElementId(String linkId, Map<String, Integer> indexMap) {
+    return new ElementId(String.valueOf(indexMap.getOrDefault(linkId, 0)));
+  }
+
+  /**
+   * Creates a numeric FieldId ("N.1") for a question item using its pre-assigned sequential index.
+   * The resulting value matches the XSD pattern [0-9]+\.[0-9]+ required for delsvar.id.
+   */
+  private static FieldId questionFieldId(String linkId, Map<String, Integer> indexMap) {
+    return new FieldId(indexMap.getOrDefault(linkId, 0) + ".1");
   }
 
   public CertificateModel map(Questionnaire questionnaire) {
@@ -100,14 +109,16 @@ public class QuestionnaireToCertificateModelMapper {
 
     final var topLevelItems = questionnaire.getItem();
     final var itemIndex = buildItemIndex(topLevelItems);
+    final var indexMap = buildLinkIdIndexMap(topLevelItems);
     final var elementSpecifications =
         IntStream.range(0, topLevelItems.size())
-            .mapToObj(i -> mapTopLevelItem(topLevelItems.get(i), i + 1, itemIndex))
+            .mapToObj(i -> mapTopLevelItem(topLevelItems.get(i), i + 1, itemIndex, indexMap))
             .filter(Objects::nonNull)
             .toList();
 
     return CertificateModel.builder()
         .availableForCitizen(false)
+        .recipient(new Recipient(new RecipientId("FKASSA"), "Försäkringskassan", "FKASSA"))
         .id(mapModelId(questionnaire))
         .type(mapType(questionnaire))
         .typeName(mapTypeName(questionnaire))
@@ -235,18 +246,20 @@ public class QuestionnaireToCertificateModelMapper {
   private ElementSpecification mapTopLevelItem(
       QuestionnaireItemComponent item,
       int categoryIndex,
-      Map<String, QuestionnaireItemComponent> itemIndex) {
+      Map<String, QuestionnaireItemComponent> itemIndex,
+      Map<String, Integer> indexMap) {
     if (item.getType() == QuestionnaireItemType.GROUP) {
-      return mapGroupItem(item, itemIndex);
+      return mapGroupItem(item, itemIndex, indexMap);
     }
-    return mapItemWithCategory(item, categoryIndex, itemIndex);
+    return mapItemWithCategory(item, categoryIndex, itemIndex, indexMap);
   }
 
   private ElementSpecification mapItemWithCategory(
       QuestionnaireItemComponent item,
       int categoryIndex,
-      Map<String, QuestionnaireItemComponent> itemIndex) {
-    final var questionSpec = mapItem(item, itemIndex);
+      Map<String, QuestionnaireItemComponent> itemIndex,
+      Map<String, Integer> indexMap) {
+    final var questionSpec = mapItem(item, itemIndex, indexMap);
     if (questionSpec == null) {
       return null;
     }
@@ -254,7 +267,7 @@ public class QuestionnaireToCertificateModelMapper {
         .id(new ElementId("KAT_" + categoryIndex))
         .configuration(
             ElementConfigurationCategory.builder().name(extractCategoryName(item)).build())
-        .rules(mapCategoryRulesFromItem(item, itemIndex))
+        .rules(mapCategoryRulesFromItem(item, itemIndex, indexMap))
         .children(List.of(questionSpec))
         .build();
   }
@@ -276,162 +289,179 @@ public class QuestionnaireToCertificateModelMapper {
 
   private List<ElementSpecification> mapItems(
       List<QuestionnaireItemComponent> items,
-      Map<String, QuestionnaireItemComponent> itemIndex) {
+      Map<String, QuestionnaireItemComponent> itemIndex,
+      Map<String, Integer> indexMap) {
     return items.stream()
         .filter(item -> !isHelpItem(item))
-        .map(item -> mapItem(item, itemIndex))
+        .map(item -> mapItem(item, itemIndex, indexMap))
         .filter(Objects::nonNull)
         .toList();
   }
 
   private ElementSpecification mapItem(
-      QuestionnaireItemComponent item, Map<String, QuestionnaireItemComponent> itemIndex) {
+      QuestionnaireItemComponent item,
+      Map<String, QuestionnaireItemComponent> itemIndex,
+      Map<String, Integer> indexMap) {
     return switch (item.getType()) {
-      case GROUP -> mapGroupItem(item, itemIndex);
-      case BOOLEAN -> mapBooleanItem(item, itemIndex);
-      case TEXT -> mapTextAreaItem(item, itemIndex);
-      case STRING -> mapTextFieldItem(item, itemIndex);
-      case CODING -> mapCodingItem(item, itemIndex);
-      case DATE -> mapDateItem(item, itemIndex);
-      case QUANTITY -> mapQuantityItem(item, itemIndex);
+      case GROUP -> mapGroupItem(item, itemIndex, indexMap);
+      case BOOLEAN -> mapBooleanItem(item, itemIndex, indexMap);
+      case TEXT -> mapTextAreaItem(item, itemIndex, indexMap);
+      case STRING -> mapTextFieldItem(item, itemIndex, indexMap);
+      case CODING -> mapCodingItem(item, itemIndex, indexMap);
+      case DATE -> mapDateItem(item, itemIndex, indexMap);
+      case QUANTITY -> mapQuantityItem(item, itemIndex, indexMap);
       default -> null;
     };
   }
 
   private ElementSpecification mapGroupItem(
-      QuestionnaireItemComponent item, Map<String, QuestionnaireItemComponent> itemIndex) {
+      QuestionnaireItemComponent item,
+      Map<String, QuestionnaireItemComponent> itemIndex,
+      Map<String, Integer> indexMap) {
     return ElementSpecification.builder()
-        .id(toElementId(item.getLinkId()))
+        .id(questionElementId(item.getLinkId(), indexMap))
         .configuration(ElementConfigurationCategory.builder().name(item.getText()).build())
-        .children(mapItems(item.getItem(), itemIndex))
+        .children(mapItems(item.getItem(), itemIndex, indexMap))
         .build();
   }
 
   private ElementSpecification mapBooleanItem(
-      QuestionnaireItemComponent item, Map<String, QuestionnaireItemComponent> itemIndex) {
+      QuestionnaireItemComponent item,
+      Map<String, QuestionnaireItemComponent> itemIndex,
+      Map<String, Integer> indexMap) {
     final var linkId = item.getLinkId();
     return ElementSpecification.builder()
-        .id(toElementId(linkId))
+        .id(questionElementId(linkId, indexMap))
         .configuration(
             ElementConfigurationCheckboxBoolean.builder()
-                .id(toFieldId(linkId))
+                .id(questionFieldId(linkId, indexMap))
                 .label(item.getText())
                 .description(extractDescription(item))
                 .selectedText("Ja")
                 .unselectedText("Ej angivet")
                 .build())
-        .rules(mapRulesFromItem(item, itemIndex))
+        .rules(mapRulesFromItem(item, itemIndex, indexMap))
         .validations(
             List.of(ElementValidationBoolean.builder().mandatory(item.getRequired()).build()))
-        .children(mapItems(item.getItem(), itemIndex))
+        .children(mapItems(item.getItem(), itemIndex, indexMap))
         .build();
   }
 
   private ElementSpecification mapTextAreaItem(
-      QuestionnaireItemComponent item, Map<String, QuestionnaireItemComponent> itemIndex) {
+      QuestionnaireItemComponent item,
+      Map<String, QuestionnaireItemComponent> itemIndex,
+      Map<String, Integer> indexMap) {
     final var linkId = item.getLinkId();
     return ElementSpecification.builder()
-        .id(toElementId(linkId))
+        .id(questionElementId(linkId, indexMap))
         .configuration(
             ElementConfigurationTextArea.builder()
-                .id(toFieldId(linkId))
+                .id(questionFieldId(linkId, indexMap))
                 .name(item.getText())
                 .description(extractDescription(item))
                 .build())
-        .rules(mapRulesFromItem(item, itemIndex))
+        .rules(mapRulesFromItem(item, itemIndex, indexMap))
         .validations(List.of(ElementValidationText.builder().mandatory(item.getRequired()).build()))
-        .children(mapItems(item.getItem(), itemIndex))
+        .children(mapItems(item.getItem(), itemIndex, indexMap))
         .build();
   }
 
   private ElementSpecification mapTextFieldItem(
-      QuestionnaireItemComponent item, Map<String, QuestionnaireItemComponent> itemIndex) {
+      QuestionnaireItemComponent item,
+      Map<String, QuestionnaireItemComponent> itemIndex,
+      Map<String, Integer> indexMap) {
     final var linkId = item.getLinkId();
     return ElementSpecification.builder()
-        .id(toElementId(linkId))
+        .id(questionElementId(linkId, indexMap))
         .configuration(
             ElementConfigurationTextField.builder()
-                .id(toFieldId(linkId))
+                .id(questionFieldId(linkId, indexMap))
                 .name(item.getText())
                 .description(extractDescription(item))
                 .build())
-        .rules(mapRulesFromItem(item, itemIndex))
+        .rules(mapRulesFromItem(item, itemIndex, indexMap))
         .validations(List.of(ElementValidationText.builder().mandatory(item.getRequired()).build()))
-        .children(mapItems(item.getItem(), itemIndex))
+        .children(mapItems(item.getItem(), itemIndex, indexMap))
         .build();
   }
 
   private ElementSpecification mapCodingItem(
-      QuestionnaireItemComponent item, Map<String, QuestionnaireItemComponent> itemIndex) {
+      QuestionnaireItemComponent item,
+      Map<String, QuestionnaireItemComponent> itemIndex,
+      Map<String, Integer> indexMap) {
     final var linkId = item.getLinkId();
     final var options = mapAnswerOptions(item);
     final var isCheckBox = isCheckBoxControl(item);
     if (isCheckBox) {
       return ElementSpecification.builder()
-          .id(toElementId(linkId))
+          .id(questionElementId(linkId, indexMap))
           .configuration(
               ElementConfigurationCheckboxMultipleCode.builder()
-                  .id(toFieldId(linkId))
+                  .id(questionFieldId(linkId, indexMap))
                   .elementLayout(ElementLayout.ROWS) // NOT COMMUNICATED FROM QUESTIONNAIRE
                   .name(item.getText())
                   .description(extractDescription(item))
                   .list(options)
                   .build())
-          .rules(mapRulesFromItem(item, itemIndex))
+          .rules(mapRulesFromItem(item, itemIndex, indexMap))
           .validations(
               List.of(ElementValidationCodeList.builder().mandatory(item.getRequired()).build()))
-          .children(mapItems(item.getItem(), itemIndex))
+          .children(mapItems(item.getItem(), itemIndex, indexMap))
           .build();
     }
     return ElementSpecification.builder()
-        .id(toElementId(linkId))
+        .id(questionElementId(linkId, indexMap))
         .configuration(
             ElementConfigurationDropdownCode.builder()
-                .id(toFieldId(linkId))
+                .id(questionFieldId(linkId, indexMap))
                 .name(item.getText())
                 .description(extractDescription(item))
                 .list(options)
                 .build())
-        .rules(mapRulesFromItem(item, itemIndex))
+        .rules(mapRulesFromItem(item, itemIndex, indexMap))
         .validations(List.of(ElementValidationCode.builder().mandatory(item.getRequired()).build()))
-        .children(mapItems(item.getItem(), itemIndex))
+        .children(mapItems(item.getItem(), itemIndex, indexMap))
         .build();
   }
 
   private ElementSpecification mapDateItem(
-      QuestionnaireItemComponent item, Map<String, QuestionnaireItemComponent> itemIndex) {
+      QuestionnaireItemComponent item,
+      Map<String, QuestionnaireItemComponent> itemIndex,
+      Map<String, Integer> indexMap) {
     final var linkId = item.getLinkId();
     return ElementSpecification.builder()
-        .id(toElementId(linkId))
+        .id(questionElementId(linkId, indexMap))
         .configuration(
             ElementConfigurationDate.builder()
-                .id(toFieldId(linkId))
+                .id(questionFieldId(linkId, indexMap))
                 .name(item.getText())
                 .build())
-        .rules(mapRulesFromItem(item, itemIndex))
+        .rules(mapRulesFromItem(item, itemIndex, indexMap))
         .validations(List.of(ElementValidationDate.builder().mandatory(item.getRequired()).build()))
-        .children(mapItems(item.getItem(), itemIndex))
+        .children(mapItems(item.getItem(), itemIndex, indexMap))
         .build();
   }
 
   private ElementSpecification mapQuantityItem(
-      QuestionnaireItemComponent item, Map<String, QuestionnaireItemComponent> itemIndex) {
+      QuestionnaireItemComponent item,
+      Map<String, QuestionnaireItemComponent> itemIndex,
+      Map<String, Integer> indexMap) {
     final var linkId = item.getLinkId();
     final var unitExt = item.getExtensionByUrl(UNIT_OPTION_URL);
     final var unit = unitExt != null ? unitExt.getValue().primitiveValue() : null;
     return ElementSpecification.builder()
-        .id(toElementId(linkId))
+        .id(questionElementId(linkId, indexMap))
         .configuration(
             ElementConfigurationInteger.builder()
-                .id(toFieldId(linkId))
+                .id(questionFieldId(linkId, indexMap))
                 .name(item.getText())
                 .description(extractDescription(item))
                 .unitOfMeasurement(unit)
                 .build())
-        .rules(mapRulesFromItem(item, itemIndex))
+        .rules(mapRulesFromItem(item, itemIndex, indexMap))
         .validations(
             List.of(ElementValidationInteger.builder().mandatory(item.getRequired()).build()))
-        .children(mapItems(item.getItem(), itemIndex))
+        .children(mapItems(item.getItem(), itemIndex, indexMap))
         .build();
   }
 
@@ -506,8 +536,30 @@ public class QuestionnaireToCertificateModelMapper {
     }
   }
 
+  private Map<String, Integer> buildLinkIdIndexMap(List<QuestionnaireItemComponent> items) {
+    final var map = new HashMap<String, Integer>();
+    final var counter = new int[] {0};
+    assignLinkIdIndices(items, map, counter);
+    return map;
+  }
+
+  private void assignLinkIdIndices(
+      List<QuestionnaireItemComponent> items, Map<String, Integer> map, int[] counter) {
+    for (final var item : items) {
+      if (!isHelpItem(item)) {
+        counter[0]++;
+        map.put(item.getLinkId(), counter[0]);
+        if (!item.getItem().isEmpty()) {
+          assignLinkIdIndices(item.getItem(), map, counter);
+        }
+      }
+    }
+  }
+
   private List<ElementRule> mapRulesFromItem(
-      QuestionnaireItemComponent item, Map<String, QuestionnaireItemComponent> itemIndex) {
+      QuestionnaireItemComponent item,
+      Map<String, QuestionnaireItemComponent> itemIndex,
+      Map<String, Integer> indexMap) {
     final var rules = new ArrayList<ElementRule>();
 
     for (final var enableWhen : item.getEnableWhen()) {
@@ -519,9 +571,9 @@ public class QuestionnaireToCertificateModelMapper {
       if (parentItem == null) {
         continue;
       }
-      final var parentId = toElementId(parentLinkId);
+      final var parentId = questionElementId(parentLinkId, indexMap);
       if (enableWhen.hasAnswerBooleanType()) {
-        final var fieldId = toFieldId(parentLinkId);
+        final var fieldId = questionFieldId(parentLinkId, indexMap);
         rules.add(
             enableWhen.getAnswerBooleanType().booleanValue()
                 ? buildShowRule(parentId, fieldId)
@@ -536,19 +588,23 @@ public class QuestionnaireToCertificateModelMapper {
     }
 
     if (item.getRequired()) {
-      final var id = toElementId(item.getLinkId());
-      rules.add(buildMandatoryRule(item, id));
+      final var id = questionElementId(item.getLinkId(), indexMap);
+      rules.add(buildMandatoryRule(item, id, indexMap));
     }
 
     if (item.hasMaxLength() && item.getMaxLength() > 0) {
-      rules.add(buildLimitRule(toElementId(item.getLinkId()), (short) item.getMaxLength()));
+      rules.add(
+          buildLimitRule(
+              questionElementId(item.getLinkId(), indexMap), (short) item.getMaxLength()));
     }
 
     return rules;
   }
 
   private List<ElementRule> mapCategoryRulesFromItem(
-      QuestionnaireItemComponent item, Map<String, QuestionnaireItemComponent> itemIndex) {
+      QuestionnaireItemComponent item,
+      Map<String, QuestionnaireItemComponent> itemIndex,
+      Map<String, Integer> indexMap) {
     return item.getEnableWhen().stream()
         .filter(
             enableWhen ->
@@ -557,8 +613,8 @@ public class QuestionnaireToCertificateModelMapper {
         .map(
             enableWhen -> {
               final var parentLinkId = enableWhen.getQuestion();
-              final var parentId = toElementId(parentLinkId);
-              final var fieldId = toFieldId(parentLinkId);
+              final var parentId = questionElementId(parentLinkId, indexMap);
+              final var fieldId = questionFieldId(parentLinkId, indexMap);
               return enableWhen.getAnswerBooleanType().booleanValue()
                   ? buildShowRule(parentId, fieldId)
                   : buildHideRule(parentId, fieldId);
@@ -566,8 +622,9 @@ public class QuestionnaireToCertificateModelMapper {
         .collect(Collectors.toList());
   }
 
-  private ElementRule buildMandatoryRule(QuestionnaireItemComponent item, ElementId id) {
-    final var fieldId = toFieldId(item.getLinkId()).value();
+  private ElementRule buildMandatoryRule(
+      QuestionnaireItemComponent item, ElementId id, Map<String, Integer> indexMap) {
+    final var fieldId = questionFieldId(item.getLinkId(), indexMap).value();
     if (item.getType() == QuestionnaireItemType.BOOLEAN) {
       return ElementRuleExpression.builder()
           .id(id)
