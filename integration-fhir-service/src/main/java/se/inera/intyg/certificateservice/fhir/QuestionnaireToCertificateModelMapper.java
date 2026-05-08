@@ -4,14 +4,20 @@ import static se.inera.intyg.certificateservice.domain.certificatemodel.model.El
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.hl7.fhir.r5.model.Questionnaire;
 import org.hl7.fhir.r5.model.Questionnaire.QuestionnaireItemComponent;
+import org.hl7.fhir.r5.model.Questionnaire.QuestionnaireItemEnableWhenComponent;
+import org.hl7.fhir.r5.model.Questionnaire.QuestionnaireItemOperator;
 import org.hl7.fhir.r5.model.Questionnaire.QuestionnaireItemType;
 import org.springframework.stereotype.Component;
 import se.inera.intyg.certificateservice.domain.action.certificate.model.CertificateActionFactory;
@@ -34,8 +40,14 @@ import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementCo
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementConfigurationUnitContactInformation;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementId;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementLayout;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementRule;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementRuleExpression;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementRuleLimit;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementRuleType;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementSpecification;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.FieldId;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.RuleExpression;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.RuleLimit;
 import se.inera.intyg.certificateservice.domain.common.model.Code;
 import se.inera.intyg.certificateservice.domain.common.model.Role;
 import se.inera.intyg.certificateservice.domain.validation.model.ElementValidationBoolean;
@@ -68,9 +80,10 @@ public class QuestionnaireToCertificateModelMapper {
         Stream.concat(signingRoles.stream(), nonSigningRoles.stream()).toList();
 
     final var topLevelItems = questionnaire.getItem();
+    final var itemIndex = buildItemIndex(topLevelItems);
     final var elementSpecifications =
         IntStream.range(0, topLevelItems.size())
-            .mapToObj(i -> mapTopLevelItem(topLevelItems.get(i), i + 1))
+            .mapToObj(i -> mapTopLevelItem(topLevelItems.get(i), i + 1, itemIndex))
             .filter(Objects::nonNull)
             .toList();
 
@@ -200,22 +213,29 @@ public class QuestionnaireToCertificateModelMapper {
         .toLocalDateTime();
   }
 
-  private ElementSpecification mapTopLevelItem(QuestionnaireItemComponent item, int index) {
+  private ElementSpecification mapTopLevelItem(
+      QuestionnaireItemComponent item,
+      int categoryIndex,
+      Map<String, QuestionnaireItemComponent> itemIndex) {
     if (item.getType() == QuestionnaireItemType.GROUP) {
-      return mapGroupItem(item);
+      return mapGroupItem(item, itemIndex);
     }
-    return mapItemWithCategory(item, index);
+    return mapItemWithCategory(item, categoryIndex, itemIndex);
   }
 
-  private ElementSpecification mapItemWithCategory(QuestionnaireItemComponent item, int index) {
-    final var questionSpec = mapItem(item);
+  private ElementSpecification mapItemWithCategory(
+      QuestionnaireItemComponent item,
+      int categoryIndex,
+      Map<String, QuestionnaireItemComponent> itemIndex) {
+    final var questionSpec = mapItem(item, itemIndex);
     if (questionSpec == null) {
       return null;
     }
     return ElementSpecification.builder()
-        .id(new ElementId("KAT_" + index))
+        .id(new ElementId("KAT_" + categoryIndex))
         .configuration(
             ElementConfigurationCategory.builder().name(extractCategoryName(item)).build())
+        .rules(mapCategoryRulesFromItem(item, itemIndex))
         .children(List.of(questionSpec))
         .build();
   }
@@ -235,32 +255,37 @@ public class QuestionnaireToCertificateModelMapper {
     return item.getText();
   }
 
-  private List<ElementSpecification> mapItems(List<QuestionnaireItemComponent> items) {
-    return items.stream().map(this::mapItem).filter(Objects::nonNull).toList();
+  private List<ElementSpecification> mapItems(
+      List<QuestionnaireItemComponent> items,
+      Map<String, QuestionnaireItemComponent> itemIndex) {
+    return items.stream().map(item -> mapItem(item, itemIndex)).filter(Objects::nonNull).toList();
   }
 
-  private ElementSpecification mapItem(QuestionnaireItemComponent item) {
+  private ElementSpecification mapItem(
+      QuestionnaireItemComponent item, Map<String, QuestionnaireItemComponent> itemIndex) {
     return switch (item.getType()) {
-      case GROUP -> mapGroupItem(item);
-      case BOOLEAN -> mapBooleanItem(item);
-      case TEXT -> mapTextAreaItem(item);
-      case STRING -> mapTextFieldItem(item);
-      case CODING -> mapCodingItem(item);
-      case DATE -> mapDateItem(item);
-      case QUANTITY -> mapQuantityItem(item);
+      case GROUP -> mapGroupItem(item, itemIndex);
+      case BOOLEAN -> mapBooleanItem(item, itemIndex);
+      case TEXT -> mapTextAreaItem(item, itemIndex);
+      case STRING -> mapTextFieldItem(item, itemIndex);
+      case CODING -> mapCodingItem(item, itemIndex);
+      case DATE -> mapDateItem(item, itemIndex);
+      case QUANTITY -> mapQuantityItem(item, itemIndex);
       default -> null;
     };
   }
 
-  private ElementSpecification mapGroupItem(QuestionnaireItemComponent item) {
+  private ElementSpecification mapGroupItem(
+      QuestionnaireItemComponent item, Map<String, QuestionnaireItemComponent> itemIndex) {
     return ElementSpecification.builder()
         .id(new ElementId(item.getLinkId()))
         .configuration(ElementConfigurationCategory.builder().name(item.getText()).build())
-        .children(mapItems(item.getItem()))
+        .children(mapItems(item.getItem(), itemIndex))
         .build();
   }
 
-  private ElementSpecification mapBooleanItem(QuestionnaireItemComponent item) {
+  private ElementSpecification mapBooleanItem(
+      QuestionnaireItemComponent item, Map<String, QuestionnaireItemComponent> itemIndex) {
     final var linkId = item.getLinkId();
     return ElementSpecification.builder()
         .id(new ElementId(linkId))
@@ -271,13 +296,15 @@ public class QuestionnaireToCertificateModelMapper {
                 .selectedText("Ja")
                 .unselectedText("Ej angivet")
                 .build())
+        .rules(mapRulesFromItem(item, itemIndex))
         .validations(
             List.of(ElementValidationBoolean.builder().mandatory(item.getRequired()).build()))
-        .children(mapItems(item.getItem()))
+        .children(mapItems(item.getItem(), itemIndex))
         .build();
   }
 
-  private ElementSpecification mapTextAreaItem(QuestionnaireItemComponent item) {
+  private ElementSpecification mapTextAreaItem(
+      QuestionnaireItemComponent item, Map<String, QuestionnaireItemComponent> itemIndex) {
     final var linkId = item.getLinkId();
     return ElementSpecification.builder()
         .id(new ElementId(linkId))
@@ -286,12 +313,14 @@ public class QuestionnaireToCertificateModelMapper {
                 .id(new FieldId(linkId))
                 .name(item.getText())
                 .build())
+        .rules(mapRulesFromItem(item, itemIndex))
         .validations(List.of(ElementValidationText.builder().mandatory(item.getRequired()).build()))
-        .children(mapItems(item.getItem()))
+        .children(mapItems(item.getItem(), itemIndex))
         .build();
   }
 
-  private ElementSpecification mapTextFieldItem(QuestionnaireItemComponent item) {
+  private ElementSpecification mapTextFieldItem(
+      QuestionnaireItemComponent item, Map<String, QuestionnaireItemComponent> itemIndex) {
     final var linkId = item.getLinkId();
     return ElementSpecification.builder()
         .id(new ElementId(linkId))
@@ -300,12 +329,14 @@ public class QuestionnaireToCertificateModelMapper {
                 .id(new FieldId(linkId))
                 .name(item.getText())
                 .build())
+        .rules(mapRulesFromItem(item, itemIndex))
         .validations(List.of(ElementValidationText.builder().mandatory(item.getRequired()).build()))
-        .children(mapItems(item.getItem()))
+        .children(mapItems(item.getItem(), itemIndex))
         .build();
   }
 
-  private ElementSpecification mapCodingItem(QuestionnaireItemComponent item) {
+  private ElementSpecification mapCodingItem(
+      QuestionnaireItemComponent item, Map<String, QuestionnaireItemComponent> itemIndex) {
     final var linkId = item.getLinkId();
     final var options = mapAnswerOptions(item);
     final var isCheckBox = isCheckBoxControl(item);
@@ -319,9 +350,10 @@ public class QuestionnaireToCertificateModelMapper {
                   .name(item.getText())
                   .list(options)
                   .build())
+          .rules(mapRulesFromItem(item, itemIndex))
           .validations(
               List.of(ElementValidationCodeList.builder().mandatory(item.getRequired()).build()))
-          .children(mapItems(item.getItem()))
+          .children(mapItems(item.getItem(), itemIndex))
           .build();
     }
     return ElementSpecification.builder()
@@ -332,23 +364,27 @@ public class QuestionnaireToCertificateModelMapper {
                 .name(item.getText())
                 .list(options)
                 .build())
+        .rules(mapRulesFromItem(item, itemIndex))
         .validations(List.of(ElementValidationCode.builder().mandatory(item.getRequired()).build()))
-        .children(mapItems(item.getItem()))
+        .children(mapItems(item.getItem(), itemIndex))
         .build();
   }
 
-  private ElementSpecification mapDateItem(QuestionnaireItemComponent item) {
+  private ElementSpecification mapDateItem(
+      QuestionnaireItemComponent item, Map<String, QuestionnaireItemComponent> itemIndex) {
     final var linkId = item.getLinkId();
     return ElementSpecification.builder()
         .id(new ElementId(linkId))
         .configuration(
             ElementConfigurationDate.builder().id(new FieldId(linkId)).name(item.getText()).build())
+        .rules(mapRulesFromItem(item, itemIndex))
         .validations(List.of(ElementValidationDate.builder().mandatory(item.getRequired()).build()))
-        .children(mapItems(item.getItem()))
+        .children(mapItems(item.getItem(), itemIndex))
         .build();
   }
 
-  private ElementSpecification mapQuantityItem(QuestionnaireItemComponent item) {
+  private ElementSpecification mapQuantityItem(
+      QuestionnaireItemComponent item, Map<String, QuestionnaireItemComponent> itemIndex) {
     final var linkId = item.getLinkId();
     final var unitExt = item.getExtensionByUrl(UNIT_OPTION_URL);
     final var unit = unitExt != null ? unitExt.getValue().primitiveValue() : null;
@@ -360,9 +396,10 @@ public class QuestionnaireToCertificateModelMapper {
                 .name(item.getText())
                 .unitOfMeasurement(unit)
                 .build())
+        .rules(mapRulesFromItem(item, itemIndex))
         .validations(
             List.of(ElementValidationInteger.builder().mandatory(item.getRequired()).build()))
-        .children(mapItems(item.getItem()))
+        .children(mapItems(item.getItem(), itemIndex))
         .build();
   }
 
@@ -385,5 +422,146 @@ public class QuestionnaireToCertificateModelMapper {
               return new ElementConfigurationCode(fieldId, coding.getDisplay(), code);
             })
         .toList();
+  }
+
+  private Map<String, QuestionnaireItemComponent> buildItemIndex(
+      List<QuestionnaireItemComponent> items) {
+    final var index = new HashMap<String, QuestionnaireItemComponent>();
+    indexItems(items, index);
+    return index;
+  }
+
+  private void indexItems(
+      List<QuestionnaireItemComponent> items,
+      Map<String, QuestionnaireItemComponent> index) {
+    for (final var item : items) {
+      index.put(item.getLinkId(), item);
+      if (!item.getItem().isEmpty()) {
+        indexItems(item.getItem(), index);
+      }
+    }
+  }
+
+  private List<ElementRule> mapRulesFromItem(
+      QuestionnaireItemComponent item, Map<String, QuestionnaireItemComponent> itemIndex) {
+    final var rules = new ArrayList<ElementRule>();
+
+    for (final var enableWhen : item.getEnableWhen()) {
+      if (enableWhen.getOperator() != QuestionnaireItemOperator.EQUAL) {
+        continue;
+      }
+      final var parentLinkId = enableWhen.getQuestion();
+      final var parentItem = itemIndex.get(parentLinkId);
+      if (parentItem == null) {
+        continue;
+      }
+      final var parentId = new ElementId(parentLinkId);
+      if (enableWhen.hasAnswerBooleanType()) {
+        final var fieldId = new FieldId(parentLinkId);
+        rules.add(
+            enableWhen.getAnswerBooleanType().booleanValue()
+                ? buildShowRule(parentId, fieldId)
+                : buildHideRule(parentId, fieldId));
+      } else if (enableWhen.hasAnswerCoding()) {
+        final var code = enableWhen.getAnswerCoding().getCode();
+        final var optionFieldId = lookupOptionFieldId(parentItem, code);
+        if (optionFieldId != null) {
+          rules.add(buildShowRule(parentId, optionFieldId));
+        }
+      }
+    }
+
+    if (item.getRequired()) {
+      final var id = new ElementId(item.getLinkId());
+      rules.add(buildMandatoryRule(item, id));
+    }
+
+    if (item.hasMaxLength() && item.getMaxLength() > 0) {
+      rules.add(buildLimitRule(new ElementId(item.getLinkId()), (short) item.getMaxLength()));
+    }
+
+    return rules;
+  }
+
+  private List<ElementRule> mapCategoryRulesFromItem(
+      QuestionnaireItemComponent item, Map<String, QuestionnaireItemComponent> itemIndex) {
+    return item.getEnableWhen().stream()
+        .filter(
+            enableWhen ->
+                enableWhen.getOperator() == QuestionnaireItemOperator.EQUAL
+                    && enableWhen.hasAnswerBooleanType())
+        .map(
+            enableWhen -> {
+              final var parentLinkId = enableWhen.getQuestion();
+              final var parentId = new ElementId(parentLinkId);
+              final var fieldId = new FieldId(parentLinkId);
+              return enableWhen.getAnswerBooleanType().booleanValue()
+                  ? buildShowRule(parentId, fieldId)
+                  : buildHideRule(parentId, fieldId);
+            })
+        .collect(Collectors.toList());
+  }
+
+  private ElementRule buildMandatoryRule(QuestionnaireItemComponent item, ElementId id) {
+    final var linkId = item.getLinkId();
+    if (item.getType() == QuestionnaireItemType.BOOLEAN) {
+      return ElementRuleExpression.builder()
+          .id(id)
+          .type(ElementRuleType.MANDATORY)
+          .expression(new RuleExpression("exists($" + linkId + ")"))
+          .build();
+    }
+    if (item.getType() == QuestionnaireItemType.CODING && isCheckBoxControl(item)) {
+      final var optionExpressions =
+          mapAnswerOptions(item).stream()
+              .map(opt -> "$" + opt.id().value())
+              .collect(Collectors.joining(" || "));
+      return ElementRuleExpression.builder()
+          .id(id)
+          .type(ElementRuleType.MANDATORY)
+          .expression(new RuleExpression(optionExpressions))
+          .build();
+    }
+    return ElementRuleExpression.builder()
+        .id(id)
+        .type(ElementRuleType.MANDATORY)
+        .expression(new RuleExpression("$" + linkId))
+        .build();
+  }
+
+  private static ElementRule buildShowRule(ElementId id, FieldId fieldId) {
+    return ElementRuleExpression.builder()
+        .type(ElementRuleType.SHOW)
+        .id(id)
+        .expression(new RuleExpression("$" + fieldId.value()))
+        .build();
+  }
+
+  private static ElementRule buildHideRule(ElementId id, FieldId fieldId) {
+    return ElementRuleExpression.builder()
+        .type(ElementRuleType.HIDE)
+        .id(id)
+        .expression(new RuleExpression("$" + fieldId.value()))
+        .build();
+  }
+
+  private static ElementRule buildLimitRule(ElementId id, short limit) {
+    return ElementRuleLimit.builder()
+        .id(id)
+        .type(ElementRuleType.TEXT_LIMIT)
+        .limit(new RuleLimit(limit))
+        .build();
+  }
+
+  private FieldId lookupOptionFieldId(QuestionnaireItemComponent parent, String code) {
+    return parent.getAnswerOption().stream()
+        .filter(opt -> code.equals(opt.getValueCoding().getCode()))
+        .map(
+            opt -> {
+              final var coding = opt.getValueCoding();
+              return new FieldId(coding.hasId() ? coding.getId() : coding.getCode());
+            })
+        .findFirst()
+        .orElse(null);
   }
 }
