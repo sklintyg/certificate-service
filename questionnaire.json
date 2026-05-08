@@ -408,7 +408,7 @@
       "linkId": "92642cf4-45f2-420f-8384-f3f62600049b",
       "text": "Funktionsnedsättning",
       "type": "text",
-      "required": false
+      "required": true
     },
     {
       "extension": [
@@ -420,7 +420,7 @@
       "linkId": "bdd1ead7-639a-4c11-8934-0d7c1de78b04",
       "text": "Aktivitetsbegränsning",
       "type": "text",
-      "required": false
+      "required": true
     },
     {
       "extension": [

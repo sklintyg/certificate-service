@@ -34,6 +34,6 @@ public class FHIRIntegrationService {
 
     final var client = ctx.newRestfulGenericClient("https://hapi.fhir.org/baseR5");
 
-    return client.read().resource(Questionnaire.class).withId("898089").execute();
+    return client.read().resource(Questionnaire.class).withId("898148").execute();
   }
 }
