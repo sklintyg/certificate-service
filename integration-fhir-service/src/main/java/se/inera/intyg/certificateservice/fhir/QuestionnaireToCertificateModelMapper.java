@@ -68,7 +68,10 @@ public class QuestionnaireToCertificateModelMapper {
       "http://hl7.org/fhir/StructureDefinition/rendering-markdown";
   private static final String UNIT_OPTION_URL =
       "http://hl7.org/fhir/StructureDefinition/questionnaire-unitOption";
+  private static final String SUBLABEL_EXTENSION_URL =
+      "https://electronichealth.se/fhir/NDI/StructureDefinition/SHCSublabelExtension";
   private static final String CHECK_BOX_CODE = "check-box";
+  private static final String HELP_CODE = "help";
   private static final Pattern CATEGORY_NAME_PATTERN = Pattern.compile("###\\s+\\*\\*(.*?)\\*\\*");
 
   private final CertificateActionFactory certificateActionFactory;
@@ -274,7 +277,11 @@ public class QuestionnaireToCertificateModelMapper {
   private List<ElementSpecification> mapItems(
       List<QuestionnaireItemComponent> items,
       Map<String, QuestionnaireItemComponent> itemIndex) {
-    return items.stream().map(item -> mapItem(item, itemIndex)).filter(Objects::nonNull).toList();
+    return items.stream()
+        .filter(item -> !isHelpItem(item))
+        .map(item -> mapItem(item, itemIndex))
+        .filter(Objects::nonNull)
+        .toList();
   }
 
   private ElementSpecification mapItem(
@@ -309,6 +316,7 @@ public class QuestionnaireToCertificateModelMapper {
             ElementConfigurationCheckboxBoolean.builder()
                 .id(toFieldId(linkId))
                 .label(item.getText())
+                .description(extractDescription(item))
                 .selectedText("Ja")
                 .unselectedText("Ej angivet")
                 .build())
@@ -328,6 +336,7 @@ public class QuestionnaireToCertificateModelMapper {
             ElementConfigurationTextArea.builder()
                 .id(toFieldId(linkId))
                 .name(item.getText())
+                .description(extractDescription(item))
                 .build())
         .rules(mapRulesFromItem(item, itemIndex))
         .validations(List.of(ElementValidationText.builder().mandatory(item.getRequired()).build()))
@@ -344,6 +353,7 @@ public class QuestionnaireToCertificateModelMapper {
             ElementConfigurationTextField.builder()
                 .id(toFieldId(linkId))
                 .name(item.getText())
+                .description(extractDescription(item))
                 .build())
         .rules(mapRulesFromItem(item, itemIndex))
         .validations(List.of(ElementValidationText.builder().mandatory(item.getRequired()).build()))
@@ -364,6 +374,7 @@ public class QuestionnaireToCertificateModelMapper {
                   .id(toFieldId(linkId))
                   .elementLayout(ElementLayout.ROWS) // NOT COMMUNICATED FROM QUESTIONNAIRE
                   .name(item.getText())
+                  .description(extractDescription(item))
                   .list(options)
                   .build())
           .rules(mapRulesFromItem(item, itemIndex))
@@ -378,6 +389,7 @@ public class QuestionnaireToCertificateModelMapper {
             ElementConfigurationDropdownCode.builder()
                 .id(toFieldId(linkId))
                 .name(item.getText())
+                .description(extractDescription(item))
                 .list(options)
                 .build())
         .rules(mapRulesFromItem(item, itemIndex))
@@ -413,6 +425,7 @@ public class QuestionnaireToCertificateModelMapper {
             ElementConfigurationInteger.builder()
                 .id(toFieldId(linkId))
                 .name(item.getText())
+                .description(extractDescription(item))
                 .unitOfMeasurement(unit)
                 .build())
         .rules(mapRulesFromItem(item, itemIndex))
@@ -429,6 +442,38 @@ public class QuestionnaireToCertificateModelMapper {
     }
     return ext.getValue() instanceof org.hl7.fhir.r5.model.CodeableConcept cc
         && CHECK_BOX_CODE.equals(cc.getCodingFirstRep().getCode());
+  }
+
+  private boolean isHelpItem(QuestionnaireItemComponent item) {
+    final var ext = item.getExtensionByUrl(ITEM_CONTROL_URL);
+    if (ext == null) {
+      return false;
+    }
+    return ext.getValue() instanceof org.hl7.fhir.r5.model.CodeableConcept cc
+        && HELP_CODE.equals(cc.getCodingFirstRep().getCode());
+  }
+
+  private String extractDescription(QuestionnaireItemComponent item) {
+    final var sublabelExt = item.getExtensionByUrl(SUBLABEL_EXTENSION_URL);
+    if (sublabelExt != null) {
+      final var value = sublabelExt.getValue().primitiveValue();
+      if (value != null && !value.isBlank()) {
+        return value;
+      }
+    }
+    for (final var child : item.getItem()) {
+      if (isHelpItem(child)) {
+        for (final var ext : child.getTextElement().getExtension()) {
+          if (RENDERING_MARKDOWN_URL.equals(ext.getUrl())) {
+            final var value = ext.getValue().primitiveValue();
+            if (value != null && !value.isBlank()) {
+              return value;
+            }
+          }
+        }
+      }
+    }
+    return null;
   }
 
   private List<ElementConfigurationCode> mapAnswerOptions(QuestionnaireItemComponent item) {

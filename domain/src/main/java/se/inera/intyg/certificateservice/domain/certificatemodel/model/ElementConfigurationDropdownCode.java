@@ -42,6 +42,7 @@ public class ElementConfigurationDropdownCode implements ElementConfiguration {
   @Getter(onMethod = @__(@Override))
   ElementMessage message;
 
+  String description;
   FieldId id;
   List<ElementConfigurationCode> list;
   ElementLayout elementLayout;
