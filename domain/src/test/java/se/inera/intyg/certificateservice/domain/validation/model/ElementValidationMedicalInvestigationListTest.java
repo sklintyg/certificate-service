@@ -196,6 +196,40 @@ class ElementValidationMedicalInvestigationListTest {
           IllegalArgumentException.class,
           () -> validation.validate(elementData, categoryId, Collections.emptyList()));
     }
+
+    @Test
+    void shallThrowIllegalArgumentExceptionIfInformationSourceContainsNonIso88591Chars() {
+      final Optional<ElementId> categoryId = Optional.empty();
+      final var invalidInvestigation =
+          MedicalInvestigation.builder()
+              .id(new FieldId("INV_ISO"))
+              .date(
+                  ElementValueDate.builder()
+                      .dateId(new FieldId("DATE_ISO"))
+                      .date(LocalDate.now())
+                      .build())
+              .investigationType(
+                  ElementValueCode.builder().codeId(new FieldId("CODE_ISO")).code("CODE").build())
+              .informationSource(
+                  ElementValueText.builder()
+                      .textId(new FieldId("TEXT_ISO"))
+                      .text("Invalid\u0100Char")
+                      .build())
+              .build();
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueMedicalInvestigationList.builder()
+                      .id(FIELD_ID)
+                      .list(List.of(invalidInvestigation))
+                      .build())
+              .build();
+
+      assertThrows(
+          IllegalArgumentException.class,
+          () -> validation.validate(elementData, categoryId, Collections.emptyList()));
+    }
   }
 
   @Nested

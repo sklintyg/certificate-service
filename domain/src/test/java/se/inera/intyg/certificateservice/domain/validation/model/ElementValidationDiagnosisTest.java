@@ -70,6 +70,31 @@ class ElementValidationDiagnosisTest {
                 null, CATEGORY_ELEMENT_ID, Collections.emptyList()));
   }
 
+  @Test
+  void shallThrowIfDescriptionContainsNonIso88591Chars() {
+    elementValidationDiagnosis = ElementValidationDiagnosis.builder().build();
+    final var elementData =
+        ElementData.builder()
+            .id(ELEMENT_ID)
+            .value(
+                ElementValueDiagnosisList.builder()
+                    .diagnoses(
+                        List.of(
+                            ElementValueDiagnosis.builder()
+                                .id(DIAGNOS_ONE)
+                                .code(CODE)
+                                .description("Beskrivning\u0100")
+                                .build()))
+                    .build())
+            .build();
+
+    assertThrows(
+        IllegalArgumentException.class,
+        () ->
+            elementValidationDiagnosis.validate(
+                elementData, CATEGORY_ELEMENT_ID, Collections.emptyList()));
+  }
+
   @Nested
   class WithMandatoryField {
 

@@ -53,6 +53,8 @@ public class ElementValidationIcfValue implements ElementValidation {
           errorMessage(data, value.id(), categoryId, ErrorMessageFactory.missingAnswer()));
     }
 
+    ElementValidator.validateIso88591(value.text());
+
     if (ElementValidator.isTextOverLimit(value.text(), limit)) {
       return List.of(
           errorMessage(data, value.id(), categoryId, ErrorMessageFactory.textLimit(limit)));
