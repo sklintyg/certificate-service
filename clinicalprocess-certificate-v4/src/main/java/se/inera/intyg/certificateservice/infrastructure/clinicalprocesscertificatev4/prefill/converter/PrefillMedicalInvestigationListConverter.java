@@ -93,13 +93,25 @@ public class PrefillMedicalInvestigationListConverter implements PrefillStandard
                                     final var instance = answer.getInstans() - 1;
                                     final var config =
                                         medicalInvestigationListConfig.list().get(instance);
+
+                                    final var informationSourceText =
+                                        (String)
+                                            getContentFromSubAnswer(
+                                                    subAnswers, specification.id(), "%s.3")
+                                                .getFirst();
+
+                                    PrefillValidator.validateIso88591(informationSourceText);
+
                                     return MedicalInvestigation.builder()
                                         .id(config.id())
                                         .investigationType(
                                             getCode(subAnswers, config, specification.id()))
                                         .date(getDate(subAnswers, config, specification.id()))
                                         .informationSource(
-                                            getText(subAnswers, config, specification.id()))
+                                            ElementValueText.builder()
+                                                .textId(config.informationSourceId())
+                                                .text(informationSourceText)
+                                                .build())
                                         .build();
                                   } catch (Exception ex) {
                                     prefillErrors.add(
@@ -148,13 +160,6 @@ public class PrefillMedicalInvestigationListConverter implements PrefillStandard
         LocalDate.parse((String) getContentFromSubAnswer(subAnswer, elementId, "%s.2").getFirst());
 
     return ElementValueDate.builder().dateId(config.dateId()).date(date).build();
-  }
-
-  private ElementValueText getText(
-      List<Delsvar> subAnswer, MedicalInvestigationConfig config, ElementId elementId) {
-    final var text = (String) getContentFromSubAnswer(subAnswer, elementId, "%s.3").getFirst();
-
-    return ElementValueText.builder().textId(config.informationSourceId()).text(text).build();
   }
 
   private static List<Object> getContentFromSubAnswer(

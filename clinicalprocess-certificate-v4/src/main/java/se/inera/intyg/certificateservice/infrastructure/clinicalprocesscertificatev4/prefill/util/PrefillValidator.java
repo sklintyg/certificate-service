@@ -24,6 +24,7 @@ import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementCo
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementSpecification;
 import se.inera.intyg.certificateservice.domain.diagnosiscode.model.DiagnosisCode;
 import se.inera.intyg.certificateservice.domain.diagnosiscode.repository.DiagnosisCodeRepository;
+import se.inera.intyg.certificateservice.domain.validation.model.CharacterValidator;
 import se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.prefill.PrefillError;
 import se.riv.clinicalprocess.healthcond.certificate.types.v3.CVType;
 import se.riv.clinicalprocess.healthcond.certificate.v3.Svar;
@@ -33,6 +34,14 @@ public class PrefillValidator {
 
   private PrefillValidator() {
     throw new IllegalStateException("Utility class");
+  }
+
+  public static void validateIso88591(String text) {
+    if (text == null || text.isBlank()) {
+      return;
+    }
+
+    CharacterValidator.iso88591(text);
   }
 
   public static List<PrefillError> validateSingleAnswerOrSubAnswer(

@@ -18,11 +18,9 @@
  */
 package se.inera.intyg.certificateservice.domain.validation.model;
 
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.TemporalAmount;
-import java.util.stream.Collectors;
 
 public class ElementValidator {
 
@@ -71,18 +69,7 @@ public class ElementValidator {
       return;
     }
 
-    final var encoder = StandardCharsets.ISO_8859_1.newEncoder();
-    final var invalidChars =
-        text.chars()
-            .filter(c -> !encoder.canEncode((char) c))
-            .distinct()
-            .mapToObj(c -> String.valueOf((char) c))
-            .collect(Collectors.joining(", "));
-
-    if (!invalidChars.isEmpty()) {
-      throw new IllegalArgumentException(
-          "Text contains characters not supported in ISO 8859-1: [%s]".formatted(invalidChars));
-    }
+    CharacterValidator.iso88591(text);
   }
 
   public static LocalDate toDateFromTemporalAmount(TemporalAmount limit) {

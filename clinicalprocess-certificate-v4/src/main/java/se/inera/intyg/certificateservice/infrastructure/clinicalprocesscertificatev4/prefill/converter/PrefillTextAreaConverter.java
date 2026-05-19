@@ -26,6 +26,7 @@ import se.inera.intyg.certificateservice.domain.certificate.model.ElementValueTe
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementConfiguration;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementConfigurationTextArea;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementSpecification;
+import se.inera.intyg.certificateservice.domain.validation.model.ElementValidator;
 import se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.prefill.PrefillAnswer;
 import se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.prefill.PrefillError;
 import se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.prefill.util.PrefillValidator;
@@ -76,6 +77,18 @@ public class PrefillTextAreaConverter implements PrefillStandardConverter {
       return PrefillAnswer.builder().errors(prefillErrors).build();
     }
 
+    final var text = SubAnswersUtil.getContent(subAnswers, answers, configurationTextArea);
+
+    try {
+      ElementValidator.validateIso88591(text);
+    } catch (IllegalArgumentException e) {
+      prefillErrors.add(PrefillError.invalidFormat(specification.id().id(), e.getMessage()));
+    }
+
+    if (!prefillErrors.isEmpty()) {
+      return PrefillAnswer.builder().errors(prefillErrors).build();
+    }
+
     return PrefillAnswer.builder()
         .elementData(
             ElementData.builder()
@@ -83,7 +96,7 @@ public class PrefillTextAreaConverter implements PrefillStandardConverter {
                 .value(
                     ElementValueText.builder()
                         .textId(configurationTextArea.id())
-                        .text(SubAnswersUtil.getContent(subAnswers, answers, configurationTextArea))
+                        .text(text)
                         .build())
                 .build())
         .build();

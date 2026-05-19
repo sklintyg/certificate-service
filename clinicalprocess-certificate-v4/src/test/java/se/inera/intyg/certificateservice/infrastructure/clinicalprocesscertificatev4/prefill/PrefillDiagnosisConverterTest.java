@@ -278,6 +278,37 @@ class PrefillDiagnosisConverterTest {
       final var value = (ElementValueDiagnosisList) result.getElementData().value();
       assertEquals(expectedDescription, value.diagnoses().getFirst().description());
     }
+
+    @Test
+    void shouldReturnErrorIfDescriptionContainsNonIso88591Chars() {
+      final var prefill = new Forifyllnad();
+      final var svar = new Svar();
+
+      svar.setId(SPECIFICATION.id().id());
+      svar.setInstans(1);
+
+      final var delsvarCode = new Delsvar();
+      final var delsvarDescription = new Delsvar();
+
+      delsvarCode.setId("%s.2".formatted(SPECIFICATION.id().id()));
+      delsvarDescription.setId("%s.1".formatted(SPECIFICATION.id().id()));
+
+      delsvarCode.getContent().add(createCVTypeElement(DIAGNOS_CODE));
+      delsvarDescription.getContent().add("invalid\u0100");
+
+      svar.getDelsvar().add(delsvarCode);
+      svar.getDelsvar().add(delsvarDescription);
+
+      prefill.getSvar().add(svar);
+
+      doReturn(Optional.of(Diagnosis.builder().build()))
+          .when(diagnosisCodeRepository)
+          .findByCode(new DiagnosisCode(DIAGNOS_CODE));
+
+      final var result = prefillDiagnosisConverter.prefillAnswer(SPECIFICATION, prefill);
+
+      assertEquals(PrefillErrorType.INVALID_FORMAT, result.getErrors().getFirst().type());
+    }
   }
 
   @Test

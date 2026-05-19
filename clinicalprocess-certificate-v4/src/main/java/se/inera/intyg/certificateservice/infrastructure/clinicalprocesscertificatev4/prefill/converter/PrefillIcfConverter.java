@@ -26,6 +26,7 @@ import se.inera.intyg.certificateservice.domain.certificate.model.ElementValueIc
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementConfiguration;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementConfigurationIcf;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementSpecification;
+import se.inera.intyg.certificateservice.domain.validation.model.ElementValidator;
 import se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.prefill.PrefillAnswer;
 import se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.prefill.PrefillError;
 import se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.prefill.util.PrefillValidator;
@@ -75,15 +76,23 @@ public class PrefillIcfConverter implements PrefillStandardConverter {
       return PrefillAnswer.builder().errors(prefillErrors).build();
     }
 
+    final var text = SubAnswersUtil.getContent(subAnswers, answers, configurationIcf);
+
+    try {
+      ElementValidator.validateIso88591(text);
+    } catch (IllegalArgumentException e) {
+      prefillErrors.add(PrefillError.invalidFormat(specification.id().id(), e.getMessage()));
+    }
+
+    if (!prefillErrors.isEmpty()) {
+      return PrefillAnswer.builder().errors(prefillErrors).build();
+    }
+
     return PrefillAnswer.builder()
         .elementData(
             ElementData.builder()
                 .id(specification.id())
-                .value(
-                    ElementValueIcf.builder()
-                        .id(configurationIcf.id())
-                        .text(SubAnswersUtil.getContent(subAnswers, answers, configurationIcf))
-                        .build())
+                .value(ElementValueIcf.builder().id(configurationIcf.id()).text(text).build())
                 .build())
         .build();
   }

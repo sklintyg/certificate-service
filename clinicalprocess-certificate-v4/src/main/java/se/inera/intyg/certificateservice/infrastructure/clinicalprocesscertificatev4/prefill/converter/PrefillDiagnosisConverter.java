@@ -99,12 +99,23 @@ public class PrefillDiagnosisConverter implements PrefillStandardConverter {
                                       return null;
                                     }
 
+                                    final var subAnswerCode =
+                                        getSubAnswerCode(answer.getDelsvar(), specification);
+                                    final var description =
+                                        getSubAnswerDescription(
+                                            answer.getDelsvar(),
+                                            specification,
+                                            subAnswerCode.getCode());
+
+                                    PrefillValidator.validateIso88591(description);
+
                                     final var instance = answer.getInstans() - 1;
                                     return toElementValueDiagnosis(
                                         answer.getDelsvar(),
                                         elementConfigurationDiagnosis,
                                         instance,
-                                        specification);
+                                        specification,
+                                        description);
                                   } catch (Exception e) {
                                     prefillErrors.add(
                                         PrefillError.invalidFormat(answer.getId(), e.getMessage()));
@@ -133,15 +144,14 @@ public class PrefillDiagnosisConverter implements PrefillStandardConverter {
       List<Delsvar> subAnswers,
       ElementConfigurationDiagnosis elementConfigurationDiagnosis,
       Integer instance,
-      ElementSpecification specification) {
+      ElementSpecification specification,
+      String description) {
     final var subAnswerCode = getSubAnswerCode(subAnswers, specification);
-    final var subAnswerDescription =
-        getSubAnswerDescription(subAnswers, specification, subAnswerCode.getCode());
 
     return ElementValueDiagnosis.builder()
         .id(elementConfigurationDiagnosis.list().get(instance).id())
         .terminology(getTerminology(elementConfigurationDiagnosis, subAnswerCode))
-        .description(subAnswerDescription)
+        .description(description)
         .code(subAnswerCode.getCode())
         .build();
   }
