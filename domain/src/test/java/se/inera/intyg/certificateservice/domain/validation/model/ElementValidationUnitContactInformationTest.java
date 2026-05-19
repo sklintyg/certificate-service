@@ -316,4 +316,56 @@ class ElementValidationUnitContactInformationTest {
         elementValidation.validate(elementData, Optional.empty(), Collections.emptyList());
     assertEquals(expectedValidationError, actualResult);
   }
+
+  @Test
+  void shallThrowIfAddressContainsNonIso88591Chars() {
+    final var elementData =
+        ElementData.builder()
+            .id(UNIT_CONTACT_INFORMATION)
+            .value(elementValueUnitContactInformationBuilder.address("Gatan\u0100").build())
+            .build();
+
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> elementValidation.validate(elementData, Optional.empty(), Collections.emptyList()));
+  }
+
+  @Test
+  void shallThrowIfZipCodeContainsNonIso88591Chars() {
+    final var elementData =
+        ElementData.builder()
+            .id(UNIT_CONTACT_INFORMATION)
+            .value(elementValueUnitContactInformationBuilder.zipCode("123\u0100").build())
+            .build();
+
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> elementValidation.validate(elementData, Optional.empty(), Collections.emptyList()));
+  }
+
+  @Test
+  void shallThrowIfCityContainsNonIso88591Chars() {
+    final var elementData =
+        ElementData.builder()
+            .id(UNIT_CONTACT_INFORMATION)
+            .value(elementValueUnitContactInformationBuilder.city("Stad\u0100").build())
+            .build();
+
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> elementValidation.validate(elementData, Optional.empty(), Collections.emptyList()));
+  }
+
+  @Test
+  void shallThrowIfPhoneNumberContainsNonIso88591Chars() {
+    final var elementData =
+        ElementData.builder()
+            .id(UNIT_CONTACT_INFORMATION)
+            .value(elementValueUnitContactInformationBuilder.phoneNumber("070\u0100").build())
+            .build();
+
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> elementValidation.validate(elementData, Optional.empty(), Collections.emptyList()));
+  }
 }

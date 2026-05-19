@@ -53,6 +53,8 @@ public class ElementValidationText implements ElementValidation {
           errorMessage(data, value.textId(), categoryId, ErrorMessageFactory.missingAnswer()));
     }
 
+    ElementValidator.validateIso88591(value.text());
+
     if (value.text() != null && ElementValidator.isTextOverLimit(value.text(), limit)) {
       return List.of(
           errorMessage(data, value.textId(), categoryId, ErrorMessageFactory.textLimit(limit)));

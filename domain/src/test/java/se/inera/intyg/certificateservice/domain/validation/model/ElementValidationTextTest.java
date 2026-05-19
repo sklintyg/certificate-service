@@ -82,6 +82,20 @@ class ElementValidationTextTest {
           IllegalArgumentException.class,
           () -> elementValidationText.validate(elementData, categoryId, Collections.emptyList()));
     }
+
+    @Test
+    void shallThrowIllegalArgumentExceptionIfTextContainsNonIso88591Chars() {
+      final Optional<ElementId> categoryId = Optional.empty();
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(ElementValueText.builder().textId(FIELD_ID).text("Invalid\u0100Char").build())
+              .build();
+
+      assertThrows(
+          IllegalArgumentException.class,
+          () -> elementValidationText.validate(elementData, categoryId, Collections.emptyList()));
+    }
   }
 
   @Nested

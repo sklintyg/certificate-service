@@ -65,6 +65,8 @@ public class ElementValidationMedicalInvestigationList implements ElementValidat
     final var rowOrderErrors = getRowOrderErrors(data, categoryId, medicalInvestigationList);
     final var textLimitErrors = getTextLimitErrors(data, categoryId, medicalInvestigationList);
 
+    validateIso88591InInformationSources(medicalInvestigationList);
+
     return Stream.of(
             dateAfterMaxErrors,
             dateBeforeMinErrors,
@@ -278,6 +280,15 @@ public class ElementValidationMedicalInvestigationList implements ElementValidat
 
   private static boolean isSourceEmpty(MedicalInvestigation medicalInvestigation) {
     return !ElementValidator.isTextDefined(medicalInvestigation.informationSource().text());
+  }
+
+  private static void validateIso88591InInformationSources(
+      ElementValueMedicalInvestigationList medicalInvestigationList) {
+    medicalInvestigationList
+        .list()
+        .forEach(
+            investigation ->
+                ElementValidator.validateIso88591(investigation.informationSource().text()));
   }
 
   private static boolean isTypeEmpty(MedicalInvestigation medicalInvestigation) {

@@ -57,6 +57,11 @@ public class ElementValidationUnitContactInformation implements ElementValidatio
 
     final var elementValueUnitContactInformation = getValue(data.value());
 
+    ElementValidator.validateIso88591(elementValueUnitContactInformation.address());
+    ElementValidator.validateIso88591(elementValueUnitContactInformation.zipCode());
+    ElementValidator.validateIso88591(elementValueUnitContactInformation.city());
+    ElementValidator.validateIso88591(elementValueUnitContactInformation.phoneNumber());
+
     final var validationErrors = new ArrayList<ValidationError>();
     if (isNullOrBlank(elementValueUnitContactInformation.address())) {
       validationErrors.add(errorMessage(ADDRESS_FIELD_ID, ADDRESS_MESSAGE));
