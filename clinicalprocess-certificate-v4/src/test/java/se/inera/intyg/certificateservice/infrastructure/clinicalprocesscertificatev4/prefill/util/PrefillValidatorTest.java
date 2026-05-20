@@ -51,7 +51,7 @@ class PrefillValidatorTest {
     }
 
     @Test
-    void shouldReturnInvalidFormatErrorIfTextContainsMultipleNonIso88591Chars() {
+    void shouldThrowIfTextContainsMultipleNonIso88591Chars() {
       assertThrows(
           IllegalArgumentException.class,
           () -> PrefillValidator.validateIso88591("in\u0100v\u0101lid"));
