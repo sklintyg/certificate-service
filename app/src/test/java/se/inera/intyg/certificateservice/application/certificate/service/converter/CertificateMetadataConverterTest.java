@@ -25,6 +25,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 import static se.inera.intyg.certificateservice.application.testdata.TestDataCommonWebcertUnitDTO.alfaMedicincentrumDtoBuilder;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataCareProvider.ALFA_REGIONEN;
@@ -601,6 +603,26 @@ class CertificateMetadataConverterTest {
         assertFalse(
             certificateMetadataConverter
                 .convert(invalidCertificate, ACTION_EVALUATION)
+                .isValidForSign());
+      }
+
+      @Test
+      void shallIncludeValidForSignFalseIfValidateReturnsNull() {
+        final var spyCertificate = spy(certificate);
+        doReturn(null).when(spyCertificate).validate();
+        assertFalse(
+            certificateMetadataConverter
+                .convert(spyCertificate, ACTION_EVALUATION)
+                .isValidForSign());
+      }
+
+      @Test
+      void shallIncludeValidForSignFalseIfValidateThrows() {
+        final var spyCertificate = spy(certificate);
+        doThrow(new RuntimeException("validation error")).when(spyCertificate).validate();
+        assertFalse(
+            certificateMetadataConverter
+                .convert(spyCertificate, ACTION_EVALUATION)
                 .isValidForSign());
       }
 

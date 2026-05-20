@@ -22,6 +22,7 @@ import static se.inera.intyg.certificateservice.domain.certificatemodel.model.El
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import se.inera.intyg.certificateservice.application.certificate.dto.CertificateMetadataDTO;
@@ -39,6 +40,7 @@ import se.inera.intyg.certificateservice.domain.action.certificate.model.ActionE
 import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
 import se.inera.intyg.certificateservice.domain.certificate.model.Relation;
 import se.inera.intyg.certificateservice.domain.certificate.model.Status;
+import se.inera.intyg.certificateservice.domain.validation.model.ValidationResult;
 
 @Component
 @RequiredArgsConstructor
@@ -60,7 +62,9 @@ public class CertificateMetadataConverter {
         .typeVersion(certificate.certificateModel().id().version().version())
         .name(certificate.certificateModel().name())
         .description(certificate.certificateModel().detailedDescription())
-        .validForSign(certificate.isDraft() && certificate.validate().isValid())
+        .validForSign(
+            certificate.isDraft()
+                && safeValidate(certificate).map(ValidationResult::isValid).orElse(false))
         .created(certificate.created())
         .testCertificate(certificate.certificateMetaData().patient().testIndicated().value())
         .availableForCitizen(certificate.certificateModel().availableForCitizen())
@@ -239,5 +243,25 @@ public class CertificateMetadataConverter {
       case SIGNED -> CertificateStatusTypeDTO.SIGNED;
       case REVOKED -> CertificateStatusTypeDTO.REVOKED;
     };
+  }
+
+  /**
+   * Safely invokes {@link Certificate#validate()} and wraps the result in an {@link
+   * java.util.Optional}.
+   *
+   * <p>Exception — ISO 8859-1 validation in {@link
+   * se.inera.intyg.certificateservice.domain.validation.model.CharacterValidator} throws {@link
+   * IllegalArgumentException} when certificate data contains characters outside the ISO 8859-1
+   * charset.
+   *
+   * <p>{@link java.util.Optional#empty()} is returned so callers can apply a safe fallback via
+   * {@code orElse()}.
+   */
+  private static Optional<ValidationResult> safeValidate(Certificate certificate) {
+    try {
+      return Optional.ofNullable(certificate.validate());
+    } catch (Exception e) {
+      return Optional.empty();
+    }
   }
 }

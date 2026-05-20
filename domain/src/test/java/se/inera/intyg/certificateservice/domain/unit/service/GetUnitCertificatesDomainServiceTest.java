@@ -20,6 +20,7 @@ package se.inera.intyg.certificateservice.domain.unit.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataCareProvider.ALFA_REGIONEN;
@@ -182,6 +183,50 @@ class GetUnitCertificatesDomainServiceTest {
     doReturn(ValidationResult.builder().errors(List.of(ValidationError.builder().build())).build())
         .when(certificate)
         .validate();
+    doReturn(List.of(certificate))
+        .when(certificateRepository)
+        .findByCertificatesRequest(certificatesRequest);
+
+    final var actualResult =
+        getUnitCertificatesDomainService.get(certificatesRequest, actionEvaluation);
+
+    assertEquals(Collections.emptyList(), actualResult);
+  }
+
+  @Test
+  void shallIncludeCertificateWhenValidateReturnsNullAndAskingForInvalidCertificates() {
+    final var actionEvaluation = actionEvaluationBuilder.build();
+
+    final var certificatesRequest =
+        certificatesRequestBuilder.validCertificates(Boolean.FALSE).build();
+
+    final var certificate = mock(MedicalCertificate.class);
+    doReturn(true)
+        .when(certificate)
+        .allowTo(CertificateActionType.READ, Optional.of(actionEvaluation));
+    doReturn(null).when(certificate).validate();
+    doReturn(List.of(certificate))
+        .when(certificateRepository)
+        .findByCertificatesRequest(certificatesRequest);
+
+    final var actualResult =
+        getUnitCertificatesDomainService.get(certificatesRequest, actionEvaluation);
+
+    assertEquals(List.of(certificate), actualResult);
+  }
+
+  @Test
+  void shallExcludeCertificateWhenValidateThrowsAndAskingForValidCertificates() {
+    final var actionEvaluation = actionEvaluationBuilder.build();
+
+    final var certificatesRequest =
+        certificatesRequestBuilder.validCertificates(Boolean.TRUE).build();
+
+    final var certificate = mock(MedicalCertificate.class);
+    doReturn(true)
+        .when(certificate)
+        .allowTo(CertificateActionType.READ, Optional.of(actionEvaluation));
+    doThrow(new RuntimeException("validation error")).when(certificate).validate();
     doReturn(List.of(certificate))
         .when(certificateRepository)
         .findByCertificatesRequest(certificatesRequest);
