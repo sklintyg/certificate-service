@@ -39,6 +39,8 @@ import se.inera.intyg.certificateservice.domain.action.certificate.model.ActionE
 import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
 import se.inera.intyg.certificateservice.domain.certificate.model.CertificateId;
 import se.inera.intyg.certificateservice.domain.certificate.model.ElementData;
+import se.inera.intyg.certificateservice.domain.certificate.model.ElementValueDate;
+import se.inera.intyg.certificateservice.domain.certificate.model.ElementValueText;
 import se.inera.intyg.certificateservice.domain.certificate.repository.CertificateRepository;
 import se.inera.intyg.certificateservice.domain.common.exception.CertificateActionForbidden;
 import se.inera.intyg.certificateservice.domain.event.model.CertificateEvent;
@@ -51,7 +53,8 @@ class ValidateCertificateDomainServiceTest {
 
   private static final CertificateId CERTIFICATE_ID = new CertificateId("certificateId");
   private static final ActionEvaluation ACTION_EVALUATION = ActionEvaluation.builder().build();
-  private static final List<ElementData> ELEMENT_DATA_LIST = List.of(ElementData.builder().build());
+  private static final List<ElementData> ELEMENT_DATA_LIST =
+      List.of(ElementData.builder().value(ElementValueDate.builder().build()).build());
   @Mock private CertificateRepository certificateRepository;
   @Mock private CertificateEventDomainService certificateEventDomainService;
   @Mock private Certificate certificate;
@@ -128,5 +131,22 @@ class ValidateCertificateDomainServiceTest {
                     CERTIFICATE_ID, ELEMENT_DATA_LIST, ACTION_EVALUATION));
 
     assertEquals(expectedReason, certificateActionForbidden.reason());
+  }
+
+  @Test
+  void shallThrowIfElementValueContainsInvalidChars() {
+    final var dataWithInvalidChars =
+        List.of(
+            ElementData.builder()
+                .value(ElementValueText.builder().text("\u0400").build())
+                .build());
+
+    doReturn(true).when(certificate).allowTo(READ, Optional.of(ACTION_EVALUATION));
+
+    assertThrows(
+        IllegalArgumentException.class,
+        () ->
+            validateCertificateDomainService.validate(
+                CERTIFICATE_ID, dataWithInvalidChars, ACTION_EVALUATION));
   }
 }

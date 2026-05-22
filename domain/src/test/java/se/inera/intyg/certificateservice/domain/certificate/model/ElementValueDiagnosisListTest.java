@@ -18,15 +18,108 @@
  */
 package se.inera.intyg.certificateservice.domain.certificate.model;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.nio.charset.CharsetEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 class ElementValueDiagnosisListTest {
+
+  private static final CharsetEncoder ISO_8859_1_ENCODER = StandardCharsets.ISO_8859_1.newEncoder();
+  private static final String INVALID_CHAR = "\u0400";
+
+  @Nested
+  class Encoding {
+
+    @Test
+    void shouldReturnCanEncodeWhenDiagnosesIsEmpty() {
+      final var result = ElementValueDiagnosisList.builder().build().encoding(ISO_8859_1_ENCODER);
+      assertTrue(result.canEncode());
+      assertTrue(result.invalidChars().isEmpty());
+    }
+
+    @Test
+    void shouldReturnCanEncodeWhenDescriptionIsNull() {
+      final var result =
+          ElementValueDiagnosisList.builder()
+              .diagnoses(List.of(ElementValueDiagnosis.builder().build()))
+              .build()
+              .encoding(ISO_8859_1_ENCODER);
+      assertTrue(result.canEncode());
+      assertTrue(result.invalidChars().isEmpty());
+    }
+
+    @Test
+    void shouldReturnCanEncodeWhenDescriptionIsValid() {
+      final var result =
+          ElementValueDiagnosisList.builder()
+              .diagnoses(
+                  List.of(
+                      ElementValueDiagnosis.builder()
+                          .code("J22")
+                          .description("valid description")
+                          .build()))
+              .build()
+              .encoding(ISO_8859_1_ENCODER);
+      assertTrue(result.canEncode());
+      assertTrue(result.invalidChars().isEmpty());
+    }
+
+    @Test
+    void shouldReturnCannotEncodeWhenDescriptionHasInvalidChars() {
+      final var result =
+          ElementValueDiagnosisList.builder()
+              .diagnoses(
+                  List.of(
+                      ElementValueDiagnosis.builder()
+                          .code("J22")
+                          .description(INVALID_CHAR)
+                          .build()))
+              .build()
+              .encoding(ISO_8859_1_ENCODER);
+      assertFalse(result.canEncode());
+      assertEquals(List.of(INVALID_CHAR), result.invalidChars());
+    }
+
+    @Test
+    void shouldReturnDistinctInvalidCharsAcrossMultipleDiagnoses() {
+      final var result =
+          ElementValueDiagnosisList.builder()
+              .diagnoses(
+                  List.of(
+                      ElementValueDiagnosis.builder()
+                          .description(INVALID_CHAR)
+                          .build(),
+                      ElementValueDiagnosis.builder()
+                          .description(INVALID_CHAR)
+                          .build()))
+              .build()
+              .encoding(ISO_8859_1_ENCODER);
+      assertFalse(result.canEncode());
+      assertEquals(1, result.invalidChars().size());
+    }
+
+    @Test
+    void shouldNotCheckCodeForEncoding() {
+      final var result =
+          ElementValueDiagnosisList.builder()
+              .diagnoses(
+                  List.of(
+                      ElementValueDiagnosis.builder()
+                          .code(INVALID_CHAR)
+                          .description("valid")
+                          .build()))
+              .build()
+              .encoding(ISO_8859_1_ENCODER);
+      assertTrue(result.canEncode());
+    }
+  }
 
   @Nested
   class IsEmpty {

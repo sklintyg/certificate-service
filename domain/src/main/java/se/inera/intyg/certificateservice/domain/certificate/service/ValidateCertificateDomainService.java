@@ -61,8 +61,8 @@ public class ValidateCertificateDomainService {
           final var encoderResult = element.value().encoding(ISO_8859_1_ENCODER);
           if (!encoderResult.canEncode()) {
             throw new IllegalArgumentException(
-                "Text contains characters not supported in ISO 8859-1: [%s]"
-                    .formatted(String.join(", ", encoderResult.invalidChars())));
+                "Question '%s' contains characters not supported in ISO 8859-1: [%s]"
+                    .formatted(element.id().id(), String.join(", ", encoderResult.invalidChars())));
           }
         });
 

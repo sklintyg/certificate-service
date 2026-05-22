@@ -18,6 +18,8 @@
  */
 package se.inera.intyg.certificateservice.domain.certificate.service;
 
+import java.nio.charset.CharsetEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
@@ -41,6 +43,7 @@ public class UpdateCertificateDomainService {
 
   private final CertificateRepository certificateRepository;
   private final CertificateEventDomainService certificateEventDomainService;
+  private static final CharsetEncoder ISO_8859_1_ENCODER = StandardCharsets.ISO_8859_1.newEncoder();
 
   public Certificate update(
       CertificateId certificateId,
@@ -57,6 +60,16 @@ public class UpdateCertificateDomainService {
           certificate.reasonNotAllowed(
               CertificateActionType.UPDATE, Optional.of(actionEvaluation)));
     }
+
+    elementData.forEach(
+        element -> {
+          final var encoderResult = element.value().encoding(ISO_8859_1_ENCODER);
+          if (!encoderResult.canEncode()) {
+            throw new IllegalArgumentException(
+                "Question '%s' contains characters not supported in ISO 8859-1: [%s]"
+                    .formatted(element.id().id(), String.join(", ", encoderResult.invalidChars())));
+          }
+        });
 
     certificate.updateData(elementData, revision, actionEvaluation);
     certificate.updateMetadata(actionEvaluation);

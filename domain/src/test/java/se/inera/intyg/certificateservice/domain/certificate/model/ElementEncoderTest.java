@@ -27,76 +27,60 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementConfigurationIcf;
 
-class ElementValueIcfTest {
+class ElementEncoderTest {
 
   private static final CharsetEncoder ISO_8859_1_ENCODER = StandardCharsets.ISO_8859_1.newEncoder();
   private static final String INVALID_CHAR = "\u0400";
 
   @Nested
-  class Encoding {
+  class CanEncode {
 
     @Test
     void shouldReturnCanEncodeWhenTextIsNull() {
-      final var result = ElementValueIcf.builder().build().encoding(ISO_8859_1_ENCODER);
+      final var result = ElementEncoder.canEncode(ISO_8859_1_ENCODER, null);
       assertTrue(result.canEncode());
       assertTrue(result.invalidChars().isEmpty());
     }
 
     @Test
     void shouldReturnCanEncodeWhenTextIsEmpty() {
-      final var result =
-          ElementValueIcf.builder().text("").build().encoding(ISO_8859_1_ENCODER);
+      final var result = ElementEncoder.canEncode(ISO_8859_1_ENCODER, "");
       assertTrue(result.canEncode());
       assertTrue(result.invalidChars().isEmpty());
     }
 
     @Test
-    void shouldReturnCanEncodeWhenTextIsValid() {
-      final var result =
-          ElementValueIcf.builder().text("valid text").build().encoding(ISO_8859_1_ENCODER);
+    void shouldReturnCanEncodeWhenAllCharsAreValid() {
+      final var result = ElementEncoder.canEncode(ISO_8859_1_ENCODER, "hello");
       assertTrue(result.canEncode());
       assertTrue(result.invalidChars().isEmpty());
     }
 
     @Test
     void shouldReturnCannotEncodeWhenTextHasInvalidChars() {
-      final var result =
-          ElementValueIcf.builder().text(INVALID_CHAR).build().encoding(ISO_8859_1_ENCODER);
+      final var result = ElementEncoder.canEncode(ISO_8859_1_ENCODER, INVALID_CHAR);
       assertFalse(result.canEncode());
+    }
+
+    @Test
+    void shouldReturnInvalidCharInResult() {
+      final var result = ElementEncoder.canEncode(ISO_8859_1_ENCODER, INVALID_CHAR);
       assertEquals(List.of(INVALID_CHAR), result.invalidChars());
     }
-  }
-
-  @Nested
-  class FormatIcfValueTextTests {
 
     @Test
-    void shouldReturnTextIfIcfCodesIsEmpty() {
-      final var expectedValue = "expectedValue";
-      final var elementValueIcf = ElementValueIcf.builder().text(expectedValue).build();
-
-      final var result = elementValueIcf.formatIcfValueText(null);
-      assertEquals(expectedValue, result);
+    void shouldReturnDistinctInvalidChars() {
+      final var result = ElementEncoder.canEncode(ISO_8859_1_ENCODER, INVALID_CHAR + INVALID_CHAR);
+      assertEquals(1, result.invalidChars().size());
     }
 
     @Test
-    void shouldReturnFormattedTextIfIcdCodesHasValue() {
-      final var expectedText =
-          """
-          collectionsLabel icfCode1 - icfCode2
-
-          text
-          """;
-      final var elementValueIcf =
-          ElementValueIcf.builder().text("text").icfCodes(List.of("icfCode1", "icfCode2")).build();
-
-      final var elementConfigurationIcf =
-          ElementConfigurationIcf.builder().collectionsLabel("collectionsLabel").build();
-
-      final var result = elementValueIcf.formatIcfValueText(elementConfigurationIcf);
-      assertEquals(expectedText, result);
+    void shouldReturnAllDistinctInvalidChars() {
+      final var secondInvalidChar = "\u0401";
+      final var result =
+          ElementEncoder.canEncode(ISO_8859_1_ENCODER, INVALID_CHAR + secondInvalidChar);
+      assertEquals(2, result.invalidChars().size());
     }
   }
 }

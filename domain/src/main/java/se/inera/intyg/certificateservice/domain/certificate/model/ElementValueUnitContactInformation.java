@@ -18,6 +18,8 @@
  */
 package se.inera.intyg.certificateservice.domain.certificate.model;
 
+import java.nio.charset.CharsetEncoder;
+import java.util.stream.Stream;
 import lombok.Builder;
 import lombok.Value;
 import se.inera.intyg.certificateservice.domain.unit.model.IssuingUnit;
@@ -38,6 +40,17 @@ public class ElementValueUnitContactInformation implements ElementValue {
         || !ElementValidator.isTextDefined(city)
         || !ElementValidator.isTextDefined(zipCode)
         || !ElementValidator.isTextDefined(phoneNumber);
+  }
+
+  @Override
+  public ElementEncoderResult encoding(CharsetEncoder encoder) {
+    final var allInvalidChars = Stream.of(address, city, zipCode, phoneNumber)
+        .map(field -> ElementEncoder.canEncode(encoder, field))
+        .flatMap(r -> r.invalidChars().stream())
+        .distinct()
+        .toList();
+
+    return new ElementEncoderResult(allInvalidChars.isEmpty(), allInvalidChars);
   }
 
   public ElementValueUnitContactInformation copy(IssuingUnit issuingUnit) {

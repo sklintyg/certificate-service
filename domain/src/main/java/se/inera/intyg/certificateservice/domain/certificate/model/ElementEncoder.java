@@ -1,6 +1,7 @@
 package se.inera.intyg.certificateservice.domain.certificate.model;
 
 import java.nio.charset.CharsetEncoder;
+import java.util.Collections;
 
 public class ElementEncoder {
 
@@ -9,6 +10,10 @@ public class ElementEncoder {
   }
 
   public static ElementEncoderResult canEncode(CharsetEncoder encoder, String value) {
+    if (value == null || value.isEmpty()) {
+      return new ElementEncoderResult(true, Collections.emptyList());
+    }
+
     final var invalidChars =
         value
             .chars()
@@ -17,6 +22,6 @@ public class ElementEncoder {
             .mapToObj(c -> String.valueOf((char) c))
             .toList();
 
-    return new ElementEncoderResult(!invalidChars.isEmpty(), invalidChars);
+    return new ElementEncoderResult(invalidChars.isEmpty(), invalidChars);
   }
 }
