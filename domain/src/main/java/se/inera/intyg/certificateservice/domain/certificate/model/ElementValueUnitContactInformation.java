@@ -44,11 +44,12 @@ public class ElementValueUnitContactInformation implements ElementValue {
 
   @Override
   public ElementEncoderResult encoding(CharsetEncoder encoder) {
-    final var allInvalidChars = Stream.of(address, city, zipCode, phoneNumber)
-        .map(field -> ElementEncoder.canEncode(encoder, field))
-        .flatMap(r -> r.invalidChars().stream())
-        .distinct()
-        .toList();
+    final var allInvalidChars =
+        Stream.of(address, city, zipCode, phoneNumber)
+            .map(field -> ElementEncoder.canEncode(encoder, field))
+            .flatMap(r -> r.invalidChars().stream())
+            .distinct()
+            .toList();
 
     return new ElementEncoderResult(allInvalidChars.isEmpty(), allInvalidChars);
   }

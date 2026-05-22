@@ -82,8 +82,7 @@ class ElementValueMedicalInvestigationListTest {
               .list(
                   List.of(
                       MedicalInvestigation.builder()
-                          .informationSource(
-                              ElementValueText.builder().text(INVALID_CHAR).build())
+                          .informationSource(ElementValueText.builder().text(INVALID_CHAR).build())
                           .build()))
               .build()
               .encoding(ISO_8859_1_ENCODER);
@@ -98,12 +97,10 @@ class ElementValueMedicalInvestigationListTest {
               .list(
                   List.of(
                       MedicalInvestigation.builder()
-                          .informationSource(
-                              ElementValueText.builder().text(INVALID_CHAR).build())
+                          .informationSource(ElementValueText.builder().text(INVALID_CHAR).build())
                           .build(),
                       MedicalInvestigation.builder()
-                          .informationSource(
-                              ElementValueText.builder().text(INVALID_CHAR).build())
+                          .informationSource(ElementValueText.builder().text(INVALID_CHAR).build())
                           .build()))
               .build()
               .encoding(ISO_8859_1_ENCODER);

@@ -137,9 +137,7 @@ class ValidateCertificateDomainServiceTest {
   void shallThrowIfElementValueContainsInvalidChars() {
     final var dataWithInvalidChars =
         List.of(
-            ElementData.builder()
-                .value(ElementValueText.builder().text("\u0400").build())
-                .build());
+            ElementData.builder().value(ElementValueText.builder().text("\u0400").build()).build());
 
     doReturn(true).when(certificate).allowTo(READ, Optional.of(ACTION_EVALUATION));
 

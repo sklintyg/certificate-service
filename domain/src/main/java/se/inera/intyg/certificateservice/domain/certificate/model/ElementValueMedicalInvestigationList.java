@@ -53,12 +53,13 @@ public class ElementValueMedicalInvestigationList implements ElementValue {
       return new ElementEncoderResult(true, Collections.emptyList());
     }
 
-    final var allInvalidChars = list.stream()
-        .filter(mi -> mi.informationSource() != null)
-        .map(mi -> ElementEncoder.canEncode(encoder, mi.informationSource().text()))
-        .flatMap(r -> r.invalidChars().stream())
-        .distinct()
-        .toList();
+    final var allInvalidChars =
+        list.stream()
+            .filter(mi -> mi.informationSource() != null)
+            .map(mi -> ElementEncoder.canEncode(encoder, mi.informationSource().text()))
+            .flatMap(r -> r.invalidChars().stream())
+            .distinct()
+            .toList();
 
     return new ElementEncoderResult(allInvalidChars.isEmpty(), allInvalidChars);
   }

@@ -46,11 +46,12 @@ public class ElementValueDiagnosisList implements ElementValue {
       return new ElementEncoderResult(true, Collections.emptyList());
     }
 
-    final var allInvalidChars = diagnoses.stream()
-        .map(d -> ElementEncoder.canEncode(encoder, d.description()))
-        .flatMap(r -> r.invalidChars().stream())
-        .distinct()
-        .toList();
+    final var allInvalidChars =
+        diagnoses.stream()
+            .map(d -> ElementEncoder.canEncode(encoder, d.description()))
+            .flatMap(r -> r.invalidChars().stream())
+            .distinct()
+            .toList();
 
     return new ElementEncoderResult(allInvalidChars.isEmpty(), allInvalidChars);
   }

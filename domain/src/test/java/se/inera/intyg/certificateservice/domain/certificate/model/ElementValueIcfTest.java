@@ -46,8 +46,7 @@ class ElementValueIcfTest {
 
     @Test
     void shouldReturnCanEncodeWhenTextIsEmpty() {
-      final var result =
-          ElementValueIcf.builder().text("").build().encoding(ISO_8859_1_ENCODER);
+      final var result = ElementValueIcf.builder().text("").build().encoding(ISO_8859_1_ENCODER);
       assertTrue(result.canEncode());
       assertTrue(result.invalidChars().isEmpty());
     }

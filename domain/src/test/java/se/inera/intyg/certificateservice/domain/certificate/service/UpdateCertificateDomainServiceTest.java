@@ -211,9 +211,7 @@ class UpdateCertificateDomainServiceTest {
   void shallThrowIfElementValueContainsInvalidChars() {
     final var data =
         List.of(
-            ElementData.builder()
-                .value(ElementValueText.builder().text("\u0400").build())
-                .build());
+            ElementData.builder().value(ElementValueText.builder().text("\u0400").build()).build());
 
     final var certificate = mock(MedicalCertificate.class);
     doReturn(certificate).when(certificateRepository).getById(CERTIFICATE_ID);

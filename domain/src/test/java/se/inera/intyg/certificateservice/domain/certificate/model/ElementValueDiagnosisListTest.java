@@ -93,12 +93,8 @@ class ElementValueDiagnosisListTest {
           ElementValueDiagnosisList.builder()
               .diagnoses(
                   List.of(
-                      ElementValueDiagnosis.builder()
-                          .description(INVALID_CHAR)
-                          .build(),
-                      ElementValueDiagnosis.builder()
-                          .description(INVALID_CHAR)
-                          .build()))
+                      ElementValueDiagnosis.builder().description(INVALID_CHAR).build(),
+                      ElementValueDiagnosis.builder().description(INVALID_CHAR).build()))
               .build()
               .encoding(ISO_8859_1_ENCODER);
       assertFalse(result.canEncode());
