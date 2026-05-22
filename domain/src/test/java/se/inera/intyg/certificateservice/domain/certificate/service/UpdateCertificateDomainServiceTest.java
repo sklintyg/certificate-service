@@ -46,6 +46,7 @@ import se.inera.intyg.certificateservice.domain.certificate.model.ElementValueTe
 import se.inera.intyg.certificateservice.domain.certificate.model.MedicalCertificate;
 import se.inera.intyg.certificateservice.domain.certificate.model.Revision;
 import se.inera.intyg.certificateservice.domain.certificate.repository.CertificateRepository;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementId;
 import se.inera.intyg.certificateservice.domain.common.exception.CertificateActionForbidden;
 import se.inera.intyg.certificateservice.domain.event.model.CertificateEvent;
 import se.inera.intyg.certificateservice.domain.event.model.CertificateEventType;
@@ -211,7 +212,10 @@ class UpdateCertificateDomainServiceTest {
   void shallThrowIfElementValueContainsInvalidChars() {
     final var data =
         List.of(
-            ElementData.builder().value(ElementValueText.builder().text("\u0400").build()).build());
+            ElementData.builder()
+                .id(new ElementId("id"))
+                .value(ElementValueText.builder().text("\u0400").build())
+                .build());
 
     final var certificate = mock(MedicalCertificate.class);
     doReturn(certificate).when(certificateRepository).getById(CERTIFICATE_ID);

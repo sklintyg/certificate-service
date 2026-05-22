@@ -42,6 +42,7 @@ import se.inera.intyg.certificateservice.domain.certificate.model.ElementData;
 import se.inera.intyg.certificateservice.domain.certificate.model.ElementValueDate;
 import se.inera.intyg.certificateservice.domain.certificate.model.ElementValueText;
 import se.inera.intyg.certificateservice.domain.certificate.repository.CertificateRepository;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementId;
 import se.inera.intyg.certificateservice.domain.common.exception.CertificateActionForbidden;
 import se.inera.intyg.certificateservice.domain.event.model.CertificateEvent;
 import se.inera.intyg.certificateservice.domain.event.model.CertificateEventType;
@@ -137,7 +138,10 @@ class ValidateCertificateDomainServiceTest {
   void shallThrowIfElementValueContainsInvalidChars() {
     final var dataWithInvalidChars =
         List.of(
-            ElementData.builder().value(ElementValueText.builder().text("\u0400").build()).build());
+            ElementData.builder()
+                .id(new ElementId("id"))
+                .value(ElementValueText.builder().text("\u0400").build())
+                .build());
 
     doReturn(true).when(certificate).allowTo(READ, Optional.of(ACTION_EVALUATION));
 
