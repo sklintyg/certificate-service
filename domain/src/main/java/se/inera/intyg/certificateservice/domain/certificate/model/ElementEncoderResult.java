@@ -18,27 +18,6 @@
  */
 package se.inera.intyg.certificateservice.domain.certificate.model;
 
-import java.nio.charset.CharsetEncoder;
-import lombok.Builder;
-import lombok.Value;
-import lombok.With;
-import se.inera.intyg.certificateservice.domain.certificatemodel.model.FieldId;
-import se.inera.intyg.certificateservice.domain.validation.model.ElementValidator;
+import java.util.List;
 
-@Value
-@Builder
-public class ElementValueText implements ElementValue {
-
-  FieldId textId;
-  @With String text;
-
-  @Override
-  public boolean isEmpty() {
-    return !ElementValidator.isTextDefined(text);
-  }
-
-  @Override
-  public ElementEncoderResult encoding(CharsetEncoder encoder) {
-    return ElementEncoder.canEncode(encoder, text);
-  }
-}
+public record ElementEncoderResult(boolean canEncode, List<String> invalidChars) {}

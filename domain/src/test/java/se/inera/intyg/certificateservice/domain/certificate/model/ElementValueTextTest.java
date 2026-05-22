@@ -18,13 +18,54 @@
  */
 package se.inera.intyg.certificateservice.domain.certificate.model;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.nio.charset.CharsetEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 class ElementValueTextTest {
+
+  private static final CharsetEncoder ISO_8859_1_ENCODER = StandardCharsets.ISO_8859_1.newEncoder();
+  private static final String INVALID_CHAR = "\u0400";
+
+  @Nested
+  class Encoding {
+
+    @Test
+    void shouldReturnCanEncodeWhenTextIsNull() {
+      final var result = ElementValueText.builder().build().encoding(ISO_8859_1_ENCODER);
+      assertTrue(result.canEncode());
+      assertTrue(result.invalidChars().isEmpty());
+    }
+
+    @Test
+    void shouldReturnCanEncodeWhenTextIsEmpty() {
+      final var result = ElementValueText.builder().text("").build().encoding(ISO_8859_1_ENCODER);
+      assertTrue(result.canEncode());
+      assertTrue(result.invalidChars().isEmpty());
+    }
+
+    @Test
+    void shouldReturnCanEncodeWhenTextIsValid() {
+      final var result =
+          ElementValueText.builder().text("valid text").build().encoding(ISO_8859_1_ENCODER);
+      assertTrue(result.canEncode());
+      assertTrue(result.invalidChars().isEmpty());
+    }
+
+    @Test
+    void shouldReturnCannotEncodeWhenTextHasInvalidChars() {
+      final var result =
+          ElementValueText.builder().text(INVALID_CHAR).build().encoding(ISO_8859_1_ENCODER);
+      assertFalse(result.canEncode());
+      assertEquals(List.of(INVALID_CHAR), result.invalidChars());
+    }
+  }
 
   @Nested
   class IsEmpty {

@@ -19,26 +19,27 @@
 package se.inera.intyg.certificateservice.domain.certificate.model;
 
 import java.nio.charset.CharsetEncoder;
-import lombok.Builder;
-import lombok.Value;
-import lombok.With;
-import se.inera.intyg.certificateservice.domain.certificatemodel.model.FieldId;
-import se.inera.intyg.certificateservice.domain.validation.model.ElementValidator;
+import java.util.Collections;
 
-@Value
-@Builder
-public class ElementValueText implements ElementValue {
+public class ElementEncoder {
 
-  FieldId textId;
-  @With String text;
-
-  @Override
-  public boolean isEmpty() {
-    return !ElementValidator.isTextDefined(text);
+  private ElementEncoder() {
+    throw new IllegalStateException("Utility class");
   }
 
-  @Override
-  public ElementEncoderResult encoding(CharsetEncoder encoder) {
-    return ElementEncoder.canEncode(encoder, text);
+  public static ElementEncoderResult canEncode(CharsetEncoder encoder, String value) {
+    if (value == null || value.isEmpty()) {
+      return new ElementEncoderResult(true, Collections.emptyList());
+    }
+
+    final var invalidChars =
+        value
+            .chars()
+            .filter(c -> !encoder.canEncode((char) c))
+            .distinct()
+            .mapToObj(c -> String.valueOf((char) c))
+            .toList();
+
+    return new ElementEncoderResult(invalidChars.isEmpty(), invalidChars);
   }
 }

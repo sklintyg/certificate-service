@@ -18,6 +18,7 @@
  */
 package se.inera.intyg.certificateservice.domain.certificate.model;
 
+import java.nio.charset.CharsetEncoder;
 import java.util.Collections;
 import java.util.List;
 import lombok.Builder;
@@ -38,6 +39,11 @@ public class ElementValueIcf implements ElementValue {
   @Override
   public boolean isEmpty() {
     return !ElementValidator.isTextDefined(text);
+  }
+
+  @Override
+  public ElementEncoderResult encoding(CharsetEncoder encoder) {
+    return ElementEncoder.canEncode(encoder, text);
   }
 
   public String formatIcfValueText(ElementConfigurationIcf elementConfigurationIcf) {

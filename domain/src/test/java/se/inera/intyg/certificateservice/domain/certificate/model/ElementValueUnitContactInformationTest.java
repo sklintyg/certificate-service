@@ -24,12 +24,102 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataElementData.contactInfoElementValueBuilder;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataSubUnit.alfaAllergimottagningenBuilder;
 
+import java.nio.charset.CharsetEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import se.inera.intyg.certificateservice.domain.unit.model.UnitAddress;
 import se.inera.intyg.certificateservice.domain.unit.model.UnitContactInfo;
 
 class ElementValueUnitContactInformationTest {
+
+  private static final CharsetEncoder ISO_8859_1_ENCODER = StandardCharsets.ISO_8859_1.newEncoder();
+  private static final String INVALID_CHAR = "\u0400";
+
+  @Nested
+  class Encoding {
+
+    @Test
+    void shouldReturnCanEncodeWhenAllFieldsAreNull() {
+      final var result =
+          ElementValueUnitContactInformation.builder().build().encoding(ISO_8859_1_ENCODER);
+      assertTrue(result.canEncode());
+      assertTrue(result.invalidChars().isEmpty());
+    }
+
+    @Test
+    void shouldReturnCanEncodeWhenAllFieldsAreValid() {
+      final var result =
+          ElementValueUnitContactInformation.builder()
+              .address("Main Street 1")
+              .city("Stockholm")
+              .zipCode("12345")
+              .phoneNumber("0701234567")
+              .build()
+              .encoding(ISO_8859_1_ENCODER);
+      assertTrue(result.canEncode());
+      assertTrue(result.invalidChars().isEmpty());
+    }
+
+    @Test
+    void shouldReturnCannotEncodeWhenAddressHasInvalidChars() {
+      final var result =
+          ElementValueUnitContactInformation.builder()
+              .address(INVALID_CHAR)
+              .build()
+              .encoding(ISO_8859_1_ENCODER);
+      assertFalse(result.canEncode());
+      assertEquals(List.of(INVALID_CHAR), result.invalidChars());
+    }
+
+    @Test
+    void shouldReturnCannotEncodeWhenCityHasInvalidChars() {
+      final var result =
+          ElementValueUnitContactInformation.builder()
+              .city(INVALID_CHAR)
+              .build()
+              .encoding(ISO_8859_1_ENCODER);
+      assertFalse(result.canEncode());
+      assertEquals(List.of(INVALID_CHAR), result.invalidChars());
+    }
+
+    @Test
+    void shouldReturnCannotEncodeWhenZipCodeHasInvalidChars() {
+      final var result =
+          ElementValueUnitContactInformation.builder()
+              .zipCode(INVALID_CHAR)
+              .build()
+              .encoding(ISO_8859_1_ENCODER);
+      assertFalse(result.canEncode());
+      assertEquals(List.of(INVALID_CHAR), result.invalidChars());
+    }
+
+    @Test
+    void shouldReturnCannotEncodeWhenPhoneNumberHasInvalidChars() {
+      final var result =
+          ElementValueUnitContactInformation.builder()
+              .phoneNumber(INVALID_CHAR)
+              .build()
+              .encoding(ISO_8859_1_ENCODER);
+      assertFalse(result.canEncode());
+      assertEquals(List.of(INVALID_CHAR), result.invalidChars());
+    }
+
+    @Test
+    void shouldReturnDistinctInvalidCharsAcrossAllFields() {
+      final var result =
+          ElementValueUnitContactInformation.builder()
+              .address(INVALID_CHAR)
+              .city(INVALID_CHAR)
+              .zipCode(INVALID_CHAR)
+              .phoneNumber(INVALID_CHAR)
+              .build()
+              .encoding(ISO_8859_1_ENCODER);
+      assertFalse(result.canEncode());
+      assertEquals(1, result.invalidChars().size());
+    }
+  }
 
   @Nested
   class IsEmpty {

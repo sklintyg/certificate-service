@@ -18,9 +18,12 @@
  */
 package se.inera.intyg.certificateservice.domain.certificate.model;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.nio.charset.CharsetEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
@@ -28,6 +31,83 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 class ElementValueMedicalInvestigationListTest {
+
+  private static final CharsetEncoder ISO_8859_1_ENCODER = StandardCharsets.ISO_8859_1.newEncoder();
+  private static final String INVALID_CHAR = "\u0400";
+
+  @Nested
+  class Encoding {
+
+    @Test
+    void shouldReturnCanEncodeWhenListIsEmpty() {
+      final var result =
+          ElementValueMedicalInvestigationList.builder()
+              .list(Collections.emptyList())
+              .build()
+              .encoding(ISO_8859_1_ENCODER);
+      assertTrue(result.canEncode());
+      assertTrue(result.invalidChars().isEmpty());
+    }
+
+    @Test
+    void shouldReturnCanEncodeWhenInformationSourceIsNull() {
+      final var result =
+          ElementValueMedicalInvestigationList.builder()
+              .list(List.of(MedicalInvestigation.builder().build()))
+              .build()
+              .encoding(ISO_8859_1_ENCODER);
+      assertTrue(result.canEncode());
+      assertTrue(result.invalidChars().isEmpty());
+    }
+
+    @Test
+    void shouldReturnCanEncodeWhenInformationSourceTextIsValid() {
+      final var result =
+          ElementValueMedicalInvestigationList.builder()
+              .list(
+                  List.of(
+                      MedicalInvestigation.builder()
+                          .informationSource(ElementValueText.builder().text("valid text").build())
+                          .build()))
+              .build()
+              .encoding(ISO_8859_1_ENCODER);
+      assertTrue(result.canEncode());
+      assertTrue(result.invalidChars().isEmpty());
+    }
+
+    @Test
+    void shouldReturnCannotEncodeWhenInformationSourceTextHasInvalidChars() {
+      final var result =
+          ElementValueMedicalInvestigationList.builder()
+              .list(
+                  List.of(
+                      MedicalInvestigation.builder()
+                          .informationSource(ElementValueText.builder().text(INVALID_CHAR).build())
+                          .build()))
+              .build()
+              .encoding(ISO_8859_1_ENCODER);
+      assertFalse(result.canEncode());
+      assertEquals(List.of(INVALID_CHAR), result.invalidChars());
+    }
+
+    @Test
+    void shouldReturnDistinctInvalidCharsAcrossMultipleRows() {
+      final var result =
+          ElementValueMedicalInvestigationList.builder()
+              .list(
+                  List.of(
+                      MedicalInvestigation.builder()
+                          .informationSource(ElementValueText.builder().text(INVALID_CHAR).build())
+                          .build(),
+                      MedicalInvestigation.builder()
+                          .informationSource(ElementValueText.builder().text(INVALID_CHAR).build())
+                          .build()))
+              .build()
+              .encoding(ISO_8859_1_ENCODER);
+      assertFalse(result.canEncode());
+      assertEquals(1, result.invalidChars().size());
+    }
+  }
 
   @Nested
   class IsEmpty {

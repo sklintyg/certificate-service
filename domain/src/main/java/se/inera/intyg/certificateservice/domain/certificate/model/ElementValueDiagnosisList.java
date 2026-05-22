@@ -18,6 +18,7 @@
  */
 package se.inera.intyg.certificateservice.domain.certificate.model;
 
+import java.nio.charset.CharsetEncoder;
 import java.util.Collections;
 import java.util.List;
 import lombok.Builder;
@@ -37,5 +38,21 @@ public class ElementValueDiagnosisList implements ElementValue {
     }
 
     return diagnoses.stream().allMatch(ElementValueDiagnosis::isEmpty);
+  }
+
+  @Override
+  public ElementEncoderResult encoding(CharsetEncoder encoder) {
+    if (diagnoses == null || diagnoses.isEmpty()) {
+      return new ElementEncoderResult(true, Collections.emptyList());
+    }
+
+    final var allInvalidChars =
+        diagnoses.stream()
+            .map(d -> ElementEncoder.canEncode(encoder, d.description()))
+            .flatMap(r -> r.invalidChars().stream())
+            .distinct()
+            .toList();
+
+    return new ElementEncoderResult(allInvalidChars.isEmpty(), allInvalidChars);
   }
 }
