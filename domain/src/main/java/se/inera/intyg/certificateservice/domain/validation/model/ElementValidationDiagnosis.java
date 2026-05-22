@@ -67,10 +67,6 @@ public class ElementValidationDiagnosis implements ElementValidation {
     }
 
     final var validationErrors = new ArrayList<ValidationError>();
-    elementValueDiagnosisList
-        .diagnoses()
-        .forEach(diagnosis -> ElementValidator.validateIso88591(diagnosis.description()));
-
     if (order != null) {
       final var elementDiagnosesMap = getElementDiagnosesMap(elementValueDiagnosisList);
       validationErrors.addAll(
