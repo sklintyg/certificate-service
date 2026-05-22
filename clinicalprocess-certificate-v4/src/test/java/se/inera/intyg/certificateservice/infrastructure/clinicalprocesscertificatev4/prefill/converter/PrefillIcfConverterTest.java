@@ -205,5 +205,21 @@ class PrefillIcfConverterTest {
 
       assertEquals(PrefillErrorType.WRONG_NUMBER_OF_ANSWERS, result.getErrors().getFirst().type());
     }
+
+    @Test
+    void shouldReturnErrorIfTextContainsNonIso88591Chars() {
+      final var prefill = new Forifyllnad();
+      final var svar = new Svar();
+      svar.setId(SPECIFICATION.id().id());
+      final var delsvar = new Delsvar();
+      delsvar.setId(TEXT_AREA_ID.value());
+      delsvar.getContent().add("invalid\u0100");
+      svar.getDelsvar().add(delsvar);
+      prefill.getSvar().add(svar);
+
+      final var result = prefillIcfConverter.prefillAnswer(SPECIFICATION, prefill);
+
+      assertEquals(PrefillErrorType.INVALID_FORMAT, result.getErrors().getFirst().type());
+    }
   }
 }

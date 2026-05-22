@@ -21,15 +21,15 @@ package se.inera.intyg.certificateservice.domain.certificate.model;
 import java.nio.charset.CharsetEncoder;
 import java.util.Collections;
 
-public class ElementEncoder {
+public class EncodingValidator {
 
-  private ElementEncoder() {
+  private EncodingValidator() {
     throw new IllegalStateException("Utility class");
   }
 
-  public static ElementEncoderResult canEncode(CharsetEncoder encoder, String value) {
+  public static EncodingValidatorResult canEncode(CharsetEncoder encoder, String value) {
     if (value == null || value.isEmpty()) {
-      return new ElementEncoderResult(true, Collections.emptyList());
+      return new EncodingValidatorResult(true, Collections.emptyList());
     }
 
     final var invalidChars =
@@ -40,6 +40,6 @@ public class ElementEncoder {
             .mapToObj(c -> String.valueOf((char) c))
             .toList();
 
-    return new ElementEncoderResult(invalidChars.isEmpty(), invalidChars);
+    return new EncodingValidatorResult(invalidChars.isEmpty(), invalidChars);
   }
 }

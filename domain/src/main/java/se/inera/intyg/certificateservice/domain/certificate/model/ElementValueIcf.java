@@ -42,8 +42,8 @@ public class ElementValueIcf implements ElementValue {
   }
 
   @Override
-  public ElementEncoderResult encoding(CharsetEncoder encoder) {
-    return ElementEncoder.canEncode(encoder, text);
+  public EncodingValidatorResult encoding(CharsetEncoder encoder) {
+    return EncodingValidator.canEncode(encoder, text);
   }
 
   public String formatIcfValueText(ElementConfigurationIcf elementConfigurationIcf) {

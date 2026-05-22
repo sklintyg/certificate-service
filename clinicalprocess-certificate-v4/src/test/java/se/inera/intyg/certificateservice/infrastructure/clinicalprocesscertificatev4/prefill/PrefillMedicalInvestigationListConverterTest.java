@@ -310,6 +310,17 @@ class PrefillMedicalInvestigationListConverterTest {
       assertEquals(PrefillErrorType.WRONG_NUMBER_OF_ANSWERS, result.getErrors().getFirst().type());
     }
 
+    @Test
+    void shouldReturnErrorIfInformationSourceContainsNonIso88591Chars() {
+      final var prefill = new Forifyllnad();
+      prefill.getSvar().add(getMedicalInvestigationAnswer(CODE, "invalid\u0100", DATE, 1));
+
+      final var result =
+          prefillMedicalInvestigationListConverter.prefillAnswer(SPECIFICATION, prefill);
+
+      assertEquals(PrefillErrorType.INVALID_FORMAT, result.getErrors().getFirst().type());
+    }
+
     private static Svar getMedicalInvestigationAnswer(
         String code, String text, LocalDate date, int instance) {
       final var answer = new Svar();

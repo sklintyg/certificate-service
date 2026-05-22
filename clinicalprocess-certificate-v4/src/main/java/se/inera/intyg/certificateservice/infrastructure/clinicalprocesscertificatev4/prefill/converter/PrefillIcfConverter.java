@@ -75,15 +75,18 @@ public class PrefillIcfConverter implements PrefillStandardConverter {
       return PrefillAnswer.builder().errors(prefillErrors).build();
     }
 
+    final var text = SubAnswersUtil.getContent(subAnswers, answers, configurationIcf);
+
+    prefillErrors.addAll(PrefillValidator.encoding(specification.id().id(), text));
+    if (!prefillErrors.isEmpty()) {
+      return PrefillAnswer.builder().errors(prefillErrors).build();
+    }
+
     return PrefillAnswer.builder()
         .elementData(
             ElementData.builder()
                 .id(specification.id())
-                .value(
-                    ElementValueIcf.builder()
-                        .id(configurationIcf.id())
-                        .text(SubAnswersUtil.getContent(subAnswers, answers, configurationIcf))
-                        .build())
+                .value(ElementValueIcf.builder().id(configurationIcf.id()).text(text).build())
                 .build())
         .build();
   }

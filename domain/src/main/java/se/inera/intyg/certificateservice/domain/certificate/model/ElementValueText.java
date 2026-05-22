@@ -38,7 +38,7 @@ public class ElementValueText implements ElementValue {
   }
 
   @Override
-  public ElementEncoderResult encoding(CharsetEncoder encoder) {
-    return ElementEncoder.canEncode(encoder, text);
+  public EncodingValidatorResult encoding(CharsetEncoder encoder) {
+    return EncodingValidator.canEncode(encoder, text);
   }
 }

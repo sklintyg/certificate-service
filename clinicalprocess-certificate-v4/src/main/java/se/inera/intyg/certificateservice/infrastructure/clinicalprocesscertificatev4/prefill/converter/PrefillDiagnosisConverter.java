@@ -83,7 +83,6 @@ public class PrefillDiagnosisConverter implements PrefillStandardConverter {
                             .map(
                                 answer -> {
                                   try {
-
                                     final var validationErrors = new ArrayList<PrefillError>();
                                     validationErrors.addAll(
                                         PrefillValidator.validateMinimumNumberOfDelsvar(
@@ -99,12 +98,29 @@ public class PrefillDiagnosisConverter implements PrefillStandardConverter {
                                       return null;
                                     }
 
+                                    final var subAnswerCode =
+                                        getSubAnswerCode(answer.getDelsvar(), specification);
+                                    final var description =
+                                        getSubAnswerDescription(
+                                            answer.getDelsvar(),
+                                            specification,
+                                            subAnswerCode.getCode());
+
+                                    validationErrors.addAll(
+                                        PrefillValidator.encoding(answer.getId(), description));
+
+                                    if (!validationErrors.isEmpty()) {
+                                      prefillErrors.addAll(validationErrors);
+                                      return null;
+                                    }
+
                                     final var instance = answer.getInstans() - 1;
                                     return toElementValueDiagnosis(
                                         answer.getDelsvar(),
                                         elementConfigurationDiagnosis,
                                         instance,
-                                        specification);
+                                        specification,
+                                        description);
                                   } catch (Exception e) {
                                     prefillErrors.add(
                                         PrefillError.invalidFormat(answer.getId(), e.getMessage()));
@@ -133,15 +149,14 @@ public class PrefillDiagnosisConverter implements PrefillStandardConverter {
       List<Delsvar> subAnswers,
       ElementConfigurationDiagnosis elementConfigurationDiagnosis,
       Integer instance,
-      ElementSpecification specification) {
+      ElementSpecification specification,
+      String description) {
     final var subAnswerCode = getSubAnswerCode(subAnswers, specification);
-    final var subAnswerDescription =
-        getSubAnswerDescription(subAnswers, specification, subAnswerCode.getCode());
 
     return ElementValueDiagnosis.builder()
         .id(elementConfigurationDiagnosis.list().get(instance).id())
         .terminology(getTerminology(elementConfigurationDiagnosis, subAnswerCode))
-        .description(subAnswerDescription)
+        .description(description)
         .code(subAnswerCode.getCode())
         .build();
   }

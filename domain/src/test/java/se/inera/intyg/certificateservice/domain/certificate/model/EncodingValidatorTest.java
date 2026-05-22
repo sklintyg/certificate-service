@@ -28,7 +28,7 @@ import java.util.List;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-class ElementEncoderTest {
+class EncodingValidatorTest {
 
   private static final CharsetEncoder ISO_8859_1_ENCODER = StandardCharsets.ISO_8859_1.newEncoder();
   private static final String INVALID_CHAR = "\u0400";
@@ -38,40 +38,41 @@ class ElementEncoderTest {
 
     @Test
     void shouldReturnCanEncodeWhenTextIsNull() {
-      final var result = ElementEncoder.canEncode(ISO_8859_1_ENCODER, null);
+      final var result = EncodingValidator.canEncode(ISO_8859_1_ENCODER, null);
       assertTrue(result.canEncode());
       assertTrue(result.invalidChars().isEmpty());
     }
 
     @Test
     void shouldReturnCanEncodeWhenTextIsEmpty() {
-      final var result = ElementEncoder.canEncode(ISO_8859_1_ENCODER, "");
+      final var result = EncodingValidator.canEncode(ISO_8859_1_ENCODER, "");
       assertTrue(result.canEncode());
       assertTrue(result.invalidChars().isEmpty());
     }
 
     @Test
     void shouldReturnCanEncodeWhenAllCharsAreValid() {
-      final var result = ElementEncoder.canEncode(ISO_8859_1_ENCODER, "hello");
+      final var result = EncodingValidator.canEncode(ISO_8859_1_ENCODER, "hello");
       assertTrue(result.canEncode());
       assertTrue(result.invalidChars().isEmpty());
     }
 
     @Test
     void shouldReturnCannotEncodeWhenTextHasInvalidChars() {
-      final var result = ElementEncoder.canEncode(ISO_8859_1_ENCODER, INVALID_CHAR);
+      final var result = EncodingValidator.canEncode(ISO_8859_1_ENCODER, INVALID_CHAR);
       assertFalse(result.canEncode());
     }
 
     @Test
     void shouldReturnInvalidCharInResult() {
-      final var result = ElementEncoder.canEncode(ISO_8859_1_ENCODER, INVALID_CHAR);
+      final var result = EncodingValidator.canEncode(ISO_8859_1_ENCODER, INVALID_CHAR);
       assertEquals(List.of(INVALID_CHAR), result.invalidChars());
     }
 
     @Test
     void shouldReturnDistinctInvalidChars() {
-      final var result = ElementEncoder.canEncode(ISO_8859_1_ENCODER, INVALID_CHAR + INVALID_CHAR);
+      final var result =
+          EncodingValidator.canEncode(ISO_8859_1_ENCODER, INVALID_CHAR + INVALID_CHAR);
       assertEquals(1, result.invalidChars().size());
     }
 
@@ -79,7 +80,7 @@ class ElementEncoderTest {
     void shouldReturnAllDistinctInvalidChars() {
       final var secondInvalidChar = "\u0401";
       final var result =
-          ElementEncoder.canEncode(ISO_8859_1_ENCODER, INVALID_CHAR + secondInvalidChar);
+          EncodingValidator.canEncode(ISO_8859_1_ENCODER, INVALID_CHAR + secondInvalidChar);
       assertEquals(2, result.invalidChars().size());
     }
   }

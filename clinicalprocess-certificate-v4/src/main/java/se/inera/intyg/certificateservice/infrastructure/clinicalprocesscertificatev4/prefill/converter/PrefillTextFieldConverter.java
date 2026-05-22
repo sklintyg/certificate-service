@@ -76,6 +76,12 @@ public class PrefillTextFieldConverter implements PrefillStandardConverter {
       return PrefillAnswer.builder().errors(prefillErrors).build();
     }
 
+    final var text = SubAnswersUtil.getContent(subAnswers, answers, configurationTextField);
+    prefillErrors.addAll(PrefillValidator.encoding(specification.id().id(), text));
+    if (!prefillErrors.isEmpty()) {
+      return PrefillAnswer.builder().errors(prefillErrors).build();
+    }
+
     return PrefillAnswer.builder()
         .elementData(
             ElementData.builder()
@@ -83,8 +89,7 @@ public class PrefillTextFieldConverter implements PrefillStandardConverter {
                 .value(
                     ElementValueText.builder()
                         .textId(configurationTextField.id())
-                        .text(
-                            SubAnswersUtil.getContent(subAnswers, answers, configurationTextField))
+                        .text(text)
                         .build())
                 .build())
         .build();

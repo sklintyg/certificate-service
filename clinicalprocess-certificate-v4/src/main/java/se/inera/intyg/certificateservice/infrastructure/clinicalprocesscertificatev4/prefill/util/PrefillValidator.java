@@ -18,8 +18,11 @@
  */
 package se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.prefill.util;
 
+import java.nio.charset.CharsetEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import se.inera.intyg.certificateservice.domain.certificate.model.EncodingValidator;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementConfiguration;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementSpecification;
 import se.inera.intyg.certificateservice.domain.diagnosiscode.model.DiagnosisCode;
@@ -30,9 +33,29 @@ import se.riv.clinicalprocess.healthcond.certificate.v3.Svar;
 import se.riv.clinicalprocess.healthcond.certificate.v3.Svar.Delsvar;
 
 public class PrefillValidator {
+  private static final CharsetEncoder ISO_8859_1_ENCODER = StandardCharsets.ISO_8859_1.newEncoder();
 
   private PrefillValidator() {
     throw new IllegalStateException("Utility class");
+  }
+
+  public static List<PrefillError> encoding(String questionId, String text) {
+    final var prefillErrors = new ArrayList<PrefillError>();
+    if (text == null || text.isBlank()) {
+      return prefillErrors;
+    }
+
+    final var encoderResult = EncodingValidator.canEncode(ISO_8859_1_ENCODER, text);
+
+    if (!encoderResult.canEncode()) {
+      prefillErrors.add(
+          PrefillError.invalidFormat(
+              questionId,
+              "Text contains characters not supported in ISO 8859-1: [%s]"
+                  .formatted(String.join(", ", encoderResult.invalidChars()))));
+    }
+
+    return prefillErrors;
   }
 
   public static List<PrefillError> validateSingleAnswerOrSubAnswer(
