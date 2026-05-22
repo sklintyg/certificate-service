@@ -141,7 +141,7 @@ class PrefillDiagnosisConverterTest {
 
       final var result = prefillDiagnosisConverter.prefillAnswer(SPECIFICATION, prefill);
 
-      assertEquals(PrefillErrorType.WRONG_NUMBER_OF_ANSWERS, result.getErrors().getLast().type());
+      assertEquals(PrefillErrorType.WRONG_NUMBER_OF_ANSWERS, result.getErrors().getFirst().type());
     }
 
     @Test

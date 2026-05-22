@@ -18,43 +18,43 @@
  */
 package se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.prefill.util;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.prefill.PrefillErrorType.INVALID_FORMAT;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class PrefillValidatorTest {
 
+  private static final String QUESTION_ID = "questionId";
+
   @Nested
-  class ValidateIso88591 {
+  class EncodingTests {
 
-    @Test
-    void shouldNotThrowIfTextIsNull() {
-      assertDoesNotThrow(() -> PrefillValidator.validateIso88591(null));
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(strings = {"    ", "Valid ISO text: åäö"})
+    void shouldReturnNoErrors(String text) {
+      final var result = PrefillValidator.encoding(QUESTION_ID, text);
+      assertTrue(result.isEmpty());
     }
 
     @Test
-    void shouldNotThrowIfTextIsBlank() {
-      assertDoesNotThrow(() -> PrefillValidator.validateIso88591("    "));
+    void shouldReturnErrorIfTextContainsSingleNonIso88591Char() {
+      final var result = PrefillValidator.encoding(QUESTION_ID, "invalid\u0100");
+      assertEquals(1, result.size());
+      assertEquals(INVALID_FORMAT, result.get(0).type());
     }
 
     @Test
-    void shouldNotThrowIfTextIsValidIso88591() {
-      assertDoesNotThrow(() -> PrefillValidator.validateIso88591("Valid ISO text: åäö"));
-    }
-
-    @Test
-    void shouldThrowIfTextContainsSingleNonIso88591Char() {
-      assertThrows(
-          IllegalArgumentException.class, () -> PrefillValidator.validateIso88591("invalid\u0100"));
-    }
-
-    @Test
-    void shouldThrowIfTextContainsMultipleNonIso88591Chars() {
-      assertThrows(
-          IllegalArgumentException.class,
-          () -> PrefillValidator.validateIso88591("in\u0100v\u0101lid"));
+    void shouldReturnErrorIfTextContainsMultipleNonIso88591Chars() {
+      final var result = PrefillValidator.encoding(QUESTION_ID, "in\u0100v\u0101lid");
+      assertEquals(1, result.size());
+      assertEquals(INVALID_FORMAT, result.get(0).type());
     }
   }
 }

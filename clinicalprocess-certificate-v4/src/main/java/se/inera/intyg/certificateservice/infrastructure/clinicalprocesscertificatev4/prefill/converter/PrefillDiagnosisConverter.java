@@ -83,7 +83,6 @@ public class PrefillDiagnosisConverter implements PrefillStandardConverter {
                             .map(
                                 answer -> {
                                   try {
-
                                     final var validationErrors = new ArrayList<PrefillError>();
                                     validationErrors.addAll(
                                         PrefillValidator.validateMinimumNumberOfDelsvar(
@@ -107,7 +106,13 @@ public class PrefillDiagnosisConverter implements PrefillStandardConverter {
                                             specification,
                                             subAnswerCode.getCode());
 
-                                    PrefillValidator.validateIso88591(description);
+                                    validationErrors.addAll(
+                                        PrefillValidator.encoding(answer.getId(), description));
+
+                                    if (!validationErrors.isEmpty()) {
+                                      prefillErrors.addAll(validationErrors);
+                                      return null;
+                                    }
 
                                     final var instance = answer.getInstans() - 1;
                                     return toElementValueDiagnosis(

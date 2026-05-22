@@ -100,7 +100,15 @@ public class PrefillMedicalInvestigationListConverter implements PrefillStandard
                                                     subAnswers, specification.id(), "%s.3")
                                                 .getFirst();
 
-                                    PrefillValidator.validateIso88591(informationSourceText);
+                                    final var validationErrors =
+                                        new ArrayList<>(
+                                            PrefillValidator.encoding(
+                                                answer.getId(), informationSourceText));
+
+                                    if (!validationErrors.isEmpty()) {
+                                      prefillErrors.addAll(validationErrors);
+                                      return null;
+                                    }
 
                                     return MedicalInvestigation.builder()
                                         .id(config.id())

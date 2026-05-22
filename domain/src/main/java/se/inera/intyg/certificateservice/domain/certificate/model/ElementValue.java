@@ -25,7 +25,7 @@ public interface ElementValue {
 
   boolean isEmpty();
 
-  default ElementEncoderResult encoding(CharsetEncoder encoder) {
-    return new ElementEncoderResult(true, Collections.emptyList());
+  default EncodingValidatorResult encoding(CharsetEncoder encoder) {
+    return new EncodingValidatorResult(true, Collections.emptyList());
   }
 }

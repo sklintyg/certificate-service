@@ -77,13 +77,7 @@ public class PrefillTextFieldConverter implements PrefillStandardConverter {
     }
 
     final var text = SubAnswersUtil.getContent(subAnswers, answers, configurationTextField);
-
-    try {
-      PrefillValidator.validateIso88591(text);
-    } catch (IllegalArgumentException e) {
-      prefillErrors.add(PrefillError.invalidFormat(specification.id().id(), e.getMessage()));
-    }
-
+    prefillErrors.addAll(PrefillValidator.encoding(specification.id().id(), text));
     if (!prefillErrors.isEmpty()) {
       return PrefillAnswer.builder().errors(prefillErrors).build();
     }

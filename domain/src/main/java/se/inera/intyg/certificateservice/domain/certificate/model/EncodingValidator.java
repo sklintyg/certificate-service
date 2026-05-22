@@ -16,29 +16,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package se.inera.intyg.certificateservice.domain.validation.model;
+package se.inera.intyg.certificateservice.domain.certificate.model;
 
-import java.nio.charset.StandardCharsets;
-import java.util.stream.Collectors;
+import java.nio.charset.CharsetEncoder;
+import java.util.Collections;
 
-public class CharacterValidator {
+public class EncodingValidator {
 
-  private CharacterValidator() {
+  private EncodingValidator() {
     throw new IllegalStateException("Utility class");
   }
 
-  public static void iso88591(String text) {
-    final var encoder = StandardCharsets.ISO_8859_1.newEncoder();
+  public static EncodingValidatorResult canEncode(CharsetEncoder encoder, String value) {
+    if (value == null || value.isEmpty()) {
+      return new EncodingValidatorResult(true, Collections.emptyList());
+    }
+
     final var invalidChars =
-        text.chars()
+        value
+            .chars()
             .filter(c -> !encoder.canEncode((char) c))
             .distinct()
             .mapToObj(c -> String.valueOf((char) c))
-            .collect(Collectors.joining(", "));
+            .toList();
 
-    if (!invalidChars.isEmpty()) {
-      throw new IllegalArgumentException(
-          "Text contains characters not supported in ISO 8859-1: [%s]".formatted(invalidChars));
-    }
+    return new EncodingValidatorResult(invalidChars.isEmpty(), invalidChars);
   }
 }

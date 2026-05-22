@@ -48,19 +48,19 @@ public class ElementValueMedicalInvestigationList implements ElementValue {
   }
 
   @Override
-  public ElementEncoderResult encoding(CharsetEncoder encoder) {
+  public EncodingValidatorResult encoding(CharsetEncoder encoder) {
     if (list == null || list.isEmpty()) {
-      return new ElementEncoderResult(true, Collections.emptyList());
+      return new EncodingValidatorResult(true, Collections.emptyList());
     }
 
     final var allInvalidChars =
         list.stream()
             .filter(mi -> mi.informationSource() != null)
-            .map(mi -> ElementEncoder.canEncode(encoder, mi.informationSource().text()))
+            .map(mi -> EncodingValidator.canEncode(encoder, mi.informationSource().text()))
             .flatMap(r -> r.invalidChars().stream())
             .distinct()
             .toList();
 
-    return new ElementEncoderResult(allInvalidChars.isEmpty(), allInvalidChars);
+    return new EncodingValidatorResult(allInvalidChars.isEmpty(), allInvalidChars);
   }
 }

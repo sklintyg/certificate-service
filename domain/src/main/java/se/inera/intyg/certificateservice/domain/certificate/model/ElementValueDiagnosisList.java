@@ -41,18 +41,18 @@ public class ElementValueDiagnosisList implements ElementValue {
   }
 
   @Override
-  public ElementEncoderResult encoding(CharsetEncoder encoder) {
+  public EncodingValidatorResult encoding(CharsetEncoder encoder) {
     if (diagnoses == null || diagnoses.isEmpty()) {
-      return new ElementEncoderResult(true, Collections.emptyList());
+      return new EncodingValidatorResult(true, Collections.emptyList());
     }
 
     final var allInvalidChars =
         diagnoses.stream()
-            .map(d -> ElementEncoder.canEncode(encoder, d.description()))
+            .map(d -> EncodingValidator.canEncode(encoder, d.description()))
             .flatMap(r -> r.invalidChars().stream())
             .distinct()
             .toList();
 
-    return new ElementEncoderResult(allInvalidChars.isEmpty(), allInvalidChars);
+    return new EncodingValidatorResult(allInvalidChars.isEmpty(), allInvalidChars);
   }
 }
