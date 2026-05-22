@@ -18,6 +18,7 @@
  */
 package se.inera.intyg.certificateservice.domain.certificate.model;
 
+import java.nio.charset.CharsetEncoder;
 import lombok.Builder;
 import lombok.Value;
 import lombok.With;
@@ -34,5 +35,10 @@ public class ElementValueText implements ElementValue {
   @Override
   public boolean isEmpty() {
     return !ElementValidator.isTextDefined(text);
+  }
+
+  @Override
+  public ElementEncoderResult encoding(CharsetEncoder encoder) {
+    return ElementEncoder.canEncode(encoder, text);
   }
 }

@@ -18,7 +18,14 @@
  */
 package se.inera.intyg.certificateservice.domain.certificate.model;
 
+import java.nio.charset.CharsetEncoder;
+import java.util.Collections;
+
 public interface ElementValue {
 
   boolean isEmpty();
+
+  default ElementEncoderResult encoding(CharsetEncoder encoder) {
+    return new ElementEncoderResult(true, Collections.emptyList());
+  }
 }
