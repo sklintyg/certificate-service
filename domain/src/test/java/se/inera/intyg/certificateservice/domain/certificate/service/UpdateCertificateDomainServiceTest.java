@@ -41,9 +41,12 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import se.inera.intyg.certificateservice.domain.certificate.model.ElementData;
+import se.inera.intyg.certificateservice.domain.certificate.model.ElementValueText;
 import se.inera.intyg.certificateservice.domain.certificate.model.MedicalCertificate;
 import se.inera.intyg.certificateservice.domain.certificate.model.Revision;
 import se.inera.intyg.certificateservice.domain.certificate.repository.CertificateRepository;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementId;
 import se.inera.intyg.certificateservice.domain.common.exception.CertificateActionForbidden;
 import se.inera.intyg.certificateservice.domain.event.model.CertificateEvent;
 import se.inera.intyg.certificateservice.domain.event.model.CertificateEventType;
@@ -203,5 +206,25 @@ class UpdateCertificateDomainServiceTest {
                     CERTIFICATE_ID, data, ACTION_EVALUATION, new Revision(0), null));
 
     assertEquals(expectedReason, certificateActionForbidden.reason());
+  }
+
+  @Test
+  void shallThrowIfElementValueContainsInvalidChars() {
+    final var data =
+        List.of(
+            ElementData.builder()
+                .id(new ElementId("id"))
+                .value(ElementValueText.builder().text("\u0400").build())
+                .build());
+
+    final var certificate = mock(MedicalCertificate.class);
+    doReturn(certificate).when(certificateRepository).getById(CERTIFICATE_ID);
+    doReturn(true).when(certificate).allowTo(UPDATE, Optional.of(ACTION_EVALUATION));
+
+    assertThrows(
+        IllegalArgumentException.class,
+        () ->
+            updateCertificateDomainService.update(
+                CERTIFICATE_ID, data, ACTION_EVALUATION, REVISION, null));
   }
 }

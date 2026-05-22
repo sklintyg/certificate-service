@@ -18,6 +18,8 @@
  */
 package se.inera.intyg.certificateservice.domain.certificate.model;
 
+import java.nio.charset.CharsetEncoder;
+import java.util.Collections;
 import java.util.List;
 import lombok.Builder;
 import lombok.Value;
@@ -43,5 +45,22 @@ public class ElementValueMedicalInvestigationList implements ElementValue {
                 value.investigationType().isEmpty()
                     || value.informationSource().isEmpty()
                     || value.date().isEmpty());
+  }
+
+  @Override
+  public ElementEncoderResult encoding(CharsetEncoder encoder) {
+    if (list == null || list.isEmpty()) {
+      return new ElementEncoderResult(true, Collections.emptyList());
+    }
+
+    final var allInvalidChars =
+        list.stream()
+            .filter(mi -> mi.informationSource() != null)
+            .map(mi -> ElementEncoder.canEncode(encoder, mi.informationSource().text()))
+            .flatMap(r -> r.invalidChars().stream())
+            .distinct()
+            .toList();
+
+    return new ElementEncoderResult(allInvalidChars.isEmpty(), allInvalidChars);
   }
 }

@@ -64,14 +64,6 @@ public class ElementValidator {
     return text != null && !text.isEmpty() && !text.isBlank();
   }
 
-  public static void validateIso88591(String text) {
-    if (text == null || text.isEmpty()) {
-      return;
-    }
-
-    CharacterValidator.iso88591(text);
-  }
-
   public static LocalDate toDateFromTemporalAmount(TemporalAmount limit) {
     return LocalDate.now(ZoneId.systemDefault()).plus(limit);
   }

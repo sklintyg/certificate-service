@@ -37,7 +37,6 @@ import java.time.LocalDate;
 import java.util.Objects;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 import se.inera.intyg.certificateservice.application.certificate.dto.CertificateDTO;
 import se.inera.intyg.certificateservice.application.certificate.dto.CertificateDataElement;
 import se.inera.intyg.certificateservice.integrationtest.common.setup.BaseIntegrationIT;
@@ -207,27 +206,6 @@ public abstract class ValidateCertificateIT extends BaseIntegrationIT {
                 certificate.getBody().getCertificate().getMetadata().getId());
 
     assertFalse(response.getBody().getValidationErrors().isEmpty());
-  }
-
-  @Test
-  @DisplayName("Om textvärde innehåller tecken utanför ISO 8859-1 skall HTTP 400 returneras")
-  void shallReturnBadRequestIfAddressContainsNonIso88591Chars() {
-    final var testCertificates =
-        testabilityApi()
-            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion()));
-
-    final var certificate =
-        updateUnit(
-            testCertificates,
-            certificate(testCertificates).getMetadata().getUnit().withAddress("Adress\u0100"));
-
-    final var response =
-        api()
-            .validateCertificate(
-                customValidateCertificateRequest().certificate(certificate).build(),
-                certificateId(testCertificates));
-
-    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
   }
 
   private CertificateDataElement updateValue(
