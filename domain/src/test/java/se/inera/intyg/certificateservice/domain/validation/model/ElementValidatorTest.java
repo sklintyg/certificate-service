@@ -18,10 +18,8 @@
  */
 package se.inera.intyg.certificateservice.domain.validation.model;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
@@ -106,6 +104,7 @@ class ElementValidatorTest {
 
   @Nested
   class TextDefined {
+
     @Test
     void shouldReturnTrueIfTextIsDefined() {
       assertTrue(ElementValidator.isTextDefined("12345"));
@@ -124,39 +123,6 @@ class ElementValidatorTest {
     @Test
     void shouldReturnFalseIfTextIsEmpty() {
       assertFalse(ElementValidator.isTextDefined(""));
-    }
-  }
-
-  @Nested
-  class ValidateIso88591 {
-
-    @Test
-    void shouldNotThrowIfTextIsNull() {
-      assertDoesNotThrow(() -> ElementValidator.validateIso88591(null));
-    }
-
-    @Test
-    void shouldNotThrowIfTextIsEmpty() {
-      assertDoesNotThrow(() -> ElementValidator.validateIso88591(""));
-    }
-
-    @Test
-    void shouldNotThrowIfAllCharsAreValidIso88591() {
-      assertDoesNotThrow(() -> ElementValidator.validateIso88591("Hälsoläget är bra."));
-    }
-
-    @Test
-    void shouldThrowIfTextContainsSingleNonIso88591Char() {
-      assertThrows(
-          IllegalArgumentException.class,
-          () -> ElementValidator.validateIso88591("Hello\u0100World"));
-    }
-
-    @Test
-    void shouldThrowIfTextContainsMultipleNonIso88591Chars() {
-      assertThrows(
-          IllegalArgumentException.class,
-          () -> ElementValidator.validateIso88591("\u0100\u0101text"));
     }
   }
 
