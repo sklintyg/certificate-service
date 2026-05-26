@@ -24,7 +24,7 @@ import java.util.Set;
 
 public class EncodingValidator {
 
-  private static final Set<Character> ALLOWED_CHAR_SET = Set.of(new Character[]{'\n', '\r', '\t'});
+  private static final Set<Character> ALLOWED_CHAR_SET = Set.of(new Character[] {'\n', '\r', '\t'});
 
   private EncodingValidator() {
     throw new IllegalStateException("Utility class");
@@ -47,7 +47,6 @@ public class EncodingValidator {
   }
 
   private static boolean isInvalidControlCharacter(int character) {
-    return Character.isISOControl(character)
-        && !(ALLOWED_CHAR_SET.contains((char) character));
+    return Character.isISOControl(character) && !(ALLOWED_CHAR_SET.contains((char) character));
   }
 }
