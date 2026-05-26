@@ -27,11 +27,14 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class EncodingValidatorTest {
 
   private static final CharsetEncoder ISO_8859_1_ENCODER = StandardCharsets.ISO_8859_1.newEncoder();
-  private static final String INVALID_CHAR = "\u0400";
+  private static final CharsetEncoder US_ASCII_ENCODER = StandardCharsets.US_ASCII.newEncoder();
+  private static final String INVALID_CHAR = "Ѐ";
 
   @Nested
   class CanEncode {
@@ -78,10 +81,49 @@ class EncodingValidatorTest {
 
     @Test
     void shouldReturnAllDistinctInvalidChars() {
-      final var secondInvalidChar = "\u0401";
+      final var secondInvalidChar = "Ё";
       final var result =
           EncodingValidator.canEncode(ISO_8859_1_ENCODER, INVALID_CHAR + secondInvalidChar);
       assertEquals(2, result.invalidChars().size());
+    }
+  }
+
+  @Nested
+  class IsInvalidControlCharacter {
+
+    @ParameterizedTest
+    @ValueSource(strings = {"\n", "\r", "\t"})
+    void shouldAllowNewlineCarriageReturnAndTab(String allowed) {
+      final var result = EncodingValidator.canEncode(US_ASCII_ENCODER, allowed);
+      assertTrue(result.canEncode());
+    }
+
+    @Test
+    void shouldRejectControlCharacterNotInAllowedSet() {
+      //  is a C1 control character: ISO control but not in {'\n', '\r', '\t'}
+      final var result = EncodingValidator.canEncode(US_ASCII_ENCODER, "");
+      assertFalse(result.canEncode());
+    }
+
+    @Test
+    void shouldNotFilterOutNonControlInvalidChars() {
+      // Cyrillic is not an ISO control character so it passes the control filter
+      // and is then caught by the encoder check
+      final var result = EncodingValidator.canEncode(US_ASCII_ENCODER, INVALID_CHAR);
+      assertFalse(result.canEncode());
+    }
+
+    @Test
+    void shouldAllowTextMixingAllowedControlCharsAndRegularChars() {
+      final var result = EncodingValidator.canEncode(US_ASCII_ENCODER, "hello\nworld\r\t");
+      assertTrue(result.canEncode());
+    }
+
+    @Test
+    void shouldRejectTextContainingDisallowedControlCharAmongValidChars() {
+      //  (SOH) is an ISO control character not in the allowed set
+      final var result = EncodingValidator.canEncode(US_ASCII_ENCODER, "hello\u0001world");
+      assertFalse(result.canEncode());
     }
   }
 }

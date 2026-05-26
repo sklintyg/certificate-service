@@ -20,8 +20,11 @@ package se.inera.intyg.certificateservice.domain.certificate.model;
 
 import java.nio.charset.CharsetEncoder;
 import java.util.Collections;
+import java.util.Set;
 
 public class EncodingValidator {
+
+  private static final Set<Character> ALLOWED_CHAR_SET = Set.of(new Character[]{'\n', '\r', '\t'});
 
   private EncodingValidator() {
     throw new IllegalStateException("Utility class");
@@ -35,11 +38,16 @@ public class EncodingValidator {
     final var invalidChars =
         value
             .chars()
-            .filter(c -> !encoder.canEncode((char) c))
+            .filter(c -> !encoder.canEncode((char) c) || isInvalidControlCharacter(c))
             .distinct()
             .mapToObj(c -> String.valueOf((char) c))
             .toList();
 
     return new EncodingValidatorResult(invalidChars.isEmpty(), invalidChars);
+  }
+
+  private static boolean isInvalidControlCharacter(int character) {
+    return Character.isISOControl(character)
+        && !(ALLOWED_CHAR_SET.contains((char) character));
   }
 }
