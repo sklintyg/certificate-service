@@ -40,7 +40,7 @@ public class XmlGeneratorText implements XmlGeneratorElementValue {
       return Collections.emptyList();
     }
 
-    if (textValue.text() == null || textValue.text().isEmpty()) {
+    if (textValue.text() == null || textValue.text().isBlank()) {
       return Collections.emptyList();
     }
 
