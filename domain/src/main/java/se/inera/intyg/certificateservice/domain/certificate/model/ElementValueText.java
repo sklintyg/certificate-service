@@ -42,7 +42,7 @@ public class ElementValueText implements ElementValue {
     return EncodingValidator.canEncode(encoder, text);
   }
 
-  public boolean isWhiteSpace() {
+  public boolean isWhiteSpaceOnly() {
     return ElementValidator.isTextWhiteSpaceOnly(text);
   }
 }

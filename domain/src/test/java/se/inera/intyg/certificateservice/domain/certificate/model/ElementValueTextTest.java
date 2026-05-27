@@ -97,23 +97,23 @@ class ElementValueTextTest {
   class IsWhiteSpaceOnly {
     @Test
     void shouldReturnFalseIfNull() {
-      assertFalse(ElementValueText.builder().build().isWhiteSpace());
+      assertFalse(ElementValueText.builder().build().isWhiteSpaceOnly());
     }
 
     @Test
     void shouldReturnFalseIfText() {
-      assertFalse(ElementValueText.builder().text("Text 1").build().isWhiteSpace());
+      assertFalse(ElementValueText.builder().text("Text 1").build().isWhiteSpaceOnly());
     }
 
     @Test
     void shouldReturnFalseIfEmpty() {
-      assertFalse(ElementValueText.builder().text("").build().isWhiteSpace());
+      assertFalse(ElementValueText.builder().text("").build().isWhiteSpaceOnly());
     }
 
     @ParameterizedTest
     @ValueSource(strings = {" ", "\n", "\t"})
     void shouldReturnTrueIfWhiteSpaceOnly(String text) {
-      assertTrue(ElementValueText.builder().text(text).build().isWhiteSpace());
+      assertTrue(ElementValueText.builder().text(text).build().isWhiteSpaceOnly());
     }
   }
 }
