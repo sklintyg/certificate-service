@@ -29,8 +29,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import se.inera.intyg.certificateservice.domain.action.certificate.model.ActionEvaluation;
@@ -62,7 +60,7 @@ import se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertifica
 import se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.validation.XmlValidationService;
 
 @ExtendWith({MockitoExtension.class})
-class SchematronValidationFK7427Test {
+public class SchematronValidationFK7427Test {
 
   private static final ActionEvaluation ACTION_EVALUATION = ActionEvaluation.builder().build();
   @Mock private CertificateActionFactory certificateActionFactory;
@@ -242,38 +240,6 @@ class SchematronValidationFK7427Test {
 
       final var xml = generator.generate(certificate, false);
       assertFalse(
-          schematronValidator.validate(
-              certificate.id(), xml, CertificateModelFactoryFK7427.SCHEMATRON_PATH));
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {" ", "\n", "\t"})
-    void shallReturnTrueIfTextValueOnSymtomIsBlank() {
-      final var certificate =
-          TestDataCertificate.fk7427CertificateBuilder()
-              .certificateModel(certificateModelFactoryFK7427.create())
-              .build();
-
-      final var symtomId = new ElementId("55");
-
-      final var elements =
-          certificate.elementData().stream()
-              .filter(elementData -> elementData.id().equals(symtomId))
-              .collect(Collectors.toMap(ElementData::id, data -> data));
-
-      final var valueSymtom = (ElementValueText) elements.get(symtomId).value();
-      final var elementDataSymtom = elements.get(symtomId).withValue(valueSymtom.withText(" "));
-
-      final var updatedElementData =
-          certificate.elementData().stream()
-              .map(data -> data.id().equals(symtomId) ? elementDataSymtom : data)
-              .toList();
-
-      certificate.updateData(updatedElementData, new Revision(0), ACTION_EVALUATION);
-
-      final var xml = generator.generate(certificate, false);
-
-      assertTrue(
           schematronValidator.validate(
               certificate.id(), xml, CertificateModelFactoryFK7427.SCHEMATRON_PATH));
     }

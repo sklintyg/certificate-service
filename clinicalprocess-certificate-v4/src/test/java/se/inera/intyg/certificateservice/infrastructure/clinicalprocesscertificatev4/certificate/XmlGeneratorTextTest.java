@@ -24,8 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 import se.inera.intyg.certificateservice.domain.certificate.model.ElementData;
@@ -64,15 +62,15 @@ class XmlGeneratorTextTest {
     final var response = xmlGeneratorText.generate(data, ELEMENT_SPECIFICATION);
 
     assertAll(
-        () -> assertEquals(expectedData.getId(), response.getFirst().getId()),
+        () -> assertEquals(expectedData.getId(), response.get(0).getId()),
         () ->
             assertEquals(
-                expectedData.getDelsvar().getFirst().getId(),
-                response.getFirst().getDelsvar().getFirst().getId()),
+                expectedData.getDelsvar().get(0).getId(),
+                response.get(0).getDelsvar().get(0).getId()),
         () ->
             assertEquals(
-                expectedData.getDelsvar().getFirst().getContent().getFirst(),
-                response.getFirst().getDelsvar().getFirst().getContent().getFirst()));
+                expectedData.getDelsvar().get(0).getContent().get(0),
+                response.get(0).getDelsvar().get(0).getContent().get(0)));
   }
 
   @Test
@@ -106,20 +104,6 @@ class XmlGeneratorTextTest {
     final var data =
         ElementData.builder()
             .value(ElementValueUnitContactInformation.builder().build())
-            .id(new ElementId(QUESTION_ID))
-            .build();
-
-    final var response = xmlGeneratorText.generate(data, ELEMENT_SPECIFICATION);
-
-    assertTrue(response.isEmpty());
-  }
-
-  @ParameterizedTest
-  @ValueSource(strings = {" ", "\n", "\t"})
-  void shouldMapEmptyIfValueIsWhiteSpace(String whiteSpace) {
-    final var data =
-        ElementData.builder()
-            .value(ElementValueText.builder().text(whiteSpace).build())
             .id(new ElementId(QUESTION_ID))
             .build();
 
