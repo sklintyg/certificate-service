@@ -28,6 +28,8 @@ import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class ElementValueDiagnosisListTest {
 
@@ -167,6 +169,52 @@ class ElementValueDiagnosisListTest {
     void shouldReturnTrueIfEmpty() {
       assertTrue(
           ElementValueDiagnosisList.builder().diagnoses(Collections.emptyList()).build().isEmpty());
+    }
+  }
+
+  @Nested
+  class IsWhiteSpaceOnly {
+    @Test
+    void shouldReturnFalseIfNull() {
+      assertFalse(ElementValueDiagnosisList.builder().build().isWhiteSpaceOnly());
+    }
+
+    @Test
+    void shouldReturnFalseIfText() {
+      assertFalse(
+          ElementValueDiagnosisList.builder()
+              .diagnoses(
+                  List.of(
+                      ElementValueDiagnosis.builder()
+                          .code("DiagnosisList 1")
+                          .description("Description")
+                          .build()))
+              .build()
+              .isWhiteSpaceOnly());
+    }
+
+    @Test
+    void shouldReturnFalseIfEmpty() {
+      assertFalse(
+          ElementValueDiagnosisList.builder()
+              .diagnoses(Collections.emptyList())
+              .build()
+              .isWhiteSpaceOnly());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {" ", "\n", "\t"})
+    void shouldReturnTrueIfWhiteSpaceOnly(String text) {
+      assertTrue(
+          ElementValueDiagnosisList.builder()
+              .diagnoses(
+                  List.of(
+                      ElementValueDiagnosis.builder()
+                          .code("DiagnosisList 1")
+                          .description(text)
+                          .build()))
+              .build()
+              .isWhiteSpaceOnly());
     }
   }
 }

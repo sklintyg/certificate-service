@@ -35,4 +35,9 @@ public class ElementValueCode implements ElementValue {
   public boolean isEmpty() {
     return !ElementValidator.isTextDefined(code);
   }
+
+  @Override
+  public boolean isWhiteSpaceOnly() {
+    return ElementValidator.isTextWhiteSpaceOnly(code);
+  }
 }

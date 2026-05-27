@@ -43,6 +43,14 @@ public class ElementValueUnitContactInformation implements ElementValue {
   }
 
   @Override
+  public boolean isWhiteSpaceOnly() {
+    return ElementValidator.isTextWhiteSpaceOnly(address)
+        || ElementValidator.isTextWhiteSpaceOnly(city)
+        || ElementValidator.isTextWhiteSpaceOnly(zipCode)
+        || ElementValidator.isTextWhiteSpaceOnly(phoneNumber);
+  }
+
+  @Override
   public EncodingValidatorResult encoding(CharsetEncoder encoder) {
     final var allInvalidChars =
         Stream.of(address, city, zipCode, phoneNumber)

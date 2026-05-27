@@ -28,4 +28,8 @@ public interface ElementValue {
   default EncodingValidatorResult encoding(CharsetEncoder encoder) {
     return new EncodingValidatorResult(true, Collections.emptyList());
   }
+
+  default boolean isWhiteSpaceOnly() {
+    return false;
+  }
 }

@@ -48,6 +48,19 @@ public class ElementValueMedicalInvestigationList implements ElementValue {
   }
 
   @Override
+  public boolean isWhiteSpaceOnly() {
+    if (list == null || list.isEmpty()) {
+      return false;
+    }
+
+    return list.stream()
+        .allMatch(
+            value ->
+                value.investigationType().isWhiteSpaceOnly()
+                    || value.informationSource().isWhiteSpaceOnly());
+  }
+
+  @Override
   public EncodingValidatorResult encoding(CharsetEncoder encoder) {
     if (list == null || list.isEmpty()) {
       return new EncodingValidatorResult(true, Collections.emptyList());
