@@ -28,6 +28,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 import se.inera.intyg.certificateservice.domain.certificate.model.ElementData;
 import se.inera.intyg.certificateservice.domain.certificate.model.ElementValueText;
@@ -252,6 +254,30 @@ class ElementValidationTextTest {
               elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
 
       assertEquals(Collections.emptyList(), actualResult);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {" ", "\t", "\n"})
+    void shallReturnValidationErrorIfTextIsWhiteSpaceOnly(String text) {
+      final var expectedValidationError =
+          List.of(
+              ValidationError.builder()
+                  .elementId(ELEMENT_ID)
+                  .fieldId(FIELD_ID)
+                  .categoryId(CATEGORY_ID)
+                  .message(new ErrorMessage("Fältet får inte fyllas i med endast blanksteg."))
+                  .build());
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(ElementValueText.builder().textId(FIELD_ID).text(text).build())
+              .build();
+
+      final var actualResult =
+          elementValidationText.validate(
+              elementData, Optional.of(CATEGORY_ID), Collections.emptyList());
+
+      assertEquals(expectedValidationError, actualResult);
     }
   }
 }

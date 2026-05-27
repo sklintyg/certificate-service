@@ -26,6 +26,8 @@ import java.time.LocalDate;
 import java.time.Period;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class ElementValidatorTest {
 
@@ -123,6 +125,12 @@ class ElementValidatorTest {
     @Test
     void shouldReturnFalseIfTextIsEmpty() {
       assertFalse(ElementValidator.isTextDefined(""));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {" ", "\n", "\t"})
+    void shouldReturnTrueIfTextIsWhiteSpaceOnly(String text) {
+      assertTrue(ElementValidator.isTextWhiteSpaceOnly(text));
     }
   }
 

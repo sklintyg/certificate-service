@@ -54,6 +54,10 @@ public class ErrorMessageFactory {
     return new ErrorMessage("Ange ett svar.");
   }
 
+  public static ErrorMessage emptyAnswer() {
+    return new ErrorMessage("Fältet får inte fyllas i med endast blanksteg.");
+  }
+
   public static ErrorMessage missingMultipleOption() {
     return new ErrorMessage("Välj minst ett alternativ.");
   }
