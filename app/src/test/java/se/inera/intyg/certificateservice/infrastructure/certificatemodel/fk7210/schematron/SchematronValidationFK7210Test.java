@@ -22,6 +22,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -91,6 +93,33 @@ class SchematronValidationFK7210Test {
             certificate.id(), xml, CertificateModelFactoryFK7210.SCHEMATRON_PATH));
   }
 
+  @Test
+  void shallReturnTrueIfValueIsBeforeCurrentDateButAfterOrEqualToSigningDate() {
+    final var signingDate = LocalDateTime.now(ZoneId.systemDefault()).minusDays(10);
+    final var element =
+        ElementData.builder()
+            .id(new ElementId("54"))
+            .value(
+                ElementValueDate.builder()
+                    .dateId(new FieldId("54.1"))
+                    .date(LocalDate.now().minusDays(5))
+                    .build())
+            .build();
+
+    final var certificate =
+        TestDataCertificate.fk7210CertificateBuilder()
+            .certificateModel(certificateModelFactoryFK7210.create())
+            .signed(signingDate)
+            .elementData(List.of(element))
+            .build();
+
+    final var xml = generator.generate(certificate, true);
+
+    assertTrue(
+        schematronValidator.validate(
+            certificate.id(), xml, CertificateModelFactoryFK7210.SCHEMATRON_PATH));
+  }
+
   @Nested
   class QuestionFodelsedatum {
 
@@ -112,7 +141,7 @@ class SchematronValidationFK7210Test {
     }
 
     @Test
-    void shallReturnFalseIfValueIsBeforeToday() {
+    void shallReturnFalseIfValueIsBeforeSigningDate() {
       final var element =
           ElementData.builder()
               .id(new ElementId("54"))
