@@ -41,15 +41,6 @@ public class ElementValueDiagnosisList implements ElementValue {
   }
 
   @Override
-  public boolean isWhiteSpaceOnly() {
-    if (diagnoses == null || diagnoses.isEmpty()) {
-      return false;
-    }
-
-    return diagnoses.stream().allMatch(ElementValueDiagnosis::isWhiteSpaceOnly);
-  }
-
-  @Override
   public EncodingValidatorResult encoding(CharsetEncoder encoder) {
     if (diagnoses == null || diagnoses.isEmpty()) {
       return new EncodingValidatorResult(true, Collections.emptyList());

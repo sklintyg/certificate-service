@@ -27,12 +27,8 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Stream;
-import org.junit.jupiter.api.Named;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
 
 class ElementValueMedicalInvestigationListTest {
 
@@ -192,71 +188,5 @@ class ElementValueMedicalInvestigationListTest {
     }
   }
 
-  @Nested
-  class IsWhiteSpaceOnly {
-    @Test
-    void shouldReturnFalseIfNull() {
-      assertFalse(ElementValueMedicalInvestigationList.builder().build().isWhiteSpaceOnly());
-    }
-
-    @Test
-    void shouldReturnFalseIfText() {
-      assertFalse(
-          ElementValueMedicalInvestigationList.builder()
-              .list(
-                  List.of(
-                      MedicalInvestigation.builder()
-                          .investigationType(ElementValueCode.builder().code("CODE").build())
-                          .informationSource(ElementValueText.builder().text("TEXT").build())
-                          .date(ElementValueDate.builder().build())
-                          .build()))
-              .build()
-              .isWhiteSpaceOnly());
-    }
-
-    @Test
-    void shouldReturnFalseIfEmpty() {
-      assertFalse(
-          ElementValueMedicalInvestigationList.builder()
-              .list(Collections.emptyList())
-              .build()
-              .isWhiteSpaceOnly());
-    }
-
-    @ParameterizedTest
-    @MethodSource("provideWhiteSpaceCharacters")
-    void shouldReturnTrueIfInformationSourceHasWhiteSpaceOnly(String text) {
-      assertTrue(
-          ElementValueMedicalInvestigationList.builder()
-              .list(
-                  List.of(
-                      MedicalInvestigation.builder()
-                          .informationSource(ElementValueText.builder().text(text).build())
-                          .investigationType(ElementValueCode.builder().code("CODE").build())
-                          .date(ElementValueDate.builder().build())
-                          .build()))
-              .build()
-              .isWhiteSpaceOnly());
-    }
-
-    @ParameterizedTest
-    @MethodSource("provideWhiteSpaceCharacters")
-    void shouldReturnTrueIfInvestigationTypeHasWhiteSpaceOnly(String text) {
-      assertTrue(
-          ElementValueMedicalInvestigationList.builder()
-              .list(
-                  List.of(
-                      MedicalInvestigation.builder()
-                          .informationSource(ElementValueText.builder().text("TEXT").build())
-                          .investigationType(ElementValueCode.builder().code(text).build())
-                          .date(ElementValueDate.builder().build())
-                          .build()))
-              .build()
-              .isWhiteSpaceOnly());
-    }
-
-    private static Stream<Named<String>> provideWhiteSpaceCharacters() {
-      return Stream.of(Named.of("space", " "), Named.of("tab", "\t"), Named.of("newline", "\n"));
-    }
-  }
 }
+

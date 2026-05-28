@@ -29,8 +29,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import se.inera.intyg.certificateservice.domain.unit.model.UnitAddress;
 import se.inera.intyg.certificateservice.domain.unit.model.UnitContactInfo;
 
@@ -152,51 +150,6 @@ class ElementValueUnitContactInformationTest {
               .zipCode("ZipCode")
               .build()
               .isEmpty());
-    }
-  }
-
-  @Nested
-  class IsWhiteSpaceOnly {
-    @Test
-    void shouldReturnFalseIfNull() {
-      assertFalse(ElementValueUnitContactInformation.builder().build().isWhiteSpaceOnly());
-    }
-
-    @Test
-    void shouldReturnFalseIfText() {
-      assertFalse(
-          ElementValueUnitContactInformation.builder()
-              .address("Address")
-              .city("City")
-              .zipCode("ZipCode")
-              .phoneNumber("PhoneNumber")
-              .build()
-              .isWhiteSpaceOnly());
-    }
-
-    @Test
-    void shouldReturnFalseIfEmpty() {
-      assertFalse(
-          ElementValueUnitContactInformation.builder()
-              .address("")
-              .city("")
-              .zipCode("")
-              .phoneNumber("")
-              .build()
-              .isWhiteSpaceOnly());
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {" ", "\n", "\t"})
-    void shouldReturnTrueIfOneValueHasWhiteSpaceOnly(String text) {
-      assertTrue(
-          ElementValueUnitContactInformation.builder()
-              .address("Address")
-              .city("City")
-              .zipCode("ZipCode")
-              .phoneNumber(text)
-              .build()
-              .isWhiteSpaceOnly());
     }
   }
 

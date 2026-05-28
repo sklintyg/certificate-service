@@ -39,6 +39,7 @@ public class ElementValueDiagnosis implements ElementValue {
 
   @Override
   public boolean isWhiteSpaceOnly() {
-    return ElementValidator.isTextWhiteSpaceOnly(description);
+    return ElementValidator.isTextWhiteSpaceOnly(description)
+        || ElementValidator.isTextWhiteSpaceOnly(code);
   }
 }

@@ -64,13 +64,16 @@ public class ElementValidationMedicalInvestigationList implements ElementValidat
     final var mandatoryErrors = getMandatoryErrors(data, categoryId, medicalInvestigationList);
     final var rowOrderErrors = getRowOrderErrors(data, categoryId, medicalInvestigationList);
     final var textLimitErrors = getTextLimitErrors(data, categoryId, medicalInvestigationList);
+    final var whiteSpaceOnlyErrors =
+        getWhiteSpaceOnlyErrors(data, categoryId, medicalInvestigationList);
 
     return Stream.of(
             dateAfterMaxErrors,
             dateBeforeMinErrors,
             mandatoryErrors,
             rowOrderErrors,
-            textLimitErrors)
+            textLimitErrors,
+            whiteSpaceOnlyErrors)
         .flatMap(List::stream)
         .toList();
   }
@@ -84,21 +87,21 @@ public class ElementValidationMedicalInvestigationList implements ElementValidat
     }
 
     if (hasIncorrectRowOrder(medicalInvestigationList)) {
-      return Boolean.TRUE.equals(isIncomplete(medicalInvestigationList.list().get(0)))
-          ? getRowEmptyFieldErrors(medicalInvestigationList.list().get(0), data, categoryId)
+      return isIncomplete(medicalInvestigationList.list().getFirst())
+          ? getRowEmptyFieldErrors(medicalInvestigationList.list().getFirst(), data, categoryId)
           : Collections.emptyList();
     }
 
-    if (isEmpty(medicalInvestigationList.list().get(0))
-        || isIncomplete(medicalInvestigationList.list().get(0))) {
+    if (isEmpty(medicalInvestigationList.list().getFirst())
+        || isIncomplete(medicalInvestigationList.list().getFirst())) {
       return Stream.concat(
               Stream.of(
                   errorMessage(
                       data,
-                      medicalInvestigationList.list().get(0).id(),
+                      medicalInvestigationList.list().getFirst().id(),
                       categoryId,
                       ErrorMessageFactory.missingAnswer())),
-              getRowEmptyFieldErrors(medicalInvestigationList.list().get(0), data, categoryId)
+              getRowEmptyFieldErrors(medicalInvestigationList.list().getFirst(), data, categoryId)
                   .stream())
           .toList();
     }
@@ -158,6 +161,22 @@ public class ElementValidationMedicalInvestigationList implements ElementValidat
                     medicalInvestigation.informationSource().textId(),
                     categoryId,
                     ErrorMessageFactory.textLimit(limit)))
+        .toList();
+  }
+
+  private List<ValidationError> getWhiteSpaceOnlyErrors(
+      ElementData data,
+      Optional<ElementId> categoryId,
+      ElementValueMedicalInvestigationList medicalInvestigationList) {
+    return medicalInvestigationList.list().stream()
+        .filter(medicalInvestigation -> medicalInvestigation.informationSource().isWhiteSpaceOnly())
+        .map(
+            medicalInvestigation ->
+                errorMessage(
+                    data,
+                    medicalInvestigation.informationSource().textId(),
+                    categoryId,
+                    ErrorMessageFactory.emptyAnswer()))
         .toList();
   }
 
