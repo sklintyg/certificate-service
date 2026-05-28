@@ -42,6 +42,11 @@ public class ElementValueIcf implements ElementValue {
   }
 
   @Override
+  public boolean isWhiteSpaceOnly() {
+    return ElementValidator.isTextWhiteSpaceOnly(text);
+  }
+
+  @Override
   public EncodingValidatorResult encoding(CharsetEncoder encoder) {
     return EncodingValidator.canEncode(encoder, text);
   }

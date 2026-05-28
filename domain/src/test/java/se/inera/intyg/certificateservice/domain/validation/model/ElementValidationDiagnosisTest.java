@@ -99,7 +99,7 @@ class ElementValidationDiagnosisTest {
           elementValidationDiagnosis.validate(
               elementData, CATEGORY_ELEMENT_ID, Collections.emptyList());
 
-      assertEquals(expectedValidationError, validationErrors.get(0));
+      assertEquals(expectedValidationError, validationErrors.getFirst());
     }
 
     @Test
@@ -127,7 +127,7 @@ class ElementValidationDiagnosisTest {
           elementValidationDiagnosis.validate(
               elementData, CATEGORY_ELEMENT_ID, Collections.emptyList());
 
-      assertEquals(expectedValidationError, validationErrors.get(0));
+      assertEquals(expectedValidationError, validationErrors.getFirst());
     }
 
     @Test
@@ -517,6 +517,72 @@ class ElementValidationDiagnosisTest {
           elementValidationDiagnosis.validate(
               elementData, CATEGORY_ELEMENT_ID, Collections.emptyList());
       assertTrue(validationErrors.isEmpty());
+    }
+  }
+
+  @Nested
+  class WhiteSpaceOnly {
+
+    @BeforeEach
+    void setUp() {
+      elementValidationDiagnosis = ElementValidationDiagnosis.builder().build();
+    }
+
+    @Test
+    void shallReturnValidationErrorIfDescriptionIsWhiteSpaceOnly() {
+      final var expectedValidationError =
+          List.of(
+              ValidationError.builder()
+                  .elementId(ELEMENT_ID)
+                  .fieldId(DIAGNOS_ONE)
+                  .categoryId(CATEGORY_ELEMENT_ID.orElseThrow())
+                  .message(new ErrorMessage("Fältet får inte fyllas i med endast blanksteg."))
+                  .build());
+
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueDiagnosisList.builder()
+                      .diagnoses(
+                          List.of(
+                              ElementValueDiagnosis.builder()
+                                  .id(DIAGNOS_ONE)
+                                  .code(CODE)
+                                  .description(" ")
+                                  .build()))
+                      .build())
+              .build();
+
+      final var validationErrors =
+          elementValidationDiagnosis.validate(
+              elementData, CATEGORY_ELEMENT_ID, Collections.emptyList());
+
+      assertEquals(expectedValidationError, validationErrors);
+    }
+
+    @Test
+    void shallNotReturnValidationErrorIfDescriptionIsNotWhiteSpaceOnly() {
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueDiagnosisList.builder()
+                      .diagnoses(
+                          List.of(
+                              ElementValueDiagnosis.builder()
+                                  .id(DIAGNOS_ONE)
+                                  .code(CODE)
+                                  .description(DESCRIPTION)
+                                  .build()))
+                      .build())
+              .build();
+
+      final var validationErrors =
+          elementValidationDiagnosis.validate(
+              elementData, CATEGORY_ELEMENT_ID, Collections.emptyList());
+
+      assertEquals(Collections.emptyList(), validationErrors);
     }
   }
 }

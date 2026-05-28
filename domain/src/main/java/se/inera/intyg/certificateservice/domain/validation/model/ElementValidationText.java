@@ -53,6 +53,11 @@ public class ElementValidationText implements ElementValidation {
           errorMessage(data, value.textId(), categoryId, ErrorMessageFactory.missingAnswer()));
     }
 
+    if (value.isWhiteSpaceOnly()) {
+      return List.of(
+          errorMessage(data, value.textId(), categoryId, ErrorMessageFactory.emptyAnswer()));
+    }
+
     if (value.text() != null && ElementValidator.isTextOverLimit(value.text(), limit)) {
       return List.of(
           errorMessage(data, value.textId(), categoryId, ErrorMessageFactory.textLimit(limit)));

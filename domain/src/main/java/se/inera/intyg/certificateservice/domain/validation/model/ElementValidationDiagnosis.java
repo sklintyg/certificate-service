@@ -78,6 +78,8 @@ public class ElementValidationDiagnosis implements ElementValidation {
           invalidDiagnosisCodeValidationErrors(data, categoryId, elementValueDiagnosisList));
     }
 
+    validationErrors.addAll(getWhiteSpaceOnlyErrors(data, categoryId, elementValueDiagnosisList));
+
     return validationErrors;
   }
 
@@ -158,6 +160,18 @@ public class ElementValidationDiagnosis implements ElementValidation {
         .noneMatch(elementValueDiagnosis -> elementValueDiagnosis.id().equals(mandatoryField));
   }
 
+  private List<ValidationError> getWhiteSpaceOnlyErrors(
+      ElementData data,
+      Optional<ElementId> categoryId,
+      ElementValueDiagnosisList elementValueDiagnosisList) {
+    return elementValueDiagnosisList.diagnoses().stream()
+        .filter(ElementValueDiagnosis::isWhiteSpaceOnly)
+        .map(
+            diagnosis ->
+                errorMessage(data, diagnosis.id(), categoryId, ErrorMessageFactory.emptyAnswer()))
+        .toList();
+  }
+
   private ElementValueDiagnosisList getValue(ElementValue value) {
     if (value == null) {
       throw new IllegalArgumentException("Element data value is null");
@@ -178,6 +192,16 @@ public class ElementValidationDiagnosis implements ElementValidation {
         .fieldId(fieldId)
         .categoryId(categoryId.orElse(null))
         .message(new ErrorMessage(message))
+        .build();
+  }
+
+  private static ValidationError errorMessage(
+      ElementData data, FieldId fieldId, Optional<ElementId> categoryId, ErrorMessage message) {
+    return ValidationError.builder()
+        .elementId(data.id())
+        .fieldId(fieldId)
+        .categoryId(categoryId.orElse(null))
+        .message(message)
         .build();
   }
 }

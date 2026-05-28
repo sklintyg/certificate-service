@@ -27,6 +27,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class ElementValueTextTest {
 
@@ -88,6 +90,30 @@ class ElementValueTextTest {
     @Test
     void shouldReturnTrueIfBlank() {
       assertTrue(ElementValueText.builder().text("  ").build().isEmpty());
+    }
+  }
+
+  @Nested
+  class IsWhiteSpaceOnly {
+    @Test
+    void shouldReturnFalseIfNull() {
+      assertFalse(ElementValueText.builder().build().isWhiteSpaceOnly());
+    }
+
+    @Test
+    void shouldReturnFalseIfText() {
+      assertFalse(ElementValueText.builder().text("Text 1").build().isWhiteSpaceOnly());
+    }
+
+    @Test
+    void shouldReturnFalseIfEmpty() {
+      assertFalse(ElementValueText.builder().text("").build().isWhiteSpaceOnly());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {" ", "\n", "\t"})
+    void shouldReturnTrueIfWhiteSpaceOnly(String text) {
+      assertTrue(ElementValueText.builder().text(text).build().isWhiteSpaceOnly());
     }
   }
 }

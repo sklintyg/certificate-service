@@ -61,7 +61,11 @@ public class ElementValidator {
   }
 
   public static boolean isTextDefined(String text) {
-    return text != null && !text.isEmpty() && !text.isBlank();
+    return text != null && !text.isBlank();
+  }
+
+  public static boolean isTextWhiteSpaceOnly(String text) {
+    return text != null && !text.isEmpty() && text.isBlank();
   }
 
   public static LocalDate toDateFromTemporalAmount(TemporalAmount limit) {

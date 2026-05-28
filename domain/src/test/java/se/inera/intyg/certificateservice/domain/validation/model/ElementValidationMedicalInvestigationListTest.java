@@ -117,6 +117,26 @@ class ElementValidationMedicalInvestigationListTest {
               ElementValueText.builder().textId(new FieldId("TEXT_3")).text("TEXT").build())
           .build();
 
+  private static final MedicalInvestigation WHITESPACE_SOURCE_MEDICAL_INV =
+      MedicalInvestigation.builder()
+          .id(new FieldId("WHITESPACE_MI_1"))
+          .date(
+              ElementValueDate.builder()
+                  .dateId(new FieldId("WHITESPACE_DATE_1"))
+                  .date(DATE)
+                  .build())
+          .investigationType(
+              ElementValueCode.builder()
+                  .codeId(new FieldId("WHITESPACE_CODE_1"))
+                  .code("CODE")
+                  .build())
+          .informationSource(
+              ElementValueText.builder()
+                  .textId(new FieldId("WHITESPACE_TEXT_1"))
+                  .text("   ")
+                  .build())
+          .build();
+
   private ElementValidationMedicalInvestigationList validation;
 
   @Nested
@@ -241,7 +261,7 @@ class ElementValidationMedicalInvestigationListTest {
 
       final var validationErrors =
           validation.validate(elementData, categoryId, Collections.emptyList());
-      assertTrue(validationErrors.contains(expectedValidationError.get(0)));
+      assertTrue(validationErrors.contains(expectedValidationError.getFirst()));
     }
 
     @Test
@@ -273,7 +293,7 @@ class ElementValidationMedicalInvestigationListTest {
 
       final var validationErrors =
           validation.validate(elementData, categoryId, Collections.emptyList());
-      assertTrue(validationErrors.contains(expectedValidationError.get(0)));
+      assertTrue(validationErrors.contains(expectedValidationError.getFirst()));
       assertTrue(validationErrors.contains(expectedValidationError.get(1)));
     }
   }
@@ -321,7 +341,7 @@ class ElementValidationMedicalInvestigationListTest {
 
       final var validationErrors =
           validation.validate(elementData, categoryId, Collections.emptyList());
-      assertTrue(validationErrors.contains(expectedValidationError.get(0)));
+      assertTrue(validationErrors.contains(expectedValidationError.getFirst()));
     }
 
     @Test
@@ -353,7 +373,7 @@ class ElementValidationMedicalInvestigationListTest {
 
       final var validationErrors =
           validation.validate(elementData, categoryId, Collections.emptyList());
-      assertTrue(validationErrors.contains(expectedValidationError.get(0)));
+      assertTrue(validationErrors.contains(expectedValidationError.getFirst()));
       assertTrue(validationErrors.contains(expectedValidationError.get(1)));
     }
   }
@@ -633,6 +653,54 @@ class ElementValidationMedicalInvestigationListTest {
 
       final var validationErrors =
           validation.validate(elementData, categoryId, Collections.emptyList());
+      assertEquals(Collections.emptyList(), validationErrors);
+    }
+  }
+
+  @Nested
+  class WhiteSpaceOnly {
+
+    @Test
+    void shouldReturnErrorIfInformationSourceIsWhiteSpaceOnly() {
+      validation = ElementValidationMedicalInvestigationList.builder().build();
+      final var categoryId = Optional.of(CATEGORY_ID);
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueMedicalInvestigationList.builder()
+                      .id(FIELD_ID)
+                      .list(List.of(WHITESPACE_SOURCE_MEDICAL_INV))
+                      .build())
+              .build();
+
+      final var validationErrors =
+          validation.validate(elementData, categoryId, Collections.emptyList());
+
+      assertEquals(
+          getExpectedValidationErrorAsList(
+              "Fältet får inte fyllas i med endast blanksteg.",
+              WHITESPACE_SOURCE_MEDICAL_INV.informationSource().textId()),
+          validationErrors);
+    }
+
+    @Test
+    void shouldNotReturnErrorIfInformationSourceIsNotWhiteSpaceOnly() {
+      validation = ElementValidationMedicalInvestigationList.builder().build();
+      final var categoryId = Optional.of(CATEGORY_ID);
+      final var elementData =
+          ElementData.builder()
+              .id(ELEMENT_ID)
+              .value(
+                  ElementValueMedicalInvestigationList.builder()
+                      .id(FIELD_ID)
+                      .list(List.of(COMPLETE_MEDICAL_INV))
+                      .build())
+              .build();
+
+      final var validationErrors =
+          validation.validate(elementData, categoryId, Collections.emptyList());
+
       assertEquals(Collections.emptyList(), validationErrors);
     }
   }

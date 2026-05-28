@@ -23,6 +23,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class ElementValueDiagnosisTest {
 
@@ -43,6 +45,30 @@ class ElementValueDiagnosisTest {
     @Test
     void shouldReturnTrueIfOneValueIsEmpty() {
       assertTrue(ElementValueDiagnosis.builder().code("A20").build().isEmpty());
+    }
+  }
+
+  @Nested
+  class IsWhiteSpaceOnly {
+    @Test
+    void shouldReturnFalseIfNull() {
+      assertFalse(ElementValueDiagnosis.builder().build().isWhiteSpaceOnly());
+    }
+
+    @Test
+    void shouldReturnFalseIfText() {
+      assertFalse(ElementValueDiagnosis.builder().description("Text 1").build().isWhiteSpaceOnly());
+    }
+
+    @Test
+    void shouldReturnFalseIfEmpty() {
+      assertFalse(ElementValueDiagnosis.builder().description("").build().isWhiteSpaceOnly());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {" ", "\n", "\t"})
+    void shouldReturnTrueIfWhiteSpaceOnly(String text) {
+      assertTrue(ElementValueDiagnosis.builder().description(text).build().isWhiteSpaceOnly());
     }
   }
 }

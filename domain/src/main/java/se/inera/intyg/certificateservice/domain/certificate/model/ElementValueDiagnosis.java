@@ -36,4 +36,9 @@ public class ElementValueDiagnosis implements ElementValue {
   public boolean isEmpty() {
     return !ElementValidator.isTextDefined(code) || !ElementValidator.isTextDefined(description);
   }
+
+  @Override
+  public boolean isWhiteSpaceOnly() {
+    return ElementValidator.isTextWhiteSpaceOnly(description);
+  }
 }
