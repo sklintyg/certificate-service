@@ -169,6 +169,4 @@ class ElementValueDiagnosisListTest {
           ElementValueDiagnosisList.builder().diagnoses(Collections.emptyList()).build().isEmpty());
     }
   }
-
 }
-

@@ -54,8 +54,7 @@ public class ElementValidationIcfValue implements ElementValidation {
     }
 
     if (value.isWhiteSpaceOnly()) {
-      return List.of(
-          errorMessage(data, value.id(), categoryId, ErrorMessageFactory.emptyAnswer()));
+      return List.of(errorMessage(data, value.id(), categoryId, ErrorMessageFactory.emptyAnswer()));
     }
 
     if (ElementValidator.isTextOverLimit(value.text(), limit)) {

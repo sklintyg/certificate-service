@@ -187,6 +187,4 @@ class ElementValueMedicalInvestigationListTest {
               .isEmpty());
     }
   }
-
 }
-
