@@ -211,6 +211,16 @@ class CertificateModelFactoryFK7210Test {
     }
 
     @Test
+    void shallIncludeMessageBeraknatFodelsedatum() {
+      final var certificateModel = certificateModelFactoryFK7210.create();
+
+      assertTrue(
+          certificateModel.elementSpecificationExists(new ElementId("fodelsedatum")),
+          "Expected elementId: '%s' to exists in elementSpecifications '%s'"
+              .formatted(new ElementId("fodelsedatum"), certificateModel.elementSpecifications()));
+    }
+
+    @Test
     void shallIncludeIssuingUnitContactInfo() {
       final var certificateModel = certificateModelFactoryFK7210.create();
 
