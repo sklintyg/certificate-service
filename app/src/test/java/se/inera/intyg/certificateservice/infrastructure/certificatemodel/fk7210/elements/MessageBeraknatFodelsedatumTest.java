@@ -66,9 +66,9 @@ class MessageBeraknatFodelsedatumTest {
                 ElementMessage.builder()
                     .content(
                         """
-                                                        Du har angivit dagens datum som beräknat födelsedatum.<br>
-                                                        Säkerställ att datumet stämmer.
-                                                        """)
+                        Du har angivit dagens datum som beräknat födelsedatum.<br>
+                        Säkerställ att datumet stämmer.
+                        """)
                     .level(MessageLevel.INFO)
                     .build())
             .build();
