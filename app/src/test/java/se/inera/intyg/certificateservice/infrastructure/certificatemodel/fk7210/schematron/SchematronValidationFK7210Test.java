@@ -94,7 +94,7 @@ class SchematronValidationFK7210Test {
   }
 
   @Test
-  void shallReturnTrueIfValueIsBeforeCurrentDateButAfterOrEqualToSigningDate() {
+  void shallReturnTrueIfExpectedBirthDateIsBeforeCurrentDateButAfterSigningDate() {
     final var signingDate = LocalDateTime.now(ZoneId.systemDefault()).minusDays(10);
     final var element =
         ElementData.builder()
@@ -103,6 +103,33 @@ class SchematronValidationFK7210Test {
                 ElementValueDate.builder()
                     .dateId(new FieldId("54.1"))
                     .date(LocalDate.now().minusDays(5))
+                    .build())
+            .build();
+
+    final var certificate =
+        TestDataCertificate.fk7210CertificateBuilder()
+            .certificateModel(certificateModelFactoryFK7210.create())
+            .signed(signingDate)
+            .elementData(List.of(element))
+            .build();
+
+    final var xml = generator.generate(certificate, true);
+
+    assertTrue(
+        schematronValidator.validate(
+            certificate.id(), xml, CertificateModelFactoryFK7210.SCHEMATRON_PATH));
+  }
+
+  @Test
+  void shallReturnTrueIfExpectedBirthDateIsBeforeCurrentDateAndEqualsSigningDate() {
+    final var signingDate = LocalDateTime.now(ZoneId.systemDefault()).minusDays(10);
+    final var element =
+        ElementData.builder()
+            .id(new ElementId("54"))
+            .value(
+                ElementValueDate.builder()
+                    .dateId(new FieldId("54.1"))
+                    .date(LocalDate.now().minusDays(10))
                     .build())
             .build();
 
