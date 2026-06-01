@@ -40,6 +40,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 import se.inera.intyg.certificateservice.domain.action.certificate.model.CertificateActionFactory;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.CertificateModel;
 import se.inera.intyg.certificateservice.domain.certificatemodel.repository.CertificateActionConfigurationRepository;
+import se.inera.intyg.certificateservice.domain.diagnosiscode.repository.DiagnosisCodeRepository;
+import se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.CertificateModelFactoryFK3226;
 import se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.CertificateModelFactoryTS8071;
 
 /**
@@ -80,8 +82,11 @@ class VersionLockTest {
   @Mock
   private static CertificateActionConfigurationRepository certificateActionConfigurationRepository;
 
+  @Mock private static DiagnosisCodeRepository diagnosisCodeRepository;
+
   private ObjectMapper objectMapper;
   private static final CertificateModelFactoryTS8071 ts8071FactoryV1;
+  private static final CertificateModelFactoryFK3226 fk3226FactoryV1;
 
   static {
     ts8071FactoryV1 =
@@ -89,6 +94,13 @@ class VersionLockTest {
             certificateActionFactory, certificateActionConfigurationRepository);
     ReflectionTestUtils.setField(
         ts8071FactoryV1, "activeFrom", LocalDateTime.of(2024, 12, 1, 0, 0, 0));
+
+    fk3226FactoryV1 =
+        new CertificateModelFactoryFK3226(diagnosisCodeRepository, certificateActionFactory);
+    ReflectionTestUtils.setField(
+        fk3226FactoryV1, "activeFrom", LocalDateTime.of(2024, 1, 25, 0, 0, 0));
+    ReflectionTestUtils.setField(
+        fk3226FactoryV1, "fkLogicalAddress", "test-logical-address");
   }
 
   @BeforeEach
@@ -127,7 +139,9 @@ class VersionLockTest {
   }
 
   private static Stream<Arguments> lockedVersions() {
-    return Stream.of(Arguments.of(ts8071FactoryV1.create(), "ts8071-v1.0.json", "TS8071 V1"));
+    return Stream.of(
+        Arguments.of(ts8071FactoryV1.create(), "ts8071-v1.0.json", "TS8071 V1"),
+        Arguments.of(fk3226FactoryV1.create(), "fk3226-v1.0.json", "FK3226 V1"));
   }
 
   private void assertVersionLocked(CertificateModel certificateModel, String snapshotFileName) {
