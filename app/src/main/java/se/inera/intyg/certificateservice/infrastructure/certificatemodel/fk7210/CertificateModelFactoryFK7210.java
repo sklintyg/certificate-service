@@ -20,6 +20,7 @@ package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7210
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.elements.ElementUnitContactInformation.issuingUnitContactInfo;
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7210.elements.CategoryBeraknatFodelsedatum.categoryBeraknatFodelsedatum;
+import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7210.elements.MessageBeraknatFodelsedatum.messageBeraknatFodelsedatum;
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7210.elements.QuestionBeraknatFodelsedatum.questionBeraknatFodelsedatum;
 
 import java.time.LocalDateTime;
@@ -117,7 +118,8 @@ public class CertificateModelFactoryFK7210 implements CertificateModelFactory {
                     .build()))
         .elementSpecifications(
             List.of(
-                categoryBeraknatFodelsedatum(questionBeraknatFodelsedatum()),
+                categoryBeraknatFodelsedatum(
+                    questionBeraknatFodelsedatum(), messageBeraknatFodelsedatum()),
                 issuingUnitContactInfo()))
         .certificateActionFactory(certificateActionFactory)
         .build();
