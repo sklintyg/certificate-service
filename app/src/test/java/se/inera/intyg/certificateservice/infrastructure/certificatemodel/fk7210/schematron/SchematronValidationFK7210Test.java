@@ -189,7 +189,7 @@ class SchematronValidationFK7210Test {
     }
 
     @Test
-    void shallReturnFalseIfValueIsMoreThanOneYearInTheFuture() {
+    void shallReturnFalseIfValueIsMoreThanOneYearInTheFutureFromSigningDate() {
       final var element =
           ElementData.builder()
               .id(new ElementId("54"))

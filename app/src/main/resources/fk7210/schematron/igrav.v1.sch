@@ -32,13 +32,13 @@
   <iso:pattern id="q54.1">
     <iso:rule context="//gn:delsvar[@id='54.1']">
       <iso:let name="signingDate" value="xs:date(xs:dateTime(//rg:intyg/gn:signeringstidpunkt))"/>
-      <iso:let name="currentDatePlusOneYear" value="xs:date(current-date()) + xs:dayTimeDuration('P366D')"/>
+      <iso:let name="signingDatePlusOneYear" value="$signingDate + xs:dayTimeDuration('P366D')"/>
       <iso:let name="expectedBirthDate" value="xs:date(.)"/>
       <iso:extends rule="date"/>
       <iso:assert test="$expectedBirthDate ge $signingDate">
         Datum som anges som 'Beräknat födelsedatum' får inte vara tidigare än signeringsdatumet.
       </iso:assert>
-      <iso:assert test="$expectedBirthDate le $currentDatePlusOneYear">
+      <iso:assert test="$expectedBirthDate le $signingDatePlusOneYear">
         Datum som anges som 'Beräknat födelsedatum' får inte vara längre än 366 dagar framåt i
         tiden.
       </iso:assert>
