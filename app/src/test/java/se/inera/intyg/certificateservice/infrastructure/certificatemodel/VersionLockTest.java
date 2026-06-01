@@ -99,8 +99,7 @@ class VersionLockTest {
         new CertificateModelFactoryFK3226(diagnosisCodeRepository, certificateActionFactory);
     ReflectionTestUtils.setField(
         fk3226FactoryV1, "activeFrom", LocalDateTime.of(2024, 1, 25, 0, 0, 0));
-    ReflectionTestUtils.setField(
-        fk3226FactoryV1, "fkLogicalAddress", "test-logical-address");
+    ReflectionTestUtils.setField(fk3226FactoryV1, "fkLogicalAddress", "test-logical-address");
   }
 
   @BeforeEach
