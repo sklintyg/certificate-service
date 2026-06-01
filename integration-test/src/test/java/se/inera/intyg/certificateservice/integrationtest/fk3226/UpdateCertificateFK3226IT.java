@@ -20,15 +20,15 @@ package se.inera.intyg.certificateservice.integrationtest.fk3226;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static se.inera.intyg.certificateservice.application.testdata.TestDataCommonUnitDTO.ALFA_MEDICINCENTRUM_DTO;
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.QuestionDiagnos.DIAGNOSIS_ID;
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.QuestionDiagnos.DIAGNOS_1;
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.QuestionForutsattningarForAttLamnaSkriftligtSamtycke.FORUTSATTNINGAR_FOR_ATT_LAMNA_SKRIFTLIGT_SAMTYCKE_FIELD_ID;
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.QuestionForutsattningarForAttLamnaSkriftligtSamtycke.FORUTSATTNINGAR_FOR_ATT_LAMNA_SKRIFTLIGT_SAMTYCKE_ID;
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.QuestionPatientensBehandlingOchVardsituation.QUESTION_PATIENTENS_BEHANDLING_OCH_VARDSITUATION_FIELD_ID;
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.QuestionPatientensBehandlingOchVardsituation.QUESTION_PATIENTENS_BEHANDLING_OCH_VARDSITUATION_ID;
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.QuestionUtlatandeBaseratPa.QUESTION_UTLATANDE_BASERAT_PA_FIELD_ID;
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.QuestionUtlatandeBaseratPa.QUESTION_UTLATANDE_BASERAT_PA_ID;
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.QuestionUtlatandeBaseratPa.UTLATANDE_BASERAT_PA_JOURNALUPPGIFTER_FIELD_ID;
+import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.common.QuestionDiagnos.DIAGNOSIS_ID;
+import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.common.QuestionDiagnos.DIAGNOS_1;
+import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.common.QuestionForutsattningarForAttLamnaSkriftligtSamtycke.FORUTSATTNINGAR_FOR_ATT_LAMNA_SKRIFTLIGT_SAMTYCKE_FIELD_ID;
+import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.common.QuestionForutsattningarForAttLamnaSkriftligtSamtycke.FORUTSATTNINGAR_FOR_ATT_LAMNA_SKRIFTLIGT_SAMTYCKE_ID;
+import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.common.QuestionUtlatandeBaseratPa.QUESTION_UTLATANDE_BASERAT_PA_FIELD_ID;
+import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.common.QuestionUtlatandeBaseratPa.QUESTION_UTLATANDE_BASERAT_PA_ID;
+import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.common.QuestionUtlatandeBaseratPa.UTLATANDE_BASERAT_PA_JOURNALUPPGIFTER_FIELD_ID;
+import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.v1.QuestionPatientensBehandlingOchVardsituationV1.QUESTION_PATIENTENS_BEHANDLING_OCH_VARDSITUATION_FIELD_ID;
+import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.v1.QuestionPatientensBehandlingOchVardsituationV1.QUESTION_PATIENTENS_BEHANDLING_OCH_VARDSITUATION_ID;
 import static se.inera.intyg.certificateservice.integrationtest.common.util.ApiRequestUtil.customTestabilityCertificateRequest;
 import static se.inera.intyg.certificateservice.integrationtest.common.util.ApiRequestUtil.customUpdateCertificateRequest;
 import static se.inera.intyg.certificateservice.integrationtest.common.util.CertificateUtil.certificate;
@@ -150,7 +150,7 @@ public abstract class UpdateCertificateFK3226IT extends BaseIntegrationIT {
     final var expectedData =
         CertificateDataValueCode.builder()
             .id(QUESTION_PATIENTENS_BEHANDLING_OCH_VARDSITUATION_FIELD_ID.value())
-            .code(CodeSystemKvFkmu0009.ENDAST_PALLIATIV.code())
+            .code(CodeSystemKvFkmu0009.ENDAST_PALLIATIV_V1.code())
             .build();
     final var certificate = certificate(testCertificates);
 

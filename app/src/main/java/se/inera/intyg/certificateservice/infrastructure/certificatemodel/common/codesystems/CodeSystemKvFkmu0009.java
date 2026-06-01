@@ -24,11 +24,17 @@ public class CodeSystemKvFkmu0009 {
 
   public static final String CODE_SYSTEM = "KV_FKMU_0009";
 
-  public static final Code ENDAST_PALLIATIV =
+  public static final Code ENDAST_PALLIATIV_V1 =
       new Code(
           "ENDAST_PALLIATIV",
           CODE_SYSTEM,
           "Endast palliativ vård ges och all aktiv behandling mot sjukdomstillståndet har avslutats");
+
+  public static final Code ENDAST_PALLIATIV_V1_1 =
+      new Code(
+          "ENDAST_PALLIATIV",
+          CODE_SYSTEM,
+          "Vård i patientens sista tid i livet (dagar, veckor eller månader)");
 
   public static final Code AKUT_LIVSHOTANDE =
       new Code(

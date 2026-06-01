@@ -37,6 +37,7 @@ import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfFieldI
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.RuleExpression;
 import se.inera.intyg.certificateservice.domain.common.model.Code;
 import se.inera.intyg.certificateservice.domain.validation.model.ElementValidationDateList;
+import se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.common.QuestionUtlatandeBaseratPa;
 
 class QuestionUtlatandeBaseratPaTest {
 
