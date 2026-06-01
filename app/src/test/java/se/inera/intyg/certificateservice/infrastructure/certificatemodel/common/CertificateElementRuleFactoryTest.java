@@ -337,4 +337,18 @@ class CertificateElementRuleFactoryTest {
 
     assertEquals(expected, response);
   }
+
+  @Test
+  void shouldReturnEqual() {
+    final var expectedResult = "1 == 2";
+    final var response = CertificateElementRuleFactory.equals("1", 2);
+    assertEquals(expectedResult, response);
+  }
+
+  @Test
+  void shouldReturnWrapWithAttribute() {
+    final var expectedResult = "2(attribute)";
+    final var response = CertificateElementRuleFactory.wrapWithAttribute("attribute", "2");
+    assertEquals(expectedResult, response);
+  }
 }
