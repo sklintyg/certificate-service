@@ -94,7 +94,7 @@ public class CertificateModelFactoryFK7809 implements CertificateModelFactory {
       """
       <b className="iu-fw-heading">Vem kan få merkostnadsersättning?</b>
 
-      En person kan ha rätt till merkostnadsersättning för kostnader som beror på att hen fått en varaktig funktionsnedsättning som kan antas finnas i minst ett år. Funktionsnedsättningen ska ha uppstått innan hen fyllde 66 år. Om personen är född 1957 eller tidigare kan hen även få ersättning för kostnader som beror på att hen fått en funktionsnedsättning innan hen fyllde 65 år. För att få merkostnadsersättning ska merkostnaderna uppgå till minst 25 procent av ett prisbasbelopp per år.
+      En person kan ha rätt till merkostnadsersättning för kostnader som beror på att hen har en funktionsnedsättning som kan antas finnas i minst ett år. Funktionsnedsättningen ska ha funnits innan personen uppnår riktåldern för pension. För att få merkostnadsersättning ska merkostnaderna uppgå till minst 25 procent av ett prisbasbelopp per år.
 
       Den som anses vara blind eller gravt hörselskadad kan få en garanterad nivå av merkostnadsersättning utan att ha några merkostnader.
       """;
