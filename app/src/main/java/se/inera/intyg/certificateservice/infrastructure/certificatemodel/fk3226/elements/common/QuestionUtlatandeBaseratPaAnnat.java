@@ -80,6 +80,8 @@ public class QuestionUtlatandeBaseratPaAnnat {
         .pdfConfiguration(
             PdfConfigurationText.builder()
                 .pdfFieldId(PDF_STATEMENT_BASED_ON_OTHER_FIELD_ID)
+                .overflowSheetFieldId(
+                    new PdfFieldId("form1[0].#subform[2].flt_txtFortsattningsblad[0]"))
                 .build())
         .includeWhenRenewing(false)
         .build();
