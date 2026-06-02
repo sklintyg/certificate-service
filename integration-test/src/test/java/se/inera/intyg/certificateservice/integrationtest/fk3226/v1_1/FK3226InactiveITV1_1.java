@@ -16,9 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package se.inera.intyg.certificateservice.integrationtest.fk3226;
+package se.inera.intyg.certificateservice.integrationtest.fk3226.v1_1;
 
-import static se.inera.intyg.certificateservice.integrationtest.fk3226.FK3226TestSetup.fk3226TestSetup;
+import static se.inera.intyg.certificateservice.integrationtest.fk3226.v1_1.FK3226TestSetupV1_1.fk3226TestSetupV1_1;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,16 +29,16 @@ import se.inera.intyg.certificateservice.integrationtest.common.setup.InActiveCe
 import se.inera.intyg.certificateservice.integrationtest.common.setup.TestabilityUtilities;
 import se.inera.intyg.certificateservice.integrationtest.common.tests.InactiveTypeIT;
 
-class FK3226InactiveIT extends InActiveCertificatesIT {
+class FK3226InactiveITV1_1 extends InActiveCertificatesIT {
 
-  public static final String TYPE = FK3226TestSetup.TYPE;
+  public static final String TYPE = FK3226TestSetupV1_1.TYPE;
 
   @BeforeEach
   void setUp() {
     super.setUpBaseIT();
 
     baseTestabilityUtilities =
-        fk3226TestSetup()
+        fk3226TestSetupV1_1()
             .testabilityUtilities(
                 TestabilityUtilities.builder()
                     .api(api)

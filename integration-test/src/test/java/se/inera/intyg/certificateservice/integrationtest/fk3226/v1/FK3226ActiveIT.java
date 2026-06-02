@@ -16,13 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package se.inera.intyg.certificateservice.integrationtest.fk3226;
+package se.inera.intyg.certificateservice.integrationtest.fk3226.v1;
 
 import static se.inera.intyg.certificateservice.application.testdata.TestDataCommonUserDTO.AJLA_DOCTOR_DTO;
 import static se.inera.intyg.certificateservice.application.testdata.TestDataCommonUserDTO.ALVA_VARDADMINISTRATOR_DTO;
 import static se.inera.intyg.certificateservice.application.testdata.TestDataCommonUserDTO.ANNA_SJUKSKOTERSKA_DTO;
 import static se.inera.intyg.certificateservice.application.testdata.TestDataCommonUserDTO.BERTIL_BARNMORSKA_DTO;
-import static se.inera.intyg.certificateservice.integrationtest.fk3226.FK3226TestSetup.fk3226TestSetup;
+import static se.inera.intyg.certificateservice.integrationtest.fk3226.v1.FK3226TestSetup.fk3226TestSetup;
 
 import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
@@ -30,6 +30,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.params.provider.Arguments;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import se.inera.intyg.certificateservice.integrationtest.common.setup.ActiveCertificatesIT;
 import se.inera.intyg.certificateservice.integrationtest.common.setup.BaseTestabilityUtilities;
 import se.inera.intyg.certificateservice.integrationtest.common.setup.TestabilityUtilities;
@@ -74,6 +76,11 @@ import se.inera.intyg.certificateservice.integrationtest.common.tests.UpdateCert
 import se.inera.intyg.certificateservice.integrationtest.common.tests.ValidateCertificateIT;
 
 public class FK3226ActiveIT extends ActiveCertificatesIT {
+
+  @DynamicPropertySource
+  static void deactivateV1(DynamicPropertyRegistry registry) {
+    registry.add("certificate.model.fk3226.v1_1.active.from", () -> "2099-01-01T00:00:00");
+  }
 
   public static final String TYPE = FK3226TestSetup.TYPE;
 
@@ -155,9 +162,6 @@ public class FK3226ActiveIT extends ActiveCertificatesIT {
     protected BaseTestabilityUtilities testabilityUtilities() {
       return baseTestabilityUtilities;
     }
-
-    // TODO Add test for "Kompletteringsbegäran skall sättas som hanterad när förnyade intyget
-    // signeras" - see FK7472ActiveIT
   }
 
   @Nested

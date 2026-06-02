@@ -73,7 +73,8 @@ import se.inera.intyg.certificateservice.testability.certificate.dto.Testability
 import se.inera.intyg.certificateservice.testability.certificate.service.fillservice.TestabilityCertificateFillService;
 
 @Component
-public class TestabilityCertificateFillServiceFK3226V1 implements TestabilityCertificateFillService {
+public class TestabilityCertificateFillServiceFK3226V1
+    implements TestabilityCertificateFillService {
 
   @Override
   public List<CertificateModelId> certificateModelIds() {

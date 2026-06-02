@@ -61,6 +61,7 @@ public abstract class InActiveCertificatesIT {
     registry.add("certificate.model.ag7804.v2_0.active.from", () -> "2099-01-01T00:00:00");
     registry.add("certificate.model.fk3221.v1_0.active.from", () -> "2099-01-01T00:00:00");
     registry.add("certificate.model.fk3226.v1_0.active.from", () -> "2099-01-01T00:00:00");
+    registry.add("certificate.model.fk3226.v1_1.active.from", () -> "2099-01-01T00:00:00");
     registry.add("certificate.model.fk7210.v1_0.active.from", () -> "2099-01-01T00:00:00");
     registry.add("certificate.model.fk7426.v1_0.active.from", () -> "2099-01-01T00:00:00");
     registry.add("certificate.model.fk7427.v1_0.active.from", () -> "2099-01-01T00:00:00");

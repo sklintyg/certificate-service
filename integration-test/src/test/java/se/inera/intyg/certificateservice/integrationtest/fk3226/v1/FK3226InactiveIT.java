@@ -16,23 +16,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package se.inera.intyg.certificateservice.integrationtest.fk3226;
+package se.inera.intyg.certificateservice.integrationtest.fk3226.v1;
 
-import static se.inera.intyg.certificateservice.integrationtest.fk3226.FK3226TestSetup.fk3226TestSetup;
+import static se.inera.intyg.certificateservice.integrationtest.fk3226.v1.FK3226TestSetup.fk3226TestSetup;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
-import se.inera.intyg.certificateservice.integrationtest.common.setup.ActiveCertificatesIT;
 import se.inera.intyg.certificateservice.integrationtest.common.setup.BaseTestabilityUtilities;
+import se.inera.intyg.certificateservice.integrationtest.common.setup.InActiveCertificatesIT;
 import se.inera.intyg.certificateservice.integrationtest.common.setup.TestabilityUtilities;
-import se.inera.intyg.certificateservice.integrationtest.common.tests.ExistsCitizenCertificateIT;
-import se.inera.intyg.certificateservice.integrationtest.common.tests.GetCitizenCertificateIT;
-import se.inera.intyg.certificateservice.integrationtest.common.tests.GetCitizenCertificateListIT;
-import se.inera.intyg.certificateservice.integrationtest.common.tests.PrintCitizenCertificateIT;
+import se.inera.intyg.certificateservice.integrationtest.common.tests.InactiveTypeIT;
 
-class FK3226CitizenIT extends ActiveCertificatesIT {
+class FK3226InactiveIT extends InActiveCertificatesIT {
 
   public static final String TYPE = FK3226TestSetup.TYPE;
 
@@ -57,38 +54,8 @@ class FK3226CitizenIT extends ActiveCertificatesIT {
   }
 
   @Nested
-  @DisplayName(TYPE + "Hämta intyg för invånare")
-  class GetCitizenCertificate extends GetCitizenCertificateIT {
-
-    @Override
-    protected BaseTestabilityUtilities testabilityUtilities() {
-      return baseTestabilityUtilities;
-    }
-  }
-
-  @Nested
-  @DisplayName(TYPE + "Hämta intygslista för invånare")
-  class GetCitizenCertificateList extends GetCitizenCertificateListIT {
-
-    @Override
-    protected BaseTestabilityUtilities testabilityUtilities() {
-      return baseTestabilityUtilities;
-    }
-  }
-
-  @Nested
-  @DisplayName(TYPE + "Finns intyg för invånare")
-  class ExistsCitizenCertificate extends ExistsCitizenCertificateIT {
-
-    @Override
-    protected BaseTestabilityUtilities testabilityUtilities() {
-      return baseTestabilityUtilities;
-    }
-  }
-
-  @Nested
-  @DisplayName(TYPE + "Skriv ut intyg för invånare")
-  class PrintCitizenCertificate extends PrintCitizenCertificateIT {
+  @DisplayName(TYPE + "Inaktivt intyg")
+  class InactiveType extends InactiveTypeIT {
 
     @Override
     protected BaseTestabilityUtilities testabilityUtilities() {

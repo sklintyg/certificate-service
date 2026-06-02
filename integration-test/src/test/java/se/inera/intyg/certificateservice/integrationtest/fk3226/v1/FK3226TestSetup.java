@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package se.inera.intyg.certificateservice.integrationtest.fk3226;
+package se.inera.intyg.certificateservice.integrationtest.fk3226.v1;
 
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.common.QuestionForutsattningarForAttLamnaSkriftligtSamtycke.FORUTSATTNINGAR_FOR_ATT_LAMNA_SKRIFTLIGT_SAMTYCKE_FIELD_ID;
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.common.QuestionForutsattningarForAttLamnaSkriftligtSamtycke.FORUTSATTNINGAR_FOR_ATT_LAMNA_SKRIFTLIGT_SAMTYCKE_ID;
