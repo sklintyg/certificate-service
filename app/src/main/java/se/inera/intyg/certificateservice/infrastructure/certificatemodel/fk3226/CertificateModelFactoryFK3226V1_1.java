@@ -138,7 +138,7 @@ public class CertificateModelFactoryFK3226V1_1 implements CertificateModelFactor
                     .subject(new Subject(MessageType.OTHER.displayName()))
                     .build()))
         .schematronPath(SCHEMATRON_PATH)
-        .pdfSpecification(FK3226PdfSpecification.create())
+        .pdfSpecification(FK3226PdfSpecificationV1_1.create())
         .certificateActionSpecifications(FK3226CertificateActionSpecification.create())
         .messageActionSpecifications(FK3226MessageActionSpecification.create())
         .elementSpecifications(
