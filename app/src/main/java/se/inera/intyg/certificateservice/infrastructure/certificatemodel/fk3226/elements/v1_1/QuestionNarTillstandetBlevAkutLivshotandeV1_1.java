@@ -41,7 +41,7 @@ public class QuestionNarTillstandetBlevAkutLivshotandeV1_1 {
   private static final FieldId QUESTION_NAR_TILLSTANDET_BLEV_AKUT_LIVSHOTANDE_FIELD_ID =
       new FieldId("52.3");
   private static final PdfFieldId PDF_WHEN_CONDITION_BECAME_LIFE_THREATENING_FIELD_ID =
-      new PdfFieldId("form1[0].#subform[1].flt_datumAkutLivshotande[0]");
+      new PdfFieldId("form1[0].#subform[1].flt_datumTillstand[0]");
 
   private QuestionNarTillstandetBlevAkutLivshotandeV1_1() {
     throw new IllegalStateException("Utility class");

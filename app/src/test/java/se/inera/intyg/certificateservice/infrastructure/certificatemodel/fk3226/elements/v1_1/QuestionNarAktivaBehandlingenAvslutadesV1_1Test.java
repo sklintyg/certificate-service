@@ -151,7 +151,7 @@ class QuestionNarAktivaBehandlingenAvslutadesV1_1Test {
   void shallIncludePdfConfiguration() {
     final var expected =
         PdfConfigurationDate.builder()
-            .pdfFieldId(new PdfFieldId("form1[0].#subform[1].flt_datumBehandlingenAvslutad[0]"))
+            .pdfFieldId(new PdfFieldId("form1[0].#subform[1].flt_datumPatientensOverlevnad[0]"))
             .build();
 
     final var element =

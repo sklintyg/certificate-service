@@ -150,7 +150,7 @@ class QuestionNarTillstandetBlevAkutLivshotandeV1_1Test {
   void shallIncludePdfConfiguration() {
     final var expected =
         PdfConfigurationDate.builder()
-            .pdfFieldId(new PdfFieldId("form1[0].#subform[1].flt_datumAkutLivshotande[0]"))
+            .pdfFieldId(new PdfFieldId("form1[0].#subform[1].flt_datumTillstand[0]"))
             .build();
 
     final var element =

@@ -41,7 +41,7 @@ public class QuestionNarAktivaBehandlingenAvslutadesV1_1 {
   private static final FieldId QUESTION_NAR_AKTIVA_BEHANDLINGEN_AVSLUTADES_FIELD_ID =
       new FieldId("52.2");
   private static final PdfFieldId PDF_WHEN_ACTIVE_TREATMENT_WAS_STOPPED_FIELD_ID =
-      new PdfFieldId("form1[0].#subform[1].flt_datumBehandlingenAvslutad[0]");
+      new PdfFieldId("form1[0].#subform[1].flt_datumPatientensOverlevnad[0]");
 
   private QuestionNarAktivaBehandlingenAvslutadesV1_1() {
     throw new IllegalStateException("Utility class");
