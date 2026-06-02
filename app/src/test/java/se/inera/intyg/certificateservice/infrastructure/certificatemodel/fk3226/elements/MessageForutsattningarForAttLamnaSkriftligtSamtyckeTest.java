@@ -25,6 +25,7 @@ import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementCo
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementId;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementMessage;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.MessageLevel;
+import se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.common.MessageForutsattningarForAttLamnaSkriftligtSamtycke;
 
 class MessageForutsattningarForAttLamnaSkriftligtSamtyckeTest {
 

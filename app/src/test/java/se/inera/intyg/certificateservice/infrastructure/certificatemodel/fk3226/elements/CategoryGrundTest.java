@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementConfigurationCategory;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementId;
+import se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.common.CategoryGrund;
 
 class CategoryGrundTest {
 

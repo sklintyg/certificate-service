@@ -44,6 +44,7 @@ import se.inera.intyg.certificateservice.domain.certificatemodel.model.RuleExpre
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.RuleLimit;
 import se.inera.intyg.certificateservice.domain.diagnosiscode.repository.DiagnosisCodeRepository;
 import se.inera.intyg.certificateservice.domain.validation.model.ElementValidationDiagnosis;
+import se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.common.QuestionDiagnos;
 
 @ExtendWith(MockitoExtension.class)
 class QuestionDiagnosTest {

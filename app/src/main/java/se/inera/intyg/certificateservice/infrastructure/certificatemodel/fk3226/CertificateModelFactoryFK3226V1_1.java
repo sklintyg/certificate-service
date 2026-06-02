@@ -26,14 +26,14 @@ import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.common.QuestionForutsattningarForAttLamnaSkriftligtSamtycke.questionForutsattningarForAttLamnaSkriftligtSamtycke;
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.common.QuestionUtlatandeBaseratPa.questionUtlatandeBaseratPa;
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.common.QuestionUtlatandeBaseratPaAnnat.questionUtlatandeBaseratPaAnnat;
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.v1.CategoryHotV1.categoryHot;
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.v1.QuestionNarAktivaBehandlingenAvslutadesV1.questionNarAktivaBehandlingenAvslutades;
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.v1.QuestionNarTillstandetBlevAkutLivshotandeV1.questionNarTillstandetBlevAkutLivshotande;
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.v1.QuestionPatagligtHotMotPatientensLivAkutLivshotandeV1.questionPatagligtHotMotPatientensLivAkutLivshotande;
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.v1.QuestionPatagligtHotMotPatientensLivAnnatV1.questionPatagligtHotMotPatientensLivAnnat;
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.v1.QuestionPatientensBehandlingOchVardsituationV1.questionPatientBehandlingOchVardsituation;
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.v1.QuestionTillstandetUppskattasLivshotandeTillOchMedV1.questionTillstandetUppskattasLivshotandeTillOchMed;
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.v1.QuestionUppskattaHurLangeTillstandetKommerVaraLivshotandeV1.questionUppskattaHurLangeTillstandetKommerVaraLivshotande;
+import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.v1_1.CategoryHotV1_1.categoryHot;
+import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.v1_1.QuestionNarAktivaBehandlingenAvslutadesV1_1.questionNarAktivaBehandlingenAvslutades;
+import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.v1_1.QuestionNarTillstandetBlevAkutLivshotandeV1_1.questionNarTillstandetBlevAkutLivshotande;
+import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.v1_1.QuestionPatagligtHotMotPatientensLivAkutLivshotandeV1_1.questionPatagligtHotMotPatientensLivAkutLivshotande;
+import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.v1_1.QuestionPatagligtHotMotPatientensLivAnnatV1_1.questionPatagligtHotMotPatientensLivAnnat;
+import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.v1_1.QuestionPatientensBehandlingOchVardsituationV1_1.questionPatientBehandlingOchVardsituation;
+import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.v1_1.QuestionTillstandetUppskattasLivshotandeTillOchMedV1_1.questionTillstandetUppskattasLivshotandeTillOchMed;
+import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.v1_1.QuestionUppskattaHurLangeTillstandetKommerVaraLivshotandeV1_1.questionUppskattaHurLangeTillstandetKommerVaraLivshotande;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -60,19 +60,19 @@ import se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.
 
 @Component
 @RequiredArgsConstructor
-public class CertificateModelFactoryFK3226 implements CertificateModelFactory {
+public class CertificateModelFactoryFK3226V1_1 implements CertificateModelFactory {
 
   private final DiagnosisCodeRepository diagnosisCodeRepository;
   private final CertificateActionFactory certificateActionFactory;
 
-  @Value("${certificate.model.fk3226.v1_0.active.from}")
+  @Value("${certificate.model.fk3226.v1_1.active.from}")
   private LocalDateTime activeFrom;
 
   @Value("${sendmessagetofk.logicaladdress}")
   private String fkLogicalAddress;
 
   private static final String FK_3226 = "fk3226";
-  private static final String VERSION = "1.0";
+  private static final String VERSION = "1.1";
   private static final CertificateTypeName FK3226_TYPE_NAME = new CertificateTypeName("FK3226");
   private static final String NAME = "Läkarutlåtande för närståendepenning";
   private static final String DESCRIPTION =
@@ -85,15 +85,15 @@ public class CertificateModelFactoryFK3226 implements CertificateModelFactory {
       <b className="iu-fw-heading">Vad är närståendepenning?</b><br>
       <p>Närståendepenning är en ersättning för den som avstår från att förvärvsarbeta för att vara med en patient som är svårt sjuk i lagens mening. I lagen definierar man svårt sjuk som att patientens hälsotillstånd är så nedsatt att det finns ett påtagligt hot mot hens liv på viss tids sikt. Sjukdomstillstånd som på flera års sikt utvecklas till livshotande tillstånd ger däremot inte rätt till närståendepenning.</p>
       <b className="iu-fw-heading">Vem är närstående?</b><br>
-      <p>Till närstående räknas anhöriga, men även andra som har nära relationer med den som är sjuk till exempel vänner eller grannar. Flera närstående kan turas om och få ersätttning för olika dagar eller olika delar av dagar.</p>
+      <p>Till närstående räknas anhöriga, men även andra som har nära relationer med den som är sjuk till exempel vänner eller grannar. Flera närstående kan turas om och få ersättning för olika dagar eller olika delar av dagar.</p>
       <b className="iu-fw-heading">Ansökan och samtycke</b><br>
       <p>När den närstående som stödjer patienten ansöker om närståendepenning ska hen bifoga blankett Samtycke för närståendepenning. Det gäller i de fall patienten har medicinska förutsättningar för att kunna samtycka till en närståendes stöd.</p>
       <b className="iu-fw-heading">Särskilda regler för vissa HIV-smittade</b><br>
-      <p>Om patienten har hiv och har blivit smittad på något av följande sätt, ange det vid “Annat” under “Patientens behandling och vårdsituation”.</p>
+      <p>Ange om patienten blivit hiv-smittad på något av följande sätt.</p>
       <ol><li>Patienten har blivit smittad när hen fick blod- eller blodprodukter, och smittades när hen behandlades av den svenska hälso- och sjukvården.</li><li>Patienten har blivit smittad av nuvarande eller före detta make, maka, sambo eller registrerade partner, och den personen smittades när hen behandlades av den svenska hälso- och sjukvården.</li></ol>
       """;
 
-  public static final CertificateModelId FK3226_V1_0 =
+  public static final CertificateModelId FK3226_V1_1 =
       CertificateModelId.builder()
           .type(new CertificateType(FK_3226))
           .version(new CertificateVersion(VERSION))
@@ -105,7 +105,7 @@ public class CertificateModelFactoryFK3226 implements CertificateModelFactory {
   @Override
   public CertificateModel create() {
     return CertificateModel.builder()
-        .id(FK3226_V1_0)
+        .id(FK3226_V1_1)
         .type(CodeSystemKvIntygstyp.FK3226)
         .typeName(FK3226_TYPE_NAME)
         .name(NAME)
