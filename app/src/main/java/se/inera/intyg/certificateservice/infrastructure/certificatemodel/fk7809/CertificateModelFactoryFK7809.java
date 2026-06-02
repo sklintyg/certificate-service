@@ -110,7 +110,6 @@ public class CertificateModelFactoryFK7809 implements CertificateModelFactory {
 
        Merkostnader delas in sju olika kategorier:
        <ul><li>hälsa, vård och kost,</li><li>slitage och rengöring,</li><li>resor,</li><li>hjälpmedel</li><li>hjälp i den dagliga livsföringen</li><li>boende, och</li><li>övriga ändamål</li></ul>
-
        Den som anses vara blind eller gravt hörselskadad kan få en garanterad nivå av merkostnadsersättning utan att ha några merkostnader.
       """;
   private static final String PREAMBLE_TEXT =
