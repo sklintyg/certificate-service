@@ -89,7 +89,7 @@ public class CertificateModelFactoryFK3226V1_1 implements CertificateModelFactor
       <b className="iu-fw-heading">Ansökan och samtycke</b><br>
       <p>När den närstående som stödjer patienten ansöker om närståendepenning ska hen bifoga blankett Samtycke för närståendepenning. Det gäller i de fall patienten har medicinska förutsättningar för att kunna samtycka till en närståendes stöd.</p>
       <b className="iu-fw-heading">Särskilda regler för vissa HIV-smittade</b><br>
-      <p>Ange om patienten blivit hiv-smittad på något av följande sätt.</p>
+      <p>Om patienten har hiv och har blivit smittad på något av följande sätt, ange det vid “Annat” under “Patientens vårdsituation”.</p>
       <ol><li>Patienten har blivit smittad när hen fick blod- eller blodprodukter, och smittades när hen behandlades av den svenska hälso- och sjukvården.</li><li>Patienten har blivit smittad av nuvarande eller före detta make, maka, sambo eller registrerade partner, och den personen smittades när hen behandlades av den svenska hälso- och sjukvården.</li></ol>
       """;
 
