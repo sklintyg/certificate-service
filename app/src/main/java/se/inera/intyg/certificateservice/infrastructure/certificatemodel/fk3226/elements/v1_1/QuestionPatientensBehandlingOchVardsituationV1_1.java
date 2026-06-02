@@ -59,8 +59,8 @@ public class QuestionPatientensBehandlingOchVardsituationV1_1 {
         List.of(
             new ElementConfigurationCode(
                 ENDAST_PALLIATIV_FIELD_ID,
-                CodeSystemKvFkmu0009.ENDAST_PALLIATIV_V1_1.displayName(),
-                CodeSystemKvFkmu0009.ENDAST_PALLIATIV_V1_1),
+                CodeSystemKvFkmu0009.ENDAST_PALLIATIV_V2.displayName(),
+                CodeSystemKvFkmu0009.ENDAST_PALLIATIV_V2),
             new ElementConfigurationCode(
                 AKUT_LIVSHOTANDE_FIELD_ID,
                 CodeSystemKvFkmu0009.AKUT_LIVSHOTANDE.displayName(),

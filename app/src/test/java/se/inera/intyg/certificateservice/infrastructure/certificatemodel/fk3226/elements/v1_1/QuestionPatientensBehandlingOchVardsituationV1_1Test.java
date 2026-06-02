@@ -61,7 +61,7 @@ class QuestionPatientensBehandlingOchVardsituationV1_1Test {
                     new ElementConfigurationCode(
                         new FieldId("ENDAST_PALLIATIV"),
                         "Vård i patientens sista tid i livet (dagar, veckor eller månader)",
-                        CodeSystemKvFkmu0009.ENDAST_PALLIATIV_V1_1),
+                        CodeSystemKvFkmu0009.ENDAST_PALLIATIV_V2),
                     new ElementConfigurationCode(
                         new FieldId("AKUT_LIVSHOTANDE"),
                         "Akut livshotande tillstånd (till exempel vård på intensivvårdsavdelning)",

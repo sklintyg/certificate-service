@@ -30,7 +30,7 @@ public class CodeSystemKvFkmu0009 {
           CODE_SYSTEM,
           "Endast palliativ vård ges och all aktiv behandling mot sjukdomstillståndet har avslutats");
 
-  public static final Code ENDAST_PALLIATIV_V1_1 =
+  public static final Code ENDAST_PALLIATIV_V2 =
       new Code(
           "ENDAST_PALLIATIV",
           CODE_SYSTEM,
