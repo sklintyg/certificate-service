@@ -20,7 +20,6 @@ package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7210
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementConfigurationMessage;
@@ -50,9 +49,7 @@ class MessageBeraknatFodelsedatumTest {
         List.of(
             ElementRuleExpression.builder()
                 .id(new ElementId("54"))
-                .expression(
-                    new RuleExpression(
-                        "epochDay('54.1') == %s".formatted(LocalDate.now().toEpochDay())))
+                .expression(new RuleExpression("today('54.1')"))
                 .type(ElementRuleType.SHOW)
                 .build()),
         element.rules());

@@ -18,13 +18,10 @@
  */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7210.elements;
 
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.CertificateElementRuleFactory.TO_EPOCH_DAY;
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.CertificateElementRuleFactory.withCitation;
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.CertificateElementRuleFactory.wrapWithAttribute;
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7210.elements.QuestionBeraknatFodelsedatum.QUESTION_BERAKNAT_FODELSEDATUM_FIELD_ID;
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7210.elements.QuestionBeraknatFodelsedatum.QUESTION_BERAKNAT_FODELSEDATUM_ID;
 
-import java.time.LocalDate;
 import java.util.List;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementConfigurationMessage;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementId;
@@ -60,11 +57,8 @@ public class MessageBeraknatFodelsedatum {
                 CertificateElementRuleFactory.show(
                     QUESTION_BERAKNAT_FODELSEDATUM_ID,
                     new RuleExpression(
-                        CertificateElementRuleFactory.equals(
-                            wrapWithAttribute(
-                                withCitation(QUESTION_BERAKNAT_FODELSEDATUM_FIELD_ID.value()),
-                                TO_EPOCH_DAY),
-                            LocalDate.now().toEpochDay())))))
+                        CertificateElementRuleFactory.today(
+                            withCitation(QUESTION_BERAKNAT_FODELSEDATUM_FIELD_ID.value()))))))
         .build();
   }
 }

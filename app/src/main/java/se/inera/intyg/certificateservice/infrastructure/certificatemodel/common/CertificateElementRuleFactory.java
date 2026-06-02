@@ -33,8 +33,6 @@ import se.inera.intyg.certificateservice.domain.certificatemodel.model.RuleLimit
 
 public class CertificateElementRuleFactory {
 
-  public static final String TO_EPOCH_DAY = "epochDay";
-
   private CertificateElementRuleFactory() {
     throw new IllegalStateException("Utility class");
   }
@@ -309,6 +307,10 @@ public class CertificateElementRuleFactory {
 
   public static String equals(String s1, long s2) {
     return s1 + " == " + s2;
+  }
+
+  public static String today(String s1) {
+    return wrapWithAttribute(s1, "today");
   }
 
   public static String withCitation(String field) {

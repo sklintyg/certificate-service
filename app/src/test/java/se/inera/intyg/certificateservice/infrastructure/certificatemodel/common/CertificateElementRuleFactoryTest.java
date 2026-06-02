@@ -351,4 +351,11 @@ class CertificateElementRuleFactoryTest {
     final var response = CertificateElementRuleFactory.wrapWithAttribute("attribute", "2");
     assertEquals(expectedResult, response);
   }
+
+  @Test
+  void shouldReturnToday() {
+    final var expectedResult = "today(id)";
+    final var result = CertificateElementRuleFactory.today("id");
+    assertEquals(expectedResult, result);
+  }
 }
