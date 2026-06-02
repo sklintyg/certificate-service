@@ -18,8 +18,8 @@
  */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.v1_1;
 
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.v1.QuestionPatientensBehandlingOchVardsituationV1.ANNAT_FIELD_ID;
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.v1.QuestionPatientensBehandlingOchVardsituationV1.QUESTION_PATIENTENS_BEHANDLING_OCH_VARDSITUATION_ID;
+import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.v1_1.QuestionPatientensBehandlingOchVardsituationV1_1.ANNAT_FIELD_ID;
+import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.v1_1.QuestionPatientensBehandlingOchVardsituationV1_1.QUESTION_PATIENTENS_BEHANDLING_OCH_VARDSITUATION_ID;
 
 import java.util.List;
 import se.inera.intyg.certificateservice.domain.certificate.model.ElementValueCode;
