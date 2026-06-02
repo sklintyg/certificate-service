@@ -24,7 +24,6 @@ import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.common.MessageForutsattningarForAttLamnaSkriftligtSamtycke.messageForutsattningarForAttLamnaSkriftligtSamtycke;
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.common.QuestionDiagnos.questionDiagnos;
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.common.QuestionForutsattningarForAttLamnaSkriftligtSamtycke.questionForutsattningarForAttLamnaSkriftligtSamtycke;
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.v1_1.QuestionUtlatandeBaseratPaV1_1.questionUtlatandeBaseratPa;
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.common.QuestionUtlatandeBaseratPaAnnat.questionUtlatandeBaseratPaAnnat;
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.v1_1.CategoryHotV1_1.categoryHot;
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.v1_1.QuestionNarAktivaBehandlingenAvslutadesV1_1.questionNarAktivaBehandlingenAvslutades;
@@ -34,6 +33,7 @@ import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.v1_1.QuestionPatientensBehandlingOchVardsituationV1_1.questionPatientBehandlingOchVardsituation;
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.v1_1.QuestionTillstandetUppskattasLivshotandeTillOchMedV1_1.questionTillstandetUppskattasLivshotandeTillOchMed;
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.v1_1.QuestionUppskattaHurLangeTillstandetKommerVaraLivshotandeV1_1.questionUppskattaHurLangeTillstandetKommerVaraLivshotande;
+import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.v1_1.QuestionUtlatandeBaseratPaV1_1.questionUtlatandeBaseratPa;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -62,17 +62,15 @@ import se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.
 @RequiredArgsConstructor
 public class CertificateModelFactoryFK3226V1_1 implements CertificateModelFactory {
 
-  private final DiagnosisCodeRepository diagnosisCodeRepository;
-  private final CertificateActionFactory certificateActionFactory;
-
-  @Value("${certificate.model.fk3226.v1_1.active.from}")
-  private LocalDateTime activeFrom;
-
-  @Value("${sendmessagetofk.logicaladdress}")
-  private String fkLogicalAddress;
-
+  public static final SchematronPath SCHEMATRON_PATH =
+      new SchematronPath("fk3226/schematron/lunsp.v1.sch");
   private static final String FK_3226 = "fk3226";
   private static final String VERSION = "1.1";
+  public static final CertificateModelId FK3226_V1_1 =
+      CertificateModelId.builder()
+          .type(new CertificateType(FK_3226))
+          .version(new CertificateVersion(VERSION))
+          .build();
   private static final CertificateTypeName FK3226_TYPE_NAME = new CertificateTypeName("FK3226");
   private static final String NAME = "Läkarutlåtande för närståendepenning";
   private static final String DESCRIPTION =
@@ -92,15 +90,12 @@ public class CertificateModelFactoryFK3226V1_1 implements CertificateModelFactor
       <p>Om patienten har hiv och har blivit smittad på något av följande sätt, ange det vid “Annat” under “Patientens vårdsituation”.</p>
       <ol><li>Patienten har blivit smittad när hen fick blod- eller blodprodukter, och smittades när hen behandlades av den svenska hälso- och sjukvården.</li><li>Patienten har blivit smittad av nuvarande eller före detta make, maka, sambo eller registrerade partner, och den personen smittades när hen behandlades av den svenska hälso- och sjukvården.</li></ol>
       """;
-
-  public static final CertificateModelId FK3226_V1_1 =
-      CertificateModelId.builder()
-          .type(new CertificateType(FK_3226))
-          .version(new CertificateVersion(VERSION))
-          .build();
-
-  public static final SchematronPath SCHEMATRON_PATH =
-      new SchematronPath("fk3226/schematron/lunsp.v1.sch");
+  private final DiagnosisCodeRepository diagnosisCodeRepository;
+  private final CertificateActionFactory certificateActionFactory;
+  @Value("${certificate.model.fk3226.v1_1.active.from}")
+  private LocalDateTime activeFrom;
+  @Value("${sendmessagetofk.logicaladdress}")
+  private String fkLogicalAddress;
 
   @Override
   public CertificateModel create() {
