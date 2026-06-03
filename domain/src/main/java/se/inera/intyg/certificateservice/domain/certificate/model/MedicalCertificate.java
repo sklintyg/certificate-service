@@ -452,7 +452,7 @@ public class MedicalCertificate implements Certificate {
         MedicalCertificate.builder()
             .id(new CertificateId(UUID.randomUUID().toString()))
             .created(LocalDateTime.now(ZoneId.systemDefault()))
-            .certificateModel(this.certificateModel())
+            .certificateModel(this.certificateModel().latestMinorVersion())
             .revision(new Revision(0))
             .certificateRepository(this.certificateRepository)
             .build();
