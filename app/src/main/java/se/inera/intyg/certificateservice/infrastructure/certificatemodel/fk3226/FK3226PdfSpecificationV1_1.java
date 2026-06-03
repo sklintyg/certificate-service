@@ -28,9 +28,8 @@ import se.inera.intyg.certificateservice.domain.certificatemodel.model.TemplateP
 
 public class FK3226PdfSpecificationV1_1 {
 
-  public static final String PDF_FK_3226_PDF = "fk3226/pdf/v1_1/fk3226_v1.1.pdf";
-  public static final String PDF_NO_ADDRESS_FK_3226_PDF =
-      "fk3226/pdf/v1_1/fk3226_v1.1_no_address.pdf";
+  public static final String PDF_FK_3226_PDF = "fk3226/pdf/fk3226_v1.1.pdf";
+  public static final String PDF_NO_ADDRESS_FK_3226_PDF = "fk3226/pdf/fk3226_v1.1_no_address.pdf";
   public static final PdfMcid PDF_MCID = new PdfMcid(100);
   public static final PdfFieldId PDF_PATIENT_ID_FIELD_ID_3 =
       new PdfFieldId("form1[0].#subform[1].flt_txtPersonNr[2]");
