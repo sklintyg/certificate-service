@@ -1,25 +1,6 @@
-/*
- * Copyright (C) 2026 Inera AB (http://www.inera.se)
- *
- * This file is part of sklintyg (https://github.com/sklintyg).
- *
- * sklintyg is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * sklintyg is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements;
+package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.v1_1;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.Period;
 import java.util.List;
@@ -37,15 +18,14 @@ import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfFieldI
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.RuleExpression;
 import se.inera.intyg.certificateservice.domain.common.model.Code;
 import se.inera.intyg.certificateservice.domain.validation.model.ElementValidationDateList;
-import se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.common.QuestionUtlatandeBaseratPa;
 
-class QuestionUtlatandeBaseratPaTest {
+class QuestionUtlatandeBaseratPaV1_1Test {
 
   private static final ElementId ELEMENT_ID = new ElementId("1");
 
   @Test
   void shallIncludeId() {
-    final var element = QuestionUtlatandeBaseratPa.questionUtlatandeBaseratPa();
+    final var element = QuestionUtlatandeBaseratPaV1_1.questionUtlatandeBaseratPa();
 
     assertEquals(ELEMENT_ID, element.id());
   }
@@ -82,7 +62,7 @@ class QuestionUtlatandeBaseratPaTest {
                         .build()))
             .build();
 
-    final var element = QuestionUtlatandeBaseratPa.questionUtlatandeBaseratPa();
+    final var element = QuestionUtlatandeBaseratPaV1_1.questionUtlatandeBaseratPa();
 
     assertEquals(expectedConfiguration, element.configuration());
   }
@@ -98,7 +78,7 @@ class QuestionUtlatandeBaseratPaTest {
                     new RuleExpression("$undersokningAvPatienten || $journaluppgifter || $annat"))
                 .build());
 
-    final var element = QuestionUtlatandeBaseratPa.questionUtlatandeBaseratPa();
+    final var element = QuestionUtlatandeBaseratPaV1_1.questionUtlatandeBaseratPa();
 
     assertEquals(expectedRules, element.rules());
   }
@@ -108,7 +88,7 @@ class QuestionUtlatandeBaseratPaTest {
     final var expectedValidations =
         List.of(ElementValidationDateList.builder().mandatory(true).max(Period.ofDays(0)).build());
 
-    final var element = QuestionUtlatandeBaseratPa.questionUtlatandeBaseratPa();
+    final var element = QuestionUtlatandeBaseratPaV1_1.questionUtlatandeBaseratPa();
 
     assertEquals(expectedValidations, element.validations());
   }
@@ -123,29 +103,31 @@ class QuestionUtlatandeBaseratPaTest {
                     PdfConfigurationDateCheckbox.builder()
                         .checkboxFieldId(
                             new PdfFieldId("form1[0].#subform[0].ksr_UndersokningPatient[0]"))
-                        .dateFieldId(new PdfFieldId("form1[0].#subform[0].flt_datUl_1[0]"))
+                        .dateFieldId(
+                            new PdfFieldId("form1[0].#subform[0].flt_datumUnsersokning[0]"))
                         .build(),
                     new FieldId("journaluppgifter"),
                     PdfConfigurationDateCheckbox.builder()
                         .checkboxFieldId(
                             new PdfFieldId("form1[0].#subform[0].ksr_Journaluppgifter[0]"))
-                        .dateFieldId(new PdfFieldId("form1[0].#subform[0].flt_datUl_2[0]"))
+                        .dateFieldId(
+                            new PdfFieldId("form1[0].#subform[0].flt_datumJournaluppgifter[0]"))
                         .build(),
                     new FieldId("annat"),
                     PdfConfigurationDateCheckbox.builder()
                         .checkboxFieldId(new PdfFieldId("form1[0].#subform[0].ksr_Annat[0]"))
-                        .dateFieldId(new PdfFieldId("form1[0].#subform[0].flt_datUl_3[0]"))
+                        .dateFieldId(new PdfFieldId("form1[0].#subform[0].flt_datumAnnat[0]"))
                         .build()))
             .build();
 
-    final var element = QuestionUtlatandeBaseratPa.questionUtlatandeBaseratPa();
+    final var element = QuestionUtlatandeBaseratPaV1_1.questionUtlatandeBaseratPa();
 
     assertEquals(expected, element.pdfConfiguration());
   }
 
   @Test
   void shouldHaveIncludeWhenRenewingFalse() {
-    final var element = QuestionUtlatandeBaseratPa.questionUtlatandeBaseratPa();
+    final var element = QuestionUtlatandeBaseratPaV1_1.questionUtlatandeBaseratPa();
     assertFalse(element.includeWhenRenewing());
   }
 }

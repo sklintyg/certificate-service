@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.common;
+package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.v1;
 
 import java.time.Period;
 import java.util.List;
@@ -33,7 +33,7 @@ import se.inera.intyg.certificateservice.domain.validation.model.ElementValidati
 import se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.CertificateElementRuleFactory;
 import se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.codesystems.CodeSystemKvFkmu0001;
 
-public class QuestionUtlatandeBaseratPa {
+public class QuestionUtlatandeBaseratPaV1 {
 
   public static final ElementId QUESTION_UTLATANDE_BASERAT_PA_ID = new ElementId("1");
   public static final FieldId QUESTION_UTLATANDE_BASERAT_PA_FIELD_ID = new FieldId("1.1");
@@ -54,7 +54,7 @@ public class QuestionUtlatandeBaseratPa {
   private static final PdfFieldId PDF_STATEMENT_BASED_ON_OTHER_DATE_FIELD_ID =
       new PdfFieldId("form1[0].#subform[0].flt_datUl_3[0]");
 
-  private QuestionUtlatandeBaseratPa() {
+  private QuestionUtlatandeBaseratPaV1() {
     throw new IllegalStateException("Utility class");
   }
 

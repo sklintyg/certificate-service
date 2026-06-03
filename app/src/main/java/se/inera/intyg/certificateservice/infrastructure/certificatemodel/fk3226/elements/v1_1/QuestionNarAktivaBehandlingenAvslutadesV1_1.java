@@ -40,8 +40,8 @@ public class QuestionNarAktivaBehandlingenAvslutadesV1_1 {
       new ElementId("52.2");
   private static final FieldId QUESTION_NAR_AKTIVA_BEHANDLINGEN_AVSLUTADES_FIELD_ID =
       new FieldId("52.2");
-  private static final PdfFieldId PDF_WHEN_ACTIVE_TREATMENT_WAS_STOPPED_FIELD_ID =
-      new PdfFieldId("form1[0].#subform[1].flt_datumBehandlingenAvslutad[0]");
+  private static final PdfFieldId PDF_PATIENT_SURVIVAL_DATE_FIELD_ID =
+      new PdfFieldId("form1[0].#subform[1].flt_datumPatientensOverlevnad[0]");
 
   private QuestionNarAktivaBehandlingenAvslutadesV1_1() {
     throw new IllegalStateException("Utility class");
@@ -78,7 +78,7 @@ public class QuestionNarAktivaBehandlingenAvslutadesV1_1 {
         .mapping(new ElementMapping(QUESTION_PATIENTENS_BEHANDLING_OCH_VARDSITUATION_ID, null))
         .pdfConfiguration(
             PdfConfigurationDate.builder()
-                .pdfFieldId(PDF_WHEN_ACTIVE_TREATMENT_WAS_STOPPED_FIELD_ID)
+                .pdfFieldId(PDF_PATIENT_SURVIVAL_DATE_FIELD_ID)
                 .build())
         .build();
   }

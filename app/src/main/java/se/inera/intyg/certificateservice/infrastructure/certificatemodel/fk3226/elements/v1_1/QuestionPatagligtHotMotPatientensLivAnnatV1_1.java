@@ -79,6 +79,8 @@ public class QuestionPatagligtHotMotPatientensLivAnnatV1_1 {
         .pdfConfiguration(
             PdfConfigurationText.builder()
                 .pdfFieldId(PDF_CONDITION_IS_LIFE_THREATENING_OTHER_FIELD_ID)
+                .overflowSheetFieldId(
+                    new PdfFieldId("form1[0].#subform[2].flt_txtFortsattningsblad[0]"))
                 .maxLength(265)
                 .build())
         .build();
