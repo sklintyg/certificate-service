@@ -919,6 +919,131 @@ class CertificateModelTest {
   }
 
   @Nested
+  class IsLatestMinorVersionTests {
+
+    @Test
+    void shouldReturnTrueIfLatestMinorVersion() {
+      final var model = buildModel("1.2", LocalDateTime.now().minusDays(1));
+      final var models =
+          List.of(
+              buildModel("1.0", LocalDateTime.now().minusDays(1)),
+              buildModel("1.1", LocalDateTime.now().minusDays(1)),
+              model);
+
+      final var certificateModel = model.withVersions(models);
+
+      assertTrue(certificateModel.isLatestMinorVersion());
+    }
+
+    @Test
+    void shouldReturnTrueIfLatestMinorVersionWithMajorVersion() {
+      final var model = buildModel("1.2", LocalDateTime.now().minusDays(1));
+      final var models =
+          List.of(
+              buildModel("1.0", LocalDateTime.now().minusDays(1)),
+              buildModel("2.0", LocalDateTime.now().minusDays(1)),
+              model);
+
+      final var certificateModel = model.withVersions(models);
+
+      assertTrue(certificateModel.isLatestMinorVersion());
+    }
+
+    @Test
+    void shouldReturnFalseIfNotLatestMinorVersion() {
+      final var model = buildModel("1.0", LocalDateTime.now().minusDays(1));
+      final var models =
+          List.of(
+              buildModel("1.1", LocalDateTime.now().minusDays(1)),
+              buildModel("1.2", LocalDateTime.now().minusDays(1)),
+              model);
+
+      final var certificateModel = model.withVersions(models);
+
+      assertFalse(certificateModel.isLatestMinorVersion());
+    }
+
+    private static CertificateModel buildModel(String version, LocalDateTime activeFrom) {
+      return CertificateModel.builder()
+          .id(
+              CertificateModelId.builder()
+                  .type(new CertificateType("type"))
+                  .version(new CertificateVersion(version))
+                  .build())
+          .activeFrom(activeFrom)
+          .build();
+    }
+  }
+
+  @Nested
+  class LatestMinorVersionTests {
+
+    @Test
+    void shouldReturnLatestMinorVersion() {
+      final var latestModel = buildModel("1.2", LocalDateTime.now().minusDays(1));
+      final var models =
+          List.of(
+              buildModel("1.0", LocalDateTime.now().minusDays(1)),
+              buildModel("1.1", LocalDateTime.now().minusDays(1)),
+              latestModel);
+
+      final var certificateModel =
+          buildModel("1.0", LocalDateTime.now().minusDays(1)).withVersions(models);
+
+      assertEquals(latestModel.id(), certificateModel.latestMinorVersion().id());
+    }
+
+    @Test
+    void shouldReturnLatestMinorVersionWithSameVersions() {
+      final var latestModel = buildModel("1.2", LocalDateTime.now().minusDays(1));
+      final var models =
+          List.of(
+              buildModel("1.0", LocalDateTime.now().minusDays(1)),
+              buildModel("1.1", LocalDateTime.now().minusDays(1)),
+              latestModel);
+
+      final var certificateModel =
+          buildModel("1.0", LocalDateTime.now().minusDays(1)).withVersions(models);
+
+      assertEquals(models, certificateModel.latestMinorVersion().versions());
+    }
+
+    @Test
+    void shouldReturnLatestMinorVersionIgnoringOtherMajorVersions() {
+      final var latestModel = buildModel("1.2", LocalDateTime.now().minusDays(1));
+      final var models =
+          List.of(
+              buildModel("1.0", LocalDateTime.now().minusDays(1)),
+              buildModel("2.0", LocalDateTime.now().minusDays(1)),
+              latestModel);
+
+      final var certificateModel =
+          buildModel("1.0", LocalDateTime.now().minusDays(1)).withVersions(models);
+
+      assertEquals(latestModel.id(), certificateModel.latestMinorVersion().id());
+    }
+
+    @Test
+    void shouldThrowIfNoActiveMinorVersionFound() {
+      final var certificateModel =
+          buildModel("1.0", LocalDateTime.now().minusDays(1)).withVersions(List.of());
+
+      assertThrows(IllegalStateException.class, certificateModel::latestMinorVersion);
+    }
+
+    private static CertificateModel buildModel(String version, LocalDateTime activeFrom) {
+      return CertificateModel.builder()
+          .id(
+              CertificateModelId.builder()
+                  .type(new CertificateType("type"))
+                  .version(new CertificateVersion(version))
+                  .build())
+          .activeFrom(activeFrom)
+          .build();
+    }
+  }
+
+  @Nested
   class IsActiveTests {
 
     @Test

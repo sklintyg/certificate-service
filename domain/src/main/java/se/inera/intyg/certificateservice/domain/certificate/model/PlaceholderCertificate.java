@@ -360,4 +360,10 @@ public class PlaceholderCertificate implements Certificate {
   public void updateMetadata(CertificateMetaData metaData) {
     throw new IllegalStateException("Cannot update metadata for a placeholder certificate");
   }
+
+  @Override
+  public void updateCertificateModel() {
+    throw new IllegalStateException(
+        "Cannot update certificate model for a placeholder certificate");
+  }
 }

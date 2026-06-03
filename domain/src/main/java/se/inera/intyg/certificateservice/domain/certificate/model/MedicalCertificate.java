@@ -72,7 +72,7 @@ import se.inera.intyg.certificateservice.domain.validation.model.ValidationResul
 public class MedicalCertificate implements Certificate {
 
   private final CertificateId id;
-  private final CertificateModel certificateModel;
+  private CertificateModel certificateModel;
   private final LocalDateTime created;
   private LocalDateTime signed;
   private LocalDateTime modified;
@@ -789,5 +789,14 @@ public class MedicalCertificate implements Certificate {
     }
 
     certificateMetaData = metaData;
+  }
+
+  @Override
+  public void updateCertificateModel() {
+    if (this.certificateModel.isLatestMinorVersion()) {
+      return;
+    }
+
+    this.certificateModel = this.certificateModel.latestMinorVersion();
   }
 }
