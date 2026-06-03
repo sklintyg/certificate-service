@@ -18,8 +18,8 @@
  */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.common;
 
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.common.QuestionUtlatandeBaseratPa.QUESTION_UTLATANDE_BASERAT_PA_ID;
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.common.QuestionUtlatandeBaseratPa.UTLATANDE_BASERAT_PA_ANNAT_FIELD_ID;
+import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.v1.QuestionUtlatandeBaseratPaV1.QUESTION_UTLATANDE_BASERAT_PA_ID;
+import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.v1.QuestionUtlatandeBaseratPaV1.UTLATANDE_BASERAT_PA_ANNAT_FIELD_ID;
 
 import java.util.List;
 import se.inera.intyg.certificateservice.domain.certificate.model.ElementValueDateList;

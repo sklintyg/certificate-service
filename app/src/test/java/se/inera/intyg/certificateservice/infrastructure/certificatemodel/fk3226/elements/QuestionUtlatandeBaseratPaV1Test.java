@@ -37,15 +37,15 @@ import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfFieldI
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.RuleExpression;
 import se.inera.intyg.certificateservice.domain.common.model.Code;
 import se.inera.intyg.certificateservice.domain.validation.model.ElementValidationDateList;
-import se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.common.QuestionUtlatandeBaseratPa;
+import se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.v1.QuestionUtlatandeBaseratPaV1;
 
-class QuestionUtlatandeBaseratPaTest {
+class QuestionUtlatandeBaseratPaV1Test {
 
   private static final ElementId ELEMENT_ID = new ElementId("1");
 
   @Test
   void shallIncludeId() {
-    final var element = QuestionUtlatandeBaseratPa.questionUtlatandeBaseratPa();
+    final var element = QuestionUtlatandeBaseratPaV1.questionUtlatandeBaseratPa();
 
     assertEquals(ELEMENT_ID, element.id());
   }
@@ -82,7 +82,7 @@ class QuestionUtlatandeBaseratPaTest {
                         .build()))
             .build();
 
-    final var element = QuestionUtlatandeBaseratPa.questionUtlatandeBaseratPa();
+    final var element = QuestionUtlatandeBaseratPaV1.questionUtlatandeBaseratPa();
 
     assertEquals(expectedConfiguration, element.configuration());
   }
@@ -98,7 +98,7 @@ class QuestionUtlatandeBaseratPaTest {
                     new RuleExpression("$undersokningAvPatienten || $journaluppgifter || $annat"))
                 .build());
 
-    final var element = QuestionUtlatandeBaseratPa.questionUtlatandeBaseratPa();
+    final var element = QuestionUtlatandeBaseratPaV1.questionUtlatandeBaseratPa();
 
     assertEquals(expectedRules, element.rules());
   }
@@ -108,7 +108,7 @@ class QuestionUtlatandeBaseratPaTest {
     final var expectedValidations =
         List.of(ElementValidationDateList.builder().mandatory(true).max(Period.ofDays(0)).build());
 
-    final var element = QuestionUtlatandeBaseratPa.questionUtlatandeBaseratPa();
+    final var element = QuestionUtlatandeBaseratPaV1.questionUtlatandeBaseratPa();
 
     assertEquals(expectedValidations, element.validations());
   }
@@ -138,14 +138,14 @@ class QuestionUtlatandeBaseratPaTest {
                         .build()))
             .build();
 
-    final var element = QuestionUtlatandeBaseratPa.questionUtlatandeBaseratPa();
+    final var element = QuestionUtlatandeBaseratPaV1.questionUtlatandeBaseratPa();
 
     assertEquals(expected, element.pdfConfiguration());
   }
 
   @Test
   void shouldHaveIncludeWhenRenewingFalse() {
-    final var element = QuestionUtlatandeBaseratPa.questionUtlatandeBaseratPa();
+    final var element = QuestionUtlatandeBaseratPaV1.questionUtlatandeBaseratPa();
     assertFalse(element.includeWhenRenewing());
   }
 }
