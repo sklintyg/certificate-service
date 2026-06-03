@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements;
+package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.v1;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -37,7 +37,6 @@ import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfFieldI
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.RuleExpression;
 import se.inera.intyg.certificateservice.domain.common.model.Code;
 import se.inera.intyg.certificateservice.domain.validation.model.ElementValidationDateList;
-import se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.v1.QuestionUtlatandeBaseratPaV1;
 
 class QuestionUtlatandeBaseratPaV1Test {
 
