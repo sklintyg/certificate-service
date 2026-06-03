@@ -92,8 +92,10 @@ public class CertificateModelFactoryFK3226V1_1 implements CertificateModelFactor
       """;
   private final DiagnosisCodeRepository diagnosisCodeRepository;
   private final CertificateActionFactory certificateActionFactory;
+
   @Value("${certificate.model.fk3226.v1_1.active.from}")
   private LocalDateTime activeFrom;
+
   @Value("${sendmessagetofk.logicaladdress}")
   private String fkLogicalAddress;
 
