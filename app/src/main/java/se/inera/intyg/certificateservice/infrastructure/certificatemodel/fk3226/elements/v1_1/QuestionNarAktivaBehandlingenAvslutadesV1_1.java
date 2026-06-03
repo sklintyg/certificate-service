@@ -77,9 +77,7 @@ public class QuestionNarAktivaBehandlingenAvslutadesV1_1 {
                     .anyMatch(value -> value.codeId().equals(ENDAST_PALLIATIV_FIELD_ID)))
         .mapping(new ElementMapping(QUESTION_PATIENTENS_BEHANDLING_OCH_VARDSITUATION_ID, null))
         .pdfConfiguration(
-            PdfConfigurationDate.builder()
-                .pdfFieldId(PDF_PATIENT_SURVIVAL_DATE_FIELD_ID)
-                .build())
+            PdfConfigurationDate.builder().pdfFieldId(PDF_PATIENT_SURVIVAL_DATE_FIELD_ID).build())
         .build();
   }
 }
