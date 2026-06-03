@@ -235,6 +235,13 @@ public class CertificateUtil {
     return certificate.getMetadata().getVersion();
   }
 
+  public static String typeVersion(CertificateDTO certificate) {
+    if (certificate == null || certificate.getMetadata() == null) {
+      return null;
+    }
+    return certificate.getMetadata().getTypeVersion();
+  }
+
   public static CertificateDTO certificate(List<CreateCertificateResponse> responses) {
     if (responses == null || responses.size() != 1) {
       return null;

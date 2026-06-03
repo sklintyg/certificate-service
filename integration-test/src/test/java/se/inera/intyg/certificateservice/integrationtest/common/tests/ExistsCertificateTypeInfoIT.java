@@ -32,7 +32,7 @@ public abstract class ExistsCertificateTypeInfoIT extends BaseIntegrationIT {
   @DisplayName("Aktiv version skall vara senaste version")
   void shallReturnLatestVersionWhenTypeExists() {
     final var expectedCertificateModelId =
-        CertificateModelIdDTO.builder().type(type()).version(typeVersion()).build();
+        CertificateModelIdDTO.builder().type(type()).version(latestMinorVersion()).build();
 
     final var response = api().findLatestCertificateTypeVersion(type());
 

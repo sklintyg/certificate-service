@@ -32,7 +32,7 @@ public class FK3226TestSetupV1_1 {
   public static final String TYPE = "FK3226 - ";
   private static final String CODE = "LUNSP";
   private static final String CERTIFICATE_TYPE = "fk3226";
-  private static final String ACTIVE_CERTIFICATE_TYPE_VERSION = "1.1";
+  public static final String ACTIVE_CERTIFICATE_TYPE_VERSION = "1.1";
   private static final String RECIPIENT = "FKASSA";
   private static final Boolean VALUE = false;
 

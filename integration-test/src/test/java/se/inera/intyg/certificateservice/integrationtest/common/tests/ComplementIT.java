@@ -44,6 +44,7 @@ import java.util.Objects;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import se.inera.intyg.certificateservice.integrationtest.common.setup.BaseIntegrationIT;
+import se.inera.intyg.certificateservice.integrationtest.common.util.CertificateUtil;
 
 public abstract class ComplementIT extends BaseIntegrationIT {
 
@@ -369,5 +370,32 @@ public abstract class ComplementIT extends BaseIntegrationIT {
                 defaultReplaceCertificateRequest(), certificateId(testCertificates));
 
     assertEquals(403, response.getStatusCode().value());
+  }
+
+  @Test
+  @DisplayName(
+      "Om intyget kompletteras med ett nytt intyg ska det nya intyget vara av den senaste minor versionen")
+  void shallSuccessfullyComplementAndReturnNewCertificateAsLatestMinorVersion() {
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED));
+
+    api().sendCertificate(defaultSendCertificateRequest(), certificateId(testCertificates));
+
+    api()
+        .receiveMessage(
+            incomingComplementMessageBuilder()
+                .certificateId(certificateId(testCertificates))
+                .complements(
+                    List.of(incomingComplementDTOBuilder().questionId(questionId()).build()))
+                .build());
+
+    final var response =
+        api()
+            .complementCertificate(
+                defaultComplementCertificateRequest(), certificateId(testCertificates));
+
+    assertEquals(
+        latestMinorVersion(), CertificateUtil.typeVersion(certificate(response.getBody())));
   }
 }

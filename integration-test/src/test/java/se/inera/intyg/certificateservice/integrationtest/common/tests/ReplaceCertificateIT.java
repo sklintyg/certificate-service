@@ -32,6 +32,7 @@ import static se.inera.intyg.certificateservice.integrationtest.common.util.ApiR
 import static se.inera.intyg.certificateservice.integrationtest.common.util.ApiRequestUtil.customTestabilityCertificateRequest;
 import static se.inera.intyg.certificateservice.integrationtest.common.util.ApiRequestUtil.defaultReplaceCertificateRequest;
 import static se.inera.intyg.certificateservice.integrationtest.common.util.ApiRequestUtil.defaultTestablilityCertificateRequest;
+import static se.inera.intyg.certificateservice.integrationtest.common.util.CertificateUtil.certificate;
 import static se.inera.intyg.certificateservice.integrationtest.common.util.CertificateUtil.certificateId;
 import static se.inera.intyg.certificateservice.integrationtest.common.util.CertificateUtil.relation;
 import static se.inera.intyg.certificateservice.integrationtest.common.util.CertificateUtil.replaceCertificateResponse;
@@ -39,6 +40,7 @@ import static se.inera.intyg.certificateservice.integrationtest.common.util.Cert
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import se.inera.intyg.certificateservice.integrationtest.common.setup.BaseIntegrationIT;
+import se.inera.intyg.certificateservice.integrationtest.common.util.CertificateUtil;
 
 public abstract class ReplaceCertificateIT extends BaseIntegrationIT {
 
@@ -244,5 +246,21 @@ public abstract class ReplaceCertificateIT extends BaseIntegrationIT {
                 defaultReplaceCertificateRequest(), certificateId(testCertificates));
 
     assertEquals(403, response.getStatusCode().value());
+  }
+
+  @Test
+  @DisplayName("Om intyget ersätts ska det nya intyget vara av den senaste minor versionen")
+  void shallSuccessfullyReplaceAsLatestMinorVersion() {
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion(), SIGNED));
+
+    final var response =
+        api()
+            .replaceCertificate(
+                defaultReplaceCertificateRequest(), certificateId(testCertificates));
+
+    assertEquals(
+        latestMinorVersion(), CertificateUtil.typeVersion(certificate(response.getBody())));
   }
 }

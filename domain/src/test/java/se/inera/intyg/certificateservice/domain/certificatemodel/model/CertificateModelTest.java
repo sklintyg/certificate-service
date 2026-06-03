@@ -924,13 +924,13 @@ class CertificateModelTest {
     @Test
     void shouldReturnTrueIfLatestMinorVersion() {
       final var model = buildModel("1.2", LocalDateTime.now().minusDays(1));
-      final var models =
+      final var versions =
           List.of(
               buildModel("1.0", LocalDateTime.now().minusDays(1)),
               buildModel("1.1", LocalDateTime.now().minusDays(1)),
               model);
 
-      final var certificateModel = model.withVersions(models);
+      final var certificateModel = model.withVersions(versions);
 
       assertTrue(certificateModel.isLatestMinorVersion());
     }
@@ -938,13 +938,13 @@ class CertificateModelTest {
     @Test
     void shouldReturnTrueIfLatestMinorVersionWithMajorVersion() {
       final var model = buildModel("1.2", LocalDateTime.now().minusDays(1));
-      final var models =
+      final var versions =
           List.of(
               buildModel("1.0", LocalDateTime.now().minusDays(1)),
               buildModel("2.0", LocalDateTime.now().minusDays(1)),
               model);
 
-      final var certificateModel = model.withVersions(models);
+      final var certificateModel = model.withVersions(versions);
 
       assertTrue(certificateModel.isLatestMinorVersion());
     }
@@ -952,13 +952,9 @@ class CertificateModelTest {
     @Test
     void shouldReturnFalseIfNotLatestMinorVersion() {
       final var model = buildModel("1.0", LocalDateTime.now().minusDays(1));
-      final var models =
-          List.of(
-              buildModel("1.1", LocalDateTime.now().minusDays(1)),
-              buildModel("1.2", LocalDateTime.now().minusDays(1)),
-              model);
+      final var versions = List.of(buildModel("1.1", LocalDateTime.now().minusDays(1)), model);
 
-      final var certificateModel = model.withVersions(models);
+      final var certificateModel = model.withVersions(versions);
 
       assertFalse(certificateModel.isLatestMinorVersion());
     }
