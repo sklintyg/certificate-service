@@ -26,6 +26,7 @@ import se.inera.intyg.certificateservice.domain.certificate.model.ElementValueBo
 import se.inera.intyg.certificateservice.integrationtest.common.setup.BaseTestabilityUtilities;
 import se.inera.intyg.certificateservice.integrationtest.common.setup.TestabilityAccess;
 import se.inera.intyg.certificateservice.integrationtest.common.setup.TestabilityCertificate;
+import se.inera.intyg.certificateservice.integrationtest.fk3226.v1_1.FK3226TestSetupV1_1;
 
 public class FK3226TestSetup {
 
@@ -43,6 +44,7 @@ public class FK3226TestSetup {
                 .type(CERTIFICATE_TYPE)
                 .code(CODE)
                 .activeVersion(ACTIVE_CERTIFICATE_TYPE_VERSION)
+                .latestMinorVersion(FK3226TestSetupV1_1.ACTIVE_CERTIFICATE_TYPE_VERSION)
                 .recipient(RECIPIENT)
                 .valueForTest(
                     ElementData.builder()

@@ -18,9 +18,27 @@
  */
 package se.inera.intyg.certificateservice.domain.certificatemodel.model;
 
-public record CertificateVersion(String version) {
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-  public boolean sameMinorVersion(String version) {
-    return this.version.split("\\.")[0].equals(version.split("\\.")[0]);
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+
+class CertificateVersionTest {
+
+  @Nested
+  class SameMinorVersionTests {
+
+    @Test
+    void shouldReturnTrueIfFirstDigitMatch() {
+      final var certificateVersion = new CertificateVersion("1.0");
+      assertTrue(certificateVersion.sameMinorVersion("1.4"));
+    }
+
+    @Test
+    void shouldReturnFalseIfFirstDigitDontMatch() {
+      final var certificateVersion = new CertificateVersion("1.0");
+      assertFalse(certificateVersion.sameMinorVersion("2.0"));
+    }
   }
 }

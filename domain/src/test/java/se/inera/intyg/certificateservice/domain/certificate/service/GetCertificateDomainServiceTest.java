@@ -87,6 +87,15 @@ class GetCertificateDomainServiceTest {
   }
 
   @Test
+  void shallUpdateCertificateModelIfDraftAndHasUpdateRights() {
+    doReturn(true).when(certificate).allowTo(READ, Optional.of(ACTION_EVALUATION));
+    doReturn(true).when(certificate).allowTo(UPDATE, Optional.of(ACTION_EVALUATION));
+    doReturn(true).when(certificate).isDraft();
+    getCertificateDomainService.get(CERTIFICATE_ID, ACTION_EVALUATION);
+    verify(certificate).updateCertificateModel();
+  }
+
+  @Test
   void shallNotUpdateCertificateMetadataIfDraftAndHasNoUpdateRights() {
     doReturn(true).when(certificate).allowTo(READ, Optional.of(ACTION_EVALUATION));
     doReturn(false).when(certificate).allowTo(UPDATE, Optional.of(ACTION_EVALUATION));

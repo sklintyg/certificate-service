@@ -37,6 +37,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import se.inera.intyg.certificateservice.application.common.dto.UserDTO;
 import se.inera.intyg.certificateservice.integrationtest.common.setup.BaseIntegrationIT;
+import se.inera.intyg.certificateservice.integrationtest.common.util.CertificateUtil;
 
 public abstract class GetCertificateIT extends BaseIntegrationIT {
 
@@ -185,5 +186,19 @@ public abstract class GetCertificateIT extends BaseIntegrationIT {
                 certificateId(testCertificates));
 
     assertNotNull(certificate(response.getBody()), "Should return certificate when exists!");
+  }
+
+  @Test
+  @DisplayName("Om intyget är ett ukast ska den senate minor versionen returneras")
+  void shallReturnLatestMinorVersionForCertificate() {
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion()));
+
+    final var response =
+        api().getCertificate(defaultGetCertificateRequest(), certificateId(testCertificates));
+
+    final var certificate = certificate(response.getBody());
+    assertEquals(latestMinorVersion(), CertificateUtil.typeVersion(certificate));
   }
 }

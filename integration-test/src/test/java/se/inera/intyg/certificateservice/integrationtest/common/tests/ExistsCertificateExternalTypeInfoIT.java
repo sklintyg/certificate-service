@@ -34,7 +34,7 @@ public abstract class ExistsCertificateExternalTypeInfoIT extends BaseIntegratio
       "Skall returnera den senaste aktiva versionen om intygstypen med bifogat kodsystem existerar")
   void shallReturnLatestVersionWhenExternalTypeExists() {
     final var expectedCertificateModelId =
-        CertificateModelIdDTO.builder().type(type()).version(typeVersion()).build();
+        CertificateModelIdDTO.builder().type(type()).version(latestMinorVersion()).build();
 
     final var response = api().findLatestCertificateExternalTypeVersion(codeSystem(), code());
 

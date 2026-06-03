@@ -1502,9 +1502,11 @@ class MedicalCertificateTest {
     }
 
     @Test
-    void shallReturnNewCertificateWithSameModel() {
+    void shallReturnNewCertificateWithLatestMinorVersionModel() {
       final var actionEvaluation = actionEvaluationBuilder.build();
       final var signedCertificate = certificateBuilder.status(Status.SIGNED).build();
+
+      when(certificateModel.latestMinorVersion()).thenReturn(certificateModel);
 
       final var actualCertificate = signedCertificate.replace(actionEvaluation);
 
@@ -1707,9 +1709,11 @@ class MedicalCertificateTest {
     }
 
     @Test
-    void shallReturnNewCertificateWithSameModel() {
+    void shallReturnNewCertificateWithLatestMinorVersionModel() {
       final var actionEvaluation = actionEvaluationBuilder.build();
       final var signedCertificate = certificateBuilder.status(Status.SIGNED).build();
+
+      when(certificateModel.latestMinorVersion()).thenReturn(certificateModel);
 
       final var actualCertificate = signedCertificate.complement(actionEvaluation);
 
@@ -1925,9 +1929,11 @@ class MedicalCertificateTest {
     }
 
     @Test
-    void shallReturnNewCertificateWithSameModel() {
+    void shallReturnNewCertificateWithLatestMinorVersionModel() {
       final var actionEvaluation = actionEvaluationBuilder.build();
       final var signedCertificate = certificateBuilder.status(Status.SIGNED).build();
+
+      when(certificateModel.latestMinorVersion()).thenReturn(certificateModel);
 
       final var actualCertificate = signedCertificate.renew(actionEvaluation);
 

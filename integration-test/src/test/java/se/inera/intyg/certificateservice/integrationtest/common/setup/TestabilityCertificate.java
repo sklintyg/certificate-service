@@ -29,6 +29,7 @@ public class TestabilityCertificate {
   String type;
   String code;
   String activeVersion;
+  String latestMinorVersion;
 
   String recipient;
 

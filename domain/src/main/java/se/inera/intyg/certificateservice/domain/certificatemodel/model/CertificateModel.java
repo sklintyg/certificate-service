@@ -207,4 +207,33 @@ public class CertificateModel implements Comparator<ElementId> {
   public boolean isInactive() {
     return !isActive();
   }
+
+  public boolean isLatestMinorVersion() {
+    final var version = id.version().version();
+    return versions.stream()
+        .filter(CertificateModel::isActive)
+        .map(CertificateModel::id)
+        .map(CertificateModelId::version)
+        .filter(Objects::nonNull)
+        .filter(ver -> ver.sameMinorVersion(version))
+        .map(CertificateVersion::version)
+        .map(BigDecimal::new)
+        .max(Comparator.naturalOrder())
+        .map(max -> max.compareTo(new BigDecimal(version)) == 0)
+        .orElse(false);
+  }
+
+  public CertificateModel latestMinorVersion() {
+    final var version = id.version().version();
+    return versions.stream()
+        .filter(CertificateModel::isActive)
+        .filter(ver -> ver.id().version().sameMinorVersion(version))
+        .max(Comparator.comparing(ver -> new BigDecimal(ver.id().version().version())))
+        .map(model -> model.withVersions(versions))
+        .orElseThrow(
+            () ->
+                new IllegalStateException(
+                    "No active minor version found for certificate type '%s' version '%s'"
+                        .formatted(id.type().type(), version)));
+  }
 }

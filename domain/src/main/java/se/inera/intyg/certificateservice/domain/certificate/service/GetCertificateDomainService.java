@@ -52,6 +52,7 @@ public class GetCertificateDomainService {
 
     if (certificate.isDraft() && certificate.allowTo(UPDATE, Optional.of(actionEvaluation))) {
       certificate.updateMetadata(actionEvaluation);
+      certificate.updateCertificateModel();
     }
 
     certificateEventDomainService.publish(

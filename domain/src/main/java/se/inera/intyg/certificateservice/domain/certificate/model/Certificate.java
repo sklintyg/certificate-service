@@ -175,4 +175,6 @@ public interface Certificate {
   void updateMetadata(Patient patient);
 
   void updateMetadata(CertificateMetaData updatedMetadata);
+
+  void updateCertificateModel();
 }

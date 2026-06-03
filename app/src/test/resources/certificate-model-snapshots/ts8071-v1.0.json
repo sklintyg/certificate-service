@@ -5256,5 +5256,6 @@
   "generalPrintProvider" : null,
   "active" : true,
   "lastestActiveVersion" : false,
+  "latestMinorVersion" : false,
   "inactive" : false
 }
