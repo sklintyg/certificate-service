@@ -90,10 +90,11 @@ public class CertificateActionCreate implements CertificateAction {
   }
 
   @Override
-  public Optional<String> message() {
+  public Optional<String> message(
+      Optional<Certificate> certificate, Optional<ActionEvaluation> actionEvaluation) {
     return actionRules.stream()
-        .filter(ActionRule::message)
-        .map(ActionRule::getReasonForPermissionDenied)
+        .map(rule -> rule.message(certificate, actionEvaluation))
+        .flatMap(Optional::stream)
         .findFirst();
   }
 }

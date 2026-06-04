@@ -24,7 +24,7 @@ import se.inera.intyg.certificateservice.domain.certificatemodel.model.ActionRul
 
 public class ActionRulePatientAgeEighteenOrOlder implements ActionRule {
 
-  ActionRuleContentProvider contentProvider;
+  private final ActionRuleContentProvider contentProvider;
 
   public ActionRulePatientAgeEighteenOrOlder(ActionRuleContentProvider contentProvider) {
     this.contentProvider = contentProvider;
@@ -52,7 +52,11 @@ public class ActionRulePatientAgeEighteenOrOlder implements ActionRule {
   }
 
   @Override
-  public boolean message() {
-    return true;
+  public Optional<String> message(
+      Optional<Certificate> certificate, Optional<ActionEvaluation> actionEvaluation) {
+    if (evaluate(certificate, actionEvaluation)) {
+      return Optional.empty();
+    }
+    return Optional.of(getReasonForPermissionDenied());
   }
 }

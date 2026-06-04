@@ -31,17 +31,17 @@ public interface ActionRule {
   }
 
   /**
-   * Indicates whether this rule should contribute a user-facing message when it denies an action.
+   * Returns a user-facing message to display when this rule denies an action for the given context.
    *
-   * <p>When {@code true}, the reason returned by {@link #getReasonForPermissionDenied()} is
-   * collected by the enclosing {@code CertificateAction} and forwarded to {@code
-   * CertificateTypeInfoConverter}, where it is displayed to the user. The default implementation
-   * returns {@code false}, meaning the rule produces no message.
+   * <p>The returned value is collected by the enclosing {@code CertificateAction} and forwarded to
+   * {@code CertificateTypeInfoConverter}, where it is displayed to the user. The default
+   * implementation returns {@code Optional.empty()}, meaning the rule produces no message.
    *
-   * @return {@code true} if this rule should surface a message to the user on denial; {@code false}
-   *     otherwise
+   * @return the denial message if this rule currently evaluates to false and has a user-facing
+   *     reason; {@code Optional.empty()} otherwise
    */
-  default boolean message() {
-    return false;
+  default Optional<String> message(
+      Optional<Certificate> certificate, Optional<ActionEvaluation> actionEvaluation) {
+    return Optional.empty();
   }
 }

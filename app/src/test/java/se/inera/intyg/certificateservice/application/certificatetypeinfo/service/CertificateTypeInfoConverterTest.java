@@ -143,9 +143,8 @@ class CertificateTypeInfoConverterTest {
   void shallIncludeMessage() {
     final var expectedMessage = "expectedMessage";
 
-    when(CERTIFICATE_ACTION.evaluate(Optional.empty(), Optional.of(ACTION_EVALUATION)))
-        .thenReturn(false);
-    when(CERTIFICATE_ACTION.message()).thenReturn(Optional.of(expectedMessage));
+    when(CERTIFICATE_ACTION.message(Optional.empty(), Optional.of(ACTION_EVALUATION)))
+        .thenReturn(Optional.of(expectedMessage));
 
     final var result =
         certificateTypeInfoConverter.convert(
@@ -154,21 +153,9 @@ class CertificateTypeInfoConverterTest {
   }
 
   @Test
-  void shallNotIncludeMessageIfEvaluationReturnsTrue() {
-    when(CERTIFICATE_ACTION.evaluate(Optional.empty(), Optional.of(ACTION_EVALUATION)))
-        .thenReturn(true);
-
-    final var result =
-        certificateTypeInfoConverter.convert(
-            certificateModel, CERTIFICATE_ACTIONS, ACTION_EVALUATION);
-    assertNull(result.getMessage());
-  }
-
-  @Test
-  void shallNotIncludeMessageIfActionDontProvideMessage() {
-    when(CERTIFICATE_ACTION.evaluate(Optional.empty(), Optional.of(ACTION_EVALUATION)))
-        .thenReturn(true);
-    when(CERTIFICATE_ACTION.message()).thenReturn(Optional.empty());
+  void shallNotIncludeMessageIfActionReturnsEmptyMessage() {
+    when(CERTIFICATE_ACTION.message(Optional.empty(), Optional.of(ACTION_EVALUATION)))
+        .thenReturn(Optional.empty());
 
     final var result =
         certificateTypeInfoConverter.convert(

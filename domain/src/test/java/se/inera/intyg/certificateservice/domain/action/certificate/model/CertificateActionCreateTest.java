@@ -457,11 +457,12 @@ class CertificateActionCreateTest {
                       .typeSpecificRules(List.of(actionRulePatientAgeEighteenOrOlder))
                       .build());
 
-      when(actionRulePatientAgeEighteenOrOlder.message()).thenReturn(true);
-      when(actionRulePatientAgeEighteenOrOlder.getReasonForPermissionDenied())
-          .thenReturn(expectedMessage);
+      when(actionRulePatientAgeEighteenOrOlder.message(Optional.empty(), Optional.empty()))
+          .thenReturn(Optional.of(expectedMessage));
 
-      final var actualMessage = certificateActionCreate.message().orElseThrow();
+      final var actualMessage =
+          certificateActionCreate.message(Optional.empty(), Optional.empty()).orElseThrow();
+
       assertEquals(expectedMessage, actualMessage);
     }
 
@@ -479,9 +480,11 @@ class CertificateActionCreateTest {
                       .typeSpecificRules(List.of(actionRulePatientAgeEighteenOrOlder))
                       .build());
 
-      when(actionRulePatientAgeEighteenOrOlder.message()).thenReturn(false);
+      when(actionRulePatientAgeEighteenOrOlder.message(Optional.empty(), Optional.empty()))
+          .thenReturn(Optional.empty());
 
-      final var actualMessage = certificateActionCreate.message();
+      final var actualMessage = certificateActionCreate.message(Optional.empty(), Optional.empty());
+
       assertTrue(actualMessage.isEmpty());
     }
   }

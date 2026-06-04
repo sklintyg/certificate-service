@@ -54,7 +54,12 @@ public interface CertificateAction {
     return evaluate(certificate, actionEvaluation);
   }
 
-  default Optional<String> message() {
+  /**
+   * Returns a user-facing message to display when this action denies based on the given context.
+   * Returns {@code Optional.empty()} if the action is allowed or has no user-facing reason.
+   */
+  default Optional<String> message(
+      Optional<Certificate> certificate, Optional<ActionEvaluation> actionEvaluation) {
     return Optional.empty();
   }
 }

@@ -41,14 +41,6 @@ class ActionRulePatientAgeEighteenOrOlderTest {
 
   @Mock ActionRuleContentProvider actionRuleContentProvider;
 
-  @Test
-  void messageShouldReturnTrue() {
-    final var rulePatientAgeEighteenOrOlder =
-        new ActionRulePatientAgeEighteenOrOlder(actionRuleContentProvider);
-
-    assertTrue(rulePatientAgeEighteenOrOlder.message());
-  }
-
   @Nested
   class EvaluateTests {
 
@@ -131,7 +123,7 @@ class ActionRulePatientAgeEighteenOrOlderTest {
   class GetReasonForPermissionDeniedTests {
 
     @Test
-    void shouldReturnReasonFromContentProviderIfPresent() {
+    void shouldReturnReasonFromContentProvider() {
       final var expectedMessage = "expectedMessage";
 
       final var rulePatientAgeEighteenOrOlder =
@@ -142,17 +134,71 @@ class ActionRulePatientAgeEighteenOrOlderTest {
       final var actualMessage = rulePatientAgeEighteenOrOlder.getReasonForPermissionDenied();
       assertEquals(expectedMessage, actualMessage);
     }
+  }
+
+  @Nested
+  class MessageTests {
 
     @Test
-    void shouldReturnDefaultReasonIfContentProviderNotPresent() {
-      final var expectedMessage =
-          "Du saknar behörighet för den begärda åtgärden."
-              + " För att utföra denna uppgift krävs särskilda rättigheter eller en specifik befattning.";
+    void shouldReturnMessageWhenPatientIsUnderEighteen() {
+      final var expectedMessage = "expectedMessage";
+      final var rulePatientAgeEighteenOrOlder =
+          new ActionRulePatientAgeEighteenOrOlder(actionRuleContentProvider);
 
-      final var rulePatientAgeEighteenOrOlder = new ActionRulePatientAgeEighteenOrOlder(null);
+      when(actionRuleContentProvider.getReasonForPermissionDenied()).thenReturn(expectedMessage);
 
-      final var actualMessage = rulePatientAgeEighteenOrOlder.getReasonForPermissionDenied();
-      assertEquals(expectedMessage, actualMessage);
+      final var actionEvaluation =
+          Optional.of(
+              ActionEvaluation.builder()
+                  .patient(
+                      athenaReactAnderssonBuilder()
+                          .id(
+                              PersonId.builder()
+                                  .id(
+                                      LocalDate.now()
+                                          .minusYears(18)
+                                          .plusDays(1)
+                                          .toString()
+                                          .replace("-", ""))
+                                  .build())
+                          .build())
+                  .build());
+
+      final var result = rulePatientAgeEighteenOrOlder.message(Optional.empty(), actionEvaluation);
+      assertEquals(Optional.of(expectedMessage), result);
+    }
+
+    @Test
+    void shouldReturnEmptyWhenPatientIsEighteen() {
+      final var rulePatientAgeEighteenOrOlder =
+          new ActionRulePatientAgeEighteenOrOlder(actionRuleContentProvider);
+
+      final var actionEvaluation =
+          Optional.of(
+              ActionEvaluation.builder()
+                  .patient(
+                      athenaReactAnderssonBuilder()
+                          .id(
+                              PersonId.builder()
+                                  .id(LocalDate.now().minusYears(18).toString().replace("-", ""))
+                                  .build())
+                          .build())
+                  .build());
+
+      final var result = rulePatientAgeEighteenOrOlder.message(Optional.empty(), actionEvaluation);
+      assertEquals(Optional.empty(), result);
+    }
+
+    @Test
+    void shouldReturnEmptyWhenPatientIsOlderThanEighteen() {
+      final var rulePatientAgeEighteenOrOlder =
+          new ActionRulePatientAgeEighteenOrOlder(actionRuleContentProvider);
+
+      final var actionEvaluation =
+          Optional.of(ActionEvaluation.builder().patient(ATHENA_REACT_ANDERSSON).build());
+
+      final var result = rulePatientAgeEighteenOrOlder.message(Optional.empty(), actionEvaluation);
+      assertTrue(result.isEmpty());
     }
   }
 }
