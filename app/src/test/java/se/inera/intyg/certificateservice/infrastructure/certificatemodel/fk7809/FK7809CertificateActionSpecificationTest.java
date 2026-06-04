@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import se.inera.intyg.certificateservice.domain.action.certificate.model.ActionRulePatientAgeEighteenOrOlder;
 import se.inera.intyg.certificateservice.domain.action.certificate.model.CertificateActionType;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.CertificateActionSpecification;
 import se.inera.intyg.certificateservice.domain.common.model.Role;
@@ -40,6 +41,23 @@ class FK7809CertificateActionSpecificationTest {
                 actionSpecification ->
                     expectedType.equals(actionSpecification.certificateActionType())),
         "Expected type: %s".formatted(expectedType));
+  }
+
+  @Test
+  void shallIncludeCertificateActionCreateWithTypeSpecificRules() {
+    final var actionSpecifications = FK7809CertificateActionSpecification.create();
+
+    final var createAction =
+        actionSpecifications.stream()
+            .filter(rule -> rule.certificateActionType().equals(CertificateActionType.CREATE))
+            .findFirst()
+            .orElseThrow();
+
+    assertTrue(
+        createAction.typeSpecificRules().stream()
+            .anyMatch(
+                actionRule ->
+                    actionRule.getClass().equals(ActionRulePatientAgeEighteenOrOlder.class)));
   }
 
   @Test

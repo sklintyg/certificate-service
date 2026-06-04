@@ -20,6 +20,7 @@ package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7809
 
 import java.util.List;
 import java.util.stream.Stream;
+import se.inera.intyg.certificateservice.domain.action.certificate.model.ActionRulePatientAgeEighteenOrOlder;
 import se.inera.intyg.certificateservice.domain.action.certificate.model.CertificateActionType;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.CertificateActionSpecification;
 import se.inera.intyg.certificateservice.domain.common.model.Role;
@@ -41,6 +42,10 @@ public class FK7809CertificateActionSpecification {
         CertificateActionSpecification.builder()
             .certificateActionType(CertificateActionType.CREATE)
             .allowedRoles(allowedRoles)
+            .typeSpecificRules(
+                List.of(
+                    new ActionRulePatientAgeEighteenOrOlder(
+                        new FK7809PatientAgeEighteenOrOlderContentProvider())))
             .build(),
         CertificateActionSpecification.builder()
             .certificateActionType(CertificateActionType.READ)

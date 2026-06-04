@@ -57,6 +57,13 @@ public class CertificateTypeInfoConverter {
                 ? confirmationModalConverter.convert(
                     certificateModel.confirmationModalProvider().of(null, actionEvaluation))
                 : null)
+        .message(
+            certificateActions.stream()
+                .filter(value -> !value.evaluate(Optional.empty(), Optional.of(actionEvaluation)))
+                .map(CertificateAction::message)
+                .flatMap(Optional::stream)
+                .findFirst()
+                .orElse(null))
         .build();
   }
 }

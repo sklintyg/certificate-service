@@ -19,6 +19,7 @@
 package se.inera.intyg.certificateservice.application.certificatetypeinfo.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -136,5 +137,42 @@ class CertificateTypeInfoConverterTest {
         certificateTypeInfoConverter.convert(
             certificateModel, CERTIFICATE_ACTIONS, ACTION_EVALUATION);
     assertEquals(expectedLinks, result.getLinks());
+  }
+
+  @Test
+  void shallIncludeMessage() {
+    final var expectedMessage = "expectedMessage";
+
+    when(CERTIFICATE_ACTION.evaluate(Optional.empty(), Optional.of(ACTION_EVALUATION)))
+        .thenReturn(false);
+    when(CERTIFICATE_ACTION.message()).thenReturn(Optional.of(expectedMessage));
+
+    final var result =
+        certificateTypeInfoConverter.convert(
+            certificateModel, CERTIFICATE_ACTIONS, ACTION_EVALUATION);
+    assertEquals(expectedMessage, result.getMessage());
+  }
+
+  @Test
+  void shallNotIncludeMessageIfEvaluationReturnsTrue() {
+    when(CERTIFICATE_ACTION.evaluate(Optional.empty(), Optional.of(ACTION_EVALUATION)))
+        .thenReturn(true);
+
+    final var result =
+        certificateTypeInfoConverter.convert(
+            certificateModel, CERTIFICATE_ACTIONS, ACTION_EVALUATION);
+    assertNull(result.getMessage());
+  }
+
+  @Test
+  void shallNotIncludeMessageIfActionDontProvideMessage() {
+    when(CERTIFICATE_ACTION.evaluate(Optional.empty(), Optional.of(ACTION_EVALUATION)))
+        .thenReturn(true);
+    when(CERTIFICATE_ACTION.message()).thenReturn(Optional.empty());
+
+    final var result =
+        certificateTypeInfoConverter.convert(
+            certificateModel, CERTIFICATE_ACTIONS, ACTION_EVALUATION);
+    assertNull(result.getMessage());
   }
 }

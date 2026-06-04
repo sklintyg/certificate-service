@@ -21,6 +21,9 @@ package se.inera.intyg.certificateservice.domain.action.certificate.model;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataCareProvider.ALFA_REGIONEN;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataCareUnit.ALFA_MEDICINCENTRUM;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataPatient.ANONYMA_REACT_ATTILA;
@@ -67,185 +70,46 @@ class CertificateActionCreateTest {
   @Mock CertificateActionConfigurationRepository certificateActionConfigurationRepository;
   @InjectMocks CertificateActionFactory certificateActionFactory;
 
-  @BeforeEach
-  void setUp() {
-    certificateActionCreate =
-        (CertificateActionCreate) certificateActionFactory.create(CERTIFICATE_ACTION_SPECIFICATION);
-
-    actionEvaluationBuilder =
-        ActionEvaluation.builder()
-            .user(AJLA_DOKTOR)
-            .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
-            .patient(ATHENA_REACT_ANDERSSON)
-            .careProvider(ALFA_REGIONEN)
-            .careUnit(ALFA_MEDICINCENTRUM);
-  }
-
-  @Test
-  void shallReturnName() {
-    assertEquals("Skapa intyg", certificateActionCreate.getName(Optional.empty()));
-  }
-
-  @Test
-  void shallReturnType() {
-    assertEquals(CertificateActionType.CREATE, certificateActionCreate.getType());
-  }
-
-  @Test
-  void shallReturnDescription() {
-    assertEquals(
-        "Skapa ett intygsutkast.", certificateActionCreate.getDescription(Optional.empty()));
-  }
-
-  @Test
-  void shallReturnFalseIfPatientIsDeceased() {
-    final var actionEvaluation =
-        ActionEvaluation.builder()
-            .patient(ATLAS_REACT_ABRAHAMSSON)
-            .user(AJLA_DOKTOR)
-            .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
-            .build();
-
-    final var actualResult =
-        certificateActionCreate.evaluate(Optional.empty(), Optional.of(actionEvaluation));
-
-    assertFalse(actualResult);
-  }
-
-  @Test
-  void shallReturnTrueIfPatientIsNotDeceased() {
-    final var actionEvaluation =
-        ActionEvaluation.builder()
-            .patient(ATHENA_REACT_ANDERSSON)
-            .user(AJLA_DOKTOR)
-            .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
-            .build();
-
-    final var actualResult =
-        certificateActionCreate.evaluate(Optional.empty(), Optional.of(actionEvaluation));
-
-    assertTrue(actualResult);
-  }
-
-  @Test
-  void shallReturnFalseIfUserIsBlocked() {
-    final var actionEvaluation =
-        ActionEvaluation.builder()
-            .patient(ATHENA_REACT_ANDERSSON)
-            .user(ajlaDoctorBuilder().blocked(BLOCKED_TRUE).build())
-            .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
-            .build();
-
-    final var actualResult =
-        certificateActionCreate.evaluate(Optional.empty(), Optional.of(actionEvaluation));
-
-    assertFalse(actualResult);
-  }
-
-  @Test
-  void shallReturnTrueIfUserIsNotBlocked() {
-    final var actionEvaluation =
-        ActionEvaluation.builder()
-            .patient(ATHENA_REACT_ANDERSSON)
-            .user(AJLA_DOKTOR)
-            .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
-            .build();
-
-    final var actualResult =
-        certificateActionCreate.evaluate(Optional.empty(), Optional.of(actionEvaluation));
-
-    assertTrue(actualResult);
-  }
-
-  @Test
-  void shallReturnFalseIfUserIsCareAdminAndPatientIsProtectedPerson() {
-    final var actionEvaluation =
-        ActionEvaluation.builder()
-            .patient(ANONYMA_REACT_ATTILA)
-            .user(ALVA_VARDADMINISTRATOR)
-            .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
-            .build();
-
-    final var actualResult =
-        certificateActionCreate.evaluate(Optional.empty(), Optional.of(actionEvaluation));
-
-    assertFalse(actualResult);
-  }
-
-  @Test
-  void shallReturnTrueIfUserIsDoctorAndPatientIsProtectedPerson() {
-    final var actionEvaluation =
-        ActionEvaluation.builder()
-            .patient(ANONYMA_REACT_ATTILA)
-            .user(AJLA_DOKTOR)
-            .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
-            .build();
-
-    final var actualResult =
-        certificateActionCreate.evaluate(Optional.empty(), Optional.of(actionEvaluation));
-
-    assertTrue(actualResult);
-  }
-
-  @Test
-  void shallReturnFalseIfPatientMissing() {
-    final var actionEvaluation = ActionEvaluation.builder().user(AJLA_DOKTOR).build();
-
-    final var actualResult =
-        certificateActionCreate.evaluate(Optional.empty(), Optional.of(actionEvaluation));
-
-    assertFalse(actualResult);
-  }
-
-  @Test
-  void shallReturnFalseIfUserMissing() {
-    final var actionEvaluation = ActionEvaluation.builder().patient(ATHENA_REACT_ANDERSSON).build();
-
-    final var actualResult =
-        certificateActionCreate.evaluate(Optional.empty(), Optional.of(actionEvaluation));
-
-    assertFalse(actualResult);
-  }
-
-  @Test
-  void shallReturnReasonNotAllowedIfEvaluateReturnsFalse() {
-    final var actionEvaluation =
-        ActionEvaluation.builder()
-            .patient(ANONYMA_REACT_ATTILA)
-            .user(ALVA_VARDADMINISTRATOR)
-            .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
-            .build();
-
-    final var actualResult =
-        certificateActionCreate.reasonNotAllowed(Optional.empty(), Optional.of(actionEvaluation));
-
-    assertFalse(actualResult.isEmpty());
-  }
-
-  @Test
-  void shallReturnEmptyListIfEvaluateReturnsTrue() {
-    final var actionEvaluation =
-        ActionEvaluation.builder()
-            .patient(ANONYMA_REACT_ATTILA)
-            .user(AJLA_DOKTOR)
-            .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
-            .build();
-
-    final var actualResult =
-        certificateActionCreate.reasonNotAllowed(Optional.empty(), Optional.of(actionEvaluation));
-
-    assertTrue(actualResult.isEmpty());
-  }
-
   @Nested
-  class EvaluateActionRuleRole {
+  class WithoutTypeSpecificRules {
+
+    @BeforeEach
+    void setUp() {
+      certificateActionCreate =
+          (CertificateActionCreate)
+              certificateActionFactory.create(CERTIFICATE_ACTION_SPECIFICATION);
+
+      actionEvaluationBuilder =
+          ActionEvaluation.builder()
+              .user(AJLA_DOKTOR)
+              .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
+              .patient(ATHENA_REACT_ANDERSSON)
+              .careProvider(ALFA_REGIONEN)
+              .careUnit(ALFA_MEDICINCENTRUM);
+    }
 
     @Test
-    void shallReturnFalseIfDentist() {
+    void shallReturnName() {
+      assertEquals("Skapa intyg", certificateActionCreate.getName(Optional.empty()));
+    }
+
+    @Test
+    void shallReturnType() {
+      assertEquals(CertificateActionType.CREATE, certificateActionCreate.getType());
+    }
+
+    @Test
+    void shallReturnDescription() {
+      assertEquals(
+          "Skapa ett intygsutkast.", certificateActionCreate.getDescription(Optional.empty()));
+    }
+
+    @Test
+    void shallReturnFalseIfPatientIsDeceased() {
       final var actionEvaluation =
           ActionEvaluation.builder()
-              .patient(ATHENA_REACT_ANDERSSON)
-              .user(DAN_DENTIST)
+              .patient(ATLAS_REACT_ABRAHAMSSON)
+              .user(AJLA_DOKTOR)
               .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
               .build();
 
@@ -256,22 +120,7 @@ class CertificateActionCreateTest {
     }
 
     @Test
-    void shallReturnTrueIfCareAdmin() {
-      final var actionEvaluation =
-          ActionEvaluation.builder()
-              .patient(ATHENA_REACT_ANDERSSON)
-              .user(ALVA_VARDADMINISTRATOR)
-              .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
-              .build();
-
-      final var actualResult =
-          certificateActionCreate.evaluate(Optional.empty(), Optional.of(actionEvaluation));
-
-      assertTrue(actualResult);
-    }
-
-    @Test
-    void shallReturnTrueIfDoctor() {
+    void shallReturnTrueIfPatientIsNotDeceased() {
       final var actionEvaluation =
           ActionEvaluation.builder()
               .patient(ATHENA_REACT_ANDERSSON)
@@ -286,11 +135,26 @@ class CertificateActionCreateTest {
     }
 
     @Test
-    void shallReturnTrueIfNurse() {
+    void shallReturnFalseIfUserIsBlocked() {
       final var actionEvaluation =
           ActionEvaluation.builder()
               .patient(ATHENA_REACT_ANDERSSON)
-              .user(ANNA_SJUKSKOTERKSA)
+              .user(ajlaDoctorBuilder().blocked(BLOCKED_TRUE).build())
+              .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
+              .build();
+
+      final var actualResult =
+          certificateActionCreate.evaluate(Optional.empty(), Optional.of(actionEvaluation));
+
+      assertFalse(actualResult);
+    }
+
+    @Test
+    void shallReturnTrueIfUserIsNotBlocked() {
+      final var actionEvaluation =
+          ActionEvaluation.builder()
+              .patient(ATHENA_REACT_ANDERSSON)
+              .user(AJLA_DOKTOR)
               .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
               .build();
 
@@ -301,11 +165,26 @@ class CertificateActionCreateTest {
     }
 
     @Test
-    void shallReturnTrueIfMidwife() {
+    void shallReturnFalseIfUserIsCareAdminAndPatientIsProtectedPerson() {
       final var actionEvaluation =
           ActionEvaluation.builder()
-              .patient(ATHENA_REACT_ANDERSSON)
-              .user(BERTIL_BARNMORSKA)
+              .patient(ANONYMA_REACT_ATTILA)
+              .user(ALVA_VARDADMINISTRATOR)
+              .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
+              .build();
+
+      final var actualResult =
+          certificateActionCreate.evaluate(Optional.empty(), Optional.of(actionEvaluation));
+
+      assertFalse(actualResult);
+    }
+
+    @Test
+    void shallReturnTrueIfUserIsDoctorAndPatientIsProtectedPerson() {
+      final var actionEvaluation =
+          ActionEvaluation.builder()
+              .patient(ANONYMA_REACT_ATTILA)
+              .user(AJLA_DOKTOR)
               .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
               .build();
 
@@ -314,84 +193,296 @@ class CertificateActionCreateTest {
 
       assertTrue(actualResult);
     }
+
+    @Test
+    void shallReturnFalseIfPatientMissing() {
+      final var actionEvaluation = ActionEvaluation.builder().user(AJLA_DOKTOR).build();
+
+      final var actualResult =
+          certificateActionCreate.evaluate(Optional.empty(), Optional.of(actionEvaluation));
+
+      assertFalse(actualResult);
+    }
+
+    @Test
+    void shallReturnFalseIfUserMissing() {
+      final var actionEvaluation =
+          ActionEvaluation.builder().patient(ATHENA_REACT_ANDERSSON).build();
+
+      final var actualResult =
+          certificateActionCreate.evaluate(Optional.empty(), Optional.of(actionEvaluation));
+
+      assertFalse(actualResult);
+    }
+
+    @Test
+    void shallReturnReasonNotAllowedIfEvaluateReturnsFalse() {
+      final var actionEvaluation =
+          ActionEvaluation.builder()
+              .patient(ANONYMA_REACT_ATTILA)
+              .user(ALVA_VARDADMINISTRATOR)
+              .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
+              .build();
+
+      final var actualResult =
+          certificateActionCreate.reasonNotAllowed(Optional.empty(), Optional.of(actionEvaluation));
+
+      assertFalse(actualResult.isEmpty());
+    }
+
+    @Test
+    void shallReturnEmptyListIfEvaluateReturnsTrue() {
+      final var actionEvaluation =
+          ActionEvaluation.builder()
+              .patient(ANONYMA_REACT_ATTILA)
+              .user(AJLA_DOKTOR)
+              .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
+              .build();
+
+      final var actualResult =
+          certificateActionCreate.reasonNotAllowed(Optional.empty(), Optional.of(actionEvaluation));
+
+      assertTrue(actualResult.isEmpty());
+    }
+
+    @Nested
+    class EvaluateActionRuleRole {
+
+      @Test
+      void shallReturnFalseIfDentist() {
+        final var actionEvaluation =
+            ActionEvaluation.builder()
+                .patient(ATHENA_REACT_ANDERSSON)
+                .user(DAN_DENTIST)
+                .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
+                .build();
+
+        final var actualResult =
+            certificateActionCreate.evaluate(Optional.empty(), Optional.of(actionEvaluation));
+
+        assertFalse(actualResult);
+      }
+
+      @Test
+      void shallReturnTrueIfCareAdmin() {
+        final var actionEvaluation =
+            ActionEvaluation.builder()
+                .patient(ATHENA_REACT_ANDERSSON)
+                .user(ALVA_VARDADMINISTRATOR)
+                .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
+                .build();
+
+        final var actualResult =
+            certificateActionCreate.evaluate(Optional.empty(), Optional.of(actionEvaluation));
+
+        assertTrue(actualResult);
+      }
+
+      @Test
+      void shallReturnTrueIfDoctor() {
+        final var actionEvaluation =
+            ActionEvaluation.builder()
+                .patient(ATHENA_REACT_ANDERSSON)
+                .user(AJLA_DOKTOR)
+                .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
+                .build();
+
+        final var actualResult =
+            certificateActionCreate.evaluate(Optional.empty(), Optional.of(actionEvaluation));
+
+        assertTrue(actualResult);
+      }
+
+      @Test
+      void shallReturnTrueIfNurse() {
+        final var actionEvaluation =
+            ActionEvaluation.builder()
+                .patient(ATHENA_REACT_ANDERSSON)
+                .user(ANNA_SJUKSKOTERKSA)
+                .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
+                .build();
+
+        final var actualResult =
+            certificateActionCreate.evaluate(Optional.empty(), Optional.of(actionEvaluation));
+
+        assertTrue(actualResult);
+      }
+
+      @Test
+      void shallReturnTrueIfMidwife() {
+        final var actionEvaluation =
+            ActionEvaluation.builder()
+                .patient(ATHENA_REACT_ANDERSSON)
+                .user(BERTIL_BARNMORSKA)
+                .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
+                .build();
+
+        final var actualResult =
+            certificateActionCreate.evaluate(Optional.empty(), Optional.of(actionEvaluation));
+
+        assertTrue(actualResult);
+      }
+    }
+
+    @Test
+    void shallAlwaysReturnIncludeTrue() {
+      final var actionEvaluation = ActionEvaluation.builder().build();
+      assertTrue(certificateActionCreate.include(Optional.empty(), Optional.of(actionEvaluation)));
+    }
+
+    @Test
+    void shallReturnEnabledTrueIfEvalutateTrue() {
+      final var actionEvaluation =
+          ActionEvaluation.builder()
+              .patient(ANONYMA_REACT_ATTILA)
+              .user(AJLA_DOKTOR)
+              .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
+              .build();
+      assertTrue(
+          certificateActionCreate.isEnabled(Optional.empty(), Optional.of(actionEvaluation)));
+    }
+
+    @Test
+    void shallReturnEnabledFalseIfEvalutateFalse() {
+      final var actionEvaluation =
+          ActionEvaluation.builder()
+              .patient(ANONYMA_REACT_ATTILA)
+              .user(ALVA_VARDADMINISTRATOR)
+              .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
+              .build();
+      assertFalse(
+          certificateActionCreate.isEnabled(Optional.empty(), Optional.of(actionEvaluation)));
+    }
+
+    @Test
+    void shallReturnFalseIfUnitIsInactive() {
+      final var actionEvaluation =
+          ActionEvaluation.builder()
+              .patient(ATHENA_REACT_ANDERSSON)
+              .user(AJLA_DOKTOR)
+              .subUnit(alfaAllergimottagningenBuilder().inactive(new Inactive(true)).build())
+              .build();
+
+      final var actualResult =
+          certificateActionCreate.evaluate(Optional.empty(), Optional.of(actionEvaluation));
+
+      assertFalse(actualResult);
+    }
+
+    @Test
+    void shallReturnTrueIfUnitIsNotInactive() {
+      final var actionEvaluation =
+          ActionEvaluation.builder()
+              .patient(ATHENA_REACT_ANDERSSON)
+              .user(AJLA_DOKTOR)
+              .subUnit(alfaAllergimottagningenBuilder().inactive(new Inactive(false)).build())
+              .build();
+
+      final var actualResult =
+          certificateActionCreate.evaluate(Optional.empty(), Optional.of(actionEvaluation));
+
+      assertTrue(actualResult);
+    }
+
+    @Test
+    void shallReturnFalseIfUserMissingAgreement() {
+      final var actionEvaluation =
+          actionEvaluationBuilder
+              .user(ajlaDoctorBuilder().agreement(AGREEMENT_FALSE).build())
+              .build();
+
+      assertFalse(
+          certificateActionCreate.evaluate(Optional.empty(), Optional.of(actionEvaluation)),
+          () -> "Expected false when passing %s and %s".formatted(actionEvaluation, null));
+    }
+
+    @Test
+    void shallReturnTrueIfUserHasAgreement() {
+      final var actionEvaluation = actionEvaluationBuilder.build();
+
+      assertTrue(
+          certificateActionCreate.evaluate(Optional.empty(), Optional.of(actionEvaluation)),
+          () -> "Expected true when passing %s and %s".formatted(actionEvaluation, null));
+    }
   }
 
-  @Test
-  void shallAlwaysReturnIncludeTrue() {
-    final var actionEvaluation = ActionEvaluation.builder().build();
-    assertTrue(certificateActionCreate.include(Optional.empty(), Optional.of(actionEvaluation)));
+  @Nested
+  class WithTypeSpecificRules {
+
+    @Test
+    void shouldEvaluateTypeSpecificRules() {
+      final var actionRulePatientAgeEighteenOrOlder =
+          mock(ActionRulePatientAgeEighteenOrOlder.class);
+
+      certificateActionCreate =
+          (CertificateActionCreate)
+              certificateActionFactory.create(
+                  CertificateActionSpecification.builder()
+                      .certificateActionType(CertificateActionType.CREATE)
+                      .allowedRoles(List.of(Role.DOCTOR, Role.CARE_ADMIN, Role.MIDWIFE, Role.NURSE))
+                      .typeSpecificRules(List.of(actionRulePatientAgeEighteenOrOlder))
+                      .build());
+
+      actionEvaluationBuilder =
+          ActionEvaluation.builder()
+              .user(AJLA_DOKTOR)
+              .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
+              .patient(ATHENA_REACT_ANDERSSON)
+              .careProvider(ALFA_REGIONEN)
+              .careUnit(ALFA_MEDICINCENTRUM);
+
+      final var actionEvaluation = actionEvaluationBuilder.build();
+
+      certificateActionCreate.evaluate(Optional.empty(), Optional.of(actionEvaluation));
+      verify(actionRulePatientAgeEighteenOrOlder)
+          .evaluate(Optional.empty(), Optional.of(actionEvaluation));
+    }
   }
 
-  @Test
-  void shallReturnEnabledTrueIfEvalutateTrue() {
-    final var actionEvaluation =
-        ActionEvaluation.builder()
-            .patient(ANONYMA_REACT_ATTILA)
-            .user(AJLA_DOKTOR)
-            .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
-            .build();
-    assertTrue(certificateActionCreate.isEnabled(Optional.empty(), Optional.of(actionEvaluation)));
-  }
+  @Nested
+  class MessageTests {
 
-  @Test
-  void shallReturnEnabledFalseIfEvalutateFalse() {
-    final var actionEvaluation =
-        ActionEvaluation.builder()
-            .patient(ANONYMA_REACT_ATTILA)
-            .user(ALVA_VARDADMINISTRATOR)
-            .subUnit(ALFA_ALLERGIMOTTAGNINGEN)
-            .build();
-    assertFalse(certificateActionCreate.isEnabled(Optional.empty(), Optional.of(actionEvaluation)));
-  }
+    @Test
+    void shouldReturnMessageIfPresent() {
+      final var expectedMessage = "reason";
+      final var actionRulePatientAgeEighteenOrOlder =
+          mock(ActionRulePatientAgeEighteenOrOlder.class);
 
-  @Test
-  void shallReturnFalseIfUnitIsInactive() {
-    final var actionEvaluation =
-        ActionEvaluation.builder()
-            .patient(ATHENA_REACT_ANDERSSON)
-            .user(AJLA_DOKTOR)
-            .subUnit(alfaAllergimottagningenBuilder().inactive(new Inactive(true)).build())
-            .build();
+      certificateActionCreate =
+          (CertificateActionCreate)
+              certificateActionFactory.create(
+                  CertificateActionSpecification.builder()
+                      .certificateActionType(CertificateActionType.CREATE)
+                      .allowedRoles(List.of(Role.DOCTOR, Role.CARE_ADMIN, Role.MIDWIFE, Role.NURSE))
+                      .typeSpecificRules(List.of(actionRulePatientAgeEighteenOrOlder))
+                      .build());
 
-    final var actualResult =
-        certificateActionCreate.evaluate(Optional.empty(), Optional.of(actionEvaluation));
+      when(actionRulePatientAgeEighteenOrOlder.message()).thenReturn(true);
+      when(actionRulePatientAgeEighteenOrOlder.getReasonForPermissionDenied())
+          .thenReturn(expectedMessage);
 
-    assertFalse(actualResult);
-  }
+      final var actualMessage = certificateActionCreate.message().orElseThrow();
+      assertEquals(expectedMessage, actualMessage);
+    }
 
-  @Test
-  void shallReturnTrueIfUnitIsNotInactive() {
-    final var actionEvaluation =
-        ActionEvaluation.builder()
-            .patient(ATHENA_REACT_ANDERSSON)
-            .user(AJLA_DOKTOR)
-            .subUnit(alfaAllergimottagningenBuilder().inactive(new Inactive(false)).build())
-            .build();
+    @Test
+    void shouldReturnOptionalEmptyIfMessageNotPresent() {
+      final var actionRulePatientAgeEighteenOrOlder =
+          mock(ActionRulePatientAgeEighteenOrOlder.class);
 
-    final var actualResult =
-        certificateActionCreate.evaluate(Optional.empty(), Optional.of(actionEvaluation));
+      certificateActionCreate =
+          (CertificateActionCreate)
+              certificateActionFactory.create(
+                  CertificateActionSpecification.builder()
+                      .certificateActionType(CertificateActionType.CREATE)
+                      .allowedRoles(List.of(Role.DOCTOR, Role.CARE_ADMIN, Role.MIDWIFE, Role.NURSE))
+                      .typeSpecificRules(List.of(actionRulePatientAgeEighteenOrOlder))
+                      .build());
 
-    assertTrue(actualResult);
-  }
+      when(actionRulePatientAgeEighteenOrOlder.message()).thenReturn(false);
 
-  @Test
-  void shallReturnFalseIfUserMissingAgreement() {
-    final var actionEvaluation =
-        actionEvaluationBuilder
-            .user(ajlaDoctorBuilder().agreement(AGREEMENT_FALSE).build())
-            .build();
-
-    assertFalse(
-        certificateActionCreate.evaluate(Optional.empty(), Optional.of(actionEvaluation)),
-        () -> "Expected false when passing %s and %s".formatted(actionEvaluation, null));
-  }
-
-  @Test
-  void shallReturnTrueIfUserHasAgreement() {
-    final var actionEvaluation = actionEvaluationBuilder.build();
-
-    assertTrue(
-        certificateActionCreate.evaluate(Optional.empty(), Optional.of(actionEvaluation)),
-        () -> "Expected true when passing %s and %s".formatted(actionEvaluation, null));
+      final var actualMessage = certificateActionCreate.message();
+      assertTrue(actualMessage.isEmpty());
+    }
   }
 }

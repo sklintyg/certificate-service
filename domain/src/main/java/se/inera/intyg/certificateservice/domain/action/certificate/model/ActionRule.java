@@ -29,4 +29,19 @@ public interface ActionRule {
     return "Du saknar behörighet för den begärda åtgärden."
         + " För att utföra denna uppgift krävs särskilda rättigheter eller en specifik befattning.";
   }
+
+  /**
+   * Indicates whether this rule should contribute a user-facing message when it denies an action.
+   *
+   * <p>When {@code true}, the reason returned by {@link #getReasonForPermissionDenied()} is
+   * collected by the enclosing {@code CertificateAction} and forwarded to {@code
+   * CertificateTypeInfoConverter}, where it is displayed to the user. The default implementation
+   * returns {@code false}, meaning the rule produces no message.
+   *
+   * @return {@code true} if this rule should surface a message to the user on denial; {@code false}
+   *     otherwise
+   */
+  default boolean message() {
+    return false;
+  }
 }

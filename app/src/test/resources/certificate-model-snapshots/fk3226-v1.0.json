@@ -34,235 +34,274 @@
     "enabled" : null,
     "allowedRoles" : [ "DOCTOR", "PRIVATE_DOCTOR", "CARE_ADMIN", "MIDWIFE", "NURSE" ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null
+    "contentProvider" : null,
+    "typeSpecificRules" : []
   }, {
     "certificateActionType" : "READ",
     "enabled" : null,
     "allowedRoles" : [ "DOCTOR", "PRIVATE_DOCTOR", "CARE_ADMIN", "MIDWIFE", "NURSE" ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null
+    "contentProvider" : null,
+    "typeSpecificRules" : []
   }, {
     "certificateActionType" : "UPDATE",
     "enabled" : null,
     "allowedRoles" : [ "DOCTOR", "PRIVATE_DOCTOR", "CARE_ADMIN", "MIDWIFE", "NURSE" ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null
+    "contentProvider" : null,
+    "typeSpecificRules" : []
   }, {
     "certificateActionType" : "DELETE",
     "enabled" : null,
     "allowedRoles" : [ "DOCTOR", "PRIVATE_DOCTOR", "CARE_ADMIN", "MIDWIFE", "NURSE" ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null
+    "contentProvider" : null,
+    "typeSpecificRules" : []
   }, {
     "certificateActionType" : "SIGN",
     "enabled" : null,
     "allowedRoles" : [ "DOCTOR", "PRIVATE_DOCTOR" ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null
+    "contentProvider" : null,
+    "typeSpecificRules" : []
   }, {
     "certificateActionType" : "SEND",
     "enabled" : null,
     "allowedRoles" : [ "DOCTOR", "PRIVATE_DOCTOR", "CARE_ADMIN", "MIDWIFE", "NURSE" ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null
+    "contentProvider" : null,
+    "typeSpecificRules" : []
   }, {
     "certificateActionType" : "PRINT",
     "enabled" : null,
     "allowedRoles" : [ ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null
+    "contentProvider" : null,
+    "typeSpecificRules" : []
   }, {
     "certificateActionType" : "REVOKE",
     "enabled" : null,
     "allowedRoles" : [ "DOCTOR", "PRIVATE_DOCTOR" ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null
+    "contentProvider" : null,
+    "typeSpecificRules" : []
   }, {
     "certificateActionType" : "REPLACE",
     "enabled" : null,
     "allowedRoles" : [ "DOCTOR", "PRIVATE_DOCTOR" ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null
+    "contentProvider" : null,
+    "typeSpecificRules" : []
   }, {
     "certificateActionType" : "REPLACE_CONTINUE",
     "enabled" : null,
     "allowedRoles" : [ "DOCTOR", "PRIVATE_DOCTOR" ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null
+    "contentProvider" : null,
+    "typeSpecificRules" : []
   }, {
     "certificateActionType" : "RENEW",
     "enabled" : null,
     "allowedRoles" : [ "DOCTOR", "PRIVATE_DOCTOR", "CARE_ADMIN", "MIDWIFE", "NURSE" ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null
+    "contentProvider" : null,
+    "typeSpecificRules" : []
   }, {
     "certificateActionType" : "SEND_AFTER_SIGN",
     "enabled" : null,
     "allowedRoles" : [ ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null
+    "contentProvider" : null,
+    "typeSpecificRules" : []
   }, {
     "certificateActionType" : "SEND_AFTER_COMPLEMENT",
     "enabled" : null,
     "allowedRoles" : [ ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null
+    "contentProvider" : null,
+    "typeSpecificRules" : []
   }, {
     "certificateActionType" : "MESSAGES",
     "enabled" : null,
     "allowedRoles" : [ ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null
+    "contentProvider" : null,
+    "typeSpecificRules" : []
   }, {
     "certificateActionType" : "MESSAGES_ADMINISTRATIVE",
     "enabled" : true,
     "allowedRoles" : [ ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null
+    "contentProvider" : null,
+    "typeSpecificRules" : []
   }, {
     "certificateActionType" : "RECEIVE_COMPLEMENT",
     "enabled" : null,
     "allowedRoles" : [ ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null
+    "contentProvider" : null,
+    "typeSpecificRules" : []
   }, {
     "certificateActionType" : "RECEIVE_QUESTION",
     "enabled" : null,
     "allowedRoles" : [ ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null
+    "contentProvider" : null,
+    "typeSpecificRules" : []
   }, {
     "certificateActionType" : "RECEIVE_ANSWER",
     "enabled" : null,
     "allowedRoles" : [ ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null
+    "contentProvider" : null,
+    "typeSpecificRules" : []
   }, {
     "certificateActionType" : "RECEIVE_REMINDER",
     "enabled" : null,
     "allowedRoles" : [ ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null
+    "contentProvider" : null,
+    "typeSpecificRules" : []
   }, {
     "certificateActionType" : "COMPLEMENT",
     "enabled" : null,
     "allowedRoles" : [ "DOCTOR", "PRIVATE_DOCTOR", "CARE_ADMIN", "MIDWIFE", "NURSE" ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null
+    "contentProvider" : null,
+    "typeSpecificRules" : []
   }, {
     "certificateActionType" : "CANNOT_COMPLEMENT",
     "enabled" : null,
     "allowedRoles" : [ ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null
+    "contentProvider" : null,
+    "typeSpecificRules" : []
   }, {
     "certificateActionType" : "FORWARD_MESSAGE",
     "enabled" : null,
     "allowedRoles" : [ ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null
+    "contentProvider" : null,
+    "typeSpecificRules" : []
   }, {
     "certificateActionType" : "HANDLE_COMPLEMENT",
     "enabled" : null,
     "allowedRoles" : [ ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null
+    "contentProvider" : null,
+    "typeSpecificRules" : []
   }, {
     "certificateActionType" : "CREATE_MESSAGE",
     "enabled" : null,
     "allowedRoles" : [ ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null
+    "contentProvider" : null,
+    "typeSpecificRules" : []
   }, {
     "certificateActionType" : "ANSWER_MESSAGE",
     "enabled" : null,
     "allowedRoles" : [ ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null
+    "contentProvider" : null,
+    "typeSpecificRules" : []
   }, {
     "certificateActionType" : "SAVE_MESSAGE",
     "enabled" : null,
     "allowedRoles" : [ ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null
+    "contentProvider" : null,
+    "typeSpecificRules" : []
   }, {
     "certificateActionType" : "DELETE_MESSAGE",
     "enabled" : null,
     "allowedRoles" : [ ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null
+    "contentProvider" : null,
+    "typeSpecificRules" : []
   }, {
     "certificateActionType" : "SEND_MESSAGE",
     "enabled" : null,
     "allowedRoles" : [ ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null
+    "contentProvider" : null,
+    "typeSpecificRules" : []
   }, {
     "certificateActionType" : "SAVE_ANSWER",
     "enabled" : null,
     "allowedRoles" : [ ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null
+    "contentProvider" : null,
+    "typeSpecificRules" : []
   }, {
     "certificateActionType" : "DELETE_ANSWER",
     "enabled" : null,
     "allowedRoles" : [ ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null
+    "contentProvider" : null,
+    "typeSpecificRules" : []
   }, {
     "certificateActionType" : "SEND_ANSWER",
     "enabled" : null,
     "allowedRoles" : [ ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null
+    "contentProvider" : null,
+    "typeSpecificRules" : []
   }, {
     "certificateActionType" : "HANDLE_MESSAGE",
     "enabled" : null,
     "allowedRoles" : [ ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null
+    "contentProvider" : null,
+    "typeSpecificRules" : []
   }, {
     "certificateActionType" : "FORWARD_CERTIFICATE",
     "enabled" : null,
     "allowedRoles" : [ "CARE_ADMIN", "MIDWIFE", "NURSE" ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null
+    "contentProvider" : null,
+    "typeSpecificRules" : []
   }, {
     "certificateActionType" : "FORWARD_MESSAGE",
     "enabled" : null,
     "allowedRoles" : [ ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null
+    "contentProvider" : null,
+    "typeSpecificRules" : []
   }, {
     "certificateActionType" : "READY_FOR_SIGN",
     "enabled" : null,
     "allowedRoles" : [ "CARE_ADMIN", "MIDWIFE", "NURSE" ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null
+    "contentProvider" : null,
+    "typeSpecificRules" : []
   }, {
     "certificateActionType" : "LIST_CERTIFICATE_TYPE",
     "enabled" : null,
     "allowedRoles" : [ "DOCTOR", "PRIVATE_DOCTOR", "CARE_ADMIN", "MIDWIFE", "NURSE" ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null
+    "contentProvider" : null,
+    "typeSpecificRules" : []
   }, {
     "certificateActionType" : "QUESTIONS_NOT_AVAILABLE",
     "enabled" : null,
     "allowedRoles" : [ ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null
+    "contentProvider" : null,
+    "typeSpecificRules" : []
   }, {
     "certificateActionType" : "FORWARD_CERTIFICATE_FROM_LIST",
     "enabled" : null,
     "allowedRoles" : [ ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null
+    "contentProvider" : null,
+    "typeSpecificRules" : []
   }, {
     "certificateActionType" : "INACTIVE_CERTIFICATE_MODEL",
     "enabled" : null,
     "allowedRoles" : [ ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null
+    "contentProvider" : null,
+    "typeSpecificRules" : []
   } ],
   "messageActionSpecifications" : [ {
     "messageActionType" : "ANSWER"
