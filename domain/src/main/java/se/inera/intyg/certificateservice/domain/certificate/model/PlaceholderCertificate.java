@@ -362,7 +362,7 @@ public class PlaceholderCertificate implements Certificate {
   }
 
   @Override
-  public void updateCertificateModel() {
+  public boolean upgradeCertificateModelToLatestMinorVersion() {
     throw new IllegalStateException(
         "Cannot update certificate model for a placeholder certificate");
   }

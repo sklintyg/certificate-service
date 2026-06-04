@@ -27,18 +27,18 @@ import org.junit.jupiter.api.Test;
 class CertificateVersionTest {
 
   @Nested
-  class SameMinorVersionTests {
+  class SameMajorVersionTests {
 
     @Test
     void shouldReturnTrueIfFirstDigitMatch() {
       final var certificateVersion = new CertificateVersion("1.0");
-      assertTrue(certificateVersion.sameMinorVersion("1.4"));
+      assertTrue(certificateVersion.sameMajorVersion("1.4"));
     }
 
     @Test
     void shouldReturnFalseIfFirstDigitDontMatch() {
       final var certificateVersion = new CertificateVersion("1.0");
-      assertFalse(certificateVersion.sameMinorVersion("2.0"));
+      assertFalse(certificateVersion.sameMajorVersion("2.0"));
     }
   }
 }

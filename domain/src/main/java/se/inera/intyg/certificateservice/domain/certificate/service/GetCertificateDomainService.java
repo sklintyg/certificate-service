@@ -50,9 +50,10 @@ public class GetCertificateDomainService {
           certificate.reasonNotAllowed(CertificateActionType.READ, Optional.of(actionEvaluation)));
     }
 
-    if (certificate.isDraft() && certificate.allowTo(UPDATE, Optional.of(actionEvaluation))) {
-      certificate.updateMetadata(actionEvaluation);
-      certificate.updateCertificateModel();
+    final var certificateWithUpdateModel = upgradeMinorModelVersion(actionEvaluation, certificate);
+    if (certificateWithUpdateModel.isDraft()
+        && certificateWithUpdateModel.allowTo(UPDATE, Optional.of(actionEvaluation))) {
+      certificateWithUpdateModel.updateMetadata(actionEvaluation);
     }
 
     certificateEventDomainService.publish(
@@ -60,10 +61,20 @@ public class GetCertificateDomainService {
             .type(CertificateEventType.READ)
             .start(start)
             .end(LocalDateTime.now(ZoneId.systemDefault()))
-            .certificate(certificate)
+            .certificate(certificateWithUpdateModel)
             .actionEvaluation(actionEvaluation)
             .build());
 
+    return certificateWithUpdateModel;
+  }
+
+  private Certificate upgradeMinorModelVersion(
+      ActionEvaluation actionEvaluation, Certificate certificate) {
+    if (certificate.isDraft() && certificate.allowTo(UPDATE, Optional.of(actionEvaluation))) {
+      if (certificate.upgradeCertificateModelToLatestMinorVersion()) {
+        return certificateRepository.save(certificate);
+      }
+    }
     return certificate;
   }
 }

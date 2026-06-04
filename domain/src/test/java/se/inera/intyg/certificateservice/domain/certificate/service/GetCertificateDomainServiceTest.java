@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static se.inera.intyg.certificateservice.domain.action.certificate.model.CertificateActionType.READ;
@@ -87,12 +88,47 @@ class GetCertificateDomainServiceTest {
   }
 
   @Test
+  void shallUpdateCertificateMetadataOnUpdatedCertificateWhenModelHasBeenUpdated() {
+    doReturn(true).when(certificate).allowTo(READ, Optional.of(ACTION_EVALUATION));
+    doReturn(true).when(certificate).allowTo(UPDATE, Optional.of(ACTION_EVALUATION));
+    doReturn(true).when(certificate).isDraft();
+    doReturn(true).when(certificate).upgradeCertificateModelToLatestMinorVersion();
+    final var updatedCertificate = mock(Certificate.class);
+    doReturn(updatedCertificate).when(certificateRepository).save(certificate);
+    doReturn(true).when(updatedCertificate).allowTo(UPDATE, Optional.of(ACTION_EVALUATION));
+    doReturn(true).when(updatedCertificate).isDraft();
+    getCertificateDomainService.get(CERTIFICATE_ID, ACTION_EVALUATION);
+    verify(certificate, never()).updateMetadata(ACTION_EVALUATION);
+    verify(updatedCertificate).updateMetadata(ACTION_EVALUATION);
+  }
+
+  @Test
   void shallUpdateCertificateModelIfDraftAndHasUpdateRights() {
     doReturn(true).when(certificate).allowTo(READ, Optional.of(ACTION_EVALUATION));
     doReturn(true).when(certificate).allowTo(UPDATE, Optional.of(ACTION_EVALUATION));
     doReturn(true).when(certificate).isDraft();
     getCertificateDomainService.get(CERTIFICATE_ID, ACTION_EVALUATION);
-    verify(certificate).updateCertificateModel();
+    verify(certificate).upgradeCertificateModelToLatestMinorVersion();
+  }
+
+  @Test
+  void shallSaveUpdatedCertificateModelIfDraftAndHasUpdateRights() {
+    doReturn(true).when(certificate).allowTo(READ, Optional.of(ACTION_EVALUATION));
+    doReturn(true).when(certificate).allowTo(UPDATE, Optional.of(ACTION_EVALUATION));
+    doReturn(true).when(certificate).isDraft();
+    doReturn(true).when(certificate).upgradeCertificateModelToLatestMinorVersion();
+    doReturn(mock(Certificate.class)).when(certificateRepository).save(certificate);
+    getCertificateDomainService.get(CERTIFICATE_ID, ACTION_EVALUATION);
+    verify(certificateRepository).save(certificate);
+  }
+
+  @Test
+  void shallNotUpdateCertificateModelIfDraftAndHasNoUpdateRights() {
+    doReturn(true).when(certificate).allowTo(READ, Optional.of(ACTION_EVALUATION));
+    doReturn(false).when(certificate).allowTo(UPDATE, Optional.of(ACTION_EVALUATION));
+    doReturn(true).when(certificate).isDraft();
+    getCertificateDomainService.get(CERTIFICATE_ID, ACTION_EVALUATION);
+    verify(certificate, never()).upgradeCertificateModelToLatestMinorVersion();
   }
 
   @Test

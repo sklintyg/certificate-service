@@ -176,5 +176,5 @@ public interface Certificate {
 
   void updateMetadata(CertificateMetaData updatedMetadata);
 
-  void updateCertificateModel();
+  boolean upgradeCertificateModelToLatestMinorVersion();
 }

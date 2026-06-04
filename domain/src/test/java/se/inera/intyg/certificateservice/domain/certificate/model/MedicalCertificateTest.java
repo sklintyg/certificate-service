@@ -1506,11 +1506,12 @@ class MedicalCertificateTest {
       final var actionEvaluation = actionEvaluationBuilder.build();
       final var signedCertificate = certificateBuilder.status(Status.SIGNED).build();
 
-      when(certificateModel.latestMinorVersion()).thenReturn(certificateModel);
+      final var latestCertificateModel = mock(CertificateModel.class);
+      when(certificateModel.latestMinorVersion()).thenReturn(latestCertificateModel);
 
       final var actualCertificate = signedCertificate.replace(actionEvaluation);
 
-      assertEquals(signedCertificate.certificateModel(), actualCertificate.certificateModel());
+      assertEquals(latestCertificateModel, actualCertificate.certificateModel());
     }
 
     @Test
@@ -1713,11 +1714,12 @@ class MedicalCertificateTest {
       final var actionEvaluation = actionEvaluationBuilder.build();
       final var signedCertificate = certificateBuilder.status(Status.SIGNED).build();
 
-      when(certificateModel.latestMinorVersion()).thenReturn(certificateModel);
+      final var latestCertificateModel = mock(CertificateModel.class);
+      when(certificateModel.latestMinorVersion()).thenReturn(latestCertificateModel);
 
       final var actualCertificate = signedCertificate.complement(actionEvaluation);
 
-      assertEquals(signedCertificate.certificateModel(), actualCertificate.certificateModel());
+      assertEquals(latestCertificateModel, actualCertificate.certificateModel());
     }
 
     @Test
@@ -1933,11 +1935,12 @@ class MedicalCertificateTest {
       final var actionEvaluation = actionEvaluationBuilder.build();
       final var signedCertificate = certificateBuilder.status(Status.SIGNED).build();
 
-      when(certificateModel.latestMinorVersion()).thenReturn(certificateModel);
+      final var latestCertificateModel = mock(CertificateModel.class);
+      when(certificateModel.latestMinorVersion()).thenReturn(latestCertificateModel);
 
       final var actualCertificate = signedCertificate.renew(actionEvaluation);
 
-      assertEquals(signedCertificate.certificateModel(), actualCertificate.certificateModel());
+      assertEquals(latestCertificateModel, actualCertificate.certificateModel());
     }
 
     @Test
@@ -3079,6 +3082,52 @@ class MedicalCertificateTest {
       assertEquals(
           "Cannot update metadata with CertificateMetaData having different careUnit HSA-ID",
           illegalArgumentException.getMessage());
+    }
+  }
+
+  @Nested
+  class UpdateCertificateModel {
+
+    @Test
+    void shouldUpdateModelIfNotLatestMinorVersion() {
+      final var draftCertificate = certificateBuilder.status(Status.DRAFT).build();
+
+      when(certificateModel.isLatestMinorVersion()).thenReturn(false);
+      final var latestCertificateModel = mock(CertificateModel.class);
+      when(certificateModel.latestMinorVersion()).thenReturn(latestCertificateModel);
+
+      final var hasUpdateModel = draftCertificate.upgradeCertificateModelToLatestMinorVersion();
+
+      assertAll(
+          () -> assertTrue(hasUpdateModel, "Should return true when updated model to latest minor"),
+          () -> assertEquals(latestCertificateModel, draftCertificate.certificateModel()));
+    }
+
+    @Test
+    void shouldNotUpdateModelIfLatestMinorVersion() {
+      final var draftCertificate = certificateBuilder.status(Status.DRAFT).build();
+
+      when(certificateModel.isLatestMinorVersion()).thenReturn(true);
+
+      final var hasUpdateModel = draftCertificate.upgradeCertificateModelToLatestMinorVersion();
+
+      assertAll(
+          () -> assertFalse(hasUpdateModel, "Should return false when already latest minor"),
+          () -> assertEquals(certificateModel, draftCertificate.certificateModel()));
+    }
+
+    @Test
+    void shallThrowExceptionIfStatusDoesntMatchDraft() {
+      final var signedCertificate = certificateBuilder.status(Status.SIGNED).build();
+
+      final var illegalStateException =
+          assertThrows(
+              IllegalStateException.class,
+              signedCertificate::upgradeCertificateModelToLatestMinorVersion);
+
+      assertTrue(
+          illegalStateException.getMessage().contains("Incorrect status"),
+          () -> "Received message was: %s".formatted(illegalStateException.getMessage()));
     }
   }
 }

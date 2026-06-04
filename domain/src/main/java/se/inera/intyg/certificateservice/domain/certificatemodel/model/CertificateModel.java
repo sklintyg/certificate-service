@@ -215,7 +215,7 @@ public class CertificateModel implements Comparator<ElementId> {
         .map(CertificateModel::id)
         .map(CertificateModelId::version)
         .filter(Objects::nonNull)
-        .filter(ver -> ver.sameMinorVersion(version))
+        .filter(ver -> ver.sameMajorVersion(version))
         .map(CertificateVersion::version)
         .map(BigDecimal::new)
         .max(Comparator.naturalOrder())
@@ -227,7 +227,7 @@ public class CertificateModel implements Comparator<ElementId> {
     final var version = id.version().version();
     return versions.stream()
         .filter(CertificateModel::isActive)
-        .filter(ver -> ver.id().version().sameMinorVersion(version))
+        .filter(ver -> ver.id().version().sameMajorVersion(version))
         .max(Comparator.comparing(ver -> new BigDecimal(ver.id().version().version())))
         .map(model -> model.withVersions(versions))
         .orElseThrow(

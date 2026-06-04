@@ -20,7 +20,7 @@ package se.inera.intyg.certificateservice.domain.certificatemodel.model;
 
 public record CertificateVersion(String version) {
 
-  public boolean sameMinorVersion(String version) {
+  public boolean sameMajorVersion(String version) {
     return this.version.split("\\.")[0].equals(version.split("\\.")[0]);
   }
 }
