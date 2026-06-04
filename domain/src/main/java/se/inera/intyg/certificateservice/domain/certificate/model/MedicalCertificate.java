@@ -792,11 +792,17 @@ public class MedicalCertificate implements Certificate {
   }
 
   @Override
-  public void updateCertificateModel() {
+  public boolean upgradeCertificateModelToLatestMinorVersion() {
+    if (!Status.DRAFT.equals(status())) {
+      throw new IllegalStateException(
+          "Incorrect status '%s' - required status is '%s' to upgrade to latest minor version"
+              .formatted(status(), Status.DRAFT));
+    }
     if (this.certificateModel.isLatestMinorVersion()) {
-      return;
+      return false;
     }
 
     this.certificateModel = this.certificateModel.latestMinorVersion();
+    return true;
   }
 }
