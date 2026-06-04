@@ -53,4 +53,8 @@ public interface CertificateAction {
       Optional<Certificate> certificate, Optional<ActionEvaluation> actionEvaluation) {
     return evaluate(certificate, actionEvaluation);
   }
+
+  default Optional<String> message() {
+    return Optional.empty();
+  }
 }

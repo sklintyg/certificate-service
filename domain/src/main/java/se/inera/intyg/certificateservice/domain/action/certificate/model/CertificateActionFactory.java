@@ -19,6 +19,7 @@
 package se.inera.intyg.certificateservice.domain.action.certificate.model;
 
 import java.util.List;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import se.inera.intyg.certificateservice.domain.certificate.model.RelationType;
 import se.inera.intyg.certificateservice.domain.certificate.model.Status;
@@ -37,14 +38,17 @@ public class CertificateActionFactory {
           CertificateActionCreate.builder()
               .certificateActionSpecification(actionSpecification)
               .actionRules(
-                  List.of(
-                      new ActionRuleProtectedPerson(
-                          actionSpecification.allowedRolesForProtectedPersons()),
-                      new ActionRulePatientAlive(),
-                      new ActionRuleUserNotBlocked(),
-                      new ActionRuleInactiveUnit(),
-                      new ActionRuleRole(actionSpecification.allowedRoles()),
-                      new ActionRuleUserAgreement()))
+                  Stream.concat(
+                          Stream.of(
+                              new ActionRuleProtectedPerson(
+                                  actionSpecification.allowedRolesForProtectedPersons()),
+                              new ActionRulePatientAlive(),
+                              new ActionRuleUserNotBlocked(),
+                              new ActionRuleInactiveUnit(),
+                              new ActionRuleRole(actionSpecification.allowedRoles()),
+                              new ActionRuleUserAgreement()),
+                          actionSpecification.typeSpecificRules().stream())
+                      .toList())
               .build();
       case READ ->
           CertificateActionRead.builder()
