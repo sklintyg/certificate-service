@@ -134,6 +134,18 @@ class ActionRulePatientAgeEighteenOrOlderTest {
       final var actualMessage = rulePatientAgeEighteenOrOlder.getReasonForPermissionDenied();
       assertEquals(expectedMessage, actualMessage);
     }
+
+    @Test
+    void shouldReturnDefaultReasonIfContentProviderNotPresent() {
+      final var expectedMessage =
+          "Du saknar behörighet för den begärda åtgärden."
+              + " För att utföra denna uppgift krävs särskilda rättigheter eller en specifik befattning.";
+
+      final var rulePatientAgeEighteenOrOlder = new ActionRulePatientAgeEighteenOrOlder(null);
+
+      final var actualMessage = rulePatientAgeEighteenOrOlder.getReasonForPermissionDenied();
+      assertEquals(expectedMessage, actualMessage);
+    }
   }
 
   @Nested
