@@ -32,7 +32,6 @@ import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfConfig
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfFieldId;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.RuleExpression;
 import se.inera.intyg.certificateservice.domain.validation.model.ElementValidationBoolean;
-import se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.common.QuestionForutsattningarForAttLamnaSkriftligtSamtycke;
 
 class QuestionForutsattningarForAttLamnaSkriftligtSamtyckeTest {
 

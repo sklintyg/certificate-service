@@ -18,8 +18,8 @@
  */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226;
 
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.common.QuestionDiagnos.DIAGNOSIS_ID;
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.common.QuestionDiagnos.DIAGNOS_1;
+import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.QuestionDiagnos.DIAGNOSIS_ID;
+import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements.QuestionDiagnos.DIAGNOS_1;
 
 import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.CertificateSummary;

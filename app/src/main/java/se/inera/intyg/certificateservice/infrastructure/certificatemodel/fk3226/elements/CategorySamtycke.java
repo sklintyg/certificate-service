@@ -18,30 +18,25 @@
  */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import org.junit.jupiter.api.Test;
+import java.util.List;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementConfigurationCategory;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementId;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementSpecification;
 
-class CategorySamtyckeTest {
+public class CategorySamtycke {
 
-  private static final ElementId ELEMENT_ID = new ElementId("KAT_3");
+  private static final ElementId QUESTION_SAMTYCKE_CATEGORY_ID = new ElementId("KAT_3");
 
-  @Test
-  void shallIncludeId() {
-    final var element = CategorySamtycke.categorySamtycke();
-
-    assertEquals(ELEMENT_ID, element.id());
+  private CategorySamtycke() {
+    throw new IllegalStateException("Utility class");
   }
 
-  @Test
-  void shallIncludeConfiguration() {
-    final var expectedConfiguration =
-        ElementConfigurationCategory.builder().name("Samtycke för närståendes stöd").build();
-
-    final var element = CategorySamtycke.categorySamtycke();
-
-    assertEquals(expectedConfiguration, element.configuration());
+  public static ElementSpecification categorySamtycke(ElementSpecification... children) {
+    return ElementSpecification.builder()
+        .id(QUESTION_SAMTYCKE_CATEGORY_ID)
+        .configuration(
+            ElementConfigurationCategory.builder().name("Samtycke för närståendes stöd").build())
+        .children(List.of(children))
+        .build();
   }
 }

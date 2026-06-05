@@ -18,30 +18,31 @@
  */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.elements;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import org.junit.jupiter.api.Test;
+import java.util.List;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementConfigurationCategory;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementId;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementSpecification;
+import se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.CertificateTextProvider;
+import se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.FK3226TextKey;
 
-class CategorySamtyckeTest {
+public class CategoryHot {
 
-  private static final ElementId ELEMENT_ID = new ElementId("KAT_3");
+  private static final ElementId CATEGORY_HOT_ID = new ElementId("KAT_2");
 
-  @Test
-  void shallIncludeId() {
-    final var element = CategorySamtycke.categorySamtycke();
-
-    assertEquals(ELEMENT_ID, element.id());
+  private CategoryHot() {
+    throw new IllegalStateException("Utility class");
   }
 
-  @Test
-  void shallIncludeConfiguration() {
-    final var expectedConfiguration =
-        ElementConfigurationCategory.builder().name("Samtycke för närståendes stöd").build();
-
-    final var element = CategorySamtycke.categorySamtycke();
-
-    assertEquals(expectedConfiguration, element.configuration());
+  public static ElementSpecification categoryHot(
+      CertificateTextProvider texts, ElementSpecification... children) {
+    return ElementSpecification.builder()
+        .id(CATEGORY_HOT_ID)
+        .configuration(
+            ElementConfigurationCategory.builder()
+                .name("Påtagligt hot mot patientens liv")
+                .description(texts.text(FK3226TextKey.CATEGORY_HOT_DESCRIPTION))
+                .build())
+        .children(List.of(children))
+        .build();
   }
 }
