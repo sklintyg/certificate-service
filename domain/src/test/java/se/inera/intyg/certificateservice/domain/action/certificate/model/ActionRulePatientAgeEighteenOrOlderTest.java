@@ -25,6 +25,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataPatient.ATHENA_REACT_ANDERSSON;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataPatient.athenaReactAnderssonBuilder;
+import static se.inera.intyg.certificateservice.domain.testdata.TestDataPatient.coordinationNumberBuilder;
+import static se.inera.intyg.certificateservice.domain.testdata.TestDataPatient.personalIdentityNumberBuilder;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -34,7 +36,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ActionRuleContentProvider;
-import se.inera.intyg.certificateservice.domain.common.model.PersonId;
 
 @ExtendWith(MockitoExtension.class)
 class ActionRulePatientAgeEighteenOrOlderTest {
@@ -81,10 +82,7 @@ class ActionRulePatientAgeEighteenOrOlderTest {
               ActionEvaluation.builder()
                   .patient(
                       athenaReactAnderssonBuilder()
-                          .id(
-                              PersonId.builder()
-                                  .id(LocalDate.now().minusYears(18).toString().replace("-", ""))
-                                  .build())
+                          .id(personalIdentityNumberBuilder(LocalDate.now().minusYears(18)).build())
                           .build())
                   .build());
 
@@ -103,13 +101,46 @@ class ActionRulePatientAgeEighteenOrOlderTest {
                   .patient(
                       athenaReactAnderssonBuilder()
                           .id(
-                              PersonId.builder()
-                                  .id(
-                                      LocalDate.now()
-                                          .minusYears(18)
-                                          .plusDays(1)
-                                          .toString()
-                                          .replace("-", ""))
+                              personalIdentityNumberBuilder(
+                                      LocalDate.now().minusYears(18).plusDays(1))
+                                  .build())
+                          .build())
+                  .build());
+
+      final var result = rulePatientAgeEighteenOrOlder.evaluate(Optional.empty(), actionEvaluation);
+      assertFalse(result);
+    }
+
+    @Test
+    void shouldReturnTrueIfPatientIsEighteenWithCoordinationNumber() {
+      final var rulePatientAgeEighteenOrOlder =
+          new ActionRulePatientAgeEighteenOrOlder(actionRuleContentProvider);
+
+      final var actionEvaluation =
+          Optional.of(
+              ActionEvaluation.builder()
+                  .patient(
+                      athenaReactAnderssonBuilder()
+                          .id(coordinationNumberBuilder(LocalDate.now().minusYears(18)).build())
+                          .build())
+                  .build());
+
+      final var result = rulePatientAgeEighteenOrOlder.evaluate(Optional.empty(), actionEvaluation);
+      assertTrue(result);
+    }
+
+    @Test
+    void shouldReturnFalseIfPatientIsUnderEighteenWithCoordinationNumber() {
+      final var rulePatientAgeEighteenOrOlder =
+          new ActionRulePatientAgeEighteenOrOlder(actionRuleContentProvider);
+
+      final var actionEvaluation =
+          Optional.of(
+              ActionEvaluation.builder()
+                  .patient(
+                      athenaReactAnderssonBuilder()
+                          .id(
+                              coordinationNumberBuilder(LocalDate.now().minusYears(18).plusDays(1))
                                   .build())
                           .build())
                   .build());
@@ -165,13 +196,8 @@ class ActionRulePatientAgeEighteenOrOlderTest {
                   .patient(
                       athenaReactAnderssonBuilder()
                           .id(
-                              PersonId.builder()
-                                  .id(
-                                      LocalDate.now()
-                                          .minusYears(18)
-                                          .plusDays(1)
-                                          .toString()
-                                          .replace("-", ""))
+                              personalIdentityNumberBuilder(
+                                      LocalDate.now().minusYears(18).plusDays(1))
                                   .build())
                           .build())
                   .build());
@@ -190,10 +216,7 @@ class ActionRulePatientAgeEighteenOrOlderTest {
               ActionEvaluation.builder()
                   .patient(
                       athenaReactAnderssonBuilder()
-                          .id(
-                              PersonId.builder()
-                                  .id(LocalDate.now().minusYears(18).toString().replace("-", ""))
-                                  .build())
+                          .id(personalIdentityNumberBuilder(LocalDate.now().minusYears(18)).build())
                           .build())
                   .build());
 
@@ -211,6 +234,47 @@ class ActionRulePatientAgeEighteenOrOlderTest {
 
       final var result = rulePatientAgeEighteenOrOlder.message(Optional.empty(), actionEvaluation);
       assertTrue(result.isEmpty());
+    }
+
+    @Test
+    void shouldReturnMessageWhenPatientIsUnderEighteenWithCoordinationNumber() {
+      final var expectedMessage = "expectedMessage";
+      final var rulePatientAgeEighteenOrOlder =
+          new ActionRulePatientAgeEighteenOrOlder(actionRuleContentProvider);
+
+      when(actionRuleContentProvider.getReasonForPermissionDenied()).thenReturn(expectedMessage);
+
+      final var actionEvaluation =
+          Optional.of(
+              ActionEvaluation.builder()
+                  .patient(
+                      athenaReactAnderssonBuilder()
+                          .id(
+                              coordinationNumberBuilder(LocalDate.now().minusYears(18).plusDays(1))
+                                  .build())
+                          .build())
+                  .build());
+
+      final var result = rulePatientAgeEighteenOrOlder.message(Optional.empty(), actionEvaluation);
+      assertEquals(Optional.of(expectedMessage), result);
+    }
+
+    @Test
+    void shouldReturnEmptyWhenPatientIsEighteenWithCoordinationNumber() {
+      final var rulePatientAgeEighteenOrOlder =
+          new ActionRulePatientAgeEighteenOrOlder(actionRuleContentProvider);
+
+      final var actionEvaluation =
+          Optional.of(
+              ActionEvaluation.builder()
+                  .patient(
+                      athenaReactAnderssonBuilder()
+                          .id(coordinationNumberBuilder(LocalDate.now().minusYears(18)).build())
+                          .build())
+                  .build());
+
+      final var result = rulePatientAgeEighteenOrOlder.message(Optional.empty(), actionEvaluation);
+      assertEquals(Optional.empty(), result);
     }
   }
 }

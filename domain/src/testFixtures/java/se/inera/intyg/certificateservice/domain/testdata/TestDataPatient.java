@@ -18,6 +18,8 @@
  */
 package se.inera.intyg.certificateservice.domain.testdata;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import se.inera.intyg.certificateservice.domain.common.model.PersonId;
 import se.inera.intyg.certificateservice.domain.common.model.PersonIdType;
 import se.inera.intyg.certificateservice.domain.patient.model.Name;
@@ -30,6 +32,7 @@ public class TestDataPatient {
   public static final Patient ALVE_REACT_ALFREDSSON = alveReactAlfredssonBuilder().build();
   public static final Patient ATLAS_REACT_ABRAHAMSSON = atlasReactAbrahamssonBuilder().build();
   public static final Patient ANONYMA_REACT_ATTILA = anonymaReactAttilaBuilder().build();
+  private static final String BIRTH_NUMBER = "002";
 
   public static Patient.PatientBuilder athenaReactAnderssonBuilder() {
     return Patient.builder()
@@ -125,5 +128,43 @@ public class TestDataPatient {
         .testIndicated(TestDataPatientConstants.ANONYMA_REACT_ATTILA_TEST_INDICATED)
         .deceased(TestDataPatientConstants.ANONYMA_REACT_ATTILA_DECEASED)
         .protectedPerson(TestDataPatientConstants.ANONYMA_REACT_ATTILA_PROTECTED_PERSON);
+  }
+
+  public static PersonId.PersonIdBuilder personalIdentityNumberBuilder(LocalDate birthDate) {
+    return PersonId.builder()
+        .id(buildPersonalIdentityNumberId(birthDate))
+        .type(PersonIdType.PERSONAL_IDENTITY_NUMBER);
+  }
+
+  public static PersonId.PersonIdBuilder coordinationNumberBuilder(LocalDate birthDate) {
+    return PersonId.builder()
+        .id(buildCoordinationNumberId(birthDate))
+        .type(PersonIdType.COORDINATION_NUMBER);
+  }
+
+  private static String buildPersonalIdentityNumberId(LocalDate birthDate) {
+    final var yyyyMMdd = birthDate.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+    final var yyMMdd = birthDate.format(DateTimeFormatter.ofPattern("yyMMdd"));
+    final var checkDigit = getCheckDigit(yyMMdd + BIRTH_NUMBER);
+    return yyyyMMdd + "-" + BIRTH_NUMBER + checkDigit;
+  }
+
+  private static String buildCoordinationNumberId(LocalDate birthDate) {
+    final var yyyy = birthDate.format(DateTimeFormatter.ofPattern("yyyy"));
+    final var MM = birthDate.format(DateTimeFormatter.ofPattern("MM"));
+    final var yy = birthDate.format(DateTimeFormatter.ofPattern("yy"));
+    final var coordinationDay = String.format("%02d", birthDate.getDayOfMonth() + 60);
+    final var checkDigit = getCheckDigit(yy + MM + coordinationDay + BIRTH_NUMBER);
+    return yyyy + MM + coordinationDay + "-" + BIRTH_NUMBER + checkDigit;
+  }
+
+  private static int getCheckDigit(String nineDigits) {
+    int sum = 0;
+    for (var i = 0; i < 9; i++) {
+      final var digit = nineDigits.charAt(i) - '0';
+      final var product = digit * (i % 2 == 0 ? 2 : 1);
+      sum += product >= 10 ? product - 9 : product;
+    }
+    return (10 - sum % 10) % 10;
   }
 }
