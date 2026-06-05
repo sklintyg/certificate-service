@@ -59,8 +59,7 @@ public class CertificateTypeInfoConverter {
                 : null)
         .message(
             certificateActions.stream()
-                .filter(value -> !value.evaluate(Optional.empty(), Optional.of(actionEvaluation)))
-                .map(CertificateAction::message)
+                .map(action -> action.message(Optional.empty(), Optional.of(actionEvaluation)))
                 .flatMap(Optional::stream)
                 .findFirst()
                 .orElse(null))
