@@ -33,11 +33,13 @@ public class ActionRulePatientAgeEighteenOrOlder implements ActionRule {
   @Override
   public boolean evaluate(
       Optional<Certificate> certificate, Optional<ActionEvaluation> actionEvaluation) {
-    final var patient = actionEvaluation.map(ActionEvaluation::patient).orElse(null);
-
-    if (patient == null) {
-      throw new IllegalArgumentException("Action evaluation is missing required field patient");
-    }
+    final var patient =
+        actionEvaluation
+            .map(ActionEvaluation::patient)
+            .orElseThrow(
+                () ->
+                    new IllegalArgumentException(
+                        "Action evaluation is missing required field patient"));
 
     return patient.getAge() >= 18;
   }
