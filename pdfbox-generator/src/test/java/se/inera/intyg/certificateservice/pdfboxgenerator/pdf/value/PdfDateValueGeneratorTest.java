@@ -60,6 +60,45 @@ class PdfDateValueGeneratorTest {
   }
 
   @Test
+  void shouldSetValueIfElementDataWithDateAndOffset() {
+    final var expected =
+        List.of(PdfField.builder().id(FIELD_ID).value(VALUE.toString()).offset(-8).build());
+
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .pdfConfiguration(
+                PdfConfigurationDate.builder()
+                    .pdfFieldId(new PdfFieldId(FIELD_ID))
+                    .offset(-8)
+                    .build())
+            .build();
+
+    final var elementValue = ElementValueDate.builder().date(VALUE).build();
+
+    final var result = pdfDateValueGenerator.generate(elementSpecification, elementValue);
+
+    assertEquals(expected, result);
+  }
+
+  @Test
+  void shouldSetOffsetToZeroIfElementDataMissesOffset() {
+    final var expected =
+        List.of(PdfField.builder().id(FIELD_ID).value(VALUE.toString()).offset(0).build());
+
+    final var elementSpecification =
+        ElementSpecification.builder()
+            .pdfConfiguration(
+                PdfConfigurationDate.builder().pdfFieldId(new PdfFieldId(FIELD_ID)).build())
+            .build();
+
+    final var elementValue = ElementValueDate.builder().date(VALUE).build();
+
+    final var result = pdfDateValueGenerator.generate(elementSpecification, elementValue);
+
+    assertEquals(expected, result);
+  }
+
+  @Test
   void shouldReturnEmptyListIfNoDate() {
     final var elementSpecification =
         ElementSpecification.builder()
