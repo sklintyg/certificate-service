@@ -20,9 +20,9 @@ package se.inera.intyg.certificateservice.infrastructure.certificatemodel.common
 
 import se.inera.intyg.certificateservice.domain.common.model.Code;
 
-public interface CertificateTextProvider {
+public interface CertificateTextProvider<K extends Enum<K>> {
 
-  String text(Enum<?> key);
+  String text(K key);
 
-  Code code(Enum<?> key);
+  Code code(K key);
 }

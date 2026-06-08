@@ -23,11 +23,11 @@ import se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.
 import se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.codesystems.CodeSystemKvFkmu0009;
 import se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.v1.FK3226TextKey;
 
-public class FK3226V1TextProvider implements CertificateTextProvider {
+public class FK3226V1TextProvider implements CertificateTextProvider<FK3226TextKey> {
 
   @Override
-  public String text(Enum<?> key) {
-    return switch ((FK3226TextKey) key) {
+  public String text(FK3226TextKey key) {
+    return switch (key) {
       case CATEGORY_HOT_DESCRIPTION ->
           """
           Ange på vilket sätt hälsotillståndet utgör ett påtagligt hot mot patientens liv i nuläget eller på viss tids sikt.
@@ -43,8 +43,8 @@ public class FK3226V1TextProvider implements CertificateTextProvider {
   }
 
   @Override
-  public Code code(Enum<?> key) {
-    return switch ((FK3226TextKey) key) {
+  public Code code(FK3226TextKey key) {
+    return switch (key) {
       case CODE_ENDAST_PALLIATIV -> CodeSystemKvFkmu0009.ENDAST_PALLIATIV_V1;
       default -> throw new IllegalArgumentException("No code mapping for key: " + key);
     };

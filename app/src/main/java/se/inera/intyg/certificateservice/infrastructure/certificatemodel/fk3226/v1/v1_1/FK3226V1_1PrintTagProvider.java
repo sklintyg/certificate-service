@@ -22,11 +22,11 @@ import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfFieldI
 import se.inera.intyg.certificateservice.infrastructure.certificatemodel.common.CertificatePrintTagProvider;
 import se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.v1.FK3226PrintTagKey;
 
-public class FK3226V1_1PrintTagProvider implements CertificatePrintTagProvider {
+public class FK3226V1_1PrintTagProvider implements CertificatePrintTagProvider<FK3226PrintTagKey> {
 
   @Override
-  public PdfFieldId fieldId(Enum<?> key) {
-    return switch ((FK3226PrintTagKey) key) {
+  public PdfFieldId fieldId(FK3226PrintTagKey key) {
+    return switch (key) {
       case QUESTION_NAR_AKTIVA_BEHANDLINGEN_AVSLUTADES_DATE ->
           new PdfFieldId("form1[0].#subform[1].flt_datumPatientensOverlevnad[0]");
       case QUESTION_NAR_TILLSTANDET_BLEV_AKUT_LIVSHOTANDE_DATE ->

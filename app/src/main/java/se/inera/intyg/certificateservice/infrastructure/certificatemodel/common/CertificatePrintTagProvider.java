@@ -20,7 +20,7 @@ package se.inera.intyg.certificateservice.infrastructure.certificatemodel.common
 
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfFieldId;
 
-public interface CertificatePrintTagProvider {
+public interface CertificatePrintTagProvider<K extends Enum<K>> {
 
-  PdfFieldId fieldId(Enum<?> key);
+  PdfFieldId fieldId(K key);
 }
