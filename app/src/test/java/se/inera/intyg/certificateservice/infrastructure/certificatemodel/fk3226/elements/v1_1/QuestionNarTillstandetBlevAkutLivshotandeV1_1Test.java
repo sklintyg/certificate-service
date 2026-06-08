@@ -151,6 +151,7 @@ class QuestionNarTillstandetBlevAkutLivshotandeV1_1Test {
     final var expected =
         PdfConfigurationDate.builder()
             .pdfFieldId(new PdfFieldId("form1[0].#subform[1].flt_datumTillstand[0]"))
+            .offset(-8)
             .build();
 
     final var element =

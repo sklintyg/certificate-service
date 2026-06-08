@@ -152,6 +152,7 @@ class QuestionNarAktivaBehandlingenAvslutadesV1_1Test {
     final var expected =
         PdfConfigurationDate.builder()
             .pdfFieldId(new PdfFieldId("form1[0].#subform[1].flt_datumPatientensOverlevnad[0]"))
+            .offset(-8)
             .build();
 
     final var element =
