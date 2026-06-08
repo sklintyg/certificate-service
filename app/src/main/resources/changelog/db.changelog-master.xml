@@ -872,4 +872,165 @@
       <column name="created"/>
     </createIndex>
   </changeSet>
+
+  <changeSet id="10" author="mww">
+    <preConditions onFail="MARK_RAN">
+      <indexExists tableName="certificate" indexName="key"/>
+    </preConditions>
+    <dropIndex tableName="certificate" indexName="key"/>
+  </changeSet>
+
+  <changeSet id="11" author="mww">
+    <preConditions onFail="MARK_RAN">
+      <indexExists tableName="certificate_status" indexName="key"/>
+    </preConditions>
+    <dropIndex tableName="certificate_status" indexName="key"/>
+  </changeSet>
+
+  <changeSet id="12" author="mww">
+    <preConditions onFail="MARK_RAN">
+      <indexExists tableName="certificate_model" indexName="key"/>
+    </preConditions>
+    <dropIndex tableName="certificate_model" indexName="key"/>
+  </changeSet>
+
+  <changeSet id="13" author="mww">
+    <preConditions onFail="MARK_RAN">
+      <indexExists tableName="certificate_xml" indexName="key"/>
+    </preConditions>
+    <dropIndex tableName="certificate_xml" indexName="key"/>
+  </changeSet>
+
+  <changeSet id="14" author="mww">
+    <preConditions onFail="MARK_RAN">
+      <indexExists tableName="patient" indexName="key"/>
+    </preConditions>
+    <dropIndex tableName="patient" indexName="key"/>
+  </changeSet>
+
+  <changeSet id="15" author="mww">
+    <preConditions onFail="MARK_RAN">
+      <indexExists tableName="unit" indexName="key"/>
+    </preConditions>
+    <dropIndex tableName="unit" indexName="key"/>
+  </changeSet>
+
+  <changeSet id="16" author="mww">
+    <preConditions onFail="MARK_RAN">
+      <indexExists tableName="unit_type" indexName="key"/>
+    </preConditions>
+    <dropIndex tableName="unit_type" indexName="key"/>
+  </changeSet>
+
+  <changeSet id="17" author="mww">
+    <preConditions onFail="MARK_RAN">
+      <indexExists tableName="revoked_reason" indexName="key"/>
+    </preConditions>
+    <dropIndex tableName="revoked_reason" indexName="key"/>
+  </changeSet>
+
+  <changeSet id="18" author="mww">
+    <preConditions onFail="MARK_RAN">
+      <indexExists tableName="certificate_relation_type" indexName="key"/>
+    </preConditions>
+    <dropIndex tableName="certificate_relation_type" indexName="key"/>
+  </changeSet>
+
+  <changeSet id="19" author="mww">
+    <preConditions onFail="MARK_RAN">
+      <indexExists tableName="certificate_relation" indexName="key"/>
+    </preConditions>
+    <dropIndex tableName="certificate_relation" indexName="key"/>
+  </changeSet>
+
+  <changeSet id="20" author="mww">
+    <preConditions onFail="MARK_RAN">
+      <indexExists tableName="external_reference" indexName="key"/>
+    </preConditions>
+    <dropIndex tableName="external_reference" indexName="key"/>
+  </changeSet>
+
+  <changeSet id="21" author="mww">
+    <preConditions onFail="MARK_RAN">
+      <indexExists tableName="staff" indexName="key"/>
+    </preConditions>
+    <dropIndex tableName="staff" indexName="key"/>
+  </changeSet>
+
+  <changeSet id="22" author="mww">
+    <preConditions onFail="MARK_RAN">
+      <indexExists tableName="staff_role" indexName="key"/>
+    </preConditions>
+    <dropIndex tableName="staff_role" indexName="key"/>
+  </changeSet>
+
+  <changeSet id="23" author="mww">
+    <preConditions onFail="MARK_RAN">
+      <indexExists tableName="certificate_data" indexName="key"/>
+    </preConditions>
+    <dropIndex tableName="certificate_data" indexName="key"/>
+  </changeSet>
+
+  <changeSet id="24" author="mww">
+    <preConditions onFail="MARK_RAN">
+      <indexExists tableName="patient_id_type" indexName="key"/>
+    </preConditions>
+    <dropIndex tableName="patient_id_type" indexName="key"/>
+  </changeSet>
+
+  <changeSet id="25" author="mww">
+    <preConditions onFail="MARK_RAN">
+      <indexExists tableName="message" indexName="key"/>
+    </preConditions>
+    <dropIndex tableName="message" indexName="key"/>
+  </changeSet>
+
+  <changeSet id="26" author="mww">
+    <preConditions onFail="MARK_RAN">
+      <indexExists tableName="message_status" indexName="key"/>
+    </preConditions>
+    <dropIndex tableName="message_status" indexName="key"/>
+  </changeSet>
+
+  <changeSet id="27" author="mww">
+    <preConditions onFail="MARK_RAN">
+      <indexExists tableName="message_type" indexName="key"/>
+    </preConditions>
+    <dropIndex tableName="message_type" indexName="key"/>
+  </changeSet>
+
+  <changeSet id="28" author="mww">
+    <preConditions onFail="MARK_RAN">
+      <indexExists tableName="message_relation_type" indexName="key"/>
+    </preConditions>
+    <dropIndex tableName="message_relation_type" indexName="key"/>
+  </changeSet>
+
+  <changeSet id="29" author="mww">
+    <preConditions onFail="MARK_RAN">
+      <indexExists tableName="message_relation" indexName="key"/>
+    </preConditions>
+    <dropIndex tableName="message_relation" indexName="key"/>
+  </changeSet>
+
+  <changeSet id="30" author="mww">
+    <preConditions onFail="MARK_RAN">
+      <indexExists tableName="unit_version" indexName="key"/>
+    </preConditions>
+    <dropIndex tableName="unit_version" indexName="key"/>
+  </changeSet>
+
+  <changeSet id="31" author="mww">
+    <preConditions onFail="MARK_RAN">
+      <indexExists tableName="staff_version" indexName="key"/>
+    </preConditions>
+    <dropIndex tableName="staff_version" indexName="key"/>
+  </changeSet>
+
+  <changeSet id="32" author="mww">
+    <preConditions onFail="MARK_RAN">
+      <indexExists tableName="patient_version" indexName="key"/>
+    </preConditions>
+    <dropIndex tableName="patient_version" indexName="key"/>
+  </changeSet>
 </databaseChangeLog>
