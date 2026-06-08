@@ -41,7 +41,7 @@ import se.inera.intyg.certificateservice.domain.action.certificate.model.Certifi
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.CertificateModel;
 import se.inera.intyg.certificateservice.domain.certificatemodel.repository.CertificateActionConfigurationRepository;
 import se.inera.intyg.certificateservice.domain.diagnosiscode.repository.DiagnosisCodeRepository;
-import se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.CertificateModelFactoryFK3226;
+import se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.v1.v1_0.CertificateModelFactoryFK3226;
 import se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.CertificateModelFactoryTS8071;
 
 /**
