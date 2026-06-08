@@ -46,6 +46,7 @@ public class PdfDateValueGenerator implements PdfElementValue<ElementValueDate> 
         PdfField.builder()
             .id(pdfConfiguration.pdfFieldId().id())
             .value(elementValueDate.date().toString())
+            .offset(pdfConfiguration.offset())
             .build());
   }
 }

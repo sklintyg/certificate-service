@@ -26,4 +26,5 @@ import lombok.Value;
 public class PdfConfigurationDate implements PdfConfiguration {
 
   PdfFieldId pdfFieldId;
+  @Builder.Default Integer offset = 0;
 }
