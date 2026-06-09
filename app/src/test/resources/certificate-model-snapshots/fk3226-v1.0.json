@@ -818,7 +818,8 @@
         "pdfConfiguration" : {
           "pdfFieldId" : {
             "id" : "form1[0].#subform[1].flt_datumBehandlingenAvslutad[0]"
-          }
+          },
+          "offset" : 0
         },
         "children" : [ ],
         "shouldValidate" : { },
@@ -874,7 +875,8 @@
         "pdfConfiguration" : {
           "pdfFieldId" : {
             "id" : "form1[0].#subform[1].flt_datumAkutLivshotande[0]"
-          }
+          },
+          "offset" : 0
         },
         "children" : [ ],
         "shouldValidate" : { },
@@ -1059,7 +1061,8 @@
         "pdfConfiguration" : {
           "pdfFieldId" : {
             "id" : "form1[0].#subform[1].flt_datumTillMed[0]"
-          }
+          },
+          "offset" : 0
         },
         "children" : [ ],
         "shouldValidate" : { },

@@ -78,6 +78,7 @@ public class QuestionNarTillstandetBlevAkutLivshotandeV1_1 {
         .pdfConfiguration(
             PdfConfigurationDate.builder()
                 .pdfFieldId(PDF_WHEN_CONDITION_BECAME_LIFE_THREATENING_FIELD_ID)
+                .offset(-8)
                 .build())
         .build();
   }
