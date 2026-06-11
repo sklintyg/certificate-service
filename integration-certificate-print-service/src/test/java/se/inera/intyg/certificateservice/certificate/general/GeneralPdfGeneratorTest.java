@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package se.inera.intyg.certificateservice.certificate;
+package se.inera.intyg.certificateservice.certificate.general;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -32,7 +32,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import se.inera.intyg.certificateservice.certificate.general.GeneralPdfGenerator;
 import se.inera.intyg.certificateservice.certificate.general.converter.PrintCertificateCategoryConverter;
 import se.inera.intyg.certificateservice.certificate.general.converter.PrintCertificateMetadataConverter;
 import se.inera.intyg.certificateservice.certificate.general.dto.PrintCertificateCategoryDTO;
