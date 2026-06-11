@@ -96,6 +96,7 @@ public class Message {
     if (this.status != MessageStatus.HANDLED) {
       this.status = MessageStatus.HANDLED;
       this.modified = LocalDateTime.now(ZoneId.systemDefault());
+      Optional.ofNullable(answer).ifPresent(Answer::handle);
     }
   }
 
@@ -103,6 +104,7 @@ public class Message {
     if (this.status == MessageStatus.HANDLED) {
       this.status = MessageStatus.SENT;
       this.modified = LocalDateTime.now(ZoneId.systemDefault());
+      Optional.ofNullable(answer).ifPresent(Answer::unhandle);
     }
   }
 

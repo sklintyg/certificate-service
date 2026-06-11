@@ -121,6 +121,6 @@ class SetMessagesToHandleDomainServiceTest {
 
     setMessagesToHandleDomainService.handle(List.of(messageToHandle));
 
-    assertEquals(MessageStatus.SENT, messageToHandle.answer().status());
+    assertEquals(MessageStatus.HANDLED, messageToHandle.answer().status());
   }
 }
