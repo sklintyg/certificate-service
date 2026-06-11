@@ -18,8 +18,12 @@
  */
 package se.inera.intyg.certificateservice.domain.message.model;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static se.inera.intyg.certificateservice.domain.testdata.TestDataMessage.answerBuilder;
+import static se.inera.intyg.certificateservice.domain.testdata.TestDataMessage.complementMessageBuilder;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataStaff.AJLA_DOKTOR;
 
 import org.junit.jupiter.api.Nested;
@@ -108,6 +112,66 @@ class AnswerTest {
       final var answer = Answer.builder().build();
       answer.save(AJLA_DOKTOR, CONTENT);
       assertNotNull(answer.modified());
+    }
+  }
+
+  @Nested
+  class TestHandle {
+
+    @Test
+    void shallSetStatusToHandled() {
+      final var unhandledAnswer = answerBuilder().build();
+      unhandledAnswer.handle();
+      assertEquals(MessageStatus.HANDLED, unhandledAnswer.status());
+    }
+
+    @Test
+    void shallUpdateModified() {
+      final var unhandledAnswer = complementMessageBuilder().build();
+      final var modifiedBefore = unhandledAnswer.modified();
+      unhandledAnswer.handle();
+      assertAll(
+          () -> assertNotNull(unhandledAnswer.modified()),
+          () -> assertNotEquals(modifiedBefore, unhandledAnswer.modified()));
+    }
+
+    @Test
+    void shallNotUpdateModifiedIfAlreadyHandled() {
+      final var unhandledAnswer = complementMessageBuilder().status(MessageStatus.HANDLED).build();
+
+      final var modifiedBefore = unhandledAnswer.modified();
+      unhandledAnswer.handle();
+      assertEquals(modifiedBefore, unhandledAnswer.modified());
+    }
+  }
+
+  @Nested
+  class TestUnHandle {
+
+    @Test
+    void shallSetStatusToSent() {
+      final var unhandledAnswer = complementMessageBuilder().status(MessageStatus.HANDLED).build();
+      unhandledAnswer.unhandle();
+      assertEquals(MessageStatus.SENT, unhandledAnswer.status());
+    }
+
+    @Test
+    void shallUpdateModified() {
+      final var unhandledAnswer = complementMessageBuilder().status(MessageStatus.HANDLED).build();
+      final var modifiedBefore = unhandledAnswer.modified();
+      unhandledAnswer.unhandle();
+      assertAll(
+          () -> assertNotNull(unhandledAnswer.modified()),
+          () -> assertNotEquals(modifiedBefore, unhandledAnswer.modified()));
+    }
+
+    @Test
+    void shallNotUpdateModifiedIfAlreadyHandled() {
+      final var unhandledAnswer = complementMessageBuilder().status(MessageStatus.SENT).build();
+
+      final var modifiedBefore = unhandledAnswer.modified();
+      unhandledAnswer.unhandle();
+      assertEquals(modifiedBefore, unhandledAnswer.modified());
     }
   }
 }

@@ -218,7 +218,7 @@ class HandleMessageDomainServiceTest {
                   .build();
           handleMessageDomainService.handle(message, true, certificate, ACTION_EVALUATION);
 
-          assertEquals(MessageStatus.SENT, message.answer().status());
+          assertEquals(MessageStatus.HANDLED, message.answer().status());
         }
       }
 

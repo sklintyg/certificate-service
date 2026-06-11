@@ -18,7 +18,10 @@
  */
 package se.inera.intyg.certificateservice.domain.message.model;
 
+import static se.inera.intyg.certificateservice.domain.message.model.MessageStatus.DELETED_DRAFT;
+
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -51,7 +54,7 @@ public class Answer {
   }
 
   public void delete() {
-    this.status = MessageStatus.DELETED_DRAFT;
+    this.status = DELETED_DRAFT;
   }
 
   public void save(Staff staff, Content content) {
@@ -63,5 +66,19 @@ public class Answer {
 
   public boolean isDraft() {
     return MessageStatus.DRAFT.equals(this.status);
+  }
+
+  public void handle() {
+    if (this.status == MessageStatus.SENT) {
+      this.status = MessageStatus.HANDLED;
+      this.modified = LocalDateTime.now(ZoneId.systemDefault());
+    }
+  }
+
+  public void unhandle() {
+    if (this.status == MessageStatus.HANDLED) {
+      this.status = MessageStatus.SENT;
+      this.modified = LocalDateTime.now(ZoneId.systemDefault());
+    }
   }
 }

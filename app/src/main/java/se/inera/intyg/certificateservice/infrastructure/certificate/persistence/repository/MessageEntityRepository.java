@@ -41,7 +41,7 @@ public interface MessageEntityRepository
       value =
           "SELECT c.certificate_id AS certificateId, "
               + "SUM(CASE WHEN mt.type = 'COMPLEMENT' THEN 1 ELSE 0 END) AS complementsCount, "
-              + "SUM(CASE WHEN mt.type IN ('OTHER', 'CONTACT', 'COORDINATION') THEN 1 ELSE 0 END) AS othersCount "
+              + "SUM(CASE WHEN mt.type IN ('OTHER', 'CONTACT', 'COORDINATION', 'ANSWER') THEN 1 ELSE 0 END) AS othersCount "
               + "FROM certificate c "
               + "JOIN message m ON m.certificate_key = c.key "
               + "JOIN message_type mt ON m.message_type_key = mt.key "

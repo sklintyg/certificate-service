@@ -27,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static se.inera.intyg.certificateservice.domain.testdata.TestDataMessage.answerBuilder;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataMessage.complementMessageBuilder;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataStaff.AJLA_DOKTOR;
 
@@ -129,6 +130,52 @@ class MessageTest {
       final var modifiedBefore = unhandledMessage.modified();
       unhandledMessage.handle();
       assertEquals(modifiedBefore, unhandledMessage.modified());
+    }
+
+    @Test
+    void shallUpdateAnswerIfPresent() {
+      final var unhandledMessageWithAnswer =
+          complementMessageBuilder().answer(answerBuilder().build()).build();
+      unhandledMessageWithAnswer.handle();
+      assertEquals(MessageStatus.HANDLED, unhandledMessageWithAnswer.answer().status());
+    }
+  }
+
+  @Nested
+  class TestUnHandle {
+
+    @Test
+    void shallSetStatusToSent() {
+      final var unhandledMessage = complementMessageBuilder().status(MessageStatus.HANDLED).build();
+      unhandledMessage.unhandle();
+      assertEquals(MessageStatus.SENT, unhandledMessage.status());
+    }
+
+    @Test
+    void shallUpdateModified() {
+      final var unhandledMessage = complementMessageBuilder().status(MessageStatus.HANDLED).build();
+      final var modifiedBefore = unhandledMessage.modified();
+      unhandledMessage.unhandle();
+      assertAll(
+          () -> assertNotNull(unhandledMessage.modified()),
+          () -> assertNotEquals(modifiedBefore, unhandledMessage.modified()));
+    }
+
+    @Test
+    void shallNotUpdateModifiedIfAlreadyHandled() {
+      final var unhandledMessage = complementMessageBuilder().status(MessageStatus.SENT).build();
+
+      final var modifiedBefore = unhandledMessage.modified();
+      unhandledMessage.unhandle();
+      assertEquals(modifiedBefore, unhandledMessage.modified());
+    }
+
+    @Test
+    void shallUpdateAnswerIfPresent() {
+      final var unhandledMessageWithAnswer =
+          complementMessageBuilder().answer(answerBuilder().build()).build();
+      unhandledMessageWithAnswer.unhandle();
+      assertEquals(MessageStatus.SENT, unhandledMessageWithAnswer.answer().status());
     }
   }
 
