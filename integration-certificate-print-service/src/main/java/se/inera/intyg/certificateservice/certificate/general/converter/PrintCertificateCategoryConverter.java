@@ -16,14 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package se.inera.intyg.certificateservice.certificate.converter;
+package se.inera.intyg.certificateservice.certificate.general.converter;
 
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import se.inera.intyg.certificateservice.certificate.dto.PrintCertificateCategoryDTO;
-import se.inera.intyg.certificateservice.certificate.dto.PrintCertificateQuestionDTO;
+import se.inera.intyg.certificateservice.certificate.general.dto.PrintCertificateCategoryDTO;
+import se.inera.intyg.certificateservice.certificate.general.dto.PrintCertificateQuestionDTO;
 import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
 import se.inera.intyg.certificateservice.domain.certificate.service.PdfGeneratorOptions;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementConfigurationCategory;

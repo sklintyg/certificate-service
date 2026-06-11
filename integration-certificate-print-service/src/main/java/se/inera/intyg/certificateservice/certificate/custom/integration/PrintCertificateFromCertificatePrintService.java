@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package se.inera.intyg.certificateservice.certificate.integration;
+package se.inera.intyg.certificateservice.certificate.custom.integration;
 
 import static se.inera.intyg.certificateservice.logging.MdcHelper.LOG_SESSION_ID_HEADER;
 import static se.inera.intyg.certificateservice.logging.MdcHelper.LOG_TRACE_ID_HEADER;
@@ -29,8 +29,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
-import se.inera.intyg.certificateservice.certificate.dto.PrintCertificateRequestDTO;
-import se.inera.intyg.certificateservice.certificate.dto.PrintCertificateResponseDTO;
+import se.inera.intyg.certificateservice.certificate.custom.dto.CustomPrintRequestDTO;
+import se.inera.intyg.certificateservice.certificate.general.dto.PrintCertificateResponseDTO;
 import se.inera.intyg.certificateservice.logging.PerformanceLogging;
 
 @Service
@@ -49,10 +49,10 @@ public class PrintCertificateFromCertificatePrintService {
   @PerformanceLogging(
       eventAction = "print-certificate-from-certificate-print-service",
       eventType = EVENT_TYPE_ACCESSED)
-  public PrintCertificateResponseDTO print(PrintCertificateRequestDTO request) {
+  public PrintCertificateResponseDTO print(CustomPrintRequestDTO request) {
     return cpsRestClient
         .post()
-        .uri(printCertificateServiceUrl + "/api/print")
+        .uri(printCertificateServiceUrl + "/api/print/general")
         .header(LOG_TRACE_ID_HEADER, MDC.get(TRACE_ID_KEY))
         .header(LOG_SESSION_ID_HEADER, MDC.get(SESSION_ID_KEY))
         .body(request)

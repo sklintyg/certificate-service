@@ -16,18 +16,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package se.inera.intyg.certificateservice.certificate.dto;
+package se.inera.intyg.certificateservice.certificate.general.dto;
 
-import lombok.AllArgsConstructor;
+import java.util.List;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Value;
 
-@Data
+@Value
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class PrintCertificateResponseDTO {
+public class PrintCertificateRequestDTO {
 
-  private byte[] pdfData;
+  List<PrintCertificateCategoryDTO> categories;
+  PrintCertificateMetadataDTO metadata;
 }

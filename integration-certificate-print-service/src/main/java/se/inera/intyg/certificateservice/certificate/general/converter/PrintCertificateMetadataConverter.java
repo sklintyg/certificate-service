@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package se.inera.intyg.certificateservice.certificate.converter;
+package se.inera.intyg.certificateservice.certificate.general.converter;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -25,8 +25,8 @@ import java.util.Optional;
 import javax.imageio.ImageIO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import se.inera.intyg.certificateservice.certificate.dto.GeneralPrintTextDTO;
-import se.inera.intyg.certificateservice.certificate.dto.PrintCertificateMetadataDTO;
+import se.inera.intyg.certificateservice.certificate.general.dto.GeneralPrintTextDTO;
+import se.inera.intyg.certificateservice.certificate.general.dto.PrintCertificateMetadataDTO;
 import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.CertificateGeneralPrintText;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.GeneralPdfSpecification;

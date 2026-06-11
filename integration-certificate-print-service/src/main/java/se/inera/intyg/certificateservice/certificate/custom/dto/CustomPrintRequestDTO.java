@@ -16,32 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package se.inera.intyg.certificateservice.certificate.dto;
+package se.inera.intyg.certificateservice.certificate.custom.dto;
 
-import java.util.List;
-import lombok.Builder;
-import lombok.Value;
+import java.util.Map;
 
-@Value
-@Builder
-public class PrintCertificateMetadataDTO {
-
-  String name;
-  String version;
-  String typeId;
-  String certificateId;
-  String sentDate;
-  String signingDate;
-  byte[] recipientLogo;
-  String recipientName;
-  String recipientId;
-  boolean canSendElectronically;
-  String applicationOrigin;
-  String personId;
-  String description;
-  String fileName;
-  String issuerName;
-  String issuingUnit;
-  List<String> unitInformation;
-  GeneralPrintTextDTO generalPrintText;
-}
+public record CustomPrintRequestDTO(
+    String template, CustomPdfMetadataDTO metadata, Map<String, CustomPdfFieldDTO> fields) {}

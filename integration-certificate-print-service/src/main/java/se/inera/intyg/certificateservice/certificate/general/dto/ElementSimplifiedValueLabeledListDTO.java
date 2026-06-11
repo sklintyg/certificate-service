@@ -16,18 +16,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package se.inera.intyg.certificateservice.certificate.dto;
+package se.inera.intyg.certificateservice.certificate.general.dto;
 
 import java.util.List;
 import lombok.Builder;
 import lombok.Value;
+import lombok.With;
 
 @Value
 @Builder
-public class PrintCertificateQuestionDTO {
+public class ElementSimplifiedValueLabeledListDTO implements ElementSimplifiedValueDTO {
 
-  String id;
-  String name;
-  List<PrintCertificateQuestionDTO> subquestions;
-  ElementSimplifiedValueDTO value;
+  @With List<ElementSimplifiedValueLabeledTextDTO> list;
 }

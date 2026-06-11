@@ -16,15 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package se.inera.intyg.certificateservice.certificate.dto;
+package se.inera.intyg.certificateservice.certificate.custom.dto;
 
-import lombok.Builder;
-import lombok.Value;
-import lombok.With;
-
-@Value
-@Builder
-public class ElementSimplifiedValueTextDTO implements ElementSimplifiedValueDTO {
-
-  @With String text;
-}
+public record CustomPdfFieldDTO(String value) {}

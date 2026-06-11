@@ -16,15 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package se.inera.intyg.certificateservice.certificate.dto;
+package se.inera.intyg.certificateservice.certificate.custom.dto;
 
-import lombok.Builder;
-import lombok.Value;
+import java.util.List;
 
-@Value
-@Builder
-public class ElementSimplifiedValueLabeledTextDTO implements ElementSimplifiedValueDTO {
-
-  String label;
-  String text;
-}
+public record CustomPdfMetadataDTO(
+    List<WaterMarkDTO> waterMarkList,
+    String rightMarginText,
+    AccessabilityMetadataDTO accessabilityMetadataDTO) {}

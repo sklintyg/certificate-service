@@ -16,17 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package se.inera.intyg.certificateservice.certificate.dto;
+package se.inera.intyg.certificateservice.certificate.general.dto;
 
-import java.util.List;
-import lombok.Builder;
-import lombok.Value;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-@Value
-@Builder
-public class PrintCertificateCategoryDTO {
-
-  String id;
-  String name;
-  List<PrintCertificateQuestionDTO> questions;
-}
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
+@JsonSubTypes({
+  @Type(value = ElementSimplifiedValueTextDTO.class, name = "TEXT"),
+  @Type(value = ElementSimplifiedValueListDTO.class, name = "LIST"),
+  @Type(value = ElementSimplifiedValueTableDTO.class, name = "TABLE"),
+  @Type(value = ElementSimplifiedValueLabeledListDTO.class, name = "LABELED_LIST"),
+  @Type(value = ElementSimplifiedValueLabeledTextDTO.class, name = "LABELED_TEXT")
+})
+public interface ElementSimplifiedValueDTO {}

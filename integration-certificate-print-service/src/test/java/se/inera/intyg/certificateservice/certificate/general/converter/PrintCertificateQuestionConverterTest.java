@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package se.inera.intyg.certificateservice.certificate.converter;
+package se.inera.intyg.certificateservice.certificate.general.converter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -28,10 +28,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
-import se.inera.intyg.certificateservice.certificate.dto.ElementSimplifiedValueLabeledListDTO;
-import se.inera.intyg.certificateservice.certificate.dto.ElementSimplifiedValueLabeledTextDTO;
-import se.inera.intyg.certificateservice.certificate.dto.ElementSimplifiedValueTextDTO;
-import se.inera.intyg.certificateservice.certificate.dto.PrintCertificateQuestionDTO;
+import se.inera.intyg.certificateservice.certificate.general.dto.ElementSimplifiedValueLabeledListDTO;
+import se.inera.intyg.certificateservice.certificate.general.dto.ElementSimplifiedValueLabeledTextDTO;
+import se.inera.intyg.certificateservice.certificate.general.dto.ElementSimplifiedValueTextDTO;
+import se.inera.intyg.certificateservice.certificate.general.dto.PrintCertificateQuestionDTO;
 import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
 import se.inera.intyg.certificateservice.domain.certificate.model.ElementData;
 import se.inera.intyg.certificateservice.domain.certificate.model.ElementSimplifiedValueText;
