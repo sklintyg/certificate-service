@@ -39,7 +39,7 @@ public class FK3226PdfSpecificationV1_1 {
   private static final PdfFieldId PDF_PATIENT_ID_FIELD_ID_2 =
       new PdfFieldId("form1[0].#subform[1].flt_txtPersonNr[1]");
   public static final PdfFieldId PDF_PATIENT_ID_FIELD_ID_3 =
-      new PdfFieldId("form1[0].#subform[2].flt_txtPersonNr[3]");
+      new PdfFieldId("form1[0].#subform[2].flt_txtPersonNr[2]");
   private static final PdfFieldId PDF_SIGNED_DATE_FIELD_ID =
       new PdfFieldId("form1[0].#subform[1].flt_datumUnderskrift[0]");
   private static final PdfFieldId PDF_SIGNED_BY_NAME_FIELD_ID =
@@ -64,6 +64,7 @@ public class FK3226PdfSpecificationV1_1 {
         .pdfTemplatePath(PDF_FK_3226_PDF)
         .pdfNoAddressTemplatePath(PDF_NO_ADDRESS_FK_3226_PDF)
         .overFlowPageIndex(new OverflowPageIndex(2))
+        .hasPageNbr(false)
         .patientIdFieldIds(
             List.of(
                 PDF_PATIENT_ID_FIELD_ID_1, PDF_PATIENT_ID_FIELD_ID_2, PDF_PATIENT_ID_FIELD_ID_3))
