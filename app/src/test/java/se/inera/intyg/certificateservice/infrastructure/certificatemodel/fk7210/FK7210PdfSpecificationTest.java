@@ -19,11 +19,16 @@
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7210;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7210.FK7210PdfSpecification.PDF_FK_7210_PDF;
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7210.FK7210PdfSpecification.PDF_NO_ADDRESS_FK_7210_PDF;
+import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7210.FK7210PdfSpecification.PDF_SIGNATURE_TEXT_FONT_SIZE;
+import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7210.FK7210PdfSpecification.PDF_SIGNATURE_TEXT_X;
+import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7210.FK7210PdfSpecification.PDF_SIGNATURE_TEXT_Y;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.CustomPdfSpecification;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfFieldId;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfSignature;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfTagIndex;
@@ -31,26 +36,26 @@ import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfTagInd
 class FK7210PdfSpecificationTest {
 
   @Test
-  void shallIncludePdfTemplatePathWithAddress() {
-    final var pdfSpecification = FK7210PdfSpecification.create();
+  void shallReturnCustomPdfSpecification() {
+    assertInstanceOf(CustomPdfSpecification.class, FK7210PdfSpecification.create());
+  }
 
-    assertEquals(PDF_FK_7210_PDF, pdfSpecification.pdfTemplatePath());
+  @Test
+  void shallIncludePdfTemplatePathWithAddress() {
+    assertEquals(PDF_FK_7210_PDF, FK7210PdfSpecification.create().pdfTemplatePath());
   }
 
   @Test
   void shallIncludePdfTemplatePathNoAddress() {
-    final var pdfSpecification = FK7210PdfSpecification.create();
-
-    assertEquals(PDF_NO_ADDRESS_FK_7210_PDF, pdfSpecification.pdfNoAddressTemplatePath());
+    assertEquals(
+        PDF_NO_ADDRESS_FK_7210_PDF, FK7210PdfSpecification.create().pdfNoAddressTemplatePath());
   }
 
   @Test
   void shallIncludePatientFieldId() {
     final var expected = List.of(new PdfFieldId("form1[0].#subform[0].flt_txtPersonNr[0]"));
 
-    final var pdfSpecification = FK7210PdfSpecification.create();
-
-    assertEquals(expected, pdfSpecification.patientIdFieldIds());
+    assertEquals(expected, FK7210PdfSpecification.create().patientIdFieldIds());
   }
 
   @Test
@@ -71,16 +76,22 @@ class FK7210PdfSpecificationTest {
                 new PdfFieldId("form1[0].#subform[0].flt_txtVardgivarensNamnAdressTelefon[0]"))
             .build();
 
-    final var pdfSpecification = FK7210PdfSpecification.create();
-
-    assertEquals(expected, pdfSpecification.signature());
+    assertEquals(expected, FK7210PdfSpecification.create().signature());
   }
 
   @Test
-  void shallIncludeMcid() {
-    final var expected = 100;
-    final var pdfSpecification = FK7210PdfSpecification.create();
+  void shallIncludeSignatureTextX() {
+    assertEquals(PDF_SIGNATURE_TEXT_X, FK7210PdfSpecification.create().signatureTextX());
+  }
 
-    assertEquals(expected, pdfSpecification.pdfMcid().value());
+  @Test
+  void shallIncludeSignatureTextY() {
+    assertEquals(PDF_SIGNATURE_TEXT_Y, FK7210PdfSpecification.create().signatureTextY());
+  }
+
+  @Test
+  void shallIncludeSignatureTextFontSize() {
+    assertEquals(
+        PDF_SIGNATURE_TEXT_FONT_SIZE, FK7210PdfSpecification.create().signatureTextFontSize());
   }
 }
