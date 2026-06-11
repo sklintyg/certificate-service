@@ -506,8 +506,10 @@ public class AppConfig {
   @Bean
   public PdfGeneratorProvider pdfGeneratorProvider(
       @Qualifier("certificatePdfGenerator") PdfGenerator certificatePdfGenerator,
-      @Qualifier("generalPdfGenerator") PdfGenerator generalPdfGenerator) {
-    return new PdfGeneratorProvider(certificatePdfGenerator, generalPdfGenerator);
+      @Qualifier("generalPdfGenerator") PdfGenerator generalPdfGenerator,
+      @Qualifier("customPdfGenerator") PdfGenerator customPdfGenerator) {
+    return new PdfGeneratorProvider(
+        certificatePdfGenerator, generalPdfGenerator, customPdfGenerator);
   }
 
   @Bean
