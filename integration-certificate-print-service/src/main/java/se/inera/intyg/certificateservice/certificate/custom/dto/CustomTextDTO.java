@@ -21,11 +21,5 @@ package se.inera.intyg.certificateservice.certificate.custom.dto;
 import lombok.Builder;
 
 @Builder
-public record WaterMarkDTO(
-    String value,
-    Integer x,
-    Integer y,
-    int fontSize,
-    boolean fullPage,
-    Integer pageIndex,
-    Integer tagIndex) {}
+public record CustomTextDTO(
+    String value, Integer x, Integer y, int fontSize, Integer pageIndex, Integer tagIndex) {}

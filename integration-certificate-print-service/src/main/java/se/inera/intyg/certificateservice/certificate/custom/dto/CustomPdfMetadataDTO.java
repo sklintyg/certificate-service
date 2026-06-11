@@ -21,6 +21,7 @@ package se.inera.intyg.certificateservice.certificate.custom.dto;
 import java.util.List;
 
 public record CustomPdfMetadataDTO(
-    List<WaterMarkDTO> waterMarkList,
+    List<CustomTextDTO> customTextDTOList,
+    AccessabilityMetadataDTO accessabilityMetadataDTO,
     String rightMarginText,
-    AccessabilityMetadataDTO accessabilityMetadataDTO) {}
+    boolean addDraftWatermark) {}
