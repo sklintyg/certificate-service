@@ -34,25 +34,25 @@ import se.inera.intyg.certificateservice.certificate.general.dto.PrintCertificat
 import se.inera.intyg.certificateservice.logging.PerformanceLogging;
 
 @Service
-public class PrintCertificateFromCertificatePrintService {
+public class PrintCustomCertificateFromCertificatePrintService {
 
   private final RestClient cpsRestClient;
 
   @Value("${integration.certificateprintservice.address}")
   private String printCertificateServiceUrl;
 
-  public PrintCertificateFromCertificatePrintService(
+  public PrintCustomCertificateFromCertificatePrintService(
       @Qualifier("cpsRestClient") RestClient cpsRestClient) {
     this.cpsRestClient = cpsRestClient;
   }
 
   @PerformanceLogging(
-      eventAction = "print-certificate-from-certificate-print-service",
+      eventAction = "print-custom-certificate-from-certificate-print-service",
       eventType = EVENT_TYPE_ACCESSED)
   public PrintCertificateResponseDTO print(CustomPrintRequestDTO request) {
     return cpsRestClient
         .post()
-        .uri(printCertificateServiceUrl + "/api/print/general")
+        .uri(printCertificateServiceUrl + "/api/print/custom")
         .header(LOG_TRACE_ID_HEADER, MDC.get(TRACE_ID_KEY))
         .header(LOG_SESSION_ID_HEADER, MDC.get(SESSION_ID_KEY))
         .body(request)

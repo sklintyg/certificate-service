@@ -18,4 +18,4 @@
  */
 package se.inera.intyg.certificateservice.certificate.custom.dto;
 
-public record AccessabilityMetadataDTO(String title) {}
+public record AccessibilityMetadataDTO(String title) {}

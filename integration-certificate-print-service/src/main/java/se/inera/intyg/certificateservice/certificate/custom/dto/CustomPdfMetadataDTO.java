@@ -22,6 +22,6 @@ import java.util.List;
 
 public record CustomPdfMetadataDTO(
     List<CustomTextDTO> customTextDTOList,
-    AccessabilityMetadataDTO accessabilityMetadataDTO,
+    AccessibilityMetadataDTO accessibilityMetadataDTO,
     String rightMarginText,
     boolean addDraftWatermark) {}
