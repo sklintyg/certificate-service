@@ -47,7 +47,14 @@ public interface MessageEntityRepository
               + "JOIN message_type mt ON m.message_type_key = mt.key "
               + "JOIN patient p ON c.patient_key = p.key "
               + "JOIN message_status ms ON m.message_status_key = ms.key "
-              + "WHERE p.patient_id IN :patientIds AND m.created >= DATE_SUB(NOW(), INTERVAL :maxDays DAY) AND m.author = 'FK' AND ms.status = 'SENT' "
+              + "WHERE p.patient_id IN :patientIds AND m.created >= DATE_SUB(NOW(), INTERVAL :maxDays DAY) "
+              + "AND ("
+              + "(m.author = 'FK' AND ms.status = 'SENT') "
+              + "OR   (m.author != 'FK' AND ms.status != 'HANDLED' "
+              + "AND EXISTS ("
+              + "SELECT 1 FROM message_relation mr JOIN message answer ON mr.child_message_key = answer.key "
+              + "WHERE mr.parent_message_key = m.key AND answer.author = 'FK'"
+              + ")))"
               + "GROUP BY c.certificate_id",
       nativeQuery = true)
   List<CertificateMessageCountEntity> getMessageCountForCertificates(
