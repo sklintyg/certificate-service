@@ -80,6 +80,7 @@ public class QuestionTillstandetUppskattasLivshotandeTillOchMedV1_1 {
         .pdfConfiguration(
             PdfConfigurationDate.builder()
                 .pdfFieldId(PDF_CONDITION_IS_LIFE_THREATENING_TO_FIELD_ID)
+                .offset(-8)
                 .build())
         .build();
   }
