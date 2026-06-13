@@ -25,6 +25,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataCertificate.fk7210CertificateBuilder;
+import static se.inera.intyg.certificateservice.domain.testdata.TestDataCertificateModel.FK7210_CERTIFICATE_MODEL;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataCertificateModel.fk7210certificateModelBuilder;
 
 import java.util.Base64;
@@ -38,19 +39,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import se.inera.intyg.certificateservice.certificate.custom.converter.CustomPrintRequestConverter;
 import se.inera.intyg.certificateservice.certificate.custom.integration.PrintCustomCertificateFromCertificatePrintService;
 import se.inera.intyg.certificateservice.certificate.general.dto.PrintCertificateResponseDTO;
-import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
 import se.inera.intyg.certificateservice.domain.certificate.service.PdfGeneratorOptions;
-import se.inera.intyg.certificateservice.domain.certificatemodel.model.CustomPdfSignature;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.CustomPdfSpecification;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.GeneralPdfSpecification;
-import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfFieldId;
-import se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7210.FK7210OverlayTextProvider;
 import se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7210.FK7210TemplatePathProvider;
 
 @ExtendWith(MockitoExtension.class)
 class CustomPdfGeneratorTest {
 
-  private static final String ADDITIONAL_INFO_TEXT = "Webcert 2.0";
   private static final byte[] RAW_PDF_BYTES = new byte[] {10, 20, 30};
   private static final byte[] ENCODED_PDF_BYTES = Base64.getEncoder().encode(RAW_PDF_BYTES);
 
@@ -86,7 +82,7 @@ class CustomPdfGeneratorTest {
               .build();
       final var options =
           PdfGeneratorOptions.builder()
-              .additionalInfoText(ADDITIONAL_INFO_TEXT)
+              .additionalInfoText(FK7210_CERTIFICATE_MODEL.name())
               .citizenFormat(false)
               .hiddenElements(List.of())
               .build();
@@ -105,12 +101,12 @@ class CustomPdfGeneratorTest {
     void setUp() {
       options =
           PdfGeneratorOptions.builder()
-              .additionalInfoText(ADDITIONAL_INFO_TEXT)
+              .additionalInfoText(FK7210_CERTIFICATE_MODEL.name())
               .citizenFormat(false)
               .hiddenElements(List.of())
               .build();
 
-      when(pdfTemplateLoader.load(anyString())).thenReturn(new byte[] {1, 2, 3});
+      when(pdfTemplateLoader.load(anyString())).thenReturn(RAW_PDF_BYTES);
       when(customPrintRequestConverter.convert(any(), any(), any(), any(), anyString()))
           .thenReturn(null);
       when(printCustomCertificateFromCertificatePrintService.print(any()))
@@ -119,45 +115,38 @@ class CustomPdfGeneratorTest {
 
     @Test
     void shallReturnDecodedPdfBytes() {
-      final var pdf = customPdfGenerator.generate(buildCertificate(), options);
+      final var certificate =
+          fk7210CertificateBuilder()
+              .certificateModel(
+                  fk7210certificateModelBuilder()
+                      .pdfSpecification(
+                          CustomPdfSpecification.builder()
+                              .pdfTemplatePathProvider(new FK7210TemplatePathProvider())
+                              .build())
+                      .build())
+              .build();
+
+      final var pdf = customPdfGenerator.generate(certificate, options);
 
       assertArrayEquals(RAW_PDF_BYTES, pdf.pdfData());
     }
 
     @Test
     void shallReturnCorrectFileName() {
-      final var pdf = customPdfGenerator.generate(buildCertificate(), options);
+      final var certificate =
+          fk7210CertificateBuilder()
+              .certificateModel(
+                  fk7210certificateModelBuilder()
+                      .pdfSpecification(
+                          CustomPdfSpecification.builder()
+                              .pdfTemplatePathProvider(new FK7210TemplatePathProvider())
+                              .build())
+                      .build())
+              .build();
 
-      assertTrue(pdf.fileName().startsWith("intyg_om_graviditet_"));
+      final var pdf = customPdfGenerator.generate(certificate, options);
+
+      assertTrue(pdf.fileName().startsWith(FK7210_CERTIFICATE_MODEL.fileName()));
     }
-  }
-
-  private static Certificate buildCertificate() {
-    return fk7210CertificateBuilder()
-        .certificateModel(fk7210certificateModelBuilder().pdfSpecification(buildSpec()).build())
-        .build();
-  }
-
-  private static CustomPdfSpecification buildSpec() {
-    return CustomPdfSpecification.builder()
-        .pdfTemplatePathProvider(new FK7210TemplatePathProvider())
-        .patientIdFieldIds(List.of(new PdfFieldId("form1[0].#subform[0].flt_txtPersonNr[0]")))
-        .signature(
-            CustomPdfSignature.builder()
-                .signedDateFieldId(new PdfFieldId("form1[0].#subform[0].flt_datUnderskrift[0]"))
-                .signedByNameFieldId(
-                    new PdfFieldId("form1[0].#subform[0].flt_txtNamnfortydligande[0]"))
-                .paTitleFieldId(new PdfFieldId("form1[0].#subform[0].flt_txtBefattning[0]"))
-                .specialtyFieldId(
-                    new PdfFieldId("form1[0].#subform[0].flt_txtEventuellSpecialistkompetens[0]"))
-                .hsaIdFieldId(new PdfFieldId("form1[0].#subform[0].flt_txtLakarensHSA-ID[0]"))
-                .workplaceCodeFieldId(
-                    new PdfFieldId("form1[0].#subform[0].flt_txtArbetsplatskod[0]"))
-                .contactInformation(
-                    new PdfFieldId("form1[0].#subform[0].flt_txtVardgivarensNamnAdressTelefon[0]"))
-                .signaturePageIndex(0)
-                .build())
-        .overlayTextProvider(new FK7210OverlayTextProvider())
-        .build();
   }
 }
