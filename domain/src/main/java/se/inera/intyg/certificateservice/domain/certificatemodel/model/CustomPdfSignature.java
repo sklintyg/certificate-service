@@ -16,12 +16,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package se.inera.intyg.certificateservice.certificate.custom.dto;
+package se.inera.intyg.certificateservice.domain.certificatemodel.model;
 
-import java.util.List;
+import lombok.Builder;
+import lombok.Value;
 
-public record CustomPdfMetadataDTO(
-    List<CustomTextDTO> customTexts,
-    AccessibilityMetadataDTO accessibilityMetadata,
-    String rightMarginText,
-    boolean addDraftWatermark) {}
+@Value
+@Builder
+public class CustomPdfSignature {
+
+  PdfTagIndexProvider pdfTagIndexProvider;
+  int signaturePageIndex;
+  PdfFieldId signedDateFieldId;
+  PdfFieldId signedByNameFieldId;
+  PdfFieldId paTitleFieldId;
+  PdfFieldId specialtyFieldId;
+  PdfFieldId hsaIdFieldId;
+  PdfFieldId workplaceCodeFieldId;
+  PdfFieldId contactInformation;
+}

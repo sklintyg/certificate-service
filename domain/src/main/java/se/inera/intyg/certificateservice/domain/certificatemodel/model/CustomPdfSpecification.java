@@ -22,21 +22,12 @@ import java.util.List;
 import lombok.Builder;
 import lombok.Value;
 
-/**
- * PDF specification for template-based PDF generation that is delegated to
- * certificate-print-service (CPS) via its custom print endpoint. The caller supplies the PDF
- * template together with a map of form-field values and overlay metadata, and CPS performs the
- * actual rendering.
- */
 @Value
 @Builder
 public class CustomPdfSpecification implements PdfSpecification {
 
-  String pdfTemplatePath;
-  String pdfNoAddressTemplatePath;
+  PdfTemplatePathProvider pdfTemplatePathProvider;
   List<PdfFieldId> patientIdFieldIds;
-  PdfSignature signature;
-  int signatureTextX;
-  int signatureTextY;
-  int signatureTextFontSize;
+  CustomPdfSignature signature;
+  OverlayTextProvider overlayTextProvider;
 }

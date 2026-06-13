@@ -65,12 +65,7 @@ class PdfGeneratorProviderTest {
 
   @Test
   void shallReturnCustomPdfServiceWhenCustomPdfSpecification() {
-    when(certificateModel.pdfSpecification())
-        .thenReturn(
-            CustomPdfSpecification.builder()
-                .pdfTemplatePath("template.pdf")
-                .pdfNoAddressTemplatePath("template_no_address.pdf")
-                .build());
+    when(certificateModel.pdfSpecification()).thenReturn(CustomPdfSpecification.builder().build());
 
     assertEquals(customPdfService, provider.provider(certificate));
   }

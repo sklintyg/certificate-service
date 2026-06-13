@@ -18,7 +18,6 @@
  */
 package se.inera.intyg.certificateservice.certificate.custom;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
@@ -39,6 +38,7 @@ public class CustomPdfGenerator implements PdfGenerator {
   private final CustomPrintRequestConverter customPrintRequestConverter;
   private final PrintCustomCertificateFromCertificatePrintService
       printCustomCertificateFromCertificatePrintService;
+  private final PdfTemplateLoader pdfTemplateLoader;
 
   @Override
   public Pdf generate(Certificate certificate, PdfGeneratorOptions options) {
@@ -49,11 +49,9 @@ public class CustomPdfGenerator implements PdfGenerator {
     }
 
     final var fileName = buildFileName(certificate);
-    final var includeAddress =
-        CustomPrintRequestConverter.includeAddress(certificate, options.citizenFormat());
-    final var templatePath =
-        includeAddress ? spec.pdfTemplatePath() : spec.pdfNoAddressTemplatePath();
-    final var templateBytes = loadTemplate(templatePath);
+
+    final var templateBytes =
+        pdfTemplateLoader.load(spec.pdfTemplatePathProvider().pathOf(certificate, options));
 
     final var request =
         customPrintRequestConverter.convert(certificate, options, spec, templateBytes, fileName);
@@ -61,17 +59,6 @@ public class CustomPdfGenerator implements PdfGenerator {
 
     final var pdfBytes = Base64.getDecoder().decode(response.getPdfData());
     return new Pdf(pdfBytes, fileName);
-  }
-
-  byte[] loadTemplate(String templatePath) {
-    try (final var in = getClass().getClassLoader().getResourceAsStream(templatePath)) {
-      if (in == null) {
-        throw new IllegalStateException("PDF template not found at path: " + templatePath);
-      }
-      return in.readAllBytes();
-    } catch (IOException e) {
-      throw new IllegalStateException("Could not load PDF template from path: " + templatePath, e);
-    }
   }
 
   private static String buildFileName(Certificate certificate) {

@@ -18,8 +18,6 @@
  */
 package se.inera.intyg.certificateservice.certificate.custom.converter;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.springframework.stereotype.Component;
 import se.inera.intyg.certificateservice.certificate.custom.dto.AccessibilityMetadataDTO;
 import se.inera.intyg.certificateservice.certificate.custom.dto.CustomPdfMetadataDTO;
@@ -32,68 +30,22 @@ import se.inera.intyg.certificateservice.domain.certificatemodel.model.CustomPdf
 @Component
 public class CustomPdfMetadataConverter {
 
-  static final String DIGITALLY_SIGNED_TEXT =
-      "Detta är en utskrift av ett elektroniskt intyg. "
-          + "Intyget har signerats elektroniskt av intygsutfärdaren.";
-  static final String SENT_TEXT_PREFIX = "Intyget har skickats digitalt till ";
-  static final String CITIZEN_VISIBILITY_TEXT = "Du kan se intyget genom att logga in på 1177.se";
-  private static final int SENT_TEXT_FONT_SIZE = 22;
-  private static final int CITIZEN_VISIBILITY_TEXT_FONT_SIZE = 16;
-
   public CustomPdfMetadataDTO convert(
       Certificate certificate,
       PdfGeneratorOptions options,
       CustomPdfSpecification spec,
-      boolean includeAddress,
       String fileName) {
+    final var tagIndex = spec.signature().pdfTagIndexProvider().of(certificate, options);
     return new CustomPdfMetadataDTO(
-        buildTextList(certificate, spec, includeAddress),
+        spec.overlayTextProvider().of(certificate, tagIndex, options).stream()
+            .map(CustomTextDTO::toDTO)
+            .toList(),
         new AccessibilityMetadataDTO(fileName),
-        buildRightMarginText(certificate, options),
+        rightMarginText(certificate, options),
         certificate.status() == Status.DRAFT);
   }
 
-  private static List<CustomTextDTO> buildTextList(
-      Certificate certificate, CustomPdfSpecification spec, boolean includeAddress) {
-    final var textList = new ArrayList<CustomTextDTO>();
-
-    if (certificate.status() == Status.SIGNED) {
-      final var tagIndex =
-          includeAddress
-              ? spec.signature().signatureWithAddressTagIndex().value()
-              : spec.signature().signatureWithoutAddressTagIndex().value();
-      textList.add(
-          CustomTextDTO.builder()
-              .value(DIGITALLY_SIGNED_TEXT)
-              .x(spec.signatureTextX())
-              .y(spec.signatureTextY())
-              .fontSize(spec.signatureTextFontSize())
-              .pageIndex(spec.signature().signaturePageIndex())
-              .tagIndex(tagIndex)
-              .build());
-    }
-
-    final var sent = certificate.sent();
-    if (sent != null && sent.sentAt() != null) {
-      textList.add(
-          CustomTextDTO.builder()
-              .value(SENT_TEXT_PREFIX + sent.recipient().name())
-              .fontSize(SENT_TEXT_FONT_SIZE)
-              .build());
-
-      if (Boolean.TRUE.equals(certificate.certificateModel().availableForCitizen())) {
-        textList.add(
-            CustomTextDTO.builder()
-                .value(CITIZEN_VISIBILITY_TEXT)
-                .fontSize(CITIZEN_VISIBILITY_TEXT_FONT_SIZE)
-                .build());
-      }
-    }
-
-    return textList;
-  }
-
-  private static String buildRightMarginText(Certificate certificate, PdfGeneratorOptions options) {
+  private static String rightMarginText(Certificate certificate, PdfGeneratorOptions options) {
     if (certificate.status() != Status.SIGNED) {
       return null;
     }

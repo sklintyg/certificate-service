@@ -16,12 +16,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package se.inera.intyg.certificateservice.certificate.custom.dto;
+package se.inera.intyg.certificateservice.certificate.custom;
 
-import java.util.List;
+import java.io.IOException;
+import org.springframework.stereotype.Component;
 
-public record CustomPdfMetadataDTO(
-    List<CustomTextDTO> customTexts,
-    AccessibilityMetadataDTO accessibilityMetadata,
-    String rightMarginText,
-    boolean addDraftWatermark) {}
+@Component
+public class PdfTemplateLoader {
+
+  public byte[] load(String templatePath) {
+    try (final var in = getClass().getClassLoader().getResourceAsStream(templatePath)) {
+      if (in == null) {
+        throw new IllegalStateException("PDF template not found at path: " + templatePath);
+      }
+      return in.readAllBytes();
+    } catch (IOException e) {
+      throw new IllegalStateException("Could not load PDF template from path: " + templatePath, e);
+    }
+  }
+}

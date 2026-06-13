@@ -18,10 +18,11 @@
  */
 package se.inera.intyg.certificateservice.certificate.custom.dto;
 
-import java.util.List;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.Appearance;
 
-public record CustomPdfMetadataDTO(
-    List<CustomTextDTO> customTexts,
-    AccessibilityMetadataDTO accessibilityMetadata,
-    String rightMarginText,
-    boolean addDraftWatermark) {}
+public record AppearanceDTO(float fontSize, FontStyleEnumDTO style) {
+
+  public static AppearanceDTO toDTO(Appearance appearance) {
+    return new AppearanceDTO(appearance.fontSize(), FontStyleEnumDTO.toType(appearance.style()));
+  }
+}

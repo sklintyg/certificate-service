@@ -16,35 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package se.inera.intyg.certificateservice.certificate.custom.converter;
+package se.inera.intyg.certificateservice.certificate.custom.provider;
 
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 import se.inera.intyg.certificateservice.certificate.custom.dto.CustomPdfFieldDTO;
-import se.inera.intyg.certificateservice.certificate.custom.provider.PdfFieldsProvider;
 import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.CustomPdfSpecification;
 
-@Component
-@RequiredArgsConstructor
-public class CustomPdfFieldsConverter {
+public interface PdfFieldsProvider {
 
-  private final List<PdfFieldsProvider> providers;
-
-  public Map<String, CustomPdfFieldDTO> convert(
-      Certificate certificate, CustomPdfSpecification spec) {
-    return providers.stream()
-        .flatMap(provider -> provider.fields(certificate, spec).entrySet().stream())
-        .collect(
-            Collectors.toMap(
-                Map.Entry::getKey,
-                Map.Entry::getValue,
-                (a, b) -> {
-                  throw new IllegalStateException(
-                      "Duplicate PDF field id detected — two providers produced the same key");
-                }));
-  }
+  Map<String, CustomPdfFieldDTO> fields(Certificate certificate, CustomPdfSpecification spec);
 }

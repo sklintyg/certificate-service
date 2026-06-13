@@ -16,23 +16,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package se.inera.intyg.certificateservice.certificate.custom.dto;
+package se.inera.intyg.certificateservice.certificate.custom;
 
-import lombok.Builder;
-import se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayText;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@Builder
-public record CustomTextDTO(
-    String value, float x, float y, AppearanceDTO appearance, Integer pageIndex, Integer tagIndex) {
+import org.junit.jupiter.api.Test;
 
-  public static CustomTextDTO toDTO(OverlayText overlayText) {
-    return CustomTextDTO.builder()
-        .value(overlayText.value())
-        .x(overlayText.x())
-        .y(overlayText.y())
-        .appearance(AppearanceDTO.toDTO(overlayText.appearance()))
-        .pageIndex(overlayText.pageIndex())
-        .tagIndex(overlayText.tagIndex())
-        .build();
+class PdfTemplateLoaderTest {
+
+  private static final String EXISTING_TEMPLATE = "test-templates/fk7210_v1.pdf";
+  private static final String MISSING_TEMPLATE = "test-templates/does-not-exist.pdf";
+
+  private final PdfTemplateLoader loader = new PdfTemplateLoader();
+
+  @Test
+  void shallReturnBytesWhenTemplateExists() {
+    final var bytes = loader.load(EXISTING_TEMPLATE);
+
+    assertTrue(bytes.length > 0);
+  }
+
+  @Test
+  void shallThrowWhenTemplateNotFound() {
+    assertThrows(IllegalStateException.class, () -> loader.load(MISSING_TEMPLATE));
   }
 }

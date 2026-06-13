@@ -16,12 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package se.inera.intyg.certificateservice.certificate.custom.dto;
+package se.inera.intyg.certificateservice.domain.certificatemodel.model;
 
 import java.util.List;
+import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
+import se.inera.intyg.certificateservice.domain.certificate.service.PdfGeneratorOptions;
 
-public record CustomPdfMetadataDTO(
-    List<CustomTextDTO> customTexts,
-    AccessibilityMetadataDTO accessibilityMetadata,
-    String rightMarginText,
-    boolean addDraftWatermark) {}
+public interface OverlayTextProvider {
+  List<OverlayText> of(
+      Certificate certificate, PdfTagIndex pdfTagIndex, PdfGeneratorOptions options);
+}

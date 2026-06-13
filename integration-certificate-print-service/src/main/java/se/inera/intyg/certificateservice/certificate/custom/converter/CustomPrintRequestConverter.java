@@ -39,18 +39,10 @@ public class CustomPrintRequestConverter {
       CustomPdfSpecification spec,
       byte[] templateBytes,
       String fileName) {
-    final var includeAddress = includeAddress(certificate, options.citizenFormat());
 
     return new CustomPrintRequestDTO(
         Base64.getEncoder().encodeToString(templateBytes),
-        customPdfMetadataConverter.convert(certificate, options, spec, includeAddress, fileName),
+        customPdfMetadataConverter.convert(certificate, options, spec, fileName),
         customPdfFieldsConverter.convert(certificate, spec));
-  }
-
-  public static boolean includeAddress(Certificate certificate, boolean citizenFormat) {
-    if (citizenFormat) {
-      return false;
-    }
-    return certificate.sent() == null || certificate.sent().sentAt() == null;
   }
 }

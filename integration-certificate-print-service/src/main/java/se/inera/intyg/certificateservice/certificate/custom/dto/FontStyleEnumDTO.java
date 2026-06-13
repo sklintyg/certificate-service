@@ -18,10 +18,16 @@
  */
 package se.inera.intyg.certificateservice.certificate.custom.dto;
 
-import java.util.List;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.FontStyle;
 
-public record CustomPdfMetadataDTO(
-    List<CustomTextDTO> customTexts,
-    AccessibilityMetadataDTO accessibilityMetadata,
-    String rightMarginText,
-    boolean addDraftWatermark) {}
+public enum FontStyleEnumDTO {
+  BOLD,
+  NORMAL;
+
+  public static FontStyleEnumDTO toType(FontStyle fontStyle) {
+    return switch (fontStyle) {
+      case null -> NORMAL;
+      case BOLD -> BOLD;
+    };
+  }
+}
