@@ -19,6 +19,8 @@
 package se.inera.intyg.certificateservice.certificate.custom.provider;
 
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 import se.inera.intyg.certificateservice.certificate.custom.dto.CustomPdfFieldDTO;
@@ -39,17 +41,19 @@ public class DateElementPdfFieldsProvider implements PdfFieldsProvider {
         .filter(es -> es.pdfConfiguration() instanceof PdfConfigurationDate)
         .flatMap(
             elementSpec ->
-                certificate
-                    .getElementDataById(elementSpec.id())
-                    .filter(data -> data.value() instanceof ElementValueDate v && v.date() != null)
-                    .map(
-                        data -> {
-                          final var config = (PdfConfigurationDate) elementSpec.pdfConfiguration();
-                          final var date = ((ElementValueDate) data.value()).date();
-                          return Map.entry(
-                              config.pdfFieldId().id(), new CustomPdfFieldDTO(date.toString()));
-                        })
+                elementSpec
+                    .valueAs(certificate, ElementValueDate.class)
+                    .map(getElementValueDateEntry(elementSpec))
                     .stream())
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+  }
+
+  private static Function<ElementValueDate, Entry<String, CustomPdfFieldDTO>>
+      getElementValueDateEntry(ElementSpecification elementSpec) {
+    return elementValue -> {
+      var config = (PdfConfigurationDate) elementSpec.pdfConfiguration();
+      return Map.entry(
+          config.pdfFieldId().id(), new CustomPdfFieldDTO(elementValue.date().toString()));
+    };
   }
 }

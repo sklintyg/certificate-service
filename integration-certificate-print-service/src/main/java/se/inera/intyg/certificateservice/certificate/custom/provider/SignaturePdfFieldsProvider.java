@@ -21,6 +21,7 @@ package se.inera.intyg.certificateservice.certificate.custom.provider;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.springframework.stereotype.Component;
@@ -32,6 +33,7 @@ import se.inera.intyg.certificateservice.domain.certificatemodel.model.CustomPdf
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.CustomPdfSpecification;
 import se.inera.intyg.certificateservice.domain.common.model.PaTitle;
 import se.inera.intyg.certificateservice.domain.common.model.Speciality;
+import se.inera.intyg.certificateservice.domain.unit.model.WorkplaceCode;
 
 @Component
 public class SignaturePdfFieldsProvider implements PdfFieldsProvider {
@@ -63,32 +65,26 @@ public class SignaturePdfFieldsProvider implements PdfFieldsProvider {
   private static Map<String, CustomPdfFieldDTO> optionalFields(
       CustomPdfSignature signature, CertificateMetaData metadata) {
     return Stream.of(
-            Optional.ofNullable(metadata.issuer().paTitles())
-                .map(
-                    titles ->
-                        Map.entry(
-                            signature.paTitleFieldId().id(),
-                            new CustomPdfFieldDTO(
-                                titles.stream()
-                                    .map(PaTitle::code)
-                                    .collect(Collectors.joining(", "))))),
-            Optional.ofNullable(metadata.issuer().specialities())
-                .map(
-                    specs ->
-                        Map.entry(
-                            signature.specialtyFieldId().id(),
-                            new CustomPdfFieldDTO(
-                                specs.stream()
-                                    .map(Speciality::value)
-                                    .collect(Collectors.joining(", "))))),
-            Optional.ofNullable(metadata.issuingUnit().workplaceCode())
-                .map(
-                    wc ->
-                        Map.entry(
-                            signature.workplaceCodeFieldId().id(),
-                            new CustomPdfFieldDTO(wc.code()))))
-        .filter(Optional::isPresent)
-        .map(Optional::get)
+            field(
+                metadata.issuer().paTitles(),
+                signature.paTitleFieldId().id(),
+                titles -> titles.stream().map(PaTitle::code).collect(Collectors.joining(", "))),
+            field(
+                metadata.issuer().specialities(),
+                signature.specialtyFieldId().id(),
+                specs -> specs.stream().map(Speciality::value).collect(Collectors.joining(", "))),
+            field(
+                metadata.issuingUnit().workplaceCode(),
+                signature.workplaceCodeFieldId().id(),
+                WorkplaceCode::code))
+        .flatMap(Optional::stream)
         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+  }
+
+  private static <T> Optional<Map.Entry<String, CustomPdfFieldDTO>> field(
+      T value, String fieldId, Function<T, String> mapper) {
+
+    return Optional.ofNullable(value)
+        .map(v -> Map.entry(fieldId, new CustomPdfFieldDTO(mapper.apply(v))));
   }
 }

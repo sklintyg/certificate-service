@@ -25,8 +25,10 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 import lombok.Builder;
 import lombok.Value;
+import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
 import se.inera.intyg.certificateservice.domain.certificate.model.ElementData;
 import se.inera.intyg.certificateservice.domain.certificate.model.ElementSimplifiedValue;
+import se.inera.intyg.certificateservice.domain.certificate.model.ElementValue;
 import se.inera.intyg.certificateservice.domain.certificate.service.PdfGeneratorOptions;
 import se.inera.intyg.certificateservice.domain.validation.model.ElementValidation;
 import se.inera.intyg.certificateservice.domain.validation.model.ValidationError;
@@ -121,6 +123,14 @@ public class ElementSpecification {
       return data.withValue(configuration().emptyValue());
     }
     return data;
+  }
+
+  public <T extends ElementValue> Optional<T> valueAs(Certificate certificate, Class<T> valueType) {
+    return certificate
+        .getElementDataById(id)
+        .map(ElementData::value)
+        .filter(valueType::isInstance)
+        .map(valueType::cast);
   }
 
   public Optional<ElementMapping> getMapping() {
