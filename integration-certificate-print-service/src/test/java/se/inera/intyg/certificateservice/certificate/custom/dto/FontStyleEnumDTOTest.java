@@ -16,9 +16,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package se.inera.intyg.certificateservice.domain.certificatemodel.model;
+package se.inera.intyg.certificateservice.certificate.custom.dto;
 
-public enum FontStyle {
-  NORMAL,
-  BOLD
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.FontStyle;
+
+class FontStyleEnumDTOTest {
+
+  @Test
+  void shallConvertNormalAppearanceStyle() {
+    assertEquals(FontStyleEnumDTO.NORMAL, FontStyleEnumDTO.toDTO(FontStyle.NORMAL));
+  }
+
+  @Test
+  void shallConvertBoldAppearanceStyle() {
+    assertEquals(FontStyleEnumDTO.BOLD, FontStyleEnumDTO.toDTO(FontStyle.BOLD));
+  }
+
+  @Test
+  void shallConvertNullAppearanceStyle() {
+    assertEquals(FontStyleEnumDTO.NORMAL, FontStyleEnumDTO.toDTO(null));
+  }
 }

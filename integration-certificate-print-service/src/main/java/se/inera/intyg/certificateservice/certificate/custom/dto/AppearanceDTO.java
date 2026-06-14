@@ -23,6 +23,6 @@ import se.inera.intyg.certificateservice.domain.certificatemodel.model.Appearanc
 public record AppearanceDTO(float fontSize, FontStyleEnumDTO style) {
 
   public static AppearanceDTO toDTO(Appearance appearance) {
-    return new AppearanceDTO(appearance.fontSize(), FontStyleEnumDTO.toType(appearance.style()));
+    return new AppearanceDTO(appearance.fontSize(), FontStyleEnumDTO.toDTO(appearance.style()));
   }
 }

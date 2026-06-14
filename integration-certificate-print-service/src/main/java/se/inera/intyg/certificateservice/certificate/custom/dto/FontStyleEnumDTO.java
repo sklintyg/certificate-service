@@ -24,10 +24,11 @@ public enum FontStyleEnumDTO {
   BOLD,
   NORMAL;
 
-  public static FontStyleEnumDTO toType(FontStyle fontStyle) {
+  public static FontStyleEnumDTO toDTO(FontStyle fontStyle) {
     return switch (fontStyle) {
-      case null -> NORMAL;
+      case NORMAL -> NORMAL;
       case BOLD -> BOLD;
+      case null -> NORMAL;
     };
   }
 }
