@@ -19,41 +19,39 @@
 package se.inera.intyg.certificateservice.certificate.custom.provider;
 
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.function.Function;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.springframework.stereotype.Component;
 import se.inera.intyg.certificateservice.certificate.custom.dto.CustomPdfFieldDTO;
 import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
-import se.inera.intyg.certificateservice.domain.certificate.model.ElementValueDate;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.CustomPdfSpecification;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementSpecification;
-import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfConfigurationDate;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfField;
 
 @Component
-public class DateElementPdfFieldsProvider implements PdfFieldsProvider {
+public class ElementPdfFieldsProvider implements PdfFieldsProvider {
 
   @Override
   public Map<String, CustomPdfFieldDTO> fields(
       Certificate certificate, CustomPdfSpecification spec) {
     return certificate.certificateModel().elementSpecifications().stream()
         .flatMap(ElementSpecification::flatten)
-        .filter(es -> es.pdfConfiguration() instanceof PdfConfigurationDate)
-        .flatMap(
-            elementSpec ->
-                elementSpec
-                    .valueAs(certificate, ElementValueDate.class)
-                    .map(getElementValueDateEntry(elementSpec))
-                    .stream())
-        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        .flatMap(elementSpec -> getPdfFields(certificate, elementSpec))
+        .collect(
+            Collectors.toMap(
+                field -> field.fieldId().id(),
+                field -> new CustomPdfFieldDTO(field.value()),
+                (a, b) -> {
+                  throw new IllegalStateException(
+                      "Duplicate PDF field id detected, two pdf configurations produced the same key");
+                }));
   }
 
-  private static Function<ElementValueDate, Entry<String, CustomPdfFieldDTO>>
-      getElementValueDateEntry(ElementSpecification elementSpec) {
-    return elementValue -> {
-      var config = (PdfConfigurationDate) elementSpec.pdfConfiguration();
-      return Map.entry(
-          config.pdfFieldId().id(), new CustomPdfFieldDTO(elementValue.date().toString()));
-    };
+  private static Stream<PdfField> getPdfFields(
+      Certificate certificate, ElementSpecification elementSpec) {
+    return Optional.ofNullable(elementSpec.pdfConfiguration())
+        .flatMap(config -> config.toPdfField(elementSpec, certificate))
+        .stream();
   }
 }

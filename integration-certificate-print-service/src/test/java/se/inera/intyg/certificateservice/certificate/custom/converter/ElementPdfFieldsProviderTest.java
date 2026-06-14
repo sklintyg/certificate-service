@@ -27,10 +27,10 @@ import static se.inera.intyg.certificateservice.domain.testdata.TestDataPdfSpeci
 
 import java.time.LocalDate;
 import java.util.List;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import se.inera.intyg.certificateservice.certificate.custom.provider.DateElementPdfFieldsProvider;
+import se.inera.intyg.certificateservice.certificate.custom.provider.ElementPdfFieldsProvider;
 import se.inera.intyg.certificateservice.domain.certificate.model.ElementData;
-import se.inera.intyg.certificateservice.domain.certificate.model.ElementValueDate;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.CustomPdfSpecification;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementConfigurationDate;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.ElementSpecification;
@@ -38,60 +38,68 @@ import se.inera.intyg.certificateservice.domain.certificatemodel.model.FieldId;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfConfigurationDate;
 import se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7210.FK7210TemplatePathProvider;
 
-class DateElementPdfFieldsProviderTest {
+class ElementPdfFieldsProviderTest {
 
   private static final LocalDate BIRTH_DATE = LocalDate.of(2025, 10, 20);
 
-  private final DateElementPdfFieldsProvider provider = new DateElementPdfFieldsProvider();
+  private final ElementPdfFieldsProvider provider = new ElementPdfFieldsProvider();
   private final CustomPdfSpecification spec =
       CustomPdfSpecification.builder()
           .pdfTemplatePathProvider(new FK7210TemplatePathProvider())
           .build();
 
-  @Test
-  void shallAddDateFieldWhenElementValueDatePresent() {
-    final var certificate =
-        fk7210CertificateBuilder()
-            .certificateModel(
-                fk7210certificateModelBuilder()
-                    .elementSpecifications(List.of(birthDateElementSpec()))
-                    .build())
-            .elementData(
-                List.of(
-                    ElementData.builder()
-                        .id(FK7210_QUESTION_BERAKNAT_FODELSEDATUM_ID)
-                        .value(ElementValueDate.builder().date(BIRTH_DATE).build())
-                        .build()))
-            .build();
+  @Nested
+  class ElementValueDate {
+    @Test
+    void shallAddDateFieldWhenElementValueDatePresent() {
+      final var certificate =
+          fk7210CertificateBuilder()
+              .certificateModel(
+                  fk7210certificateModelBuilder()
+                      .elementSpecifications(List.of(birthDateElementSpec()))
+                      .build())
+              .elementData(
+                  List.of(
+                      ElementData.builder()
+                          .id(FK7210_QUESTION_BERAKNAT_FODELSEDATUM_ID)
+                          .value(
+                              se.inera.intyg.certificateservice.domain.certificate.model
+                                  .ElementValueDate.builder()
+                                  .date(BIRTH_DATE)
+                                  .build())
+                          .build()))
+              .build();
 
-    final var fields = provider.fields(certificate, spec);
+      final var fields = provider.fields(certificate, spec);
 
-    assertEquals(BIRTH_DATE.toString(), fields.get(FK7210_PDF_FODELSEDATUM_FIELD_ID.id()).value());
-  }
+      assertEquals(
+          BIRTH_DATE.toString(), fields.get(FK7210_PDF_FODELSEDATUM_FIELD_ID.id()).value());
+    }
 
-  @Test
-  void shallNotAddDateFieldWhenNoElementData() {
-    final var certificate =
-        fk7210CertificateBuilder()
-            .certificateModel(
-                fk7210certificateModelBuilder()
-                    .elementSpecifications(List.of(birthDateElementSpec()))
-                    .build())
-            .elementData(List.of())
-            .build();
+    @Test
+    void shallNotAddDateFieldWhenNoElementData() {
+      final var certificate =
+          fk7210CertificateBuilder()
+              .certificateModel(
+                  fk7210certificateModelBuilder()
+                      .elementSpecifications(List.of(birthDateElementSpec()))
+                      .build())
+              .elementData(List.of())
+              .build();
 
-    final var fields = provider.fields(certificate, spec);
+      final var fields = provider.fields(certificate, spec);
 
-    assertFalse(fields.containsKey(FK7210_PDF_FODELSEDATUM_FIELD_ID.id()));
-  }
+      assertFalse(fields.containsKey(FK7210_PDF_FODELSEDATUM_FIELD_ID.id()));
+    }
 
-  private static ElementSpecification birthDateElementSpec() {
-    return ElementSpecification.builder()
-        .id(FK7210_QUESTION_BERAKNAT_FODELSEDATUM_ID)
-        .configuration(
-            ElementConfigurationDate.builder().name("Datum").id(new FieldId("54.1")).build())
-        .pdfConfiguration(
-            PdfConfigurationDate.builder().pdfFieldId(FK7210_PDF_FODELSEDATUM_FIELD_ID).build())
-        .build();
+    private static ElementSpecification birthDateElementSpec() {
+      return ElementSpecification.builder()
+          .id(FK7210_QUESTION_BERAKNAT_FODELSEDATUM_ID)
+          .configuration(
+              ElementConfigurationDate.builder().name("Datum").id(new FieldId("54.1")).build())
+          .pdfConfiguration(
+              PdfConfigurationDate.builder().pdfFieldId(FK7210_PDF_FODELSEDATUM_FIELD_ID).build())
+          .build();
+    }
   }
 }

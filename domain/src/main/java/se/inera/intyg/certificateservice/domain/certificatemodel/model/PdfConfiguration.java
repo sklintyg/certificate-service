@@ -18,4 +18,11 @@
  */
 package se.inera.intyg.certificateservice.domain.certificatemodel.model;
 
-public interface PdfConfiguration {}
+import java.util.Optional;
+import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
+
+public interface PdfConfiguration {
+  default Optional<PdfField> toPdfField(ElementSpecification elementSpec, Certificate certificate) {
+    return Optional.empty();
+  }
+}
