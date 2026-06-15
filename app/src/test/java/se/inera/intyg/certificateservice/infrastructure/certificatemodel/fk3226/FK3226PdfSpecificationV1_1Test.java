@@ -51,7 +51,7 @@ class FK3226PdfSpecificationV1_1Test {
         List.of(
             new PdfFieldId("form1[0].#subform[0].flt_txtPersonNr[0]"),
             new PdfFieldId("form1[0].#subform[1].flt_txtPersonNr[1]"),
-            new PdfFieldId("form1[0].#subform[2].flt_txtPersonNr[3]"));
+            new PdfFieldId("form1[0].#subform[2].flt_txtPersonNr[2]"));
 
     final var certificateModel = FK3226PdfSpecificationV1_1.create();
 

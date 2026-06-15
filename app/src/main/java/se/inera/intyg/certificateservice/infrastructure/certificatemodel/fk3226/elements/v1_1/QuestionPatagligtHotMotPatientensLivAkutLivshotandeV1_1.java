@@ -40,7 +40,7 @@ public class QuestionPatagligtHotMotPatientensLivAkutLivshotandeV1_1 {
   private static final FieldId QUESTION_PATAGLIGT_HOT_MOT_PATIENTENS_LIV_AKUT_LIVSHOTANDE_FIELD_ID =
       new FieldId("52.4");
   private static final PdfFieldId PDF_THREAT_TO_PATIENTS_LIFE_FIELD_ID =
-      new PdfFieldId("form1[0].#subform[1].flt_txtSjukdomstillstand[0]");
+      new PdfFieldId("form1[0].#subform[1].flt_txtBeskrivSjukdomstillstand[0]");
 
   private QuestionPatagligtHotMotPatientensLivAkutLivshotandeV1_1() {
     throw new IllegalStateException("Utility class");
