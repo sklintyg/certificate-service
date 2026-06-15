@@ -53,7 +53,7 @@ class CustomTextDTOTest {
   }
 
   @Test
-  void shallSetNormalStyleWhenAppearanceStyleIsNull() {
+  void shallSetNullStyleWhenAppearanceStyleIsNull() {
     final var overlayText =
         OverlayText.builder()
             .value("Sent text")
@@ -65,7 +65,7 @@ class CustomTextDTOTest {
 
     final var dto = CustomTextDTO.toDTO(overlayText);
 
-    assertEquals(new AppearanceDTO(22f, FontStyleEnumDTO.NORMAL), dto.appearance());
+    assertEquals(new AppearanceDTO(22f, null), dto.appearance());
   }
 
   @Test

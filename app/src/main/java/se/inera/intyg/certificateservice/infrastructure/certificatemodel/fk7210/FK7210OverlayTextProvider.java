@@ -88,7 +88,7 @@ public class FK7210OverlayTextProvider implements OverlayTextProvider {
         .value(SENT_TEXT_PREFIX + recipientName)
         .x(SENT_TEXT_X)
         .y(SENT_TEXT_Y)
-        .appearance(new Appearance(SENT_TEXT_FONT_SIZE, FontStyle.NORMAL))
+        .appearance(new Appearance(SENT_TEXT_FONT_SIZE))
         .pageIndex(0)
         .build();
   }
@@ -98,7 +98,7 @@ public class FK7210OverlayTextProvider implements OverlayTextProvider {
         .value(CITIZEN_VISIBILITY_TEXT)
         .x(CITIZEN_VISIBILITY_TEXT_X)
         .y(CITIZEN_VISIBILITY_TEXT_Y)
-        .appearance(new Appearance(CITIZEN_VISIBILITY_TEXT_FONT_SIZE, FontStyle.NORMAL))
+        .appearance(new Appearance(CITIZEN_VISIBILITY_TEXT_FONT_SIZE))
         .pageIndex(0)
         .build();
   }

@@ -130,9 +130,7 @@ class FK7210OverlayTextProviderTest {
         () -> assertEquals(SENT_TEXT_PREFIX + RECIPIENT_NAME, texts.get(1).value()),
         () -> assertEquals(SENT_TEXT_X, texts.get(1).x()),
         () -> assertEquals(SENT_TEXT_Y, texts.get(1).y()),
-        () ->
-            assertEquals(
-                new Appearance(SENT_TEXT_FONT_SIZE, FontStyle.NORMAL), texts.get(1).appearance()));
+        () -> assertEquals(new Appearance(SENT_TEXT_FONT_SIZE), texts.get(1).appearance()));
   }
 
   @Test
@@ -158,7 +156,6 @@ class FK7210OverlayTextProviderTest {
         () -> assertEquals(CITIZEN_VISIBILITY_TEXT_Y, texts.get(2).y()),
         () ->
             assertEquals(
-                new Appearance(CITIZEN_VISIBILITY_TEXT_FONT_SIZE, FontStyle.NORMAL),
-                texts.get(2).appearance()));
+                new Appearance(CITIZEN_VISIBILITY_TEXT_FONT_SIZE), texts.get(2).appearance()));
   }
 }

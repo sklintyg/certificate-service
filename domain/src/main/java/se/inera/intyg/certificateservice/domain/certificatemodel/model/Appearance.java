@@ -18,4 +18,8 @@
  */
 package se.inera.intyg.certificateservice.domain.certificatemodel.model;
 
-public record Appearance(float fontSize, FontStyle style) {}
+public record Appearance(float fontSize, FontStyle style) {
+  public Appearance(float fontSize) {
+    this(fontSize, null);
+  }
+}

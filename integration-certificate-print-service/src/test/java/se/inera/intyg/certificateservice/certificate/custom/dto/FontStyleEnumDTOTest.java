@@ -19,16 +19,12 @@
 package se.inera.intyg.certificateservice.certificate.custom.dto;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.junit.jupiter.api.Test;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.FontStyle;
 
 class FontStyleEnumDTOTest {
-
-  @Test
-  void shallConvertNormalAppearanceStyle() {
-    assertEquals(FontStyleEnumDTO.NORMAL, FontStyleEnumDTO.toDTO(FontStyle.NORMAL));
-  }
 
   @Test
   void shallConvertBoldAppearanceStyle() {
@@ -37,6 +33,6 @@ class FontStyleEnumDTOTest {
 
   @Test
   void shallConvertNullAppearanceStyle() {
-    assertEquals(FontStyleEnumDTO.NORMAL, FontStyleEnumDTO.toDTO(null));
+    assertNull(FontStyleEnumDTO.toDTO(null));
   }
 }

@@ -59,7 +59,10 @@ class PdfTextValueGeneratorTest {
       final var elementSpecification =
           ElementSpecification.builder()
               .pdfConfiguration(
-                  PdfConfigurationText.builder().pdfFieldId(new PdfFieldId(FIELD_ID)).build())
+                  PdfConfigurationText.builder()
+                      .offset(0)
+                      .pdfFieldId(new PdfFieldId(FIELD_ID))
+                      .build())
               .build();
 
       final var elementValue = ElementValueText.builder().text(VALUE).build();

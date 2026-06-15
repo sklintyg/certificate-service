@@ -21,14 +21,15 @@ package se.inera.intyg.certificateservice.certificate.custom.dto;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.FontStyle;
 
 public enum FontStyleEnumDTO {
-  BOLD,
-  NORMAL;
+  BOLD;
 
   public static FontStyleEnumDTO toDTO(FontStyle fontStyle) {
+    if (fontStyle == null) {
+      return null;
+    }
+
     return switch (fontStyle) {
-      case NORMAL -> NORMAL;
       case BOLD -> BOLD;
-      case null -> NORMAL;
     };
   }
 }
