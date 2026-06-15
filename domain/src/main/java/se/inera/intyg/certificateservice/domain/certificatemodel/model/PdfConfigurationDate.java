@@ -29,13 +29,13 @@ import se.inera.intyg.certificateservice.domain.certificate.model.ElementValueDa
 public class PdfConfigurationDate implements PdfConfiguration {
 
   PdfFieldId pdfFieldId;
-  @Builder.Default Integer offset = 0;
+  Integer offset;
 
   @Override
   public Optional<PdfField> toPdfField(ElementSpecification elementSpec, Certificate certificate) {
     return elementSpec
         .valueAs(certificate, ElementValueDate.class)
         .filter(value -> value.date() != null)
-        .map(value -> new PdfField(pdfFieldId, value.date().toString()));
+        .map(value -> new PdfField(pdfFieldId, value.date().toString(), offset));
   }
 }

@@ -38,13 +38,32 @@ class PdfConfigurationDateTest {
 
   @Test
   void shallReturnPdfFieldIfValueIsDate() {
-    final var expected = Optional.of(new PdfField(PDF_FIELD_ID, "2026-06-14"));
+    final var expected = Optional.of(new PdfField(PDF_FIELD_ID, "2026-06-14", null));
 
     final var elementValue = ElementValueDate.builder().date(LocalDate.of(2026, 6, 14)).build();
 
     final var elementSpec = ElementSpecification.builder().id(ELEMENT_ID).build();
 
     final var config = PdfConfigurationDate.builder().pdfFieldId(PDF_FIELD_ID).build();
+
+    doReturn(Optional.of(ElementData.builder().id(ELEMENT_ID).value(elementValue).build()))
+        .when(certificate)
+        .getElementDataById(ELEMENT_ID);
+
+    final var result = config.toPdfField(elementSpec, certificate);
+
+    assertEquals(expected, result);
+  }
+
+  @Test
+  void shallHaveOffset() {
+    final var expected = Optional.of(new PdfField(PDF_FIELD_ID, "2026-06-14", 10));
+
+    final var elementValue = ElementValueDate.builder().date(LocalDate.of(2026, 6, 14)).build();
+
+    final var elementSpec = ElementSpecification.builder().id(ELEMENT_ID).build();
+
+    final var config = PdfConfigurationDate.builder().pdfFieldId(PDF_FIELD_ID).offset(10).build();
 
     doReturn(Optional.of(ElementData.builder().id(ELEMENT_ID).value(elementValue).build()))
         .when(certificate)

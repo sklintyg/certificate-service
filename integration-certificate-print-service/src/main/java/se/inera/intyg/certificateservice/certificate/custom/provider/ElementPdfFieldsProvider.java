@@ -41,7 +41,7 @@ public class ElementPdfFieldsProvider implements PdfFieldsProvider {
         .collect(
             Collectors.toMap(
                 field -> field.fieldId().id(),
-                field -> new CustomPdfFieldDTO(field.value()),
+                field -> new CustomPdfFieldDTO(field.value(), field.offset()),
                 (a, b) -> {
                   throw new IllegalStateException(
                       "Duplicate PDF field id detected, two pdf configurations produced the same key");

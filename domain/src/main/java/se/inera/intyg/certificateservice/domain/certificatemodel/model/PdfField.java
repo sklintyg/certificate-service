@@ -18,4 +18,4 @@
  */
 package se.inera.intyg.certificateservice.domain.certificatemodel.model;
 
-public record PdfField(PdfFieldId fieldId, String value) {}
+public record PdfField(PdfFieldId fieldId, String value, Integer offset) {}
