@@ -16,29 +16,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7210;
+package se.inera.intyg.certificateservice.domain.certificatemodel.model;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
+import static se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayTextProvider.CITIZEN_VISIBILITY_TEXT;
+import static se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayTextProvider.CITIZEN_VISIBILITY_TEXT_FONT_SIZE;
+import static se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayTextProvider.CITIZEN_VISIBILITY_TEXT_X;
+import static se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayTextProvider.CITIZEN_VISIBILITY_TEXT_Y;
+import static se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayTextProvider.DIGITALLY_SIGNED_TEXT;
+import static se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayTextProvider.PDF_SIGNATURE_PAGE_INDEX;
+import static se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayTextProvider.PDF_SIGNATURE_TEXT_FONT_SIZE;
+import static se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayTextProvider.PDF_SIGNATURE_TEXT_X;
+import static se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayTextProvider.PDF_SIGNATURE_TEXT_Y;
+import static se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayTextProvider.SENT_TEXT_FONT_SIZE;
+import static se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayTextProvider.SENT_TEXT_PREFIX;
+import static se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayTextProvider.SENT_TEXT_X;
+import static se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayTextProvider.SENT_TEXT_Y;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataCertificateModelConstants.FK_RECIPIENT;
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7210.FK7210OverlayTextProvider.CITIZEN_VISIBILITY_TEXT;
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7210.FK7210OverlayTextProvider.CITIZEN_VISIBILITY_TEXT_FONT_SIZE;
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7210.FK7210OverlayTextProvider.CITIZEN_VISIBILITY_TEXT_X;
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7210.FK7210OverlayTextProvider.CITIZEN_VISIBILITY_TEXT_Y;
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7210.FK7210OverlayTextProvider.DIGITALLY_SIGNED_TEXT;
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7210.FK7210OverlayTextProvider.PDF_SIGNATURE_PAGE_INDEX;
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7210.FK7210OverlayTextProvider.PDF_SIGNATURE_TEXT_FONT_SIZE;
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7210.FK7210OverlayTextProvider.PDF_SIGNATURE_TEXT_X;
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7210.FK7210OverlayTextProvider.PDF_SIGNATURE_TEXT_Y;
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7210.FK7210OverlayTextProvider.SENT_TEXT_FONT_SIZE;
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7210.FK7210OverlayTextProvider.SENT_TEXT_PREFIX;
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7210.FK7210OverlayTextProvider.SENT_TEXT_X;
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7210.FK7210OverlayTextProvider.SENT_TEXT_Y;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -46,16 +45,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
 import se.inera.intyg.certificateservice.domain.certificate.model.Sent;
 import se.inera.intyg.certificateservice.domain.certificate.model.Status;
-import se.inera.intyg.certificateservice.domain.certificate.service.PdfGeneratorOptions;
-import se.inera.intyg.certificateservice.domain.certificatemodel.model.Appearance;
-import se.inera.intyg.certificateservice.domain.certificatemodel.model.CertificateModel;
-import se.inera.intyg.certificateservice.domain.certificatemodel.model.FontStyle;
-import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfTagIndex;
 import se.inera.intyg.certificateservice.domain.common.model.Recipient;
 import se.inera.intyg.certificateservice.domain.common.model.RecipientId;
 
 @ExtendWith(MockitoExtension.class)
-class FK7210OverlayTextProviderTest {
+class OverlayTextProviderTest {
 
   private static final String RECIPIENT_NAME = "Försäkringskassan";
   private static final PdfTagIndex TAG_WITH_ADDRESS = new PdfTagIndex(15);
@@ -64,22 +58,14 @@ class FK7210OverlayTextProviderTest {
   @Mock private Certificate certificate;
   @Mock private CertificateModel certificateModel;
 
-  private final FK7210OverlayTextProvider provider = new FK7210OverlayTextProvider();
-
-  private PdfGeneratorOptions defaultOptions() {
-    return PdfGeneratorOptions.builder()
-        .additionalInfoText("Webcert")
-        .citizenFormat(false)
-        .hiddenElements(List.of())
-        .build();
-  }
+  private final OverlayTextProvider provider = new OverlayTextProvider();
 
   @Test
   void shallReturnEmptyListWhenDraftAndNotSent() {
     when(certificate.status()).thenReturn(Status.DRAFT);
     when(certificate.sent()).thenReturn(null);
 
-    final var texts = provider.of(certificate, TAG_WITH_ADDRESS, defaultOptions());
+    final var texts = provider.of(certificate, TAG_WITH_ADDRESS);
 
     assertTrue(texts.isEmpty());
   }
@@ -89,7 +75,7 @@ class FK7210OverlayTextProviderTest {
     when(certificate.status()).thenReturn(Status.SIGNED);
     when(certificate.sent()).thenReturn(null);
 
-    final var texts = provider.of(certificate, TAG_WITH_ADDRESS, defaultOptions());
+    final var texts = provider.of(certificate, TAG_WITH_ADDRESS);
 
     assertEquals(1, texts.size());
     final var text = texts.getFirst();
@@ -109,7 +95,7 @@ class FK7210OverlayTextProviderTest {
     when(certificate.status()).thenReturn(Status.SIGNED);
     when(certificate.sent()).thenReturn(null);
 
-    final var texts = provider.of(certificate, TAG_WITHOUT_ADDRESS, defaultOptions());
+    final var texts = provider.of(certificate, TAG_WITHOUT_ADDRESS);
 
     assertEquals(TAG_WITHOUT_ADDRESS.value(), texts.getFirst().tagIndex());
   }
@@ -122,7 +108,7 @@ class FK7210OverlayTextProviderTest {
     when(certificate.certificateModel()).thenReturn(certificateModel);
     when(certificateModel.availableForCitizen()).thenReturn(false);
 
-    final var texts = provider.of(certificate, TAG_WITHOUT_ADDRESS, defaultOptions());
+    final var texts = provider.of(certificate, TAG_WITHOUT_ADDRESS);
 
     assertEquals(2, texts.size());
     assertAll(
@@ -145,7 +131,7 @@ class FK7210OverlayTextProviderTest {
     when(certificate.certificateModel()).thenReturn(certificateModel);
     when(certificateModel.availableForCitizen()).thenReturn(true);
 
-    final var texts = provider.of(certificate, TAG_WITHOUT_ADDRESS, defaultOptions());
+    final var texts = provider.of(certificate, TAG_WITHOUT_ADDRESS);
 
     assertEquals(3, texts.size());
     assertAll(

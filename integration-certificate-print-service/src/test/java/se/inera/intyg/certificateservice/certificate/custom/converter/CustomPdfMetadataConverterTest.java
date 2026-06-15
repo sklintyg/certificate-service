@@ -76,7 +76,7 @@ class CustomPdfMetadataConverterTest {
             .build();
 
     when(tagIndexProvider.of(any(), any())).thenReturn(new PdfTagIndex(15));
-    when(overlayTextProvider.of(any(), any(), any())).thenReturn(List.of());
+    when(overlayTextProvider.of(any(), any())).thenReturn(List.of());
   }
 
   @Test
@@ -145,7 +145,7 @@ class CustomPdfMetadataConverterTest {
               .pageIndex(0)
               .tagIndex(15)
               .build();
-      when(overlayTextProvider.of(any(), any(), any())).thenReturn(List.of(overlayText));
+      when(overlayTextProvider.of(any(), any())).thenReturn(List.of(overlayText));
       when(certificate.status()).thenReturn(Status.DRAFT);
 
       final var result = converter.convert(certificate, options, spec, FILE_NAME);

@@ -21,6 +21,7 @@ package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7210
 import java.util.List;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.CustomPdfSignature;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.CustomPdfSpecification;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayTextProvider;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfFieldId;
 
 public class FK7210PdfSpecification {
@@ -63,7 +64,7 @@ public class FK7210PdfSpecification {
                 .workplaceCodeFieldId(PDF_WORKPLACE_CODE_FIELD_ID)
                 .contactInformation(PDF_CONTACT_INFORMATION)
                 .build())
-        .overlayTextProvider(new FK7210OverlayTextProvider())
+        .overlayTextProvider(new OverlayTextProvider())
         .build();
   }
 }
