@@ -22,6 +22,14 @@ import java.util.Optional;
 import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
 
 public interface PdfConfiguration {
+
+  /**
+   * Remove this default implementation when all print logic is moved to CPS
+   *
+   * @param elementSpec
+   * @param certificate
+   * @return
+   */
   default Optional<PdfField> toPdfField(ElementSpecification elementSpec, Certificate certificate) {
     return Optional.empty();
   }
