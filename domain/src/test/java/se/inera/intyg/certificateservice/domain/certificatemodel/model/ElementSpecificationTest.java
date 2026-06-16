@@ -34,6 +34,7 @@ import static se.inera.intyg.certificateservice.domain.testdata.TestDataElementS
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataElementSpecification.categoryElementSpecificationBuilder;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataElementSpecification.dateElementSpecificationBuilder;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -42,10 +43,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
 import se.inera.intyg.certificateservice.domain.certificate.model.ElementData;
 import se.inera.intyg.certificateservice.domain.certificate.model.ElementSimplifiedValue;
 import se.inera.intyg.certificateservice.domain.certificate.model.ElementSimplifiedValueText;
 import se.inera.intyg.certificateservice.domain.certificate.model.ElementValue;
+import se.inera.intyg.certificateservice.domain.certificate.model.ElementValueBoolean;
 import se.inera.intyg.certificateservice.domain.certificate.model.ElementValueDate;
 import se.inera.intyg.certificateservice.domain.certificate.service.PdfGeneratorOptions;
 import se.inera.intyg.certificateservice.domain.validation.model.ElementValidation;
@@ -595,6 +598,61 @@ class ElementSpecificationTest {
 
       assertEquals(Optional.of(expectedSimplifiedValue), result);
       verify(configuration).simplified(elementValue);
+    }
+  }
+
+  @Nested
+  class ValueAs {
+
+    @Test
+    void shallReturnValueIfValueMatchesRequestedType() {
+      final var expectedValue = ElementValueDate.builder().date(LocalDate.of(2026, 6, 14)).build();
+
+      final var certificate = mock(Certificate.class);
+
+      doReturn(
+              Optional.of(
+                  ElementData.builder()
+                      .id(DATE_ELEMENT_SPECIFICATION.id())
+                      .value(expectedValue)
+                      .build()))
+          .when(certificate)
+          .getElementDataById(DATE_ELEMENT_SPECIFICATION.id());
+
+      final var result = DATE_ELEMENT_SPECIFICATION.valueAs(certificate, ElementValueDate.class);
+
+      assertEquals(Optional.of(expectedValue), result);
+    }
+
+    @Test
+    void shallReturnEmptyIfValueDoesNotMatchRequestedType() {
+      final var certificate = mock(Certificate.class);
+
+      doReturn(
+              Optional.of(
+                  ElementData.builder()
+                      .id(DATE_ELEMENT_SPECIFICATION.id())
+                      .value(mock(ElementValueBoolean.class))
+                      .build()))
+          .when(certificate)
+          .getElementDataById(DATE_ELEMENT_SPECIFICATION.id());
+
+      final var result = DATE_ELEMENT_SPECIFICATION.valueAs(certificate, ElementValueDate.class);
+
+      assertEquals(Optional.empty(), result);
+    }
+
+    @Test
+    void shallReturnEmptyIfElementDataDoesNotExist() {
+      final var certificate = mock(Certificate.class);
+
+      doReturn(Optional.empty())
+          .when(certificate)
+          .getElementDataById(DATE_ELEMENT_SPECIFICATION.id());
+
+      final var result = DATE_ELEMENT_SPECIFICATION.valueAs(certificate, ElementValueDate.class);
+
+      assertEquals(Optional.empty(), result);
     }
   }
 }

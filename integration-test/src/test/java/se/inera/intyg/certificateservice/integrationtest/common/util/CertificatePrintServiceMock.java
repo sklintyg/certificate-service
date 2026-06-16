@@ -19,6 +19,9 @@
 package se.inera.intyg.certificateservice.integrationtest.common.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.model.HttpRequest;
@@ -29,20 +32,40 @@ import se.inera.intyg.certificateservice.application.certificate.dto.GetCertific
 @RequiredArgsConstructor
 public class CertificatePrintServiceMock {
 
+  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
   private final MockServerClient mockServerClient;
+
+  public void mockCustomPdf() {
+    try {
+      final byte[] stubPdf = "%PDF-1.4".getBytes(StandardCharsets.UTF_8);
+      final byte[] encodedPdfData = Base64.getEncoder().encode(stubPdf);
+
+      mockServerClient
+          .when(HttpRequest.request("/api/print/custom").withMethod("POST"))
+          .respond(
+              HttpResponse.response()
+                  .withBody(
+                      OBJECT_MAPPER.writeValueAsString(
+                          Map.of("pdfData", Base64.getEncoder().encodeToString(encodedPdfData))))
+                  .withStatusCode(200)
+                  .withContentType(MediaType.APPLICATION_JSON));
+    } catch (Exception ex) {
+      throw new IllegalStateException(ex);
+    }
+  }
 
   public void mockPdf() {
     try {
       mockServerClient
-          .when(HttpRequest.request("/api/print"))
+          .when(HttpRequest.request("/api/print/general").withMethod("POST"))
           .respond(
               HttpResponse.response(
-                      new ObjectMapper()
-                          .writeValueAsString(
-                              GetCertificatePdfResponse.builder()
-                                  .fileName("lakarintyg_transportstyrelsen")
-                                  .pdfData("pdfData".getBytes())
-                                  .build()))
+                      OBJECT_MAPPER.writeValueAsString(
+                          GetCertificatePdfResponse.builder()
+                              .fileName("lakarintyg_transportstyrelsen")
+                              .pdfData("pdfData".getBytes())
+                              .build()))
                   .withStatusCode(200)
                   .withContentType(MediaType.APPLICATION_JSON));
     } catch (Exception ex) {

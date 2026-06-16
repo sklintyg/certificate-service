@@ -488,7 +488,7 @@
           },
           "maxLength" : null,
           "overflowSheetFieldId" : null,
-          "offset" : 0
+          "offset" : null
         },
         "children" : [ ],
         "shouldValidate" : { },
@@ -819,7 +819,7 @@
           "pdfFieldId" : {
             "id" : "form1[0].#subform[1].flt_datumBehandlingenAvslutad[0]"
           },
-          "offset" : 0
+          "offset" : null
         },
         "children" : [ ],
         "shouldValidate" : { },
@@ -876,7 +876,7 @@
           "pdfFieldId" : {
             "id" : "form1[0].#subform[1].flt_datumAkutLivshotande[0]"
           },
-          "offset" : 0
+          "offset" :null
         },
         "children" : [ ],
         "shouldValidate" : { },
@@ -943,7 +943,7 @@
           },
           "maxLength" : 265,
           "overflowSheetFieldId" : null,
-          "offset" : 0
+          "offset" : null
         },
         "children" : [ ],
         "shouldValidate" : { },
@@ -1062,7 +1062,7 @@
           "pdfFieldId" : {
             "id" : "form1[0].#subform[1].flt_datumTillMed[0]"
           },
-          "offset" : 0
+          "offset" : null
         },
         "children" : [ ],
         "shouldValidate" : { },
@@ -1129,7 +1129,7 @@
           },
           "maxLength" : 265,
           "overflowSheetFieldId" : null,
-          "offset" : 0
+          "offset" : null
         },
         "children" : [ ],
         "shouldValidate" : { },
