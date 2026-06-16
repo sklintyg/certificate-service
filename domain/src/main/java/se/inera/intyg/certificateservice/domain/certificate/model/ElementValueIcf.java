@@ -53,7 +53,7 @@ public class ElementValueIcf implements ElementValue {
 
   @Override
   public String asString() {
-    return text;
+    return icfCodes.isEmpty() ? text : "%s %s".formatted(String.join(" - ", icfCodes), text);
   }
 
   public String formatIcfValueText(ElementConfigurationIcf elementConfigurationIcf) {
