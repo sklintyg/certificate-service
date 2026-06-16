@@ -18,20 +18,11 @@
  */
 package se.inera.intyg.certificateservice.domain.certificatemodel.model;
 
-import java.util.Collections;
-import java.util.List;
-import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
+public final class PdfFormConstants {
 
-public interface PdfConfiguration {
+  public static final String CHECKED_BOX_VALUE = "1";
 
-  /**
-   * Remove this default implementation when all print logic is moved to CPS
-   *
-   * @param elementSpec
-   * @param certificate
-   * @return
-   */
-  default List<PdfField> toPdfFields(ElementSpecification elementSpec, Certificate certificate) {
-    return Collections.emptyList();
+  private PdfFormConstants() {
+    throw new IllegalStateException("Utility class");
   }
 }

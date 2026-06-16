@@ -18,8 +18,13 @@
  */
 package se.inera.intyg.certificateservice.domain.certificatemodel.model;
 
+import java.util.List;
+import java.util.stream.Stream;
 import lombok.Builder;
 import lombok.Value;
+import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
+import se.inera.intyg.certificateservice.domain.certificate.model.ElementData;
+import se.inera.intyg.certificateservice.domain.certificate.model.ElementValue;
 
 @Value
 @Builder
@@ -29,4 +34,20 @@ public class PdfConfigurationText implements PdfConfiguration {
   Integer maxLength;
   PdfFieldId overflowSheetFieldId;
   Integer offset;
+
+  @Override
+  public List<PdfField> toPdfFields(ElementSpecification elementSpec, Certificate certificate) {
+    return certificate.getElementDataById(elementSpec.id()).map(ElementData::value).stream()
+        .flatMap(this::toTextField)
+        .toList();
+  }
+
+  private Stream<PdfField> toTextField(ElementValue value) {
+    if (value.asString() == null) {
+      return Stream.empty();
+    }
+
+    return Stream.of(
+        PdfField.builder().fieldId(pdfFieldId).value(value.asString()).offset(offset).build());
+  }
 }

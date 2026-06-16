@@ -18,4 +18,7 @@
  */
 package se.inera.intyg.certificateservice.domain.certificatemodel.model;
 
-public record PdfField(PdfFieldId fieldId, String value, Integer offset) {}
+import lombok.Builder;
+
+@Builder
+public record PdfField(PdfFieldId fieldId, String value, Integer offset, String appearance) {}

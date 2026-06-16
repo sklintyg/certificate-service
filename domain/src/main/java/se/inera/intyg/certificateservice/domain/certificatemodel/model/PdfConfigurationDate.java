@@ -18,7 +18,7 @@
  */
 package se.inera.intyg.certificateservice.domain.certificatemodel.model;
 
-import java.util.Optional;
+import java.util.List;
 import lombok.Builder;
 import lombok.Value;
 import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
@@ -32,10 +32,18 @@ public class PdfConfigurationDate implements PdfConfiguration {
   Integer offset;
 
   @Override
-  public Optional<PdfField> toPdfField(ElementSpecification elementSpec, Certificate certificate) {
+  public List<PdfField> toPdfFields(ElementSpecification elementSpec, Certificate certificate) {
     return elementSpec
         .valueAs(certificate, ElementValueDate.class)
         .filter(value -> value.date() != null)
-        .map(value -> new PdfField(pdfFieldId, value.date().toString(), offset));
+        .map(
+            value ->
+                PdfField.builder()
+                    .fieldId(pdfFieldId)
+                    .value(value.date().toString())
+                    .offset(offset)
+                    .build())
+        .stream()
+        .toList();
   }
 }

@@ -18,13 +18,58 @@
  */
 package se.inera.intyg.certificateservice.domain.certificatemodel.model;
 
+import static se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfFormConstants.CHECKED_BOX_VALUE;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 import lombok.Builder;
 import lombok.Value;
+import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
+import se.inera.intyg.certificateservice.domain.certificate.model.DateRange;
+import se.inera.intyg.certificateservice.domain.certificate.model.ElementValueDateRangeList;
 
 @Value
 @Builder
 public class PdfConfigurationDateRangeList implements PdfConfiguration {
 
   Map<FieldId, PdfConfigurationDateRangeCheckbox> dateRanges;
+
+  @Override
+  public List<PdfField> toPdfFields(ElementSpecification elementSpec, Certificate certificate) {
+    return elementSpec.valueAs(certificate, ElementValueDateRangeList.class).stream()
+        .flatMap(value -> value.dateRangeList().stream())
+        .flatMap(this::toPdfFields)
+        .toList();
+  }
+
+  private Stream<PdfField> toPdfFields(DateRange dateRange) {
+    final var dateRangeConfig = dateRanges.get(dateRange.dateRangeId());
+    if (dateRangeConfig == null) {
+      throw new IllegalArgumentException("No date range found for id: " + dateRange.dateRangeId());
+    }
+
+    final var fields = new ArrayList<PdfField>();
+    fields.add(
+        PdfField.builder().fieldId(dateRangeConfig.checkbox()).value(CHECKED_BOX_VALUE).build());
+
+    if (dateRange.from() != null) {
+      fields.add(
+          PdfField.builder()
+              .fieldId(dateRangeConfig.from())
+              .value(dateRange.from().toString())
+              .build());
+    }
+
+    if (dateRange.to() != null) {
+      fields.add(
+          PdfField.builder()
+              .fieldId(dateRangeConfig.to())
+              .value(dateRange.to().toString())
+              .build());
+    }
+
+    return fields.stream();
+  }
 }

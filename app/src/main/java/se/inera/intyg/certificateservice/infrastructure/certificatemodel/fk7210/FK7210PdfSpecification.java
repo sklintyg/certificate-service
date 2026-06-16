@@ -64,7 +64,7 @@ public class FK7210PdfSpecification {
                 .workplaceCodeFieldId(PDF_WORKPLACE_CODE_FIELD_ID)
                 .contactInformation(PDF_CONTACT_INFORMATION)
                 .build())
-        .overlayTextProvider(new OverlayTextProvider())
+        .overlayTextProvider(new OverlayTextProvider(173f, 523f))
         .build();
   }
 }

@@ -51,6 +51,11 @@ public class ElementValueIcf implements ElementValue {
     return EncodingValidator.canEncode(encoder, text);
   }
 
+  @Override
+  public String asString() {
+    return text;
+  }
+
   public String formatIcfValueText(ElementConfigurationIcf elementConfigurationIcf) {
     if (icfCodes.isEmpty()) {
       return text;

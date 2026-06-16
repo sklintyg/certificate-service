@@ -41,7 +41,7 @@ public class ElementPdfFieldsProvider implements PdfFieldsProvider {
         .collect(
             Collectors.toMap(
                 field -> field.fieldId().id(),
-                field -> new CustomPdfFieldDTO(field.value(), field.offset()),
+                field -> new CustomPdfFieldDTO(field.value(), field.offset(), field.appearance()),
                 (a, b) -> {
                   throw new IllegalStateException(
                       "Duplicate PDF field id detected, two pdf configurations produced the same key");
@@ -50,8 +50,7 @@ public class ElementPdfFieldsProvider implements PdfFieldsProvider {
 
   private static Stream<PdfField> getPdfFields(
       Certificate certificate, ElementSpecification elementSpec) {
-    return Optional.ofNullable(elementSpec.pdfConfiguration())
-        .flatMap(config -> config.toPdfField(elementSpec, certificate))
-        .stream();
+    return Optional.ofNullable(elementSpec.pdfConfiguration()).stream()
+        .flatMap(config -> config.toPdfFields(elementSpec, certificate).stream());
   }
 }

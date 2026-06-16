@@ -18,9 +18,12 @@
  */
 package se.inera.intyg.certificateservice.domain.certificatemodel.model;
 
+import java.util.List;
 import java.util.Map;
 import lombok.Builder;
 import lombok.Value;
+import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
+import se.inera.intyg.certificateservice.domain.certificate.model.ElementValueCode;
 
 @Value
 @Builder
@@ -28,4 +31,27 @@ public class PdfConfigurationRadioCode implements PdfConfiguration {
 
   PdfFieldId radioGroupFieldId;
   Map<FieldId, PdfFieldId> codes;
+
+  @Override
+  public List<PdfField> toPdfFields(ElementSpecification elementSpec, Certificate certificate) {
+    return elementSpec
+        .valueAs(certificate, ElementValueCode.class)
+        .filter(code -> !codeIsInvalid(code))
+        .map(this::toField)
+        .stream()
+        .toList();
+  }
+
+  private PdfField toField(ElementValueCode code) {
+    final var option = codes.get(code.codeId());
+    if (option == null) {
+      throw new IllegalArgumentException("Code " + code.codeId() + " not found");
+    }
+
+    return PdfField.builder().fieldId(radioGroupFieldId).value(option.id()).build();
+  }
+
+  private static boolean codeIsInvalid(ElementValueCode code) {
+    return code.codeId() == null || code.codeId().value() == null;
+  }
 }
