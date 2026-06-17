@@ -30,7 +30,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
 import se.inera.intyg.certificateservice.domain.certificate.model.ElementData;
-import se.inera.intyg.certificateservice.domain.certificate.model.ElementValue;
+import se.inera.intyg.certificateservice.domain.certificate.model.ElementValueIcf;
+import se.inera.intyg.certificateservice.domain.certificate.model.ElementValueInteger;
+import se.inera.intyg.certificateservice.domain.certificate.model.ElementValueText;
 
 @ExtendWith(MockitoExtension.class)
 class PdfConfigurationTextTest {
@@ -44,7 +46,6 @@ class PdfConfigurationTextTest {
   @Mock private final ElementSpecification elementSpec = mock(ElementSpecification.class);
   @Mock private final Certificate certificate = mock(Certificate.class);
   @Mock private final ElementData elementData = mock(ElementData.class);
-  @Mock private final ElementValue elementValue = mock(ElementValue.class);
 
   private final PdfConfigurationText pdfConfiguration =
       PdfConfigurationText.builder()
@@ -55,26 +56,60 @@ class PdfConfigurationTextTest {
           .build();
 
   @Test
-  void shallReturnPdfFieldWhenElementValueHasText() {
+  void shallReturnPdfFieldWhenElementValueTextWithText() {
+    final var elementValueText = mock(ElementValueText.class);
+
     when(elementSpec.id()).thenReturn(ELEMENT_ID);
     when(certificate.getElementDataById(ELEMENT_ID)).thenReturn(Optional.of(elementData));
-    when(elementData.value()).thenReturn(elementValue);
-    when(elementValue.asString()).thenReturn(TEXT);
+    when(elementData.value()).thenReturn(elementValueText);
+    when(elementValueText.text()).thenReturn(TEXT);
 
     final var expected =
         List.of(PdfField.builder().fieldId(PDF_FIELD_ID).value(TEXT).offset(OFFSET).build());
 
-    assertEquals(expected, pdfConfiguration.toPdfFields(elementSpec, certificate));
+    assertEquals(expected, pdfConfiguration.toPdfFields(elementSpec, certificate).toList());
   }
 
   @Test
-  void shallReturnEmptyListWhenElementValueAsStringIsNull() {
+  void shallReturnPdfFieldWhenElementValueIcfWithText() {
+    final var elementValueIcf = mock(ElementValueIcf.class);
+
     when(elementSpec.id()).thenReturn(ELEMENT_ID);
     when(certificate.getElementDataById(ELEMENT_ID)).thenReturn(Optional.of(elementData));
-    when(elementData.value()).thenReturn(elementValue);
-    when(elementValue.asString()).thenReturn(null);
+    when(elementData.value()).thenReturn(elementValueIcf);
+    when(elementValueIcf.text()).thenReturn(TEXT);
 
-    assertEquals(List.of(), pdfConfiguration.toPdfFields(elementSpec, certificate));
+    final var expected =
+        List.of(PdfField.builder().fieldId(PDF_FIELD_ID).value(TEXT).offset(OFFSET).build());
+
+    assertEquals(expected, pdfConfiguration.toPdfFields(elementSpec, certificate).toList());
+  }
+
+  @Test
+  void shallReturnPdfFieldWhenElementValueIntegerWithValue() {
+    final var elementValueInteger = mock(ElementValueInteger.class);
+
+    when(elementSpec.id()).thenReturn(ELEMENT_ID);
+    when(certificate.getElementDataById(ELEMENT_ID)).thenReturn(Optional.of(elementData));
+    when(elementData.value()).thenReturn(elementValueInteger);
+    when(elementValueInteger.value()).thenReturn(5);
+
+    final var expected =
+        List.of(PdfField.builder().fieldId(PDF_FIELD_ID).value("5").offset(OFFSET).build());
+
+    assertEquals(expected, pdfConfiguration.toPdfFields(elementSpec, certificate).toList());
+  }
+
+  @Test
+  void shallReturnEmptyListWhenElementValueIsNull() {
+    final var elementValueText = mock(ElementValueText.class);
+
+    when(elementSpec.id()).thenReturn(ELEMENT_ID);
+    when(certificate.getElementDataById(ELEMENT_ID)).thenReturn(Optional.of(elementData));
+    when(elementData.value()).thenReturn(elementValueText);
+    when(elementValueText.text()).thenReturn(null);
+
+    assertEquals(List.of(), pdfConfiguration.toPdfFields(elementSpec, certificate).toList());
   }
 
   @Test
@@ -82,6 +117,6 @@ class PdfConfigurationTextTest {
     when(elementSpec.id()).thenReturn(ELEMENT_ID);
     when(certificate.getElementDataById(ELEMENT_ID)).thenReturn(Optional.empty());
 
-    assertEquals(List.of(), pdfConfiguration.toPdfFields(elementSpec, certificate));
+    assertEquals(List.of(), pdfConfiguration.toPdfFields(elementSpec, certificate).toList());
   }
 }

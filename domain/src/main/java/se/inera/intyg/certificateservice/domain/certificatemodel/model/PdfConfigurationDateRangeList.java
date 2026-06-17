@@ -21,7 +21,6 @@ package se.inera.intyg.certificateservice.domain.certificatemodel.model;
 import static se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfFormConstants.CHECKED_BOX_VALUE;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 import lombok.Builder;
@@ -37,11 +36,10 @@ public class PdfConfigurationDateRangeList implements PdfConfiguration {
   Map<FieldId, PdfConfigurationDateRangeCheckbox> dateRanges;
 
   @Override
-  public List<PdfField> toPdfFields(ElementSpecification elementSpec, Certificate certificate) {
+  public Stream<PdfField> toPdfFields(ElementSpecification elementSpec, Certificate certificate) {
     return elementSpec.valueAs(certificate, ElementValueDateRangeList.class).stream()
         .flatMap(value -> value.dateRangeList().stream())
-        .flatMap(this::toPdfFields)
-        .toList();
+        .flatMap(this::toPdfFields);
   }
 
   private Stream<PdfField> toPdfFields(DateRange dateRange) {

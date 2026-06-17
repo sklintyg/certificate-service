@@ -18,13 +18,15 @@
  */
 package se.inera.intyg.certificateservice.domain.certificatemodel.model;
 
-import java.util.List;
 import java.util.stream.Stream;
 import lombok.Builder;
 import lombok.Value;
 import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
 import se.inera.intyg.certificateservice.domain.certificate.model.ElementData;
 import se.inera.intyg.certificateservice.domain.certificate.model.ElementValue;
+import se.inera.intyg.certificateservice.domain.certificate.model.ElementValueIcf;
+import se.inera.intyg.certificateservice.domain.certificate.model.ElementValueInteger;
+import se.inera.intyg.certificateservice.domain.certificate.model.ElementValueText;
 
 @Value
 @Builder
@@ -36,18 +38,32 @@ public class PdfConfigurationText implements PdfConfiguration {
   Integer offset;
 
   @Override
-  public List<PdfField> toPdfFields(ElementSpecification elementSpec, Certificate certificate) {
+  public Stream<PdfField> toPdfFields(ElementSpecification elementSpec, Certificate certificate) {
     return certificate.getElementDataById(elementSpec.id()).map(ElementData::value).stream()
-        .flatMap(this::toTextField)
-        .toList();
+        .flatMap(this::toTextField);
   }
 
   private Stream<PdfField> toTextField(ElementValue value) {
-    if (value.asString() == null) {
+    return switch (value) {
+      case ElementValueText elementValueText -> toTextField(elementValueText.text());
+      case ElementValueIcf elementValueIcf -> toTextField(getIcfText(elementValueIcf));
+      case ElementValueInteger elementValueInteger ->
+          toTextField(
+              elementValueInteger.value() == null ? null : elementValueInteger.value().toString());
+      default -> Stream.empty();
+    };
+  }
+
+  private String getIcfText(ElementValueIcf elementValueIcf) {
+    return elementValueIcf.icfCodes().isEmpty()
+        ? elementValueIcf.text()
+        : "%s %s".formatted(String.join(" - ", elementValueIcf.icfCodes()), elementValueIcf.text());
+  }
+
+  private Stream<PdfField> toTextField(String text) {
+    if (text == null) {
       return Stream.empty();
     }
-
-    return Stream.of(
-        PdfField.builder().fieldId(pdfFieldId).value(value.asString()).offset(offset).build());
+    return Stream.of(PdfField.builder().fieldId(pdfFieldId).value(text).offset(offset).build());
   }
 }

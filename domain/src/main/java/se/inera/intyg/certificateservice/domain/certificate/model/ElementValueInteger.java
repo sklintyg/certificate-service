@@ -35,9 +35,4 @@ public class ElementValueInteger implements ElementValue {
   public boolean isEmpty() {
     return value == null;
   }
-
-  @Override
-  public String asString() {
-    return isEmpty() ? null : value.toString();
-  }
 }

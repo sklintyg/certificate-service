@@ -51,6 +51,6 @@ public class ElementPdfFieldsProvider implements PdfFieldsProvider {
   private static Stream<PdfField> getPdfFields(
       Certificate certificate, ElementSpecification elementSpec) {
     return Optional.ofNullable(elementSpec.pdfConfiguration()).stream()
-        .flatMap(config -> config.toPdfFields(elementSpec, certificate).stream());
+        .flatMap(config -> config.toPdfFields(elementSpec, certificate));
   }
 }

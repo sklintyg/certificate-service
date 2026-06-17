@@ -46,9 +46,4 @@ public class ElementValueText implements ElementValue {
   public boolean isWhiteSpaceOnly() {
     return ElementValidator.isTextWhiteSpaceOnly(text);
   }
-
-  @Override
-  public String asString() {
-    return text;
-  }
 }

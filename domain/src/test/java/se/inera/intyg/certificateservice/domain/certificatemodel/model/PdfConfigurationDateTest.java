@@ -53,7 +53,7 @@ class PdfConfigurationDateTest {
         .when(certificate)
         .getElementDataById(ELEMENT_ID);
 
-    final var result = config.toPdfFields(elementSpec, certificate);
+    final var result = config.toPdfFields(elementSpec, certificate).toList();
 
     assertEquals(expected, result);
   }
@@ -73,7 +73,7 @@ class PdfConfigurationDateTest {
         .when(certificate)
         .getElementDataById(ELEMENT_ID);
 
-    final var result = config.toPdfFields(elementSpec, certificate);
+    final var result = config.toPdfFields(elementSpec, certificate).toList();
 
     assertEquals(expected, result);
   }
@@ -90,7 +90,7 @@ class PdfConfigurationDateTest {
         .when(certificate)
         .getElementDataById(ELEMENT_ID);
 
-    final var result = config.toPdfFields(elementSpec, certificate);
+    final var result = config.toPdfFields(elementSpec, certificate).toList();
 
     assertEquals(Collections.emptyList(), result);
   }
@@ -110,7 +110,7 @@ class PdfConfigurationDateTest {
         .when(certificate)
         .getElementDataById(ELEMENT_ID);
 
-    final var result = config.toPdfFields(elementSpec, certificate);
+    final var result = config.toPdfFields(elementSpec, certificate).toList();
 
     assertEquals(Collections.emptyList(), result);
   }
@@ -123,7 +123,7 @@ class PdfConfigurationDateTest {
 
     doReturn(Optional.empty()).when(certificate).getElementDataById(ELEMENT_ID);
 
-    final var result = config.toPdfFields(elementSpec, certificate);
+    final var result = config.toPdfFields(elementSpec, certificate).toList();
 
     assertEquals(Collections.emptyList(), result);
   }

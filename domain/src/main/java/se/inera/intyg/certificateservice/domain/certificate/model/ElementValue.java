@@ -32,8 +32,4 @@ public interface ElementValue {
   default boolean isWhiteSpaceOnly() {
     return false;
   }
-
-  default String asString() {
-    return null;
-  }
 }

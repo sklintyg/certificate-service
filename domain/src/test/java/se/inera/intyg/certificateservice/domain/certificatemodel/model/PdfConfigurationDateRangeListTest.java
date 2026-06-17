@@ -80,7 +80,7 @@ class PdfConfigurationDateRangeListTest {
             PdfField.builder().fieldId(FROM).value(FROM_DATE.toString()).build(),
             PdfField.builder().fieldId(TO).value(TO_DATE.toString()).build());
 
-    assertEquals(expected, config.toPdfFields(elementSpec, certificate));
+    assertEquals(expected, config.toPdfFields(elementSpec, certificate).toList());
   }
 
   @Test
@@ -111,7 +111,7 @@ class PdfConfigurationDateRangeListTest {
     final var expected =
         List.of(PdfField.builder().fieldId(CHECKBOX).value(CHECKED_BOX_VALUE).build());
 
-    assertEquals(expected, config.toPdfFields(elementSpec, certificate));
+    assertEquals(expected, config.toPdfFields(elementSpec, certificate).toList());
   }
 
   @Test
@@ -134,7 +134,7 @@ class PdfConfigurationDateRangeListTest {
         .when(certificate)
         .getElementDataById(ELEMENT_ID);
 
-    assertEquals(Collections.emptyList(), config.toPdfFields(elementSpec, certificate));
+    assertEquals(Collections.emptyList(), config.toPdfFields(elementSpec, certificate).toList());
   }
 
   @Test
@@ -154,7 +154,7 @@ class PdfConfigurationDateRangeListTest {
 
     doReturn(Optional.empty()).when(certificate).getElementDataById(ELEMENT_ID);
 
-    assertEquals(Collections.emptyList(), config.toPdfFields(elementSpec, certificate));
+    assertEquals(Collections.emptyList(), config.toPdfFields(elementSpec, certificate).toList());
   }
 
   @Test
@@ -185,6 +185,7 @@ class PdfConfigurationDateRangeListTest {
         .getElementDataById(ELEMENT_ID);
 
     assertThrows(
-        IllegalArgumentException.class, () -> config.toPdfFields(elementSpec, certificate));
+        IllegalArgumentException.class,
+        () -> config.toPdfFields(elementSpec, certificate).toList());
   }
 }

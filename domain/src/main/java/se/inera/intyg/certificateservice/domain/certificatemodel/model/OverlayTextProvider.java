@@ -20,11 +20,9 @@ package se.inera.intyg.certificateservice.domain.certificatemodel.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
 import se.inera.intyg.certificateservice.domain.certificate.model.Status;
 
-@RequiredArgsConstructor
 public class OverlayTextProvider {
 
   static final float PDF_SIGNATURE_TEXT_FONT_SIZE = 8f;
@@ -46,6 +44,11 @@ public class OverlayTextProvider {
   // Signature text position derived from the signed-date field rectangle in the PDF template
   private final float signatureTextX;
   private final float signatureTextY;
+
+  public OverlayTextProvider(float signatureTextX, float signatureTextY) {
+    this.signatureTextX = signatureTextX;
+    this.signatureTextY = signatureTextY;
+  }
 
   public List<OverlayText> of(Certificate certificate, PdfTagIndex tagIndex) {
     final var texts = new ArrayList<OverlayText>();

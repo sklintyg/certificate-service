@@ -59,7 +59,7 @@ class PdfConfigurationRadioCodeTest {
     final var expected =
         List.of(PdfField.builder().fieldId(RADIO_GROUP).value(OPTION_VALUE.id()).build());
 
-    assertEquals(expected, config.toPdfFields(elementSpec, certificate));
+    assertEquals(expected, config.toPdfFields(elementSpec, certificate).toList());
   }
 
   @Test
@@ -76,7 +76,7 @@ class PdfConfigurationRadioCodeTest {
         .when(certificate)
         .getElementDataById(ELEMENT_ID);
 
-    assertEquals(Collections.emptyList(), config.toPdfFields(elementSpec, certificate));
+    assertEquals(Collections.emptyList(), config.toPdfFields(elementSpec, certificate).toList());
   }
 
   @Test
@@ -96,6 +96,7 @@ class PdfConfigurationRadioCodeTest {
         .getElementDataById(ELEMENT_ID);
 
     assertThrows(
-        IllegalArgumentException.class, () -> config.toPdfFields(elementSpec, certificate));
+        IllegalArgumentException.class,
+        () -> config.toPdfFields(elementSpec, certificate).toList());
   }
 }

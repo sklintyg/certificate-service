@@ -18,7 +18,7 @@
  */
 package se.inera.intyg.certificateservice.domain.certificatemodel.model;
 
-import java.util.List;
+import java.util.stream.Stream;
 import lombok.Builder;
 import lombok.Value;
 import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
@@ -33,7 +33,7 @@ public class PdfConfigurationRadioBoolean implements PdfConfiguration {
   PdfRadioOption optionFalse;
 
   @Override
-  public List<PdfField> toPdfFields(ElementSpecification elementSpec, Certificate certificate) {
+  public Stream<PdfField> toPdfFields(ElementSpecification elementSpec, Certificate certificate) {
     return elementSpec
         .valueAs(certificate, ElementValueBoolean.class)
         .filter(value -> value.value() != null)
@@ -46,7 +46,6 @@ public class PdfConfigurationRadioBoolean implements PdfConfiguration {
                             ? optionTrue.value()
                             : optionFalse.value())
                     .build())
-        .stream()
-        .toList();
+        .stream();
   }
 }

@@ -18,20 +18,13 @@
  */
 package se.inera.intyg.certificateservice.domain.certificatemodel.model;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.stream.Stream;
 import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
 
 public interface PdfConfiguration {
 
-  /**
-   * Remove this default implementation when all print logic is moved to CPS
-   *
-   * @param elementSpec
-   * @param certificate
-   * @return
-   */
-  default List<PdfField> toPdfFields(ElementSpecification elementSpec, Certificate certificate) {
-    return Collections.emptyList();
+  // TODO: Remove this default implementation when all print logic is moved to CPS
+  default Stream<PdfField> toPdfFields(ElementSpecification elementSpec, Certificate certificate) {
+    return Stream.empty();
   }
 }

@@ -18,8 +18,8 @@
  */
 package se.inera.intyg.certificateservice.domain.certificatemodel.model;
 
-import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 import lombok.Builder;
 import lombok.Value;
 import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
@@ -33,13 +33,12 @@ public class PdfConfigurationRadioCode implements PdfConfiguration {
   Map<FieldId, PdfFieldId> codes;
 
   @Override
-  public List<PdfField> toPdfFields(ElementSpecification elementSpec, Certificate certificate) {
+  public Stream<PdfField> toPdfFields(ElementSpecification elementSpec, Certificate certificate) {
     return elementSpec
         .valueAs(certificate, ElementValueCode.class)
         .filter(code -> !codeIsInvalid(code))
         .map(this::toField)
-        .stream()
-        .toList();
+        .stream();
   }
 
   private PdfField toField(ElementValueCode code) {

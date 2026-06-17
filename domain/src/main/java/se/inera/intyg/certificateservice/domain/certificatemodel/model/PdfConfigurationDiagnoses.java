@@ -39,11 +39,10 @@ public class PdfConfigurationDiagnoses implements PdfConfiguration {
   PdfFieldId overflowSheetFieldId;
 
   @Override
-  public List<PdfField> toPdfFields(ElementSpecification elementSpec, Certificate certificate) {
+  public Stream<PdfField> toPdfFields(ElementSpecification elementSpec, Certificate certificate) {
     return elementSpec.valueAs(certificate, ElementValueDiagnosisList.class).stream()
         .flatMap(value -> value.diagnoses().stream())
-        .flatMap(this::toPdfFields)
-        .toList();
+        .flatMap(this::toPdfFields);
   }
 
   private Stream<PdfField> toPdfFields(ElementValueDiagnosis diagnosis) {

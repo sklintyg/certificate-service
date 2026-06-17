@@ -20,7 +20,8 @@ package se.inera.intyg.certificateservice.domain.certificatemodel.model;
 
 import static se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfFormConstants.CHECKED_BOX_VALUE;
 
-import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 import lombok.Builder;
 import lombok.Value;
 import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
@@ -37,15 +38,14 @@ public class PdfConfigurationBoolean implements PdfConfiguration {
   String valueFalse;
 
   @Override
-  public List<PdfField> toPdfFields(ElementSpecification elementSpec, Certificate certificate) {
+  public Stream<PdfField> toPdfFields(ElementSpecification elementSpec, Certificate certificate) {
     return elementSpec
         .valueAs(certificate, ElementValueBoolean.class)
         .flatMap(this::toField)
-        .stream()
-        .toList();
+        .stream();
   }
 
-  private java.util.Optional<PdfField> toField(ElementValueBoolean value) {
+  private Optional<PdfField> toField(ElementValueBoolean value) {
     if (value.value() == null) {
       return java.util.Optional.empty();
     }
