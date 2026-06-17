@@ -25,10 +25,6 @@ import se.inera.intyg.certificateservice.domain.certificate.model.Status;
 
 public class OverlayTextProvider {
 
-  // Signature text position derived from the signed-date field rectangle in the PDF template:
-  // x = upperRightX (113.385) + 60 = 173, y = lowerLeftY (521.274) + 2 = 523
-  static final float PDF_SIGNATURE_TEXT_X = 173f;
-  static final float PDF_SIGNATURE_TEXT_Y = 523f;
   static final float PDF_SIGNATURE_TEXT_FONT_SIZE = 8f;
   static final int PDF_SIGNATURE_PAGE_INDEX = 0;
   static final String DIGITALLY_SIGNED_TEXT =
@@ -44,6 +40,15 @@ public class OverlayTextProvider {
   static final float CITIZEN_VISIBILITY_TEXT_Y = 665f;
   static final float CITIZEN_VISIBILITY_TEXT_FONT_SIZE = 16f;
   static final String CITIZEN_VISIBILITY_TEXT = "Du kan se intyget genom att logga in på 1177.se";
+
+  // Signature text position derived from the signed-date field rectangle in the PDF template
+  private final float signatureTextX;
+  private final float signatureTextY;
+
+  public OverlayTextProvider(float signatureTextX, float signatureTextY) {
+    this.signatureTextX = signatureTextX;
+    this.signatureTextY = signatureTextY;
+  }
 
   public List<OverlayText> of(Certificate certificate, PdfTagIndex tagIndex) {
     final var texts = new ArrayList<OverlayText>();
@@ -64,18 +69,18 @@ public class OverlayTextProvider {
     return texts;
   }
 
-  private static OverlayText digitallySignedText(PdfTagIndex pdfTagIndex) {
+  private OverlayText digitallySignedText(PdfTagIndex pdfTagIndex) {
     return OverlayText.builder()
         .value(DIGITALLY_SIGNED_TEXT)
-        .x(PDF_SIGNATURE_TEXT_X)
-        .y(PDF_SIGNATURE_TEXT_Y)
+        .x(signatureTextX)
+        .y(signatureTextY)
         .appearance(new Appearance(PDF_SIGNATURE_TEXT_FONT_SIZE, FontStyle.BOLD))
         .pageIndex(PDF_SIGNATURE_PAGE_INDEX)
         .tagIndex(pdfTagIndex.value())
         .build();
   }
 
-  private static OverlayText sentText(String recipientName) {
+  private OverlayText sentText(String recipientName) {
     return OverlayText.builder()
         .value(SENT_TEXT_PREFIX + recipientName)
         .x(SENT_TEXT_X)
@@ -85,7 +90,7 @@ public class OverlayTextProvider {
         .build();
   }
 
-  private static OverlayText citizenVisibilityText() {
+  private OverlayText citizenVisibilityText() {
     return OverlayText.builder()
         .value(CITIZEN_VISIBILITY_TEXT)
         .x(CITIZEN_VISIBILITY_TEXT_X)

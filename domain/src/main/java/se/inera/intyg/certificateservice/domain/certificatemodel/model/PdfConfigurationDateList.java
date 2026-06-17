@@ -18,13 +18,47 @@
  */
 package se.inera.intyg.certificateservice.domain.certificatemodel.model;
 
+import static se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfFormConstants.CHECKED_BOX_VALUE;
+
 import java.util.Map;
+import java.util.stream.Stream;
 import lombok.Builder;
 import lombok.Value;
+import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
+import se.inera.intyg.certificateservice.domain.certificate.model.ElementValueDate;
+import se.inera.intyg.certificateservice.domain.certificate.model.ElementValueDateList;
 
 @Value
 @Builder
 public class PdfConfigurationDateList implements PdfConfiguration {
 
   Map<FieldId, PdfConfigurationDateCheckbox> dateCheckboxes;
+
+  @Override
+  public Stream<PdfField> toPdfFields(ElementSpecification elementSpec, Certificate certificate) {
+    return elementSpec.valueAs(certificate, ElementValueDateList.class).stream()
+        .flatMap(value -> value.dateList().stream())
+        .flatMap(this::toPdfFields);
+  }
+
+  private Stream<PdfField> toPdfFields(ElementValueDate date) {
+    if (date.date() == null) {
+      return Stream.empty();
+    }
+
+    final var checkboxConfig = dateCheckboxes.get(date.dateId());
+    if (checkboxConfig == null) {
+      throw new IllegalArgumentException("No checkbox found for date: " + date.dateId());
+    }
+
+    return Stream.of(
+        PdfField.builder()
+            .fieldId(checkboxConfig.checkboxFieldId())
+            .value(CHECKED_BOX_VALUE)
+            .build(),
+        PdfField.builder()
+            .fieldId(checkboxConfig.dateFieldId())
+            .value(date.date().toString())
+            .build());
+  }
 }

@@ -23,6 +23,8 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
@@ -38,7 +40,8 @@ class PdfConfigurationDateTest {
 
   @Test
   void shallReturnPdfFieldIfValueIsDate() {
-    final var expected = Optional.of(new PdfField(PDF_FIELD_ID, "2026-06-14", null));
+    final var expected =
+        List.of(PdfField.builder().fieldId(PDF_FIELD_ID).value("2026-06-14").build());
 
     final var elementValue = ElementValueDate.builder().date(LocalDate.of(2026, 6, 14)).build();
 
@@ -50,14 +53,15 @@ class PdfConfigurationDateTest {
         .when(certificate)
         .getElementDataById(ELEMENT_ID);
 
-    final var result = config.toPdfField(elementSpec, certificate);
+    final var result = config.toPdfFields(elementSpec, certificate).toList();
 
     assertEquals(expected, result);
   }
 
   @Test
   void shallHaveOffset() {
-    final var expected = Optional.of(new PdfField(PDF_FIELD_ID, "2026-06-14", 10));
+    final var expected =
+        List.of(PdfField.builder().fieldId(PDF_FIELD_ID).value("2026-06-14").offset(10).build());
 
     final var elementValue = ElementValueDate.builder().date(LocalDate.of(2026, 6, 14)).build();
 
@@ -69,7 +73,7 @@ class PdfConfigurationDateTest {
         .when(certificate)
         .getElementDataById(ELEMENT_ID);
 
-    final var result = config.toPdfField(elementSpec, certificate);
+    final var result = config.toPdfFields(elementSpec, certificate).toList();
 
     assertEquals(expected, result);
   }
@@ -86,9 +90,9 @@ class PdfConfigurationDateTest {
         .when(certificate)
         .getElementDataById(ELEMENT_ID);
 
-    final var result = config.toPdfField(elementSpec, certificate);
+    final var result = config.toPdfFields(elementSpec, certificate).toList();
 
-    assertEquals(Optional.empty(), result);
+    assertEquals(Collections.emptyList(), result);
   }
 
   @Test
@@ -106,9 +110,9 @@ class PdfConfigurationDateTest {
         .when(certificate)
         .getElementDataById(ELEMENT_ID);
 
-    final var result = config.toPdfField(elementSpec, certificate);
+    final var result = config.toPdfFields(elementSpec, certificate).toList();
 
-    assertEquals(Optional.empty(), result);
+    assertEquals(Collections.emptyList(), result);
   }
 
   @Test
@@ -119,8 +123,8 @@ class PdfConfigurationDateTest {
 
     doReturn(Optional.empty()).when(certificate).getElementDataById(ELEMENT_ID);
 
-    final var result = config.toPdfField(elementSpec, certificate);
+    final var result = config.toPdfFields(elementSpec, certificate).toList();
 
-    assertEquals(Optional.empty(), result);
+    assertEquals(Collections.emptyList(), result);
   }
 }

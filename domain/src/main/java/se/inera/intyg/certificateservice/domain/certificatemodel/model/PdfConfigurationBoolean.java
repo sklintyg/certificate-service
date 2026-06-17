@@ -18,8 +18,14 @@
  */
 package se.inera.intyg.certificateservice.domain.certificatemodel.model;
 
+import static se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfFormConstants.CHECKED_BOX_VALUE;
+
+import java.util.Optional;
+import java.util.stream.Stream;
 import lombok.Builder;
 import lombok.Value;
+import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
+import se.inera.intyg.certificateservice.domain.certificate.model.ElementValueBoolean;
 
 @Value
 @Builder
@@ -30,4 +36,26 @@ public class PdfConfigurationBoolean implements PdfConfiguration {
   boolean isRadioButton;
   String valueTrue;
   String valueFalse;
+
+  @Override
+  public Stream<PdfField> toPdfFields(ElementSpecification elementSpec, Certificate certificate) {
+    return elementSpec
+        .valueAs(certificate, ElementValueBoolean.class)
+        .flatMap(this::toField)
+        .stream();
+  }
+
+  private Optional<PdfField> toField(ElementValueBoolean value) {
+    if (value.value() == null) {
+      return java.util.Optional.empty();
+    }
+
+    if (checkboxFalse == null && !value.value()) {
+      return java.util.Optional.empty();
+    }
+
+    final var fieldId = Boolean.FALSE.equals(value.value()) ? checkboxFalse : checkboxTrue;
+    return java.util.Optional.of(
+        PdfField.builder().fieldId(fieldId).value(CHECKED_BOX_VALUE).build());
+  }
 }

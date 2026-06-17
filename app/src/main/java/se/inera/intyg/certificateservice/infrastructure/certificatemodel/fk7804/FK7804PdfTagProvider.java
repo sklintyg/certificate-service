@@ -16,15 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package se.inera.intyg.certificateservice.domain.certificatemodel.model;
+package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7804;
 
-import java.util.stream.Stream;
+import lombok.EqualsAndHashCode;
 import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
+import se.inera.intyg.certificateservice.domain.certificate.service.PdfGeneratorOptions;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfTagIndex;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfTagIndexProvider;
 
-public interface PdfConfiguration {
+@EqualsAndHashCode
+public class FK7804PdfTagProvider implements PdfTagIndexProvider {
 
-  // TODO: Remove this default implementation when all print logic is moved to CPS
-  default Stream<PdfField> toPdfFields(ElementSpecification elementSpec, Certificate certificate) {
-    return Stream.empty();
+  private static final PdfTagIndex PDF_SIGNATURE_TAG_INDEX = new PdfTagIndex(10);
+
+  @Override
+  public PdfTagIndex of(Certificate certificate, PdfGeneratorOptions options) {
+    return PDF_SIGNATURE_TAG_INDEX;
   }
 }

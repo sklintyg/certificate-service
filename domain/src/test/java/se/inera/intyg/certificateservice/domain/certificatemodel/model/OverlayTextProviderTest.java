@@ -29,8 +29,6 @@ import static se.inera.intyg.certificateservice.domain.certificatemodel.model.Ov
 import static se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayTextProvider.DIGITALLY_SIGNED_TEXT;
 import static se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayTextProvider.PDF_SIGNATURE_PAGE_INDEX;
 import static se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayTextProvider.PDF_SIGNATURE_TEXT_FONT_SIZE;
-import static se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayTextProvider.PDF_SIGNATURE_TEXT_X;
-import static se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayTextProvider.PDF_SIGNATURE_TEXT_Y;
 import static se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayTextProvider.SENT_TEXT_FONT_SIZE;
 import static se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayTextProvider.SENT_TEXT_PREFIX;
 import static se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayTextProvider.SENT_TEXT_X;
@@ -58,7 +56,7 @@ class OverlayTextProviderTest {
   @Mock private Certificate certificate;
   @Mock private CertificateModel certificateModel;
 
-  private final OverlayTextProvider provider = new OverlayTextProvider();
+  private final OverlayTextProvider provider = new OverlayTextProvider(173f, 523f);
 
   @Test
   void shallReturnEmptyListWhenDraftAndNotSent() {
@@ -81,8 +79,8 @@ class OverlayTextProviderTest {
     final var text = texts.getFirst();
     assertAll(
         () -> assertEquals(DIGITALLY_SIGNED_TEXT, text.value()),
-        () -> assertEquals(PDF_SIGNATURE_TEXT_X, text.x()),
-        () -> assertEquals(PDF_SIGNATURE_TEXT_Y, text.y()),
+        () -> assertEquals(173f, text.x()),
+        () -> assertEquals(523f, text.y()),
         () ->
             assertEquals(
                 new Appearance(PDF_SIGNATURE_TEXT_FONT_SIZE, FontStyle.BOLD), text.appearance()),

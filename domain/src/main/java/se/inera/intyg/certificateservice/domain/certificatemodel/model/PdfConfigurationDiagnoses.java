@@ -18,9 +18,15 @@
  */
 package se.inera.intyg.certificateservice.domain.certificatemodel.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 import lombok.Builder;
 import lombok.Value;
+import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
+import se.inera.intyg.certificateservice.domain.certificate.model.ElementValueDiagnosis;
+import se.inera.intyg.certificateservice.domain.certificate.model.ElementValueDiagnosisList;
 
 @Value
 @Builder
@@ -31,4 +37,44 @@ public class PdfConfigurationDiagnoses implements PdfConfiguration {
   Integer maxLength;
   String appearance;
   PdfFieldId overflowSheetFieldId;
+
+  @Override
+  public Stream<PdfField> toPdfFields(ElementSpecification elementSpec, Certificate certificate) {
+    return elementSpec.valueAs(certificate, ElementValueDiagnosisList.class).stream()
+        .flatMap(value -> value.diagnoses().stream())
+        .flatMap(this::toPdfFields);
+  }
+
+  private Stream<PdfField> toPdfFields(ElementValueDiagnosis diagnosis) {
+    final var pdfConfigurationDiagnosis = diagnoses.get(diagnosis.id());
+    if (pdfConfigurationDiagnosis == null) {
+      throw new IllegalArgumentException("Diagnosis " + diagnosis.id() + " not found");
+    }
+
+    final var fields = new ArrayList<PdfField>();
+    fields.add(
+        PdfField.builder()
+            .fieldId(pdfConfigurationDiagnosis.pdfNameFieldId())
+            .value(diagnosis.description())
+            .appearance(appearance)
+            .build());
+    fields.addAll(getDiagnosisCodeFields(diagnosis, pdfConfigurationDiagnosis.pdfCodeFieldIds()));
+    return fields.stream();
+  }
+
+  private static List<PdfField> getDiagnosisCodeFields(
+      ElementValueDiagnosis diagnosis, List<PdfFieldId> codeIds) {
+    final var fields = new ArrayList<PdfField>();
+    if (diagnosis.code() == null) {
+      return fields;
+    }
+
+    final var codes = diagnosis.code().toCharArray();
+    for (var i = 0; i < codes.length; i++) {
+      fields.add(
+          PdfField.builder().fieldId(codeIds.get(i)).value(String.valueOf(codes[i])).build());
+    }
+
+    return fields;
+  }
 }

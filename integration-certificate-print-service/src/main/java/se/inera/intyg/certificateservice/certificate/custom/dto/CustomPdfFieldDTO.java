@@ -18,8 +18,8 @@
  */
 package se.inera.intyg.certificateservice.certificate.custom.dto;
 
-public record CustomPdfFieldDTO(String value, Integer offset) {
+public record CustomPdfFieldDTO(String value, Integer offset, String appearance) {
   public CustomPdfFieldDTO(String value) {
-    this(value, null);
+    this(value, null, null);
   }
 }

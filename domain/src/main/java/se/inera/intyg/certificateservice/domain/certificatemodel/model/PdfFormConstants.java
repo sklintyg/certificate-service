@@ -18,13 +18,11 @@
  */
 package se.inera.intyg.certificateservice.domain.certificatemodel.model;
 
-import java.util.stream.Stream;
-import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
+public final class PdfFormConstants {
 
-public interface PdfConfiguration {
+  public static final String CHECKED_BOX_VALUE = "1";
 
-  // TODO: Remove this default implementation when all print logic is moved to CPS
-  default Stream<PdfField> toPdfFields(ElementSpecification elementSpec, Certificate certificate) {
-    return Stream.empty();
+  private PdfFormConstants() {
+    throw new IllegalStateException("Utility class");
   }
 }

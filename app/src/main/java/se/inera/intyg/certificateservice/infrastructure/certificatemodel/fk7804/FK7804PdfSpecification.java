@@ -19,22 +19,15 @@
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7804;
 
 import java.util.List;
-import se.inera.intyg.certificateservice.domain.certificatemodel.model.OverflowPageIndex;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.CustomPdfSignature;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.CustomPdfSpecification;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayTextProvider;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfFieldId;
-import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfMcid;
-import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfSignature;
-import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfTagIndex;
-import se.inera.intyg.certificateservice.domain.certificatemodel.model.TemplatePdfSpecification;
 
 public class FK7804PdfSpecification {
 
   public static final Integer PDF_TEXT_FIELD_ROW_LENGTH = 53;
-  public static final String PDF_FK_7804_PDF = "fk7804/pdf/fk7804_v2.pdf";
-  public static final String PDF_NO_ADDRESS_FK_7804_PDF = "fk7804/pdf/fk7804_v2_no_address.pdf";
-  public static final PdfMcid PDF_MCID = new PdfMcid(150);
   private static final int PDF_SIGNATURE_PAGE_INDEX = 3;
-  private static final PdfTagIndex PDF_SIGNATURE_WITH_ADDRESS_TAG_INDEX = new PdfTagIndex(10);
-  private static final PdfTagIndex PDF_SIGNATURE_WITHOUT_ADDRESS_TAG_INDEX = new PdfTagIndex(10);
 
   private static final PdfFieldId PDF_PATIENT_ID_FIELD_ID_1 =
       new PdfFieldId("form1[0].#subform[0].flt_txtPersonNr[0]");
@@ -66,12 +59,9 @@ public class FK7804PdfSpecification {
     throw new IllegalStateException("Utility class");
   }
 
-  public static TemplatePdfSpecification create() {
-    return TemplatePdfSpecification.builder()
-        .pdfTemplatePath(PDF_FK_7804_PDF)
-        .pdfNoAddressTemplatePath(PDF_NO_ADDRESS_FK_7804_PDF)
-        .hasPageNbr(false)
-        .overFlowPageIndex(new OverflowPageIndex(4))
+  public static CustomPdfSpecification create() {
+    return CustomPdfSpecification.builder()
+        .pdfTemplatePathProvider(new FK7804TemplatePathProvider())
         .patientIdFieldIds(
             List.of(
                 PDF_PATIENT_ID_FIELD_ID_1,
@@ -79,11 +69,9 @@ public class FK7804PdfSpecification {
                 PDF_PATIENT_ID_FIELD_ID_3,
                 PDF_PATIENT_ID_FIELD_ID_4,
                 PDF_PATIENT_ID_FIELD_ID_5))
-        .pdfMcid(PDF_MCID)
         .signature(
-            PdfSignature.builder()
-                .signatureWithAddressTagIndex(PDF_SIGNATURE_WITH_ADDRESS_TAG_INDEX)
-                .signatureWithoutAddressTagIndex(PDF_SIGNATURE_WITHOUT_ADDRESS_TAG_INDEX)
+            CustomPdfSignature.builder()
+                .pdfTagIndexProvider(new FK7804PdfTagProvider())
                 .signaturePageIndex(PDF_SIGNATURE_PAGE_INDEX)
                 .signedDateFieldId(PDF_SIGNED_DATE_FIELD_ID)
                 .signedByNameFieldId(PDF_SIGNED_BY_NAME_FIELD_ID)
@@ -93,10 +81,7 @@ public class FK7804PdfSpecification {
                 .workplaceCodeFieldId(PDF_WORKPLACE_CODE_FIELD_ID)
                 .contactInformation(PDF_CONTACT_INFORMATION)
                 .build())
-        .untaggedWatermarks(
-            List.of(
-                "78040502",
-                "FK 7804 (006 F 001) Fastställd av Försäkringskassa i samråd med socialstyrelsen"))
+        .overlayTextProvider(new OverlayTextProvider(173f, 638f))
         .build();
   }
 }
