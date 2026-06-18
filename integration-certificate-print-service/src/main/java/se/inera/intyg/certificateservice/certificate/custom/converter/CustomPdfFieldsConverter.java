@@ -44,7 +44,7 @@ public class CustomPdfFieldsConverter {
                 Map.Entry::getValue,
                 (a, b) -> {
                   throw new IllegalStateException(
-                      "Duplicate PDF field id detected — two providers produced the same key");
+                      "Duplicate PDF field id detected, two providers produced the same key");
                 }));
   }
 }

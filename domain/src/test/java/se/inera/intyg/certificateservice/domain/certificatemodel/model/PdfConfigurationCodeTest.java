@@ -59,7 +59,11 @@ class PdfConfigurationCodeTest {
     final var expected =
         List.of(PdfField.builder().fieldId(PDF_FIELD_ID).value(CHECKED_BOX_VALUE).build());
 
-    assertEquals(expected, config.toPdfFields(elementSpec, certificate).toList());
+    assertEquals(
+        expected,
+        config
+            .toPdfFields(elementSpec, certificate, CustomPdfSpecification.builder().build())
+            .toList());
   }
 
   @Test
@@ -84,7 +88,10 @@ class PdfConfigurationCodeTest {
         .when(certificate)
         .getElementDataById(ELEMENT_ID);
 
-    final var result = config.toPdfFields(elementSpec, certificate).toList();
+    final var result =
+        config
+            .toPdfFields(elementSpec, certificate, CustomPdfSpecification.builder().build())
+            .toList();
 
     assertEquals(2, result.size());
     assertEquals(CHECKED_BOX_VALUE, result.get(0).value());
@@ -102,7 +109,11 @@ class PdfConfigurationCodeTest {
         .when(certificate)
         .getElementDataById(ELEMENT_ID);
 
-    assertEquals(Collections.emptyList(), config.toPdfFields(elementSpec, certificate).toList());
+    assertEquals(
+        Collections.emptyList(),
+        config
+            .toPdfFields(elementSpec, certificate, CustomPdfSpecification.builder().build())
+            .toList());
   }
 
   @Test
@@ -116,7 +127,11 @@ class PdfConfigurationCodeTest {
         .when(certificate)
         .getElementDataById(ELEMENT_ID);
 
-    assertEquals(Collections.emptyList(), config.toPdfFields(elementSpec, certificate).toList());
+    assertEquals(
+        Collections.emptyList(),
+        config
+            .toPdfFields(elementSpec, certificate, CustomPdfSpecification.builder().build())
+            .toList());
   }
 
   @Test
@@ -133,6 +148,9 @@ class PdfConfigurationCodeTest {
 
     assertThrows(
         IllegalArgumentException.class,
-        () -> config.toPdfFields(elementSpec, certificate).toList());
+        () ->
+            config
+                .toPdfFields(elementSpec, certificate, CustomPdfSpecification.builder().build())
+                .toList());
   }
 }

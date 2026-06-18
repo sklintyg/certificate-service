@@ -18,8 +18,27 @@
  */
 package se.inera.intyg.certificateservice.certificate.custom.dto;
 
-public record CustomPdfFieldDTO(String value, Integer offset, String appearance) {
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfField;
+
+public record CustomPdfFieldDTO(
+    String value,
+    Integer offset,
+    String appearance,
+    Integer maxLength,
+    boolean shouldRemoveLineBreaks,
+    OverflowConfigDTO overflow) {
+
   public CustomPdfFieldDTO(String value) {
-    this(value, null, null);
+    this(value, null, null, null, false, null);
+  }
+
+  public static CustomPdfFieldDTO toDTO(PdfField field) {
+    return new CustomPdfFieldDTO(
+        field.value(),
+        field.offset(),
+        field.appearance(),
+        field.maxLength(),
+        field.shouldRemoveLineBreaks(),
+        OverflowConfigDTO.toDTO(field.overflowConfig()));
   }
 }

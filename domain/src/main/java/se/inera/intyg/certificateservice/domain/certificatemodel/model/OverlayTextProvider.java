@@ -20,13 +20,14 @@ package se.inera.intyg.certificateservice.domain.certificatemodel.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Value;
 import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
 import se.inera.intyg.certificateservice.domain.certificate.model.Status;
 
+@Value
 public class OverlayTextProvider {
 
   static final float PDF_SIGNATURE_TEXT_FONT_SIZE = 8f;
-  static final int PDF_SIGNATURE_PAGE_INDEX = 0;
   static final String DIGITALLY_SIGNED_TEXT =
       "Detta är en utskrift av ett elektroniskt intyg. "
           + "Intyget har signerats elektroniskt av intygsutfärdaren.";
@@ -41,21 +42,14 @@ public class OverlayTextProvider {
   static final float CITIZEN_VISIBILITY_TEXT_FONT_SIZE = 16f;
   static final String CITIZEN_VISIBILITY_TEXT = "Du kan se intyget genom att logga in på 1177.se";
 
-  // Signature text position derived from the signed-date field rectangle in the PDF template
-  private final float signatureTextX;
-  private final float signatureTextY;
+  SignatureOverlayDetails signatureDetails;
 
-  public OverlayTextProvider(float signatureTextX, float signatureTextY) {
-    this.signatureTextX = signatureTextX;
-    this.signatureTextY = signatureTextY;
+  public OverlayTextProvider(SignatureOverlayDetails signatureDetails) {
+    this.signatureDetails = signatureDetails;
   }
 
   public List<OverlayText> of(Certificate certificate, PdfTagIndex tagIndex) {
     final var texts = new ArrayList<OverlayText>();
-
-    if (certificate.status() == Status.SIGNED) {
-      texts.add(digitallySignedText(tagIndex));
-    }
 
     final var sent = certificate.sent();
     if (sent != null && sent.sentAt() != null) {
@@ -66,16 +60,20 @@ public class OverlayTextProvider {
       }
     }
 
+    if (certificate.status() == Status.SIGNED) {
+      texts.add(digitallySignedText(tagIndex));
+    }
+
     return texts;
   }
 
   private OverlayText digitallySignedText(PdfTagIndex pdfTagIndex) {
     return OverlayText.builder()
         .value(DIGITALLY_SIGNED_TEXT)
-        .x(signatureTextX)
-        .y(signatureTextY)
+        .x(signatureDetails.signatureTextX())
+        .y(signatureDetails.signatureTextY())
         .appearance(new Appearance(PDF_SIGNATURE_TEXT_FONT_SIZE, FontStyle.BOLD))
-        .pageIndex(PDF_SIGNATURE_PAGE_INDEX)
+        .pageIndex(signatureDetails.signaturePageIndex())
         .tagIndex(pdfTagIndex.value())
         .build();
   }

@@ -33,7 +33,10 @@ public class PdfConfigurationRadioCode implements PdfConfiguration {
   Map<FieldId, PdfFieldId> codes;
 
   @Override
-  public Stream<PdfField> toPdfFields(ElementSpecification elementSpec, Certificate certificate) {
+  public Stream<PdfField> toPdfFields(
+      ElementSpecification elementSpec,
+      Certificate certificate,
+      CustomPdfSpecification pdfSpecification) {
     return elementSpec
         .valueAs(certificate, ElementValueCode.class)
         .filter(code -> !codeIsInvalid(code))

@@ -18,11 +18,16 @@
  */
 package se.inera.intyg.certificateservice.certificate.custom.dto;
 
-import java.util.List;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.OverflowConfig;
 
-public record CustomPdfMetadataDTO(
-    List<CustomTextDTO> customTexts,
-    AccessibilityMetadataDTO accessibilityMetadata,
-    String rightMarginText,
-    boolean addDraftWatermark,
-    Integer overflowPageIndex) {}
+public record OverflowConfigDTO(String overflowFieldId, String overflowLabel) {
+
+  public static OverflowConfigDTO toDTO(OverflowConfig overflowConfig) {
+    if (overflowConfig == null || overflowConfig.overflowFieldId() == null) {
+      return null;
+    }
+
+    return new OverflowConfigDTO(
+        overflowConfig.overflowFieldId().id(), overflowConfig.overflowLabel());
+  }
+}

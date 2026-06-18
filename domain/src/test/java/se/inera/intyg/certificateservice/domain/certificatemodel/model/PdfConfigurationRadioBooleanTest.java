@@ -56,7 +56,11 @@ class PdfConfigurationRadioBooleanTest {
 
     final var expected = List.of(PdfField.builder().fieldId(RADIO_FIELD).value("2").build());
 
-    assertEquals(expected, config.toPdfFields(elementSpec, certificate).toList());
+    assertEquals(
+        expected,
+        config
+            .toPdfFields(elementSpec, certificate, CustomPdfSpecification.builder().build())
+            .toList());
   }
 
   @Test
@@ -77,7 +81,11 @@ class PdfConfigurationRadioBooleanTest {
 
     final var expected = List.of(PdfField.builder().fieldId(RADIO_FIELD).value("1").build());
 
-    assertEquals(expected, config.toPdfFields(elementSpec, certificate).toList());
+    assertEquals(
+        expected,
+        config
+            .toPdfFields(elementSpec, certificate, CustomPdfSpecification.builder().build())
+            .toList());
   }
 
   @Test
@@ -96,6 +104,10 @@ class PdfConfigurationRadioBooleanTest {
         .when(certificate)
         .getElementDataById(ELEMENT_ID);
 
-    assertEquals(Collections.emptyList(), config.toPdfFields(elementSpec, certificate).toList());
+    assertEquals(
+        Collections.emptyList(),
+        config
+            .toPdfFields(elementSpec, certificate, CustomPdfSpecification.builder().build())
+            .toList());
   }
 }

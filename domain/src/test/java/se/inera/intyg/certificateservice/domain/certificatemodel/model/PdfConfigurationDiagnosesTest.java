@@ -43,7 +43,7 @@ class PdfConfigurationDiagnosesTest {
   private static final PdfFieldId CODE_1 = new PdfFieldId("form.diag.code[0]");
   private static final PdfFieldId CODE_2 = new PdfFieldId("form.diag.code[1]");
   private static final PdfFieldId CODE_3 = new PdfFieldId("form.diag.code[2]");
-  private static final PdfFieldId OVERFLOW = new PdfFieldId("form.diag.overflow");
+  private static final PdfFieldId OVERFLOW = new PdfFieldId("form.diag.overflowConfig");
   private static final String APPEARANCE = "/ArialMT 9.00 Tf 0 g";
 
   private final Certificate certificate = mock(Certificate.class);
@@ -61,7 +61,12 @@ class PdfConfigurationDiagnosesTest {
                         .description("Akut bronkit")
                         .build()))
             .build();
-    final var elementSpec = ElementSpecification.builder().id(ELEMENT_ID).build();
+    final var elementSpec =
+        ElementSpecification.builder()
+            .configuration(ElementConfigurationDiagnosis.builder().name("name").build())
+            .id(ELEMENT_ID)
+            .build();
+
     final var config =
         PdfConfigurationDiagnoses.builder()
             .prefix(PREFIX)
@@ -87,12 +92,26 @@ class PdfConfigurationDiagnosesTest {
                 .fieldId(NAME_FIELD)
                 .value("Akut bronkit")
                 .appearance(APPEARANCE)
+                .maxLength(172)
+                .shouldRemoveLineBreaks(true)
+                .overflowConfig(
+                    OverflowConfig.builder()
+                        .overflowFieldId(new PdfFieldId("fieldId"))
+                        .overflowLabel("name")
+                        .build())
                 .build(),
             PdfField.builder().fieldId(CODE_1).value("A").build(),
             PdfField.builder().fieldId(CODE_2).value("1").build(),
             PdfField.builder().fieldId(CODE_3).value("2").build());
 
-    assertEquals(expected, config.toPdfFields(elementSpec, certificate).toList());
+    assertEquals(
+        expected,
+        config
+            .toPdfFields(
+                elementSpec,
+                certificate,
+                CustomPdfSpecification.builder().overflowFieldId(new PdfFieldId("fieldId")).build())
+            .toList());
   }
 
   @Test
@@ -108,7 +127,11 @@ class PdfConfigurationDiagnosesTest {
                         .description("Endast text")
                         .build()))
             .build();
-    final var elementSpec = ElementSpecification.builder().id(ELEMENT_ID).build();
+    final var elementSpec =
+        ElementSpecification.builder()
+            .configuration(ElementConfigurationDiagnosis.builder().name("name").build())
+            .id(ELEMENT_ID)
+            .build();
     final var config =
         PdfConfigurationDiagnoses.builder()
             .prefix(PREFIX)
@@ -133,10 +156,24 @@ class PdfConfigurationDiagnosesTest {
             PdfField.builder()
                 .fieldId(NAME_FIELD)
                 .value("Endast text")
+                .overflowConfig(
+                    OverflowConfig.builder()
+                        .overflowFieldId(new PdfFieldId("fieldId"))
+                        .overflowLabel("name")
+                        .build())
+                .maxLength(172)
+                .shouldRemoveLineBreaks(true)
                 .appearance(APPEARANCE)
                 .build());
 
-    assertEquals(expected, config.toPdfFields(elementSpec, certificate).toList());
+    assertEquals(
+        expected,
+        config
+            .toPdfFields(
+                elementSpec,
+                certificate,
+                CustomPdfSpecification.builder().overflowFieldId(new PdfFieldId("fieldId")).build())
+            .toList());
   }
 
   @Test
@@ -175,7 +212,10 @@ class PdfConfigurationDiagnosesTest {
 
     assertThrows(
         IllegalArgumentException.class,
-        () -> config.toPdfFields(elementSpec, certificate).toList());
+        () ->
+            config
+                .toPdfFields(elementSpec, certificate, CustomPdfSpecification.builder().build())
+                .toList());
   }
 
   @Test
@@ -201,7 +241,11 @@ class PdfConfigurationDiagnosesTest {
         .when(certificate)
         .getElementDataById(ELEMENT_ID);
 
-    assertEquals(Collections.emptyList(), config.toPdfFields(elementSpec, certificate).toList());
+    assertEquals(
+        Collections.emptyList(),
+        config
+            .toPdfFields(elementSpec, certificate, CustomPdfSpecification.builder().build())
+            .toList());
   }
 
   @Test
@@ -224,6 +268,10 @@ class PdfConfigurationDiagnosesTest {
 
     doReturn(Optional.empty()).when(certificate).getElementDataById(ELEMENT_ID);
 
-    assertEquals(Collections.emptyList(), config.toPdfFields(elementSpec, certificate).toList());
+    assertEquals(
+        Collections.emptyList(),
+        config
+            .toPdfFields(elementSpec, certificate, CustomPdfSpecification.builder().build())
+            .toList());
   }
 }

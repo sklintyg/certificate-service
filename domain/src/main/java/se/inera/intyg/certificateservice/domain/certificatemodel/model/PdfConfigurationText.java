@@ -38,18 +38,28 @@ public class PdfConfigurationText implements PdfConfiguration {
   Integer offset;
 
   @Override
-  public Stream<PdfField> toPdfFields(ElementSpecification elementSpec, Certificate certificate) {
+  public Stream<PdfField> toPdfFields(
+      ElementSpecification elementSpec,
+      Certificate certificate,
+      CustomPdfSpecification pdfSpecification) {
     return certificate.getElementDataById(elementSpec.id()).map(ElementData::value).stream()
-        .flatMap(this::toTextField);
+        .flatMap(elementValue -> toTextField(elementValue, elementSpec, pdfSpecification));
   }
 
-  private Stream<PdfField> toTextField(ElementValue value) {
+  private Stream<PdfField> toTextField(
+      ElementValue value,
+      ElementSpecification elementSpecification,
+      CustomPdfSpecification pdfSpecification) {
     return switch (value) {
-      case ElementValueText elementValueText -> toTextField(elementValueText.text());
-      case ElementValueIcf elementValueIcf -> toTextField(getIcfText(elementValueIcf));
+      case ElementValueText elementValueText ->
+          toTextField(elementValueText.text(), elementSpecification, pdfSpecification);
+      case ElementValueIcf elementValueIcf ->
+          toTextField(getIcfText(elementValueIcf), elementSpecification, pdfSpecification);
       case ElementValueInteger elementValueInteger ->
           toTextField(
-              elementValueInteger.value() == null ? null : elementValueInteger.value().toString());
+              elementValueInteger.value() == null ? null : elementValueInteger.value().toString(),
+              elementSpecification,
+              pdfSpecification);
       default -> Stream.empty();
     };
   }
@@ -60,10 +70,25 @@ public class PdfConfigurationText implements PdfConfiguration {
         : "%s %s".formatted(String.join(" - ", elementValueIcf.icfCodes()), elementValueIcf.text());
   }
 
-  private Stream<PdfField> toTextField(String text) {
+  private Stream<PdfField> toTextField(
+      String text,
+      ElementSpecification elementSpecification,
+      CustomPdfSpecification pdfSpecification) {
     if (text == null) {
       return Stream.empty();
     }
-    return Stream.of(PdfField.builder().fieldId(pdfFieldId).value(text).offset(offset).build());
+    return Stream.of(
+        PdfField.builder()
+            .fieldId(pdfFieldId)
+            .value(text)
+            .offset(offset)
+            .maxLength(maxLength)
+            .shouldRemoveLineBreaks(true)
+            .overflowConfig(
+                OverflowConfig.builder()
+                    .overflowFieldId(pdfSpecification.overflowFieldId())
+                    .overflowLabel(elementSpecification.configuration().name())
+                    .build())
+            .build());
   }
 }

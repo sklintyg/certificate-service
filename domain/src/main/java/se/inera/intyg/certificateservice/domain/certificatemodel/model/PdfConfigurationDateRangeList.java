@@ -36,7 +36,10 @@ public class PdfConfigurationDateRangeList implements PdfConfiguration {
   Map<FieldId, PdfConfigurationDateRangeCheckbox> dateRanges;
 
   @Override
-  public Stream<PdfField> toPdfFields(ElementSpecification elementSpec, Certificate certificate) {
+  public Stream<PdfField> toPdfFields(
+      ElementSpecification elementSpec,
+      Certificate certificate,
+      CustomPdfSpecification pdfSpecification) {
     return elementSpec.valueAs(certificate, ElementValueDateRangeList.class).stream()
         .flatMap(value -> value.dateRangeList().stream())
         .flatMap(this::toPdfFields);

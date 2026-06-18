@@ -19,6 +19,17 @@
 package se.inera.intyg.certificateservice.domain.certificatemodel.model;
 
 import lombok.Builder;
+import lombok.Builder.Default;
+import lombok.Value;
 
 @Builder
-public record PdfField(PdfFieldId fieldId, String value, Integer offset, String appearance) {}
+@Value
+public class PdfField {
+  PdfFieldId fieldId;
+  String value;
+  Integer offset;
+  String appearance;
+  Integer maxLength;
+  @Default boolean shouldRemoveLineBreaks = false;
+  OverflowConfig overflowConfig;
+}

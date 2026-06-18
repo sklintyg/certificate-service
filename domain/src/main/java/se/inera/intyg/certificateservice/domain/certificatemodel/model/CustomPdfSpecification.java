@@ -30,4 +30,6 @@ public class CustomPdfSpecification implements PdfSpecification {
   List<PdfFieldId> patientIdFieldIds;
   CustomPdfSignature signature;
   OverlayTextProvider overlayTextProvider;
+  OverflowPageIndex overFlowPageIndex;
+  PdfFieldId overflowFieldId;
 }

@@ -39,7 +39,10 @@ public class PdfConfigurationCode implements PdfConfiguration {
   Map<FieldId, PdfFieldId> codes;
 
   @Override
-  public Stream<PdfField> toPdfFields(ElementSpecification elementSpec, Certificate certificate) {
+  public Stream<PdfField> toPdfFields(
+      ElementSpecification elementSpec,
+      Certificate certificate,
+      CustomPdfSpecification pdfSpecification) {
     return certificate.getElementDataById(elementSpec.id()).map(ElementData::value).stream()
         .flatMap(this::toPdfFields);
   }
