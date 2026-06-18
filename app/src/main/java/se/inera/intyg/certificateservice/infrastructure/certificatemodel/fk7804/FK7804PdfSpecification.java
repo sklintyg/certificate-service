@@ -21,13 +21,17 @@ package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7804
 import java.util.List;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.CustomPdfSignature;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.CustomPdfSpecification;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.OverflowPageIndex;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayTextProvider;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfFieldId;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.SignatureOverlayDetails;
 
 public class FK7804PdfSpecification {
 
   public static final Integer PDF_TEXT_FIELD_ROW_LENGTH = 53;
   private static final int PDF_SIGNATURE_PAGE_INDEX = 3;
+  private static final float PDF_SIGNATURE_TEXT_X = 173f;
+  private static final float PDF_SIGNATURE_TEXT_Y = 638f;
 
   private static final PdfFieldId PDF_PATIENT_ID_FIELD_ID_1 =
       new PdfFieldId("form1[0].#subform[0].flt_txtPersonNr[0]");
@@ -81,7 +85,15 @@ public class FK7804PdfSpecification {
                 .workplaceCodeFieldId(PDF_WORKPLACE_CODE_FIELD_ID)
                 .contactInformation(PDF_CONTACT_INFORMATION)
                 .build())
-        .overlayTextProvider(new OverlayTextProvider(173f, 638f))
+        .overlayTextProvider(
+            new OverlayTextProvider(
+                SignatureOverlayDetails.builder()
+                    .signatureTextX(PDF_SIGNATURE_TEXT_X)
+                    .signatureTextY(PDF_SIGNATURE_TEXT_Y)
+                    .signaturePageIndex(PDF_SIGNATURE_PAGE_INDEX)
+                    .build()))
+        .overflowFieldId(new PdfFieldId("form1[0].#subform[4].flt_txtFortsattningsblad[0]"))
+        .overFlowPageIndex(new OverflowPageIndex(4))
         .build();
   }
 }

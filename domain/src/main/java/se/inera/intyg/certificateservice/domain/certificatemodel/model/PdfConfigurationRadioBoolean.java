@@ -33,7 +33,10 @@ public class PdfConfigurationRadioBoolean implements PdfConfiguration {
   PdfRadioOption optionFalse;
 
   @Override
-  public Stream<PdfField> toPdfFields(ElementSpecification elementSpec, Certificate certificate) {
+  public Stream<PdfField> toPdfFields(
+      ElementSpecification elementSpec,
+      Certificate certificate,
+      CustomPdfSpecification pdfSpecification) {
     return elementSpec
         .valueAs(certificate, ElementValueBoolean.class)
         .filter(value -> value.value() != null)

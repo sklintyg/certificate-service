@@ -42,7 +42,15 @@ public class CustomPdfMetadataConverter {
             .toList(),
         new AccessibilityMetadataDTO(fileName),
         rightMarginText(certificate, options),
-        certificate.status() == Status.DRAFT);
+        certificate.status() == Status.DRAFT,
+        getOverflowPageIndex(spec));
+  }
+
+  private Integer getOverflowPageIndex(CustomPdfSpecification specification) {
+    if (specification.overFlowPageIndex() == null) {
+      return null;
+    }
+    return specification.overFlowPageIndex().value();
   }
 
   private static String rightMarginText(Certificate certificate, PdfGeneratorOptions options) {

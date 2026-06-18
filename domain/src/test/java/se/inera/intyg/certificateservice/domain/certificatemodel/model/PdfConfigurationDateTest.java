@@ -53,7 +53,10 @@ class PdfConfigurationDateTest {
         .when(certificate)
         .getElementDataById(ELEMENT_ID);
 
-    final var result = config.toPdfFields(elementSpec, certificate).toList();
+    final var result =
+        config
+            .toPdfFields(elementSpec, certificate, CustomPdfSpecification.builder().build())
+            .toList();
 
     assertEquals(expected, result);
   }
@@ -73,7 +76,10 @@ class PdfConfigurationDateTest {
         .when(certificate)
         .getElementDataById(ELEMENT_ID);
 
-    final var result = config.toPdfFields(elementSpec, certificate).toList();
+    final var result =
+        config
+            .toPdfFields(elementSpec, certificate, CustomPdfSpecification.builder().build())
+            .toList();
 
     assertEquals(expected, result);
   }
@@ -90,7 +96,10 @@ class PdfConfigurationDateTest {
         .when(certificate)
         .getElementDataById(ELEMENT_ID);
 
-    final var result = config.toPdfFields(elementSpec, certificate).toList();
+    final var result =
+        config
+            .toPdfFields(elementSpec, certificate, CustomPdfSpecification.builder().build())
+            .toList();
 
     assertEquals(Collections.emptyList(), result);
   }
@@ -110,7 +119,10 @@ class PdfConfigurationDateTest {
         .when(certificate)
         .getElementDataById(ELEMENT_ID);
 
-    final var result = config.toPdfFields(elementSpec, certificate).toList();
+    final var result =
+        config
+            .toPdfFields(elementSpec, certificate, CustomPdfSpecification.builder().build())
+            .toList();
 
     assertEquals(Collections.emptyList(), result);
   }
@@ -123,7 +135,10 @@ class PdfConfigurationDateTest {
 
     doReturn(Optional.empty()).when(certificate).getElementDataById(ELEMENT_ID);
 
-    final var result = config.toPdfFields(elementSpec, certificate).toList();
+    final var result =
+        config
+            .toPdfFields(elementSpec, certificate, CustomPdfSpecification.builder().build())
+            .toList();
 
     assertEquals(Collections.emptyList(), result);
   }

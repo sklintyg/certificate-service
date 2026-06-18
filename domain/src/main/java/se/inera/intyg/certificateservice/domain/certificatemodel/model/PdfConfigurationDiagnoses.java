@@ -39,13 +39,21 @@ public class PdfConfigurationDiagnoses implements PdfConfiguration {
   PdfFieldId overflowSheetFieldId;
 
   @Override
-  public Stream<PdfField> toPdfFields(ElementSpecification elementSpec, Certificate certificate) {
+  public Stream<PdfField> toPdfFields(
+      ElementSpecification elementSpec,
+      Certificate certificate,
+      CustomPdfSpecification pdfSpecification) {
     return elementSpec.valueAs(certificate, ElementValueDiagnosisList.class).stream()
         .flatMap(value -> value.diagnoses().stream())
-        .flatMap(this::toPdfFields);
+        .flatMap(
+            elementValueDiagnosis ->
+                toPdfFields(elementValueDiagnosis, elementSpec, pdfSpecification));
   }
 
-  private Stream<PdfField> toPdfFields(ElementValueDiagnosis diagnosis) {
+  private Stream<PdfField> toPdfFields(
+      ElementValueDiagnosis diagnosis,
+      ElementSpecification elementSpecification,
+      CustomPdfSpecification pdfSpecification) {
     final var pdfConfigurationDiagnosis = diagnoses.get(diagnosis.id());
     if (pdfConfigurationDiagnosis == null) {
       throw new IllegalArgumentException("Diagnosis " + diagnosis.id() + " not found");
@@ -57,6 +65,13 @@ public class PdfConfigurationDiagnoses implements PdfConfiguration {
             .fieldId(pdfConfigurationDiagnosis.pdfNameFieldId())
             .value(diagnosis.description())
             .appearance(appearance)
+            .maxLength(maxLength)
+            .shouldRemoveLineBreaks(true)
+            .overflowConfig(
+                OverflowConfig.builder()
+                    .overflowFieldId(pdfSpecification.overflowFieldId())
+                    .overflowLabel(elementSpecification.configuration().name())
+                    .build())
             .build());
     fields.addAll(getDiagnosisCodeFields(diagnosis, pdfConfigurationDiagnosis.pdfCodeFieldIds()));
     return fields.stream();

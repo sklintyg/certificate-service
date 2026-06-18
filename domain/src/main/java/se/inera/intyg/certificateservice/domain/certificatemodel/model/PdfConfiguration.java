@@ -24,7 +24,10 @@ import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
 public interface PdfConfiguration {
 
   // TODO: Remove this default implementation when all print logic is moved to CPS
-  default Stream<PdfField> toPdfFields(ElementSpecification elementSpec, Certificate certificate) {
+  default Stream<PdfField> toPdfFields(
+      ElementSpecification elementSpec,
+      Certificate certificate,
+      CustomPdfSpecification pdfSpecification) {
     return Stream.empty();
   }
 }

@@ -19,97 +19,61 @@
 package se.inera.intyg.certificateservice.domain.certificatemodel.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
 import se.inera.intyg.certificateservice.domain.certificate.model.ElementData;
+import se.inera.intyg.certificateservice.domain.certificate.model.ElementValue;
 import se.inera.intyg.certificateservice.domain.certificate.model.ElementValueIcf;
 import se.inera.intyg.certificateservice.domain.certificate.model.ElementValueInteger;
 import se.inera.intyg.certificateservice.domain.certificate.model.ElementValueText;
 
 @ExtendWith(MockitoExtension.class)
 class PdfConfigurationTextTest {
+
   private static final ElementId ELEMENT_ID = new ElementId("elementId");
   private static final PdfFieldId PDF_FIELD_ID = new PdfFieldId("pdfFieldId");
-  private static final PdfFieldId OVERFLOW_SHEET_FIELD_ID = new PdfFieldId("overflowSheetFieldId");
+  private static final PdfFieldId OVERFLOW_FIELD_ID = new PdfFieldId("overflowFieldId");
   private static final Integer MAX_LENGTH = 100;
   private static final Integer OFFSET = 5;
   private static final String TEXT = "some text";
+  private static final String OVERFLOW_LABEL = "Question label";
 
-  @Mock private final ElementSpecification elementSpec = mock(ElementSpecification.class);
-  @Mock private final Certificate certificate = mock(Certificate.class);
-  @Mock private final ElementData elementData = mock(ElementData.class);
+  @Mock private ElementSpecification elementSpec;
+  @Mock private Certificate certificate;
+  @Mock private ElementData elementData;
+  @Mock private ElementConfiguration elementConfiguration;
+
+  private final CustomPdfSpecification pdfSpecification =
+      CustomPdfSpecification.builder().overflowFieldId(OVERFLOW_FIELD_ID).build();
 
   private final PdfConfigurationText pdfConfiguration =
       PdfConfigurationText.builder()
           .pdfFieldId(PDF_FIELD_ID)
           .maxLength(MAX_LENGTH)
-          .overflowSheetFieldId(OVERFLOW_SHEET_FIELD_ID)
+          .overflowSheetFieldId(OVERFLOW_FIELD_ID)
           .offset(OFFSET)
           .build();
 
-  @Test
-  void shallReturnPdfFieldWhenElementValueTextWithText() {
-    final var elementValueText = mock(ElementValueText.class);
+  @ParameterizedTest
+  @MethodSource("textElementValues")
+  void shallReturnPdfFieldWhenElementValueContainsText(
+      ElementValue elementValue, String expectedValue) {
+    givenCertificateValue(elementValue);
 
-    when(elementSpec.id()).thenReturn(ELEMENT_ID);
-    when(certificate.getElementDataById(ELEMENT_ID)).thenReturn(Optional.of(elementData));
-    when(elementData.value()).thenReturn(elementValueText);
-    when(elementValueText.text()).thenReturn(TEXT);
-
-    final var expected =
-        List.of(PdfField.builder().fieldId(PDF_FIELD_ID).value(TEXT).offset(OFFSET).build());
-
-    assertEquals(expected, pdfConfiguration.toPdfFields(elementSpec, certificate).toList());
-  }
-
-  @Test
-  void shallReturnPdfFieldWhenElementValueIcfWithText() {
-    final var elementValueIcf = mock(ElementValueIcf.class);
-
-    when(elementSpec.id()).thenReturn(ELEMENT_ID);
-    when(certificate.getElementDataById(ELEMENT_ID)).thenReturn(Optional.of(elementData));
-    when(elementData.value()).thenReturn(elementValueIcf);
-    when(elementValueIcf.text()).thenReturn(TEXT);
-
-    final var expected =
-        List.of(PdfField.builder().fieldId(PDF_FIELD_ID).value(TEXT).offset(OFFSET).build());
-
-    assertEquals(expected, pdfConfiguration.toPdfFields(elementSpec, certificate).toList());
-  }
-
-  @Test
-  void shallReturnPdfFieldWhenElementValueIntegerWithValue() {
-    final var elementValueInteger = mock(ElementValueInteger.class);
-
-    when(elementSpec.id()).thenReturn(ELEMENT_ID);
-    when(certificate.getElementDataById(ELEMENT_ID)).thenReturn(Optional.of(elementData));
-    when(elementData.value()).thenReturn(elementValueInteger);
-    when(elementValueInteger.value()).thenReturn(5);
-
-    final var expected =
-        List.of(PdfField.builder().fieldId(PDF_FIELD_ID).value("5").offset(OFFSET).build());
-
-    assertEquals(expected, pdfConfiguration.toPdfFields(elementSpec, certificate).toList());
-  }
-
-  @Test
-  void shallReturnEmptyListWhenElementValueIsNull() {
-    final var elementValueText = mock(ElementValueText.class);
-
-    when(elementSpec.id()).thenReturn(ELEMENT_ID);
-    when(certificate.getElementDataById(ELEMENT_ID)).thenReturn(Optional.of(elementData));
-    when(elementData.value()).thenReturn(elementValueText);
-    when(elementValueText.text()).thenReturn(null);
-
-    assertEquals(List.of(), pdfConfiguration.toPdfFields(elementSpec, certificate).toList());
+    assertEquals(
+        List.of(expectedPdfField(expectedValue)),
+        pdfConfiguration.toPdfFields(elementSpec, certificate, pdfSpecification).toList());
   }
 
   @Test
@@ -117,6 +81,52 @@ class PdfConfigurationTextTest {
     when(elementSpec.id()).thenReturn(ELEMENT_ID);
     when(certificate.getElementDataById(ELEMENT_ID)).thenReturn(Optional.empty());
 
-    assertEquals(List.of(), pdfConfiguration.toPdfFields(elementSpec, certificate).toList());
+    assertEquals(
+        List.of(),
+        pdfConfiguration.toPdfFields(elementSpec, certificate, pdfSpecification).toList());
+  }
+
+  @Test
+  void shallReturnEmptyListWhenElementDataValueIsNull() {
+    when(elementSpec.id()).thenReturn(ELEMENT_ID);
+    when(certificate.getElementDataById(ELEMENT_ID)).thenReturn(Optional.of(elementData));
+    when(elementData.value()).thenReturn(null);
+
+    assertEquals(
+        List.of(),
+        pdfConfiguration.toPdfFields(elementSpec, certificate, pdfSpecification).toList());
+  }
+
+  private static Stream<Arguments> textElementValues() {
+    return Stream.of(
+        Arguments.of(ElementValueText.builder().text(TEXT).build(), TEXT),
+        Arguments.of(ElementValueInteger.builder().value(5).build(), "5"),
+        Arguments.of(ElementValueIcf.builder().text(TEXT).icfCodes(List.of()).build(), TEXT),
+        Arguments.of(
+            ElementValueIcf.builder().text(TEXT).icfCodes(List.of("A", "B")).build(),
+            "A - B some text"));
+  }
+
+  private void givenCertificateValue(ElementValue elementValue) {
+    when(elementSpec.id()).thenReturn(ELEMENT_ID);
+    when(elementSpec.configuration()).thenReturn(elementConfiguration);
+    when(elementConfiguration.name()).thenReturn(OVERFLOW_LABEL);
+    when(certificate.getElementDataById(ELEMENT_ID)).thenReturn(Optional.of(elementData));
+    when(elementData.value()).thenReturn(elementValue);
+  }
+
+  private static PdfField expectedPdfField(String value) {
+    return PdfField.builder()
+        .fieldId(PDF_FIELD_ID)
+        .value(value)
+        .offset(OFFSET)
+        .maxLength(MAX_LENGTH)
+        .shouldRemoveLineBreaks(true)
+        .overflowConfig(
+            OverflowConfig.builder()
+                .overflowFieldId(OVERFLOW_FIELD_ID)
+                .overflowLabel(OVERFLOW_LABEL)
+                .build())
+        .build();
   }
 }

@@ -27,12 +27,8 @@ import static se.inera.intyg.certificateservice.domain.certificatemodel.model.Ov
 import static se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayTextProvider.CITIZEN_VISIBILITY_TEXT_X;
 import static se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayTextProvider.CITIZEN_VISIBILITY_TEXT_Y;
 import static se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayTextProvider.DIGITALLY_SIGNED_TEXT;
-import static se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayTextProvider.PDF_SIGNATURE_PAGE_INDEX;
 import static se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayTextProvider.PDF_SIGNATURE_TEXT_FONT_SIZE;
-import static se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayTextProvider.SENT_TEXT_FONT_SIZE;
 import static se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayTextProvider.SENT_TEXT_PREFIX;
-import static se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayTextProvider.SENT_TEXT_X;
-import static se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayTextProvider.SENT_TEXT_Y;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataCertificateModelConstants.FK_RECIPIENT;
 
 import java.time.LocalDateTime;
@@ -56,7 +52,13 @@ class OverlayTextProviderTest {
   @Mock private Certificate certificate;
   @Mock private CertificateModel certificateModel;
 
-  private final OverlayTextProvider provider = new OverlayTextProvider(173f, 523f);
+  private final OverlayTextProvider provider =
+      new OverlayTextProvider(
+          SignatureOverlayDetails.builder()
+              .signatureTextX(173f)
+              .signatureTextY(523f)
+              .signaturePageIndex(0)
+              .build());
 
   @Test
   void shallReturnEmptyListWhenDraftAndNotSent() {
@@ -84,7 +86,7 @@ class OverlayTextProviderTest {
         () ->
             assertEquals(
                 new Appearance(PDF_SIGNATURE_TEXT_FONT_SIZE, FontStyle.BOLD), text.appearance()),
-        () -> assertEquals(PDF_SIGNATURE_PAGE_INDEX, text.pageIndex()),
+        () -> assertEquals(provider.signatureDetails().signaturePageIndex(), text.pageIndex()),
         () -> assertEquals(TAG_WITH_ADDRESS.value(), text.tagIndex()));
   }
 
@@ -110,11 +112,14 @@ class OverlayTextProviderTest {
 
     assertEquals(2, texts.size());
     assertAll(
-        () -> assertEquals(DIGITALLY_SIGNED_TEXT, texts.getFirst().value()),
-        () -> assertEquals(SENT_TEXT_PREFIX + RECIPIENT_NAME, texts.get(1).value()),
-        () -> assertEquals(SENT_TEXT_X, texts.get(1).x()),
-        () -> assertEquals(SENT_TEXT_Y, texts.get(1).y()),
-        () -> assertEquals(new Appearance(SENT_TEXT_FONT_SIZE), texts.get(1).appearance()));
+        () -> assertEquals(SENT_TEXT_PREFIX + RECIPIENT_NAME, texts.getFirst().value()),
+        () -> assertEquals(DIGITALLY_SIGNED_TEXT, texts.get(1).value()),
+        () -> assertEquals(provider.signatureDetails().signatureTextX(), texts.get(1).x()),
+        () -> assertEquals(provider.signatureDetails().signatureTextY(), texts.get(1).y()),
+        () ->
+            assertEquals(
+                new Appearance(PDF_SIGNATURE_TEXT_FONT_SIZE, FontStyle.BOLD),
+                texts.get(1).appearance()));
   }
 
   @Test
@@ -133,13 +138,13 @@ class OverlayTextProviderTest {
 
     assertEquals(3, texts.size());
     assertAll(
-        () -> assertEquals(DIGITALLY_SIGNED_TEXT, texts.getFirst().value()),
-        () -> assertEquals(SENT_TEXT_PREFIX + RECIPIENT_NAME, texts.get(1).value()),
-        () -> assertEquals(CITIZEN_VISIBILITY_TEXT, texts.get(2).value()),
-        () -> assertEquals(CITIZEN_VISIBILITY_TEXT_X, texts.get(2).x()),
-        () -> assertEquals(CITIZEN_VISIBILITY_TEXT_Y, texts.get(2).y()),
+        () -> assertEquals(SENT_TEXT_PREFIX + RECIPIENT_NAME, texts.getFirst().value()),
+        () -> assertEquals(CITIZEN_VISIBILITY_TEXT, texts.get(1).value()),
+        () -> assertEquals(CITIZEN_VISIBILITY_TEXT_X, texts.get(1).x()),
+        () -> assertEquals(CITIZEN_VISIBILITY_TEXT_Y, texts.get(1).y()),
+        () -> assertEquals(DIGITALLY_SIGNED_TEXT, texts.get(2).value()),
         () ->
             assertEquals(
-                new Appearance(CITIZEN_VISIBILITY_TEXT_FONT_SIZE), texts.get(2).appearance()));
+                new Appearance(CITIZEN_VISIBILITY_TEXT_FONT_SIZE), texts.get(1).appearance()));
   }
 }

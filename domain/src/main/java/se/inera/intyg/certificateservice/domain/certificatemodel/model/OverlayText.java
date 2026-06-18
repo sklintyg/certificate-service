@@ -28,6 +28,6 @@ public class OverlayText {
   float x;
   float y;
   Appearance appearance;
-  int pageIndex;
+  Integer pageIndex;
   Integer tagIndex;
 }

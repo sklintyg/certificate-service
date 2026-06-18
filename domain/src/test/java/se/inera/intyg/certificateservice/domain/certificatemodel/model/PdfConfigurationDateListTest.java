@@ -74,7 +74,11 @@ class PdfConfigurationDateListTest {
             PdfField.builder().fieldId(CHECKBOX_FIELD).value(CHECKED_BOX_VALUE).build(),
             PdfField.builder().fieldId(DATE_FIELD).value(DATE.toString()).build());
 
-    assertEquals(expected, config.toPdfFields(elementSpec, certificate).toList());
+    assertEquals(
+        expected,
+        config
+            .toPdfFields(elementSpec, certificate, CustomPdfSpecification.builder().build())
+            .toList());
   }
 
   @Test
@@ -100,7 +104,11 @@ class PdfConfigurationDateListTest {
         .when(certificate)
         .getElementDataById(ELEMENT_ID);
 
-    assertEquals(Collections.emptyList(), config.toPdfFields(elementSpec, certificate).toList());
+    assertEquals(
+        Collections.emptyList(),
+        config
+            .toPdfFields(elementSpec, certificate, CustomPdfSpecification.builder().build())
+            .toList());
   }
 
   @Test
@@ -122,7 +130,11 @@ class PdfConfigurationDateListTest {
         .when(certificate)
         .getElementDataById(ELEMENT_ID);
 
-    assertEquals(Collections.emptyList(), config.toPdfFields(elementSpec, certificate).toList());
+    assertEquals(
+        Collections.emptyList(),
+        config
+            .toPdfFields(elementSpec, certificate, CustomPdfSpecification.builder().build())
+            .toList());
   }
 
   @Test
@@ -141,7 +153,11 @@ class PdfConfigurationDateListTest {
 
     doReturn(Optional.empty()).when(certificate).getElementDataById(ELEMENT_ID);
 
-    assertEquals(Collections.emptyList(), config.toPdfFields(elementSpec, certificate).toList());
+    assertEquals(
+        Collections.emptyList(),
+        config
+            .toPdfFields(elementSpec, certificate, CustomPdfSpecification.builder().build())
+            .toList());
   }
 
   @Test
@@ -170,6 +186,9 @@ class PdfConfigurationDateListTest {
 
     assertThrows(
         IllegalArgumentException.class,
-        () -> config.toPdfFields(elementSpec, certificate).toList());
+        () ->
+            config
+                .toPdfFields(elementSpec, certificate, CustomPdfSpecification.builder().build())
+                .toList());
   }
 }

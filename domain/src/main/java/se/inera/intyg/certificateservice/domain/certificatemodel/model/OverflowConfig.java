@@ -18,34 +18,12 @@
  */
 package se.inera.intyg.certificateservice.domain.certificatemodel.model;
 
-import java.util.stream.Stream;
 import lombok.Builder;
 import lombok.Value;
-import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
-import se.inera.intyg.certificateservice.domain.certificate.model.ElementValueDate;
 
-@Value
 @Builder
-public class PdfConfigurationDate implements PdfConfiguration {
-
-  PdfFieldId pdfFieldId;
-  Integer offset;
-
-  @Override
-  public Stream<PdfField> toPdfFields(
-      ElementSpecification elementSpec,
-      Certificate certificate,
-      CustomPdfSpecification pdfSpecification) {
-    return elementSpec
-        .valueAs(certificate, ElementValueDate.class)
-        .filter(value -> value.date() != null)
-        .map(
-            value ->
-                PdfField.builder()
-                    .fieldId(pdfFieldId)
-                    .value(value.date().toString())
-                    .offset(offset)
-                    .build())
-        .stream();
-  }
+@Value
+public class OverflowConfig {
+  PdfFieldId overflowFieldId;
+  String overflowLabel;
 }

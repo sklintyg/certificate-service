@@ -58,7 +58,11 @@ class PdfConfigurationBooleanTest {
     final var expected =
         List.of(PdfField.builder().fieldId(CHECKBOX_TRUE).value(CHECKED_BOX_VALUE).build());
 
-    assertEquals(expected, config.toPdfFields(elementSpec, certificate).toList());
+    assertEquals(
+        expected,
+        config
+            .toPdfFields(elementSpec, certificate, CustomPdfSpecification.builder().build())
+            .toList());
   }
 
   @Test
@@ -79,7 +83,11 @@ class PdfConfigurationBooleanTest {
     final var expected =
         List.of(PdfField.builder().fieldId(CHECKBOX_FALSE).value(CHECKED_BOX_VALUE).build());
 
-    assertEquals(expected, config.toPdfFields(elementSpec, certificate).toList());
+    assertEquals(
+        expected,
+        config
+            .toPdfFields(elementSpec, certificate, CustomPdfSpecification.builder().build())
+            .toList());
   }
 
   @Test
@@ -93,7 +101,11 @@ class PdfConfigurationBooleanTest {
         .when(certificate)
         .getElementDataById(ELEMENT_ID);
 
-    assertEquals(Collections.emptyList(), config.toPdfFields(elementSpec, certificate).toList());
+    assertEquals(
+        Collections.emptyList(),
+        config
+            .toPdfFields(elementSpec, certificate, CustomPdfSpecification.builder().build())
+            .toList());
   }
 
   @Test
@@ -111,7 +123,11 @@ class PdfConfigurationBooleanTest {
         .when(certificate)
         .getElementDataById(ELEMENT_ID);
 
-    assertEquals(Collections.emptyList(), config.toPdfFields(elementSpec, certificate).toList());
+    assertEquals(
+        Collections.emptyList(),
+        config
+            .toPdfFields(elementSpec, certificate, CustomPdfSpecification.builder().build())
+            .toList());
   }
 
   @Test
@@ -125,6 +141,10 @@ class PdfConfigurationBooleanTest {
 
     doReturn(Optional.empty()).when(certificate).getElementDataById(ELEMENT_ID);
 
-    assertEquals(Collections.emptyList(), config.toPdfFields(elementSpec, certificate).toList());
+    assertEquals(
+        Collections.emptyList(),
+        config
+            .toPdfFields(elementSpec, certificate, CustomPdfSpecification.builder().build())
+            .toList());
   }
 }

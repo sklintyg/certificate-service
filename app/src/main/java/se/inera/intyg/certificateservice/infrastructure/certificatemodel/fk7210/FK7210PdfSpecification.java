@@ -23,12 +23,15 @@ import se.inera.intyg.certificateservice.domain.certificatemodel.model.CustomPdf
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.CustomPdfSpecification;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayTextProvider;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfFieldId;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.SignatureOverlayDetails;
 
 public class FK7210PdfSpecification {
 
   private static final PdfFieldId PDF_PATIENT_ID_FIELD_ID =
       new PdfFieldId("form1[0].#subform[0].flt_txtPersonNr[0]");
   private static final int PDF_SIGNATURE_PAGE_INDEX = 0;
+  private static final float PDF_SIGNATURE_TEXT_X = 173f;
+  private static final float PDF_SIGNATURE_TEXT_Y = 523f;
   private static final PdfFieldId PDF_SIGNED_DATE_FIELD_ID =
       new PdfFieldId("form1[0].#subform[0].flt_datUnderskrift[0]");
   private static final PdfFieldId PDF_SIGNED_BY_NAME_FIELD_ID =
@@ -64,7 +67,12 @@ public class FK7210PdfSpecification {
                 .workplaceCodeFieldId(PDF_WORKPLACE_CODE_FIELD_ID)
                 .contactInformation(PDF_CONTACT_INFORMATION)
                 .build())
-        .overlayTextProvider(new OverlayTextProvider(173f, 523f))
+        .overlayTextProvider(
+            new OverlayTextProvider(
+                SignatureOverlayDetails.builder()
+                    .signatureTextX(PDF_SIGNATURE_TEXT_X)
+                    .signatureTextY(PDF_SIGNATURE_TEXT_Y)
+                    .build()))
         .build();
   }
 }

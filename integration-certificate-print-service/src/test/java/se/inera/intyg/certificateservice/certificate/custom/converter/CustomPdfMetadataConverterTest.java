@@ -40,6 +40,7 @@ import se.inera.intyg.certificateservice.domain.certificate.service.PdfGenerator
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.Appearance;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.CustomPdfSignature;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.CustomPdfSpecification;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.OverflowPageIndex;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayText;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayTextProvider;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfTagIndex;
@@ -105,6 +106,37 @@ class CustomPdfMetadataConverterTest {
     final var result = converter.convert(certificate, options, spec, FILE_NAME);
 
     assertFalse(result.addDraftWatermark());
+  }
+
+  @Test
+  void shallSetOverflowPageIndexIfPresent() {
+    final var pdfSpec =
+        CustomPdfSpecification.builder()
+            .signature(CustomPdfSignature.builder().pdfTagIndexProvider(tagIndexProvider).build())
+            .overlayTextProvider(overlayTextProvider)
+            .overFlowPageIndex(new OverflowPageIndex(2))
+            .build();
+
+    when(certificate.status()).thenReturn(Status.DRAFT);
+
+    final var result = converter.convert(certificate, options, pdfSpec, FILE_NAME);
+
+    assertEquals(2, result.overflowPageIndex());
+  }
+
+  @Test
+  void shallSetOverflowPageIndexToNullIfMissing() {
+    final var pdfSpec =
+        CustomPdfSpecification.builder()
+            .signature(CustomPdfSignature.builder().pdfTagIndexProvider(tagIndexProvider).build())
+            .overlayTextProvider(overlayTextProvider)
+            .build();
+
+    when(certificate.status()).thenReturn(Status.DRAFT);
+
+    final var result = converter.convert(certificate, options, pdfSpec, FILE_NAME);
+
+    assertNull(result.overflowPageIndex());
   }
 
   @Nested
