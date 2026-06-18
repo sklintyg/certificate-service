@@ -18,6 +18,7 @@
  */
 package se.inera.intyg.certificateservice.certificate.custom.converter;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -45,6 +46,7 @@ public class CustomPdfFieldsConverter {
                 (a, b) -> {
                   throw new IllegalStateException(
                       "Duplicate PDF field id detected, two providers produced the same key");
-                }));
+                },
+                LinkedHashMap::new));
   }
 }
