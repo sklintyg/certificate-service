@@ -18,6 +18,7 @@
  */
 package se.inera.intyg.certificateservice.certificate.custom.provider;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -45,7 +46,8 @@ public class ElementPdfFieldsProvider implements PdfFieldsProvider {
                 (a, b) -> {
                   throw new IllegalStateException(
                       "Duplicate PDF field id detected, two pdf configurations produced the same key");
-                }));
+                },
+                LinkedHashMap::new));
   }
 
   private static Stream<PdfField> getPdfFields(
