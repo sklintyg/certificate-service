@@ -18,13 +18,69 @@
  */
 package se.inera.intyg.certificateservice.domain.certificatemodel.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 import lombok.Builder;
 import lombok.Value;
+import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
+import se.inera.intyg.certificateservice.domain.certificate.model.ElementValueMedicalInvestigationList;
+import se.inera.intyg.certificateservice.domain.certificate.model.MedicalInvestigation;
 
 @Value
 @Builder
 public class PdfConfigurationMedicalInvestigationList implements PdfConfiguration {
 
   Map<FieldId, PdfConfigurationMedicalInvestigation> list;
+
+  @Override
+  public Stream<PdfField> toPdfFields(
+      ElementSpecification elementSpec,
+      Certificate certificate,
+      CustomPdfSpecification pdfSpecification) {
+    return elementSpec.valueAs(certificate, ElementValueMedicalInvestigationList.class).stream()
+        .flatMap(value -> value.list().stream())
+        .flatMap(
+            investigation -> fieldsForInvestigation(investigation, list.get(investigation.id())));
+  }
+
+  private static Stream<PdfField> fieldsForInvestigation(
+      MedicalInvestigation medicalInvestigation,
+      PdfConfigurationMedicalInvestigation pdfConfigurationMedicalInvestigation) {
+    final List<PdfField> fields = new ArrayList<>();
+
+    if (medicalInvestigation.date() != null && medicalInvestigation.date().date() != null) {
+      fields.add(
+          PdfField.builder()
+              .fieldId(pdfConfigurationMedicalInvestigation.datePdfFieldId())
+              .value(medicalInvestigation.date().date().toString())
+              .build());
+    }
+
+    if (medicalInvestigation.informationSource() != null
+        && medicalInvestigation.informationSource().text() != null
+        && !medicalInvestigation.informationSource().text().isEmpty()) {
+      fields.add(
+          PdfField.builder()
+              .fieldId(pdfConfigurationMedicalInvestigation.sourceTypePdfFieldId())
+              .value(medicalInvestigation.informationSource().text())
+              .build());
+    }
+
+    if (medicalInvestigation.investigationType() != null
+        && medicalInvestigation.investigationType().code() != null
+        && !medicalInvestigation.investigationType().code().isEmpty()) {
+      fields.add(
+          PdfField.builder()
+              .fieldId(pdfConfigurationMedicalInvestigation.investigationPdfFieldId())
+              .value(
+                  pdfConfigurationMedicalInvestigation
+                      .investigationPdfOptions()
+                      .get(medicalInvestigation.investigationType().code()))
+              .build());
+    }
+
+    return fields.stream();
+  }
 }
