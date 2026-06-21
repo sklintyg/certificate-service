@@ -19,20 +19,21 @@
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226;
 
 import java.util.List;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.CustomPdfSignature;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.CustomPdfSpecification;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayTextProvider;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfFieldId;
-import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfMcid;
-import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfSignature;
-import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfTagIndex;
-import se.inera.intyg.certificateservice.domain.certificatemodel.model.TemplatePdfSpecification;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.SignatureOverlayDetails;
 
 public class FK3226PdfSpecification {
 
-  public static final String PDF_FK_3226_PDF = "fk3226/pdf/fk3226_v1.pdf";
-  public static final String PDF_NO_ADDRESS_FK_3226_PDF = "fk3226/pdf/fk3226_v1_no_address.pdf";
-  public static final PdfMcid PDF_MCID = new PdfMcid(100);
   private static final int PDF_SIGNATURE_PAGE_INDEX = 1;
-  private static final PdfTagIndex PDF_SIGNATURE_WITH_ADDRESS_TAG_INDEX = new PdfTagIndex(36);
-  private static final PdfTagIndex PDF_SIGNATURE_WITHOUT_ADDRESS_TAG_INDEX = new PdfTagIndex(36);
+
+  /** Lower-left of digitally-signed overlay text; aligned with signed-date field (see FK7804). */
+  private static final float PDF_SIGNATURE_TEXT_X = 173f;
+
+  private static final float PDF_SIGNATURE_TEXT_Y = 638f;
+
   private static final PdfFieldId PDF_PATIENT_ID_FIELD_ID_1 =
       new PdfFieldId("form1[0].#subform[0].flt_txtPnr[0]");
   private static final PdfFieldId PDF_PATIENT_ID_FIELD_ID_2 =
@@ -56,16 +57,13 @@ public class FK3226PdfSpecification {
     throw new IllegalStateException("Utility class");
   }
 
-  public static TemplatePdfSpecification create() {
-    return TemplatePdfSpecification.builder()
-        .pdfTemplatePath(PDF_FK_3226_PDF)
-        .pdfNoAddressTemplatePath(PDF_NO_ADDRESS_FK_3226_PDF)
+  public static CustomPdfSpecification create() {
+    return CustomPdfSpecification.builder()
+        .pdfTemplatePathProvider(new FK3226TemplatePathProvider())
         .patientIdFieldIds(List.of(PDF_PATIENT_ID_FIELD_ID_1, PDF_PATIENT_ID_FIELD_ID_2))
-        .pdfMcid(PDF_MCID)
         .signature(
-            PdfSignature.builder()
-                .signatureWithAddressTagIndex(PDF_SIGNATURE_WITH_ADDRESS_TAG_INDEX)
-                .signatureWithoutAddressTagIndex(PDF_SIGNATURE_WITHOUT_ADDRESS_TAG_INDEX)
+            CustomPdfSignature.builder()
+                .pdfTagIndexProvider(new FK3226PdfTagProvider())
                 .signaturePageIndex(PDF_SIGNATURE_PAGE_INDEX)
                 .signedDateFieldId(PDF_SIGNED_DATE_FIELD_ID)
                 .signedByNameFieldId(PDF_SIGNED_BY_NAME_FIELD_ID)
@@ -75,6 +73,13 @@ public class FK3226PdfSpecification {
                 .workplaceCodeFieldId(PDF_WORKPLACE_CODE_FIELD_ID)
                 .contactInformation(PDF_CONTACT_INFORMATION)
                 .build())
+        .overlayTextProvider(
+            new OverlayTextProvider(
+                SignatureOverlayDetails.builder()
+                    .signatureTextX(PDF_SIGNATURE_TEXT_X)
+                    .signatureTextY(PDF_SIGNATURE_TEXT_Y)
+                    .signaturePageIndex(PDF_SIGNATURE_PAGE_INDEX)
+                    .build()))
         .build();
   }
 }

@@ -19,21 +19,19 @@
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226;
 
 import java.util.List;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.CustomPdfSignature;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.CustomPdfSpecification;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.OverflowPageIndex;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayTextProvider;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfFieldId;
-import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfMcid;
-import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfSignature;
-import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfTagIndex;
-import se.inera.intyg.certificateservice.domain.certificatemodel.model.TemplatePdfSpecification;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.SignatureOverlayDetails;
 
 public class FK3226PdfSpecificationV1_1 {
 
-  public static final String PDF_FK_3226_PDF = "fk3226/pdf/fk3226_v1.1.pdf";
-  public static final String PDF_NO_ADDRESS_FK_3226_PDF = "fk3226/pdf/fk3226_v1.1_no_address.pdf";
-  public static final PdfMcid PDF_MCID = new PdfMcid(100);
   private static final int PDF_SIGNATURE_PAGE_INDEX = 1;
-  private static final PdfTagIndex PDF_SIGNATURE_WITH_ADDRESS_TAG_INDEX = new PdfTagIndex(36);
-  private static final PdfTagIndex PDF_SIGNATURE_WITHOUT_ADDRESS_TAG_INDEX = new PdfTagIndex(36);
+  private static final float PDF_SIGNATURE_TEXT_X = 173f;
+  private static final float PDF_SIGNATURE_TEXT_Y = 638f;
+
   private static final PdfFieldId PDF_PATIENT_ID_FIELD_ID_1 =
       new PdfFieldId("form1[0].#subform[0].flt_txtPersonNr[0]");
   private static final PdfFieldId PDF_PATIENT_ID_FIELD_ID_2 =
@@ -54,25 +52,22 @@ public class FK3226PdfSpecificationV1_1 {
       new PdfFieldId("form1[0].#subform[1].flt_txtArbetsplatskod[0]");
   private static final PdfFieldId PDF_CONTACT_INFORMATION =
       new PdfFieldId("form1[0].#subform[1].flt_txtVardgivarensNamnAdressTelefon[0]");
+  private static final PdfFieldId PDF_OVERFLOW_FIELD_ID =
+      new PdfFieldId("form1[0].#subform[2].flt_txtFortsattningsblad[0]");
 
   private FK3226PdfSpecificationV1_1() {
     throw new IllegalStateException("Utility class");
   }
 
-  public static TemplatePdfSpecification create() {
-    return TemplatePdfSpecification.builder()
-        .pdfTemplatePath(PDF_FK_3226_PDF)
-        .pdfNoAddressTemplatePath(PDF_NO_ADDRESS_FK_3226_PDF)
-        .overFlowPageIndex(new OverflowPageIndex(2))
-        .hasPageNbr(false)
+  public static CustomPdfSpecification create() {
+    return CustomPdfSpecification.builder()
+        .pdfTemplatePathProvider(new FK3226V1_1TemplatePathProvider())
         .patientIdFieldIds(
             List.of(
                 PDF_PATIENT_ID_FIELD_ID_1, PDF_PATIENT_ID_FIELD_ID_2, PDF_PATIENT_ID_FIELD_ID_3))
-        .pdfMcid(PDF_MCID)
         .signature(
-            PdfSignature.builder()
-                .signatureWithAddressTagIndex(PDF_SIGNATURE_WITH_ADDRESS_TAG_INDEX)
-                .signatureWithoutAddressTagIndex(PDF_SIGNATURE_WITHOUT_ADDRESS_TAG_INDEX)
+            CustomPdfSignature.builder()
+                .pdfTagIndexProvider(new FK3226PdfTagProvider())
                 .signaturePageIndex(PDF_SIGNATURE_PAGE_INDEX)
                 .signedDateFieldId(PDF_SIGNED_DATE_FIELD_ID)
                 .signedByNameFieldId(PDF_SIGNED_BY_NAME_FIELD_ID)
@@ -82,8 +77,15 @@ public class FK3226PdfSpecificationV1_1 {
                 .workplaceCodeFieldId(PDF_WORKPLACE_CODE_FIELD_ID)
                 .contactInformation(PDF_CONTACT_INFORMATION)
                 .build())
-        .untaggedWatermarks(
-            List.of("32260101", "FK 3226 (002 F 001) Fastställd av Försäkringskassan"))
+        .overlayTextProvider(
+            new OverlayTextProvider(
+                SignatureOverlayDetails.builder()
+                    .signatureTextX(PDF_SIGNATURE_TEXT_X)
+                    .signatureTextY(PDF_SIGNATURE_TEXT_Y)
+                    .signaturePageIndex(PDF_SIGNATURE_PAGE_INDEX)
+                    .build()))
+        .overflowFieldId(PDF_OVERFLOW_FIELD_ID)
+        .overFlowPageIndex(new OverflowPageIndex(2))
         .build();
   }
 }
