@@ -31,7 +31,7 @@ public class FK3221PdfSpecification {
   public static final Integer PDF_TEXT_FIELD_LENGTH = 52;
   private static final int PDF_SIGNATURE_PAGE_INDEX = 3;
   private static final float PDF_SIGNATURE_TEXT_X = 173f;
-  private static final float PDF_SIGNATURE_TEXT_Y = 638f;
+  private static final float PDF_SIGNATURE_TEXT_Y = 523f;
   private static final List<PdfFieldId> PDF_PATIENT_ID_FIELD_IDS =
       List.of(
           new PdfFieldId("form1[0].#subform[0].flt_txtPersonNr[0]"),
