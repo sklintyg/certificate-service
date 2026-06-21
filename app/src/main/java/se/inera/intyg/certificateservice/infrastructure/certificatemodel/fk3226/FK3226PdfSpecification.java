@@ -28,11 +28,8 @@ import se.inera.intyg.certificateservice.domain.certificatemodel.model.Signature
 public class FK3226PdfSpecification {
 
   private static final int PDF_SIGNATURE_PAGE_INDEX = 1;
-
-  /** Lower-left of digitally-signed overlay text; aligned with signed-date field (see FK7804). */
   private static final float PDF_SIGNATURE_TEXT_X = 173f;
-
-  private static final float PDF_SIGNATURE_TEXT_Y = 638f;
+  private static final float PDF_SIGNATURE_TEXT_Y = 300f;
 
   private static final PdfFieldId PDF_PATIENT_ID_FIELD_ID_1 =
       new PdfFieldId("form1[0].#subform[0].flt_txtPnr[0]");
