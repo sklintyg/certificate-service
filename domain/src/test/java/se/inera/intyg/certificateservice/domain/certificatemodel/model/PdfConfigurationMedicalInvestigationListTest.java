@@ -19,6 +19,7 @@
 package se.inera.intyg.certificateservice.domain.certificatemodel.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -96,7 +97,8 @@ class PdfConfigurationMedicalInvestigationListTest {
         .thenReturn(Optional.of(ElementData.builder().id(ELEMENT_ID).value(elementValue).build()));
 
     final var result =
-        (elementSpec.pdfConfiguration())
+        elementSpec
+            .pdfConfiguration()
             .toPdfFields(elementSpec, certificate, CustomPdfSpecification.builder().build())
             .toList();
 
@@ -138,7 +140,8 @@ class PdfConfigurationMedicalInvestigationListTest {
         .thenReturn(Optional.of(ElementData.builder().id(ELEMENT_ID).value(elementValue).build()));
 
     final var result =
-        (elementSpec.pdfConfiguration())
+        elementSpec
+            .pdfConfiguration()
             .toPdfFields(elementSpec, certificate, CustomPdfSpecification.builder().build())
             .toList();
 
@@ -173,5 +176,51 @@ class PdfConfigurationMedicalInvestigationListTest {
             .toList();
 
     assertEquals(Collections.emptyList(), result);
+  }
+
+  @Test
+  void shallThrowIfMedicalInvestigationConfigurationIsMissing() {
+    final var missingFieldId = new FieldId("missingMedicalInvestigation");
+
+    final var elementSpec =
+        ElementSpecification.builder()
+            .id(ELEMENT_ID)
+            .pdfConfiguration(
+                PdfConfigurationMedicalInvestigationList.builder()
+                    .list(
+                        Map.of(
+                            FIELD_ID,
+                            PdfConfigurationMedicalInvestigation.builder()
+                                .investigationPdfOptions(INVESTIGATION_OPTIONS)
+                                .investigationPdfFieldId(INVESTIGATION_TYPE_FIELD_ID)
+                                .sourceTypePdfFieldId(SOURCE_FIELD_ID)
+                                .datePdfFieldId(DATE_FIELD_ID)
+                                .build()))
+                    .build())
+            .build();
+
+    final var elementValue =
+        ElementValueMedicalInvestigationList.builder()
+            .list(
+                List.of(
+                    MedicalInvestigation.builder()
+                        .id(missingFieldId)
+                        .date(ElementValueDate.builder().date(DATE_VALUE).build())
+                        .informationSource(ElementValueText.builder().text(SOURCE_VALUE).build())
+                        .investigationType(
+                            ElementValueCode.builder().code(INVESTIGATION_TYPE_VALUE).build())
+                        .build()))
+            .build();
+
+    when(certificate.getElementDataById(ELEMENT_ID))
+        .thenReturn(Optional.of(ElementData.builder().id(ELEMENT_ID).value(elementValue).build()));
+
+    assertThrows(
+        IllegalArgumentException.class,
+        () ->
+            elementSpec
+                .pdfConfiguration()
+                .toPdfFields(elementSpec, certificate, CustomPdfSpecification.builder().build())
+                .toList());
   }
 }
