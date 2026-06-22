@@ -22,8 +22,8 @@ import se.inera.intyg.certificateservice.domain.certificatemodel.model.AbstractT
 
 public class FK3221TemplatePathProvider extends AbstractTemplatePathProvider {
 
-  public static final String PDF_FK_3221_PDF = "fk3221/pdf/fk3221_v1.pdf";
-  public static final String PDF_NO_ADDRESS_FK_3221_PDF = "fk3221/pdf/fk3221_v1_no_address.pdf";
+  private static final String PDF_FK_3221_PDF = "fk3221/pdf/fk3221_v1.pdf";
+  private static final String PDF_NO_ADDRESS_FK_3221_PDF = "fk3221/pdf/fk3221_v1_no_address.pdf";
 
   @Override
   protected String pathWithoutAddress() {
