@@ -69,9 +69,9 @@ import se.inera.intyg.certificateservice.integrationtest.common.tests.ExistsCert
 import se.inera.intyg.certificateservice.integrationtest.common.tests.ExistsCertificateTypeInfoIT;
 import se.inera.intyg.certificateservice.integrationtest.common.tests.ForwardCertificateIT;
 import se.inera.intyg.certificateservice.integrationtest.common.tests.ForwardCertificateMessageIT;
+import se.inera.intyg.certificateservice.integrationtest.common.tests.GetCertificateCustomPdfIT;
 import se.inera.intyg.certificateservice.integrationtest.common.tests.GetCertificateEventsIT;
 import se.inera.intyg.certificateservice.integrationtest.common.tests.GetCertificateIT;
-import se.inera.intyg.certificateservice.integrationtest.common.tests.GetCertificatePdfIT;
 import se.inera.intyg.certificateservice.integrationtest.common.tests.GetCertificateTypeInfoIT;
 import se.inera.intyg.certificateservice.integrationtest.common.tests.GetCertificateXmlIT;
 import se.inera.intyg.certificateservice.integrationtest.common.tests.GetPatientCertificatesIT;
@@ -310,7 +310,7 @@ public class FK7472ActiveIT extends ActiveCertificatesIT {
 
   @Nested
   @DisplayName(TYPE + "Hämta intygspdf")
-  class GetCertificatePdf extends GetCertificatePdfIT {
+  class GetCertificatePdf extends GetCertificateCustomPdfIT {
 
     @Override
     protected BaseTestabilityUtilities testabilityUtilities() {
