@@ -19,34 +19,59 @@
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7810;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7810.FK7810PdfSpecification.PDF_FK_7810_PDF;
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7810.FK7810PdfSpecification.PDF_NO_ADDRESS_FK7810_PDF;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.CustomPdfSignature;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.CustomPdfSpecification;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.OverflowPageIndex;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayTextProvider;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfFieldId;
-import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfSignature;
-import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfTagIndex;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.SignatureOverlayDetails;
 
 class FK7810PdfSpecificationTest {
 
-  @Test
-  void shallIncludePdfTemplatePathWithAddress() {
-    final var pdfSpecification = FK7810PdfSpecification.create();
+  private static final float EXPECTED_SIGNATURE_OVERLAY_X = 173f;
+  private static final float EXPECTED_SIGNATURE_OVERLAY_Y = 274f;
+  private static final int EXPECTED_SIGNATURE_PAGE_INDEX = 4;
 
-    assertEquals(PDF_FK_7810_PDF, pdfSpecification.pdfTemplatePath());
+  @Test
+  void shallReturnCustomPdfSpecification() {
+    assertInstanceOf(CustomPdfSpecification.class, FK7810PdfSpecification.create());
   }
 
   @Test
-  void shallIncludePdfTemplatePathNoAddress() {
-    final var pdfSpecification = FK7810PdfSpecification.create();
-
-    assertEquals(PDF_NO_ADDRESS_FK7810_PDF, pdfSpecification.pdfNoAddressTemplatePath());
+  void shallIncludePdfTemplatePathProvider() {
+    assertNotNull(FK7810PdfSpecification.create().pdfTemplatePathProvider());
+    assertInstanceOf(
+        FK7810TemplatePathProvider.class,
+        FK7810PdfSpecification.create().pdfTemplatePathProvider());
   }
 
   @Test
-  void shallIncludePatientFieldId() {
+  void shallIncludeOverlayTextProvider() {
+    assertNotNull(FK7810PdfSpecification.create().overlayTextProvider());
+    assertInstanceOf(
+        OverlayTextProvider.class, FK7810PdfSpecification.create().overlayTextProvider());
+  }
+
+  @Test
+  void shallIncludeOverlaySignatureDetails() {
+    final var details = FK7810PdfSpecification.create().overlayTextProvider().signatureDetails();
+
+    assertEquals(
+        SignatureOverlayDetails.builder()
+            .signatureTextX(EXPECTED_SIGNATURE_OVERLAY_X)
+            .signatureTextY(EXPECTED_SIGNATURE_OVERLAY_Y)
+            .signaturePageIndex(EXPECTED_SIGNATURE_PAGE_INDEX)
+            .build(),
+        details);
+  }
+
+  @Test
+  void shallIncludePatientFieldIds() {
     final var expected =
         List.of(
             new PdfFieldId("form1[0].#subform[0].flt_txtPersonNr[0]"),
@@ -56,18 +81,15 @@ class FK7810PdfSpecificationTest {
             new PdfFieldId("form1[0].#subform[5].flt_txtPersonNr[1]"),
             new PdfFieldId("form1[0].#subform[6].flt_txtPersonNr[2]"));
 
-    final var pdfSpecification = FK7810PdfSpecification.create();
-
-    assertEquals(expected, pdfSpecification.patientIdFieldIds());
+    assertEquals(expected, FK7810PdfSpecification.create().patientIdFieldIds());
   }
 
   @Test
   void shallIncludeSignatureFields() {
     final var expected =
-        PdfSignature.builder()
+        CustomPdfSignature.builder()
             .signaturePageIndex(4)
-            .signatureWithAddressTagIndex(new PdfTagIndex(24))
-            .signatureWithoutAddressTagIndex(new PdfTagIndex(24))
+            .pdfTagIndexProvider(new FK7810PdfTagProvider())
             .signedDateFieldId(new PdfFieldId("form1[0].#subform[5].flt_datUnderskrift[0]"))
             .signedByNameFieldId(new PdfFieldId("form1[0].#subform[5].flt_txtNamnfortydligande[0]"))
             .paTitleFieldId(new PdfFieldId("form1[0].#subform[5].flt_txtBefattning[0]"))
@@ -79,28 +101,15 @@ class FK7810PdfSpecificationTest {
                 new PdfFieldId("form1[0].#subform[5].flt_txtVardgivarensNamnAdressTelefon[0]"))
             .build();
 
-    final var pdfSpecification = FK7810PdfSpecification.create();
-
-    assertEquals(expected, pdfSpecification.signature());
+    assertEquals(expected, FK7810PdfSpecification.create().signature());
   }
 
   @Test
-  void shallIncludeMcid() {
-    final var expected = 200;
-    final var pdfSpecification = FK7810PdfSpecification.create();
-    assertEquals(expected, pdfSpecification.pdfMcid().value());
-  }
+  void shallIncludeOverflowConfiguration() {
+    final var spec = FK7810PdfSpecification.create();
 
-  @Test
-  void shallIncludeOverflowPageIndex() {
-    final var expected = 5;
-    final var pdfSpecification = FK7810PdfSpecification.create();
-    assertEquals(expected, pdfSpecification.overFlowPageIndex().value());
-  }
-
-  @Test
-  void shallIncludeHasPageNumberFalse() {
-    final var pdfSpecification = FK7810PdfSpecification.create();
-    assertFalse(pdfSpecification.hasPageNbr());
+    assertEquals(
+        new PdfFieldId("form1[0].#subform[6].flt_txtFortsattningsblad[0]"), spec.overflowFieldId());
+    assertEquals(new OverflowPageIndex(5), spec.overFlowPageIndex());
   }
 }
