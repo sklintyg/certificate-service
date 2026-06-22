@@ -60,7 +60,7 @@ class FK7427PdfSpecificationTest {
     assertEquals(
         SignatureOverlayDetails.builder()
             .signatureTextX(173f)
-            .signatureTextY(523f)
+            .signatureTextY(230f)
             .signaturePageIndex(1)
             .build(),
         details);
