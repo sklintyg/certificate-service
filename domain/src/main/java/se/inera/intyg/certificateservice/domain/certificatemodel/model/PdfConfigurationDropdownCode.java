@@ -20,9 +20,13 @@ package se.inera.intyg.certificateservice.domain.certificatemodel.model;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.Builder;
 import lombok.Value;
+import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
+import se.inera.intyg.certificateservice.domain.certificate.model.ElementValueCode;
 
 @Value
 @Builder
@@ -34,5 +38,35 @@ public class PdfConfigurationDropdownCode implements PdfConfiguration {
   public static Map<FieldId, String> fromCodeConfig(List<ElementConfigurationCode> dropdownItems) {
     return dropdownItems.stream()
         .collect(Collectors.toMap(ElementConfigurationCode::id, ElementConfigurationCode::label));
+  }
+
+  @Override
+  public Stream<PdfField> toPdfFields(
+      ElementSpecification elementSpec,
+      Certificate certificate,
+      CustomPdfSpecification pdfSpecification) {
+    return elementSpec
+        .valueAs(certificate, ElementValueCode.class)
+        .flatMap(this::toPdfField)
+        .stream();
+  }
+
+  private Optional<PdfField> toPdfField(ElementValueCode code) {
+    if (codeIsInvalid(code)) {
+      return Optional.empty();
+    }
+
+    final var value = codes.get(code.codeId());
+
+    if (value == null) {
+      throw new IllegalArgumentException(
+          "PDF value for dropdown code '%s' was not configured".formatted(code.codeId()));
+    }
+
+    return Optional.of(PdfField.builder().fieldId(fieldId).value(value).build());
+  }
+
+  private static boolean codeIsInvalid(ElementValueCode code) {
+    return code == null || code.isEmpty() || code.codeId() == null || code.codeId().value() == null;
   }
 }
