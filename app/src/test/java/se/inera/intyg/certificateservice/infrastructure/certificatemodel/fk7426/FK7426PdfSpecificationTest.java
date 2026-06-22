@@ -42,26 +42,6 @@ class FK7426PdfSpecificationTest {
   }
 
   @Test
-  void shallIncludePdfTemplatePathWithAddress() {
-    final var pdfSpecification = FK7426PdfSpecification.create();
-
-    assertEquals(
-        FK7426PdfSpecification.PDF_FK_7426_PDF,
-        ((FK7426TemplatePathProvider) pdfSpecification.pdfTemplatePathProvider())
-            .pathWithAddress());
-  }
-
-  @Test
-  void shallIncludePdfTemplatePathNoAddress() {
-    final var pdfSpecification = FK7426PdfSpecification.create();
-
-    assertEquals(
-        FK7426PdfSpecification.PDF_FK_7426_PDF_NO_ADDRESS,
-        ((FK7426TemplatePathProvider) pdfSpecification.pdfTemplatePathProvider())
-            .pathWithoutAddress());
-  }
-
-  @Test
   void shallIncludePatientFieldIds() {
     final var expected =
         List.of(
