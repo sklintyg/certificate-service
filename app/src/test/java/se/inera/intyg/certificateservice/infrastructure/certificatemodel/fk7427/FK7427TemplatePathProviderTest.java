@@ -19,56 +19,26 @@
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7427;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7427.FK7427TemplatePathProvider.PDF_FK_7427_PDF;
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7427.FK7427TemplatePathProvider.PDF_FK_7427_PDF_NO_ADDRESS;
 
-import java.time.LocalDateTime;
-import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
-import se.inera.intyg.certificateservice.domain.certificate.model.Sent;
-import se.inera.intyg.certificateservice.domain.certificate.service.PdfGeneratorOptions;
 
 @ExtendWith(MockitoExtension.class)
 class FK7427TemplatePathProviderTest {
-  @Mock private Certificate certificate;
+
+  private static final String PDF_FK_7427_PDF = "fk7427/pdf/fk7427_v1.pdf";
+  private static final String PDF_FK_7427_PDF_NO_ADDRESS = "fk7427/pdf/fk7427_v1_no_address.pdf";
 
   private final FK7427TemplatePathProvider provider = new FK7427TemplatePathProvider();
 
-  private PdfGeneratorOptions options(boolean citizenFormat) {
-    return PdfGeneratorOptions.builder()
-        .additionalInfoText("Webcert")
-        .citizenFormat(citizenFormat)
-        .hiddenElements(List.of())
-        .build();
+  @Test
+  void shallReturnTemplatePathWithNoAddress() {
+    assertEquals(PDF_FK_7427_PDF_NO_ADDRESS, provider.pathWithoutAddress());
   }
 
   @Test
-  void shallReturnWithAddressTemplateWhenNotCitizenAndNotSent() {
-    when(certificate.sent()).thenReturn(null);
-
-    final var path = provider.pathOf(certificate, options(false));
-
-    assertEquals(PDF_FK_7427_PDF, path);
-  }
-
-  @Test
-  void shallReturnNoAddressTemplateWhenCitizenFormat() {
-    final var path = provider.pathOf(certificate, options(true));
-
-    assertEquals(PDF_FK_7427_PDF_NO_ADDRESS, path);
-  }
-
-  @Test
-  void shallReturnNoAddressTemplateWhenSent() {
-    when(certificate.sent()).thenReturn(Sent.builder().sentAt(LocalDateTime.now()).build());
-
-    final var path = provider.pathOf(certificate, options(false));
-
-    assertEquals(PDF_FK_7427_PDF_NO_ADDRESS, path);
+  void shallReturnTemplatePathWithAddress() {
+    assertEquals(PDF_FK_7427_PDF, provider.pathWithAddress());
   }
 }

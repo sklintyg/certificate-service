@@ -18,24 +18,20 @@
  */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7427;
 
-import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
-import se.inera.intyg.certificateservice.domain.certificate.service.PdfGeneratorOptions;
-import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfTemplatePathProvider;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.AbstractTemplatePathProvider;
 
-public class FK7427TemplatePathProvider implements PdfTemplatePathProvider {
+public class FK7427TemplatePathProvider extends AbstractTemplatePathProvider {
 
-  public static final String PDF_FK_7427_PDF = "fk7427/pdf/fk7427_v1.pdf";
-  public static final String PDF_FK_7427_PDF_NO_ADDRESS = "fk7427/pdf/fk7427_v1_no_address.pdf";
+  private static final String PDF_FK_7427_PDF = "fk7427/pdf/fk7427_v1.pdf";
+  private static final String PDF_FK_7427_PDF_NO_ADDRESS = "fk7427/pdf/fk7427_v1_no_address.pdf";
 
   @Override
-  public String pathOf(Certificate certificate, PdfGeneratorOptions options) {
-    return includeAddress(certificate, options) ? PDF_FK_7427_PDF : PDF_FK_7427_PDF_NO_ADDRESS;
+  protected String pathWithoutAddress() {
+    return PDF_FK_7427_PDF_NO_ADDRESS;
   }
 
-  private static boolean includeAddress(Certificate certificate, PdfGeneratorOptions options) {
-    if (options.citizenFormat()) {
-      return false;
-    }
-    return certificate.sent() == null || certificate.sent().sentAt() == null;
+  @Override
+  protected String pathWithAddress() {
+    return PDF_FK_7427_PDF;
   }
 }

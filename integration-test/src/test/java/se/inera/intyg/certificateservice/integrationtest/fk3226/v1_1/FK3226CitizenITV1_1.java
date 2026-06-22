@@ -30,7 +30,7 @@ import se.inera.intyg.certificateservice.integrationtest.common.setup.Testabilit
 import se.inera.intyg.certificateservice.integrationtest.common.tests.ExistsCitizenCertificateIT;
 import se.inera.intyg.certificateservice.integrationtest.common.tests.GetCitizenCertificateIT;
 import se.inera.intyg.certificateservice.integrationtest.common.tests.GetCitizenCertificateListIT;
-import se.inera.intyg.certificateservice.integrationtest.common.tests.PrintCitizenCertificateIT;
+import se.inera.intyg.certificateservice.integrationtest.common.tests.PrintCustomCitizenCertificateIT;
 
 class FK3226CitizenITV1_1 extends ActiveCertificatesIT {
 
@@ -88,7 +88,7 @@ class FK3226CitizenITV1_1 extends ActiveCertificatesIT {
 
   @Nested
   @DisplayName(TYPE + "Skriv ut intyg för invånare")
-  class PrintCitizenCertificate extends PrintCitizenCertificateIT {
+  class PrintCitizenCertificate extends PrintCustomCitizenCertificateIT {
 
     @Override
     protected BaseTestabilityUtilities testabilityUtilities() {
