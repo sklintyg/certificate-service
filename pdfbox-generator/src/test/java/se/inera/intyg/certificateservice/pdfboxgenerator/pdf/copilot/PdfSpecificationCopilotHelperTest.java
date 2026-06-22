@@ -27,18 +27,24 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationWidget;
 import org.apache.pdfbox.pdmodel.interactive.form.PDField;
 import org.apache.pdfbox.pdmodel.interactive.form.PDNonTerminalField;
 import org.apache.pdfbox.pdmodel.interactive.form.PDRadioButton;
+import org.apache.pdfbox.pdmodel.interactive.form.PDTerminalField;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import se.inera.intyg.certificateservice.pdfboxgenerator.pdf.service.CertificatePdfFillService;
 
 class PdfSpecificationCopilotHelperTest {
 
@@ -84,16 +90,34 @@ class PdfSpecificationCopilotHelperTest {
           FK_7472, "v1");
 
   /**
-   * To verify that the PDF templates that are delivered by the certificate recipient follows the
-   * correct structure these tests can be used.
+   * Enable locally to print the AcroForm widget rectangle for the signed-date field and suggested
+   * {@code SignatureOverlayDetails} (same offsets as {@link CertificatePdfFillService} for template
+   * PDFs: {@link CertificatePdfFillService#SIGNATURE_X_PADDING} and {@link
+   * CertificatePdfFillService#SIGNATURE_Y_PADDING}).
    *
-   * <p>If completely new PDF: - Generate structure using writeToFile method - Place this in the pdf
-   * folder for the type in the resources in app
-   *
-   * <p>If new PDF templates for existing PDF-implementation: - Run these tests to see if the new
-   * templates have differences that disrupt the previous implementation - If so, then fix what
-   * needs to be fixed and save a new structure file for the type
+   * <p>Adjust {@code signedDateFieldId} per certificate type, run the test, then copy the printed
+   * {@code signatureTextX} / {@code signatureTextY} / {@code signaturePageIndex} into {@code
+   * CustomPdfSpecification} for that type.
    */
+  @Disabled("Enable locally to print signed-date field metrics for CustomPdf overlay coordinates")
+  @Test
+  void shouldPrintSignedDateFieldRectangleAndSuggestedOverlayCoordinates() throws IOException {
+    final var certificateType = FK_3221;
+    final var signedDateFieldId = "form1[0].#subform[3].flt_datUnderskrift[0]";
+    final var classloader = getClass().getClassLoader();
+    final var inputStream =
+        classloader.getResourceAsStream(
+            String.format(
+                "%s/pdf/%s_%s.pdf",
+                certificateType, certificateType, TYPE_TO_VERSION.get(certificateType)));
+    Assumptions.assumeTrue(
+        inputStream != null,
+        "PDF not on classpath; run from a configuration that includes app resources.");
+    try (var document = Loader.loadPDF(inputStream.readAllBytes())) {
+      final var report = formatSignedDateOverlayReport(document, signedDateFieldId);
+      System.out.println(report);
+    }
+  }
 
   /** Run to generate structure for the first time and save in resources/pdf folder. */
   @Disabled
@@ -228,6 +252,72 @@ class PdfSpecificationCopilotHelperTest {
       }
     }
     return content;
+  }
+
+  private static Integer pageIndexOfWidget(PDDocument document, PDAnnotationWidget widget)
+      throws IOException {
+    for (int i = 0; i < document.getNumberOfPages(); i++) {
+      final var page = document.getPage(i);
+      if (page.getAnnotations() == null) {
+        continue;
+      }
+      for (var annotation : page.getAnnotations()) {
+        if (annotation == widget) {
+          return i;
+        }
+      }
+    }
+    final var page = widget.getPage();
+    if (page != null) {
+      for (int i = 0; i < document.getNumberOfPages(); i++) {
+        if (document.getPage(i).getCOSObject() == page.getCOSObject()) {
+          return i;
+        }
+      }
+    }
+    return null;
+  }
+
+  static String formatSignedDateOverlayReport(PDDocument document, String signedDateFieldId)
+      throws IOException {
+    final var acroForm = document.getDocumentCatalog().getAcroForm();
+    if (acroForm == null) {
+      return "No AcroForm in document.";
+    }
+    final var field = acroForm.getField(signedDateFieldId);
+    if (field == null) {
+      return "No field named: " + signedDateFieldId;
+    }
+    if (!(field instanceof PDTerminalField terminalField)) {
+      return "Field is not a terminal field: " + signedDateFieldId;
+    }
+    final var widgets = terminalField.getWidgets();
+    if (widgets == null || widgets.isEmpty()) {
+      return "Field has no widgets: " + signedDateFieldId;
+    }
+    final var rect = widgets.getFirst().getRectangle();
+    final var pageIndex = pageIndexOfWidget(document, widgets.getFirst());
+    final var suggestedX = rect.getUpperRightX() + CertificatePdfFillService.SIGNATURE_X_PADDING;
+    final var suggestedY = rect.getLowerLeftY() + CertificatePdfFillService.SIGNATURE_Y_PADDING;
+    final var sw = new StringWriter();
+    try (var out = new PrintWriter(sw)) {
+      out.println("Signed-date field: " + signedDateFieldId);
+      out.printf(
+          "Rectangle: lowerLeft=(%.4f, %.4f) upperRight=(%.4f, %.4f)%n",
+          rect.getLowerLeftX(), rect.getLowerLeftY(), rect.getUpperRightX(), rect.getUpperRightY());
+      out.println("Page index (0-based): " + (pageIndex == null ? "unknown" : pageIndex));
+      out.println(
+          "Suggested SignatureOverlayDetails (CertificatePdfFillService padding "
+              + CertificatePdfFillService.SIGNATURE_X_PADDING
+              + " / "
+              + CertificatePdfFillService.SIGNATURE_Y_PADDING
+              + "):");
+      out.printf("  signatureTextX = %.4ff;%n", suggestedX);
+      out.printf("  signatureTextY = %.4ff;%n", suggestedY);
+      out.printf(
+          "  signaturePageIndex = %s;%n", pageIndex == null ? "/* resolve manually */" : pageIndex);
+    }
+    return sw.toString();
   }
 
   private List<String> getFieldIds(PDDocument document) {

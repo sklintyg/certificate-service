@@ -18,13 +18,41 @@
  */
 package se.inera.intyg.certificateservice.domain.certificatemodel.model;
 
+import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Stream;
 import lombok.Builder;
 import lombok.Value;
+import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
+import se.inera.intyg.certificateservice.domain.certificate.model.ElementValueMedicalInvestigationList;
+import se.inera.intyg.certificateservice.domain.certificate.model.MedicalInvestigation;
 
 @Value
 @Builder
 public class PdfConfigurationMedicalInvestigationList implements PdfConfiguration {
 
   Map<FieldId, PdfConfigurationMedicalInvestigation> list;
+
+  @Override
+  public Stream<PdfField> toPdfFields(
+      ElementSpecification elementSpec,
+      Certificate certificate,
+      CustomPdfSpecification pdfSpecification) {
+    return elementSpec.valueAs(certificate, ElementValueMedicalInvestigationList.class).stream()
+        .map(ElementValueMedicalInvestigationList::list)
+        .filter(Objects::nonNull)
+        .flatMap(Collection::stream)
+        .flatMap(this::toPdfFields);
+  }
+
+  private Stream<PdfField> toPdfFields(MedicalInvestigation medicalInvestigation) {
+    final var configuration = list.get(medicalInvestigation.id());
+
+    if (configuration == null) {
+      throw new IllegalArgumentException(
+          "Medical investigation with id " + medicalInvestigation.id() + " not found");
+    }
+    return configuration.toPdfFields(medicalInvestigation);
+  }
 }
