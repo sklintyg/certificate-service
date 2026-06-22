@@ -18,8 +18,12 @@
  */
 package se.inera.intyg.certificateservice.domain.certificatemodel.model;
 
+import java.util.Optional;
+import java.util.stream.Stream;
 import lombok.Builder;
 import lombok.Value;
+import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
+import se.inera.intyg.certificateservice.domain.certificate.model.ElementValueDateRange;
 
 @Value
 @Builder
@@ -27,4 +31,23 @@ public class PdfConfigurationDateRange implements PdfConfiguration {
 
   PdfFieldId from;
   PdfFieldId to;
+
+  @Override
+  public Stream<PdfField> toPdfFields(
+      ElementSpecification elementSpec,
+      Certificate certificate,
+      CustomPdfSpecification pdfSpecification) {
+    return elementSpec.valueAs(certificate, ElementValueDateRange.class).stream()
+        .flatMap(
+            value ->
+                Stream.concat(
+                    Optional.ofNullable(value.fromDate()).stream()
+                        .map(
+                            date ->
+                                PdfField.builder().fieldId(from).value(date.toString()).build()),
+                    Optional.ofNullable(value.toDate()).stream()
+                        .map(
+                            date ->
+                                PdfField.builder().fieldId(to).value(date.toString()).build())));
+  }
 }
