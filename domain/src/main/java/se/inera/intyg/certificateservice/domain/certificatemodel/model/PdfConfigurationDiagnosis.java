@@ -19,8 +19,11 @@
 package se.inera.intyg.certificateservice.domain.certificatemodel.model;
 
 import java.util.List;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 import lombok.Builder;
 import lombok.Value;
+import se.inera.intyg.certificateservice.domain.certificate.model.ElementValueDiagnosis;
 
 @Value
 @Builder
@@ -28,4 +31,52 @@ public class PdfConfigurationDiagnosis implements PdfConfiguration {
 
   PdfFieldId pdfNameFieldId;
   List<PdfFieldId> pdfCodeFieldIds;
+
+  public Stream<PdfField> toPdfFields(
+      ElementValueDiagnosis diagnosis,
+      String appearance,
+      Integer maxLength,
+      OverflowConfig overflowConfig) {
+    return Stream.concat(
+        Stream.of(nameField(diagnosis, appearance, maxLength, overflowConfig)),
+        codeFields(diagnosis));
+  }
+
+  private PdfField nameField(
+      ElementValueDiagnosis diagnosis,
+      String appearance,
+      Integer maxLength,
+      OverflowConfig overflowConfig) {
+    return PdfField.builder()
+        .fieldId(pdfNameFieldId)
+        .value(diagnosis.description())
+        .appearance(appearance)
+        .maxLength(maxLength)
+        .shouldRemoveLineBreaks(true)
+        .overflowConfig(overflowConfig)
+        .build();
+  }
+
+  private Stream<PdfField> codeFields(ElementValueDiagnosis diagnosis) {
+    if (diagnosis.code() == null) {
+      return Stream.empty();
+    }
+
+    final var code = diagnosis.code();
+
+    if (code.length() > pdfCodeFieldIds.size()) {
+      throw new IllegalArgumentException(
+          "Diagnosis code '%s' has more characters than configured PDF fields".formatted(code));
+    }
+
+    return IntStream.range(0, code.length())
+        .mapToObj(index -> codeField(index, code.charAt(index)));
+  }
+
+  private PdfField codeField(int index, char value) {
+    return PdfField.builder()
+        .fieldId(pdfCodeFieldIds.get(index))
+        .value(String.valueOf(value))
+        .build();
+  }
 }

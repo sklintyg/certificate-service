@@ -18,8 +18,12 @@
  */
 package se.inera.intyg.certificateservice.domain.certificatemodel.model;
 
+import static se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfFormConstants.CHECKED_BOX_VALUE;
+
+import java.util.stream.Stream;
 import lombok.Builder;
 import lombok.Value;
+import se.inera.intyg.certificateservice.domain.certificate.model.ElementValueDate;
 
 @Value
 @Builder
@@ -27,4 +31,14 @@ public class PdfConfigurationDateCheckbox implements PdfConfiguration {
 
   PdfFieldId checkboxFieldId;
   PdfFieldId dateFieldId;
+
+  public Stream<PdfField> toPdfFields(ElementValueDate date) {
+    if (date.date() == null) {
+      return Stream.empty();
+    }
+
+    return Stream.of(
+        PdfField.builder().fieldId(checkboxFieldId).value(CHECKED_BOX_VALUE).build(),
+        PdfField.builder().fieldId(dateFieldId).value(date.date().toString()).build());
+  }
 }

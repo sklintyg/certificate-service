@@ -18,9 +18,6 @@
  */
 package se.inera.intyg.certificateservice.domain.certificatemodel.model;
 
-import static se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfFormConstants.CHECKED_BOX_VALUE;
-
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.stream.Stream;
 import lombok.Builder;
@@ -51,26 +48,6 @@ public class PdfConfigurationDateRangeList implements PdfConfiguration {
       throw new IllegalArgumentException("No date range found for id: " + dateRange.dateRangeId());
     }
 
-    final var fields = new ArrayList<PdfField>();
-    fields.add(
-        PdfField.builder().fieldId(dateRangeConfig.checkbox()).value(CHECKED_BOX_VALUE).build());
-
-    if (dateRange.from() != null) {
-      fields.add(
-          PdfField.builder()
-              .fieldId(dateRangeConfig.from())
-              .value(dateRange.from().toString())
-              .build());
-    }
-
-    if (dateRange.to() != null) {
-      fields.add(
-          PdfField.builder()
-              .fieldId(dateRangeConfig.to())
-              .value(dateRange.to().toString())
-              .build());
-    }
-
-    return fields.stream();
+    return dateRangeConfig.toPdfFields(dateRange);
   }
 }

@@ -18,8 +18,6 @@
  */
 package se.inera.intyg.certificateservice.domain.certificatemodel.model;
 
-import static se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfFormConstants.CHECKED_BOX_VALUE;
-
 import java.util.Map;
 import java.util.stream.Stream;
 import lombok.Builder;
@@ -45,23 +43,11 @@ public class PdfConfigurationDateList implements PdfConfiguration {
   }
 
   private Stream<PdfField> toPdfFields(ElementValueDate date) {
-    if (date.date() == null) {
-      return Stream.empty();
-    }
-
     final var checkboxConfig = dateCheckboxes.get(date.dateId());
     if (checkboxConfig == null) {
       throw new IllegalArgumentException("No checkbox found for date: " + date.dateId());
     }
 
-    return Stream.of(
-        PdfField.builder()
-            .fieldId(checkboxConfig.checkboxFieldId())
-            .value(CHECKED_BOX_VALUE)
-            .build(),
-        PdfField.builder()
-            .fieldId(checkboxConfig.dateFieldId())
-            .value(date.date().toString())
-            .build());
+    return checkboxConfig.toPdfFields(date);
   }
 }
