@@ -19,21 +19,19 @@
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7426;
 
 import java.util.List;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.CustomPdfSignature;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.CustomPdfSpecification;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.OverflowPageIndex;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayTextProvider;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfFieldId;
-import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfMcid;
-import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfSignature;
-import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfTagIndex;
-import se.inera.intyg.certificateservice.domain.certificatemodel.model.TemplatePdfSpecification;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.SignatureOverlayDetails;
 
 public class FK7426PdfSpecification {
 
+  private static final float PDF_SIGNATURE_TEXT_X = 173f;
+  private static final float PDF_SIGNATURE_TEXT_Y = 408f;
   public static final int ROW_MAX_LENGTH = 52;
-  public static final String PDF_FK_7426_PDF = "fk7426/pdf/fk7426_v1.pdf";
-  public static final String PDF_FK_7426_PDF_NO_ADDRESS = "fk7426/pdf/fk7426_v1_no_address.pdf";
-  public static final PdfMcid PDF_MCID = new PdfMcid(300);
   private static final int PDF_SIGNATURE_PAGE_INDEX = 2;
-  private static final PdfTagIndex PDF_SIGNATURE_TAG_INDEX = new PdfTagIndex(31);
   private static final List<PdfFieldId> PDF_PATIENT_ID_FIELD_IDS =
       List.of(
           new PdfFieldId("form1[0].#subform[0].flt_txtBarnPersonNr[0]"),
@@ -61,16 +59,13 @@ public class FK7426PdfSpecification {
     throw new IllegalStateException("Utility class");
   }
 
-  public static TemplatePdfSpecification create() {
-    return TemplatePdfSpecification.builder()
-        .pdfTemplatePath(PDF_FK_7426_PDF)
-        .pdfNoAddressTemplatePath(PDF_FK_7426_PDF_NO_ADDRESS)
+  public static CustomPdfSpecification create() {
+    return CustomPdfSpecification.builder()
+        .pdfTemplatePathProvider(new FK7426TemplatePathProvider())
         .patientIdFieldIds(PDF_PATIENT_ID_FIELD_IDS)
-        .pdfMcid(PDF_MCID)
         .signature(
-            PdfSignature.builder()
-                .signatureWithAddressTagIndex(PDF_SIGNATURE_TAG_INDEX)
-                .signatureWithoutAddressTagIndex(PDF_SIGNATURE_TAG_INDEX)
+            CustomPdfSignature.builder()
+                .pdfTagIndexProvider(new FK7426PdfTagProvider())
                 .signaturePageIndex(PDF_SIGNATURE_PAGE_INDEX)
                 .signedDateFieldId(PDF_SIGNED_DATE_FIELD_ID)
                 .signedByNameFieldId(PDF_SIGNED_BY_NAME_FIELD_ID)
@@ -80,10 +75,15 @@ public class FK7426PdfSpecification {
                 .workplaceCodeFieldId(PDF_WORKPLACE_CODE_FIELD_ID)
                 .contactInformation(PDF_CONTACT_INFORMATION)
                 .build())
-        .hasPageNbr(false)
+        .overlayTextProvider(
+            new OverlayTextProvider(
+                SignatureOverlayDetails.builder()
+                    .signatureTextX(PDF_SIGNATURE_TEXT_X)
+                    .signatureTextY(PDF_SIGNATURE_TEXT_Y)
+                    .signaturePageIndex(PDF_SIGNATURE_PAGE_INDEX)
+                    .build()))
+        .overflowFieldId(FORTSATTNINGSBLAD_ID)
         .overFlowPageIndex(new OverflowPageIndex(3))
-        .untaggedWatermarks(
-            List.of("74260501", "FK 7426 (001 F 001) Fastställd av Försäkringskassan"))
         .build();
   }
 }
