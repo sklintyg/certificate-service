@@ -19,47 +19,45 @@
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7472;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7472.FK7472PdfSpecification.PDF_FK_7472_PDF;
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7472.FK7472PdfSpecification.PDF_NO_ADDRESS_FK_7472_PDF;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.CustomPdfSignature;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.CustomPdfSpecification;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfFieldId;
-import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfSignature;
-import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfTagIndex;
 
 class FK7472PdfSpecificationTest {
 
   @Test
-  void shallIncludePdfTemplatePathWithAddress() {
-    final var certificateModel = FK7472PdfSpecification.create();
-
-    assertEquals(PDF_FK_7472_PDF, certificateModel.pdfTemplatePath());
+  void shallReturnCustomPdfSpecification() {
+    assertInstanceOf(CustomPdfSpecification.class, FK7472PdfSpecification.create());
   }
 
   @Test
-  void shallIncludePdfTemplatePathNoAddress() {
-    final var certificateModel = FK7472PdfSpecification.create();
+  void shallIncludePdfTemplatePathProvider() {
+    assertNotNull(FK7472PdfSpecification.create().pdfTemplatePathProvider());
+  }
 
-    assertEquals(PDF_NO_ADDRESS_FK_7472_PDF, certificateModel.pdfNoAddressTemplatePath());
+  @Test
+  void shallIncludeOverlayTextProvider() {
+    assertNotNull(FK7472PdfSpecification.create().overlayTextProvider());
   }
 
   @Test
   void shallIncludePatientFieldId() {
     final var expected = List.of(new PdfFieldId("form1[0].#subform[0].flt_txtPersonNrBarn[0]"));
 
-    final var certificateModel = FK7472PdfSpecification.create();
-
-    assertEquals(expected, certificateModel.patientIdFieldIds());
+    assertEquals(expected, FK7472PdfSpecification.create().patientIdFieldIds());
   }
 
   @Test
   void shallIncludeSignatureFields() {
     final var expected =
-        PdfSignature.builder()
+        CustomPdfSignature.builder()
             .signaturePageIndex(0)
-            .signatureWithAddressTagIndex(new PdfTagIndex(50))
-            .signatureWithoutAddressTagIndex(new PdfTagIndex(47))
+            .pdfTagIndexProvider(new FK7472PdfTagProvider())
             .signedDateFieldId(new PdfFieldId("form1[0].#subform[0].flt_datUnderskrift[0]"))
             .signedByNameFieldId(new PdfFieldId("form1[0].#subform[0].flt_txtNamnfortydligande[0]"))
             .paTitleFieldId(new PdfFieldId("form1[0].#subform[0].flt_txtBefattning[0]"))
@@ -71,16 +69,6 @@ class FK7472PdfSpecificationTest {
                 new PdfFieldId("form1[0].#subform[0].flt_txtVardgivarensNamnAdressTelefon[0]"))
             .build();
 
-    final var certificateModel = FK7472PdfSpecification.create();
-
-    assertEquals(expected, certificateModel.signature());
-  }
-
-  @Test
-  void shallIncludeMcid() {
-    final var expected = 120;
-    final var certificateModel = FK7472PdfSpecification.create();
-
-    assertEquals(expected, certificateModel.pdfMcid().value());
+    assertEquals(expected, FK7472PdfSpecification.create().signature());
   }
 }
