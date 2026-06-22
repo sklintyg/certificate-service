@@ -1315,7 +1315,7 @@
     "overlayTextProvider" : {
       "signatureDetails" : {
         "signatureTextX" : 173.0,
-        "signatureTextY" : 638.0,
+        "signatureTextY" : 300.0,
         "signaturePageIndex" : 1
       }
     },
