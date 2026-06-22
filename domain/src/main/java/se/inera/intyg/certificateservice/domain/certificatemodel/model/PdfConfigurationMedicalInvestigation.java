@@ -19,8 +19,14 @@
 package se.inera.intyg.certificateservice.domain.certificatemodel.model;
 
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Stream;
 import lombok.Builder;
 import lombok.Value;
+import se.inera.intyg.certificateservice.domain.certificate.model.ElementValueCode;
+import se.inera.intyg.certificateservice.domain.certificate.model.ElementValueDate;
+import se.inera.intyg.certificateservice.domain.certificate.model.ElementValueText;
+import se.inera.intyg.certificateservice.domain.certificate.model.MedicalInvestigation;
 
 @Value
 @Builder
@@ -30,4 +36,43 @@ public class PdfConfigurationMedicalInvestigation implements PdfConfiguration {
   Map<String, String> investigationPdfOptions;
   PdfFieldId investigationPdfFieldId;
   PdfFieldId sourceTypePdfFieldId;
+
+  public Stream<PdfField> toPdfFields(MedicalInvestigation investigation) {
+    return Stream.of(
+            dateField(investigation),
+            sourceTypeField(investigation),
+            investigationTypeField(investigation))
+        .flatMap(Optional::stream);
+  }
+
+  private Optional<PdfField> dateField(MedicalInvestigation investigation) {
+    return Optional.ofNullable(investigation.date())
+        .map(ElementValueDate::date)
+        .map(Object::toString)
+        .map(value -> toField(datePdfFieldId, value));
+  }
+
+  private Optional<PdfField> sourceTypeField(MedicalInvestigation investigation) {
+    return Optional.ofNullable(investigation.informationSource())
+        .map(ElementValueText::text)
+        .filter(this::notEmpty)
+        .map(value -> toField(sourceTypePdfFieldId, value));
+  }
+
+  private Optional<PdfField> investigationTypeField(MedicalInvestigation investigation) {
+    return Optional.ofNullable(investigation.investigationType())
+        .map(ElementValueCode::code)
+        .filter(this::notEmpty)
+        .map(investigationPdfOptions::get)
+        .filter(this::notEmpty)
+        .map(value -> toField(investigationPdfFieldId, value));
+  }
+
+  private PdfField toField(PdfFieldId fieldId, String value) {
+    return PdfField.builder().fieldId(fieldId).value(value).build();
+  }
+
+  private boolean notEmpty(String value) {
+    return value != null && !value.isEmpty();
+  }
 }
