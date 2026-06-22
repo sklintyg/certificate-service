@@ -16,22 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7804;
+package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226;
 
-import se.inera.intyg.certificateservice.domain.certificatemodel.model.AbstractTemplatePathProvider;
+import lombok.EqualsAndHashCode;
+import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
+import se.inera.intyg.certificateservice.domain.certificate.service.PdfGeneratorOptions;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfTagIndex;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfTagIndexProvider;
 
-public class FK7804TemplatePathProvider extends AbstractTemplatePathProvider {
+@EqualsAndHashCode
+public class FK3226PdfTagProvider implements PdfTagIndexProvider {
 
-  private static final String PDF_FK_7804_PDF = "fk7804/pdf/fk7804_v2.pdf";
-  private static final String PDF_NO_ADDRESS_FK_7804_PDF = "fk7804/pdf/fk7804_v2_no_address.pdf";
+  private static final PdfTagIndex PDF_SIGNATURE_TAG_INDEX = new PdfTagIndex(36);
 
   @Override
-  protected String pathWithoutAddress() {
-    return PDF_NO_ADDRESS_FK_7804_PDF;
-  }
-
-  @Override
-  protected String pathWithAddress() {
-    return PDF_FK_7804_PDF;
+  public PdfTagIndex of(Certificate certificate, PdfGeneratorOptions options) {
+    return PDF_SIGNATURE_TAG_INDEX;
   }
 }

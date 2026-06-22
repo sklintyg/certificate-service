@@ -19,52 +19,53 @@
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.FK3226PdfSpecificationV1_1.PDF_FK_3226_PDF;
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.FK3226PdfSpecificationV1_1.PDF_NO_ADDRESS_FK_3226_PDF;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.CustomPdfSignature;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.CustomPdfSpecification;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.OverflowPageIndex;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayTextProvider;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfFieldId;
-import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfSignature;
-import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfTagIndex;
 
 class FK3226PdfSpecificationV1_1Test {
 
   @Test
-  void shallIncludePdfTemplatePathWithAddress() {
-    final var certificateModel = FK3226PdfSpecificationV1_1.create();
-
-    assertEquals(PDF_FK_3226_PDF, certificateModel.pdfTemplatePath());
+  void shallReturnCustomPdfSpecification() {
+    assertInstanceOf(CustomPdfSpecification.class, FK3226PdfSpecificationV1_1.create());
   }
 
   @Test
-  void shallIncludePdfTemplatePathNoAddress() {
-    final var certificateModel = FK3226PdfSpecificationV1_1.create();
-
-    assertEquals(PDF_NO_ADDRESS_FK_3226_PDF, certificateModel.pdfNoAddressTemplatePath());
+  void shallIncludePdfTemplatePathProvider() {
+    assertNotNull(FK3226PdfSpecificationV1_1.create().pdfTemplatePathProvider());
   }
 
   @Test
-  void shallIncludePatientFieldId() {
+  void shallIncludeOverlayTextProvider() {
+    assertNotNull(FK3226PdfSpecificationV1_1.create().overlayTextProvider());
+    assertInstanceOf(
+        OverlayTextProvider.class, FK3226PdfSpecificationV1_1.create().overlayTextProvider());
+  }
+
+  @Test
+  void shallIncludePatientFieldIds() {
     final var expected =
         List.of(
             new PdfFieldId("form1[0].#subform[0].flt_txtPersonNr[0]"),
             new PdfFieldId("form1[0].#subform[1].flt_txtPersonNr[1]"),
             new PdfFieldId("form1[0].#subform[2].flt_txtPersonNr[2]"));
 
-    final var certificateModel = FK3226PdfSpecificationV1_1.create();
-
-    assertEquals(expected, certificateModel.patientIdFieldIds());
+    assertEquals(expected, FK3226PdfSpecificationV1_1.create().patientIdFieldIds());
   }
 
   @Test
   void shallIncludeSignatureFields() {
     final var expected =
-        PdfSignature.builder()
+        CustomPdfSignature.builder()
             .signaturePageIndex(1)
-            .signatureWithAddressTagIndex(new PdfTagIndex(36))
-            .signatureWithoutAddressTagIndex(new PdfTagIndex(36))
+            .pdfTagIndexProvider(new FK3226PdfTagProvider())
             .signedDateFieldId(new PdfFieldId("form1[0].#subform[1].flt_datumUnderskrift[0]"))
             .signedByNameFieldId(new PdfFieldId("form1[0].#subform[1].flt_txtNamnfortydligande[0]"))
             .paTitleFieldId(new PdfFieldId("form1[0].#subform[1].flt_txtBefattning[0]"))
@@ -76,23 +77,18 @@ class FK3226PdfSpecificationV1_1Test {
                 new PdfFieldId("form1[0].#subform[1].flt_txtVardgivarensNamnAdressTelefon[0]"))
             .build();
 
-    final var certificateModel = FK3226PdfSpecificationV1_1.create();
-
-    assertEquals(expected, certificateModel.signature());
-  }
-
-  @Test
-  void shallIncludeMcid() {
-    final var expected = 100;
-    final var certificateModel = FK3226PdfSpecificationV1_1.create();
-
-    assertEquals(expected, certificateModel.pdfMcid().value());
+    assertEquals(expected, FK3226PdfSpecificationV1_1.create().signature());
   }
 
   @Test
   void shallIncludeOverflowPageIndex() {
-    final var certificateModel = FK3226PdfSpecificationV1_1.create();
+    assertEquals(new OverflowPageIndex(2), FK3226PdfSpecificationV1_1.create().overFlowPageIndex());
+  }
 
-    assertEquals(new OverflowPageIndex(2), certificateModel.overFlowPageIndex());
+  @Test
+  void shallIncludeOverflowFieldId() {
+    assertEquals(
+        new PdfFieldId("form1[0].#subform[2].flt_txtFortsattningsblad[0]"),
+        FK3226PdfSpecificationV1_1.create().overflowFieldId());
   }
 }

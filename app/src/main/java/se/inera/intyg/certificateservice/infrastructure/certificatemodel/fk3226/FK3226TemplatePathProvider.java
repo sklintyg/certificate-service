@@ -16,22 +16,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7804;
+package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226;
 
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.AbstractTemplatePathProvider;
 
-public class FK7804TemplatePathProvider extends AbstractTemplatePathProvider {
+public class FK3226TemplatePathProvider extends AbstractTemplatePathProvider {
 
-  private static final String PDF_FK_7804_PDF = "fk7804/pdf/fk7804_v2.pdf";
-  private static final String PDF_NO_ADDRESS_FK_7804_PDF = "fk7804/pdf/fk7804_v2_no_address.pdf";
+  private static final String PDF_FK_3226_PDF = "fk3226/pdf/fk3226_v1.pdf";
+  private static final String PDF_NO_ADDRESS_FK_3226_PDF = "fk3226/pdf/fk3226_v1_no_address.pdf";
 
   @Override
   protected String pathWithoutAddress() {
-    return PDF_NO_ADDRESS_FK_7804_PDF;
+    return PDF_NO_ADDRESS_FK_3226_PDF;
   }
 
   @Override
   protected String pathWithAddress() {
-    return PDF_FK_7804_PDF;
+    return PDF_FK_3226_PDF;
   }
 }
