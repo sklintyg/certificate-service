@@ -19,21 +19,19 @@
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7809;
 
 import java.util.List;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.CustomPdfSignature;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.CustomPdfSpecification;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.OverflowPageIndex;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayTextProvider;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfFieldId;
-import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfMcid;
-import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfSignature;
-import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfTagIndex;
-import se.inera.intyg.certificateservice.domain.certificatemodel.model.TemplatePdfSpecification;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.SignatureOverlayDetails;
 
 public class FK7809PdfSpecification {
 
-  public static final String PDF_FK_7809_PDF = "fk7809/pdf/fk7809_v1.pdf";
-  public static final String PDF_NO_ADDRESS_FK_7809_PDF = "fk7809/pdf/fk7809_v1_no_address.pdf";
-  public static final PdfMcid PDF_MCID = new PdfMcid(200);
   private static final int PDF_SIGNATURE_PAGE_INDEX = 3;
-  private static final PdfTagIndex PDF_SIGNATURE_WITH_ADDRESS_TAG_INDEX = new PdfTagIndex(10);
-  private static final PdfTagIndex PDF_SIGNATURE_WITHOUT_ADDRESS_TAG_INDEX = new PdfTagIndex(10);
+  private static final float PDF_SIGNATURE_TEXT_X = 173f;
+  private static final float PDF_SIGNATURE_TEXT_Y = 523f;
+
   private static final List<PdfFieldId> PDF_PATIENT_ID_FIELD_IDS =
       List.of(
           new PdfFieldId("form1[0].#subform[0].flt_txtPersonNr[0]"),
@@ -55,21 +53,20 @@ public class FK7809PdfSpecification {
       new PdfFieldId("form1[0].#subform[3].flt_txtArbetsplatskod[0]");
   private static final PdfFieldId PDF_CONTACT_INFORMATION =
       new PdfFieldId("form1[0].#subform[3].flt_txtVardgivarensNamnAdressTelefon[0]");
+  private static final PdfFieldId OVERFLOW_SHEET_FIELD_ID =
+      new PdfFieldId("form1[0].#subform[4].flt_txtFortsattningsblad[0]");
 
   private FK7809PdfSpecification() {
     throw new IllegalStateException("Utility class");
   }
 
-  public static TemplatePdfSpecification create() {
-    return TemplatePdfSpecification.builder()
-        .pdfTemplatePath(PDF_FK_7809_PDF)
-        .pdfNoAddressTemplatePath(PDF_NO_ADDRESS_FK_7809_PDF)
+  public static CustomPdfSpecification create() {
+    return CustomPdfSpecification.builder()
+        .pdfTemplatePathProvider(new FK7809TemplatePathProvider())
         .patientIdFieldIds(PDF_PATIENT_ID_FIELD_IDS)
-        .pdfMcid(PDF_MCID)
         .signature(
-            PdfSignature.builder()
-                .signatureWithAddressTagIndex(PDF_SIGNATURE_WITH_ADDRESS_TAG_INDEX)
-                .signatureWithoutAddressTagIndex(PDF_SIGNATURE_WITHOUT_ADDRESS_TAG_INDEX)
+            CustomPdfSignature.builder()
+                .pdfTagIndexProvider(new FK7809PdfTagProvider())
                 .signaturePageIndex(PDF_SIGNATURE_PAGE_INDEX)
                 .signedDateFieldId(PDF_SIGNED_DATE_FIELD_ID)
                 .signedByNameFieldId(PDF_SIGNED_BY_NAME_FIELD_ID)
@@ -79,10 +76,15 @@ public class FK7809PdfSpecification {
                 .workplaceCodeFieldId(PDF_WORKPLACE_CODE_FIELD_ID)
                 .contactInformation(PDF_CONTACT_INFORMATION)
                 .build())
-        .hasPageNbr(false)
+        .overlayTextProvider(
+            new OverlayTextProvider(
+                SignatureOverlayDetails.builder()
+                    .signatureTextX(PDF_SIGNATURE_TEXT_X)
+                    .signatureTextY(PDF_SIGNATURE_TEXT_Y)
+                    .signaturePageIndex(PDF_SIGNATURE_PAGE_INDEX)
+                    .build()))
+        .overflowFieldId(OVERFLOW_SHEET_FIELD_ID)
         .overFlowPageIndex(new OverflowPageIndex(4))
-        .untaggedWatermarks(
-            List.of("78090501", "FK 7809 (001 F 001) Fastställd av Försäkringskassan"))
         .build();
   }
 }

@@ -1,0 +1,435 @@
+General mapping for pdf specification per question type follows pattern ElementValueBoolean maps to PdfConfigurationBoolean and ElementValueDateList maps to PdfConfigurationDateList etc.
+This part of the file contains ids and names and types of fields extracted from the pdf.
+//Page index 0
+Field ID: form1[0].#subform[0].flt_txtSidNr[0]
+Name: Sidnummer
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[0].flt_txtPatientensNamn[0]
+Name: Patientens namn
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[0].flt_txtPersonNr[0]
+Name: Personnummer med 12 siffror
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[0].ksr_UndersokningPatienten[0]
+Name: 1. Utlåtandet är baserat på. Min undersökning av patienten 
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDCheckBox
+
+Field ID: form1[0].#subform[0].flt_datumUndersokningPatient[0]
+Name: datum (år, månad, dag) - skriv in eller välj i kalendern
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[0].ksr_Journaluppgifter[0]
+Name: Journaluppgifter från och med
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDCheckBox
+
+Field ID: form1[0].#subform[0].flt_datumJournaluppgifter[0]
+Name: datum (år, månad, dag) - skriv in eller välj i kalendern
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[0].ksr_AnhorigAnnan[0]
+Name: Anhörigs eller annans beskrivning av patienten
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDCheckBox
+
+Field ID: form1[0].#subform[0].flt_datumAnhorig[0]
+Name: datum (år, månad, dag) - skriv in eller välj i kalendern
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[0].flt_txtAnhorigAnnan[0]
+Name: Ange anhörig eller annans relation till patienten 
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[0].ksr_AnnatFyll[0]
+Name: Annat
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDCheckBox
+
+Field ID: form1[0].#subform[0].flt_datumAnnat[0]
+Name: datum (år, månad, dag) - skriv in eller välj i kalendern
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[0].flt_txtAnhorig[0]
+Name: Ange vad annat är
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[0].ksr_2_1[0]
+Name: Punkt 2. Är utlåtandet även baserat på andra medicinska utredningar eller underlag? Nej
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDCheckBox
+
+Field ID: form1[0].#subform[0].ksr_JaFyll[0]
+Name: Ja. Fyll i nedan
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDCheckBox
+
+Field ID: form1[0].#subform[0].lbx_listVardeUtredningUnderlag[0]
+Name: Ange utredning eller underlag. Välj i listan
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDComboBox
+
+Field ID: form1[0].#subform[0].flt_datumUnderlagUtredning[0]
+Name: datum (år, månad, dag) - skriv in eller välj i kalendern
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[0].ksr_2_3[0]
+Name: Bifogas Ja
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDCheckBox
+
+Field ID: form1[0].#subform[0].ksr_2_4[0]
+Name: Nej
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDCheckBox
+
+Field ID: form1[0].#subform[0].flt_txHjalp1[0]
+Name: Hjälptext: Var kan Försäkringskassan hämta information om utredningen eller underlaget?Skriv exempelvis Neuropsykiatriska kliniken på X-stads sjukhus eller om patienten själv kommer att bifoga utredningen till sin ansökan. 
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[0].flt_txtVilkenVardgivare[0]
+Name: Var kan Försäkringskassan hämta information om utredningen eller underlaget?
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[0].lbx_listVardeUnderlagUtredning2[0]
+Name: Ange ytterligare utredning eller underlag, Välj i listan
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDComboBox
+
+Field ID: form1[0].#subform[0].flt_datumUnderlagUtredning2[0]
+Name: datum (år, månad, dag) skriv in eller välj i kalendern
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[0].ksr_2_5[0]
+Name: Bifogas Ja
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDCheckBox
+
+Field ID: form1[0].#subform[0].ksr_2_6[0]
+Name: Nej
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDCheckBox
+
+Field ID: form1[0].#subform[0].flt_txtVilkenVardgivare2[0]
+Name: Var kan Försäkringskassan hämta information om utredningen eller underlaget?
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[0].lbx_listVardeUnderlagUtredning3[0]
+Name: Ange ytterligare utredning eller underlag. Välj i listan
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDComboBox
+
+Field ID: form1[0].#subform[0].flt_datumUnderlagUtredning3[0]
+Name: datum (år, månad, dag) skriv in eller välj i kalendern
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[0].ksr_2_7[0]
+Name: Bifogas Ja
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDCheckBox
+
+Field ID: form1[0].#subform[0].ksr_2_8[0]
+Name: Nej
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDCheckBox
+
+Field ID: form1[0].#subform[0].flt_txtVilkenVardgivare3[0]
+Name: Var kan Försäkringskassan hämta information om utredningen eller underlaget?
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+//Page index 1
+Field ID: form1[0].#subform[1].flt_txtSidNr[1]
+Name: Sidnummer
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[1].flt_txtPersonNr[1]
+Name: Personnummer med 12 siffror
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[1].flt_txHjalp2[0]
+Name: Hjälptext: Diagnos eller diagnoser som är relevanta för funktionsnedsättningen.Diagnoskoden anges med så många positionskoder som möjligt. Använd inga andra tecken än bokstäver och siffror.
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[1].flt_txtAngeFunktionsnedsattning[0]
+Name: Punkt 3. Diagnos eller diagnoser. Du kan fylla i uppgifter för fler diagnoser. Totalt fem. Det här är diagnos ett. 
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[1].flt_txtDiaKod1[0]
+Name: Diagnoskod enligt ICD-10 SE.  Siffra ett. Diagnos ett. 
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[1].flt_txtDiaKod2[0]
+Name: Siffra två. Diagnos ett. 
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[1].flt_txtDiaKod3[0]
+Name: Siffra tre. Diagnos ett. 
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[1].flt_txtDiaKod4[0]
+Name: Siffra fyra. Diagnos ett. 
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[1].flt_txtDiaKod5[0]
+Name: Siffra fem. Diagnos ett. 
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[1].flt_txtAngeFunktionsnedsattning2[0]
+Name: Det här är diagnos två. 
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[1].flt_txtDiaKod6[0]
+Name: Diagnoskod enligt ICD-10 SE.  Siffra ett. Diagnos två. 
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[1].flt_txtDiaKod7[0]
+Name: Siffra två. Diagnos två. 
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[1].flt_txtDiaKod8[0]
+Name: Siffra tre. Diagnos två. 
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[1].flt_txtDiaKod9[0]
+Name: Siffra fyra. Diagnos två. 
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[1].flt_txtDiaKod10[0]
+Name: Siffra fem. Diagnos två. 
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[1].flt_txtAngeFunktionsnedsattning3[0]
+Name: Det här är diagnos tre
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[1].flt_txtDiaKod11[0]
+Name: Diagnoskod enligt ICD-10 SE.  Siffra ett. Diagnos tre. 
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[1].flt_txtDiaKod12[0]
+Name: Siffra två. Diagnos tre. 
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[1].flt_txtDiaKod13[0]
+Name: Siffra tre. Diagnos tre. 
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[1].flt_txtDiaKod14[0]
+Name: Siffra fyra. Diagnos tre. 
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[1].flt_txtDiaKod15[0]
+Name: Siffra fem. Diagnos tre. 
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[1].flt_txtAngeFunktionsnedsattning4[0]
+Name: Det här är diagnos tre
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[1].flt_txtDiaKod16[0]
+Name: Diagnoskod enligt ICD-10 SE.  Siffra ett. Diagnos fyra. 
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[1].flt_txtDiaKod17[0]
+Name: Siffra två. Diagnos fyra. 
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[1].flt_txtDiaKod18[0]
+Name: Siffra tre. Diagnos fyra. 
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[1].flt_txtDiaKod19[0]
+Name: Siffra fyra. Diagnos fyra. 
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[1].flt_txtDiaKod20[0]
+Name: Siffra fem. Diagnos fyra. 
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[1].flt_txtAngeFunktionsnedsattning5[0]
+Name: Det här är diagnos fen
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[1].flt_txtDiaKod21[0]
+Name: Diagnoskod enligt ICD-10 SE.  Siffra ett. Diagnos fem. 
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[1].flt_txtDiaKod22[0]
+Name: Siffra två. Diagnos fem. 
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[1].flt_txtDiaKod23[0]
+Name: Siffra tre. Diagnos fem. 
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[1].flt_txtDiaKod24[0]
+Name: Siffra fyra. Diagnos fem. 
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[1].flt_txtDiaKod25[0]
+Name: Siffra fem. Diagnos fem. 
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[1].flt_txtBeskrivRelevantHistorikDiagnos[0]
+Name: Punkt 4.  Sammanfatta historiken för diagnoserna
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[1].flt_txHjalp3[0]
+Name: Hjälptext: Funktionsnedsättning.Beskriv de funktionsnedsättningar som patienten har. Ange om din bedömning är baserad på observationer, undersökningsfynd eller testresultat. Det kan till exempel vara:- avvikelser i somatisk och psykisk status inklusive gradering- röntgen- och laboratoriefynd- resultatet av kliniskt fysiologiska undersökningar- andra testresultat, exempelvis neuropsykologiska.Ange även vilka uppgifter som är baserade på anamnes.Ange om möjligt grad av funktionsnedsättning (till exempel lätt, måttlig, stor eller total).Funktionsområdena följer väsentligen ICF, men vissa förenklingar har gjorts.
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[1].flt_txHjalp4_IntellektuellFunktion[0]
+Name: Hjälptext: Intellektuell funktion.Med intellektuell funktion, teoretisk begåvning eller intelligens menas förmågan att tänka logiskt. För att bedöma nivån krävs det att test utförts av en psykolog.
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[1].flt_txtIntellektuellFunktion[0]
+Name: Punkt 5. Funktionsnedsättning - beskriv undersökningsfynd och grad av funktionsnedsättning inom relevanta funktionsområden. Intellektuell funktion
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[1].flt_txHjalp4_IntellektuellFunktion[1]
+Name: Hjälptext: Övergripande psykosociala funktioner.Med psykosociala funktioner menas•  förmågan till emotionell kontakt•  social ömsesidighet •  samspel •  förmågan att på ett teoretiskt plan kunna sätta sig in i    hur andra människor tänker och känner, även om man inte     har varit med om samma sak själv.
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[1].flt_txtIntellektuellFunktion[1]
+Name: Övergripande psykosociala funktioner
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[1].flt_txHjalp5_Uppmarksamhet[0]
+Name: Hjälptext: Uppmärksamhet, koncentration och exekutiv funktion.Uppmärksamhet, koncentration och exekutiv funktion. Uppmärksamhet handlar om förmågan att rikta fokus på rätt sak vid rätt tillfälle samt att skifta, fördela och vidmakthålla uppmärksamheten. En person behöver även viljemässigt kunna rikta sin uppmärksamhet under en längre tid. Med exekutiv funktion menas förmågan att planera, initiera, genomföra, korrigera och avsluta en handling.
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[1].flt_txtIntellektuellFunktion[2]
+Name: Uppmärksamhet, koncentration och exekutiv funktion
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[1].flt_txHjalp6_AnnanPsykFunktion[0]
+Name: Hjälptext: Annan psykisk funktion.Med annan psykisk funktion menas exempelvis-	stämningsläge, depressivitet, ångest och reglering                    av affekter-	motivation, energinivå, impulskontroll och                                 initiativförmåga-	kognitiv flexibilitet, omdöme och insikt-	minnesfunktioner-	sömnfunktioner-	vanföreställningar och tvångstankar-	psykiska språkfunktioner-	orientering i tid samt till plats, situation och                                person.
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[1].flt_txtIntellektuellFunktion[3]
+Name: Annan psykisk funktion
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+//Page index 2
+Field ID: form1[0].#subform[2].flt_txtSidNr[2]
+Name: Sidnummer
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[2].flt_txtPersonNr[2]
+Name: Personnummer med 12 siffror
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[2].flt_txHjalp7_Horselfunktion[0]
+Name: Hjälptext: Hörselfunktion.Hörselfunktion handlar om förmågan att förnimma närvaro av ljud och att urskilja lokalisering, tonhöjd, ljudstyrka och ljudkvalitet.För att Försäkringskassan ska kunna bedöma om det finns rätt till garanterad nivå av merkostnadsersättning är följande information viktig.Beskriv eventuell nedsättning av hörseln utifrån hörselmätningar och öronstatus. Motivera konstaterade diagnoser utifrån hörseltesterna. Värdera sambandet mellan hörseltesterna och eventuella avvikelser. Beskriv förmågan till kommunikation och taluppfattning utifrån observation och resultat av mätningar eller tester. Skriv om objektiva hörselmätningar har gjorts. Ange vilken typ av hörhjälpmedel patienten använder, och om hen erbjudits utredning för cochleaimplantat (CI).Du kan skicka in • resultat av hörseltester  - tonaudiogram med ben och luftledning• resultat av maximal taluppfattning med angiven stimuleringsnivå i decibel (dB) • taluppfattning i ljudfält 65dB med optimalt anpassade hörhjälpmedel• resultat av eventuella objektiva hörselmätningar • underlag från andra bedömningar som gäller kommunikation.
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[2].flt_txtIntellektuellFunktion[4]
+Name: Hörselfunktion
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[2].flt_txHjalp8_Synfunktion[0]
+Name: Hjälptext: Synfunktion.Synfunktion handlar om förmågan att förnimma närvaro av ljus och synintryckets form, storlek, utformning och färg.För att Försäkringskassan ska kunna bedöma om det finns rätt till garanterad nivå av merkostnadsersättning är följande information viktig.Beskriv nedsättningen av synen:• synskärpa på långt håll med bästa korrektion • synfält – du kan skicka in en kopia av perimetri eller beskriva synfältet på annat sätt till exempel enligt Donders metod.• andra synfunktioner som till exempel förmåga till samsyn, dubbelseende, nystagmus, mörkerseende, färgseende, konstraseende, bländningskänslighet och perception. Beskriv• personens förmåga att orientera sig och förflytta sig med hjälp av synen• hur stora svårigheter personen har att orientera sig och förflytta sig i en främmande miljö.Bedöm sambandet mellan svårigheterna och den nedsatta synfunktionen. Ange den ledsagning eller hjälpmedel som personen behöver när hen ska förflytta sig. Det kan till exempel vara markeringskäpp, teknikkäpp eller ledarhund.
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[2].flt_txtIntellektuellFunktion[5]
+Name: Synfunktion
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[2].flt_txHjalp9_OvrigaSinnesfunktioner[0]
+Name: Hjälptext: Övriga sinnesfunktioner och smärta.Med övriga sinnesfunktioner menas exempelvis känslighet eller upplevelse av obehag vid ljud, ljus, temperatur, beröring, smak eller lukt. Med smärta menas förnimmelse av en obehaglig känsla som tyder på tänkbar eller faktisk skada i någon del av kroppen. Det innefattar förnimmelser av generell eller lokal smärta i en eller flera kroppsdelar, eller i ett dermatom (hudavsnitt). Det kan till exempel vara huggande, brännande, molande smärta och värk.
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[2].flt_txtIntellektuellFunktion[6]
+Name: Övriga sinnesfunktioner och smärta
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[2].flt_txHjalp10_Balans[0]
+Name: Hjälptext: balans, koordination och motorik.Med balans menas kroppens balansfunktion och förnimmelse av kroppsställning (positionsuppfattning). Med koordination menas till exempel ögahandkoordination, gångkoordination och att samordna rörelser av armar och ben. Med motorik menas fin- och grovmotorik eller till exempel munmotorik.
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[2].flt_txtIntellektuellFunktion[7]
+Name: Balans, koordination och motorik
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[2].flt_txHjalp11_AnnanKroppsligFunkt[0]
+Name: Hjälptext: Annan kroppslig funktion.Med annan kroppslig funktion menas till exempel andningsfunktion, matsmältnings- och ämnesomsättningsfunktion samt blås- och tarmfunktion.
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[2].flt_txtIntellektuellFunktion[8]
+Name: Annan kroppslig funktion
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[2].flt_txHjalp12_Aktivitetsbegransning[0]
+Name: Hjälptext: Aktivitetsbegränsningar.Beskriv de aktivitetsbegränsningar som du bedömer att patienten har. Beskriv även om din bedömning är baserad på observationer, anamnes eller utredning gjord av någon annan. Någon annan kan till exempel vara psykolog, arbetsterapeut, audionom, syn- eller hörselpedagog. I beskrivningen kan du utgå från aktiviteter inom områden som till exempel kommunikation, förflyttning, personlig vård och hemliv. Ange om möjligt svårighetsgraden på aktivitetsbegränsningarna.
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[2].flt_txtFlerradig[0]
+Name: Punkt 6. Aktivitetsbegränsningar — beskriv vad patienten har svårt att göra på grund av den eller de                                      funktionsnedsättningar som beskrivs ovan. Ge konkreta exempel på aktiviteter i patientens vardag där svårigheter uppstår.
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[2].flt_txHjalp13_MedicinskaBehandlingar[0]
+Name: Hjälptext: Medicinska behandlingar.Ange den medicinska indikationen och syftet med behandlingen eller åtgärden. Du kan även beskriva andra behandlingar och åtgärder som prövats utifrån funktionsnedsättningen. Om patienten använder läkemedel som inte är subventionerade: beskriv anledningen till det.
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[2].flt_txtPlaneradMedicinskBehandling[0]
+Name: Punkt 7. Medicinska behandlingar
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[2].flt_txtVardenhetTidplan[0]
+Name: Ange ansvarig vårdenhet och tidplan.
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+//Page index 3
+Field ID: form1[0].#subform[3].flt_txtSidNr[3]
+Name: Sidnummer
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[3].flt_txtPersonNr[3]
+Name: Personnummer med 12 siffror
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[3].flt_txtPatientenslFunktionsnedsattning[0]
+Name: Punkt 8. Prognos - hur förväntas patientens funktionsnedsättning och aktivitetsbegränsningar utvecklas över tid?
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[3].flt_OvrigaUpplysningar[0]
+Name: Punkt 9. Övriga upplysningar
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[3].flt_datUnderskrift[0]
+Name: Punkt 10. Underskrift. Datum - skriv in eller välj i kalendern
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[3].flt_txtNamnteckning[0]
+Name: Läkarens namnteckning. Fältet för underskrift fylls i efter utskrift av blanketten.
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[3].flt_txtNamnfortydligande[0]
+Name: Namnförtydligande
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[3].flt_txtBefattning[0]
+Name: Befattning
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[3].flt_txtEventuellSpecialistkompetens[0]
+Name: Eventuell specialistkompetens
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[3].flt_txtLakarensHSA-ID[0]
+Name: Läkarens HSA-id
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[3].flt_txtArbetsplatskod[0]
+Name: Arbetsplatskod
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[3].flt_txtPersonNrLakare[0]
+Name: Läkarens personnummer. Anges endast om du som läkare saknar HSA-id.
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[3].flt_txtVardgivarensNamnAdressTelefon[0]
+Name: Vårdenhetens namn, adress och telefon
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+//Page index 4
+Field ID: form1[0].#subform[4].flt_txtSidNr[4]
+Name: Sidnummer
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[4].flt_txtPersonNr[4]
+Name: Personnummer med 12 siffror
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
+Field ID: form1[0].#subform[4].flt_txtFortsattningsblad[0]
+Name: Punkt 11. Fortsättningblad
+Field Type: class org.apache.pdfbox.pdmodel.interactive.form.PDTextField
+
