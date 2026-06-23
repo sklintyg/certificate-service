@@ -18,12 +18,4 @@
  */
 package se.inera.intyg.certificateservice.certificate.custom.dto;
 
-import java.util.List;
-
-public record CustomPdfMetadataDTO(
-    List<CustomTextDTO> customTexts,
-    AccessibilityMetadataDTO accessibilityMetadata,
-    String rightMarginText,
-    boolean addDraftWatermark,
-    Integer overflowPageIndex,
-    CustomPdfPersonId personId) {}
+public record CustomPdfPersonId(String fieldId, String value) {}

@@ -18,9 +18,11 @@
  */
 package se.inera.intyg.certificateservice.certificate.custom.converter;
 
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import se.inera.intyg.certificateservice.certificate.custom.dto.AccessibilityMetadataDTO;
 import se.inera.intyg.certificateservice.certificate.custom.dto.CustomPdfMetadataDTO;
+import se.inera.intyg.certificateservice.certificate.custom.dto.CustomPdfPersonId;
 import se.inera.intyg.certificateservice.certificate.custom.dto.CustomTextDTO;
 import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
 import se.inera.intyg.certificateservice.domain.certificate.model.Status;
@@ -43,7 +45,17 @@ public class CustomPdfMetadataConverter {
         new AccessibilityMetadataDTO(fileName),
         rightMarginText(certificate, options),
         certificate.status() == Status.DRAFT,
-        getOverflowPageIndex(spec));
+        getOverflowPageIndex(spec),
+        getPersonId(certificate, spec));
+  }
+
+  @Nullable private static CustomPdfPersonId getPersonId(
+      Certificate certificate, CustomPdfSpecification spec) {
+    return spec.overFlowPageIndex() != null
+        ? new CustomPdfPersonId(
+            spec.patientIdFieldIds().getLast().id(),
+            certificate.certificateMetaData().patient().id().idWithoutDash())
+        : null;
   }
 
   private Integer getOverflowPageIndex(CustomPdfSpecification specification) {

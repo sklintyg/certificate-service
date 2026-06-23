@@ -66,7 +66,7 @@ class CustomPrintRequestConverterTest {
 
   @Test
   void shallConvertMetadata() {
-    final var expected = new CustomPdfMetadataDTO(List.of(), null, null, false, null);
+    final var expected = new CustomPdfMetadataDTO(List.of(), null, null, false, null, null);
     when(customPdfMetadataConverter.convert(any(), any(), any(), anyString())).thenReturn(expected);
 
     final var request = converter.convert(certificate, options, spec, TEMPLATE_BYTES, FILE_NAME);
