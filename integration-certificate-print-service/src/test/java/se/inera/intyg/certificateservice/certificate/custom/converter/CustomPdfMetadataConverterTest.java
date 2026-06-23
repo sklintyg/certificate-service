@@ -35,7 +35,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import se.inera.intyg.certificateservice.certificate.custom.dto.CustomPdfPersonId;
+import se.inera.intyg.certificateservice.certificate.custom.dto.PersonIdConfigDTO;
 import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
 import se.inera.intyg.certificateservice.domain.certificate.model.CertificateId;
 import se.inera.intyg.certificateservice.domain.certificate.model.Status;
@@ -131,7 +131,7 @@ class CustomPdfMetadataConverterTest {
   @Test
   void shallSetCustomPdfPersonIdIfOverflowPageIndexIsPresent() {
     final var expectedPersonId =
-        new CustomPdfPersonId(
+        new PersonIdConfigDTO(
             PDF_PATIENT_ID_FIELD_ID.id(), ATHENA_REACT_ANDERSSON.id().idWithoutDash());
     final var pdfSpec =
         CustomPdfSpecification.builder()

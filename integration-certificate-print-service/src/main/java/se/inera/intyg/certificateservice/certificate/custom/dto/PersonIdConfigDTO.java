@@ -18,4 +18,4 @@
  */
 package se.inera.intyg.certificateservice.certificate.custom.dto;
 
-public record CustomPdfPersonId(String fieldId, String value) {}
+public record PersonIdConfigDTO(String fieldId, String value) {}

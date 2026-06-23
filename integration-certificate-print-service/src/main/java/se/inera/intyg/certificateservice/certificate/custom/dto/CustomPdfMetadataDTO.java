@@ -26,4 +26,4 @@ public record CustomPdfMetadataDTO(
     String rightMarginText,
     boolean addDraftWatermark,
     Integer overflowPageIndex,
-    CustomPdfPersonId personId) {}
+    PersonIdConfigDTO personId) {}
