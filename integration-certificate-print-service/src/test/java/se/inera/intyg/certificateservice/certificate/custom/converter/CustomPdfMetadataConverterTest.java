@@ -24,6 +24,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static se.inera.intyg.certificateservice.domain.testdata.TestDataCertificate.FK7804_CERTIFICATE;
+import static se.inera.intyg.certificateservice.domain.testdata.TestDataPatient.ATHENA_REACT_ANDERSSON;
 
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,6 +35,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import se.inera.intyg.certificateservice.certificate.custom.dto.PersonIdConfigDTO;
 import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
 import se.inera.intyg.certificateservice.domain.certificate.model.CertificateId;
 import se.inera.intyg.certificateservice.domain.certificate.model.Status;
@@ -43,6 +46,7 @@ import se.inera.intyg.certificateservice.domain.certificatemodel.model.CustomPdf
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.OverflowPageIndex;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayText;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayTextProvider;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfFieldId;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfTagIndex;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfTagIndexProvider;
 
@@ -52,6 +56,7 @@ class CustomPdfMetadataConverterTest {
   private static final String FILE_NAME = "intyg_om_graviditet_26-01-01_1200";
   private static final String ADDITIONAL_INFO = "Webcert 2.0";
   private static final String CERTIFICATE_ID_VALUE = "CERT-ID";
+  private static final PdfFieldId PDF_PATIENT_ID_FIELD_ID = new PdfFieldId("fieldId");
 
   @Mock private Certificate certificate;
   @Mock private OverlayTextProvider overlayTextProvider;
@@ -115,13 +120,47 @@ class CustomPdfMetadataConverterTest {
             .signature(CustomPdfSignature.builder().pdfTagIndexProvider(tagIndexProvider).build())
             .overlayTextProvider(overlayTextProvider)
             .overFlowPageIndex(new OverflowPageIndex(2))
+            .patientIdFieldIds(List.of(PDF_PATIENT_ID_FIELD_ID))
             .build();
 
-    when(certificate.status()).thenReturn(Status.DRAFT);
-
-    final var result = converter.convert(certificate, options, pdfSpec, FILE_NAME);
+    final var result = converter.convert(FK7804_CERTIFICATE, options, pdfSpec, FILE_NAME);
 
     assertEquals(2, result.overflowPageIndex());
+  }
+
+  @Test
+  void shallSetCustomPdfPersonIdIfOverflowPageIndexIsPresent() {
+    final var expectedPersonId =
+        new PersonIdConfigDTO(
+            PDF_PATIENT_ID_FIELD_ID.id(), ATHENA_REACT_ANDERSSON.id().idWithoutDash());
+    final var pdfSpec =
+        CustomPdfSpecification.builder()
+            .signature(CustomPdfSignature.builder().pdfTagIndexProvider(tagIndexProvider).build())
+            .overlayTextProvider(overlayTextProvider)
+            .overFlowPageIndex(new OverflowPageIndex(2))
+            .patientIdFieldIds(List.of(PDF_PATIENT_ID_FIELD_ID))
+            .build();
+
+    final var result = converter.convert(FK7804_CERTIFICATE, options, pdfSpec, FILE_NAME);
+
+    assertEquals(expectedPersonId.fieldId(), result.personId().fieldId());
+    assertEquals(
+        FK7804_CERTIFICATE.certificateMetaData().patient().id().idWithoutDash(),
+        result.personId().value());
+  }
+
+  @Test
+  void shallNotSetCustomPdfPersonIdIfOverflowPageIndexIsMissing() {
+    final var pdfSpec =
+        CustomPdfSpecification.builder()
+            .signature(CustomPdfSignature.builder().pdfTagIndexProvider(tagIndexProvider).build())
+            .overlayTextProvider(overlayTextProvider)
+            .patientIdFieldIds(List.of(PDF_PATIENT_ID_FIELD_ID))
+            .build();
+
+    final var result = converter.convert(FK7804_CERTIFICATE, options, pdfSpec, FILE_NAME);
+
+    assertNull(result.personId());
   }
 
   @Test
