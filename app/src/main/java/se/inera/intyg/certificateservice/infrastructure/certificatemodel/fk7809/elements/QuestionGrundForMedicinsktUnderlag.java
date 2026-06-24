@@ -47,7 +47,7 @@ public class QuestionGrundForMedicinsktUnderlag {
   public static final PdfFieldId PDF_EXAMINATION_CHECKBOX_ID =
       new PdfFieldId("form1[0].#subform[0].ksr_UndersokningPatienten[0]");
   public static final PdfFieldId PDF_EXAMINATION_DATE_ID =
-      new PdfFieldId("form1[0].#subform[0].flt_datumUndersokningPatient[0]");
+      new PdfFieldId("form1[0].#subform[0].flt_datumUndersokning[0]");
   public static final PdfFieldId PDF_HEALTH_RECORDS_CHECKBOX_ID =
       new PdfFieldId("form1[0].#subform[0].ksr_Journaluppgifter[0]");
   public static final PdfFieldId PDF_HEALTH_RECORDS_DATE_ID =

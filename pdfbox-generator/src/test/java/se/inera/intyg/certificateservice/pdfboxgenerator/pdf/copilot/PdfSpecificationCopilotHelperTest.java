@@ -79,6 +79,7 @@ class PdfSpecificationCopilotHelperTest {
   private static final String FK_7810 = "fk7810";
   private static final String FK_7804 = "fk7804";
   private static final String FK_7472 = "fk7472";
+  private static final String FK_7809 = "fk7809";
 
   private static final Map<String, String> TYPE_TO_VERSION =
       Map.of(
@@ -87,7 +88,8 @@ class PdfSpecificationCopilotHelperTest {
           FK_3221, "v1",
           FK_7810, "v1",
           FK_7804, "v2",
-          FK_7472, "v1");
+          FK_7472, "v1",
+          FK_7809, "v1");
 
   /**
    * Enable locally to print the AcroForm widget rectangle for the signed-date field and suggested
@@ -102,7 +104,7 @@ class PdfSpecificationCopilotHelperTest {
   @Disabled("Enable locally to print signed-date field metrics for CustomPdf overlay coordinates")
   @Test
   void shouldPrintSignedDateFieldRectangleAndSuggestedOverlayCoordinates() throws IOException {
-    final var certificateType = FK_3221;
+    final var certificateType = FK_7809;
     final var signedDateFieldId = "form1[0].#subform[3].flt_datUnderskrift[0]";
     final var classloader = getClass().getClassLoader();
     final var inputStream =
@@ -123,7 +125,7 @@ class PdfSpecificationCopilotHelperTest {
   @Disabled
   @Test
   void shouldCreateStructureFileForPdf() {
-    final var certificateType = FK_7804;
+    final var certificateType = FK_7809;
     final var classloader = getClass().getClassLoader();
     final var inputStream =
         classloader.getResourceAsStream(
@@ -142,7 +144,7 @@ class PdfSpecificationCopilotHelperTest {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {FK_7427, FK_7426, FK_3221, FK_7810, FK_7804, FK_7472})
+  @ValueSource(strings = {FK_7427, FK_7426, FK_3221, FK_7810, FK_7804, FK_7472, FK_7809})
   void shouldHaveSameStructureAsOriginalDocument(String certificateType) {
     setup(certificateType);
 
@@ -157,7 +159,7 @@ class PdfSpecificationCopilotHelperTest {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {FK_7427, FK_7426, FK_3221, FK_7810, FK_7804, FK_7472})
+  @ValueSource(strings = {FK_7427, FK_7426, FK_3221, FK_7810, FK_7804, FK_7472,FK_7809})
   void shouldHaveSameIdsForTemplateWithAndWithoutAddress(String certificateType) {
     setup(certificateType);
 
