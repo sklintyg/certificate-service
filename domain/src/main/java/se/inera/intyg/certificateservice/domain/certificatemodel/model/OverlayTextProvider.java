@@ -23,6 +23,7 @@ import java.util.List;
 import lombok.Value;
 import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
 import se.inera.intyg.certificateservice.domain.certificate.model.Status;
+import se.inera.intyg.certificateservice.domain.certificate.service.PdfGeneratorOptions;
 
 @Value
 public class OverlayTextProvider {
@@ -42,13 +43,13 @@ public class OverlayTextProvider {
   static final float CITIZEN_VISIBILITY_TEXT_FONT_SIZE = 16f;
   static final String CITIZEN_VISIBILITY_TEXT = "Du kan se intyget genom att logga in på 1177.se";
 
-  SignatureOverlayDetails signatureDetails;
+  OverlayDetails overlayDetails;
 
-  public OverlayTextProvider(SignatureOverlayDetails signatureDetails) {
-    this.signatureDetails = signatureDetails;
+  public OverlayTextProvider(OverlayDetails overlayDetails) {
+    this.overlayDetails = overlayDetails;
   }
 
-  public List<OverlayText> of(Certificate certificate, PdfTagIndex tagIndex) {
+  public List<OverlayText> of(Certificate certificate, PdfGeneratorOptions options) {
     final var texts = new ArrayList<OverlayText>();
 
     final var sent = certificate.sent();
@@ -61,20 +62,27 @@ public class OverlayTextProvider {
     }
 
     if (certificate.status() == Status.SIGNED) {
-      texts.add(digitallySignedText(tagIndex));
+      texts.add(digitallySignedText(includeAddress(certificate, options)));
     }
 
     return texts;
   }
 
-  private OverlayText digitallySignedText(PdfTagIndex pdfTagIndex) {
+  private static boolean includeAddress(Certificate certificate, PdfGeneratorOptions options) {
+    if (options.citizenFormat()) {
+      return false;
+    }
+    return certificate.sent() == null || certificate.sent().sentAt() == null;
+  }
+
+  private OverlayText digitallySignedText(boolean includeAddress) {
     return OverlayText.builder()
         .value(DIGITALLY_SIGNED_TEXT)
-        .x(signatureDetails.signatureTextX())
-        .y(signatureDetails.signatureTextY())
+        .x(overlayDetails.signatureTextX())
+        .y(overlayDetails.signatureTextY())
         .appearance(new Appearance(PDF_SIGNATURE_TEXT_FONT_SIZE, FontStyle.BOLD))
-        .pageIndex(signatureDetails.signaturePageIndex())
-        .tagIndex(pdfTagIndex.value())
+        .pageIndex(overlayDetails.signaturePageIndex())
+        .tagIndex(overlayDetails.signedTextIndex(includeAddress))
         .build();
   }
 
@@ -85,6 +93,7 @@ public class OverlayTextProvider {
         .y(SENT_TEXT_Y)
         .appearance(new Appearance(SENT_TEXT_FONT_SIZE))
         .pageIndex(0)
+        .tagIndex(overlayDetails.sentTextIndex())
         .build();
   }
 
@@ -95,6 +104,7 @@ public class OverlayTextProvider {
         .y(CITIZEN_VISIBILITY_TEXT_Y)
         .appearance(new Appearance(CITIZEN_VISIBILITY_TEXT_FONT_SIZE))
         .pageIndex(0)
+        .tagIndex(overlayDetails.citizenTextIndex())
         .build();
   }
 }

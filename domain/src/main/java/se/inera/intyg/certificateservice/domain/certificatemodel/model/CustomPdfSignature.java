@@ -25,7 +25,6 @@ import lombok.Value;
 @Builder
 public class CustomPdfSignature {
 
-  PdfTagIndexProvider pdfTagIndexProvider;
   int signaturePageIndex;
   PdfFieldId signedDateFieldId;
   PdfFieldId signedByNameFieldId;

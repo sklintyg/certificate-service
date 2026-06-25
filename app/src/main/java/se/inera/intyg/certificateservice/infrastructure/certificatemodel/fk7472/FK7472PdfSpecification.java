@@ -21,9 +21,9 @@ package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7472
 import java.util.List;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.CustomPdfSignature;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.CustomPdfSpecification;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayDetails;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayTextProvider;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfFieldId;
-import se.inera.intyg.certificateservice.domain.certificatemodel.model.SignatureOverlayDetails;
 
 public class FK7472PdfSpecification {
 
@@ -57,7 +57,6 @@ public class FK7472PdfSpecification {
         .patientIdFieldIds(List.of(PDF_PATIENT_ID_FIELD_ID))
         .signature(
             CustomPdfSignature.builder()
-                .pdfTagIndexProvider(new FK7472PdfTagProvider())
                 .signaturePageIndex(PDF_SIGNATURE_PAGE_INDEX)
                 .signedDateFieldId(PDF_SIGNED_DATE_FIELD_ID)
                 .signedByNameFieldId(PDF_SIGNED_BY_NAME_FIELD_ID)
@@ -69,9 +68,13 @@ public class FK7472PdfSpecification {
                 .build())
         .overlayTextProvider(
             new OverlayTextProvider(
-                SignatureOverlayDetails.builder()
+                OverlayDetails.builder()
                     .signatureTextX(PDF_SIGNATURE_TEXT_X)
                     .signatureTextY(PDF_SIGNATURE_TEXT_Y)
+                    .signedTextWithAddressIndex(50)
+                    .signedTextWithoutAddressIndex(47)
+                    .sentTextIndex(3)
+                    .citizenTextIndex(3)
                     .build()))
         .build();
   }

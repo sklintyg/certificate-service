@@ -47,8 +47,6 @@ import se.inera.intyg.certificateservice.domain.certificatemodel.model.OverflowP
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayText;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayTextProvider;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfFieldId;
-import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfTagIndex;
-import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfTagIndexProvider;
 
 @ExtendWith(MockitoExtension.class)
 class CustomPdfMetadataConverterTest {
@@ -60,7 +58,6 @@ class CustomPdfMetadataConverterTest {
 
   @Mock private Certificate certificate;
   @Mock private OverlayTextProvider overlayTextProvider;
-  @Mock private PdfTagIndexProvider tagIndexProvider;
   @InjectMocks private CustomPdfMetadataConverter converter;
 
   private CustomPdfSpecification spec;
@@ -70,7 +67,7 @@ class CustomPdfMetadataConverterTest {
   void setUp() {
     spec =
         CustomPdfSpecification.builder()
-            .signature(CustomPdfSignature.builder().pdfTagIndexProvider(tagIndexProvider).build())
+            .signature(CustomPdfSignature.builder().build())
             .overlayTextProvider(overlayTextProvider)
             .build();
 
@@ -81,7 +78,6 @@ class CustomPdfMetadataConverterTest {
             .hiddenElements(List.of())
             .build();
 
-    when(tagIndexProvider.of(any(), any())).thenReturn(new PdfTagIndex(15));
     when(overlayTextProvider.of(any(), any())).thenReturn(List.of());
   }
 
@@ -117,7 +113,7 @@ class CustomPdfMetadataConverterTest {
   void shallSetOverflowPageIndexIfPresent() {
     final var pdfSpec =
         CustomPdfSpecification.builder()
-            .signature(CustomPdfSignature.builder().pdfTagIndexProvider(tagIndexProvider).build())
+            .signature(CustomPdfSignature.builder().build())
             .overlayTextProvider(overlayTextProvider)
             .overFlowPageIndex(new OverflowPageIndex(2))
             .patientIdFieldIds(List.of(PDF_PATIENT_ID_FIELD_ID))
@@ -135,7 +131,7 @@ class CustomPdfMetadataConverterTest {
             PDF_PATIENT_ID_FIELD_ID.id(), ATHENA_REACT_ANDERSSON.id().idWithoutDash());
     final var pdfSpec =
         CustomPdfSpecification.builder()
-            .signature(CustomPdfSignature.builder().pdfTagIndexProvider(tagIndexProvider).build())
+            .signature(CustomPdfSignature.builder().build())
             .overlayTextProvider(overlayTextProvider)
             .overFlowPageIndex(new OverflowPageIndex(2))
             .patientIdFieldIds(List.of(PDF_PATIENT_ID_FIELD_ID))
@@ -153,7 +149,7 @@ class CustomPdfMetadataConverterTest {
   void shallNotSetCustomPdfPersonIdIfOverflowPageIndexIsMissing() {
     final var pdfSpec =
         CustomPdfSpecification.builder()
-            .signature(CustomPdfSignature.builder().pdfTagIndexProvider(tagIndexProvider).build())
+            .signature(CustomPdfSignature.builder().build())
             .overlayTextProvider(overlayTextProvider)
             .patientIdFieldIds(List.of(PDF_PATIENT_ID_FIELD_ID))
             .build();
@@ -167,7 +163,7 @@ class CustomPdfMetadataConverterTest {
   void shallSetOverflowPageIndexToNullIfMissing() {
     final var pdfSpec =
         CustomPdfSpecification.builder()
-            .signature(CustomPdfSignature.builder().pdfTagIndexProvider(tagIndexProvider).build())
+            .signature(CustomPdfSignature.builder().build())
             .overlayTextProvider(overlayTextProvider)
             .build();
 

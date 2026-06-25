@@ -1288,7 +1288,6 @@
       "id" : "form1[0].#subform[1].flt_txtPnr[1]"
     } ],
     "signature" : {
-      "pdfTagIndexProvider" : { },
       "signaturePageIndex" : 1,
       "signedDateFieldId" : {
         "id" : "form1[0].#subform[1].flt_datUnderskrift[0]"
@@ -1313,10 +1312,14 @@
       }
     },
     "overlayTextProvider" : {
-      "signatureDetails" : {
+      "overlayDetails" : {
         "signatureTextX" : 173.0,
         "signatureTextY" : 300.0,
-        "signaturePageIndex" : 1
+        "signaturePageIndex" : 1,
+        "signedTextWithAddressIndex": 36,
+        "signedTextWithoutAddressIndex": 36,
+        "sentTextIndex": 3,
+        "citizenTextIndex": 3
       }
     },
     "overFlowPageIndex" : null,

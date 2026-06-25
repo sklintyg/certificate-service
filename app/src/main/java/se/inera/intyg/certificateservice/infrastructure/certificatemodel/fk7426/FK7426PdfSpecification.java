@@ -22,9 +22,9 @@ import java.util.List;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.CustomPdfSignature;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.CustomPdfSpecification;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.OverflowPageIndex;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayDetails;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayTextProvider;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfFieldId;
-import se.inera.intyg.certificateservice.domain.certificatemodel.model.SignatureOverlayDetails;
 
 public class FK7426PdfSpecification {
 
@@ -65,7 +65,6 @@ public class FK7426PdfSpecification {
         .patientIdFieldIds(PDF_PATIENT_ID_FIELD_IDS)
         .signature(
             CustomPdfSignature.builder()
-                .pdfTagIndexProvider(new FK7426PdfTagProvider())
                 .signaturePageIndex(PDF_SIGNATURE_PAGE_INDEX)
                 .signedDateFieldId(PDF_SIGNED_DATE_FIELD_ID)
                 .signedByNameFieldId(PDF_SIGNED_BY_NAME_FIELD_ID)
@@ -77,10 +76,14 @@ public class FK7426PdfSpecification {
                 .build())
         .overlayTextProvider(
             new OverlayTextProvider(
-                SignatureOverlayDetails.builder()
+                OverlayDetails.builder()
                     .signatureTextX(PDF_SIGNATURE_TEXT_X)
                     .signatureTextY(PDF_SIGNATURE_TEXT_Y)
                     .signaturePageIndex(PDF_SIGNATURE_PAGE_INDEX)
+                    .signedTextWithAddressIndex(31)
+                    .signedTextWithoutAddressIndex(31)
+                    .sentTextIndex(4)
+                    .citizenTextIndex(4)
                     .build()))
         .overflowFieldId(FORTSATTNINGSBLAD_ID)
         .overFlowPageIndex(new OverflowPageIndex(3))
