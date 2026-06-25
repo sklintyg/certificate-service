@@ -72,7 +72,8 @@ class PdfSpecificationCopilotHelperTest {
 
   private PDDocument documentWithoutAddress;
   private StringBuilder originalStructure;
-
+  public static final int SIGNATURE_X_PADDING = 60;
+  public static final int SIGNATURE_Y_PADDING = 7;
   private static final String FK_7427 = "fk7427";
   private static final String FK_7426 = "fk7426";
   private static final String FK_3221 = "fk3221";
@@ -299,8 +300,8 @@ class PdfSpecificationCopilotHelperTest {
     }
     final var rect = widgets.getFirst().getRectangle();
     final var pageIndex = pageIndexOfWidget(document, widgets.getFirst());
-    final var suggestedX = rect.getUpperRightX() + CertificatePdfFillService.SIGNATURE_X_PADDING;
-    final var suggestedY = rect.getLowerLeftY() + CertificatePdfFillService.SIGNATURE_Y_PADDING;
+    final var suggestedX = rect.getUpperRightX() + SIGNATURE_X_PADDING;
+    final var suggestedY = rect.getLowerLeftY() + SIGNATURE_Y_PADDING;
     final var sw = new StringWriter();
     try (var out = new PrintWriter(sw)) {
       out.println("Signed-date field: " + signedDateFieldId);
@@ -310,9 +311,9 @@ class PdfSpecificationCopilotHelperTest {
       out.println("Page index (0-based): " + (pageIndex == null ? "unknown" : pageIndex));
       out.println(
           "Suggested SignatureOverlayDetails (CertificatePdfFillService padding "
-              + CertificatePdfFillService.SIGNATURE_X_PADDING
+              + SIGNATURE_X_PADDING
               + " / "
-              + CertificatePdfFillService.SIGNATURE_Y_PADDING
+              + SIGNATURE_Y_PADDING
               + "):");
       out.printf("  signatureTextX = %.4ff;%n", suggestedX);
       out.printf("  signatureTextY = %.4ff;%n", suggestedY);
