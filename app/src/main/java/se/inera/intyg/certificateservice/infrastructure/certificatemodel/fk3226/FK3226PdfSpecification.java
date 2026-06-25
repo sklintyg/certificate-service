@@ -77,8 +77,8 @@ public class FK3226PdfSpecification {
                     .signaturePageIndex(PDF_SIGNATURE_PAGE_INDEX)
                     .signedTextWithAddressIndex(36)
                     .signedTextWithoutAddressIndex(36)
-                    .sentTextIndex(3)
-                    .citizenTextIndex(3)
+                    .sentTextIndex(4)
+                    .citizenTextIndex(4)
                     .build()))
         .build();
   }
