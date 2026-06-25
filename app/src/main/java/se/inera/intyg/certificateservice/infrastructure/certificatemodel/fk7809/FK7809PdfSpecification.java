@@ -30,7 +30,7 @@ public class FK7809PdfSpecification {
 
   private static final int PDF_SIGNATURE_PAGE_INDEX = 3;
   private static final float PDF_SIGNATURE_TEXT_X = 173f;
-  private static final float PDF_SIGNATURE_TEXT_Y = 523f;
+  private static final float PDF_SIGNATURE_TEXT_Y = 528f;
 
   private static final List<PdfFieldId> PDF_PATIENT_ID_FIELD_IDS =
       List.of(

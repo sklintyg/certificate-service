@@ -72,13 +72,15 @@ class PdfSpecificationCopilotHelperTest {
 
   private PDDocument documentWithoutAddress;
   private StringBuilder originalStructure;
-
+  public static final int SIGNATURE_X_PADDING = 60;
+  public static final int SIGNATURE_Y_PADDING = 7;
   private static final String FK_7427 = "fk7427";
   private static final String FK_7426 = "fk7426";
   private static final String FK_3221 = "fk3221";
   private static final String FK_7810 = "fk7810";
   private static final String FK_7804 = "fk7804";
   private static final String FK_7472 = "fk7472";
+  private static final String FK_7809 = "fk7809";
 
   private static final Map<String, String> TYPE_TO_VERSION =
       Map.of(
@@ -87,7 +89,8 @@ class PdfSpecificationCopilotHelperTest {
           FK_3221, "v1",
           FK_7810, "v1",
           FK_7804, "v2",
-          FK_7472, "v1");
+          FK_7472, "v1",
+          FK_7809, "v1");
 
   /**
    * Enable locally to print the AcroForm widget rectangle for the signed-date field and suggested
@@ -102,7 +105,7 @@ class PdfSpecificationCopilotHelperTest {
   @Disabled("Enable locally to print signed-date field metrics for CustomPdf overlay coordinates")
   @Test
   void shouldPrintSignedDateFieldRectangleAndSuggestedOverlayCoordinates() throws IOException {
-    final var certificateType = FK_3221;
+    final var certificateType = FK_7809;
     final var signedDateFieldId = "form1[0].#subform[3].flt_datUnderskrift[0]";
     final var classloader = getClass().getClassLoader();
     final var inputStream =
@@ -123,7 +126,7 @@ class PdfSpecificationCopilotHelperTest {
   @Disabled
   @Test
   void shouldCreateStructureFileForPdf() {
-    final var certificateType = FK_7804;
+    final var certificateType = FK_7809;
     final var classloader = getClass().getClassLoader();
     final var inputStream =
         classloader.getResourceAsStream(
@@ -142,7 +145,7 @@ class PdfSpecificationCopilotHelperTest {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {FK_7427, FK_7426, FK_3221, FK_7810, FK_7804, FK_7472})
+  @ValueSource(strings = {FK_7427, FK_7426, FK_3221, FK_7810, FK_7804, FK_7472, FK_7809})
   void shouldHaveSameStructureAsOriginalDocument(String certificateType) {
     setup(certificateType);
 
@@ -157,7 +160,7 @@ class PdfSpecificationCopilotHelperTest {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {FK_7427, FK_7426, FK_3221, FK_7810, FK_7804, FK_7472})
+  @ValueSource(strings = {FK_7427, FK_7426, FK_3221, FK_7810, FK_7804, FK_7472, FK_7809})
   void shouldHaveSameIdsForTemplateWithAndWithoutAddress(String certificateType) {
     setup(certificateType);
 
@@ -297,8 +300,8 @@ class PdfSpecificationCopilotHelperTest {
     }
     final var rect = widgets.getFirst().getRectangle();
     final var pageIndex = pageIndexOfWidget(document, widgets.getFirst());
-    final var suggestedX = rect.getUpperRightX() + CertificatePdfFillService.SIGNATURE_X_PADDING;
-    final var suggestedY = rect.getLowerLeftY() + CertificatePdfFillService.SIGNATURE_Y_PADDING;
+    final var suggestedX = rect.getUpperRightX() + SIGNATURE_X_PADDING;
+    final var suggestedY = rect.getLowerLeftY() + SIGNATURE_Y_PADDING;
     final var sw = new StringWriter();
     try (var out = new PrintWriter(sw)) {
       out.println("Signed-date field: " + signedDateFieldId);
@@ -308,9 +311,9 @@ class PdfSpecificationCopilotHelperTest {
       out.println("Page index (0-based): " + (pageIndex == null ? "unknown" : pageIndex));
       out.println(
           "Suggested SignatureOverlayDetails (CertificatePdfFillService padding "
-              + CertificatePdfFillService.SIGNATURE_X_PADDING
+              + SIGNATURE_X_PADDING
               + " / "
-              + CertificatePdfFillService.SIGNATURE_Y_PADDING
+              + SIGNATURE_Y_PADDING
               + "):");
       out.printf("  signatureTextX = %.4ff;%n", suggestedX);
       out.printf("  signatureTextY = %.4ff;%n", suggestedY);
