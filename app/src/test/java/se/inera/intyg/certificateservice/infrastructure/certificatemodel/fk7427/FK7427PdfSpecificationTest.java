@@ -64,8 +64,8 @@ class FK7427PdfSpecificationTest {
             .signaturePageIndex(1)
             .signedTextWithAddressIndex(28)
             .signedTextWithoutAddressIndex(28)
-            .sentTextIndex(3)
-            .citizenTextIndex(3)
+            .sentTextIndex(4)
+            .citizenTextIndex(4)
             .build(),
         details);
   }

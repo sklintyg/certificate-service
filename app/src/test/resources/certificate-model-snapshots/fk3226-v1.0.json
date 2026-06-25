@@ -1318,8 +1318,8 @@
         "signaturePageIndex" : 1,
         "signedTextWithAddressIndex": 36,
         "signedTextWithoutAddressIndex": 36,
-        "sentTextIndex": 4,
-        "citizenTextIndex": 4
+        "sentTextIndex": 5,
+        "citizenTextIndex": 5
       }
     },
     "overFlowPageIndex" : null,
