@@ -73,8 +73,8 @@ public class FK7210PdfSpecification {
                     .signatureTextY(PDF_SIGNATURE_TEXT_Y)
                     .signedTextWithAddressIndex(15)
                     .signedTextWithoutAddressIndex(7)
-                    .sentTextIndex(4)
-                    .citizenTextIndex(4)
+                    .sentTextIndex(5)
+                    .citizenTextIndex(5)
                     .build()))
         .build();
   }

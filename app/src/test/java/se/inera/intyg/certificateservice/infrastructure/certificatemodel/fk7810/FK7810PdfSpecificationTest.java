@@ -68,8 +68,8 @@ class FK7810PdfSpecificationTest {
             .signaturePageIndex(EXPECTED_SIGNATURE_PAGE_INDEX)
             .signedTextWithAddressIndex(24)
             .signedTextWithoutAddressIndex(24)
-            .sentTextIndex(3)
-            .citizenTextIndex(3)
+            .sentTextIndex(4)
+            .citizenTextIndex(4)
             .build(),
         details);
   }
