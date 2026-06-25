@@ -66,7 +66,6 @@ class FK3221PdfSpecificationTest {
     final var expected =
         CustomPdfSignature.builder()
             .signaturePageIndex(3)
-            .pdfTagIndexProvider(new FK3221PdfTagProvider())
             .signedDateFieldId(new PdfFieldId("form1[0].#subform[3].flt_datUnderskrift[0]"))
             .signedByNameFieldId(new PdfFieldId("form1[0].#subform[3].flt_txtNamnfortydligande[0]"))
             .paTitleFieldId(new PdfFieldId("form1[0].#subform[3].flt_txtBefattning[0]"))

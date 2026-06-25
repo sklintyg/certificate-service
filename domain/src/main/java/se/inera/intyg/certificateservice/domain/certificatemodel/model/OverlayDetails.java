@@ -23,9 +23,18 @@ import lombok.Value;
 
 @Builder
 @Value
-public class SignatureOverlayDetails {
+public class OverlayDetails {
+
   // Signature text position derived from the signed-date field rectangle in the PDF template
   float signatureTextX;
   float signatureTextY;
   @Builder.Default int signaturePageIndex = 0;
+  int signedTextWithAddressIndex;
+  int signedTextWithoutAddressIndex;
+  int sentTextIndex;
+  int citizenTextIndex;
+
+  public int signedTextIndex(boolean includeAddress) {
+    return includeAddress ? signedTextWithAddressIndex : signedTextWithoutAddressIndex;
+  }
 }

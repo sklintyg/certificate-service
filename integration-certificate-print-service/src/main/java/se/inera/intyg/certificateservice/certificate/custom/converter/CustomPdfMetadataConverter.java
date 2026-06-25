@@ -37,9 +37,8 @@ public class CustomPdfMetadataConverter {
       PdfGeneratorOptions options,
       CustomPdfSpecification spec,
       String fileName) {
-    final var tagIndex = spec.signature().pdfTagIndexProvider().of(certificate, options);
     return new CustomPdfMetadataDTO(
-        spec.overlayTextProvider().of(certificate, tagIndex).stream()
+        spec.overlayTextProvider().of(certificate, options).stream()
             .map(CustomTextDTO::toDTO)
             .toList(),
         new AccessibilityMetadataDTO(fileName),

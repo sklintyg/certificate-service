@@ -27,9 +27,9 @@ import org.junit.jupiter.api.Test;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.CustomPdfSignature;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.CustomPdfSpecification;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.OverflowPageIndex;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayDetails;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayTextProvider;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfFieldId;
-import se.inera.intyg.certificateservice.domain.certificatemodel.model.SignatureOverlayDetails;
 
 class FK7427PdfSpecificationTest {
 
@@ -55,13 +55,17 @@ class FK7427PdfSpecificationTest {
 
   @Test
   void shallIncludeOverlaySignatureDetails() {
-    final var details = FK7427PdfSpecification.create().overlayTextProvider().signatureDetails();
+    final var details = FK7427PdfSpecification.create().overlayTextProvider().overlayDetails();
 
     assertEquals(
-        SignatureOverlayDetails.builder()
+        OverlayDetails.builder()
             .signatureTextX(173f)
             .signatureTextY(230f)
             .signaturePageIndex(1)
+            .signedTextWithAddressIndex(28)
+            .signedTextWithoutAddressIndex(28)
+            .sentTextIndex(3)
+            .citizenTextIndex(3)
             .build(),
         details);
   }
@@ -82,7 +86,6 @@ class FK7427PdfSpecificationTest {
     final var expected =
         CustomPdfSignature.builder()
             .signaturePageIndex(1)
-            .pdfTagIndexProvider(new FK7427PdfTagProvider())
             .signedDateFieldId(new PdfFieldId("form1[0].#subform[2].flt_datUnderskrift[0]"))
             .signedByNameFieldId(new PdfFieldId("form1[0].#subform[2].flt_txtNamnfortydligande[0]"))
             .paTitleFieldId(new PdfFieldId("form1[0].#subform[2].flt_txtBefattning[0]"))

@@ -21,9 +21,9 @@ package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226
 import java.util.List;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.CustomPdfSignature;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.CustomPdfSpecification;
+import se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayDetails;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.OverlayTextProvider;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.PdfFieldId;
-import se.inera.intyg.certificateservice.domain.certificatemodel.model.SignatureOverlayDetails;
 
 public class FK3226PdfSpecification {
 
@@ -60,7 +60,6 @@ public class FK3226PdfSpecification {
         .patientIdFieldIds(List.of(PDF_PATIENT_ID_FIELD_ID_1, PDF_PATIENT_ID_FIELD_ID_2))
         .signature(
             CustomPdfSignature.builder()
-                .pdfTagIndexProvider(new FK3226PdfTagProvider())
                 .signaturePageIndex(PDF_SIGNATURE_PAGE_INDEX)
                 .signedDateFieldId(PDF_SIGNED_DATE_FIELD_ID)
                 .signedByNameFieldId(PDF_SIGNED_BY_NAME_FIELD_ID)
@@ -72,10 +71,14 @@ public class FK3226PdfSpecification {
                 .build())
         .overlayTextProvider(
             new OverlayTextProvider(
-                SignatureOverlayDetails.builder()
+                OverlayDetails.builder()
                     .signatureTextX(PDF_SIGNATURE_TEXT_X)
                     .signatureTextY(PDF_SIGNATURE_TEXT_Y)
                     .signaturePageIndex(PDF_SIGNATURE_PAGE_INDEX)
+                    .signedTextWithAddressIndex(36)
+                    .signedTextWithoutAddressIndex(36)
+                    .sentTextIndex(4)
+                    .citizenTextIndex(4)
                     .build()))
         .build();
   }

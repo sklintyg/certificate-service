@@ -39,6 +39,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
 import se.inera.intyg.certificateservice.domain.certificate.model.Sent;
 import se.inera.intyg.certificateservice.domain.certificate.model.Status;
+import se.inera.intyg.certificateservice.domain.certificate.service.PdfGeneratorOptions;
 import se.inera.intyg.certificateservice.domain.common.model.Recipient;
 import se.inera.intyg.certificateservice.domain.common.model.RecipientId;
 
@@ -46,26 +47,39 @@ import se.inera.intyg.certificateservice.domain.common.model.RecipientId;
 class OverlayTextProviderTest {
 
   private static final String RECIPIENT_NAME = "Försäkringskassan";
-  private static final PdfTagIndex TAG_WITH_ADDRESS = new PdfTagIndex(15);
-  private static final PdfTagIndex TAG_WITHOUT_ADDRESS = new PdfTagIndex(7);
+  private static final int SIGNED_TEXT_WITH_ADDRESS_INDEX = 15;
+  private static final int SIGNED_TEXT_WITHOUT_ADDRESS_INDEX = 7;
+  private static final int SENT_TEXT_INDEX = 3;
+  private static final int CITIZEN_TEXT_INDEX = 4;
 
   @Mock private Certificate certificate;
   @Mock private CertificateModel certificateModel;
 
-  private final OverlayTextProvider provider =
-      new OverlayTextProvider(
-          SignatureOverlayDetails.builder()
-              .signatureTextX(173f)
-              .signatureTextY(523f)
-              .signaturePageIndex(0)
-              .build());
+  private final OverlayDetails overlayDetails =
+      OverlayDetails.builder()
+          .signatureTextX(173f)
+          .signatureTextY(523f)
+          .signaturePageIndex(0)
+          .signedTextWithAddressIndex(SIGNED_TEXT_WITH_ADDRESS_INDEX)
+          .signedTextWithoutAddressIndex(SIGNED_TEXT_WITHOUT_ADDRESS_INDEX)
+          .sentTextIndex(SENT_TEXT_INDEX)
+          .citizenTextIndex(CITIZEN_TEXT_INDEX)
+          .build();
+
+  private final OverlayTextProvider provider = new OverlayTextProvider(overlayDetails);
+
+  private final PdfGeneratorOptions optionsWithAddress =
+      PdfGeneratorOptions.builder().citizenFormat(false).build();
+
+  private final PdfGeneratorOptions optionsCitizenFormat =
+      PdfGeneratorOptions.builder().citizenFormat(true).build();
 
   @Test
   void shallReturnEmptyListWhenDraftAndNotSent() {
     when(certificate.status()).thenReturn(Status.DRAFT);
     when(certificate.sent()).thenReturn(null);
 
-    final var texts = provider.of(certificate, TAG_WITH_ADDRESS);
+    final var texts = provider.of(certificate, optionsWithAddress);
 
     assertTrue(texts.isEmpty());
   }
@@ -75,7 +89,7 @@ class OverlayTextProviderTest {
     when(certificate.status()).thenReturn(Status.SIGNED);
     when(certificate.sent()).thenReturn(null);
 
-    final var texts = provider.of(certificate, TAG_WITH_ADDRESS);
+    final var texts = provider.of(certificate, optionsWithAddress);
 
     assertEquals(1, texts.size());
     final var text = texts.getFirst();
@@ -86,18 +100,32 @@ class OverlayTextProviderTest {
         () ->
             assertEquals(
                 new Appearance(PDF_SIGNATURE_TEXT_FONT_SIZE, FontStyle.BOLD), text.appearance()),
-        () -> assertEquals(provider.signatureDetails().signaturePageIndex(), text.pageIndex()),
-        () -> assertEquals(TAG_WITH_ADDRESS.value(), text.tagIndex()));
+        () -> assertEquals(overlayDetails.signaturePageIndex(), text.pageIndex()),
+        () -> assertEquals(SIGNED_TEXT_WITH_ADDRESS_INDEX, text.tagIndex()));
   }
 
   @Test
-  void shallUseTagFromProviderForDigitalSignatureText() {
+  void shallUseWithoutAddressIndexWhenCitizenFormat() {
     when(certificate.status()).thenReturn(Status.SIGNED);
     when(certificate.sent()).thenReturn(null);
 
-    final var texts = provider.of(certificate, TAG_WITHOUT_ADDRESS);
+    final var texts = provider.of(certificate, optionsCitizenFormat);
 
-    assertEquals(TAG_WITHOUT_ADDRESS.value(), texts.getFirst().tagIndex());
+    assertEquals(SIGNED_TEXT_WITHOUT_ADDRESS_INDEX, texts.getFirst().tagIndex());
+  }
+
+  @Test
+  void shallUseWithoutAddressIndexWhenSent() {
+    when(certificate.status()).thenReturn(Status.SIGNED);
+    when(certificate.sent())
+        .thenReturn(Sent.builder().sentAt(LocalDateTime.now()).recipient(FK_RECIPIENT).build());
+    when(certificate.certificateModel()).thenReturn(certificateModel);
+    when(certificateModel.availableForCitizen()).thenReturn(false);
+
+    final var texts = provider.of(certificate, optionsWithAddress);
+
+    assertEquals(2, texts.size());
+    assertEquals(SIGNED_TEXT_WITHOUT_ADDRESS_INDEX, texts.get(1).tagIndex());
   }
 
   @Test
@@ -108,14 +136,15 @@ class OverlayTextProviderTest {
     when(certificate.certificateModel()).thenReturn(certificateModel);
     when(certificateModel.availableForCitizen()).thenReturn(false);
 
-    final var texts = provider.of(certificate, TAG_WITHOUT_ADDRESS);
+    final var texts = provider.of(certificate, optionsWithAddress);
 
     assertEquals(2, texts.size());
     assertAll(
         () -> assertEquals(SENT_TEXT_PREFIX + RECIPIENT_NAME, texts.getFirst().value()),
+        () -> assertEquals(SENT_TEXT_INDEX, texts.getFirst().tagIndex()),
         () -> assertEquals(DIGITALLY_SIGNED_TEXT, texts.get(1).value()),
-        () -> assertEquals(provider.signatureDetails().signatureTextX(), texts.get(1).x()),
-        () -> assertEquals(provider.signatureDetails().signatureTextY(), texts.get(1).y()),
+        () -> assertEquals(overlayDetails.signatureTextX(), texts.get(1).x()),
+        () -> assertEquals(overlayDetails.signatureTextY(), texts.get(1).y()),
         () ->
             assertEquals(
                 new Appearance(PDF_SIGNATURE_TEXT_FONT_SIZE, FontStyle.BOLD),
@@ -134,14 +163,16 @@ class OverlayTextProviderTest {
     when(certificate.certificateModel()).thenReturn(certificateModel);
     when(certificateModel.availableForCitizen()).thenReturn(true);
 
-    final var texts = provider.of(certificate, TAG_WITHOUT_ADDRESS);
+    final var texts = provider.of(certificate, optionsWithAddress);
 
     assertEquals(3, texts.size());
     assertAll(
         () -> assertEquals(SENT_TEXT_PREFIX + RECIPIENT_NAME, texts.getFirst().value()),
+        () -> assertEquals(SENT_TEXT_INDEX, texts.getFirst().tagIndex()),
         () -> assertEquals(CITIZEN_VISIBILITY_TEXT, texts.get(1).value()),
         () -> assertEquals(CITIZEN_VISIBILITY_TEXT_X, texts.get(1).x()),
         () -> assertEquals(CITIZEN_VISIBILITY_TEXT_Y, texts.get(1).y()),
+        () -> assertEquals(CITIZEN_TEXT_INDEX, texts.get(1).tagIndex()),
         () -> assertEquals(DIGITALLY_SIGNED_TEXT, texts.get(2).value()),
         () ->
             assertEquals(
