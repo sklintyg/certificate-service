@@ -134,7 +134,7 @@ class QuestionGrundForMedicinsktUnderlagTest {
                         .checkboxFieldId(
                             new PdfFieldId("form1[0].#subform[0].ksr_UndersokningPatienten[0]"))
                         .dateFieldId(
-                            new PdfFieldId("form1[0].#subform[0].flt_datumUndersokningPatient[0]"))
+                            new PdfFieldId("form1[0].#subform[0].flt_datumUndersokning[0]"))
                         .build(),
                     new FieldId("journaluppgifter"),
                     PdfConfigurationDateCheckbox.builder()
