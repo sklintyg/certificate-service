@@ -34,7 +34,7 @@ import se.inera.intyg.certificateservice.domain.certificatemodel.model.Signature
 class FK7809PdfSpecificationTest {
 
   private static final float EXPECTED_SIGNATURE_OVERLAY_X = 173f;
-  private static final float EXPECTED_SIGNATURE_OVERLAY_Y = 523f;
+  private static final float EXPECTED_SIGNATURE_OVERLAY_Y = 528f;
   private static final int EXPECTED_SIGNATURE_PAGE_INDEX = 3;
 
   @Test
