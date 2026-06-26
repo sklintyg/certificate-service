@@ -92,7 +92,6 @@ class PdfConfigurationDiagnosesTest {
                 .fieldId(NAME_FIELD)
                 .value("Akut bronkit")
                 .appearance(APPEARANCE)
-                .maxLength(172)
                 .shouldRemoveLineBreaks(true)
                 .overflowConfig(
                     OverflowConfig.builder()
@@ -161,7 +160,6 @@ class PdfConfigurationDiagnosesTest {
                         .overflowFieldId(new PdfFieldId("fieldId"))
                         .overflowLabel("name")
                         .build())
-                .maxLength(172)
                 .shouldRemoveLineBreaks(true)
                 .appearance(APPEARANCE)
                 .build());

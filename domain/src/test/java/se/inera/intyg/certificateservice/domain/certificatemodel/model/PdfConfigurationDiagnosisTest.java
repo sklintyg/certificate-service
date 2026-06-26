@@ -57,7 +57,6 @@ class PdfConfigurationDiagnosisTest {
                 .fieldId(NAME_FIELD)
                 .value("Akut bronkit")
                 .appearance(APPEARANCE)
-                .maxLength(172)
                 .shouldRemoveLineBreaks(true)
                 .overflowConfig(overflowConfig)
                 .build(),
@@ -91,11 +90,48 @@ class PdfConfigurationDiagnosisTest {
                 .fieldId(NAME_FIELD)
                 .value("Endast text")
                 .appearance(APPEARANCE)
-                .maxLength(172)
                 .shouldRemoveLineBreaks(true)
                 .overflowConfig(overflowConfig)
                 .build());
 
     assertEquals(expected, config.toPdfFields(diagnosis, APPEARANCE, 172, overflowConfig).toList());
+  }
+
+  @Test
+  void shallBuildDescriptionValueWithinMaxLength() {
+    final var config =
+        PdfConfigurationDiagnosis.builder()
+            .pdfNameFieldId(NAME_FIELD)
+            .pdfCodeFieldIds(List.of(CODE_1, CODE_2, CODE_3))
+            .build();
+    final var diagnosis =
+        ElementValueDiagnosis.builder()
+            .id(DIAGNOSIS_ID)
+            .terminology("ICD-10")
+            .code("A12")
+            .description("En beskrivning som är för lång")
+            .build();
+    final var overflowConfig =
+        OverflowConfig.builder().overflowFieldId(OVERFLOW).overflowLabel("name").build();
+
+    final var expected =
+        List.of(
+            PdfField.builder()
+                .fieldId(NAME_FIELD)
+                .value("En beskrivning som är för l...")
+                .appearance(APPEARANCE)
+                .shouldRemoveLineBreaks(true)
+                .overflowConfig(overflowConfig)
+                .build(),
+            PdfField.builder().fieldId(CODE_1).value("A").build(),
+            PdfField.builder().fieldId(CODE_2).value("1").build(),
+            PdfField.builder().fieldId(CODE_3).value("2").build());
+
+    assertEquals(
+        expected,
+        config
+            .toPdfFields(
+                diagnosis, APPEARANCE, "En beskrivning som är för lång".length(), overflowConfig)
+            .toList());
   }
 }
