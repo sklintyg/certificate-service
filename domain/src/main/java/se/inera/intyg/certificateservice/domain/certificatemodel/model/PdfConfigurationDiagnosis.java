@@ -49,12 +49,18 @@ public class PdfConfigurationDiagnosis implements PdfConfiguration {
       OverflowConfig overflowConfig) {
     return PdfField.builder()
         .fieldId(pdfNameFieldId)
-        .value(diagnosis.description())
+        .value(buildValueWithinMaxLenght(diagnosis, maxLength))
         .appearance(appearance)
-        .maxLength(maxLength)
         .shouldRemoveLineBreaks(true)
         .overflowConfig(overflowConfig)
         .build();
+  }
+
+  private static String buildValueWithinMaxLenght(
+      ElementValueDiagnosis diagnosis, Integer maxLength) {
+    return diagnosis.description().length() < maxLength
+        ? diagnosis.description()
+        : diagnosis.description().substring(0, maxLength - 3) + "...";
   }
 
   private Stream<PdfField> codeFields(ElementValueDiagnosis diagnosis) {
