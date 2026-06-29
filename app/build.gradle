@@ -23,7 +23,7 @@ dependencies {
     implementation 'org.liquibase:liquibase-core'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
     implementation 'org.springframework.boot:spring-boot-starter-activemq'
 
     annotationProcessor 'org.projectlombok:lombok'
@@ -32,6 +32,7 @@ dependencies {
     runtimeOnly project(':pdfbox-generator')
     runtimeOnly project(':integration-certificate-print-service')
     runtimeOnly project(':integration-intyg-proxy-service')
+    runtimeOnly 'org.springframework.boot:spring-boot-properties-migrator'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.boot:spring-boot-testcontainers'

@@ -7,7 +7,11 @@ dependencies {
     implementation "jakarta.xml.ws:jakarta.xml.ws-api"
     implementation "com.helger.schematron:ph-schematron-xslt"
     implementation "org.apache.cxf:cxf-core"
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework:spring-context'
+    implementation 'org.springframework:spring-web'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations'
+
+    compileOnly "org.slf4j:slf4j-api"
 
     runtimeOnly "org.glassfish.jaxb:jaxb-runtime"
 
