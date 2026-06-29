@@ -18,8 +18,8 @@
  */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ag114;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import org.junit.jupiter.api.Test;
 import se.inera.intyg.certificateservice.domain.certificate.model.MedicalCertificate;

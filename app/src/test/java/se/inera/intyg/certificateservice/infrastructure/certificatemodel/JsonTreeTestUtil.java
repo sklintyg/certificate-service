@@ -20,7 +20,6 @@ package se.inera.intyg.certificateservice.infrastructure.certificatemodel;
 
 import java.util.Optional;
 import java.util.stream.IntStream;
-import java.util.stream.StreamSupport;
 import tools.jackson.databind.JsonNode;
 
 public class JsonTreeTestUtil {
@@ -57,22 +56,25 @@ public class JsonTreeTestUtil {
   // Generated using AI support with model: Claude Sonnet 4.5
   private static void compareObjectFields(
       String path, JsonNode expected, JsonNode actual, StringBuilder differences) {
-    StreamSupport.stream(((Iterable<String>) expected::fieldNames).spliterator(), false)
+    expected
+        .properties()
         .forEach(
-            fieldName -> {
+            entry -> {
+              final var fieldName = entry.getKey();
               final var fieldPath = buildPath(path, fieldName);
               if (actual.has(fieldName)) {
                 differences.append(
-                    compareTrees(fieldPath, expected.get(fieldName), actual.get(fieldName)));
+                    compareTrees(fieldPath, entry.getValue(), actual.get(fieldName)));
               } else {
                 differences.append(
                     String.format(
                         "  %s: field removed (was: %s)%n",
-                        fieldPath, formatValue(expected.get(fieldName))));
+                        fieldPath, formatValue(entry.getValue())));
               }
             });
 
-    StreamSupport.stream(((Iterable<String>) actual::fieldNames).spliterator(), false)
+    actual.properties().stream()
+        .map(java.util.Map.Entry::getKey)
         .filter(fieldName -> !expected.has(fieldName))
         .forEach(
             fieldName -> {

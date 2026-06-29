@@ -1034,7 +1034,7 @@ class JpaCertificateRepositoryTest {
     void shouldReturnEmptyListIfNoCertificatesAreFound() {
       final var request = CertificatesRequest.builder().build();
 
-      doReturn(List.of()).when(certificateEntityRepository).findAll(any());
+      doReturn(List.of()).when(certificateEntityRepository).findAll(any(Specification.class));
 
       final var actualCertificates =
           jpaCertificateRepository.findByCertificatesRequest(request, certificateRepository);
@@ -1046,7 +1046,9 @@ class JpaCertificateRepositoryTest {
     void shouldReturnListOfCertificates() {
       final var expectedCertificates = List.of(EXPECTED_CERTIFICATE);
       final var request = CertificatesRequest.builder().build();
-      doReturn(List.of(CERTIFICATE_ENTITY)).when(certificateEntityRepository).findAll(any());
+      doReturn(List.of(CERTIFICATE_ENTITY))
+          .when(certificateEntityRepository)
+          .findAll(any(Specification.class));
       doReturn(EXPECTED_CERTIFICATE)
           .when(certificateEntityMapper)
           .toDomain(CERTIFICATE_ENTITY, certificateRepository);
@@ -1061,7 +1063,7 @@ class JpaCertificateRepositoryTest {
     void shouldCallSpecificationFactoryToCreateSpecification() {
       final var request = CertificatesRequest.builder().build();
       final var specification = mock(Specification.class);
-      doReturn(List.of()).when(certificateEntityRepository).findAll(any());
+      doReturn(List.of()).when(certificateEntityRepository).findAll(any(Specification.class));
       when(certificateEntitySpecificationFactory.create(request)).thenReturn(specification);
 
       jpaCertificateRepository.findByCertificatesRequest(request, certificateRepository);

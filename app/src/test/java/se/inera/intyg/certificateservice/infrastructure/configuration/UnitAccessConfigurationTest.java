@@ -31,6 +31,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.util.ReflectionTestUtils;
 import se.inera.intyg.certificateservice.domain.configuration.unitaccess.dto.CertificateAccessConfiguration;
 import se.inera.intyg.certificateservice.domain.configuration.unitaccess.dto.CertificateAccessUnitConfiguration;
+import tools.jackson.databind.json.JsonMapper;
 
 @ExtendWith(MockitoExtension.class)
 class UnitAccessConfigurationTest {
@@ -45,7 +46,7 @@ class UnitAccessConfigurationTest {
 
   @BeforeEach
   void setUp() {
-    unitAccessConfiguration = new UnitAccessConfiguration();
+    unitAccessConfiguration = new UnitAccessConfiguration(JsonMapper.builder().build());
   }
 
   @Test
