@@ -18,12 +18,12 @@
  */
 package se.inera.intyg.certificateservice.application.message.dto;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import java.util.List;
 import lombok.Builder;
 import lombok.Value;
 import se.inera.intyg.certificateservice.application.message.dto.GetCertificateMessageResponse.GetCertificateMessageResponseBuilder;
+import tools.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.annotation.JsonPOJOBuilder;
 
 @JsonDeserialize(builder = GetCertificateMessageResponseBuilder.class)
 @Value

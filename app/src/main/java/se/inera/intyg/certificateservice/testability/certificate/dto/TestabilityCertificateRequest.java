@@ -18,8 +18,6 @@
  */
 package se.inera.intyg.certificateservice.testability.certificate.dto;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.Builder;
 import lombok.Value;
 import se.inera.intyg.certificateservice.application.certificate.dto.CertificateStatusTypeDTO;
@@ -28,6 +26,8 @@ import se.inera.intyg.certificateservice.application.common.dto.PatientDTO;
 import se.inera.intyg.certificateservice.application.common.dto.UnitDTO;
 import se.inera.intyg.certificateservice.application.common.dto.UserDTO;
 import se.inera.intyg.certificateservice.testability.certificate.dto.TestabilityCertificateRequest.TestabilityCertificateRequestBuilder;
+import tools.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.annotation.JsonPOJOBuilder;
 
 @JsonDeserialize(builder = TestabilityCertificateRequestBuilder.class)
 @Value

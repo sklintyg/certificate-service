@@ -18,11 +18,11 @@
  */
 package se.inera.intyg.certificateservice.application.common.dto;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.Builder;
 import lombok.Value;
 import se.inera.intyg.certificateservice.application.common.dto.PatientDTO.PatientDTOBuilder;
+import tools.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.annotation.JsonPOJOBuilder;
 
 @JsonDeserialize(builder = PatientDTOBuilder.class)
 @Value

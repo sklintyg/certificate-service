@@ -18,13 +18,13 @@
  */
 package se.inera.intyg.certificateservice.application.certificate.dto.value;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import java.time.LocalDate;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Value;
 import se.inera.intyg.certificateservice.application.certificate.dto.value.CertificateDataValueDate.CertificateDataValueDateBuilder;
+import tools.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.annotation.JsonPOJOBuilder;
 
 @JsonDeserialize(builder = CertificateDataValueDateBuilder.class)
 @Value

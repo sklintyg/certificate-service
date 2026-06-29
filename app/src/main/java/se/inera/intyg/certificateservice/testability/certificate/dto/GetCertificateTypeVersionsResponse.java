@@ -18,13 +18,13 @@
  */
 package se.inera.intyg.certificateservice.testability.certificate.dto;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import java.util.List;
 import lombok.Builder;
 import lombok.Value;
 import se.inera.intyg.certificateservice.application.certificatetypeinfo.dto.CertificateModelIdDTO;
 import se.inera.intyg.certificateservice.testability.certificate.dto.GetCertificateTypeVersionsResponse.GetCertificateTypeVersionsResponseBuilder;
+import tools.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.annotation.JsonPOJOBuilder;
 
 @JsonDeserialize(builder = GetCertificateTypeVersionsResponseBuilder.class)
 @Value

@@ -18,8 +18,6 @@
  */
 package se.inera.intyg.certificateservice.application.certificate.dto;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.Builder;
 import lombok.Value;
 import lombok.With;
@@ -28,6 +26,8 @@ import se.inera.intyg.certificateservice.application.certificate.dto.config.Cert
 import se.inera.intyg.certificateservice.application.certificate.dto.validation.CertificateDataValidation;
 import se.inera.intyg.certificateservice.application.certificate.dto.validation.ValidationError;
 import se.inera.intyg.certificateservice.application.certificate.dto.value.CertificateDataValue;
+import tools.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.annotation.JsonPOJOBuilder;
 
 @JsonDeserialize(builder = CertificateDataElementBuilder.class)
 @Value

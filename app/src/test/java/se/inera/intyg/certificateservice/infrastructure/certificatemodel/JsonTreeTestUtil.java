@@ -18,10 +18,10 @@
  */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import java.util.Optional;
 import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
+import tools.jackson.databind.JsonNode;
 
 public class JsonTreeTestUtil {
 

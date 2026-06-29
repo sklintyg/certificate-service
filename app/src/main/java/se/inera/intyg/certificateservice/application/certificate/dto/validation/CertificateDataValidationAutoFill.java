@@ -18,13 +18,13 @@
  */
 package se.inera.intyg.certificateservice.application.certificate.dto.validation;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Value;
 import se.inera.intyg.certificateservice.application.certificate.dto.validation.CertificateDataValidationAutoFill.CertificateDataValidationAutoFillBuilder;
 import se.inera.intyg.certificateservice.application.certificate.dto.value.CertificateDataValue;
+import tools.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.annotation.JsonPOJOBuilder;
 
 @JsonDeserialize(builder = CertificateDataValidationAutoFillBuilder.class)
 @Value

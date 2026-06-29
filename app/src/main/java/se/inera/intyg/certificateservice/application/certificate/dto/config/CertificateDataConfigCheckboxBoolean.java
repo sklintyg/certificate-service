@@ -18,12 +18,12 @@
  */
 package se.inera.intyg.certificateservice.application.certificate.dto.config;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Value;
 import se.inera.intyg.certificateservice.application.certificate.dto.config.CertificateDataConfigCheckboxBoolean.CertificateDataConfigCheckboxBooleanBuilder;
+import tools.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.annotation.JsonPOJOBuilder;
 
 @JsonDeserialize(builder = CertificateDataConfigCheckboxBooleanBuilder.class)
 @Value

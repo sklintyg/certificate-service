@@ -20,7 +20,6 @@ package se.inera.intyg.certificateservice.integrationtest.common.setup;
 
 import static se.inera.intyg.certificateservice.testability.common.TestabilityConstants.TESTABILITY_PROFILE;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collections;
 import org.junit.jupiter.api.BeforeAll;
 import org.mockserver.client.MockServerClient;
@@ -40,6 +39,7 @@ import se.inera.intyg.certificateservice.integrationtest.common.util.Containers;
 import se.inera.intyg.certificateservice.integrationtest.common.util.InternalApiUtil;
 import se.inera.intyg.certificateservice.integrationtest.common.util.TestabilityApiUtil;
 import se.inera.intyg.certificateservice.patient.dto.PersonsResponseDTO;
+import tools.jackson.databind.ObjectMapper;
 
 @ActiveProfiles({"integration-test", TESTABILITY_PROFILE})
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)

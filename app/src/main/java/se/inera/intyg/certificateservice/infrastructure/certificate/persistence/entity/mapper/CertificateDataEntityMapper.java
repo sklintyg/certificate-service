@@ -18,11 +18,6 @@
  */
 package se.inera.intyg.certificateservice.infrastructure.certificate.persistence.entity.mapper;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
@@ -32,6 +27,9 @@ import se.inera.intyg.certificateservice.domain.certificate.model.ElementData;
 import se.inera.intyg.certificateservice.infrastructure.certificate.persistence.elementdata.ElementDataMapper;
 import se.inera.intyg.certificateservice.infrastructure.certificate.persistence.elementdata.MappedElementData;
 import se.inera.intyg.certificateservice.infrastructure.certificate.persistence.entity.CertificateDataEntity;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.json.JsonMapper;
 
 @Component
 @RequiredArgsConstructor
@@ -59,15 +57,12 @@ public class CertificateDataEntityMapper {
               .readValue(entity.getData(), new TypeReference<List<MappedElementData>>() {});
 
       return elements.stream().map(elementDataMapper::toDomain).toList();
-    } catch (JsonProcessingException e) {
+    } catch (JacksonException e) {
       throw new IllegalStateException("Error when processing json to ElementData", e);
     }
   }
 
   private static JsonMapper objectMapper() {
-    return JsonMapper.builder()
-        .addModule(new JavaTimeModule())
-        .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-        .build();
+    return JsonMapper.builder().build();
   }
 }

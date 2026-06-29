@@ -18,12 +18,12 @@
  */
 package se.inera.intyg.certificateservice.application.unit.dto;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import java.util.Map;
 import lombok.Builder;
 import lombok.Value;
 import se.inera.intyg.certificateservice.application.unit.dto.UnitStatisticsResponse.UnitStatisticsResponseBuilder;
+import tools.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.annotation.JsonPOJOBuilder;
 
 @JsonDeserialize(builder = UnitStatisticsResponseBuilder.class)
 @Value
