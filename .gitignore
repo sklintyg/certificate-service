@@ -39,4 +39,5 @@ out/
 # BEGIN ai-resources synced (auto-generated, do not edit) ###
 /.github/copilot-instructions.md
 /.github/skills/caveman/
+/.github/skills/spring-boot-4-lifecycle-migration/
 # END ai-resources synced ###
