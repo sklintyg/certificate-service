@@ -28,12 +28,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.mockito.junit.jupiter.MockitoExtension;
 import se.inera.intyg.certificateservice.domain.certificate.model.CertificateId;
 import se.inera.intyg.certificateservice.domain.certificate.model.PlaceholderCertificate;
 import se.inera.intyg.certificateservice.domain.certificate.repository.CertificateRepository;
 
-@ExtendWith(SpringExtension.class)
+@ExtendWith(MockitoExtension.class)
 class RevokePlaceholderCertificateInternalServiceTest {
 
   private static final String CERTIFICATE_ID = "certificateId";
