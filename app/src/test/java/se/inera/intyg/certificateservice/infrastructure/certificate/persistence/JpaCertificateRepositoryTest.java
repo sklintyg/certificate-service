@@ -1035,7 +1035,8 @@ class JpaCertificateRepositoryTest {
       final var request = CertificatesRequest.builder().build();
 
       doReturn(List.of()).when(certificateEntityRepository).findAll(any(Specification.class));
-
+      when(certificateEntitySpecificationFactory.create(request))
+          .thenReturn(mock(Specification.class));
       final var actualCertificates =
           jpaCertificateRepository.findByCertificatesRequest(request, certificateRepository);
 
@@ -1052,6 +1053,8 @@ class JpaCertificateRepositoryTest {
       doReturn(EXPECTED_CERTIFICATE)
           .when(certificateEntityMapper)
           .toDomain(CERTIFICATE_ENTITY, certificateRepository);
+      when(certificateEntitySpecificationFactory.create(request))
+          .thenReturn(mock(Specification.class));
 
       final var actualCertificates =
           jpaCertificateRepository.findByCertificatesRequest(request, certificateRepository);
