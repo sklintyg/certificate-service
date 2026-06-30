@@ -1,5 +1,5 @@
 plugins {
-    id "com.yupzip.wsdl2java" version "3.0.1" apply true
+    alias(libs.plugins.com.yupzip.wsdl2java)
 }
 
 dependencies {
@@ -37,10 +37,8 @@ dependencies {
 
 wsdl2java {
     wsdlDir = file("src/main/resources/schemas")
-    cxfVersion = project.getProperties().get("wsdlCxfVersion")
-    cxfPluginVersion = project.getProperties().get("wsdlCxfPluginVersion")
-    includeJava8XmlDependencies = false
 
+    def schemasDir = file("src/main/resources/schemas").absolutePath
     def certificateVersion = "4.0"
 
     def commonOptions = [
@@ -69,46 +67,46 @@ wsdl2java {
             commonCertificateOptions + [
                     "-xjc=-extension,-npa,-Xnamespace-prefix",
                     "-b",
-                    "$wsdlDir/certificate/$certificateVersion/xmldsig-binding.xjb",
+                    "$schemasDir/certificate/$certificateVersion/xmldsig-binding.xjb",
                     "-wsdlLocation",
                     "classpath:interactions/RegisterCertificateInteraction/RegisterCertificateInteraction_3.0_RIVTABP21.wsdl",
                     "-p",
                     "urn:riv:clinicalprocess:healthcond:certificate:RegisterCertificate:3:rivtabp21=se.riv.clinicalprocess.healthcond.certificate.registerCertificate.v3",
                     "-p",
                     "urn:riv:clinicalprocess:healthcond:certificate:RegisterCertificateResponder:3=se.riv.clinicalprocess.healthcond.certificate.registerCertificate.v3",
-                    "$wsdlDir/certificate/$certificateVersion/interactions/RegisterCertificateInteraction/RegisterCertificateInteraction_3.0_RIVTABP21.wsdl"],
+                    "$schemasDir/certificate/$certificateVersion/interactions/RegisterCertificateInteraction/RegisterCertificateInteraction_3.0_RIVTABP21.wsdl"],
             commonCertificateOptions + [
                     "-xjc=-extension,-npa,-Xnamespace-prefix",
                     "-b",
-                    "$wsdlDir/certificate/$certificateVersion/xmldsig-binding.xjb",
+                    "$schemasDir/certificate/$certificateVersion/xmldsig-binding.xjb",
                     "-wsdlLocation",
                     "classpath:interactions/SendMessageToRecipientInteraction/SendMessageToRecipientInteraction_2.0_RIVTABP21.wsdl",
                     "-p",
                     "urn:riv:clinicalprocess:healthcond:certificate:SendMessageToRecipient:2:rivtabp21=se.riv.clinicalprocess.healthcond.certificate.sendMessageToRecipient.v2",
                     "-p",
                     "urn:riv:clinicalprocess:healthcond:certificate:SendMessageToRecipientResponder:2=se.riv.clinicalprocess.healthcond.certificate.sendMessageToRecipient.v2",
-                    "$wsdlDir/certificate/$certificateVersion/interactions/SendMessageToRecipientInteraction/SendMessageToRecipientInteraction_2.0_RIVTABP21.wsdl"],
+                    "$schemasDir/certificate/$certificateVersion/interactions/SendMessageToRecipientInteraction/SendMessageToRecipientInteraction_2.0_RIVTABP21.wsdl"],
             commonCertificateOptions + [
                     "-xjc=-extension,-npa,-Xnamespace-prefix",
                     "-b",
-                    "$wsdlDir/certificate/$certificateVersion/xmldsig-binding.xjb",
+                    "$schemasDir/certificate/$certificateVersion/xmldsig-binding.xjb",
                     "-wsdlLocation",
                     "classpath:interactions/ListCertificatesForCareWithQAInteraction/ListCertificatesForCareWithQAInteraction_3.3_RIVTABP21.wsdl",
                     "-p",
                     "urn:riv:clinicalprocess:healthcond:certificate:ListCertificatesForCareWithQA:3:rivtabp21=se.riv.clinicalprocess.healthcond.certificate.listCertificatesForCareWithQA.v3",
                     "-p",
                     "urn:riv:clinicalprocess:healthcond:certificate:ListCertificatesForCareWithQAResponder:3=se.riv.clinicalprocess.healthcond.certificate.listCertificatesForCareWithQA.v3",
-                    "$wsdlDir/certificate/$certificateVersion/interactions/ListCertificatesForCareWithQAInteraction/ListCertificatesForCareWithQAInteraction_3.3_RIVTABP21.wsdl"],
+                    "$schemasDir/certificate/$certificateVersion/interactions/ListCertificatesForCareWithQAInteraction/ListCertificatesForCareWithQAInteraction_3.3_RIVTABP21.wsdl"],
             commonCertificateOptions + [
                     "-xjc=-extension,-npa,-Xnamespace-prefix",
                     "-b",
-                    "$wsdlDir/certificate/$certificateVersion/xmldsig-binding.xjb",
+                    "$schemasDir/certificate/$certificateVersion/xmldsig-binding.xjb",
                     "-wsdlLocation",
                     "classpath:interactions/CreateDraftCertificate/CreateDraftCertificateInteraction_3.3_RIVTABP21.wsdl",
                     "-p",
                     "urn:riv:clinicalprocess:healthcond:certificate:CreateDraftCertificate:3:rivtabp21=se.riv.clinicalprocess.healthcond.certificate.CreateDraftCertificate.v33",
                     "-p",
                     "urn:riv:clinicalprocess:healthcond:certificate:CreateDraftCertificateResponder:3=se.riv.clinicalprocess.healthcond.certificate.CreateDraftCertificate.v33",
-                    "$wsdlDir/certificate/$certificateVersion/interactions/CreateDraftCertificate/CreateDraftCertificateInteraction_3.3_RIVTABP21.wsdl"]
+                    "$schemasDir/certificate/$certificateVersion/interactions/CreateDraftCertificate/CreateDraftCertificateInteraction_3.3_RIVTABP21.wsdl"]
     ]
 }
