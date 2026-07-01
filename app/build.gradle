@@ -20,8 +20,7 @@ dependencies {
     implementation project(':logging')
 
     implementation 'com.fasterxml.jackson.core:jackson-annotations'
-    implementation 'org.liquibase:liquibase-core'
-    implementation 'org.springframework.boot:spring-boot-liquibase'
+    implementation "org.springframework.boot:spring-boot-starter-liquibase"
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-webmvc'
