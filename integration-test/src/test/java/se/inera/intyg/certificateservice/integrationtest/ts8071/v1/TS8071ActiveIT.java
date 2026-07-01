@@ -30,8 +30,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.params.provider.Arguments;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import se.inera.intyg.certificateservice.integrationtest.common.setup.ActiveCertificatesIT;
 import se.inera.intyg.certificateservice.integrationtest.common.setup.BaseTestabilityUtilities;
 import se.inera.intyg.certificateservice.integrationtest.common.setup.TestabilityUtilities;
@@ -71,11 +69,6 @@ import se.inera.intyg.certificateservice.integrationtest.common.tests.ValidateCe
 public class TS8071ActiveIT extends ActiveCertificatesIT {
 
   public static final String TYPE = TS8071TestSetup.TYPE;
-
-  @DynamicPropertySource
-  static void deactivateV2(DynamicPropertyRegistry registry) {
-    registry.add("certificate.model.ts8071.v2_0.active.from", () -> "2099-01-01T00:00:00");
-  }
 
   @BeforeEach
   void setUp() {

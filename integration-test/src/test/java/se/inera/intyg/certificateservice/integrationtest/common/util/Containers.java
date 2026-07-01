@@ -35,7 +35,7 @@ public class Containers {
   private static void amqContainer() {
     if (AMQ_CONTAINER == null) {
       AMQ_CONTAINER =
-          new ActiveMQContainer("apache/activemq-classic:5.18.3")
+          new ActiveMQContainer("apache/activemq-classic:6.2.0")
               .withUser("activemqUser")
               .withPassword("activemqPassword");
     }

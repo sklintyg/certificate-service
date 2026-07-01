@@ -30,6 +30,7 @@ public class TestabilityCertificate {
   String code;
   String activeVersion;
   String latestMinorVersion;
+  String latestMajorVersion;
 
   String recipient;
 
