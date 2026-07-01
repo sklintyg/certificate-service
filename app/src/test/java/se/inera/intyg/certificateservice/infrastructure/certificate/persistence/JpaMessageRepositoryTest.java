@@ -298,7 +298,7 @@ class JpaMessageRepositoryTest {
 
     @Test
     void shouldReturnMessageFromRepository() {
-      final var specification = mock(Specification.class);
+      final Specification<MessageEntity> specification = mock();
       final var expectedMessage = Message.builder().build();
       final var request = MessagesRequest.builder().build();
       when(messageEntitySpecificationFactory.create(request)).thenReturn(specification);
@@ -313,7 +313,7 @@ class JpaMessageRepositoryTest {
 
     @Test
     void shouldReturnEmptyListIfNoMessagesAreFound() {
-      final var specification = mock(Specification.class);
+      final Specification<MessageEntity> specification = mock();
       final var request = MessagesRequest.builder().build();
       when(messageEntitySpecificationFactory.create(request)).thenReturn(specification);
       when(messageEntityRepository.findAll(specification)).thenReturn(Collections.emptyList());
@@ -336,7 +336,7 @@ class JpaMessageRepositoryTest {
       final var draftMessage =
           Message.builder().type(MessageType.CONTACT).status(MessageStatus.DRAFT).build();
 
-      final var specification = mock(Specification.class);
+      final Specification<MessageEntity> specification = mock();
       final var expectedMessage = Message.builder().build();
       final var request = MessagesRequest.builder().build();
 

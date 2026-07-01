@@ -344,12 +344,11 @@ class ElementSpecificationTest {
 
       doReturn(Collections.emptyList())
           .when(validation)
-          .validate(eq(elementData), any(Optional.class), eq(List.of(elementData)));
+          .validate(eq(elementData), any(), eq(List.of(elementData)));
 
       element.validate(List.of(elementData), Optional.empty());
 
-      final ArgumentCaptor<Optional<ElementId>> elementDataArgumentCaptor =
-          ArgumentCaptor.forClass(Optional.class);
+      final ArgumentCaptor<Optional<ElementId>> elementDataArgumentCaptor = ArgumentCaptor.captor();
       verify(validation)
           .validate(eq(elementData), elementDataArgumentCaptor.capture(), eq(List.of(elementData)));
 
@@ -490,7 +489,7 @@ class ElementSpecificationTest {
 
     @Test
     void shouldReturnReplacementValueWhenHiddenByValuePredicate() {
-      final var shouldHidePredicate = mock(Predicate.class);
+      final Predicate<List<ElementData>> shouldHidePredicate = mock();
       doReturn(true).when(shouldHidePredicate).test(ALL_ELEMENT_DATA);
 
       final var citizenPdfConfiguration =
@@ -521,7 +520,7 @@ class ElementSpecificationTest {
 
     @Test
     void shouldNotHideWhenHiddenByIsNullAndShouldHideIsFalse() {
-      final var shouldHidePredicate = mock(Predicate.class);
+      final Predicate<List<ElementData>> shouldHidePredicate = mock();
       doReturn(false).when(shouldHidePredicate).test(ALL_ELEMENT_DATA);
       doReturn(Optional.of(expectedSimplifiedValue)).when(configuration).simplified(elementValue);
 

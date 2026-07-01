@@ -167,7 +167,7 @@ class AnswerComplementDomainServiceTest {
 
     answerComplementDomainService.answer(CERTIFICATE_ID, ACTION_EVALUATION, CONTENT);
 
-    final ArgumentCaptor<List<Message>> messagesCaptor = ArgumentCaptor.forClass(List.class);
+    final ArgumentCaptor<List<Message>> messagesCaptor = ArgumentCaptor.captor();
     verify(setMessagesToHandleDomainService).handle(messagesCaptor.capture());
 
     assertEquals(MESSAGES, messagesCaptor.getValue());

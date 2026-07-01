@@ -769,7 +769,7 @@ class MedicalCertificateTest {
       void shallUseCertificatePatientIfPatientNotPresentInActionEvalutaion() {
         final var actionEvaluation = actionEvaluationBuilder.patient(null).build();
         final ArgumentCaptor<Optional<ActionEvaluation>> actionEvaluationArgumentCaptor =
-            ArgumentCaptor.forClass(Optional.class);
+            ArgumentCaptor.captor();
 
         final var certificateAction = mock(CertificateAction.class);
         final var actions = List.of(certificateAction);
@@ -779,8 +779,7 @@ class MedicalCertificateTest {
 
         certificate.allowTo(CertificateActionType.DELETE, Optional.of(actionEvaluation));
 
-        verify(certificateAction)
-            .evaluate(any(Optional.class), actionEvaluationArgumentCaptor.capture());
+        verify(certificateAction).evaluate(any(), actionEvaluationArgumentCaptor.capture());
 
         assertEquals(
             ATHENA_REACT_ANDERSSON,
@@ -988,8 +987,7 @@ class MedicalCertificateTest {
 
       certificate.validate(expectedElementData);
 
-      final ArgumentCaptor<List<ElementData>> listArgumentCaptor =
-          ArgumentCaptor.forClass(List.class);
+      final ArgumentCaptor<List<ElementData>> listArgumentCaptor = ArgumentCaptor.captor();
       verify(specification).validate(listArgumentCaptor.capture(), eq(Optional.empty()));
 
       assertEquals(expectedElementData, listArgumentCaptor.getValue());

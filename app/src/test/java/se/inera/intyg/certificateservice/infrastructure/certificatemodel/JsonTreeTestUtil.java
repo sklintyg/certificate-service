@@ -116,14 +116,16 @@ public class JsonTreeTestUtil {
     }
 
     final var idNode = node.get("id");
-    return Optional.ofNullable(idNode.has("id") ? idNode.get("id").asText() : null)
-        .or(() -> Optional.ofNullable(idNode.has("value") ? idNode.get("value").asText() : null))
-        .or(() -> idNode.isTextual() ? Optional.of(idNode.asText()) : Optional.empty())
+    return Optional.ofNullable(idNode.has("id") ? idNode.get("id").stringValue() : null)
+        .or(
+            () ->
+                Optional.ofNullable(idNode.has("value") ? idNode.get("value").stringValue() : null))
+        .or(() -> idNode.isString() ? Optional.of(idNode.stringValue()) : Optional.empty())
         .orElse(null);
   }
 
   private static String formatValue(JsonNode node) {
-    return node.isTextual() ? node.asText() : node.toString();
+    return node.isString() ? node.stringValue() : node.toString();
   }
 
   private static String buildPath(String currentPath, String fieldName) {
