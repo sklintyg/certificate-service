@@ -35,7 +35,6 @@ import static se.inera.intyg.certificateservice.integrationtest.fk7804.FK7804Tes
 import static se.inera.intyg.certificateservice.integrationtest.fk7804.FK7804TestSetup.CERTIFICATE_TYPE;
 import static se.inera.intyg.certificateservice.testability.common.TestabilityConstants.TESTABILITY_PROFILE;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collections;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -47,17 +46,20 @@ import org.mockserver.model.HttpRequest;
 import org.mockserver.model.HttpResponse;
 import org.mockserver.model.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.resttestclient.TestRestTemplate;
+import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.json.JsonMapper;
 import se.inera.intyg.certificateservice.integrationtest.common.util.ApiUtil;
 import se.inera.intyg.certificateservice.integrationtest.common.util.Containers;
 import se.inera.intyg.certificateservice.integrationtest.common.util.TestabilityApiUtil;
 import se.inera.intyg.certificateservice.patient.dto.PersonsResponseDTO;
 
 @ActiveProfiles({"integration-test", TESTABILITY_PROFILE})
+@AutoConfigureTestRestTemplate
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 class CertificateMetadataIT {
 
@@ -199,7 +201,7 @@ class CertificateMetadataIT {
           .when(HttpRequest.request("/api/v1/persons"))
           .respond(
               HttpResponse.response(
-                      new ObjectMapper()
+                      new JsonMapper()
                           .writeValueAsString(
                               PersonsResponseDTO.builder()
                                   .persons(Collections.emptyList())

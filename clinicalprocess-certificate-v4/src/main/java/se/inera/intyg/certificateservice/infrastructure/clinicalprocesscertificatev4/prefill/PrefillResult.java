@@ -18,8 +18,6 @@
  */
 package se.inera.intyg.certificateservice.infrastructure.clinicalprocesscertificatev4.prefill;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -31,6 +29,8 @@ import lombok.extern.slf4j.Slf4j;
 import se.inera.intyg.certificateservice.domain.certificate.model.ElementData;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.CertificateModel;
 import se.riv.clinicalprocess.healthcond.certificate.v33.Forifyllnad;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 
 @Data
 @Builder
@@ -71,13 +71,14 @@ public class PrefillResult {
       return "Success";
     }
     try {
-      return new ObjectMapper()
+      return JsonMapper.builder()
+          .build()
           .writeValueAsString(
               this.prefilledAnswers.stream()
                   .flatMap(prefillAnswer -> prefillAnswer.getErrors().stream())
                   .filter(Objects::nonNull)
                   .toList());
-    } catch (JsonProcessingException e) {
+    } catch (JacksonException e) {
       log.error("Failed to serialize PrefillResult to JSON", e);
       return "Exception occurred while serializing PrefillResult to JSON: " + e.getMessage();
     }

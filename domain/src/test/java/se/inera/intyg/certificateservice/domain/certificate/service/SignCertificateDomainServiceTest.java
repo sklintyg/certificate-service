@@ -181,7 +181,7 @@ class SignCertificateDomainServiceTest {
 
     signCertificateDomainService.sign(CERTIFICATE_ID, REVISION, SIGNATURE, ACTION_EVALUATION);
 
-    final ArgumentCaptor<List<Message>> messagesCaptor = ArgumentCaptor.forClass(List.class);
+    final ArgumentCaptor<List<Message>> messagesCaptor = ArgumentCaptor.captor();
     verify(setMessagesToHandleDomainService).handle(messagesCaptor.capture());
 
     assertEquals(expectedMessages, messagesCaptor.getValue());

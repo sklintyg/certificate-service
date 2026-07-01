@@ -80,6 +80,7 @@ class FK7427CertificateConfirmationModalProviderTest {
             fk7427CertificateBuilder()
                 .certificateMetaData(
                     CertificateMetaData.builder()
+                        .careUnit(ALFA_MEDICINCENTRUM)
                         .patient(
                             Patient.builder()
                                 .name(

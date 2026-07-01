@@ -18,17 +18,17 @@
  */
 package se.inera.intyg.certificateservice.integrationtest.common.util;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collections;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.model.HttpRequest;
 import org.mockserver.model.HttpResponse;
 import org.mockserver.model.MediaType;
 import se.inera.intyg.certificateservice.patient.dto.PersonsResponseDTO;
+import tools.jackson.databind.json.JsonMapper;
 
 public final class MockServerTestUtil {
 
-  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+  private static final JsonMapper OBJECT_MAPPER = new JsonMapper();
 
   private MockServerTestUtil() {
     throw new IllegalStateException("Utility class");

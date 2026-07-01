@@ -20,7 +20,6 @@ package se.inera.intyg.certificateservice.integrationtest.common.setup;
 
 import static se.inera.intyg.certificateservice.testability.common.TestabilityConstants.TESTABILITY_PROFILE;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collections;
 import org.junit.jupiter.api.BeforeAll;
 import org.mockserver.client.MockServerClient;
@@ -28,13 +27,15 @@ import org.mockserver.model.HttpRequest;
 import org.mockserver.model.HttpResponse;
 import org.mockserver.model.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.resttestclient.TestRestTemplate;
+import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.json.JsonMapper;
 import se.inera.intyg.certificateservice.integrationtest.common.util.ApiUtil;
 import se.inera.intyg.certificateservice.integrationtest.common.util.Containers;
 import se.inera.intyg.certificateservice.integrationtest.common.util.InternalApiUtil;
@@ -42,6 +43,7 @@ import se.inera.intyg.certificateservice.integrationtest.common.util.Testability
 import se.inera.intyg.certificateservice.patient.dto.PersonsResponseDTO;
 
 @ActiveProfiles({"integration-test", TESTABILITY_PROFILE})
+@AutoConfigureTestRestTemplate
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public abstract class InActiveCertificatesIT {
 
@@ -101,7 +103,7 @@ public abstract class InActiveCertificatesIT {
           .when(HttpRequest.request("/api/v1/persons"))
           .respond(
               HttpResponse.response(
-                      new ObjectMapper()
+                      new JsonMapper()
                           .writeValueAsString(
                               PersonsResponseDTO.builder()
                                   .persons(Collections.emptyList())

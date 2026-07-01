@@ -54,7 +54,7 @@ class GetUnitStatisticsDomainServiceTest {
 
   @Test
   void shallSetAllowedToViewProtectedPersonToFalseIfUserIsCareAdmin() {
-    final ArgumentCaptor<List<CertificateModelId>> captor = ArgumentCaptor.forClass(List.class);
+    final ArgumentCaptor<List<CertificateModelId>> captor = ArgumentCaptor.captor();
 
     final var certificateModel = mock(CertificateModel.class);
     final var actionSpecification =
@@ -77,7 +77,7 @@ class GetUnitStatisticsDomainServiceTest {
 
   @Test
   void shallSetAllowedToViewProtectedPersonToTrueIfUserNotIsCareAdmin() {
-    final ArgumentCaptor<List<CertificateModelId>> captor = ArgumentCaptor.forClass(List.class);
+    final ArgumentCaptor<List<CertificateModelId>> captor = ArgumentCaptor.captor();
 
     final var certificateModel = mock(CertificateModel.class);
     final var actionSpecification =

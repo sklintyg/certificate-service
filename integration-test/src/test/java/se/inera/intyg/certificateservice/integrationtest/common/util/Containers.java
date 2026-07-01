@@ -19,7 +19,7 @@
 package se.inera.intyg.certificateservice.integrationtest.common.util;
 
 import org.testcontainers.activemq.ActiveMQContainer;
-import org.testcontainers.containers.MockServerContainer;
+import org.testcontainers.mockserver.MockServerContainer;
 import org.testcontainers.utility.DockerImageName;
 
 public class Containers {
@@ -35,7 +35,7 @@ public class Containers {
   private static void amqContainer() {
     if (AMQ_CONTAINER == null) {
       AMQ_CONTAINER =
-          new ActiveMQContainer("apache/activemq-classic:5.18.3")
+          new ActiveMQContainer("apache/activemq-classic:6.2.0")
               .withUser("activemqUser")
               .withPassword("activemqPassword");
     }
@@ -52,7 +52,7 @@ public class Containers {
   private static void mockServerContainer() {
     if (MOCK_SERVER_CONTAINER == null) {
       MOCK_SERVER_CONTAINER =
-          new MockServerContainer(DockerImageName.parse("mockserver/mockserver:5.15.0"));
+          new MockServerContainer(DockerImageName.parse("mockserver/mockserver:7.2.0"));
     }
 
     if (!MOCK_SERVER_CONTAINER.isRunning()) {

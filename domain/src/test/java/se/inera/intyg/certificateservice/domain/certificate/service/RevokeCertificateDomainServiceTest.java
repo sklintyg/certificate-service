@@ -167,7 +167,7 @@ class RevokeCertificateDomainServiceTest {
 
     revokeCertificateDomainService.revoke(CERTIFICATE_ID, ACTION_EVALUATION, REVOKED_INFORMATION);
 
-    final ArgumentCaptor<List<Message>> messagesCaptor = ArgumentCaptor.forClass(List.class);
+    final ArgumentCaptor<List<Message>> messagesCaptor = ArgumentCaptor.captor();
     verify(setMessagesToHandleDomainService).handle(messagesCaptor.capture());
 
     assertEquals(expectedMessages, messagesCaptor.getValue());

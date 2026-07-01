@@ -19,12 +19,12 @@
 package se.inera.intyg.certificateservice.domain.configuration.unitaccess.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import java.util.List;
 import lombok.Builder;
 import lombok.Value;
 import se.inera.intyg.certificateservice.domain.configuration.unitaccess.dto.CertificateAccessConfiguration.CertificateAccessConfigurationBuilder;
+import tools.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.annotation.JsonPOJOBuilder;
 
 @JsonDeserialize(builder = CertificateAccessConfigurationBuilder.class)
 @Builder

@@ -1,7 +1,10 @@
 dependencies {
     implementation 'org.apache.pdfbox:pdfbox'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework:spring-context'
+    implementation 'org.springframework:spring-web'
     implementation project(':domain')
+
+    compileOnly "org.slf4j:slf4j-api"
 
     annotationProcessor 'org.projectlombok:lombok'
 

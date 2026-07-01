@@ -18,7 +18,7 @@
  */
 package se.inera.intyg.certificateservice.certificate.custom.converter;
 
-import org.springframework.lang.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Component;
 import se.inera.intyg.certificateservice.certificate.custom.dto.AccessibilityMetadataDTO;
 import se.inera.intyg.certificateservice.certificate.custom.dto.CustomPdfMetadataDTO;

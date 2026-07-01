@@ -27,281 +27,281 @@
     "logo" : null,
     "generalName" : null
   },
-  "activeFrom" : [ 2024, 1, 25, 0, 0 ],
+  "activeFrom" : "2024-01-25T00:00:00",
   "availableForCitizen" : true,
   "certificateActionSpecifications" : [ {
+    "allowedRoles" : [ "DOCTOR", "PRIVATE_DOCTOR", "CARE_ADMIN", "MIDWIFE", "NURSE" ],
+    "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
     "certificateActionType" : "CREATE",
+    "contentProvider" : null,
     "enabled" : null,
+    "typeSpecificRules" : [ ]
+  }, {
     "allowedRoles" : [ "DOCTOR", "PRIVATE_DOCTOR", "CARE_ADMIN", "MIDWIFE", "NURSE" ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null,
-    "typeSpecificRules" : []
-  }, {
     "certificateActionType" : "READ",
+    "contentProvider" : null,
     "enabled" : null,
+    "typeSpecificRules" : [ ]
+  }, {
     "allowedRoles" : [ "DOCTOR", "PRIVATE_DOCTOR", "CARE_ADMIN", "MIDWIFE", "NURSE" ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null,
-    "typeSpecificRules" : []
-  }, {
     "certificateActionType" : "UPDATE",
+    "contentProvider" : null,
     "enabled" : null,
+    "typeSpecificRules" : [ ]
+  }, {
     "allowedRoles" : [ "DOCTOR", "PRIVATE_DOCTOR", "CARE_ADMIN", "MIDWIFE", "NURSE" ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null,
-    "typeSpecificRules" : []
-  }, {
     "certificateActionType" : "DELETE",
-    "enabled" : null,
-    "allowedRoles" : [ "DOCTOR", "PRIVATE_DOCTOR", "CARE_ADMIN", "MIDWIFE", "NURSE" ],
-    "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
     "contentProvider" : null,
-    "typeSpecificRules" : []
+    "enabled" : null,
+    "typeSpecificRules" : [ ]
   }, {
+    "allowedRoles" : [ "DOCTOR", "PRIVATE_DOCTOR" ],
+    "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
     "certificateActionType" : "SIGN",
-    "enabled" : null,
-    "allowedRoles" : [ "DOCTOR", "PRIVATE_DOCTOR" ],
-    "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
     "contentProvider" : null,
-    "typeSpecificRules" : []
+    "enabled" : null,
+    "typeSpecificRules" : [ ]
   }, {
+    "allowedRoles" : [ "DOCTOR", "PRIVATE_DOCTOR", "CARE_ADMIN", "MIDWIFE", "NURSE" ],
+    "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
     "certificateActionType" : "SEND",
-    "enabled" : null,
-    "allowedRoles" : [ "DOCTOR", "PRIVATE_DOCTOR", "CARE_ADMIN", "MIDWIFE", "NURSE" ],
-    "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
     "contentProvider" : null,
-    "typeSpecificRules" : []
+    "enabled" : null,
+    "typeSpecificRules" : [ ]
   }, {
+    "allowedRoles" : [ ],
+    "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
     "certificateActionType" : "PRINT",
-    "enabled" : null,
-    "allowedRoles" : [ ],
-    "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
     "contentProvider" : null,
-    "typeSpecificRules" : []
+    "enabled" : null,
+    "typeSpecificRules" : [ ]
   }, {
+    "allowedRoles" : [ "DOCTOR", "PRIVATE_DOCTOR" ],
+    "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
     "certificateActionType" : "REVOKE",
+    "contentProvider" : null,
     "enabled" : null,
+    "typeSpecificRules" : [ ]
+  }, {
     "allowedRoles" : [ "DOCTOR", "PRIVATE_DOCTOR" ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null,
-    "typeSpecificRules" : []
-  }, {
     "certificateActionType" : "REPLACE",
+    "contentProvider" : null,
     "enabled" : null,
+    "typeSpecificRules" : [ ]
+  }, {
     "allowedRoles" : [ "DOCTOR", "PRIVATE_DOCTOR" ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null,
-    "typeSpecificRules" : []
-  }, {
     "certificateActionType" : "REPLACE_CONTINUE",
-    "enabled" : null,
-    "allowedRoles" : [ "DOCTOR", "PRIVATE_DOCTOR" ],
-    "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
     "contentProvider" : null,
-    "typeSpecificRules" : []
+    "enabled" : null,
+    "typeSpecificRules" : [ ]
   }, {
+    "allowedRoles" : [ "DOCTOR", "PRIVATE_DOCTOR", "CARE_ADMIN", "MIDWIFE", "NURSE" ],
+    "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
     "certificateActionType" : "RENEW",
-    "enabled" : null,
-    "allowedRoles" : [ "DOCTOR", "PRIVATE_DOCTOR", "CARE_ADMIN", "MIDWIFE", "NURSE" ],
-    "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
     "contentProvider" : null,
-    "typeSpecificRules" : []
+    "enabled" : null,
+    "typeSpecificRules" : [ ]
   }, {
+    "allowedRoles" : [ ],
+    "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
     "certificateActionType" : "SEND_AFTER_SIGN",
+    "contentProvider" : null,
     "enabled" : null,
+    "typeSpecificRules" : [ ]
+  }, {
     "allowedRoles" : [ ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null,
-    "typeSpecificRules" : []
-  }, {
     "certificateActionType" : "SEND_AFTER_COMPLEMENT",
+    "contentProvider" : null,
     "enabled" : null,
+    "typeSpecificRules" : [ ]
+  }, {
     "allowedRoles" : [ ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null,
-    "typeSpecificRules" : []
-  }, {
     "certificateActionType" : "MESSAGES",
+    "contentProvider" : null,
     "enabled" : null,
+    "typeSpecificRules" : [ ]
+  }, {
     "allowedRoles" : [ ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null,
-    "typeSpecificRules" : []
-  }, {
     "certificateActionType" : "MESSAGES_ADMINISTRATIVE",
+    "contentProvider" : null,
     "enabled" : true,
+    "typeSpecificRules" : [ ]
+  }, {
     "allowedRoles" : [ ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null,
-    "typeSpecificRules" : []
-  }, {
     "certificateActionType" : "RECEIVE_COMPLEMENT",
+    "contentProvider" : null,
     "enabled" : null,
+    "typeSpecificRules" : [ ]
+  }, {
     "allowedRoles" : [ ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null,
-    "typeSpecificRules" : []
-  }, {
     "certificateActionType" : "RECEIVE_QUESTION",
+    "contentProvider" : null,
     "enabled" : null,
+    "typeSpecificRules" : [ ]
+  }, {
     "allowedRoles" : [ ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null,
-    "typeSpecificRules" : []
-  }, {
     "certificateActionType" : "RECEIVE_ANSWER",
+    "contentProvider" : null,
     "enabled" : null,
+    "typeSpecificRules" : [ ]
+  }, {
     "allowedRoles" : [ ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null,
-    "typeSpecificRules" : []
-  }, {
     "certificateActionType" : "RECEIVE_REMINDER",
-    "enabled" : null,
-    "allowedRoles" : [ ],
-    "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
     "contentProvider" : null,
-    "typeSpecificRules" : []
+    "enabled" : null,
+    "typeSpecificRules" : [ ]
   }, {
+    "allowedRoles" : [ "DOCTOR", "PRIVATE_DOCTOR", "CARE_ADMIN", "MIDWIFE", "NURSE" ],
+    "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
     "certificateActionType" : "COMPLEMENT",
-    "enabled" : null,
-    "allowedRoles" : [ "DOCTOR", "PRIVATE_DOCTOR", "CARE_ADMIN", "MIDWIFE", "NURSE" ],
-    "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
     "contentProvider" : null,
-    "typeSpecificRules" : []
+    "enabled" : null,
+    "typeSpecificRules" : [ ]
   }, {
+    "allowedRoles" : [ ],
+    "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
     "certificateActionType" : "CANNOT_COMPLEMENT",
+    "contentProvider" : null,
     "enabled" : null,
+    "typeSpecificRules" : [ ]
+  }, {
     "allowedRoles" : [ ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null,
-    "typeSpecificRules" : []
-  }, {
     "certificateActionType" : "FORWARD_MESSAGE",
+    "contentProvider" : null,
     "enabled" : null,
+    "typeSpecificRules" : [ ]
+  }, {
     "allowedRoles" : [ ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null,
-    "typeSpecificRules" : []
-  }, {
     "certificateActionType" : "HANDLE_COMPLEMENT",
+    "contentProvider" : null,
     "enabled" : null,
+    "typeSpecificRules" : [ ]
+  }, {
     "allowedRoles" : [ ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null,
-    "typeSpecificRules" : []
-  }, {
     "certificateActionType" : "CREATE_MESSAGE",
+    "contentProvider" : null,
     "enabled" : null,
+    "typeSpecificRules" : [ ]
+  }, {
     "allowedRoles" : [ ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null,
-    "typeSpecificRules" : []
-  }, {
     "certificateActionType" : "ANSWER_MESSAGE",
+    "contentProvider" : null,
     "enabled" : null,
+    "typeSpecificRules" : [ ]
+  }, {
     "allowedRoles" : [ ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null,
-    "typeSpecificRules" : []
-  }, {
     "certificateActionType" : "SAVE_MESSAGE",
+    "contentProvider" : null,
     "enabled" : null,
+    "typeSpecificRules" : [ ]
+  }, {
     "allowedRoles" : [ ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null,
-    "typeSpecificRules" : []
-  }, {
     "certificateActionType" : "DELETE_MESSAGE",
+    "contentProvider" : null,
     "enabled" : null,
+    "typeSpecificRules" : [ ]
+  }, {
     "allowedRoles" : [ ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null,
-    "typeSpecificRules" : []
-  }, {
     "certificateActionType" : "SEND_MESSAGE",
+    "contentProvider" : null,
     "enabled" : null,
+    "typeSpecificRules" : [ ]
+  }, {
     "allowedRoles" : [ ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null,
-    "typeSpecificRules" : []
-  }, {
     "certificateActionType" : "SAVE_ANSWER",
+    "contentProvider" : null,
     "enabled" : null,
+    "typeSpecificRules" : [ ]
+  }, {
     "allowedRoles" : [ ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null,
-    "typeSpecificRules" : []
-  }, {
     "certificateActionType" : "DELETE_ANSWER",
+    "contentProvider" : null,
     "enabled" : null,
+    "typeSpecificRules" : [ ]
+  }, {
     "allowedRoles" : [ ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null,
-    "typeSpecificRules" : []
-  }, {
     "certificateActionType" : "SEND_ANSWER",
+    "contentProvider" : null,
     "enabled" : null,
+    "typeSpecificRules" : [ ]
+  }, {
     "allowedRoles" : [ ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null,
-    "typeSpecificRules" : []
-  }, {
     "certificateActionType" : "HANDLE_MESSAGE",
-    "enabled" : null,
-    "allowedRoles" : [ ],
-    "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
     "contentProvider" : null,
-    "typeSpecificRules" : []
+    "enabled" : null,
+    "typeSpecificRules" : [ ]
   }, {
+    "allowedRoles" : [ "CARE_ADMIN", "MIDWIFE", "NURSE" ],
+    "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
     "certificateActionType" : "FORWARD_CERTIFICATE",
-    "enabled" : null,
-    "allowedRoles" : [ "CARE_ADMIN", "MIDWIFE", "NURSE" ],
-    "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
     "contentProvider" : null,
-    "typeSpecificRules" : []
-  }, {
-    "certificateActionType" : "FORWARD_MESSAGE",
     "enabled" : null,
+    "typeSpecificRules" : [ ]
+  }, {
     "allowedRoles" : [ ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
+    "certificateActionType" : "FORWARD_MESSAGE",
     "contentProvider" : null,
-    "typeSpecificRules" : []
-  }, {
-    "certificateActionType" : "READY_FOR_SIGN",
     "enabled" : null,
+    "typeSpecificRules" : [ ]
+  }, {
     "allowedRoles" : [ "CARE_ADMIN", "MIDWIFE", "NURSE" ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
+    "certificateActionType" : "READY_FOR_SIGN",
     "contentProvider" : null,
-    "typeSpecificRules" : []
-  }, {
-    "certificateActionType" : "LIST_CERTIFICATE_TYPE",
     "enabled" : null,
+    "typeSpecificRules" : [ ]
+  }, {
     "allowedRoles" : [ "DOCTOR", "PRIVATE_DOCTOR", "CARE_ADMIN", "MIDWIFE", "NURSE" ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
+    "certificateActionType" : "LIST_CERTIFICATE_TYPE",
     "contentProvider" : null,
-    "typeSpecificRules" : []
+    "enabled" : null,
+    "typeSpecificRules" : [ ]
   }, {
+    "allowedRoles" : [ ],
+    "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
     "certificateActionType" : "QUESTIONS_NOT_AVAILABLE",
+    "contentProvider" : null,
     "enabled" : null,
+    "typeSpecificRules" : [ ]
+  }, {
     "allowedRoles" : [ ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
-    "contentProvider" : null,
-    "typeSpecificRules" : []
-  }, {
     "certificateActionType" : "FORWARD_CERTIFICATE_FROM_LIST",
-    "enabled" : null,
-    "allowedRoles" : [ ],
-    "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
     "contentProvider" : null,
-    "typeSpecificRules" : []
+    "enabled" : null,
+    "typeSpecificRules" : [ ]
   }, {
-    "certificateActionType" : "INACTIVE_CERTIFICATE_MODEL",
-    "enabled" : null,
     "allowedRoles" : [ ],
     "allowedRolesForProtectedPersons" : [ "DOCTOR", "PRIVATE_DOCTOR", "DENTIST" ],
+    "certificateActionType" : "INACTIVE_CERTIFICATE_MODEL",
     "contentProvider" : null,
-    "typeSpecificRules" : []
+    "enabled" : null,
+    "typeSpecificRules" : [ ]
   } ],
   "messageActionSpecifications" : [ {
     "messageActionType" : "ANSWER"
@@ -317,84 +317,130 @@
     "messageActionType" : "HANDLE_MESSAGE"
   } ],
   "elementSpecifications" : [ {
-    "id" : {
-      "id" : "KAT_1"
-    },
-    "includeWhenRenewing" : true,
-    "configuration" : {
-      "name" : "Grund för medicinskt underlag",
-      "description" : null,
-      "message" : null,
-      "type" : "CATEGORY"
-    },
-    "rules" : [ ],
-    "validations" : [ ],
-    "mapping" : null,
-    "pdfConfiguration" : null,
     "children" : [ {
-      "id" : {
-        "id" : "1"
-      },
-      "includeWhenRenewing" : false,
-      "configuration" : {
-        "name" : "Utlåtandet är baserat på",
-        "message" : null,
-        "dates" : [ {
+      "children" : [ {
+        "children" : [ ],
+        "configuration" : {
+          "description" : null,
+          "header" : null,
           "id" : {
-            "value" : "undersokningAvPatienten"
+            "value" : "1.3"
           },
-          "label" : "min undersökning av patienten",
-          "code" : {
-            "code" : "UNDERSOKNING",
-            "codeSystem" : "KV_FKMU_0001",
-            "displayName" : "min undersökning av patienten"
+          "label" : null,
+          "message" : null,
+          "name" : "Ange vad annat är",
+          "type" : "TEXT_FIELD"
+        },
+        "id" : {
+          "id" : "1.3"
+        },
+        "includeForCitizen" : true,
+        "includeInXml" : true,
+        "includeWhenRenewing" : false,
+        "mapping" : {
+          "elementId" : {
+            "id" : "1"
           },
-          "min" : null,
-          "max" : "P0D"
-        }, {
-          "id" : {
-            "value" : "journaluppgifter"
-          },
-          "label" : "journaluppgifter från den",
-          "code" : {
-            "code" : "JOURNALUPPGIFTER",
-            "codeSystem" : "KV_FKMU_0001",
-            "displayName" : "journaluppgifter från den"
-          },
-          "min" : null,
-          "max" : "P0D"
-        }, {
-          "id" : {
-            "value" : "annat"
-          },
-          "label" : "annat",
           "code" : {
             "code" : "ANNAT",
             "codeSystem" : "KV_FKMU_0001",
             "displayName" : "annat"
           },
-          "min" : null,
-          "max" : "P0D"
+          "customMapperId" : null
+        },
+        "pdfConfiguration" : {
+          "maxLength" : null,
+          "offset" : null,
+          "overflowSheetFieldId" : null,
+          "pdfFieldId" : {
+            "id" : "form1[0].#subform[0].flt_txtAnnatAngeVad[0]"
+          }
+        },
+        "rules" : [ {
+          "affectedSubElements" : null,
+          "expression" : {
+            "value" : "$1.3"
+          },
+          "id" : {
+            "id" : "1.3"
+          },
+          "type" : "MANDATORY"
+        }, {
+          "id" : {
+            "id" : "1.3"
+          },
+          "limit" : {
+            "value" : 50
+          },
+          "type" : "TEXT_LIMIT"
+        }, {
+          "affectedSubElements" : null,
+          "expression" : {
+            "value" : "$annat"
+          },
+          "id" : {
+            "id" : "1"
+          },
+          "type" : "SHOW"
+        } ],
+        "shouldValidate" : { },
+        "validations" : [ {
+          "limit" : 50,
+          "mandatory" : true
+        } ],
+        "visibilityConfiguration" : null
+      } ],
+      "configuration" : {
+        "dates" : [ {
+          "code" : {
+            "code" : "UNDERSOKNING",
+            "codeSystem" : "KV_FKMU_0001",
+            "displayName" : "min undersökning av patienten"
+          },
+          "id" : {
+            "value" : "undersokningAvPatienten"
+          },
+          "label" : "min undersökning av patienten",
+          "max" : "P0D",
+          "min" : null
+        }, {
+          "code" : {
+            "code" : "JOURNALUPPGIFTER",
+            "codeSystem" : "KV_FKMU_0001",
+            "displayName" : "journaluppgifter från den"
+          },
+          "id" : {
+            "value" : "journaluppgifter"
+          },
+          "label" : "journaluppgifter från den",
+          "max" : "P0D",
+          "min" : null
+        }, {
+          "code" : {
+            "code" : "ANNAT",
+            "codeSystem" : "KV_FKMU_0001",
+            "displayName" : "annat"
+          },
+          "id" : {
+            "value" : "annat"
+          },
+          "label" : "annat",
+          "max" : "P0D",
+          "min" : null
         } ],
         "id" : {
           "value" : "1.1"
         },
+        "message" : null,
+        "name" : "Utlåtandet är baserat på",
         "type" : "CHECKBOX_MULTIPLE_DATE"
       },
-      "rules" : [ {
-        "id" : {
-          "id" : "1"
-        },
-        "type" : "MANDATORY",
-        "expression" : {
-          "value" : "$undersokningAvPatienten || $journaluppgifter || $annat"
-        },
-        "affectedSubElements" : null
-      } ],
-      "validations" : [ {
-        "mandatory" : true,
-        "max" : "P0D"
-      } ],
+      "id" : {
+        "id" : "1"
+      },
+      "includeForCitizen" : true,
+      "includeInXml" : true,
+      "includeWhenRenewing" : false,
       "mapping" : null,
       "pdfConfiguration" : {
         "dateCheckboxes" : {
@@ -424,124 +470,49 @@
           }
         }
       },
-      "children" : [ {
+      "rules" : [ {
+        "affectedSubElements" : null,
+        "expression" : {
+          "value" : "$undersokningAvPatienten || $journaluppgifter || $annat"
+        },
         "id" : {
-          "id" : "1.3"
+          "id" : "1"
         },
-        "includeWhenRenewing" : false,
-        "configuration" : {
-          "name" : "Ange vad annat är",
-          "description" : null,
-          "header" : null,
-          "label" : null,
-          "message" : null,
-          "id" : {
-            "value" : "1.3"
-          },
-          "type" : "TEXT_FIELD"
-        },
-        "rules" : [ {
-          "id" : {
-            "id" : "1.3"
-          },
-          "type" : "MANDATORY",
-          "expression" : {
-            "value" : "$1.3"
-          },
-          "affectedSubElements" : null
-        }, {
-          "id" : {
-            "id" : "1.3"
-          },
-          "type" : "TEXT_LIMIT",
-          "limit" : {
-            "value" : 50
-          }
-        }, {
-          "id" : {
-            "id" : "1"
-          },
-          "type" : "SHOW",
-          "expression" : {
-            "value" : "$annat"
-          },
-          "affectedSubElements" : null
-        } ],
-        "validations" : [ {
-          "mandatory" : true,
-          "limit" : 50
-        } ],
-        "mapping" : {
-          "elementId" : {
-            "id" : "1"
-          },
-          "code" : {
-            "code" : "ANNAT",
-            "codeSystem" : "KV_FKMU_0001",
-            "displayName" : "annat"
-          },
-          "customMapperId" : null
-        },
-        "pdfConfiguration" : {
-          "pdfFieldId" : {
-            "id" : "form1[0].#subform[0].flt_txtAnnatAngeVad[0]"
-          },
-          "maxLength" : null,
-          "overflowSheetFieldId" : null,
-          "offset" : null
-        },
-        "children" : [ ],
-        "shouldValidate" : { },
-        "includeInXml" : true,
-        "includeForCitizen" : true,
-        "visibilityConfiguration" : null
+        "type" : "MANDATORY"
       } ],
       "shouldValidate" : null,
-      "includeInXml" : true,
-      "includeForCitizen" : true,
+      "validations" : [ {
+        "mandatory" : true,
+        "max" : "P0D"
+      } ],
       "visibilityConfiguration" : null
     } ],
-    "shouldValidate" : null,
-    "includeInXml" : true,
-    "includeForCitizen" : true,
-    "visibilityConfiguration" : null
-  }, {
-    "id" : {
-      "id" : "KAT_2"
-    },
-    "includeWhenRenewing" : true,
     "configuration" : {
-      "name" : "Påtagligt hot mot patientens liv",
-      "description" : "Ange på vilket sätt hälsotillståndet utgör ett påtagligt hot mot patientens liv i nuläget eller på viss tids sikt.\n\nHälsotillståndet kan utgöra ett påtagligt hot även om det finns hopp om att det förbättras.\n<ul>\n<li>Ange alla diagnoser som sammantaget medför ett påtagligt hot mot patientens liv.</li><li>Ange ett av alternativen som gäller patientens behandling och vårdsituation.</li></ul>",
+      "description" : null,
       "message" : null,
+      "name" : "Grund för medicinskt underlag",
       "type" : "CATEGORY"
     },
-    "rules" : [ ],
-    "validations" : [ ],
+    "id" : {
+      "id" : "KAT_1"
+    },
+    "includeForCitizen" : true,
+    "includeInXml" : true,
+    "includeWhenRenewing" : true,
     "mapping" : null,
     "pdfConfiguration" : null,
+    "rules" : [ ],
+    "shouldValidate" : null,
+    "validations" : [ ],
+    "visibilityConfiguration" : null
+  }, {
     "children" : [ {
-      "id" : {
-        "id" : "58"
-      },
-      "includeWhenRenewing" : true,
+      "children" : [ ],
       "configuration" : {
-        "name" : "Diagnos eller diagnoser för det tillstånd som orsakar ett hot mot patientens liv",
-        "message" : {
-          "content" : "Ange alla diagnoser som sammantaget medför ett påtagligt hot mot patientens liv.",
-          "level" : "OBSERVE",
-          "includedForStatuses" : [ "DRAFT" ]
-        },
         "description" : null,
         "id" : {
           "value" : "58.1"
         },
-        "terminology" : [ {
-          "id" : "ICD_10_SE",
-          "label" : "ICD-10-SE",
-          "codeSystem" : "1.2.752.116.1.1.1.1.8",
-          "equivalentCodeSystems" : [ "1.2.752.116.1.1.1", "1.2.752.116.1.1.1.1.3" ]
-        } ],
         "list" : [ {
           "id" : {
             "value" : "huvuddiagnos"
@@ -563,27 +534,138 @@
             "value" : "diagnos5"
           }
         } ],
+        "message" : {
+          "content" : "Ange alla diagnoser som sammantaget medför ett påtagligt hot mot patientens liv.",
+          "includedForStatuses" : [ "DRAFT" ],
+          "level" : "OBSERVE"
+        },
+        "name" : "Diagnos eller diagnoser för det tillstånd som orsakar ett hot mot patientens liv",
+        "terminology" : [ {
+          "id" : "ICD_10_SE",
+          "label" : "ICD-10-SE",
+          "codeSystem" : "1.2.752.116.1.1.1.1.8",
+          "equivalentCodeSystems" : [ "1.2.752.116.1.1.1", "1.2.752.116.1.1.1.1.3" ]
+        } ],
         "type" : "DIAGNOSIS"
       },
-      "rules" : [ {
-        "id" : {
-          "id" : "58"
+      "id" : {
+        "id" : "58"
+      },
+      "includeForCitizen" : true,
+      "includeInXml" : true,
+      "includeWhenRenewing" : true,
+      "mapping" : null,
+      "pdfConfiguration" : {
+        "appearance" : "/ArialMT 9.00 Tf 0 g",
+        "diagnoses" : {
+          "FieldId[value=diagnos5]" : {
+            "pdfCodeFieldIds" : [ {
+              "id" : "form1[0].#subform[0].flt_txtDiaKod21[0]"
+            }, {
+              "id" : "form1[0].#subform[0].flt_txtDiaKod22[0]"
+            }, {
+              "id" : "form1[0].#subform[0].flt_txtDiaKod23[0]"
+            }, {
+              "id" : "form1[0].#subform[0].flt_txtDiaKod24[0]"
+            }, {
+              "id" : "form1[0].#subform[0].flt_txtDiaKod25[0]"
+            } ],
+            "pdfNameFieldId" : {
+              "id" : "form1[0].#subform[0].flt_txtDiagnoser5[0]"
+            }
+          },
+          "FieldId[value=diagnos4]" : {
+            "pdfCodeFieldIds" : [ {
+              "id" : "form1[0].#subform[0].flt_txtDiaKod16[0]"
+            }, {
+              "id" : "form1[0].#subform[0].flt_txtDiaKod17[0]"
+            }, {
+              "id" : "form1[0].#subform[0].flt_txtDiaKod18[0]"
+            }, {
+              "id" : "form1[0].#subform[0].flt_txtDiaKod19[0]"
+            }, {
+              "id" : "form1[0].#subform[0].flt_txtDiaKod20[0]"
+            } ],
+            "pdfNameFieldId" : {
+              "id" : "form1[0].#subform[0].flt_txtDiagnoser4[0]"
+            }
+          },
+          "FieldId[value=diagnos3]" : {
+            "pdfCodeFieldIds" : [ {
+              "id" : "form1[0].#subform[0].flt_txtDiaKod11[0]"
+            }, {
+              "id" : "form1[0].#subform[0].flt_txtDiaKod12[0]"
+            }, {
+              "id" : "form1[0].#subform[0].flt_txtDiaKod13[0]"
+            }, {
+              "id" : "form1[0].#subform[0].flt_txtDiaKod14[0]"
+            }, {
+              "id" : "form1[0].#subform[0].flt_txtDiaKod15[0]"
+            } ],
+            "pdfNameFieldId" : {
+              "id" : "form1[0].#subform[0].flt_txtDiagnoser3[0]"
+            }
+          },
+          "FieldId[value=diagnos2]" : {
+            "pdfCodeFieldIds" : [ {
+              "id" : "form1[0].#subform[0].flt_txtDiaKod6[0]"
+            }, {
+              "id" : "form1[0].#subform[0].flt_txtDiaKod7[0]"
+            }, {
+              "id" : "form1[0].#subform[0].flt_txtDiaKod8[0]"
+            }, {
+              "id" : "form1[0].#subform[0].flt_txtDiaKod9[0]"
+            }, {
+              "id" : "form1[0].#subform[0].flt_txtDiaKod10[0]"
+            } ],
+            "pdfNameFieldId" : {
+              "id" : "form1[0].#subform[0].flt_txtDiagnoser2[0]"
+            }
+          },
+          "FieldId[value=huvuddiagnos]" : {
+            "pdfCodeFieldIds" : [ {
+              "id" : "form1[0].#subform[0].flt_txtDiaKod1[0]"
+            }, {
+              "id" : "form1[0].#subform[0].flt_txtDiaKod2[0]"
+            }, {
+              "id" : "form1[0].#subform[0].flt_txtDiaKod3[0]"
+            }, {
+              "id" : "form1[0].#subform[0].flt_txtDiaKod4[0]"
+            }, {
+              "id" : "form1[0].#subform[0].flt_txtDiaKod5[0]"
+            } ],
+            "pdfNameFieldId" : {
+              "id" : "form1[0].#subform[0].flt_txtDiagnoser[0]"
+            }
+          }
         },
-        "type" : "MANDATORY",
+        "maxLength" : 172,
+        "overflowSheetFieldId" : null,
+        "prefix" : {
+          "id" : "form1[0].#subform[0].flt_txt"
+        }
+      },
+      "rules" : [ {
+        "affectedSubElements" : null,
         "expression" : {
           "value" : "exists($huvuddiagnos)"
         },
-        "affectedSubElements" : null
+        "id" : {
+          "id" : "58"
+        },
+        "type" : "MANDATORY"
       }, {
         "id" : {
           "id" : "58"
         },
-        "type" : "TEXT_LIMIT",
         "limit" : {
           "value" : 81
-        }
+        },
+        "type" : "TEXT_LIMIT"
       } ],
+      "shouldValidate" : null,
       "validations" : [ {
+        "diagnosisCodeRepository" : null,
         "mandatoryField" : {
           "value" : "huvuddiagnos"
         },
@@ -597,114 +679,381 @@
           "value" : "diagnos4"
         }, {
           "value" : "diagnos5"
-        } ],
-        "diagnosisCodeRepository" : null
+        } ]
       } ],
-      "mapping" : null,
-      "pdfConfiguration" : {
-        "prefix" : {
-          "id" : "form1[0].#subform[0].flt_txt"
-        },
-        "diagnoses" : {
-          "FieldId[value=diagnos3]" : {
-            "pdfNameFieldId" : {
-              "id" : "form1[0].#subform[0].flt_txtDiagnoser3[0]"
-            },
-            "pdfCodeFieldIds" : [ {
-              "id" : "form1[0].#subform[0].flt_txtDiaKod11[0]"
-            }, {
-              "id" : "form1[0].#subform[0].flt_txtDiaKod12[0]"
-            }, {
-              "id" : "form1[0].#subform[0].flt_txtDiaKod13[0]"
-            }, {
-              "id" : "form1[0].#subform[0].flt_txtDiaKod14[0]"
-            }, {
-              "id" : "form1[0].#subform[0].flt_txtDiaKod15[0]"
-            } ]
-          },
-          "FieldId[value=diagnos2]" : {
-            "pdfNameFieldId" : {
-              "id" : "form1[0].#subform[0].flt_txtDiagnoser2[0]"
-            },
-            "pdfCodeFieldIds" : [ {
-              "id" : "form1[0].#subform[0].flt_txtDiaKod6[0]"
-            }, {
-              "id" : "form1[0].#subform[0].flt_txtDiaKod7[0]"
-            }, {
-              "id" : "form1[0].#subform[0].flt_txtDiaKod8[0]"
-            }, {
-              "id" : "form1[0].#subform[0].flt_txtDiaKod9[0]"
-            }, {
-              "id" : "form1[0].#subform[0].flt_txtDiaKod10[0]"
-            } ]
-          },
-          "FieldId[value=huvuddiagnos]" : {
-            "pdfNameFieldId" : {
-              "id" : "form1[0].#subform[0].flt_txtDiagnoser[0]"
-            },
-            "pdfCodeFieldIds" : [ {
-              "id" : "form1[0].#subform[0].flt_txtDiaKod1[0]"
-            }, {
-              "id" : "form1[0].#subform[0].flt_txtDiaKod2[0]"
-            }, {
-              "id" : "form1[0].#subform[0].flt_txtDiaKod3[0]"
-            }, {
-              "id" : "form1[0].#subform[0].flt_txtDiaKod4[0]"
-            }, {
-              "id" : "form1[0].#subform[0].flt_txtDiaKod5[0]"
-            } ]
-          },
-          "FieldId[value=diagnos5]" : {
-            "pdfNameFieldId" : {
-              "id" : "form1[0].#subform[0].flt_txtDiagnoser5[0]"
-            },
-            "pdfCodeFieldIds" : [ {
-              "id" : "form1[0].#subform[0].flt_txtDiaKod21[0]"
-            }, {
-              "id" : "form1[0].#subform[0].flt_txtDiaKod22[0]"
-            }, {
-              "id" : "form1[0].#subform[0].flt_txtDiaKod23[0]"
-            }, {
-              "id" : "form1[0].#subform[0].flt_txtDiaKod24[0]"
-            }, {
-              "id" : "form1[0].#subform[0].flt_txtDiaKod25[0]"
-            } ]
-          },
-          "FieldId[value=diagnos4]" : {
-            "pdfNameFieldId" : {
-              "id" : "form1[0].#subform[0].flt_txtDiagnoser4[0]"
-            },
-            "pdfCodeFieldIds" : [ {
-              "id" : "form1[0].#subform[0].flt_txtDiaKod16[0]"
-            }, {
-              "id" : "form1[0].#subform[0].flt_txtDiaKod17[0]"
-            }, {
-              "id" : "form1[0].#subform[0].flt_txtDiaKod18[0]"
-            }, {
-              "id" : "form1[0].#subform[0].flt_txtDiaKod19[0]"
-            }, {
-              "id" : "form1[0].#subform[0].flt_txtDiaKod20[0]"
-            } ]
-          }
-        },
-        "maxLength" : 172,
-        "appearance" : "/ArialMT 9.00 Tf 0 g",
-        "overflowSheetFieldId" : null
-      },
-      "children" : [ ],
-      "shouldValidate" : null,
-      "includeInXml" : true,
-      "includeForCitizen" : true,
       "visibilityConfiguration" : null
     }, {
-      "id" : {
-        "id" : "52"
-      },
-      "includeWhenRenewing" : true,
+      "children" : [ {
+        "children" : [ ],
+        "configuration" : {
+          "id" : {
+            "value" : "52.2"
+          },
+          "max" : "P0D",
+          "message" : null,
+          "min" : null,
+          "name" : "Ange när den aktiva behandlingen avslutades",
+          "type" : "DATE"
+        },
+        "id" : {
+          "id" : "52.2"
+        },
+        "includeForCitizen" : true,
+        "includeInXml" : true,
+        "includeWhenRenewing" : true,
+        "mapping" : {
+          "elementId" : {
+            "id" : "52"
+          },
+          "code" : null,
+          "customMapperId" : null
+        },
+        "pdfConfiguration" : {
+          "offset" : null,
+          "pdfFieldId" : {
+            "id" : "form1[0].#subform[1].flt_datumBehandlingenAvslutad[0]"
+          }
+        },
+        "rules" : [ {
+          "affectedSubElements" : null,
+          "expression" : {
+            "value" : "$52.2"
+          },
+          "id" : {
+            "id" : "52.2"
+          },
+          "type" : "MANDATORY"
+        }, {
+          "affectedSubElements" : null,
+          "expression" : {
+            "value" : "$ENDAST_PALLIATIV"
+          },
+          "id" : {
+            "id" : "52"
+          },
+          "type" : "SHOW"
+        } ],
+        "shouldValidate" : { },
+        "validations" : [ {
+          "mandatory" : true,
+          "max" : "P0D",
+          "min" : null
+        } ],
+        "visibilityConfiguration" : null
+      }, {
+        "children" : [ ],
+        "configuration" : {
+          "id" : {
+            "value" : "52.3"
+          },
+          "max" : "P0D",
+          "message" : null,
+          "min" : null,
+          "name" : "Ange när tillståndet blev akut livshotande",
+          "type" : "DATE"
+        },
+        "id" : {
+          "id" : "52.3"
+        },
+        "includeForCitizen" : true,
+        "includeInXml" : true,
+        "includeWhenRenewing" : true,
+        "mapping" : {
+          "elementId" : {
+            "id" : "52"
+          },
+          "code" : null,
+          "customMapperId" : null
+        },
+        "pdfConfiguration" : {
+          "offset" : null,
+          "pdfFieldId" : {
+            "id" : "form1[0].#subform[1].flt_datumAkutLivshotande[0]"
+          }
+        },
+        "rules" : [ {
+          "affectedSubElements" : null,
+          "expression" : {
+            "value" : "$52.3"
+          },
+          "id" : {
+            "id" : "52.3"
+          },
+          "type" : "MANDATORY"
+        }, {
+          "affectedSubElements" : null,
+          "expression" : {
+            "value" : "$AKUT_LIVSHOTANDE"
+          },
+          "id" : {
+            "id" : "52"
+          },
+          "type" : "SHOW"
+        } ],
+        "shouldValidate" : { },
+        "validations" : [ {
+          "mandatory" : true,
+          "max" : "P0D",
+          "min" : null
+        } ],
+        "visibilityConfiguration" : null
+      }, {
+        "children" : [ ],
+        "configuration" : {
+          "description" : null,
+          "header" : null,
+          "id" : {
+            "value" : "52.4"
+          },
+          "label" : "Ange om möjligt hur länge hotet mot livet kvarstår när patienten får vård enligt den vårdplan som gäller.",
+          "message" : null,
+          "name" : "Beskriv på vilket sätt  sjukdomstillståndet utgör ett påtagligt hot mot patientens liv",
+          "type" : "TEXT_AREA"
+        },
+        "id" : {
+          "id" : "52.4"
+        },
+        "includeForCitizen" : true,
+        "includeInXml" : true,
+        "includeWhenRenewing" : true,
+        "mapping" : {
+          "elementId" : {
+            "id" : "52"
+          },
+          "code" : null,
+          "customMapperId" : null
+        },
+        "pdfConfiguration" : {
+          "maxLength" : 265,
+          "offset" : null,
+          "overflowSheetFieldId" : null,
+          "pdfFieldId" : {
+            "id" : "form1[0].#subform[1].flt_txtSjukdomstillstand[0]"
+          }
+        },
+        "rules" : [ {
+          "affectedSubElements" : null,
+          "expression" : {
+            "value" : "$52.4"
+          },
+          "id" : {
+            "id" : "52.4"
+          },
+          "type" : "MANDATORY"
+        }, {
+          "affectedSubElements" : null,
+          "expression" : {
+            "value" : "$AKUT_LIVSHOTANDE"
+          },
+          "id" : {
+            "id" : "52"
+          },
+          "type" : "SHOW"
+        }, {
+          "id" : {
+            "id" : "52.4"
+          },
+          "limit" : {
+            "value" : 265
+          },
+          "type" : "TEXT_LIMIT"
+        } ],
+        "shouldValidate" : { },
+        "validations" : [ {
+          "limit" : 265,
+          "mandatory" : true
+        } ],
+        "visibilityConfiguration" : null
+      }, {
+        "children" : [ ],
+        "configuration" : {
+          "description" : null,
+          "id" : {
+            "value" : "52.5"
+          },
+          "message" : null,
+          "name" : "Kan du uppskatta hur länge tillståndet kommer vara livshotande?",
+          "selectedText" : "Ja",
+          "type" : "RADIO_BOOLEAN",
+          "unselectedText" : "Nej"
+        },
+        "id" : {
+          "id" : "52.5"
+        },
+        "includeForCitizen" : true,
+        "includeInXml" : true,
+        "includeWhenRenewing" : true,
+        "mapping" : {
+          "elementId" : {
+            "id" : "52"
+          },
+          "code" : null,
+          "customMapperId" : null
+        },
+        "pdfConfiguration" : {
+          "checkboxFalse" : {
+            "id" : "form1[0].#subform[1].ksr_Nej[0]"
+          },
+          "checkboxTrue" : {
+            "id" : "form1[0].#subform[1].ksr_Ja[0]"
+          },
+          "isRadioButton" : false,
+          "radioButton" : false,
+          "valueFalse" : null,
+          "valueTrue" : null
+        },
+        "rules" : [ {
+          "affectedSubElements" : null,
+          "expression" : {
+            "value" : "exists($52.5)"
+          },
+          "id" : {
+            "id" : "52.5"
+          },
+          "type" : "MANDATORY"
+        }, {
+          "affectedSubElements" : null,
+          "expression" : {
+            "value" : "$AKUT_LIVSHOTANDE"
+          },
+          "id" : {
+            "id" : "52"
+          },
+          "type" : "SHOW"
+        } ],
+        "shouldValidate" : { },
+        "validations" : [ {
+          "mandatory" : true
+        } ],
+        "visibilityConfiguration" : null
+      }, {
+        "children" : [ ],
+        "configuration" : {
+          "id" : {
+            "value" : "52.6"
+          },
+          "max" : null,
+          "message" : null,
+          "min" : null,
+          "name" : "Till och med vilket datum",
+          "type" : "DATE"
+        },
+        "id" : {
+          "id" : "52.6"
+        },
+        "includeForCitizen" : true,
+        "includeInXml" : true,
+        "includeWhenRenewing" : true,
+        "mapping" : {
+          "elementId" : {
+            "id" : "52"
+          },
+          "code" : null,
+          "customMapperId" : null
+        },
+        "pdfConfiguration" : {
+          "offset" : null,
+          "pdfFieldId" : {
+            "id" : "form1[0].#subform[1].flt_datumTillMed[0]"
+          }
+        },
+        "rules" : [ {
+          "affectedSubElements" : null,
+          "expression" : {
+            "value" : "$52.6"
+          },
+          "id" : {
+            "id" : "52.6"
+          },
+          "type" : "MANDATORY"
+        }, {
+          "affectedSubElements" : null,
+          "expression" : {
+            "value" : "$52.5"
+          },
+          "id" : {
+            "id" : "52.5"
+          },
+          "type" : "SHOW"
+        } ],
+        "shouldValidate" : { },
+        "validations" : [ {
+          "mandatory" : true,
+          "max" : null,
+          "min" : "P0D"
+        } ],
+        "visibilityConfiguration" : null
+      }, {
+        "children" : [ ],
+        "configuration" : {
+          "description" : null,
+          "header" : null,
+          "id" : {
+            "value" : "52.7"
+          },
+          "label" : "Ange när tillståndet blev livshotande, och om det är möjligt hur länge hotet mot livet kvarstår när patienten får vård enligt den vårdplan som gäller.",
+          "message" : null,
+          "name" : "Beskriv på vilket sätt sjukdomstillståndet utgör ett påtagligt hot mot patientens liv",
+          "type" : "TEXT_AREA"
+        },
+        "id" : {
+          "id" : "52.7"
+        },
+        "includeForCitizen" : true,
+        "includeInXml" : true,
+        "includeWhenRenewing" : true,
+        "mapping" : {
+          "elementId" : {
+            "id" : "52"
+          },
+          "code" : null,
+          "customMapperId" : null
+        },
+        "pdfConfiguration" : {
+          "maxLength" : 265,
+          "offset" : null,
+          "overflowSheetFieldId" : null,
+          "pdfFieldId" : {
+            "id" : "form1[0].#subform[1].flt_txtBeskrivSjukdomstillstandet[0]"
+          }
+        },
+        "rules" : [ {
+          "affectedSubElements" : null,
+          "expression" : {
+            "value" : "$52.7"
+          },
+          "id" : {
+            "id" : "52.7"
+          },
+          "type" : "MANDATORY"
+        }, {
+          "affectedSubElements" : null,
+          "expression" : {
+            "value" : "$ANNAT"
+          },
+          "id" : {
+            "id" : "52"
+          },
+          "type" : "SHOW"
+        }, {
+          "id" : {
+            "id" : "52.7"
+          },
+          "limit" : {
+            "value" : 265
+          },
+          "type" : "TEXT_LIMIT"
+        } ],
+        "shouldValidate" : { },
+        "validations" : [ {
+          "limit" : 265,
+          "mandatory" : true
+        } ],
+        "visibilityConfiguration" : null
+      } ],
       "configuration" : {
-        "name" : "Patientens behandling och vårdsituation",
         "description" : null,
-        "message" : null,
+        "elementLayout" : "ROWS",
         "id" : {
           "value" : "52.1"
         },
@@ -739,591 +1088,242 @@
             "displayName" : "Annat"
           }
         } ],
-        "elementLayout" : "ROWS",
+        "message" : null,
+        "name" : "Patientens behandling och vårdsituation",
         "type" : "RADIO_MULTIPLE_CODE"
       },
-      "rules" : [ {
-        "id" : {
-          "id" : "52"
-        },
-        "type" : "MANDATORY",
-        "expression" : {
-          "value" : "exists($ENDAST_PALLIATIV) || exists($AKUT_LIVSHOTANDE) || exists($ANNAT)"
-        },
-        "affectedSubElements" : null
-      } ],
-      "validations" : [ {
-        "mandatory" : true
-      } ],
+      "id" : {
+        "id" : "52"
+      },
+      "includeForCitizen" : true,
+      "includeInXml" : true,
+      "includeWhenRenewing" : true,
       "mapping" : null,
       "pdfConfiguration" : {
         "codes" : {
+          "FieldId[value=ANNAT]" : {
+            "id" : "form1[0].#subform[1].ksr_Annat2[0]"
+          },
           "FieldId[value=AKUT_LIVSHOTANDE]" : {
             "id" : "form1[0].#subform[1].ksr_AkutLivshotande[0]"
           },
           "FieldId[value=ENDAST_PALLIATIV]" : {
             "id" : "form1[0].#subform[1].ksr_PalliativVard[0]"
-          },
-          "FieldId[value=ANNAT]" : {
-            "id" : "form1[0].#subform[1].ksr_Annat2[0]"
           }
         }
       },
-      "children" : [ {
-        "id" : {
-          "id" : "52.2"
-        },
-        "includeWhenRenewing" : true,
-        "configuration" : {
-          "name" : "Ange när den aktiva behandlingen avslutades",
-          "message" : null,
-          "id" : {
-            "value" : "52.2"
-          },
-          "min" : null,
-          "max" : "P0D",
-          "type" : "DATE"
-        },
-        "rules" : [ {
-          "id" : {
-            "id" : "52.2"
-          },
-          "type" : "MANDATORY",
-          "expression" : {
-            "value" : "$52.2"
-          },
-          "affectedSubElements" : null
-        }, {
-          "id" : {
-            "id" : "52"
-          },
-          "type" : "SHOW",
-          "expression" : {
-            "value" : "$ENDAST_PALLIATIV"
-          },
-          "affectedSubElements" : null
-        } ],
-        "validations" : [ {
-          "mandatory" : true,
-          "min" : null,
-          "max" : "P0D"
-        } ],
-        "mapping" : {
-          "elementId" : {
-            "id" : "52"
-          },
-          "code" : null,
-          "customMapperId" : null
-        },
-        "pdfConfiguration" : {
-          "pdfFieldId" : {
-            "id" : "form1[0].#subform[1].flt_datumBehandlingenAvslutad[0]"
-          },
-          "offset" : null
-        },
-        "children" : [ ],
-        "shouldValidate" : { },
-        "includeInXml" : true,
-        "includeForCitizen" : true,
-        "visibilityConfiguration" : null
-      }, {
-        "id" : {
-          "id" : "52.3"
-        },
-        "includeWhenRenewing" : true,
-        "configuration" : {
-          "name" : "Ange när tillståndet blev akut livshotande",
-          "message" : null,
-          "id" : {
-            "value" : "52.3"
-          },
-          "min" : null,
-          "max" : "P0D",
-          "type" : "DATE"
-        },
-        "rules" : [ {
-          "id" : {
-            "id" : "52.3"
-          },
-          "type" : "MANDATORY",
-          "expression" : {
-            "value" : "$52.3"
-          },
-          "affectedSubElements" : null
-        }, {
-          "id" : {
-            "id" : "52"
-          },
-          "type" : "SHOW",
-          "expression" : {
-            "value" : "$AKUT_LIVSHOTANDE"
-          },
-          "affectedSubElements" : null
-        } ],
-        "validations" : [ {
-          "mandatory" : true,
-          "min" : null,
-          "max" : "P0D"
-        } ],
-        "mapping" : {
-          "elementId" : {
-            "id" : "52"
-          },
-          "code" : null,
-          "customMapperId" : null
-        },
-        "pdfConfiguration" : {
-          "pdfFieldId" : {
-            "id" : "form1[0].#subform[1].flt_datumAkutLivshotande[0]"
-          },
-          "offset" :null
-        },
-        "children" : [ ],
-        "shouldValidate" : { },
-        "includeInXml" : true,
-        "includeForCitizen" : true,
-        "visibilityConfiguration" : null
-      }, {
-        "id" : {
-          "id" : "52.4"
-        },
-        "includeWhenRenewing" : true,
-        "configuration" : {
-          "name" : "Beskriv på vilket sätt  sjukdomstillståndet utgör ett påtagligt hot mot patientens liv",
-          "description" : null,
-          "header" : null,
-          "label" : "Ange om möjligt hur länge hotet mot livet kvarstår när patienten får vård enligt den vårdplan som gäller.",
-          "message" : null,
-          "id" : {
-            "value" : "52.4"
-          },
-          "type" : "TEXT_AREA"
-        },
-        "rules" : [ {
-          "id" : {
-            "id" : "52.4"
-          },
-          "type" : "MANDATORY",
-          "expression" : {
-            "value" : "$52.4"
-          },
-          "affectedSubElements" : null
-        }, {
-          "id" : {
-            "id" : "52"
-          },
-          "type" : "SHOW",
-          "expression" : {
-            "value" : "$AKUT_LIVSHOTANDE"
-          },
-          "affectedSubElements" : null
-        }, {
-          "id" : {
-            "id" : "52.4"
-          },
-          "type" : "TEXT_LIMIT",
-          "limit" : {
-            "value" : 265
-          }
-        } ],
-        "validations" : [ {
-          "mandatory" : true,
-          "limit" : 265
-        } ],
-        "mapping" : {
-          "elementId" : {
-            "id" : "52"
-          },
-          "code" : null,
-          "customMapperId" : null
-        },
-        "pdfConfiguration" : {
-          "pdfFieldId" : {
-            "id" : "form1[0].#subform[1].flt_txtSjukdomstillstand[0]"
-          },
-          "maxLength" : 265,
-          "overflowSheetFieldId" : null,
-          "offset" : null
-        },
-        "children" : [ ],
-        "shouldValidate" : { },
-        "includeInXml" : true,
-        "includeForCitizen" : true,
-        "visibilityConfiguration" : null
-      }, {
-        "id" : {
-          "id" : "52.5"
-        },
-        "includeWhenRenewing" : true,
-        "configuration" : {
-          "name" : "Kan du uppskatta hur länge tillståndet kommer vara livshotande?",
-          "description" : null,
-          "message" : null,
-          "id" : {
-            "value" : "52.5"
-          },
-          "selectedText" : "Ja",
-          "unselectedText" : "Nej",
-          "type" : "RADIO_BOOLEAN"
-        },
-        "rules" : [ {
-          "id" : {
-            "id" : "52.5"
-          },
-          "type" : "MANDATORY",
-          "expression" : {
-            "value" : "exists($52.5)"
-          },
-          "affectedSubElements" : null
-        }, {
-          "id" : {
-            "id" : "52"
-          },
-          "type" : "SHOW",
-          "expression" : {
-            "value" : "$AKUT_LIVSHOTANDE"
-          },
-          "affectedSubElements" : null
-        } ],
-        "validations" : [ {
-          "mandatory" : true
-        } ],
-        "mapping" : {
-          "elementId" : {
-            "id" : "52"
-          },
-          "code" : null,
-          "customMapperId" : null
-        },
-        "pdfConfiguration" : {
-          "checkboxTrue" : {
-            "id" : "form1[0].#subform[1].ksr_Ja[0]"
-          },
-          "checkboxFalse" : {
-            "id" : "form1[0].#subform[1].ksr_Nej[0]"
-          },
-          "isRadioButton" : false,
-          "valueTrue" : null,
-          "valueFalse" : null,
-          "radioButton" : false
-        },
-        "children" : [ ],
-        "shouldValidate" : { },
-        "includeInXml" : true,
-        "includeForCitizen" : true,
-        "visibilityConfiguration" : null
-      }, {
-        "id" : {
-          "id" : "52.6"
-        },
-        "includeWhenRenewing" : true,
-        "configuration" : {
-          "name" : "Till och med vilket datum",
-          "message" : null,
-          "id" : {
-            "value" : "52.6"
-          },
-          "min" : null,
-          "max" : null,
-          "type" : "DATE"
-        },
-        "rules" : [ {
-          "id" : {
-            "id" : "52.6"
-          },
-          "type" : "MANDATORY",
-          "expression" : {
-            "value" : "$52.6"
-          },
-          "affectedSubElements" : null
-        }, {
-          "id" : {
-            "id" : "52.5"
-          },
-          "type" : "SHOW",
-          "expression" : {
-            "value" : "$52.5"
-          },
-          "affectedSubElements" : null
-        } ],
-        "validations" : [ {
-          "mandatory" : true,
-          "min" : "P0D",
-          "max" : null
-        } ],
-        "mapping" : {
-          "elementId" : {
-            "id" : "52"
-          },
-          "code" : null,
-          "customMapperId" : null
-        },
-        "pdfConfiguration" : {
-          "pdfFieldId" : {
-            "id" : "form1[0].#subform[1].flt_datumTillMed[0]"
-          },
-          "offset" : null
-        },
-        "children" : [ ],
-        "shouldValidate" : { },
-        "includeInXml" : true,
-        "includeForCitizen" : true,
-        "visibilityConfiguration" : null
-      }, {
-        "id" : {
-          "id" : "52.7"
-        },
-        "includeWhenRenewing" : true,
-        "configuration" : {
-          "name" : "Beskriv på vilket sätt sjukdomstillståndet utgör ett påtagligt hot mot patientens liv",
-          "description" : null,
-          "header" : null,
-          "label" : "Ange när tillståndet blev livshotande, och om det är möjligt hur länge hotet mot livet kvarstår när patienten får vård enligt den vårdplan som gäller.",
-          "message" : null,
-          "id" : {
-            "value" : "52.7"
-          },
-          "type" : "TEXT_AREA"
-        },
-        "rules" : [ {
-          "id" : {
-            "id" : "52.7"
-          },
-          "type" : "MANDATORY",
-          "expression" : {
-            "value" : "$52.7"
-          },
-          "affectedSubElements" : null
-        }, {
-          "id" : {
-            "id" : "52"
-          },
-          "type" : "SHOW",
-          "expression" : {
-            "value" : "$ANNAT"
-          },
-          "affectedSubElements" : null
-        }, {
-          "id" : {
-            "id" : "52.7"
-          },
-          "type" : "TEXT_LIMIT",
-          "limit" : {
-            "value" : 265
-          }
-        } ],
-        "validations" : [ {
-          "mandatory" : true,
-          "limit" : 265
-        } ],
-        "mapping" : {
-          "elementId" : {
-            "id" : "52"
-          },
-          "code" : null,
-          "customMapperId" : null
-        },
-        "pdfConfiguration" : {
-          "pdfFieldId" : {
-            "id" : "form1[0].#subform[1].flt_txtBeskrivSjukdomstillstandet[0]"
-          },
-          "maxLength" : 265,
-          "overflowSheetFieldId" : null,
-          "offset" : null
-        },
-        "children" : [ ],
-        "shouldValidate" : { },
-        "includeInXml" : true,
-        "includeForCitizen" : true,
-        "visibilityConfiguration" : null
-      } ],
-      "shouldValidate" : null,
-      "includeInXml" : true,
-      "includeForCitizen" : true,
-      "visibilityConfiguration" : null
-    } ],
-    "shouldValidate" : null,
-    "includeInXml" : true,
-    "includeForCitizen" : true,
-    "visibilityConfiguration" : null
-  }, {
-    "id" : {
-      "id" : "KAT_3"
-    },
-    "includeWhenRenewing" : true,
-    "configuration" : {
-      "name" : "Samtycke för närståendes stöd",
-      "description" : null,
-      "message" : null,
-      "type" : "CATEGORY"
-    },
-    "rules" : [ ],
-    "validations" : [ ],
-    "mapping" : null,
-    "pdfConfiguration" : null,
-    "children" : [ {
-      "id" : {
-        "id" : "forutsattningar"
-      },
-      "includeWhenRenewing" : true,
-      "configuration" : {
-        "name" : null,
-        "message" : {
-          "content" : "Om patienten har medicinska förutsättningar att samtycka till en närståendes stöd, så ska patienten göra det. Därför ska du fylla i om hen kan samtycka eller inte.",
-          "level" : "INFO",
-          "includedForStatuses" : null
-        },
-        "type" : "MESSAGE"
-      },
-      "rules" : [ ],
-      "validations" : [ ],
-      "mapping" : null,
-      "pdfConfiguration" : null,
-      "children" : [ ],
-      "shouldValidate" : null,
-      "includeInXml" : true,
-      "includeForCitizen" : true,
-      "visibilityConfiguration" : null
-    }, {
-      "id" : {
-        "id" : "53"
-      },
-      "includeWhenRenewing" : false,
-      "configuration" : {
-        "name" : "Har patienten de medicinska förutsättningarna för att kunna lämna samtycke?",
-        "description" : null,
-        "message" : null,
-        "id" : {
-          "value" : "53.1"
-        },
-        "selectedText" : "Ja",
-        "unselectedText" : "Nej",
-        "type" : "RADIO_BOOLEAN"
-      },
       "rules" : [ {
-        "id" : {
-          "id" : "53"
-        },
-        "type" : "MANDATORY",
+        "affectedSubElements" : null,
         "expression" : {
-          "value" : "exists($53.1)"
+          "value" : "exists($ENDAST_PALLIATIV) || exists($AKUT_LIVSHOTANDE) || exists($ANNAT)"
         },
-        "affectedSubElements" : null
+        "id" : {
+          "id" : "52"
+        },
+        "type" : "MANDATORY"
       } ],
+      "shouldValidate" : null,
       "validations" : [ {
         "mandatory" : true
       } ],
+      "visibilityConfiguration" : null
+    } ],
+    "configuration" : {
+      "description" : "Ange på vilket sätt hälsotillståndet utgör ett påtagligt hot mot patientens liv i nuläget eller på viss tids sikt.\n\nHälsotillståndet kan utgöra ett påtagligt hot även om det finns hopp om att det förbättras.\n<ul>\n<li>Ange alla diagnoser som sammantaget medför ett påtagligt hot mot patientens liv.</li><li>Ange ett av alternativen som gäller patientens behandling och vårdsituation.</li></ul>",
+      "message" : null,
+      "name" : "Påtagligt hot mot patientens liv",
+      "type" : "CATEGORY"
+    },
+    "id" : {
+      "id" : "KAT_2"
+    },
+    "includeForCitizen" : true,
+    "includeInXml" : true,
+    "includeWhenRenewing" : true,
+    "mapping" : null,
+    "pdfConfiguration" : null,
+    "rules" : [ ],
+    "shouldValidate" : null,
+    "validations" : [ ],
+    "visibilityConfiguration" : null
+  }, {
+    "children" : [ {
+      "children" : [ ],
+      "configuration" : {
+        "message" : {
+          "content" : "Om patienten har medicinska förutsättningar att samtycka till en närståendes stöd, så ska patienten göra det. Därför ska du fylla i om hen kan samtycka eller inte.",
+          "includedForStatuses" : null,
+          "level" : "INFO"
+        },
+        "name" : null,
+        "type" : "MESSAGE"
+      },
+      "id" : {
+        "id" : "forutsattningar"
+      },
+      "includeForCitizen" : true,
+      "includeInXml" : true,
+      "includeWhenRenewing" : true,
+      "mapping" : null,
+      "pdfConfiguration" : null,
+      "rules" : [ ],
+      "shouldValidate" : null,
+      "validations" : [ ],
+      "visibilityConfiguration" : null
+    }, {
+      "children" : [ ],
+      "configuration" : {
+        "description" : null,
+        "id" : {
+          "value" : "53.1"
+        },
+        "message" : null,
+        "name" : "Har patienten de medicinska förutsättningarna för att kunna lämna samtycke?",
+        "selectedText" : "Ja",
+        "type" : "RADIO_BOOLEAN",
+        "unselectedText" : "Nej"
+      },
+      "id" : {
+        "id" : "53"
+      },
+      "includeForCitizen" : true,
+      "includeInXml" : true,
+      "includeWhenRenewing" : false,
       "mapping" : null,
       "pdfConfiguration" : {
-        "checkboxTrue" : {
-          "id" : "form1[0].#subform[1].ksr_Ja_Modul3[0]"
-        },
         "checkboxFalse" : {
           "id" : "form1[0].#subform[1].ksr_Nej_Modul3[0]"
         },
+        "checkboxTrue" : {
+          "id" : "form1[0].#subform[1].ksr_Ja_Modul3[0]"
+        },
         "isRadioButton" : false,
-        "valueTrue" : null,
+        "radioButton" : false,
         "valueFalse" : null,
-        "radioButton" : false
+        "valueTrue" : null
       },
-      "children" : [ ],
+      "rules" : [ {
+        "affectedSubElements" : null,
+        "expression" : {
+          "value" : "exists($53.1)"
+        },
+        "id" : {
+          "id" : "53"
+        },
+        "type" : "MANDATORY"
+      } ],
       "shouldValidate" : null,
-      "includeInXml" : true,
-      "includeForCitizen" : true,
+      "validations" : [ {
+        "mandatory" : true
+      } ],
       "visibilityConfiguration" : null
     } ],
-    "shouldValidate" : null,
-    "includeInXml" : true,
+    "configuration" : {
+      "description" : null,
+      "message" : null,
+      "name" : "Samtycke för närståendes stöd",
+      "type" : "CATEGORY"
+    },
+    "id" : {
+      "id" : "KAT_3"
+    },
     "includeForCitizen" : true,
+    "includeInXml" : true,
+    "includeWhenRenewing" : true,
+    "mapping" : null,
+    "pdfConfiguration" : null,
+    "rules" : [ ],
+    "shouldValidate" : null,
+    "validations" : [ ],
     "visibilityConfiguration" : null
   }, {
-    "id" : {
-      "id" : "UNIT_CONTACT_INFORMATION"
-    },
-    "includeWhenRenewing" : true,
+    "children" : [ ],
     "configuration" : {
       "message" : null,
       "type" : "ISSUING_UNIT"
     },
-    "rules" : [ ],
-    "validations" : [ { } ],
+    "id" : {
+      "id" : "UNIT_CONTACT_INFORMATION"
+    },
+    "includeForCitizen" : true,
+    "includeInXml" : true,
+    "includeWhenRenewing" : true,
     "mapping" : null,
     "pdfConfiguration" : null,
-    "children" : [ ],
+    "rules" : [ ],
     "shouldValidate" : null,
-    "includeInXml" : true,
-    "includeForCitizen" : true,
+    "validations" : [ { } ],
     "visibilityConfiguration" : null
   } ],
   "schematronPath" : {
     "value" : "fk3226/schematron/lunsp.v1.sch"
   },
   "texts" : [ {
+    "links" : [ ],
     "text" : "Det här är ditt intyg. Intyget innehåller all information som vården fyllt i. Du kan inte ändra något i ditt intyg. Har du frågor kontaktar du den som skrivit ditt intyg.",
-    "type" : "PREAMBLE_TEXT",
-    "links" : [ ]
+    "type" : "PREAMBLE_TEXT"
   } ],
   "summaryProvider" : { },
   "messageTypes" : [ {
-    "type" : "MISSING",
     "subject" : {
       "subject" : "Välj typ av fråga"
-    }
+    },
+    "type" : "MISSING"
   }, {
-    "type" : "CONTACT",
     "subject" : {
       "subject" : "Kontakt"
-    }
+    },
+    "type" : "CONTACT"
   }, {
-    "type" : "OTHER",
     "subject" : {
       "subject" : "Övrigt"
-    }
+    },
+    "type" : "OTHER"
   } ],
   "pdfSpecification" : {
-    "pdfTemplatePathProvider" : { },
+    "overFlowPageIndex" : null,
+    "overflowFieldId" : null,
+    "overlayTextProvider" : {
+      "overlayDetails" : {
+        "citizenTextIndex" : 5,
+        "sentTextIndex" : 5,
+        "signaturePageIndex" : 1,
+        "signatureTextX" : 173.0,
+        "signatureTextY" : 300.0,
+        "signedTextWithAddressIndex" : 36,
+        "signedTextWithoutAddressIndex" : 36
+      }
+    },
     "patientIdFieldIds" : [ {
       "id" : "form1[0].#subform[0].flt_txtPnr[0]"
     }, {
       "id" : "form1[0].#subform[1].flt_txtPnr[1]"
     } ],
+    "pdfTemplatePathProvider" : { },
     "signature" : {
-      "signaturePageIndex" : 1,
-      "signedDateFieldId" : {
-        "id" : "form1[0].#subform[1].flt_datUnderskrift[0]"
-      },
-      "signedByNameFieldId" : {
-        "id" : "form1[0].#subform[1].flt_txtNamnfortydligande[0]"
-      },
-      "paTitleFieldId" : {
-        "id" : "form1[0].#subform[1].flt_txtBefattning[0]"
-      },
-      "specialtyFieldId" : {
-        "id" : "form1[0].#subform[1].flt_txtEventuellSpecialistkompetens[0]"
+      "contactInformation" : {
+        "id" : "form1[0].#subform[1].flt_txtVardgivarensNamnAdressTelefon[0]"
       },
       "hsaIdFieldId" : {
         "id" : "form1[0].#subform[1].flt_txtLakarensHSA-ID[0]"
       },
+      "paTitleFieldId" : {
+        "id" : "form1[0].#subform[1].flt_txtBefattning[0]"
+      },
+      "signaturePageIndex" : 1,
+      "signedByNameFieldId" : {
+        "id" : "form1[0].#subform[1].flt_txtNamnfortydligande[0]"
+      },
+      "signedDateFieldId" : {
+        "id" : "form1[0].#subform[1].flt_datUnderskrift[0]"
+      },
+      "specialtyFieldId" : {
+        "id" : "form1[0].#subform[1].flt_txtEventuellSpecialistkompetens[0]"
+      },
       "workplaceCodeFieldId" : {
         "id" : "form1[0].#subform[1].flt_txtArbetsplatskod[0]"
-      },
-      "contactInformation" : {
-        "id" : "form1[0].#subform[1].flt_txtVardgivarensNamnAdressTelefon[0]"
       }
-    },
-    "overlayTextProvider" : {
-      "overlayDetails" : {
-        "signatureTextX" : 173.0,
-        "signatureTextY" : 300.0,
-        "signaturePageIndex" : 1,
-        "signedTextWithAddressIndex": 36,
-        "signedTextWithoutAddressIndex": 36,
-        "sentTextIndex": 5,
-        "citizenTextIndex": 5
-      }
-    },
-    "overFlowPageIndex" : null,
-    "overflowFieldId" : null
+    }
   },
   "confirmationModalProvider" : null,
   "certificateActionFactory" : null,
@@ -1333,7 +1333,7 @@
   "versions" : [ ],
   "generalPrintProvider" : null,
   "active" : true,
+  "inactive" : false,
   "lastestActiveVersion" : false,
-  "latestMinorVersion" : false,
-  "inactive" : false
+  "latestMinorVersion" : false
 }

@@ -19,8 +19,6 @@
 package se.inera.intyg.certificateservice.application.message.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,6 +27,8 @@ import lombok.Value;
 import se.inera.intyg.certificateservice.application.certificate.dto.CertificateRelationDTO;
 import se.inera.intyg.certificateservice.application.common.dto.ResourceLinkDTO;
 import se.inera.intyg.certificateservice.application.message.dto.QuestionDTO.QuestionDTOBuilder;
+import tools.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.annotation.JsonPOJOBuilder;
 
 @JsonDeserialize(builder = QuestionDTOBuilder.class)
 @Value

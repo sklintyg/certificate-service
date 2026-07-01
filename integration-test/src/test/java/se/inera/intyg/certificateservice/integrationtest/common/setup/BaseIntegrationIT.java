@@ -149,4 +149,10 @@ public abstract class BaseIntegrationIT {
         testabilityUtilities().getTestabilityCertificate().getLatestMinorVersion();
     return latestMinorVersion != null ? latestMinorVersion : typeVersion();
   }
+
+  protected String latestMajorVersion() {
+    final var latestMajorVersion =
+        testabilityUtilities().getTestabilityCertificate().getLatestMajorVersion();
+    return latestMajorVersion != null ? latestMajorVersion : latestMinorVersion();
+  }
 }

@@ -26,6 +26,7 @@ import se.inera.intyg.certificateservice.domain.certificate.model.ElementValueTe
 import se.inera.intyg.certificateservice.integrationtest.common.setup.BaseTestabilityUtilities;
 import se.inera.intyg.certificateservice.integrationtest.common.setup.TestabilityAccess;
 import se.inera.intyg.certificateservice.integrationtest.common.setup.TestabilityCertificate;
+import se.inera.intyg.certificateservice.integrationtest.ts8071.v2.TS8071V2TestSetup;
 
 public class TS8071TestSetup {
 
@@ -43,6 +44,7 @@ public class TS8071TestSetup {
                 .type(CERTIFICATE_TYPE)
                 .code(CODE)
                 .activeVersion(ACTIVE_CERTIFICATE_TYPE_VERSION)
+                .latestMajorVersion(TS8071V2TestSetup.ACTIVE_CERTIFICATE_TYPE_VERSION)
                 .recipient(RECIPIENT)
                 .valueForTest(
                     ElementData.builder()

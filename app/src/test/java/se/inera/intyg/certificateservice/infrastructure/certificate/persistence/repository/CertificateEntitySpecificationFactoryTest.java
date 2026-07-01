@@ -184,6 +184,9 @@ class CertificateEntitySpecificationFactoryTest {
                     CertificateEntitySpecification.modifiedEqualsAndGreaterThan(
                         certificatesRequest.modifiedFrom()))
             .thenReturn(mock(Specification.class));
+        specification
+            .when(CertificateEntitySpecification::notPlacerholderCertificate)
+            .thenReturn(mock(Specification.class));
 
         assertNotNull(certificateEntitySpecificationFactory.create(certificatesRequest));
 
@@ -199,7 +202,12 @@ class CertificateEntitySpecificationFactoryTest {
       final var certificatesRequest = CertificatesRequest.builder().build();
       try (MockedStatic<CertificateEntitySpecification> specification =
           mockStatic(CertificateEntitySpecification.class)) {
+        specification
+            .when(CertificateEntitySpecification::notPlacerholderCertificate)
+            .thenReturn(mock(Specification.class));
+
         assertNotNull(certificateEntitySpecificationFactory.create(certificatesRequest));
+
         specification.verify(CertificateEntitySpecification::notPlacerholderCertificate);
         specification.verifyNoMoreInteractions();
       }
@@ -219,6 +227,9 @@ class CertificateEntitySpecificationFactoryTest {
                     CertificateEntitySpecification.modifiedEqualsAndLesserThan(
                         certificatesRequest.modifiedTo()))
             .thenReturn(mock(Specification.class));
+        specification
+            .when(CertificateEntitySpecification::notPlacerholderCertificate)
+            .thenReturn(mock(Specification.class));
 
         assertNotNull(certificateEntitySpecificationFactory.create(certificatesRequest));
 
@@ -234,6 +245,10 @@ class CertificateEntitySpecificationFactoryTest {
       final var certificatesRequest = CertificatesRequest.builder().build();
       try (MockedStatic<CertificateEntitySpecification> specification =
           mockStatic(CertificateEntitySpecification.class)) {
+        specification
+            .when(CertificateEntitySpecification::notPlacerholderCertificate)
+            .thenReturn(mock(Specification.class));
+
         assertNotNull(certificateEntitySpecificationFactory.create(certificatesRequest));
         specification.verify(CertificateEntitySpecification::notPlacerholderCertificate);
         specification.verifyNoMoreInteractions();
@@ -254,6 +269,9 @@ class CertificateEntitySpecificationFactoryTest {
                     CertificateEntitySpecification.createdEqualsAndGreaterThan(
                         certificatesRequest.createdFrom()))
             .thenReturn(mock(Specification.class));
+        specification
+            .when(CertificateEntitySpecification::notPlacerholderCertificate)
+            .thenReturn(mock(Specification.class));
 
         assertNotNull(certificateEntitySpecificationFactory.create(certificatesRequest));
 
@@ -269,6 +287,10 @@ class CertificateEntitySpecificationFactoryTest {
       final var certificatesRequest = CertificatesRequest.builder().build();
       try (MockedStatic<CertificateEntitySpecification> specification =
           mockStatic(CertificateEntitySpecification.class)) {
+        specification
+            .when(CertificateEntitySpecification::notPlacerholderCertificate)
+            .thenReturn(mock(Specification.class));
+
         assertNotNull(certificateEntitySpecificationFactory.create(certificatesRequest));
 
         specification.verify(CertificateEntitySpecification::notPlacerholderCertificate);
@@ -290,6 +312,9 @@ class CertificateEntitySpecificationFactoryTest {
                     CertificateEntitySpecification.createdEqualsAndLesserThan(
                         certificatesRequest.createdTo()))
             .thenReturn(mock(Specification.class));
+        specification
+            .when(CertificateEntitySpecification::notPlacerholderCertificate)
+            .thenReturn(mock(Specification.class));
 
         assertNotNull(certificateEntitySpecificationFactory.create(certificatesRequest));
 
@@ -305,6 +330,10 @@ class CertificateEntitySpecificationFactoryTest {
       final var certificatesRequest = CertificatesRequest.builder().build();
       try (MockedStatic<CertificateEntitySpecification> specification =
           mockStatic(CertificateEntitySpecification.class)) {
+        specification
+            .when(CertificateEntitySpecification::notPlacerholderCertificate)
+            .thenReturn(mock(Specification.class));
+
         assertNotNull(certificateEntitySpecificationFactory.create(certificatesRequest));
         specification.verify(CertificateEntitySpecification::notPlacerholderCertificate);
         specification.verifyNoMoreInteractions();
@@ -354,6 +383,10 @@ class CertificateEntitySpecificationFactoryTest {
       final var certificatesRequest = CertificatesRequest.builder().build();
       try (MockedStatic<CertificateEntitySpecification> specification =
           mockStatic(CertificateEntitySpecification.class)) {
+        specification
+            .when(CertificateEntitySpecification::notPlacerholderCertificate)
+            .thenReturn(mock(Specification.class));
+
         assertNotNull(certificateEntitySpecificationFactory.create(certificatesRequest));
         specification.verify(CertificateEntitySpecification::notPlacerholderCertificate);
       }

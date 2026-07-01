@@ -33,6 +33,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import se.inera.intyg.certificateservice.domain.configuration.limitedcertificatefunctionality.dto.LimitedActionConfiguration;
 import se.inera.intyg.certificateservice.domain.configuration.limitedcertificatefunctionality.dto.LimitedCertificateFunctionalityActionsConfiguration;
 import se.inera.intyg.certificateservice.domain.configuration.limitedcertificatefunctionality.dto.LimitedCertificateFunctionalityConfiguration;
+import tools.jackson.databind.json.JsonMapper;
 
 @ExtendWith(MockitoExtension.class)
 class GetLimitedCertificateFunctionalityConfigurationTest {
@@ -49,7 +50,7 @@ class GetLimitedCertificateFunctionalityConfigurationTest {
   @BeforeEach
   void setUp() {
     getLimitedCertificateFunctionalityConfiguration =
-        new GetLimitedCertificateFunctionalityConfiguration();
+        new GetLimitedCertificateFunctionalityConfiguration(JsonMapper.builder().build());
   }
 
   @Test

@@ -18,8 +18,6 @@
  */
 package se.inera.intyg.certificateservice.application.message.dto;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -28,6 +26,8 @@ import lombok.Builder;
 import lombok.Value;
 import se.inera.intyg.certificateservice.application.common.dto.PersonIdDTO;
 import se.inera.intyg.certificateservice.application.message.dto.IncomingMessageRequest.IncomingMessageRequestBuilder;
+import tools.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.annotation.JsonPOJOBuilder;
 
 @JsonDeserialize(builder = IncomingMessageRequestBuilder.class)
 @Value

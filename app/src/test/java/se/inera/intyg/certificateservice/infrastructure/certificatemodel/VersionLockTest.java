@@ -23,8 +23,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.LocalDateTime;
@@ -43,6 +41,7 @@ import se.inera.intyg.certificateservice.domain.certificatemodel.repository.Cert
 import se.inera.intyg.certificateservice.domain.diagnosiscode.repository.DiagnosisCodeRepository;
 import se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3226.CertificateModelFactoryFK3226;
 import se.inera.intyg.certificateservice.infrastructure.certificatemodel.ts8071.CertificateModelFactoryTS8071;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * Version lock tests to ensure that older certificate versions remain unchanged when new versions
@@ -84,7 +83,7 @@ class VersionLockTest {
 
   @Mock private static DiagnosisCodeRepository diagnosisCodeRepository;
 
-  private ObjectMapper objectMapper;
+  private JsonMapper objectMapper;
   private static final CertificateModelFactoryTS8071 ts8071FactoryV1;
   private static final CertificateModelFactoryFK3226 fk3226FactoryV1;
 
@@ -105,11 +104,11 @@ class VersionLockTest {
   @BeforeEach
   void setUp() {
     objectMapper =
-        new ObjectMapper()
-            .enable(SerializationFeature.INDENT_OUTPUT)
-            .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
-            .setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY)
-            .findAndRegisterModules();
+        JsonMapper.builder()
+            .changeDefaultVisibility(
+                checker ->
+                    checker.withVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY))
+            .build();
   }
 
   /**
@@ -145,7 +144,8 @@ class VersionLockTest {
 
   private void assertVersionLocked(CertificateModel certificateModel, String snapshotFileName) {
     try {
-      final var actualJson = objectMapper.writeValueAsString(certificateModel);
+      final var actualJson =
+          objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(certificateModel);
       final var snapshotPath = SnapshotTestUtil.getSnapshotPath(snapshotFileName);
 
       if (!Files.exists(snapshotPath)) {
