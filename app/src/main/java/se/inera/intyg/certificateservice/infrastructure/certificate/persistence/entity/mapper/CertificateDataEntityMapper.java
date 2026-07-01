@@ -36,13 +36,14 @@ import tools.jackson.databind.json.JsonMapper;
 public class CertificateDataEntityMapper {
 
   private final ElementDataMapper elementDataMapper;
+  private final JsonMapper jsonMapper;
 
   public CertificateDataEntity toEntity(List<ElementData> elements) {
     final var mappedElements = elements.stream().map(elementDataMapper::toMapped).toList();
 
     try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
 
-      objectMapper().writeValue(out, mappedElements);
+      jsonMapper.writeValue(out, mappedElements);
 
       return CertificateDataEntity.builder().data(out.toByteArray()).build();
     } catch (IOException e) {
@@ -53,16 +54,11 @@ public class CertificateDataEntityMapper {
   public List<ElementData> toDomain(CertificateDataEntity entity) {
     try {
       final var elements =
-          objectMapper()
-              .readValue(entity.getData(), new TypeReference<List<MappedElementData>>() {});
+          jsonMapper.readValue(entity.getData(), new TypeReference<List<MappedElementData>>() {});
 
       return elements.stream().map(elementDataMapper::toDomain).toList();
     } catch (JacksonException e) {
       throw new IllegalStateException("Error when processing json to ElementData", e);
     }
-  }
-
-  private static JsonMapper objectMapper() {
-    return JsonMapper.builder().build();
   }
 }

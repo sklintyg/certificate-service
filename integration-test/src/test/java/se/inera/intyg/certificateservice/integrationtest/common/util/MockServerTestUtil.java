@@ -24,11 +24,11 @@ import org.mockserver.model.HttpRequest;
 import org.mockserver.model.HttpResponse;
 import org.mockserver.model.MediaType;
 import se.inera.intyg.certificateservice.patient.dto.PersonsResponseDTO;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 public final class MockServerTestUtil {
 
-  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+  private static final JsonMapper OBJECT_MAPPER = new JsonMapper();
 
   private MockServerTestUtil() {
     throw new IllegalStateException("Utility class");

@@ -25,9 +25,9 @@ import static org.mockito.Mockito.doReturn;
 
 import java.time.LocalDate;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import se.inera.intyg.certificateservice.domain.certificate.model.ElementData;
@@ -38,6 +38,7 @@ import se.inera.intyg.certificateservice.infrastructure.certificate.persistence.
 import se.inera.intyg.certificateservice.infrastructure.certificate.persistence.elementdata.MappedElementData;
 import se.inera.intyg.certificateservice.infrastructure.certificate.persistence.elementdata.MappedElementValueDate;
 import se.inera.intyg.certificateservice.infrastructure.certificate.persistence.entity.CertificateDataEntity;
+import tools.jackson.databind.json.JsonMapper;
 
 @ExtendWith(MockitoExtension.class)
 class CertificateDataEntityMapperTest {
@@ -46,7 +47,13 @@ class CertificateDataEntityMapperTest {
   private static final FieldId DATE_ID = new FieldId("DATE_ID");
   private static final String ID = "F10";
   @Mock private ElementDataMapper elementDataMapper;
-  @InjectMocks private CertificateDataEntityMapper certificateDataEntityMapper;
+  private CertificateDataEntityMapper certificateDataEntityMapper;
+
+  @BeforeEach
+  void setUp() {
+    certificateDataEntityMapper =
+        new CertificateDataEntityMapper(elementDataMapper, new JsonMapper());
+  }
 
   @Test
   void shouldConvertToEntity() {

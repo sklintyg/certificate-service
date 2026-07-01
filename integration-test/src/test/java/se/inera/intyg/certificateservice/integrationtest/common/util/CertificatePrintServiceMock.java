@@ -27,12 +27,12 @@ import org.mockserver.model.HttpRequest;
 import org.mockserver.model.HttpResponse;
 import org.mockserver.model.MediaType;
 import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificatePdfResponse;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 @RequiredArgsConstructor
 public class CertificatePrintServiceMock {
 
-  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+  private static final JsonMapper OBJECT_MAPPER = new JsonMapper();
 
   private final MockServerClient mockServerClient;
 

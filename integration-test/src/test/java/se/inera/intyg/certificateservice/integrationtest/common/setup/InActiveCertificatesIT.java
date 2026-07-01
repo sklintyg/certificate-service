@@ -34,12 +34,12 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.json.JsonMapper;
 import se.inera.intyg.certificateservice.integrationtest.common.util.ApiUtil;
 import se.inera.intyg.certificateservice.integrationtest.common.util.Containers;
 import se.inera.intyg.certificateservice.integrationtest.common.util.InternalApiUtil;
 import se.inera.intyg.certificateservice.integrationtest.common.util.TestabilityApiUtil;
 import se.inera.intyg.certificateservice.patient.dto.PersonsResponseDTO;
-import tools.jackson.databind.ObjectMapper;
 
 @ActiveProfiles({"integration-test", TESTABILITY_PROFILE})
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -101,7 +101,7 @@ public abstract class InActiveCertificatesIT {
           .when(HttpRequest.request("/api/v1/persons"))
           .respond(
               HttpResponse.response(
-                      new ObjectMapper()
+                      new JsonMapper()
                           .writeValueAsString(
                               PersonsResponseDTO.builder()
                                   .persons(Collections.emptyList())
