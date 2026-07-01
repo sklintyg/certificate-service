@@ -47,6 +47,7 @@ import org.mockserver.model.HttpResponse;
 import org.mockserver.model.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.resttestclient.TestRestTemplate;
+import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -58,6 +59,7 @@ import se.inera.intyg.certificateservice.integrationtest.common.util.Testability
 import se.inera.intyg.certificateservice.patient.dto.PersonsResponseDTO;
 
 @ActiveProfiles({"integration-test", TESTABILITY_PROFILE})
+@AutoConfigureTestRestTemplate
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 class CertificateMetadataIT {
 

@@ -45,6 +45,9 @@ public class UnitAccessConfiguration {
   public List<CertificateAccessConfiguration> get() {
     if (certificateAccessConfigurations == null) {
       certificateAccessConfigurations = new ArrayList<>();
+      if (unitAccessConfigurationPath == null) {
+        return certificateAccessConfigurations;
+      }
       try (final var resourceAsStream = unitAccessConfigurationPath.getInputStream()) {
         certificateAccessConfigurations =
             jsonMapper.readValue(resourceAsStream, new TypeReference<>() {});

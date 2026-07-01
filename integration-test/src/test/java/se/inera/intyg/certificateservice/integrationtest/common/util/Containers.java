@@ -52,7 +52,7 @@ public class Containers {
   private static void mockServerContainer() {
     if (MOCK_SERVER_CONTAINER == null) {
       MOCK_SERVER_CONTAINER =
-          new MockServerContainer(DockerImageName.parse("mockserver/mockserver:5.15.0"));
+          new MockServerContainer(DockerImageName.parse("mockserver/mockserver:7.2.0"));
     }
 
     if (!MOCK_SERVER_CONTAINER.isRunning()) {

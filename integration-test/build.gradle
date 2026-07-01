@@ -8,6 +8,7 @@ dependencies {
 
     testCompileOnly 'com.fasterxml.jackson.core:jackson-annotations'
     testCompileOnly 'tools.jackson.core:jackson-databind'
+    testImplementation 'org.springframework.boot:spring-boot-restclient'
     testImplementation 'org.springframework.boot:spring-boot-resttestclient'
     testImplementation 'org.springframework.boot:spring-boot-starter-web'
     testImplementation 'org.springframework.boot:spring-boot-test'
