@@ -19,7 +19,7 @@
 package se.inera.intyg.certificateservice.integrationtest.common.util;
 
 import org.testcontainers.activemq.ActiveMQContainer;
-import org.testcontainers.containers.MockServerContainer;
+import org.testcontainers.mockserver.MockServerContainer;
 import org.testcontainers.utility.DockerImageName;
 
 public class Containers {
