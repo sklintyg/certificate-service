@@ -24,8 +24,8 @@ import jakarta.jms.Message;
 import java.time.Duration;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.extern.slf4j.Slf4j;
+import org.awaitility.core.ConditionTimeoutException;
 import org.springframework.jms.annotation.JmsListener;
-import org.testcontainers.shaded.org.awaitility.core.ConditionTimeoutException;
 
 @Slf4j
 public class MessageListener {
