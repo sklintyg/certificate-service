@@ -59,6 +59,7 @@ public abstract class ActiveCertificatesIT {
     registry.add("certificate.model.ag7804.v2_0.active.from", () -> "2024-01-01T00:00:00");
     registry.add("certificate.model.fk3221.v1_0.active.from", () -> "2024-01-01T00:00:00");
     registry.add("certificate.model.fk3226.v1_0.active.from", () -> "2024-01-01T00:00:00");
+    registry.add("certificate.model.fk3226.v1_1.active.from", () -> "2026-06-01T00:00:00");
     registry.add("certificate.model.fk7210.v1_0.active.from", () -> "2024-01-01T00:00:00");
     registry.add("certificate.model.fk7426.v1_0.active.from", () -> "2024-01-01T00:00:00");
     registry.add("certificate.model.fk7427.v1_0.active.from", () -> "2024-01-01T00:00:00");
@@ -67,6 +68,7 @@ public abstract class ActiveCertificatesIT {
     registry.add("certificate.model.fk7809.v1_0.active.from", () -> "2024-01-01T00:00:00");
     registry.add("certificate.model.fk7810.v1_0.active.from", () -> "2024-01-01T00:00:00");
     registry.add("certificate.model.ts8071.v1_0.active.from", () -> "2024-01-01T00:00:00");
+    registry.add("certificate.model.ts8071.v2_0.active.from", () -> "2025-10-20T00:00:00");
   }
 
   @BeforeAll
