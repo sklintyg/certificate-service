@@ -507,9 +507,10 @@ public class AppConfig {
   public PdfGeneratorProvider pdfGeneratorProvider(
       @Qualifier("certificatePdfGenerator") PdfGenerator certificatePdfGenerator,
       @Qualifier("generalPdfGenerator") PdfGenerator generalPdfGenerator,
-      @Qualifier("customPdfGenerator") PdfGenerator customPdfGenerator) {
+      @Qualifier("customPdfGenerator") PdfGenerator customPdfGenerator,
+      @Value("${app.ft.use-cps-for-custom-pdf:true}") boolean useCpsForCustomPdf) {
     return new PdfGeneratorProvider(
-        certificatePdfGenerator, generalPdfGenerator, customPdfGenerator);
+        certificatePdfGenerator, generalPdfGenerator, customPdfGenerator, useCpsForCustomPdf);
   }
 
   @Bean

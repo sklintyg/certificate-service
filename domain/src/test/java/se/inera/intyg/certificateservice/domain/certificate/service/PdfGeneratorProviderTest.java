@@ -45,7 +45,8 @@ class PdfGeneratorProviderTest {
 
   @BeforeEach
   void setUp() {
-    provider = new PdfGeneratorProvider(certificatePdfService, generalPdfService, customPdfService);
+    provider =
+        new PdfGeneratorProvider(certificatePdfService, generalPdfService, customPdfService, true);
     when(certificate.certificateModel()).thenReturn(certificateModel);
   }
 
@@ -68,6 +69,15 @@ class PdfGeneratorProviderTest {
     when(certificateModel.pdfSpecification()).thenReturn(CustomPdfSpecification.builder().build());
 
     assertEquals(customPdfService, provider.provider(certificate));
+  }
+
+  @Test
+  void shallReturnCertificatePdfServiceWhenCustomPdfSpecificationAndFeatureDisabled() {
+    var providerWithDisabledFeature =
+        new PdfGeneratorProvider(certificatePdfService, generalPdfService, customPdfService, false);
+    when(certificateModel.pdfSpecification()).thenReturn(CustomPdfSpecification.builder().build());
+
+    assertEquals(certificatePdfService, providerWithDisabledFeature.provider(certificate));
   }
 
   @Test
