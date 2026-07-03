@@ -29,6 +29,7 @@ public class PdfGeneratorProvider {
   private final PdfGenerator certificatePdfService;
   private final PdfGenerator generalPdfService;
   private final PdfGenerator customPdfService;
+  private final boolean useCustomPdfService;
 
   public PdfGenerator provider(Certificate certificate) {
     final var pdfSpecification = certificate.certificateModel().pdfSpecification();
@@ -37,7 +38,7 @@ public class PdfGeneratorProvider {
       return generalPdfService;
     }
 
-    if (pdfSpecification instanceof CustomPdfSpecification) {
+    if (useCustomPdfService && pdfSpecification instanceof CustomPdfSpecification) {
       return customPdfService;
     }
 
