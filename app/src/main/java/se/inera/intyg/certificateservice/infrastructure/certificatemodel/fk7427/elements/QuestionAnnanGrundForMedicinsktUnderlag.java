@@ -18,7 +18,6 @@
  */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7427.elements;
 
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7427.CertificateModelFactoryFK7427.TEXT_FIELD_LIMIT;
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7427.elements.QuestionGrundForMedicinsktUnderlag.QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID;
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7427.elements.QuestionGrundForMedicinsktUnderlag.UTLATANDE_BASERAT_PA_ANNAT_FIELD_ID;
 
@@ -61,16 +60,11 @@ public class QuestionAnnanGrundForMedicinsktUnderlag {
                     QUESTION_ANNAN_GRUND_FOR_MEDICINSKT_UNDERLAG_ID,
                     QUESTION_ANNAN_GRUND_FOR_MEDICINSKT_UNDERLAG_FIELD_ID),
                 CertificateElementRuleFactory.limit(
-                    QUESTION_ANNAN_GRUND_FOR_MEDICINSKT_UNDERLAG_ID, TEXT_FIELD_LIMIT),
+                    QUESTION_ANNAN_GRUND_FOR_MEDICINSKT_UNDERLAG_ID, (short) 50),
                 CertificateElementRuleFactory.show(
                     QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID,
                     UTLATANDE_BASERAT_PA_ANNAT_FIELD_ID)))
-        .validations(
-            List.of(
-                ElementValidationText.builder()
-                    .mandatory(true)
-                    .limit((int) TEXT_FIELD_LIMIT)
-                    .build()))
+        .validations(List.of(ElementValidationText.builder().mandatory(true).limit(50).build()))
         .mapping(
             new ElementMapping(
                 QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID, CodeSystemKvFkmu0001.ANNAT))
@@ -90,7 +84,6 @@ public class QuestionAnnanGrundForMedicinsktUnderlag {
         .pdfConfiguration(
             PdfConfigurationText.builder()
                 .pdfFieldId(new PdfFieldId(PDF_FIELD_ID))
-                .maxLength(66)
                 .overflowSheetFieldId(
                     new PdfFieldId("form1[0].#subform[3].flt_txtFortsattningsblad[0]"))
                 .build())

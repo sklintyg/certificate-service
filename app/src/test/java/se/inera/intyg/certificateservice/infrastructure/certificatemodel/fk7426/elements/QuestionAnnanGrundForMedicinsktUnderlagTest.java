@@ -22,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7426.FK7426PdfSpecification.ROW_MAX_LENGTH;
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7426.elements.QuestionAnnanGrundForMedicinsktUnderlag.questionAnnanGrundForMedicinsktUnderlag;
 
 import java.util.List;
@@ -81,7 +80,7 @@ class QuestionAnnanGrundForMedicinsktUnderlagTest {
             ElementRuleLimit.builder()
                 .id(ELEMENT_ID)
                 .type(ElementRuleType.TEXT_LIMIT)
-                .limit(new RuleLimit((short) 4000))
+                .limit(new RuleLimit((short) 50))
                 .build(),
             ElementRuleExpression.builder()
                 .id(new ElementId("1"))
@@ -97,7 +96,7 @@ class QuestionAnnanGrundForMedicinsktUnderlagTest {
   @Test
   void shallIncludeValidations() {
     final var expectedValidations =
-        List.of(ElementValidationText.builder().mandatory(true).limit(4000).build());
+        List.of(ElementValidationText.builder().mandatory(true).limit(50).build());
 
     final var element = questionAnnanGrundForMedicinsktUnderlag();
 
@@ -119,7 +118,6 @@ class QuestionAnnanGrundForMedicinsktUnderlagTest {
     final var expected =
         PdfConfigurationText.builder()
             .pdfFieldId(new PdfFieldId("form1[0].#subform[0].flt_txtAnhorig[0]"))
-            .maxLength(ROW_MAX_LENGTH)
             .overflowSheetFieldId(
                 new PdfFieldId("form1[0].#subform[4].flt_txtFortsattningsblad[0]"))
             .build();
