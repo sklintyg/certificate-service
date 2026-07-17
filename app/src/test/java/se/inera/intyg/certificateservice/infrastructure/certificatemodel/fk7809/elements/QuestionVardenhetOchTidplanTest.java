@@ -73,7 +73,7 @@ class QuestionVardenhetOchTidplanTest {
             ElementRuleLimit.builder()
                 .id(new ElementId("50.2"))
                 .type(ElementRuleType.TEXT_LIMIT)
-                .limit(new RuleLimit((short) 4000))
+                .limit(new RuleLimit((short) 50))
                 .build(),
             ElementRuleExpression.builder()
                 .id(new ElementId("50"))
@@ -89,7 +89,7 @@ class QuestionVardenhetOchTidplanTest {
   @Test
   void shallIncludeValidations() {
     final var expectedValidations =
-        List.of(ElementValidationText.builder().mandatory(true).limit(4000).build());
+        List.of(ElementValidationText.builder().mandatory(true).limit(50).build());
 
     final var element = QuestionVardenhetOchTidplan.questionVardenhetOchTidplan();
 
@@ -108,7 +108,6 @@ class QuestionVardenhetOchTidplanTest {
     final var expected =
         PdfConfigurationText.builder()
             .pdfFieldId(new PdfFieldId("form1[0].#subform[2].flt_txtVardenhetTidplan[0]"))
-            .maxLength(53)
             .overflowSheetFieldId(
                 new PdfFieldId(("form1[0].#subform[4].flt_txtFortsattningsblad[0]")))
             .build();

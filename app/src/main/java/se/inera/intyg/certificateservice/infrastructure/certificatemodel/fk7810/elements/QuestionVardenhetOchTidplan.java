@@ -18,7 +18,6 @@
  */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7810.elements;
 
-import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk3221.FK3221PdfSpecification.PDF_TEXT_FIELD_LENGTH;
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7810.FK7810PdfSpecification.OVERFLOW_SHEET_FIELD_ID;
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7810.elements.QuestionPagaendeOchPlaneradeBehandlingar.QUESTION_PAGAENDE_ELLER_PLANERAD_BEHANDLING_FIELD_ID;
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7810.elements.QuestionPagaendeOchPlaneradeBehandlingar.QUESTION_PAGAENDE_ELLER_PLANERAD_BEHANDLING_ID;
@@ -58,12 +57,11 @@ public class QuestionVardenhetOchTidplan {
             List.of(
                 CertificateElementRuleFactory.mandatory(
                     QUESTION_VARDENHET_OCH_TIDPLAN_ID, QUESTION_VARDENHET_OCH_TIDPLAN_FIELD_ID),
-                CertificateElementRuleFactory.limit(
-                    QUESTION_VARDENHET_OCH_TIDPLAN_ID, (short) 4000),
+                CertificateElementRuleFactory.limit(QUESTION_VARDENHET_OCH_TIDPLAN_ID, (short) 50),
                 CertificateElementRuleFactory.show(
                     QUESTION_PAGAENDE_ELLER_PLANERAD_BEHANDLING_ID,
                     QUESTION_PAGAENDE_ELLER_PLANERAD_BEHANDLING_FIELD_ID)))
-        .validations(List.of(ElementValidationText.builder().mandatory(true).limit(4000).build()))
+        .validations(List.of(ElementValidationText.builder().mandatory(true).limit(50).build()))
         .mapping(new ElementMapping(QUESTION_PAGAENDE_ELLER_PLANERAD_BEHANDLING_ID, null))
         .shouldValidate(
             elementData ->
@@ -75,7 +73,6 @@ public class QuestionVardenhetOchTidplan {
         .pdfConfiguration(
             PdfConfigurationText.builder()
                 .pdfFieldId(PDF_FIELD_ID)
-                .maxLength(PDF_TEXT_FIELD_LENGTH)
                 .overflowSheetFieldId(OVERFLOW_SHEET_FIELD_ID)
                 .build())
         .build();
