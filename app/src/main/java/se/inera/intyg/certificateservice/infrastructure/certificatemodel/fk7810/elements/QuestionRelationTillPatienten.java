@@ -65,7 +65,7 @@ public class QuestionRelationTillPatienten {
         .validations(List.of(ElementValidationText.builder().mandatory(true).limit(50).build()))
         .mapping(
             new ElementMapping(
-                QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID, CodeSystemKvFkmu0001.ANHORIG_V1))
+                QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID, CodeSystemKvFkmu0001.ANHORIG))
         .shouldValidate(
             elementData ->
                 elementData.stream()
