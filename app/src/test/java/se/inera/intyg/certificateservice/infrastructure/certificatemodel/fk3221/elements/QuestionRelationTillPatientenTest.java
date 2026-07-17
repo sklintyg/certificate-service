@@ -78,7 +78,7 @@ class QuestionRelationTillPatientenTest {
             ElementRuleLimit.builder()
                 .id(ELEMENT_ID)
                 .type(ElementRuleType.TEXT_LIMIT)
-                .limit(new RuleLimit((short) 4000))
+                .limit(new RuleLimit((short) 50))
                 .build(),
             ElementRuleExpression.builder()
                 .id(new ElementId("1"))
@@ -94,7 +94,7 @@ class QuestionRelationTillPatientenTest {
   @Test
   void shallIncludeValidations() {
     final var expectedValidations =
-        List.of(ElementValidationText.builder().mandatory(true).limit(4000).build());
+        List.of(ElementValidationText.builder().mandatory(true).limit(50).build());
 
     final var element = questionRelationTillPatienten();
 
@@ -156,7 +156,6 @@ class QuestionRelationTillPatientenTest {
     final var expected =
         PdfConfigurationText.builder()
             .pdfFieldId(new PdfFieldId("form1[0].#subform[0].flt_txtAnhorigAnnan[0]"))
-            .maxLength(50)
             .overflowSheetFieldId(
                 new PdfFieldId(("form1[0].#subform[4].flt_txtFortsattningsblad[0]")))
             .build();
