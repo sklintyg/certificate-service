@@ -20,6 +20,7 @@ package se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7810
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7810.FK7810PdfSpecification.OVERFLOW_SHEET_FIELD_ID;
+import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7810.FK7810PdfSpecification.PDF_TEXT_FIELD_LENGTH;
 import static se.inera.intyg.certificateservice.infrastructure.certificatemodel.fk7810.elements.QuestionVardenhetOchTidplan.questionVardenhetOchTidplan;
 
 import java.util.List;
@@ -110,6 +111,7 @@ class QuestionVardenhetOchTidplanTest {
     final var expected =
         PdfConfigurationText.builder()
             .pdfFieldId(new PdfFieldId("form1[0].Sida4[0].flt_txtVardenhetTidplan[0]"))
+            .maxLength(PDF_TEXT_FIELD_LENGTH)
             .overflowSheetFieldId(OVERFLOW_SHEET_FIELD_ID)
             .build();
 

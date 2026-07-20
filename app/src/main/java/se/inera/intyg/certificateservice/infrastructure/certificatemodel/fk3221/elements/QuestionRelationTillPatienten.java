@@ -81,6 +81,7 @@ public class QuestionRelationTillPatienten {
         .pdfConfiguration(
             PdfConfigurationText.builder()
                 .pdfFieldId(new PdfFieldId(PDF_FIELD_ID))
+                .maxLength(50)
                 .overflowSheetFieldId(
                     new PdfFieldId(("form1[0].#subform[4].flt_txtFortsattningsblad[0]")))
                 .build())
