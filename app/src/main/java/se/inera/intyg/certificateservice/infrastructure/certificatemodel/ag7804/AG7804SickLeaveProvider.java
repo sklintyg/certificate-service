@@ -58,7 +58,7 @@ public class AG7804SickLeaveProvider implements SickLeaveProvider {
             .map(ElementValueBoolean::value)
             .orElse(false);
 
-    if (isNotSickLeaveCertificate) {
+    if (isNotSickLeaveCertificate || certificate.isReplaced()) {
       return Optional.empty();
     }
 

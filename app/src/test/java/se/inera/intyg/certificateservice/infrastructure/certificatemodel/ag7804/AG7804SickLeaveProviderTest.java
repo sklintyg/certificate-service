@@ -20,21 +20,45 @@ package se.inera.intyg.certificateservice.infrastructure.certificatemodel.ag7804
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataCertificate.ag7804CertificateBuilder;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import se.inera.intyg.certificateservice.domain.certificate.model.DateRange;
 import se.inera.intyg.certificateservice.domain.certificate.model.ElementValueCode;
+import se.inera.intyg.certificateservice.domain.certificate.model.Relation;
+import se.inera.intyg.certificateservice.domain.certificate.model.RelationType;
+import se.inera.intyg.certificateservice.domain.certificate.model.Status;
 import se.inera.intyg.certificateservice.domain.certificatemodel.model.FieldId;
 
 @ExtendWith(MockitoExtension.class)
 class AG7804SickLeaveProviderTest {
 
   private final AG7804SickLeaveProvider provider = new AG7804SickLeaveProvider();
+
+  @Test
+  void shouldReturnOptionalEmptyIfCertificateIsReplaced() {
+    final var sickLeaveCertificate =
+        provider.build(
+            ag7804CertificateBuilder()
+                .children(
+                    List.of(
+                        Relation.builder()
+                            .certificate(ag7804CertificateBuilder().status(Status.SIGNED).build())
+                            .created(LocalDateTime.now(ZoneId.systemDefault()))
+                            .type(RelationType.REPLACE)
+                            .build()))
+                .build(),
+            false);
+
+    assertTrue(sickLeaveCertificate.isEmpty());
+  }
 
   @Test
   void shouldMapId() {

@@ -53,6 +53,10 @@ public class AG114SickLeaveProvider implements SickLeaveProvider {
     final var workCapacityPercentage = getWorkCapacityPercentage(certificate);
     final var workCapacityDateRange = getWorkCapacityDateRange(certificate, workCapacityPercentage);
 
+    if (certificate.isReplaced()) {
+      return Optional.empty();
+    }
+
     return Optional.of(
         SickLeaveCertificate.builder()
             .partOfSickLeaveChain(false)
