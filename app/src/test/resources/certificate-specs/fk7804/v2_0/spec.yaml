@@ -1,0 +1,275 @@
+# Generated from the implementation by SpecManifestGenerator.
+# Review every text against the specification document before trusting it.
+
+certificate:
+  type: "fk7804"
+  version: "2.0"
+  externalCode: "LISJP"
+  name: "Läkarintyg för sjukpenning"
+  recipient: "FKASSA"
+  description: |-
+    <b>Vad är sjukpenning?</b>
+    Sjukpenning är en ersättning för personer som arbetar i Sverige och har en nedsatt arbetsförmåga på grund av sjukdom. Beroende på hur mycket arbetsförmågan är nedsatt kan man få en fjärdedels, halv, tre fjärdedels eller hel sjukpenning. 
+    
+    <b>Andra förmåner som detta läkarintyg används till</b>
+    Om du stänger av patienten enligt smittskyddslagen ska du även använda detta intyg.
+  detailedDescription: "<p>Om du inte känner patienten ska hen styrka sin identitet genom legitimation med foto (HSLF-FS 2018:54).</p><p><b>Vad är sjukpenning?</b><br/>Sjukpenning är en ersättning för personer som har en nedsatt arbetsförmåga på grund av sjukdom. Beroende på hur mycket arbetsförmågan är nedsatt kan man få en fjärdedels, halv, tre fjärdedels eller hel sjukpenning.</p><p><b>Förutsättningar för att få sjukpenning</b><br/>Arbetsförmågan bedöms i förhållande till personens sysselsättning som kan vara nuvarande arbete eller föräldraledighet för vård av barn. För personer som är arbetslösa bedöms arbetsförmågan i förhållandet till att utföra sådant arbete som är normalt förekommande på arbetsmarknaden.</p><p>För att få sjukpenning ska man, förutom att ha nedsatt arbetsförmåga, tillhöra svensk socialförsäkring och ha inkomst från arbete. Försäkringskassan beslutar om och hur mycket sjukpenning personen kan få.</p><p>Från den åttonde dagen i en sjukperiod måste det finnas ett läkarintyg. Läkarintyget ska tydligt beskriva hur patientens sjukdom påverkar patientens förmåga att utföra sin sysselsättning.</p><p><b>Studerande</b><br/>En person kan få behålla sitt studiemedel om förmågan att studera är helt eller halvt nedsatt på grund av sjukdom. Försäkringskassan bedömer om förmågan är nedsatt och om studieperioden ska godkännas till CSN.</p><p>Den som ansöker om att få behålla sitt studiemedel ska från och med den femtonde dagen i sjukperioden styrka sin nedsatta studieförmåga med ett läkarintyg.</p><p><b>Smittbärarpenning</b><br/>En person kan få ersättning om hen måste avstå från sin sysselsättning på grund av läkarens beslut om avstängning enligt smittskyddslagen eller läkarundersökning alternativt hälsokontroll som syftar till att klarlägga sjukdom, smitta, sår eller annan skada som gör att hen inte får hantera livsmedel.</p><p>Den som ansöker om smittbärarpenning ska skicka med ett läkarintyg.</p><p><b>Mer om hur Försäkringskassan bedömer arbetsförmågan</b><br/>Försäkringskassan bedömer arbetsförmågan enligt rehabiliteringskedjan, som innebär följande:</p><ul>  <li>Under de första 90 dagarna som personen är sjukskriven kan Försäkringskassan betala sjukpenning om personen inte kan utföra sitt vanliga arbete eller ett annat tillfälligt arbete hos sin arbetsgivare.</li>  <li>Efter 90 dagar kan Försäkringskassan betala sjukpenning om personen inte kan utföra något arbete alls hos sin arbetsgivare.</li>  <li>Efter 180 dagar kan Försäkringskassan betala ut sjukpenning om personen inte kan utföra sådant arbete som är normalt förekommande på arbetsmarknaden. Men detta gäller inte om Försäkringskassan bedömer att personen med stor sannolikhet kommer att kunna gå tillbaka till ett arbete hos sin arbetsgivare innan dag 366. I dessa fall bedöms arbetsförmågan i förhållande till ett arbete hos arbetsgivaren även efter dag 180. Regeln gäller inte heller om det kan anses oskäligt att bedöma personens arbetsförmåga i förhållande till arbete som är normalt förekommande på arbetsmarknaden.</li>  <li>Efter 365 dagar kan Försäkringskassan betala ut sjukpenning om personen inte kan utföra sådant arbete som är normalt förekommande på arbetsmarknaden. Undantag från detta kan göras om det kan anses oskäligt att bedöma personens arbetsförmåga i förhållande till sådant arbete som normalt förekommer på arbetsmarknaden.</li></ul><p>Rehabiliteringskedjan gäller fullt ut bara för den som har en anställning.</p><p>Egna företagares arbetsförmåga bedöms i förhållande till de vanliga arbetsuppgifterna fram till och med dag 180. Sedan bedöms arbetsförmågan i förhållande till sådant arbete som normalt förekommer på arbetsmarknaden.</p><p>För arbetslösa bedöms arbetsförmågan i förhållande till arbeten som normalt förekommer på arbetsmarknaden redan från första dagen i sjukperioden.</p>"
+
+categories:
+  - id: "KAT_1"
+    name: "Smittbärarpenning"
+    description: |-
+      Fylls i om patienten kan arbeta men inte får göra det på grund av något av följande:
+      <ul><li>Att patienten har en allmänfarlig sjukdom och en läkare har beslutat om förhållningsregler enligt smittskyddslagen.</li><li>Att patienten genomgår en läkarundersökning eller hälsokontroll i syfte att klarlägga om hen är smittad av en allmänfarlig sjukdom.</li><li>Att patienten har en sjukdom, en smitta, eller ett sår som gör att hen inte får hantera livsmedel.</li></ul>
+      Ange vilken allmänfarlig sjukdom som patienten har eller kan antas ha i fältet för diagnos. Ange sedan för vilken period som förhållningsreglerna gäller i fältet för nedsättning av arbetsförmåga.
+    elements:
+      - id: "27"
+        kind: "FRG"
+        component: "SK-001"
+        checkboxLabel: "Förhållningsregler enligt smittskyddslagen på grund av smitta"
+        fieldId: "27.1"
+        status: "implemented"
+  - id: "KAT_2"
+    name: "Grund för medicinskt underlag"
+    elements:
+      - id: "1"
+        kind: "FRG"
+        component: "SK-004a (datum)"
+        label: "Intyget är baserat på"
+        fieldId: "1.1"
+        codeSystem: "KV_FKMU_0001"
+        options: ["FYSISKUNDERSOKNING", "DIGITALUNDERSOKNING", "TELEFONKONTAKT", "JOURNALUPPGIFTER", "ANNAT"]
+        rules: ["SR-001", "SR-004"]
+        status: "implemented"
+      - id: "1.3"
+        kind: "DFR"
+        component: "SK-006"
+        label: "Ange vad annat är"
+        parent: "1"
+        xmlParent: "1"
+        fieldId: "1.3"
+        maxLength: 50
+        rules: ["SR-001", "SR-003"]
+        status: "implemented"
+  - id: "KAT_3"
+    name: "Sysselsättning"
+    elements:
+      - id: "28"
+        kind: "FRG"
+        component: "SK-004 (kodverk)"
+        label: "I relation till vilken sysselsättning bedömer du arbetsförmågan?"
+        helpText: "Om du kryssar i flera val är det viktigt att du tydliggör under \"Övriga upplysningar\" om sjukskrivningens omfattning eller period skiljer sig åt mellan olika sysselsättningar."
+        fieldId: "28.1"
+        codeSystem: "KV_FKMU_0002"
+        options: ["NUVARANDE_ARBETE", "ARBETSSOKANDE", "FORALDRALEDIG", "STUDIER"]
+        rules: ["SR-001", "SR-004"]
+        status: "implemented"
+      - id: "29"
+        kind: "DFR"
+        component: "SK-007"
+        label: "Ange yrke och arbetsuppgifter"
+        parent: "28"
+        fieldId: "29.1"
+        maxLength: 4000
+        rules: ["SR-003", "SR-001"]
+        status: "implemented"
+  - id: "KAT_4"
+    name: "Diagnos"
+    elements:
+      - id: "6"
+        kind: "FRG"
+        component: "(diagnoser)"
+        label: "Diagnos/diagnoser för sjukdom som orsakar nedsatt arbetsförmåga"
+        helpText: "Ange vilken eller vilka sjukdomar som orsakar nedsatt arbetsförmåga. Den sjukdom som påverkar arbetsförmågan mest anges först. Diagnoskoden anges alltid med så många positioner som möjligt."
+        fieldId: "6.1"
+        rules: ["SR-001"]
+        status: "implemented"
+  - id: "KAT_5"
+    name: "Funktionsnedsättning"
+    description: |-
+      Funktionsnedsättning definieras enligt Internationell klassifikation av funktionstillstånd, funktionshinder och hälsa (ICF) som en betydande avvikelse eller förlust i kroppsfunktion och kan vara fysisk, psykisk eller kognitiv. Se även Socialstyrelsens försäkringsmedicinska kunskapsstöd.
+      
+      Försäkringskassan efterfrågar utöver din bedömning av vilka funktionsnedsättningar sjukdomen eller sjukdomarna leder till, även de medicinska uppgifter som du baserar bedömningen på.
+      
+      Om din bedömning baseras på annat än dina egna observationer och undersökningsfynd, exempelvis testresultat och anamnesuppgifter, beskriv hur du bedömer uppgifterna.
+      
+      Om uppgifterna är hämtade från någon annan inom hälso- och sjukvården, beskriv från vem och när de noterats.
+    elements:
+      - id: "35"
+        kind: "FRG"
+        component: "SK-007 (icf)"
+        label: "Ange vilken/vilka funktionsnedsättningar patienten har till följd av sjukdom och om möjligt svårighetsgrad. Ange även vad din bedömning av funktionsnedsättningar baseras på. Beskriv relevanta undersökningsfynd, testresultat, utredningssvar eller andra uppgifter (exempelvis anamnesuppgifter) och hur du bedömer dem."
+        fieldId: "35.1"
+        rules: ["SR-001", "SR-004"]
+        status: "implemented"
+  - id: "KAT_6"
+    name: "Aktivitetsbegränsning"
+    description: |-
+      Beskriv aktivitetsbegränsningens svårighetsgrad, till exempel lätt, medelsvår, svår, total eller motsvarande.
+      
+      Om patienten är arbetssökande eller har varit sjukskriven en längre tid kan det vara svårt att beskriva aktivitetsbegränsningar enbart i relation till patientens nuvarande arbetsuppgifter. Då kan det vara bra att även beskriva hur aktivitetsbegränsningarna yttrar sig i andra situationer, t. ex vardagliga situationer. 
+    elements:
+      - id: "17"
+        kind: "FRG"
+        component: "SK-007 (icf)"
+        label: "Beskriv vad du bedömer att patienten har svårt att göra på grund av sin sjukdom. Ange exempel på sådana begränsningar relaterade till de arbetsuppgifter eller annan sysselsättning som du bedömer arbetsförmågan i förhållande till. Ange om möjligt svårighetsgrad."
+        fieldId: "17.1"
+        rules: ["SR-001", "SR-004"]
+        status: "implemented"
+  - id: "KAT_7"
+    name: "Medicinsk behandling"
+    description: |-
+      Här beskriver du de medicinska behandlingar/åtgärder som kan påverka arbetsförmågan, vad de förväntas leda till, och en (preliminär) tidplan för åtgärderna.
+      
+      Om olika åtgärder behöver ske i viss ordning är det bra om du beskriver detta.
+    elements:
+      - id: "19"
+        kind: "FRG"
+        component: "SK-007"
+        label: "Beskriv pågående och planerade medicinska behandlingar/åtgärder som kan påverka arbetsförmågan"
+        checkboxLabel: "Ange vad syftet är och om möjligt tidsplan samt ansvarig vårdenhet."
+        fieldId: "19.1"
+        maxLength: 4000
+        rules: ["SR-004"]
+        status: "implemented"
+  - id: "KAT_8"
+    name: "Bedömning"
+    elements:
+      - id: "32"
+        kind: "FRG"
+        component: "SK-004a (datumperiod)"
+        label: "Min bedömning av patientens nedsättning av arbetsförmågan"
+        helpText: "Utgångspunkten är att patientens arbetsförmåga ska bedömas i förhållande till patientens normala arbetstid."
+        fieldId: "32.1"
+        codeSystem: "KV_FKMU_0003"
+        options: ["EN_FJARDEDEL", "HALFTEN", "TRE_FJARDEDEL", "HELT_NEDSATT"]
+        rules: ["SR-001"]
+        status: "implemented"
+      - id: "earlyStartDate"
+        kind: "DFR"
+        component: "SK-A01"
+        parent: "32"
+        rules: ["SR-003"]
+        status: "implemented"
+      - id: "37"
+        kind: "FRG"
+        component: "SK-007"
+        label: "Patientens arbetsförmåga bedöms nedsatt längre tid än den som Socialstyrelsens försäkringsmedicinska beslutsstöd anger, därför att"
+        helpText: |-
+          <ul><li>Om sjukdomen inte följer förväntat förlopp ska det framgå på vilket sätt.</li><li>Om det inträffar komplikationer som gör att det tar längre tid att återfå arbetsförmågan ska du beskriva detta.</li><li>Om sjukskrivningslängden påverkas av flera sjukdomar, så kallad samsjuklighet, ska du beskriva detta.</li></ul>
+        fieldId: "37.1"
+        maxLength: 4000
+        rules: ["SR-004"]
+        status: "implemented"
+      - id: "34"
+        kind: "FRG"
+        component: "SK-001"
+        label: "Transport till och från arbetsplatsen"
+        helpText: "Om patienten kan arbeta men inte kan ta sig till arbetet som vanligt kan Försäkringskassan ersätta kostnader för arbetsresor. Det innebär att patienten i stället för sjukpenning kan få ersättning för de merutgifter som uppstår för resor till och från arbetet."
+        checkboxLabel: "Patienten skulle kunna arbeta helt eller delvis vid hjälp med transport till och från arbetsplatsen"
+        fieldId: "34.1"
+        rules: ["SR-004"]
+        status: "implemented"
+      - id: "33"
+        kind: "FRG"
+        component: "SK-002 (boolesk)"
+        label: "Kommer möjligheterna till återgång i arbete försämras om arbetstiden förläggs ojämnt vid deltidssjukskrivning?"
+        helpText: |-
+          När du besvarar frågan ska du utgå från de uppgifter som du har om arbetstidens förläggning vid sjukskrivningstillfället, det vill säga den arbetstidsförläggning som du diskuterat med patienten.
+          
+          Att förläggningen försämrar patientens möjligheter till återgång i arbete kan exempelvis vara att hälsotillståndet påverkas negativt eller att sjukdomen innebär att en annan förläggning av arbetstiden än jämn minskning varje dag skulle motverka rehabiliteringen.
+        fieldId: "33.1"
+        rules: ["SR-001", "SR-003"]
+        status: "implemented"
+      - id: "33.2"
+        kind: "DFR"
+        component: "SK-007"
+        label: "Beskriv de medicinska skälen till att möjligheterna till återgång i arbete försämras"
+        parent: "33"
+        xmlParent: "33"
+        fieldId: "33.2"
+        maxLength: 4000
+        rules: ["SR-001", "SR-003"]
+        status: "implemented"
+  - id: "KAT_9"
+    name: "Prognos"
+    elements:
+      - id: "39"
+        kind: "FRG"
+        component: "SK-002 (kodverk)"
+        label: "Prognos för arbetsförmåga utifrån aktuellt undersökningstillfälle"
+        helpText: "En viktig information för att underlätta planeringen."
+        fieldId: "39.1"
+        codeSystem: "KV_FKMU_0006"
+        options: ["STOR_SANNOLIKHET", "ATER_X_ANTAL_MANADER", "SANNOLIKT_INTE", "PROGNOS_OKLAR"]
+        rules: ["SR-001", "SR-004"]
+        status: "implemented"
+      - id: "39.4"
+        kind: "DFR"
+        component: "SK-009"
+        label: "Ange antal månader"
+        parent: "39"
+        xmlParent: "39"
+        fieldId: "39.4"
+        rules: ["SR-001", "SR-003"]
+        status: "implemented"
+      - id: "39.2"
+        kind: "DFR"
+        component: "SK-007"
+        label: "Beskriv vad som ligger till grund för bedömningen"
+        parent: "39"
+        xmlParent: "39"
+        fieldId: "39.2"
+        maxLength: 4000
+        rules: ["SR-001", "SR-003"]
+        status: "implemented"
+  - id: "KAT_10"
+    name: "Åtgärder som kan främja återgången i arbete"
+    elements:
+      - id: "44"
+        kind: "FRG"
+        component: "SK-007"
+        label: "Här kan du beskriva andra åtgärder än åtgärder inom hälso- och sjukvården som kan främja återgången i arbete"
+        helpText: |-
+          Åtgärderna kan exempelvis handla om att patienten har en regelbunden kontakt med arbetsplatsen. Det kan också vara arbetsanpassning, som anpassning av arbetstider, arbetsuppgifter eller arbetsplatsen.
+          
+          Du kan även föreslå att patienten får arbetsträna vilket innebär att vara på en arbetsplats och delta
+          i verksamheten utan krav på produktivitet. 
+          
+          Tänk på att det är Försäkringskassan eller Arbetsförmedlingen som beslutar om arbetsträning. De föreslagna åtgärderna är exempel på möjliga åtgärder och det kan finnas flera åtgärder som är lämpliga.
+        checkboxLabel: "Beskriv gärna hur åtgärderna kan främja återgången i arbete eller annan aktuell sysselsättning."
+        fieldId: "44.1"
+        maxLength: 4000
+        rules: ["SR-004"]
+        status: "implemented"
+  - id: "KAT_11"
+    name: "Övrigt"
+    elements:
+      - id: "25"
+        kind: "FRG"
+        component: "SK-007"
+        label: "Övriga upplysningar"
+        fieldId: "25.1"
+        maxLength: 4000
+        status: "implemented"
+  - id: "KAT_12"
+    name: "Kontakt"
+    elements:
+      - id: "26"
+        kind: "FRG"
+        component: "SK-001"
+        label: "Kontakt med Försäkringskassan"
+        helpText: "Försäkringskassans handläggare tar kontakt med dig när underlagen har kommit in och handläggningen kan påbörjas."
+        checkboxLabel: "Jag önskar att Försäkringskassan kontaktar mig"
+        fieldId: "26.1"
+        rules: ["SR-004"]
+        status: "implemented"
+      - id: "26.2"
+        kind: "DFR"
+        component: "SK-007"
+        label: "Ange gärna varför du vill ha kontakt"
+        parent: "26"
+        xmlParent: "26"
+        fieldId: "26.2"
+        rules: ["SR-003"]
+        status: "implemented"
