@@ -39,6 +39,7 @@ import se.inera.intyg.certificateservice.domain.certificate.service.GetCertifica
 import se.inera.intyg.certificateservice.domain.certificate.service.GetCertificateDomainService;
 import se.inera.intyg.certificateservice.domain.certificate.service.GetCertificateEventsDomainService;
 import se.inera.intyg.certificateservice.domain.certificate.service.GetCertificateEventsOfTypeDomainService;
+import se.inera.intyg.certificateservice.domain.certificate.service.GetCertificateInternalPdfDomainService;
 import se.inera.intyg.certificateservice.domain.certificate.service.GetCertificatePdfDomainService;
 import se.inera.intyg.certificateservice.domain.certificate.service.GetCertificateXmlDomainService;
 import se.inera.intyg.certificateservice.domain.certificate.service.GetSickLeaveCertificateDomainService;
@@ -258,6 +259,12 @@ public class AppConfig {
       CertificateEventDomainService certificateEventDomainService) {
     return new GetCertificatePdfDomainService(
         certificateRepository, pdfGeneratorProvider, certificateEventDomainService);
+  }
+
+  @Bean
+  public GetCertificateInternalPdfDomainService getCertificateInternalPdfDomainService(
+      CertificateRepository certificateRepository, PdfGeneratorProvider pdfGeneratorProvider) {
+    return new GetCertificateInternalPdfDomainService(certificateRepository, pdfGeneratorProvider);
   }
 
   @Bean
