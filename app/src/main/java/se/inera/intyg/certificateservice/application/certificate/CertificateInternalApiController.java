@@ -38,6 +38,7 @@ import se.inera.intyg.certificateservice.application.certificate.dto.ExportInter
 import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateCountIssuedByRequest;
 import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateCountIssuedByResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateInternalMetadataResponse;
+import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateInternalPdfResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateInternalResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateInternalXmlResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.GetSickLeaveCertificateInternalRequest;
@@ -114,6 +115,15 @@ public class CertificateInternalApiController {
   GetCertificateInternalMetadataResponse getCertificateMetadata(
       @PathVariable("certificateId") String certificateId) {
     return getCertificateInternalMetadataService.get(certificateId);
+  }
+
+  @GetMapping("/{certificateId}/pdf")
+  @PerformanceLogging(
+      eventAction = "internal-retrieve-certificate-pdf",
+      eventType = EVENT_TYPE_ACCESSED)
+  GetCertificateInternalPdfResponse getCertificatePdf(
+      @PathVariable("certificateId") String certificateId) {
+    return GetCertificateInternalPdfResponse.builder().build();
   }
 
   @PostMapping("/{certificateId}")
