@@ -38,6 +38,7 @@ import se.inera.intyg.certificateservice.application.certificate.dto.CreateCerti
 import se.inera.intyg.certificateservice.application.certificate.dto.CreateDraftFromCertificateResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.ForwardCertificateResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateInternalMetadataResponse;
+import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateInternalPdfResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateInternalResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateInternalXmlResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificatePdfResponse;
@@ -307,6 +308,13 @@ public class CertificateUtil {
   }
 
   public static byte[] pdfData(GetCertificatePdfResponse response) {
+    if (response == null || response.getPdfData() == null) {
+      return null;
+    }
+    return response.getPdfData();
+  }
+
+  public static byte[] pdfData(GetCertificateInternalPdfResponse response) {
     if (response == null || response.getPdfData() == null) {
       return null;
     }

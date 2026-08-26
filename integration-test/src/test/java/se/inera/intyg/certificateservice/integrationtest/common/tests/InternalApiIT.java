@@ -36,12 +36,16 @@ import static se.inera.intyg.certificateservice.integrationtest.common.util.Cert
 import static se.inera.intyg.certificateservice.integrationtest.common.util.CertificateUtil.decodeXml;
 import static se.inera.intyg.certificateservice.integrationtest.common.util.CertificateUtil.exists;
 import static se.inera.intyg.certificateservice.integrationtest.common.util.CertificateUtil.metadata;
+import static se.inera.intyg.certificateservice.integrationtest.common.util.CertificateUtil.pdfData;
 import static se.inera.intyg.certificateservice.integrationtest.common.util.CertificateUtil.version;
 
 import java.util.Objects;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockserver.client.MockServerClient;
 import se.inera.intyg.certificateservice.integrationtest.common.setup.BaseIntegrationIT;
+import se.inera.intyg.certificateservice.integrationtest.common.util.CertificatePrintServiceMock;
+import se.inera.intyg.certificateservice.integrationtest.common.util.Containers;
 
 public abstract class InternalApiIT extends BaseIntegrationIT {
 
@@ -156,6 +160,36 @@ public abstract class InternalApiIT extends BaseIntegrationIT {
         () -> assertEquals(certificateId(testCertificates), metadata(response).getId()),
         () -> assertEquals(type(), metadata(response).getType()),
         () -> assertEquals(ALFA_ALLERGIMOTTAGNINGEN_ID, metadata(response).getUnit().getUnitId()));
+  }
+
+  @Test
+  @DisplayName("Pdf för intyget skall gå att hämta från intern api:et")
+  void shallReturnCertificatePdf() {
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion()));
+
+    api()
+        .signCertificate(
+            defaultSignCertificateRequest(),
+            certificateId(testCertificates),
+            version(testCertificates));
+
+    final var mockServerClient =
+        new MockServerClient(
+            Containers.MOCK_SERVER_CONTAINER.getHost(),
+            Containers.MOCK_SERVER_CONTAINER.getServerPort());
+    final var certificatePrintServiceMock = new CertificatePrintServiceMock(mockServerClient);
+    certificatePrintServiceMock.mockPdf();
+    certificatePrintServiceMock.mockCustomPdf();
+
+    final var response = internalApi().getCertificatePdf(certificateId(testCertificates));
+
+    assertAll(
+        () -> assertNotNull(response.getBody(), "Should return certificate pdf response"),
+        () ->
+            assertNotNull(
+                pdfData(response.getBody()), "Should return certificate pdf data when exists"));
   }
 
   @Test

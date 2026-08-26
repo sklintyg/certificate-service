@@ -55,6 +55,7 @@ import se.inera.intyg.certificateservice.application.certificate.service.EraseCe
 import se.inera.intyg.certificateservice.application.certificate.service.GetCertificateCountIssuedByInternalService;
 import se.inera.intyg.certificateservice.application.certificate.service.GetCertificateExportsInternalForCareProviderService;
 import se.inera.intyg.certificateservice.application.certificate.service.GetCertificateInternalMetadataService;
+import se.inera.intyg.certificateservice.application.certificate.service.GetCertificateInternalPdfService;
 import se.inera.intyg.certificateservice.application.certificate.service.GetCertificateInternalService;
 import se.inera.intyg.certificateservice.application.certificate.service.GetCertificateInternalXmlService;
 import se.inera.intyg.certificateservice.application.certificate.service.GetSickLeaveCertificateInternalService;
@@ -90,6 +91,7 @@ class CertificateInternalApiControllerTest {
   @Mock private LockDraftsInternalService lockDraftsInternalService;
   @Mock private CertificateExistsService certificateExistsService;
   @Mock private GetCertificateInternalMetadataService getCertificateInternalMetadataService;
+  @Mock private GetCertificateInternalPdfService getCertificateInternalPdfService;
   @Mock private GetCertificateInternalService getCertificateInternalService;
   @Mock private GetSickLeaveCertificateInternalService getSickLeaveCertificateInternalService;
   @Mock private GetCertificateInternalXmlService getCertificateInternalXmlService;
@@ -143,7 +145,10 @@ class CertificateInternalApiControllerTest {
 
   @Test
   void shallReturnGetCertificatePdfResponse() {
-    final var expectedResult = GetCertificateInternalPdfResponse.builder().build();
+    final var expectedResult =
+        GetCertificateInternalPdfResponse.builder().pdfData("pdfData".getBytes()).build();
+
+    doReturn(expectedResult).when(getCertificateInternalPdfService).get(CERTIFICATE_ID);
 
     final var actualResult = certificateInternalApiController.getCertificatePdf(CERTIFICATE_ID);
 

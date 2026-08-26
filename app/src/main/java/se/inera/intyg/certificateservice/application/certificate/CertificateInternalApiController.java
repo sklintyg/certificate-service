@@ -53,6 +53,7 @@ import se.inera.intyg.certificateservice.application.certificate.service.EraseCe
 import se.inera.intyg.certificateservice.application.certificate.service.GetCertificateCountIssuedByInternalService;
 import se.inera.intyg.certificateservice.application.certificate.service.GetCertificateExportsInternalForCareProviderService;
 import se.inera.intyg.certificateservice.application.certificate.service.GetCertificateInternalMetadataService;
+import se.inera.intyg.certificateservice.application.certificate.service.GetCertificateInternalPdfService;
 import se.inera.intyg.certificateservice.application.certificate.service.GetCertificateInternalService;
 import se.inera.intyg.certificateservice.application.certificate.service.GetCertificateInternalXmlService;
 import se.inera.intyg.certificateservice.application.certificate.service.GetSickLeaveCertificateInternalService;
@@ -77,6 +78,7 @@ public class CertificateInternalApiController {
       getCertificateExportsInternalForCareProviderService;
   private final GetCertificateInternalXmlService getCertificateInternalXmlService;
   private final GetCertificateInternalMetadataService getCertificateInternalMetadataService;
+  private final GetCertificateInternalPdfService getCertificateInternalPdfService;
   private final GetCertificateInternalService getCertificateInternalService;
   private final CertificateExistsService certificateExistsService;
   private final LockDraftsInternalService lockDraftsInternalService;
@@ -123,7 +125,7 @@ public class CertificateInternalApiController {
       eventType = EVENT_TYPE_ACCESSED)
   GetCertificateInternalPdfResponse getCertificatePdf(
       @PathVariable("certificateId") String certificateId) {
-    return GetCertificateInternalPdfResponse.builder().build();
+    return getCertificateInternalPdfService.get(certificateId);
   }
 
   @PostMapping("/{certificateId}")
