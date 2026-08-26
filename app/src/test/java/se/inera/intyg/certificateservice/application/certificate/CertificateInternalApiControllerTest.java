@@ -39,6 +39,7 @@ import se.inera.intyg.certificateservice.application.certificate.dto.ExportInter
 import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateCountIssuedByRequest;
 import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateCountIssuedByResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateInternalMetadataResponse;
+import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateInternalPdfResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateInternalResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateInternalXmlResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.GetSickLeaveCertificateInternalRequest;
@@ -136,6 +137,15 @@ class CertificateInternalApiControllerTest {
 
     final var actualResult =
         certificateInternalApiController.getCertificateMetadata(CERTIFICATE_ID);
+
+    assertEquals(expectedResult, actualResult);
+  }
+
+  @Test
+  void shallReturnGetCertificatePdfResponse() {
+    final var expectedResult = GetCertificateInternalPdfResponse.builder().build();
+
+    final var actualResult = certificateInternalApiController.getCertificatePdf(CERTIFICATE_ID);
 
     assertEquals(expectedResult, actualResult);
   }
