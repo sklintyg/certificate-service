@@ -183,10 +183,10 @@ public abstract class InternalApiIT extends BaseIntegrationIT {
     certificatePrintServiceMock.mockPdf();
     certificatePrintServiceMock.mockCustomPdf();
 
-    final var response = internalApi().getCertificatePdf(certificateId(testCertificates));
+    final var response = internalApi().getCertificateBinary(certificateId(testCertificates));
 
     assertAll(
-        () -> assertNotNull(response.getBody(), "Should return certificate pdf response"),
+        () -> assertNotNull(response.getBody(), "Should return certificate binary response"),
         () ->
             assertNotNull(
                 pdfData(response.getBody()), "Should return certificate pdf data when exists"));

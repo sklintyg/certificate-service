@@ -63,13 +63,16 @@ class GetCertificateInternalBinaryServiceTest {
     final var binaryCertificate =
         BinaryCertificateMetadataDTO.builder().certificateId(CERTIFICATE_ID).build();
     final var expectedResponse =
-        GetCertificateInternalBinaryResponse.builder().metadata(binaryCertificate).build();
+        GetCertificateInternalBinaryResponse.builder()
+            .metadata(binaryCertificate)
+            .pdfData(pdf.pdfData())
+            .build();
 
     doReturn(certificate).when(certificateRepository).getById(new CertificateId(CERTIFICATE_ID));
     doReturn(pdf)
         .when(getCertificateInternalPdfDomainService)
         .get(new CertificateId(CERTIFICATE_ID));
-    doReturn(binaryCertificate).when(binaryCertificateMetadataConverter).convert(certificate, pdf);
+    doReturn(binaryCertificate).when(binaryCertificateMetadataConverter).convert(certificate);
 
     final var actualResponse = getCertificateInternalBinaryService.get(CERTIFICATE_ID);
 

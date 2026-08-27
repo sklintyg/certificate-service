@@ -18,7 +18,6 @@
  */
 package se.inera.intyg.certificateservice.application.certificate.service.converter;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.doReturn;
@@ -48,7 +47,8 @@ import se.inera.intyg.certificateservice.application.certificate.dto.BinaryUnitD
 import se.inera.intyg.certificateservice.domain.certificate.model.CertificateId;
 import se.inera.intyg.certificateservice.domain.certificate.model.CertificateMetaData;
 import se.inera.intyg.certificateservice.domain.certificate.model.MedicalCertificate;
-import se.inera.intyg.certificateservice.domain.certificate.model.Pdf;
+import se.inera.intyg.certificateservice.domain.certificate.model.Revoked;
+import se.inera.intyg.certificateservice.domain.certificate.model.Sent;
 import se.inera.intyg.certificateservice.domain.certificate.model.Status;
 
 @ExtendWith(MockitoExtension.class)
@@ -57,11 +57,10 @@ class BinaryCertificateMetadataConverterTest {
   private static final String CERTIFICATE_ID = "certificateId";
   private static final LocalDateTime SIGNED = LocalDateTime.now();
 
-  @Mock private CertificateUnitConverter certificateUnitConverter;
+  @Mock private BinaryCertificateUnitConverter binaryCertificateUnitConverter;
   @InjectMocks private BinaryCertificateMetadataConverter binaryCertificateMetadataConverter;
 
   private MedicalCertificate certificate;
-  private Pdf pdf;
 
   @BeforeEach
   void setUp() {
@@ -70,6 +69,8 @@ class BinaryCertificateMetadataConverterTest {
             .id(new CertificateId(CERTIFICATE_ID))
             .status(Status.SIGNED)
             .signed(SIGNED)
+            .sent(Sent.builder().build())
+            .revoked(Revoked.builder().build())
             .certificateModel(fk7210certificateModelBuilder().build())
             .certificateMetaData(
                 CertificateMetaData.builder()
@@ -82,73 +83,59 @@ class BinaryCertificateMetadataConverterTest {
             .elementData(Collections.emptyList())
             .build();
 
-    pdf = new Pdf("pdfData".getBytes(), "fileName");
-
     doReturn(BinaryUnitDTO.builder().unitId(ALFA_ALLERGIMOTTAGNINGEN_ID).build())
-        .when(certificateUnitConverter)
+        .when(binaryCertificateUnitConverter)
         .convert(ALFA_ALLERGIMOTTAGNINGEN, Optional.empty());
   }
 
   @Test
   void shallIncludeCertificateId() {
-    final var result = binaryCertificateMetadataConverter.convert(certificate, pdf);
+    final var result = binaryCertificateMetadataConverter.convert(certificate);
     assertEquals(CERTIFICATE_ID, result.getCertificateId());
   }
 
   @Test
   void shallIncludeSignedAt() {
-    final var result = binaryCertificateMetadataConverter.convert(certificate, pdf);
+    final var result = binaryCertificateMetadataConverter.convert(certificate);
     assertEquals(SIGNED, result.getSignedAt());
   }
 
   @Test
   void shallIncludeIssuedByPersonId() {
-    final var result = binaryCertificateMetadataConverter.convert(certificate, pdf);
+    final var result = binaryCertificateMetadataConverter.convert(certificate);
     assertEquals(AJLA_DOCTOR_HSA_ID, result.getIssuedBy().getPersonId());
   }
 
   @Test
   void shallIncludeIssuedByFullName() {
-    final var result = binaryCertificateMetadataConverter.convert(certificate, pdf);
+    final var result = binaryCertificateMetadataConverter.convert(certificate);
     assertEquals(AJLA_DOCTOR_FULLNAME, result.getIssuedBy().getFullName());
   }
 
   @Test
   void shallIncludeIssuedByTitles() {
-    final var result = binaryCertificateMetadataConverter.convert(certificate, pdf);
+    final var result = binaryCertificateMetadataConverter.convert(certificate);
     assertEquals(2, result.getIssuedBy().getTitles().size());
   }
 
   @Test
   void shallIncludeIssuedByUnitWorkplaceCode() {
-    final var result = binaryCertificateMetadataConverter.convert(certificate, pdf);
+    final var result = binaryCertificateMetadataConverter.convert(certificate);
     assertEquals(
         ALFA_ALLERGIMOTTAGNINGEN_WORKPLACE_CODE, result.getIssuedBy().getUnit().getWorkplaceCode());
   }
 
   @Test
   void shallIncludeIssuedByUnitCareProvider() {
-    final var result = binaryCertificateMetadataConverter.convert(certificate, pdf);
+    final var result = binaryCertificateMetadataConverter.convert(certificate);
     assertEquals(ALFA_REGIONEN_ID, result.getIssuedBy().getUnit().getCareProvider().getUnitId());
     assertEquals(
         ALFA_REGIONEN_NAME, result.getIssuedBy().getUnit().getCareProvider().getUnitName());
   }
 
   @Test
-  void shallHaveRawPdfDataWithoutManualBase64Encoding() {
-    final var result = binaryCertificateMetadataConverter.convert(certificate, pdf);
-    assertArrayEquals("pdfData".getBytes(), result.getPdfData());
-  }
-
-  @Test
-  void shallReturnEmptyStatusesWhenNotSentOrRevoked() {
-    final var result = binaryCertificateMetadataConverter.convert(certificate, pdf);
-    assertEquals(0, result.getStatuses().size());
-  }
-
-  @Test
   void shallNotIncludeParentRelationIfNoParent() {
-    final var result = binaryCertificateMetadataConverter.convert(certificate, pdf);
+    final var result = binaryCertificateMetadataConverter.convert(certificate);
     assertNull(result.getRelations().getParent());
   }
 }

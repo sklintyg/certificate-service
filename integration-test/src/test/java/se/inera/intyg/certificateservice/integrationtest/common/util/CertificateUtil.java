@@ -37,6 +37,7 @@ import se.inera.intyg.certificateservice.application.certificate.dto.ComplementC
 import se.inera.intyg.certificateservice.application.certificate.dto.CreateCertificateResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.CreateDraftFromCertificateResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.ForwardCertificateResponse;
+import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateInternalBinaryResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateInternalMetadataResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateInternalResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateInternalXmlResponse;
@@ -307,6 +308,13 @@ public class CertificateUtil {
   }
 
   public static byte[] pdfData(GetCertificatePdfResponse response) {
+    if (response == null || response.getPdfData() == null) {
+      return null;
+    }
+    return response.getPdfData();
+  }
+
+  public static byte[] pdfData(GetCertificateInternalBinaryResponse response) {
     if (response == null || response.getPdfData() == null) {
       return null;
     }

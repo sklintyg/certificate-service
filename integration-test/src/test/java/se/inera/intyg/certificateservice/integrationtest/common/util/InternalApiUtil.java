@@ -33,6 +33,7 @@ import se.inera.intyg.certificateservice.application.certificate.dto.Certificate
 import se.inera.intyg.certificateservice.application.certificate.dto.CertificatesWithQAInternalResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.DisposeObsoleteDraftsRequest;
 import se.inera.intyg.certificateservice.application.certificate.dto.DisposeObsoleteDraftsResponse;
+import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateInternalBinaryResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateInternalMetadataResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateInternalResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateInternalXmlResponse;
@@ -71,6 +72,22 @@ public class InternalApiUtil {
       String certificateId) {
     final var requestUrl =
         "http://localhost:%s/internalapi/certificate/%s/metadata".formatted(port, certificateId);
+
+    final var headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_JSON);
+
+    return this.restTemplate.exchange(
+        requestUrl,
+        HttpMethod.GET,
+        new HttpEntity<>(null, headers),
+        new ParameterizedTypeReference<>() {},
+        Collections.emptyMap());
+  }
+
+  public ResponseEntity<GetCertificateInternalBinaryResponse> getCertificateBinary(
+      String certificateId) {
+    final var requestUrl =
+        "http://localhost:%s/internalapi/certificate/%s/binary".formatted(port, certificateId);
 
     final var headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
