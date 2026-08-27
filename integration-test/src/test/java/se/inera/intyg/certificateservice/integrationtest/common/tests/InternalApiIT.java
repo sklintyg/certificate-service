@@ -205,6 +205,31 @@ public abstract class InternalApiIT extends BaseIntegrationIT {
   }
 
   @Test
+  @DisplayName("Om intyg är ett utkast skall binärt intyg inte kunna hämtas")
+  void shallNotReturnBinaryCertificateIfCertificateIsDraft() {
+    final var testCertificates =
+        testabilityApi()
+            .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion()));
+
+    final var certificateId = certificateId(testCertificates);
+
+    final var mockServerClient =
+        new MockServerClient(
+            Containers.MOCK_SERVER_CONTAINER.getHost(),
+            Containers.MOCK_SERVER_CONTAINER.getServerPort());
+    final var certificatePrintServiceMock = new CertificatePrintServiceMock(mockServerClient);
+    certificatePrintServiceMock.mockPdf();
+    certificatePrintServiceMock.mockCustomPdf();
+
+    final var response = internalApi().getCertificateBinary(certificateId(testCertificates));
+
+    assertAll(
+        () -> assertEquals(500, response.getStatusCode().value()),
+        () -> assertNotNull(response.getBody()),
+        () -> assertTrue(exists(internalApi().certificateExists(certificateId).getBody())));
+  }
+
+  @Test
   @DisplayName("Om intyget finns så returneras true")
   void shallReturnTrueIfCertificateExists() {
     final var testCertificates =
