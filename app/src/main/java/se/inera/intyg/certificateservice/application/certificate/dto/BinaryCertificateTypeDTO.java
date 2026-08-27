@@ -20,17 +20,18 @@ package se.inera.intyg.certificateservice.application.certificate.dto;
 
 import lombok.Builder;
 import lombok.Value;
-import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateInternalPdfResponse.GetCertificateInternalPdfResponseBuilder;
+import se.inera.intyg.certificateservice.application.certificate.dto.BinaryCertificateTypeDTO.BinaryCertificateTypeDTOBuilder;
 import tools.jackson.databind.annotation.JsonDeserialize;
 import tools.jackson.databind.annotation.JsonPOJOBuilder;
 
-@JsonDeserialize(builder = GetCertificateInternalPdfResponseBuilder.class)
 @Value
 @Builder
-public class GetCertificateInternalPdfResponse {
-
-  byte[] pdfData;
+@JsonDeserialize(builder = BinaryCertificateTypeDTOBuilder.class)
+public class BinaryCertificateTypeDTO {
+  String code;
+  String codeSystem;
+  String displayName;
 
   @JsonPOJOBuilder(withPrefix = "")
-  public static class GetCertificateInternalPdfResponseBuilder {}
+  public static class BinaryCertificateTypeDTOBuilder {}
 }

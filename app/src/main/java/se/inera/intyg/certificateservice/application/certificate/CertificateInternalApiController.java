@@ -35,10 +35,10 @@ import se.inera.intyg.certificateservice.application.certificate.dto.Certificate
 import se.inera.intyg.certificateservice.application.certificate.dto.CertificatesWithQAInternalResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.ExportCertificateInternalRequest;
 import se.inera.intyg.certificateservice.application.certificate.dto.ExportInternalResponse;
+import se.inera.intyg.certificateservice.application.certificate.dto.GetBinaryCertificateInternalResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateCountIssuedByRequest;
 import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateCountIssuedByResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateInternalMetadataResponse;
-import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateInternalPdfResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateInternalResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateInternalXmlResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.GetSickLeaveCertificateInternalRequest;
@@ -50,10 +50,10 @@ import se.inera.intyg.certificateservice.application.certificate.dto.LockDraftsR
 import se.inera.intyg.certificateservice.application.certificate.dto.TotalExportsInternalResponse;
 import se.inera.intyg.certificateservice.application.certificate.service.CertificateExistsService;
 import se.inera.intyg.certificateservice.application.certificate.service.EraseCertificateInternalForCareProviderService;
+import se.inera.intyg.certificateservice.application.certificate.service.GetBinaryCertificateInternalService;
 import se.inera.intyg.certificateservice.application.certificate.service.GetCertificateCountIssuedByInternalService;
 import se.inera.intyg.certificateservice.application.certificate.service.GetCertificateExportsInternalForCareProviderService;
 import se.inera.intyg.certificateservice.application.certificate.service.GetCertificateInternalMetadataService;
-import se.inera.intyg.certificateservice.application.certificate.service.GetCertificateInternalPdfService;
 import se.inera.intyg.certificateservice.application.certificate.service.GetCertificateInternalService;
 import se.inera.intyg.certificateservice.application.certificate.service.GetCertificateInternalXmlService;
 import se.inera.intyg.certificateservice.application.certificate.service.GetSickLeaveCertificateInternalService;
@@ -78,7 +78,6 @@ public class CertificateInternalApiController {
       getCertificateExportsInternalForCareProviderService;
   private final GetCertificateInternalXmlService getCertificateInternalXmlService;
   private final GetCertificateInternalMetadataService getCertificateInternalMetadataService;
-  private final GetCertificateInternalPdfService getCertificateInternalPdfService;
   private final GetCertificateInternalService getCertificateInternalService;
   private final CertificateExistsService certificateExistsService;
   private final LockDraftsInternalService lockDraftsInternalService;
@@ -91,6 +90,7 @@ public class CertificateInternalApiController {
       getValidSickLeaveCertificatesInternalService;
   private final GetCertificateCountIssuedByInternalService
       getCertificateCountIssuedByInternalService;
+  private final GetBinaryCertificateInternalService getBinaryCertificateInternalService;
 
   @GetMapping("/{certificateId}/exists")
   @PerformanceLogging(
@@ -119,13 +119,13 @@ public class CertificateInternalApiController {
     return getCertificateInternalMetadataService.get(certificateId);
   }
 
-  @GetMapping("/{certificateId}/pdf")
+  @GetMapping("/{certificateId}/binary")
   @PerformanceLogging(
-      eventAction = "internal-retrieve-certificate-pdf",
+      eventAction = "internal-retrieve-certificate-binary",
       eventType = EVENT_TYPE_ACCESSED)
-  GetCertificateInternalPdfResponse getCertificatePdf(
+  GetBinaryCertificateInternalResponse getBinaryCertificate(
       @PathVariable("certificateId") String certificateId) {
-    return getCertificateInternalPdfService.get(certificateId);
+    return getBinaryCertificateInternalService.get(certificateId);
   }
 
   @PostMapping("/{certificateId}")
