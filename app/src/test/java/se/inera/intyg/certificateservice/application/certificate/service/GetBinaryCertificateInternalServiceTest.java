@@ -21,6 +21,7 @@ package se.inera.intyg.certificateservice.application.certificate.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.when;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataCertificateConstants.CERTIFICATE_ID;
 
 import org.junit.jupiter.api.Test;
@@ -34,6 +35,7 @@ import se.inera.intyg.certificateservice.application.certificate.service.convert
 import se.inera.intyg.certificateservice.domain.certificate.model.CertificateId;
 import se.inera.intyg.certificateservice.domain.certificate.model.MedicalCertificate;
 import se.inera.intyg.certificateservice.domain.certificate.model.Pdf;
+import se.inera.intyg.certificateservice.domain.certificate.model.Status;
 import se.inera.intyg.certificateservice.domain.certificate.repository.CertificateRepository;
 import se.inera.intyg.certificateservice.domain.certificate.service.GetCertificateInternalPdfDomainService;
 
@@ -57,8 +59,21 @@ class GetBinaryCertificateInternalServiceTest {
   }
 
   @Test
+  void shallThrowIfCertificateIsDraft() {
+    final var certificateId = new CertificateId("id");
+    final var certificate =
+        MedicalCertificate.builder().id(certificateId).status(Status.DRAFT).build();
+
+    when(certificateRepository.getById(certificateId)).thenReturn(certificate);
+
+    final var id = certificate.id().id();
+
+    assertThrows(IllegalStateException.class, () -> getBinaryCertificateInternalService.get(id));
+  }
+
+  @Test
   void shallReturnGetCertificateInternalBinaryResponse() {
-    final var certificate = MedicalCertificate.builder().build();
+    final var certificate = MedicalCertificate.builder().status(Status.SIGNED).build();
     final var pdf = new Pdf("pdfData".getBytes(), "fileName");
     final var binaryCertificate =
         BinaryCertificateMetadataDTO.builder().certificateId(CERTIFICATE_ID).build();

@@ -86,7 +86,11 @@ class BinaryCertificateMetadataConverterTest {
             .revoked(Revoked.builder().build())
             .build();
 
-    doReturn(BinaryUnitDTO.builder().unitId(ALFA_ALLERGIMOTTAGNINGEN_ID).build())
+    doReturn(
+            BinaryUnitDTO.builder()
+                .unitId(ALFA_ALLERGIMOTTAGNINGEN_ID)
+                .workplaceCode(ALFA_ALLERGIMOTTAGNINGEN_WORKPLACE_CODE)
+                .build())
         .when(binaryCertificateUnitConverter)
         .convert(ALFA_ALLERGIMOTTAGNINGEN, Optional.empty());
   }
@@ -148,9 +152,8 @@ class BinaryCertificateMetadataConverterTest {
   @Test
   void shallIncludeIssuedByUnitCareProvider() {
     final var result = binaryCertificateMetadataConverter.convert(certificate);
-    assertEquals(ALFA_REGIONEN_ID, result.getIssuedBy().getUnit().getCareProvider().getUnitId());
-    assertEquals(
-        ALFA_REGIONEN_NAME, result.getIssuedBy().getUnit().getCareProvider().getUnitName());
+    assertEquals(ALFA_REGIONEN_ID, result.getIssuedBy().getUnit().getCareProvider().getId());
+    assertEquals(ALFA_REGIONEN_NAME, result.getIssuedBy().getUnit().getCareProvider().getName());
   }
 
   @Test

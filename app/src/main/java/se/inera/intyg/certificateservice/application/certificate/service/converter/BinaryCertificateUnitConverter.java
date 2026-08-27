@@ -36,6 +36,7 @@ public class BinaryCertificateUnitConverter {
                   .unitId(issuingUnit.hsaId().id())
                   .unitName(issuingUnit.name().name())
                   .address(elementValue.address())
+                  .workplaceCode(workplaceCode(issuingUnit))
                   .city(elementValue.city())
                   .zipCode(elementValue.zipCode())
                   .phoneNumber(elementValue.phoneNumber())
@@ -48,6 +49,7 @@ public class BinaryCertificateUnitConverter {
                 .unitId(issuingUnit.hsaId().id())
                 .unitName(issuingUnit.name().name())
                 .address(issuingUnit.address() == null ? null : issuingUnit.address().address())
+                .workplaceCode(workplaceCode(issuingUnit))
                 .city(issuingUnit.address() == null ? null : issuingUnit.address().city())
                 .zipCode(issuingUnit.address() == null ? null : issuingUnit.address().zipCode())
                 .phoneNumber(
@@ -56,5 +58,9 @@ public class BinaryCertificateUnitConverter {
                         : issuingUnit.contactInfo().phoneNumber())
                 .email(issuingUnit.contactInfo() == null ? null : issuingUnit.contactInfo().email())
                 .build());
+  }
+
+  private String workplaceCode(IssuingUnit issuingUnit) {
+    return issuingUnit.workplaceCode() == null ? null : issuingUnit.workplaceCode().code();
   }
 }

@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import se.inera.intyg.certificateservice.application.certificate.dto.BinaryCareProviderDTO;
 import se.inera.intyg.certificateservice.application.certificate.dto.BinaryCertificateMetadataDTO;
 import se.inera.intyg.certificateservice.application.certificate.dto.BinaryCertificateTypeDTO;
 import se.inera.intyg.certificateservice.application.certificate.dto.BinaryStaffDTO;
@@ -41,7 +42,6 @@ import se.inera.intyg.certificateservice.domain.common.model.PaTitle;
 import se.inera.intyg.certificateservice.domain.common.model.Speciality;
 import se.inera.intyg.certificateservice.domain.staff.model.Staff;
 import se.inera.intyg.certificateservice.domain.unit.model.CareProvider;
-import se.inera.intyg.certificateservice.domain.unit.model.IssuingUnit;
 
 @Component
 @RequiredArgsConstructor
@@ -134,27 +134,19 @@ public class BinaryCertificateMetadataConverter {
   }
 
   private BinaryUnitDTO toUnitDTO(Certificate certificate) {
-    final var issuingUnit = certificate.certificateMetaData().issuingUnit();
-    final var baseUnit =
-        binaryCertificateUnitConverter.convert(
-            issuingUnit,
+    return binaryCertificateUnitConverter
+        .convert(
+            certificate.certificateMetaData().issuingUnit(),
             certificate.elementData().stream()
                 .filter(data -> data.id().equals(UNIT_CONTACT_INFORMATION))
-                .findFirst());
-
-    return baseUnit
-        .withWorkplaceCode(workplaceCode(issuingUnit))
+                .findFirst())
         .withCareProvider(toCareProviderDTO(certificate.certificateMetaData().careProvider()));
   }
 
-  private String workplaceCode(IssuingUnit issuingUnit) {
-    return issuingUnit.workplaceCode() != null ? issuingUnit.workplaceCode().code() : null;
-  }
-
-  private BinaryUnitDTO toCareProviderDTO(CareProvider careProvider) {
-    return BinaryUnitDTO.builder()
-        .unitId(careProvider.hsaId().id())
-        .unitName(careProvider.name().name())
+  private BinaryCareProviderDTO toCareProviderDTO(CareProvider careProvider) {
+    return BinaryCareProviderDTO.builder()
+        .id(careProvider.hsaId().id())
+        .name(careProvider.name().name())
         .build();
   }
 

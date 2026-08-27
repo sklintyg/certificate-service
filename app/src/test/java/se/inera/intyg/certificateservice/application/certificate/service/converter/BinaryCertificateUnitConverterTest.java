@@ -19,6 +19,7 @@
 package se.inera.intyg.certificateservice.application.certificate.service.converter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,6 +33,7 @@ import se.inera.intyg.certificateservice.domain.unit.model.Inactive;
 import se.inera.intyg.certificateservice.domain.unit.model.UnitAddress;
 import se.inera.intyg.certificateservice.domain.unit.model.UnitContactInfo;
 import se.inera.intyg.certificateservice.domain.unit.model.UnitName;
+import se.inera.intyg.certificateservice.domain.unit.model.WorkplaceCode;
 
 class BinaryCertificateUnitConverterTest {
 
@@ -41,6 +43,7 @@ class BinaryCertificateUnitConverterTest {
   private static final String EXPECTED_ZIP_CODE = "expectedZipCode";
   private static final String EXPECTED_PHONE_NUMBER = "expectedPhoneNumber";
   private static final String EXPECTED_EMAIL = "expectedEmail";
+  private static final String EXPECTED_WORKPLACE_CODE = "expectedWorkplaceCode";
   private static final String ISSUING_UNIT = "ISSUING_UNIT";
   private static final String EXPECTED_ID = "expectedId";
   private BinaryCertificateUnitConverter binaryCertificateUnitConverter;
@@ -170,6 +173,30 @@ class BinaryCertificateUnitConverterTest {
             .build();
     final var result = binaryCertificateUnitConverter.convert(issuingUnit, Optional.empty());
     assertEquals(EXPECTED_EMAIL, result.getEmail());
+  }
+
+  @Test
+  void shallConvertWorkplaceCodeFromIssuingUnitWhenElementDataIsPresent() {
+    final var issuingUnit =
+        careUnitBuilder.workplaceCode(new WorkplaceCode(EXPECTED_WORKPLACE_CODE)).build();
+    final var elementData = Optional.of(getElementData(null, null, null, null));
+    final var result = binaryCertificateUnitConverter.convert(issuingUnit, elementData);
+    assertEquals(EXPECTED_WORKPLACE_CODE, result.getWorkplaceCode());
+  }
+
+  @Test
+  void shallConvertWorkplaceCodeFromIssuingUnitWhenElementDataIsMissing() {
+    final var issuingUnit =
+        careUnitBuilder.workplaceCode(new WorkplaceCode(EXPECTED_WORKPLACE_CODE)).build();
+    final var result = binaryCertificateUnitConverter.convert(issuingUnit, Optional.empty());
+    assertEquals(EXPECTED_WORKPLACE_CODE, result.getWorkplaceCode());
+  }
+
+  @Test
+  void shallReturnNullWorkplaceCodeWhenIssuingUnitHasNoWorkplaceCode() {
+    final var issuingUnit = careUnitBuilder.build();
+    final var result = binaryCertificateUnitConverter.convert(issuingUnit, Optional.empty());
+    assertNull(result.getWorkplaceCode());
   }
 
   private static ElementData getElementData(
