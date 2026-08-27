@@ -29,6 +29,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import se.inera.intyg.certificateservice.application.certificate.dto.BinaryCertificateMetadataDTO;
 import se.inera.intyg.certificateservice.application.certificate.dto.CertificateDTO;
 import se.inera.intyg.certificateservice.application.certificate.dto.CertificateExistsResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.CertificateMetadataDTO;
@@ -38,8 +39,8 @@ import se.inera.intyg.certificateservice.application.certificate.dto.ExportCerti
 import se.inera.intyg.certificateservice.application.certificate.dto.ExportInternalResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateCountIssuedByRequest;
 import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateCountIssuedByResponse;
+import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateInternalBinaryResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateInternalMetadataResponse;
-import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateInternalPdfResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateInternalResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateInternalXmlResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.GetSickLeaveCertificateInternalRequest;
@@ -54,8 +55,8 @@ import se.inera.intyg.certificateservice.application.certificate.service.Certifi
 import se.inera.intyg.certificateservice.application.certificate.service.EraseCertificateInternalForCareProviderService;
 import se.inera.intyg.certificateservice.application.certificate.service.GetCertificateCountIssuedByInternalService;
 import se.inera.intyg.certificateservice.application.certificate.service.GetCertificateExportsInternalForCareProviderService;
+import se.inera.intyg.certificateservice.application.certificate.service.GetCertificateInternalBinaryService;
 import se.inera.intyg.certificateservice.application.certificate.service.GetCertificateInternalMetadataService;
-import se.inera.intyg.certificateservice.application.certificate.service.GetCertificateInternalPdfService;
 import se.inera.intyg.certificateservice.application.certificate.service.GetCertificateInternalService;
 import se.inera.intyg.certificateservice.application.certificate.service.GetCertificateInternalXmlService;
 import se.inera.intyg.certificateservice.application.certificate.service.GetSickLeaveCertificateInternalService;
@@ -91,7 +92,7 @@ class CertificateInternalApiControllerTest {
   @Mock private LockDraftsInternalService lockDraftsInternalService;
   @Mock private CertificateExistsService certificateExistsService;
   @Mock private GetCertificateInternalMetadataService getCertificateInternalMetadataService;
-  @Mock private GetCertificateInternalPdfService getCertificateInternalPdfService;
+  @Mock private GetCertificateInternalBinaryService getCertificateInternalBinaryService;
   @Mock private GetCertificateInternalService getCertificateInternalService;
   @Mock private GetSickLeaveCertificateInternalService getSickLeaveCertificateInternalService;
   @Mock private GetCertificateInternalXmlService getCertificateInternalXmlService;
@@ -144,13 +145,15 @@ class CertificateInternalApiControllerTest {
   }
 
   @Test
-  void shallReturnGetCertificatePdfResponse() {
+  void shallReturnGetBinaryCertificateResponse() {
     final var expectedResult =
-        GetCertificateInternalPdfResponse.builder().pdfData("pdfData".getBytes()).build();
+        GetCertificateInternalBinaryResponse.builder()
+            .metadata(BinaryCertificateMetadataDTO.builder().certificateId(CERTIFICATE_ID).build())
+            .build();
 
-    doReturn(expectedResult).when(getCertificateInternalPdfService).get(CERTIFICATE_ID);
+    doReturn(expectedResult).when(getCertificateInternalBinaryService).get(CERTIFICATE_ID);
 
-    final var actualResult = certificateInternalApiController.getCertificatePdf(CERTIFICATE_ID);
+    final var actualResult = certificateInternalApiController.getBinaryCertificate(CERTIFICATE_ID);
 
     assertEquals(expectedResult, actualResult);
   }

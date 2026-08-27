@@ -20,23 +20,32 @@ package se.inera.intyg.certificateservice.application.certificate.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateInternalPdfResponse;
+import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateInternalBinaryResponse;
+import se.inera.intyg.certificateservice.application.certificate.service.converter.BinaryCertificateMetadataConverter;
 import se.inera.intyg.certificateservice.domain.certificate.model.CertificateId;
+import se.inera.intyg.certificateservice.domain.certificate.repository.CertificateRepository;
 import se.inera.intyg.certificateservice.domain.certificate.service.GetCertificateInternalPdfDomainService;
 
 @Service
 @RequiredArgsConstructor
-public class GetCertificateInternalPdfService {
+public class GetCertificateInternalBinaryService {
 
+  private final CertificateRepository certificateRepository;
   private final GetCertificateInternalPdfDomainService getCertificateInternalPdfDomainService;
+  private final BinaryCertificateMetadataConverter binaryCertificateMetadataConverter;
 
-  public GetCertificateInternalPdfResponse get(String certificateId) {
+  public GetCertificateInternalBinaryResponse get(String certificateId) {
     if (certificateId == null || certificateId.isBlank()) {
       throw new IllegalArgumentException("Certificate id cannot be null or empty");
     }
 
-    final var pdf = getCertificateInternalPdfDomainService.get(new CertificateId(certificateId));
+    final var id = new CertificateId(certificateId);
+    final var certificate = certificateRepository.getById(id);
+    final var pdf = getCertificateInternalPdfDomainService.get(id);
 
-    return GetCertificateInternalPdfResponse.builder().pdfData(pdf.pdfData()).build();
+    return GetCertificateInternalBinaryResponse.builder()
+        .metadata(binaryCertificateMetadataConverter.convert(certificate))
+        .pdfData(pdf.pdfData())
+        .build();
   }
 }
