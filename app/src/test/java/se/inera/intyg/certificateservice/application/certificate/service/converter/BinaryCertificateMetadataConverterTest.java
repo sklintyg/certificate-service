@@ -26,16 +26,29 @@ import static se.inera.intyg.certificateservice.domain.testdata.TestDataCareProv
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataCareProviderConstants.ALFA_REGIONEN_NAME;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataCareUnit.ALFA_MEDICINCENTRUM;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataCertificateModel.fk7210certificateModelBuilder;
+import static se.inera.intyg.certificateservice.domain.testdata.TestDataCertificateModelConstants.FK7210_CODE_TYPE;
+import static se.inera.intyg.certificateservice.domain.testdata.TestDataCertificateModelConstants.FK7210_VERSION;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataPatient.athenaReactAnderssonBuilder;
+import static se.inera.intyg.certificateservice.domain.testdata.TestDataPatientConstants.ATHENA_REACT_ANDERSSON_CITY;
+import static se.inera.intyg.certificateservice.domain.testdata.TestDataPatientConstants.ATHENA_REACT_ANDERSSON_FIRST_NAME;
+import static se.inera.intyg.certificateservice.domain.testdata.TestDataPatientConstants.ATHENA_REACT_ANDERSSON_ID;
+import static se.inera.intyg.certificateservice.domain.testdata.TestDataPatientConstants.ATHENA_REACT_ANDERSSON_LAST_NAME;
+import static se.inera.intyg.certificateservice.domain.testdata.TestDataPatientConstants.ATHENA_REACT_ANDERSSON_STREET;
+import static se.inera.intyg.certificateservice.domain.testdata.TestDataPatientConstants.ATHENA_REACT_ANDERSSON_ZIP_CODE;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataStaff.AJLA_DOKTOR;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataSubUnit.ALFA_ALLERGIMOTTAGNINGEN;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataSubUnitConstants.ALFA_ALLERGIMOTTAGNINGEN_ID;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataSubUnitConstants.ALFA_ALLERGIMOTTAGNINGEN_WORKPLACE_CODE;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataUserConstants.AJLA_DOCTOR_FULLNAME;
+import static se.inera.intyg.certificateservice.domain.testdata.TestDataUserConstants.AJLA_DOCTOR_HEALTH_CARE_PROFESSIONAL_LICENCES;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataUserConstants.AJLA_DOCTOR_HSA_ID;
+import static se.inera.intyg.certificateservice.domain.testdata.TestDataUserConstants.AJLA_DOCTOR_LAST_NAME;
+import static se.inera.intyg.certificateservice.domain.testdata.TestDataUserConstants.AJLA_DOCTOR_MIDDLE_NAME;
+import static se.inera.intyg.certificateservice.domain.testdata.TestDataUserConstants.AJLA_DOCTOR_SPECIALITIES;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,9 +60,12 @@ import se.inera.intyg.certificateservice.application.certificate.dto.BinaryUnitD
 import se.inera.intyg.certificateservice.domain.certificate.model.CertificateId;
 import se.inera.intyg.certificateservice.domain.certificate.model.CertificateMetaData;
 import se.inera.intyg.certificateservice.domain.certificate.model.MedicalCertificate;
+import se.inera.intyg.certificateservice.domain.certificate.model.Relation;
+import se.inera.intyg.certificateservice.domain.certificate.model.RelationType;
 import se.inera.intyg.certificateservice.domain.certificate.model.Revoked;
 import se.inera.intyg.certificateservice.domain.certificate.model.Sent;
 import se.inera.intyg.certificateservice.domain.certificate.model.Status;
+import se.inera.intyg.certificateservice.domain.common.model.Speciality;
 
 @ExtendWith(MockitoExtension.class)
 class BinaryCertificateMetadataConverterTest {
@@ -65,27 +81,31 @@ class BinaryCertificateMetadataConverterTest {
   @BeforeEach
   void setUp() {
     certificate =
-        MedicalCertificate.builder()
-            .id(new CertificateId(CERTIFICATE_ID))
-            .status(Status.SIGNED)
-            .signed(SIGNED)
+        baseCertificateBuilder()
             .sent(Sent.builder().build())
             .revoked(Revoked.builder().build())
-            .certificateModel(fk7210certificateModelBuilder().build())
-            .certificateMetaData(
-                CertificateMetaData.builder()
-                    .patient(athenaReactAnderssonBuilder().build())
-                    .issuer(AJLA_DOKTOR)
-                    .issuingUnit(ALFA_ALLERGIMOTTAGNINGEN)
-                    .careUnit(ALFA_MEDICINCENTRUM)
-                    .careProvider(ALFA_REGIONEN)
-                    .build())
-            .elementData(Collections.emptyList())
             .build();
 
     doReturn(BinaryUnitDTO.builder().unitId(ALFA_ALLERGIMOTTAGNINGEN_ID).build())
         .when(binaryCertificateUnitConverter)
         .convert(ALFA_ALLERGIMOTTAGNINGEN, Optional.empty());
+  }
+
+  private MedicalCertificate.MedicalCertificateBuilder baseCertificateBuilder() {
+    return MedicalCertificate.builder()
+        .id(new CertificateId(CERTIFICATE_ID))
+        .status(Status.SIGNED)
+        .signed(SIGNED)
+        .certificateModel(fk7210certificateModelBuilder().build())
+        .certificateMetaData(
+            CertificateMetaData.builder()
+                .patient(athenaReactAnderssonBuilder().build())
+                .issuer(AJLA_DOKTOR)
+                .issuingUnit(ALFA_ALLERGIMOTTAGNINGEN)
+                .careUnit(ALFA_MEDICINCENTRUM)
+                .careProvider(ALFA_REGIONEN)
+                .build())
+        .elementData(Collections.emptyList());
   }
 
   @Test
@@ -137,5 +157,111 @@ class BinaryCertificateMetadataConverterTest {
   void shallNotIncludeParentRelationIfNoParent() {
     final var result = binaryCertificateMetadataConverter.convert(certificate);
     assertNull(result.getRelations().getParent());
+  }
+
+  @Test
+  void shallReturnNullRevokedAtWhenCertificateIsNotRevoked() {
+    final var certificateWithoutRevoked = baseCertificateBuilder().build();
+    final var result = binaryCertificateMetadataConverter.convert(certificateWithoutRevoked);
+    assertNull(result.getRevokedAt());
+  }
+
+  @Test
+  void shallIncludeRevokedAtWhenCertificateIsRevoked() {
+    final var revokedAt = LocalDateTime.now();
+    final var certificateWithRevoked =
+        baseCertificateBuilder().revoked(Revoked.builder().revokedAt(revokedAt).build()).build();
+    final var result = binaryCertificateMetadataConverter.convert(certificateWithRevoked);
+    assertEquals(revokedAt, result.getRevokedAt());
+  }
+
+  @Test
+  void shallReturnNullSentAtWhenCertificateIsNotSent() {
+    final var certificateWithoutSent = baseCertificateBuilder().build();
+    final var result = binaryCertificateMetadataConverter.convert(certificateWithoutSent);
+    assertNull(result.getSentAt());
+  }
+
+  @Test
+  void shallIncludeSentAtWhenCertificateIsSent() {
+    final var sentAt = LocalDateTime.now();
+    final var certificateWithSent =
+        baseCertificateBuilder().sent(Sent.builder().sentAt(sentAt).build()).build();
+    final var result = binaryCertificateMetadataConverter.convert(certificateWithSent);
+    assertEquals(sentAt, result.getSentAt());
+  }
+
+  @Test
+  void shallIncludeType() {
+    final var result = binaryCertificateMetadataConverter.convert(certificate);
+    assertEquals(FK7210_CODE_TYPE.code(), result.getType().getCode());
+    assertEquals(FK7210_CODE_TYPE.codeSystem(), result.getType().getCodeSystem());
+    assertEquals(FK7210_CODE_TYPE.displayName(), result.getType().getDisplayName());
+  }
+
+  @Test
+  void shallIncludeVersion() {
+    final var result = binaryCertificateMetadataConverter.convert(certificate);
+    assertEquals(FK7210_VERSION.version(), result.getVersion());
+  }
+
+  @Test
+  void shallIncludePatientPersonId() {
+    final var result = binaryCertificateMetadataConverter.convert(certificate);
+    assertEquals(ATHENA_REACT_ANDERSSON_ID, result.getPatient().getPersonId().getId());
+  }
+
+  @Test
+  void shallIncludePatientName() {
+    final var result = binaryCertificateMetadataConverter.convert(certificate);
+    assertEquals(ATHENA_REACT_ANDERSSON_FIRST_NAME, result.getPatient().getFirstName());
+    assertEquals(ATHENA_REACT_ANDERSSON_LAST_NAME, result.getPatient().getLastName());
+  }
+
+  @Test
+  void shallIncludePatientAddress() {
+    final var result = binaryCertificateMetadataConverter.convert(certificate);
+    assertEquals(ATHENA_REACT_ANDERSSON_STREET, result.getPatient().getStreet());
+    assertEquals(ATHENA_REACT_ANDERSSON_CITY, result.getPatient().getCity());
+    assertEquals(ATHENA_REACT_ANDERSSON_ZIP_CODE, result.getPatient().getZipCode());
+  }
+
+  @Test
+  void shallIncludeIssuedByMiddleAndLastName() {
+    final var result = binaryCertificateMetadataConverter.convert(certificate);
+    assertEquals(AJLA_DOCTOR_MIDDLE_NAME, result.getIssuedBy().getMiddleName());
+    assertEquals(AJLA_DOCTOR_LAST_NAME, result.getIssuedBy().getLastName());
+  }
+
+  @Test
+  void shallIncludeIssuedBySpecialities() {
+    final var result = binaryCertificateMetadataConverter.convert(certificate);
+    final var expectedSpecialities =
+        AJLA_DOCTOR_SPECIALITIES.stream().map(Speciality::value).toList();
+    assertEquals(expectedSpecialities, result.getIssuedBy().getSpecialities());
+  }
+
+  @Test
+  void shallIncludeIssuedByLicences() {
+    final var result = binaryCertificateMetadataConverter.convert(certificate);
+    assertEquals(
+        AJLA_DOCTOR_HEALTH_CARE_PROFESSIONAL_LICENCES.size(),
+        result.getIssuedBy().getLicences().size());
+  }
+
+  @Test
+  void shallIncludeChildrenRelationsWhenPresent() {
+    final var cert =
+        baseCertificateBuilder()
+            .children(
+                List.of(
+                    Relation.builder()
+                        .certificate(baseCertificateBuilder().build())
+                        .created(LocalDateTime.now())
+                        .type(RelationType.RENEW)
+                        .build()))
+            .build();
+    final var result = binaryCertificateMetadataConverter.convert(cert);
+    assertEquals(1, result.getRelations().getChildren().size());
   }
 }
