@@ -30,6 +30,7 @@ import static se.inera.intyg.certificateservice.integrationtest.common.util.ApiR
 import static se.inera.intyg.certificateservice.integrationtest.common.util.ApiRequestUtil.defaultSendCertificateRequest;
 import static se.inera.intyg.certificateservice.integrationtest.common.util.ApiRequestUtil.defaultSignCertificateRequest;
 import static se.inera.intyg.certificateservice.integrationtest.common.util.ApiRequestUtil.defaultTestablilityCertificateRequest;
+import static se.inera.intyg.certificateservice.integrationtest.common.util.CertificateUtil.binaryMetadata;
 import static se.inera.intyg.certificateservice.integrationtest.common.util.CertificateUtil.certificate;
 import static se.inera.intyg.certificateservice.integrationtest.common.util.CertificateUtil.certificateId;
 import static se.inera.intyg.certificateservice.integrationtest.common.util.CertificateUtil.certificateInternalXmlResponse;
@@ -163,8 +164,8 @@ public abstract class InternalApiIT extends BaseIntegrationIT {
   }
 
   @Test
-  @DisplayName("Pdf för intyget skall gå att hämta från intern api:et")
-  void shallReturnCertificatePdf() {
+  @DisplayName("Binärt intyg skall gå att hämta från intern api:et")
+  void shallReturnCertificateBinary() {
     final var testCertificates =
         testabilityApi()
             .addCertificates(defaultTestablilityCertificateRequest(type(), typeVersion()));
@@ -189,7 +190,18 @@ public abstract class InternalApiIT extends BaseIntegrationIT {
         () -> assertNotNull(response.getBody(), "Should return certificate binary response"),
         () ->
             assertNotNull(
-                pdfData(response.getBody()), "Should return certificate pdf data when exists"));
+                pdfData(response.getBody()), "Should return certificate pdf data when exists"),
+        () ->
+            assertEquals(
+                certificateId(testCertificates), binaryMetadata(response).getCertificateId()),
+        () -> assertEquals(codeSystem(), binaryMetadata(response).getType().getCodeSystem()),
+        () ->
+            assertEquals(
+                ALFA_ALLERGIMOTTAGNINGEN_ID,
+                binaryMetadata(response).getIssuedBy().getUnit().getUnitId()),
+        () -> assertNotNull(binaryMetadata(response).getSignedAt()),
+        () -> assertNull(binaryMetadata(response).getRevokedAt()),
+        () -> assertNull(binaryMetadata(response).getSentAt()));
   }
 
   @Test

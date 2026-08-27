@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import org.springframework.http.ResponseEntity;
+import se.inera.intyg.certificateservice.application.certificate.dto.BinaryCertificateMetadataDTO;
 import se.inera.intyg.certificateservice.application.certificate.dto.CertificateDTO;
 import se.inera.intyg.certificateservice.application.certificate.dto.CertificateDataElement;
 import se.inera.intyg.certificateservice.application.certificate.dto.CertificateExistsResponse;
@@ -37,7 +38,7 @@ import se.inera.intyg.certificateservice.application.certificate.dto.ComplementC
 import se.inera.intyg.certificateservice.application.certificate.dto.CreateCertificateResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.CreateDraftFromCertificateResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.ForwardCertificateResponse;
-import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateInternalBinaryResponse;
+import se.inera.intyg.certificateservice.application.certificate.dto.GetBinaryCertificateInternalResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateInternalMetadataResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateInternalResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateInternalXmlResponse;
@@ -314,7 +315,7 @@ public class CertificateUtil {
     return response.getPdfData();
   }
 
-  public static byte[] pdfData(GetCertificateInternalBinaryResponse response) {
+  public static byte[] pdfData(GetBinaryCertificateInternalResponse response) {
     if (response == null || response.getPdfData() == null) {
       return null;
     }
@@ -548,6 +549,14 @@ public class CertificateUtil {
       throw new IllegalArgumentException("Missing response!");
     }
     return response.getBody().getCertificateMetadata();
+  }
+
+  public static BinaryCertificateMetadataDTO binaryMetadata(
+      ResponseEntity<GetBinaryCertificateInternalResponse> response) {
+    if (response == null || response.getBody() == null) {
+      throw new IllegalArgumentException("Missing response!");
+    }
+    return response.getBody().getMetadata();
   }
 
   public static CertificateMetadataDTO metadata(CertificateDTO certificateDTO) {
