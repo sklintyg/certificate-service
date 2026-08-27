@@ -43,7 +43,8 @@ public class GetBinaryCertificateInternalService {
     final var certificate = certificateRepository.getById(id);
 
     if (certificate.isDraft()) {
-      throw new IllegalStateException("Certificate cannot be draft");
+      throw new IllegalStateException(
+          "Certificate with id %s cannot be draft".formatted(certificateId));
     }
 
     final var pdf = getCertificateInternalPdfDomainService.get(id);
