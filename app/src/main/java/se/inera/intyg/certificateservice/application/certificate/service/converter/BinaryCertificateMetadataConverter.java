@@ -25,13 +25,13 @@ import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import se.inera.intyg.certificateservice.application.certificate.dto.BinaryCertificateMetadataDTO;
+import se.inera.intyg.certificateservice.application.certificate.dto.BinaryCertificateTypeDTO;
 import se.inera.intyg.certificateservice.application.certificate.dto.BinaryStaffDTO;
 import se.inera.intyg.certificateservice.application.certificate.dto.BinaryUnitDTO;
 import se.inera.intyg.certificateservice.application.certificate.dto.CertificateRelationDTO;
 import se.inera.intyg.certificateservice.application.certificate.dto.CertificateRelationTypeDTO;
 import se.inera.intyg.certificateservice.application.certificate.dto.CertificateRelationsDTO;
 import se.inera.intyg.certificateservice.application.certificate.dto.CertificateStatusTypeDTO;
-import se.inera.intyg.certificateservice.application.certificate.dto.CertificateTypeDTO;
 import se.inera.intyg.certificateservice.application.certificate.dto.PatientDTO;
 import se.inera.intyg.certificateservice.application.certificate.dto.PersonIdDTO;
 import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
@@ -43,13 +43,6 @@ import se.inera.intyg.certificateservice.domain.staff.model.Staff;
 import se.inera.intyg.certificateservice.domain.unit.model.CareProvider;
 import se.inera.intyg.certificateservice.domain.unit.model.IssuingUnit;
 
-/**
- * Converts a {@link Certificate} aggregate (and its rendered PDF) into a {@link
- * BinaryCertificateMetadataDTO} for the internal binary certificate API. Reuses the existing CS
- * DTOs (StaffDTO, UnitDTO, PatientDTO, CertificateRelationsDTO, CertificateStatusTypeDTO) instead
- * of introducing a TKB-literal DTO tree — mapping to the formal TKB `BinartIntyg` XML shape is
- * Webcert's responsibility.
- */
 @Component
 @RequiredArgsConstructor
 public class BinaryCertificateMetadataConverter {
@@ -70,9 +63,9 @@ public class BinaryCertificateMetadataConverter {
         .build();
   }
 
-  private CertificateTypeDTO toCertificateTypeDTO(Certificate certificate) {
+  private BinaryCertificateTypeDTO toCertificateTypeDTO(Certificate certificate) {
     final var type = certificate.certificateModel().type();
-    return CertificateTypeDTO.builder()
+    return BinaryCertificateTypeDTO.builder()
         .code(type.code())
         .codeSystem(type.codeSystem())
         .displayName(type.displayName())
@@ -111,11 +104,11 @@ public class BinaryCertificateMetadataConverter {
         .build();
   }
 
-  private List<CertificateTypeDTO> toTitles(Staff staff) {
+  private List<BinaryCertificateTypeDTO> toTitles(Staff staff) {
     return staff.paTitles().stream()
         .map(
             paTitle ->
-                CertificateTypeDTO.builder()
+                BinaryCertificateTypeDTO.builder()
                     .code(paTitle.code())
                     .codeSystem(PaTitle.OID)
                     .displayName(paTitle.description())
@@ -127,12 +120,12 @@ public class BinaryCertificateMetadataConverter {
     return staff.specialities().stream().map(Speciality::value).toList();
   }
 
-  private List<CertificateTypeDTO> toLicences(Staff staff) {
+  private List<BinaryCertificateTypeDTO> toLicences(Staff staff) {
     return staff.healthCareProfessionalLicence().stream()
         .map(HealthCareProfessionalLicence::code)
         .map(
             code ->
-                CertificateTypeDTO.builder()
+                BinaryCertificateTypeDTO.builder()
                     .code(code.code())
                     .codeSystem(code.codeSystem())
                     .displayName(code.displayName())

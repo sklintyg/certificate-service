@@ -31,7 +31,7 @@ import tools.jackson.databind.annotation.JsonPOJOBuilder;
 public class BinaryCertificateMetadataDTO {
 
   String certificateId;
-  CertificateTypeDTO type;
+  BinaryCertificateTypeDTO type;
   String version;
   LocalDateTime signedAt;
   LocalDateTime revokedAt;

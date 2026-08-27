@@ -29,7 +29,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import se.inera.intyg.certificateservice.application.certificate.dto.BinaryCertificateMetadataDTO;
-import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateInternalBinaryResponse;
+import se.inera.intyg.certificateservice.application.certificate.dto.GetBinaryCertificateInternalResponse;
 import se.inera.intyg.certificateservice.application.certificate.service.converter.BinaryCertificateMetadataConverter;
 import se.inera.intyg.certificateservice.domain.certificate.model.CertificateId;
 import se.inera.intyg.certificateservice.domain.certificate.model.MedicalCertificate;
@@ -38,22 +38,22 @@ import se.inera.intyg.certificateservice.domain.certificate.repository.Certifica
 import se.inera.intyg.certificateservice.domain.certificate.service.GetCertificateInternalPdfDomainService;
 
 @ExtendWith(MockitoExtension.class)
-class GetCertificateInternalBinaryServiceTest {
+class GetBinaryCertificateInternalServiceTest {
 
   @Mock CertificateRepository certificateRepository;
   @Mock GetCertificateInternalPdfDomainService getCertificateInternalPdfDomainService;
   @Mock BinaryCertificateMetadataConverter binaryCertificateMetadataConverter;
-  @InjectMocks GetCertificateInternalBinaryService getCertificateInternalBinaryService;
+  @InjectMocks GetBinaryCertificateInternalService getBinaryCertificateInternalService;
 
   @Test
   void shallThrowIfCertificateIdIsNull() {
     assertThrows(
-        IllegalArgumentException.class, () -> getCertificateInternalBinaryService.get(null));
+        IllegalArgumentException.class, () -> getBinaryCertificateInternalService.get(null));
   }
 
   @Test
   void shallThrowIfCertificateIdIsBlank() {
-    assertThrows(IllegalArgumentException.class, () -> getCertificateInternalBinaryService.get(""));
+    assertThrows(IllegalArgumentException.class, () -> getBinaryCertificateInternalService.get(""));
   }
 
   @Test
@@ -63,7 +63,7 @@ class GetCertificateInternalBinaryServiceTest {
     final var binaryCertificate =
         BinaryCertificateMetadataDTO.builder().certificateId(CERTIFICATE_ID).build();
     final var expectedResponse =
-        GetCertificateInternalBinaryResponse.builder()
+        GetBinaryCertificateInternalResponse.builder()
             .metadata(binaryCertificate)
             .pdfData(pdf.pdfData())
             .build();
@@ -74,7 +74,7 @@ class GetCertificateInternalBinaryServiceTest {
         .get(new CertificateId(CERTIFICATE_ID));
     doReturn(binaryCertificate).when(binaryCertificateMetadataConverter).convert(certificate);
 
-    final var actualResponse = getCertificateInternalBinaryService.get(CERTIFICATE_ID);
+    final var actualResponse = getBinaryCertificateInternalService.get(CERTIFICATE_ID);
 
     assertEquals(expectedResponse, actualResponse);
   }

@@ -35,9 +35,9 @@ import se.inera.intyg.certificateservice.application.certificate.dto.Certificate
 import se.inera.intyg.certificateservice.application.certificate.dto.CertificatesWithQAInternalResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.ExportCertificateInternalRequest;
 import se.inera.intyg.certificateservice.application.certificate.dto.ExportInternalResponse;
+import se.inera.intyg.certificateservice.application.certificate.dto.GetBinaryCertificateInternalResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateCountIssuedByRequest;
 import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateCountIssuedByResponse;
-import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateInternalBinaryResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateInternalMetadataResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateInternalResponse;
 import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateInternalXmlResponse;
@@ -50,9 +50,9 @@ import se.inera.intyg.certificateservice.application.certificate.dto.LockDraftsR
 import se.inera.intyg.certificateservice.application.certificate.dto.TotalExportsInternalResponse;
 import se.inera.intyg.certificateservice.application.certificate.service.CertificateExistsService;
 import se.inera.intyg.certificateservice.application.certificate.service.EraseCertificateInternalForCareProviderService;
+import se.inera.intyg.certificateservice.application.certificate.service.GetBinaryCertificateInternalService;
 import se.inera.intyg.certificateservice.application.certificate.service.GetCertificateCountIssuedByInternalService;
 import se.inera.intyg.certificateservice.application.certificate.service.GetCertificateExportsInternalForCareProviderService;
-import se.inera.intyg.certificateservice.application.certificate.service.GetCertificateInternalBinaryService;
 import se.inera.intyg.certificateservice.application.certificate.service.GetCertificateInternalMetadataService;
 import se.inera.intyg.certificateservice.application.certificate.service.GetCertificateInternalService;
 import se.inera.intyg.certificateservice.application.certificate.service.GetCertificateInternalXmlService;
@@ -90,7 +90,7 @@ public class CertificateInternalApiController {
       getValidSickLeaveCertificatesInternalService;
   private final GetCertificateCountIssuedByInternalService
       getCertificateCountIssuedByInternalService;
-  private final GetCertificateInternalBinaryService getCertificateInternalBinaryService;
+  private final GetBinaryCertificateInternalService getBinaryCertificateInternalService;
 
   @GetMapping("/{certificateId}/exists")
   @PerformanceLogging(
@@ -123,9 +123,9 @@ public class CertificateInternalApiController {
   @PerformanceLogging(
       eventAction = "internal-retrieve-certificate-binary",
       eventType = EVENT_TYPE_ACCESSED)
-  GetCertificateInternalBinaryResponse getBinaryCertificate(
+  GetBinaryCertificateInternalResponse getBinaryCertificate(
       @PathVariable("certificateId") String certificateId) {
-    return getCertificateInternalBinaryService.get(certificateId);
+    return getBinaryCertificateInternalService.get(certificateId);
   }
 
   @PostMapping("/{certificateId}")

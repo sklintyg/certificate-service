@@ -35,9 +35,9 @@ public class BinaryStaffDTO {
   String middleName;
   String lastName;
   String fullName;
-  List<CertificateTypeDTO> titles;
+  List<BinaryCertificateTypeDTO> titles;
   List<String> specialities;
-  List<CertificateTypeDTO> licences;
+  List<BinaryCertificateTypeDTO> licences;
   BinaryUnitDTO unit;
 
   @JsonPOJOBuilder(withPrefix = "")

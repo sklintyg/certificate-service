@@ -41,10 +41,6 @@ public class BinaryCertificateUnitConverter {
                   .phoneNumber(elementValue.phoneNumber())
                   .email(
                       issuingUnit.contactInfo() == null ? null : issuingUnit.contactInfo().email())
-                  .isInactive(
-                      issuingUnit.inactive() == null
-                          ? Boolean.FALSE
-                          : issuingUnit.inactive().value())
                   .build();
             })
         .orElse(
@@ -59,8 +55,6 @@ public class BinaryCertificateUnitConverter {
                         ? null
                         : issuingUnit.contactInfo().phoneNumber())
                 .email(issuingUnit.contactInfo() == null ? null : issuingUnit.contactInfo().email())
-                .isInactive(
-                    issuingUnit.inactive() == null ? Boolean.FALSE : issuingUnit.inactive().value())
                 .build());
   }
 }

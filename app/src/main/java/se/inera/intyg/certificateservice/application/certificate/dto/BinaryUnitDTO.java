@@ -40,7 +40,6 @@ public class BinaryUnitDTO {
   @With BinaryUnitDTO careProvider;
 
   String email;
-  Boolean isInactive;
 
   @JsonPOJOBuilder(withPrefix = "")
   public static class BinaryUnitDTOBuilder {}

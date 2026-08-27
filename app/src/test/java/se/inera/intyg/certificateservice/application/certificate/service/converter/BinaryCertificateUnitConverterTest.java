@@ -19,7 +19,6 @@
 package se.inera.intyg.certificateservice.application.certificate.service.converter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -171,13 +170,6 @@ class BinaryCertificateUnitConverterTest {
             .build();
     final var result = binaryCertificateUnitConverter.convert(issuingUnit, Optional.empty());
     assertEquals(EXPECTED_EMAIL, result.getEmail());
-  }
-
-  @Test
-  void shallConvertIsInactiveFromIssuingUnit() {
-    final var issuingUnit = careUnitBuilder.inactive(new Inactive(true)).build();
-    final var result = binaryCertificateUnitConverter.convert(issuingUnit, Optional.empty());
-    assertTrue(result.getIsInactive());
   }
 
   private static ElementData getElementData(

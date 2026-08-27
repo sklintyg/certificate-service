@@ -20,7 +20,7 @@ package se.inera.intyg.certificateservice.application.certificate.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import se.inera.intyg.certificateservice.application.certificate.dto.GetCertificateInternalBinaryResponse;
+import se.inera.intyg.certificateservice.application.certificate.dto.GetBinaryCertificateInternalResponse;
 import se.inera.intyg.certificateservice.application.certificate.service.converter.BinaryCertificateMetadataConverter;
 import se.inera.intyg.certificateservice.domain.certificate.model.CertificateId;
 import se.inera.intyg.certificateservice.domain.certificate.repository.CertificateRepository;
@@ -28,13 +28,13 @@ import se.inera.intyg.certificateservice.domain.certificate.service.GetCertifica
 
 @Service
 @RequiredArgsConstructor
-public class GetCertificateInternalBinaryService {
+public class GetBinaryCertificateInternalService {
 
   private final CertificateRepository certificateRepository;
   private final GetCertificateInternalPdfDomainService getCertificateInternalPdfDomainService;
   private final BinaryCertificateMetadataConverter binaryCertificateMetadataConverter;
 
-  public GetCertificateInternalBinaryResponse get(String certificateId) {
+  public GetBinaryCertificateInternalResponse get(String certificateId) {
     if (certificateId == null || certificateId.isBlank()) {
       throw new IllegalArgumentException("Certificate id cannot be null or empty");
     }
@@ -43,7 +43,7 @@ public class GetCertificateInternalBinaryService {
     final var certificate = certificateRepository.getById(id);
     final var pdf = getCertificateInternalPdfDomainService.get(id);
 
-    return GetCertificateInternalBinaryResponse.builder()
+    return GetBinaryCertificateInternalResponse.builder()
         .metadata(binaryCertificateMetadataConverter.convert(certificate))
         .pdfData(pdf.pdfData())
         .build();
