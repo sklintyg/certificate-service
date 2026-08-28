@@ -40,9 +40,9 @@ The main table's columns map straight onto element fields:
 |---|---|
 | ID | `id` — used verbatim as the `ElementId` |
 | Typ | `kind` — `KAT` starts a new category, `FRG` / `DFR` are elements |
-| Inputkomponent (datatyp) | `component` — e.g. `SK-002 (kodverk)` |
+| Inputkomponent (datatyp) | `component` — e.g. `SK-002 (kodverk)`, or a `KKSF-*` code for a combined component |
 | Multiplicitet | `multiplicity` |
-| Regel | `rules` — the `SR-*` codes; `KKSF-*` and `B-*` codes go to `open-questions.md` |
+| Regel | `rules` — the `SR-*` codes; `B-*` codes go to `open-questions.md` |
 | Rubriktext | `label`, plus `header` / `checkboxLabel` when the cell names them |
 | XML-mappning | `fieldId` from `TextId` / `BooleskId` / `KodId` / `DatumId` / `PeriodKodId`; `codeSystem` from `Kodverk`; `options` from `Urval` |
 

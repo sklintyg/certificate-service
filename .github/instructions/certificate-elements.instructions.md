@@ -32,6 +32,48 @@ a case they do not cover, add it here rather than improvising.
 | — | utredning/underlag | `ElementConfigurationMedicalInvestigationList` | `ElementValueMedicalInvestigationList` | `ElementValidationMedicalInvestigationList` | `QuestionUtredningEllerUnderlag` |
 | — | synskärpa | `ElementConfigurationVisualAcuities` | `ElementValueVisualAcuities` | `ElementValidationVisualAcuities` | `QuestionSynskarpa` |
 
+## KKSF-xxx — *Inputkomponent* → combined components
+
+Some specifications type a cell with a `KKSF-*` code instead of an `SK-*` one. These are
+the **combined** components, specified in "IT-CS Inputkomponenter kombinerad"; each is
+built out of several standard components. That document's *Teknisk komponent* row is the
+authoritative mapping, and it is what the table below copies.
+
+The parenthetical a specification writes after a `KKSF` code is descriptive, not
+selective — `KKSF-001 (kodverk)` and `KKSF-001` are the same component. This is the
+opposite of `SK-005 (datum)` vs `SK-005 (datumperiod)`, where the parenthetical is what
+picks the type. `ComponentTypeMapping` resolves `KKSF` codes with the parenthetical
+stripped for exactly this reason.
+
+| KKSF | Komponent | `ElementType` | Equivalent SK row |
+|---|---|---|---|
+| KKSF-001 | Diagnos | `DIAGNOSIS` | *— diagnoser* |
+| KKSF-002 | Omfattning och period | `CHECKBOX_DATE_RANGE_LIST` | SK-004a (koder med datumperioder) |
+| KKSF-004a | Utlåtandet baserat på andra utredningar/underlag | `MEDICAL_INVESTIGATION_LIST` | *— utredning/underlag* |
+| KKSF-006a | Checkbox med datum | `CHECKBOX_MULTIPLE_DATE` | SK-004a (koder med datum) |
+| KKSF-007 | Synskärpa | `VISUAL_ACUITIES` | *— synskärpa* |
+| KKSF-012 | Ange datumintervall/period | `DATE_RANGE` | SK-005 (datumperiod) |
+| KKSF-014 | Postadress | `ISSUING_UNIT` | *— vårdenhet* |
+
+`KKSF-014` is `issuingUnitContactInfo()`, which every model already ends with. It is
+mapped so a manifest containing it is not rejected, but extraction rule 7 says not to
+write that row at all. The specification spells it both `KKSF-14` and `KKSF-014`.
+
+### Not mapped, and why
+
+These have no single `ElementType`, so a manifest using one fails
+`manifestShouldBeWellFormed` on purpose. Resolve the row with the specification's author
+rather than picking a type.
+
+| KKSF | Komponent | What the document says |
+|---|---|---|
+| KKSF-003 | Utlåtande dödsorsak | No *Teknisk komponent* row; SK-006 + SK-005 + SK-008 + Button |
+| KKSF-003a | Utlåtande dödsorsak (sjukdoms-/skadeförlopp) | No *Teknisk komponent* row |
+| KKSF-006 | Checkbox med datum | No *Teknisk komponent* row. Use `KKSF-006a` |
+| KKSF-010a | T.ex. funktionsnedsättning | `CHECKBOX_MULTIPLE_CODE` **+** `TEXT_AREA` — two elements, not one |
+| KKSF-011 | T.ex. AG7804 Diagnos | `RADIO_BOOLEAN` **/** `CHECKBOX_MULTIPLE_CODE` — either, per certificate |
+| KKSF-013 | AF-intyget | No *Teknisk komponent* row; SK-004 + SK-009 + SK-005 + Button |
+
 Two more exist and are not selected from a specification row:
 
 - `ElementConfigurationCode` — not a question. It is one *option* inside a

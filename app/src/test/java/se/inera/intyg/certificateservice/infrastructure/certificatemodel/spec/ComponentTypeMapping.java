@@ -67,7 +67,21 @@ public class ComponentTypeMapping {
           Map.entry("(diagnoser)", ElementType.DIAGNOSIS),
           Map.entry("(utredning)", ElementType.MEDICAL_INVESTIGATION_LIST),
           Map.entry("(synskarpa)", ElementType.VISUAL_ACUITIES),
-          Map.entry("(vardenhet)", ElementType.ISSUING_UNIT));
+          Map.entry("(vardenhet)", ElementType.ISSUING_UNIT),
+          // KKSF-xxx are the combined components, specified in "IT-CS Inputkomponenter
+          // kombinerad". Each entry below is that document's own "Teknisk komponent" row.
+          // Codes whose technical component is composite (KKSF-010a), alternative
+          // (KKSF-011) or unstated (KKSF-003, KKSF-003a, KKSF-006, KKSF-013) are
+          // deliberately absent — they cannot be resolved to one ElementType.
+          Map.entry("kksf-001", ElementType.DIAGNOSIS),
+          Map.entry("kksf-002", ElementType.CHECKBOX_DATE_RANGE_LIST),
+          Map.entry("kksf-004a", ElementType.MEDICAL_INVESTIGATION_LIST),
+          Map.entry("kksf-006a", ElementType.CHECKBOX_MULTIPLE_DATE),
+          Map.entry("kksf-007", ElementType.VISUAL_ACUITIES),
+          Map.entry("kksf-012", ElementType.DATE_RANGE),
+          // The specification writes the address component both zero-padded and not.
+          Map.entry("kksf-14", ElementType.ISSUING_UNIT),
+          Map.entry("kksf-014", ElementType.ISSUING_UNIT));
 
   /**
    * A specification rule code may legitimately be realised as one of several rule types, so each
@@ -120,7 +134,19 @@ public class ComponentTypeMapping {
   }
 
   public static Optional<ElementType> elementType(String component) {
-    return Optional.ofNullable(COMPONENTS.get(normalize(component)));
+    final var normalized = normalize(component);
+    final var direct = COMPONENTS.get(normalized);
+    if (direct != null) {
+      return Optional.of(direct);
+    }
+    // A KKSF code identifies a combined component by itself, so the parenthetical a
+    // specification adds after it is descriptive — "KKSF-001 (kodverk)", "KKSF-006a
+    // (checkbox med datum)". An SK parenthetical is not: it selects the datatype, which
+    // is why the fallback is limited to KKSF.
+    if (normalized.startsWith("kksf-")) {
+      return Optional.ofNullable(COMPONENTS.get(normalized.replaceAll("\\(.*", "")));
+    }
+    return Optional.empty();
   }
 
   /** The component code a {@link SpecManifest} should use for a given configuration type. */
