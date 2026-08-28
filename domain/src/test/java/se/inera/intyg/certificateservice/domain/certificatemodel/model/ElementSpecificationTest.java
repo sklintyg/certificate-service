@@ -35,6 +35,7 @@ import static se.inera.intyg.certificateservice.domain.testdata.TestDataElementS
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataElementSpecification.dateElementSpecificationBuilder;
 
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -134,7 +135,6 @@ class ElementSpecificationTest {
     private static final ElementId ELEMENT_ID = new ElementId("elementId");
     private static final FieldId FIELD_ID_ONE = new FieldId("dateElementValueId");
     private static final FieldId FIELD_ID_TWO = new FieldId("fieldIdTwo");
-    private static final ElementId CATEGORY_ID = new ElementId("categoryId");
 
     @Test
     void shallReturnEmptyIfShouldValidateReturnsFalse() {
@@ -605,7 +605,8 @@ class ElementSpecificationTest {
 
     @Test
     void shallReturnValueIfValueMatchesRequestedType() {
-      final var expectedValue = ElementValueDate.builder().date(LocalDate.of(2026, 6, 14)).build();
+      final var expectedValue =
+          ElementValueDate.builder().date(LocalDate.of(2026, Month.JUNE, 14)).build();
 
       final var certificate = mock(Certificate.class);
 

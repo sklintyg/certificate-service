@@ -26,6 +26,7 @@ import com.fasterxml.jackson.annotation.PropertyAccessor;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -92,12 +93,12 @@ class VersionLockTest {
         new CertificateModelFactoryTS8071(
             certificateActionFactory, certificateActionConfigurationRepository);
     ReflectionTestUtils.setField(
-        ts8071FactoryV1, "activeFrom", LocalDateTime.of(2024, 12, 1, 0, 0, 0));
+        ts8071FactoryV1, "activeFrom", LocalDateTime.of(2024, Month.DECEMBER, 1, 0, 0, 0));
 
     fk3226FactoryV1 =
         new CertificateModelFactoryFK3226(diagnosisCodeRepository, certificateActionFactory);
     ReflectionTestUtils.setField(
-        fk3226FactoryV1, "activeFrom", LocalDateTime.of(2024, 1, 25, 0, 0, 0));
+        fk3226FactoryV1, "activeFrom", LocalDateTime.of(2024, Month.JANUARY, 25, 0, 0, 0));
     ReflectionTestUtils.setField(fk3226FactoryV1, "fkLogicalAddress", "test-logical-address");
   }
 
