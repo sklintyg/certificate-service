@@ -29,12 +29,7 @@ import static se.inera.intyg.certificateservice.domain.testdata.TestDataCertific
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataCertificateModelConstants.FK7210_CODE_TYPE;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataCertificateModelConstants.FK7210_VERSION;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataPatient.athenaReactAnderssonBuilder;
-import static se.inera.intyg.certificateservice.domain.testdata.TestDataPatientConstants.ATHENA_REACT_ANDERSSON_CITY;
-import static se.inera.intyg.certificateservice.domain.testdata.TestDataPatientConstants.ATHENA_REACT_ANDERSSON_FIRST_NAME;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataPatientConstants.ATHENA_REACT_ANDERSSON_ID;
-import static se.inera.intyg.certificateservice.domain.testdata.TestDataPatientConstants.ATHENA_REACT_ANDERSSON_LAST_NAME;
-import static se.inera.intyg.certificateservice.domain.testdata.TestDataPatientConstants.ATHENA_REACT_ANDERSSON_STREET;
-import static se.inera.intyg.certificateservice.domain.testdata.TestDataPatientConstants.ATHENA_REACT_ANDERSSON_ZIP_CODE;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataStaff.AJLA_DOKTOR;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataSubUnit.ALFA_ALLERGIMOTTAGNINGEN;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataSubUnitConstants.ALFA_ALLERGIMOTTAGNINGEN_ID;
@@ -209,22 +204,7 @@ class BinaryCertificateMetadataConverterTest {
   @Test
   void shallIncludePatientPersonId() {
     final var result = binaryCertificateMetadataConverter.convert(certificate);
-    assertEquals(ATHENA_REACT_ANDERSSON_ID, result.getPatient().getPersonId().getId());
-  }
-
-  @Test
-  void shallIncludePatientName() {
-    final var result = binaryCertificateMetadataConverter.convert(certificate);
-    assertEquals(ATHENA_REACT_ANDERSSON_FIRST_NAME, result.getPatient().getFirstName());
-    assertEquals(ATHENA_REACT_ANDERSSON_LAST_NAME, result.getPatient().getLastName());
-  }
-
-  @Test
-  void shallIncludePatientAddress() {
-    final var result = binaryCertificateMetadataConverter.convert(certificate);
-    assertEquals(ATHENA_REACT_ANDERSSON_STREET, result.getPatient().getStreet());
-    assertEquals(ATHENA_REACT_ANDERSSON_CITY, result.getPatient().getCity());
-    assertEquals(ATHENA_REACT_ANDERSSON_ZIP_CODE, result.getPatient().getZipCode());
+    assertEquals(ATHENA_REACT_ANDERSSON_ID, result.getPatient().getPersonId());
   }
 
   @Test

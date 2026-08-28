@@ -27,14 +27,13 @@ import org.springframework.stereotype.Component;
 import se.inera.intyg.certificateservice.application.certificate.dto.BinaryCertificateCareProviderDTO;
 import se.inera.intyg.certificateservice.application.certificate.dto.BinaryCertificateCodeDTO;
 import se.inera.intyg.certificateservice.application.certificate.dto.BinaryCertificateMetadataDTO;
+import se.inera.intyg.certificateservice.application.certificate.dto.BinaryCertificatePatientDTO;
 import se.inera.intyg.certificateservice.application.certificate.dto.BinaryCertificateStaffDTO;
 import se.inera.intyg.certificateservice.application.certificate.dto.BinaryCertificateUnitDTO;
 import se.inera.intyg.certificateservice.application.certificate.dto.CertificateRelationDTO;
 import se.inera.intyg.certificateservice.application.certificate.dto.CertificateRelationTypeDTO;
 import se.inera.intyg.certificateservice.application.certificate.dto.CertificateRelationsDTO;
 import se.inera.intyg.certificateservice.application.certificate.dto.CertificateStatusTypeDTO;
-import se.inera.intyg.certificateservice.application.certificate.dto.PatientDTO;
-import se.inera.intyg.certificateservice.application.certificate.dto.PersonIdDTO;
 import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
 import se.inera.intyg.certificateservice.domain.certificate.model.Relation;
 import se.inera.intyg.certificateservice.domain.common.model.HealthCareProfessionalLicence;
@@ -72,20 +71,9 @@ public class BinaryCertificateMetadataConverter {
         .build();
   }
 
-  private PatientDTO toPatientDTO(Certificate certificate) {
-    final var patient = certificate.certificateMetaData().patient();
-    return PatientDTO.builder()
-        .personId(
-            PersonIdDTO.builder()
-                .id(patient.id().idWithDash())
-                .type(patient.id().type().name())
-                .build())
-        .firstName(patient.name().firstName())
-        .middleName(patient.name().middleName())
-        .lastName(patient.name().lastName())
-        .street(patient.address() != null ? patient.address().street() : "")
-        .city(patient.address() != null ? patient.address().city() : "")
-        .zipCode(patient.address() != null ? patient.address().zipCode() : "")
+  private BinaryCertificatePatientDTO toPatientDTO(Certificate certificate) {
+    return BinaryCertificatePatientDTO.builder()
+        .personId(certificate.certificateMetaData().patient().id().id())
         .build();
   }
 
