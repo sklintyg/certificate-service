@@ -18,20 +18,25 @@
  */
 package se.inera.intyg.certificateservice.application.certificate.dto;
 
+import java.util.List;
 import lombok.Builder;
 import lombok.Value;
-import se.inera.intyg.certificateservice.application.certificate.dto.BinaryCertificateTypeDTO.BinaryCertificateTypeDTOBuilder;
+import se.inera.intyg.certificateservice.application.certificate.dto.BinaryCertificateStaffDTO.BinaryCertificateStaffDTOBuilder;
 import tools.jackson.databind.annotation.JsonDeserialize;
 import tools.jackson.databind.annotation.JsonPOJOBuilder;
 
+@JsonDeserialize(builder = BinaryCertificateStaffDTOBuilder.class)
 @Value
 @Builder
-@JsonDeserialize(builder = BinaryCertificateTypeDTOBuilder.class)
-public class BinaryCertificateTypeDTO {
-  String code;
-  String codeSystem;
-  String displayName;
+public class BinaryCertificateStaffDTO {
+
+  String personId;
+  String fullName;
+  List<BinaryCertificateCodeDTO> titles;
+  List<String> specialities;
+  List<BinaryCertificateCodeDTO> licences;
+  BinaryCertificateUnitDTO unit;
 
   @JsonPOJOBuilder(withPrefix = "")
-  public static class BinaryCertificateTypeDTOBuilder {}
+  public static class BinaryCertificateStaffDTOBuilder {}
 }

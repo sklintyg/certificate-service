@@ -24,17 +24,17 @@ import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import se.inera.intyg.certificateservice.application.certificate.dto.BinaryCareProviderDTO;
+import se.inera.intyg.certificateservice.application.certificate.dto.BinaryCertificateCareProviderDTO;
+import se.inera.intyg.certificateservice.application.certificate.dto.BinaryCertificateCodeDTO;
 import se.inera.intyg.certificateservice.application.certificate.dto.BinaryCertificateMetadataDTO;
-import se.inera.intyg.certificateservice.application.certificate.dto.BinaryCertificateTypeDTO;
-import se.inera.intyg.certificateservice.application.certificate.dto.BinaryStaffDTO;
-import se.inera.intyg.certificateservice.application.certificate.dto.BinaryUnitDTO;
+import se.inera.intyg.certificateservice.application.certificate.dto.BinaryCertificatePatientDTO;
+import se.inera.intyg.certificateservice.application.certificate.dto.BinaryCertificateStaffDTO;
+import se.inera.intyg.certificateservice.application.certificate.dto.BinaryCertificateUnitDTO;
 import se.inera.intyg.certificateservice.application.certificate.dto.CertificateRelationDTO;
 import se.inera.intyg.certificateservice.application.certificate.dto.CertificateRelationTypeDTO;
 import se.inera.intyg.certificateservice.application.certificate.dto.CertificateRelationsDTO;
 import se.inera.intyg.certificateservice.application.certificate.dto.CertificateStatusTypeDTO;
-import se.inera.intyg.certificateservice.application.certificate.dto.PatientDTO;
-import se.inera.intyg.certificateservice.application.certificate.dto.PersonIdDTO;
+import se.inera.intyg.certificateservice.application.common.dto.PersonIdTypeDTO;
 import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
 import se.inera.intyg.certificateservice.domain.certificate.model.Relation;
 import se.inera.intyg.certificateservice.domain.common.model.HealthCareProfessionalLicence;
@@ -63,39 +63,28 @@ public class BinaryCertificateMetadataConverter {
         .build();
   }
 
-  private BinaryCertificateTypeDTO toCertificateTypeDTO(Certificate certificate) {
+  private BinaryCertificateCodeDTO toCertificateTypeDTO(Certificate certificate) {
     final var type = certificate.certificateModel().type();
-    return BinaryCertificateTypeDTO.builder()
+    return BinaryCertificateCodeDTO.builder()
         .code(type.code())
         .codeSystem(type.codeSystem())
         .displayName(type.displayName())
         .build();
   }
 
-  private PatientDTO toPatientDTO(Certificate certificate) {
-    final var patient = certificate.certificateMetaData().patient();
-    return PatientDTO.builder()
-        .personId(
-            PersonIdDTO.builder()
-                .id(patient.id().idWithDash())
-                .type(patient.id().type().name())
-                .build())
-        .firstName(patient.name().firstName())
-        .middleName(patient.name().middleName())
-        .lastName(patient.name().lastName())
-        .street(patient.address() != null ? patient.address().street() : "")
-        .city(patient.address() != null ? patient.address().city() : "")
-        .zipCode(patient.address() != null ? patient.address().zipCode() : "")
+  private BinaryCertificatePatientDTO toPatientDTO(Certificate certificate) {
+    return BinaryCertificatePatientDTO.builder()
+        .patientId(certificate.certificateMetaData().patient().id().id())
+        .type(
+            PersonIdTypeDTO.toPersonIdTypeDTO(
+                certificate.certificateMetaData().patient().id().type()))
         .build();
   }
 
-  private BinaryStaffDTO toBinaryStaffDTO(Certificate certificate) {
+  private BinaryCertificateStaffDTO toBinaryStaffDTO(Certificate certificate) {
     final var staff = certificate.certificateMetaData().issuer();
-    return BinaryStaffDTO.builder()
+    return BinaryCertificateStaffDTO.builder()
         .personId(staff.hsaId().id())
-        .firstName(staff.name().firstName())
-        .middleName(staff.name().middleName())
-        .lastName(staff.name().lastName())
         .fullName(staff.name().fullName())
         .titles(toTitles(staff))
         .specialities(toSpecialities(staff))
@@ -104,11 +93,11 @@ public class BinaryCertificateMetadataConverter {
         .build();
   }
 
-  private List<BinaryCertificateTypeDTO> toTitles(Staff staff) {
+  private List<BinaryCertificateCodeDTO> toTitles(Staff staff) {
     return staff.paTitles().stream()
         .map(
             paTitle ->
-                BinaryCertificateTypeDTO.builder()
+                BinaryCertificateCodeDTO.builder()
                     .code(paTitle.code())
                     .codeSystem(PaTitle.OID)
                     .displayName(paTitle.description())
@@ -120,12 +109,12 @@ public class BinaryCertificateMetadataConverter {
     return staff.specialities().stream().map(Speciality::value).toList();
   }
 
-  private List<BinaryCertificateTypeDTO> toLicences(Staff staff) {
+  private List<BinaryCertificateCodeDTO> toLicences(Staff staff) {
     return staff.healthCareProfessionalLicence().stream()
         .map(HealthCareProfessionalLicence::code)
         .map(
             code ->
-                BinaryCertificateTypeDTO.builder()
+                BinaryCertificateCodeDTO.builder()
                     .code(code.code())
                     .codeSystem(code.codeSystem())
                     .displayName(code.displayName())
@@ -133,7 +122,7 @@ public class BinaryCertificateMetadataConverter {
         .toList();
   }
 
-  private BinaryUnitDTO toUnitDTO(Certificate certificate) {
+  private BinaryCertificateUnitDTO toUnitDTO(Certificate certificate) {
     return binaryCertificateUnitConverter
         .convert(
             certificate.certificateMetaData().issuingUnit(),
@@ -143,8 +132,8 @@ public class BinaryCertificateMetadataConverter {
         .withCareProvider(toCareProviderDTO(certificate.certificateMetaData().careProvider()));
   }
 
-  private BinaryCareProviderDTO toCareProviderDTO(CareProvider careProvider) {
-    return BinaryCareProviderDTO.builder()
+  private BinaryCertificateCareProviderDTO toCareProviderDTO(CareProvider careProvider) {
+    return BinaryCertificateCareProviderDTO.builder()
         .id(careProvider.hsaId().id())
         .name(careProvider.name().name())
         .build();

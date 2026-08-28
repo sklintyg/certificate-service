@@ -21,6 +21,7 @@ package se.inera.intyg.certificateservice.application.certificate.service.conver
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.doReturn;
+import static se.inera.intyg.certificateservice.application.common.dto.PersonIdTypeDTO.PERSONAL_IDENTITY_NUMBER;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataCareProvider.ALFA_REGIONEN;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataCareProviderConstants.ALFA_REGIONEN_ID;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataCareProviderConstants.ALFA_REGIONEN_NAME;
@@ -29,12 +30,7 @@ import static se.inera.intyg.certificateservice.domain.testdata.TestDataCertific
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataCertificateModelConstants.FK7210_CODE_TYPE;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataCertificateModelConstants.FK7210_VERSION;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataPatient.athenaReactAnderssonBuilder;
-import static se.inera.intyg.certificateservice.domain.testdata.TestDataPatientConstants.ATHENA_REACT_ANDERSSON_CITY;
-import static se.inera.intyg.certificateservice.domain.testdata.TestDataPatientConstants.ATHENA_REACT_ANDERSSON_FIRST_NAME;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataPatientConstants.ATHENA_REACT_ANDERSSON_ID;
-import static se.inera.intyg.certificateservice.domain.testdata.TestDataPatientConstants.ATHENA_REACT_ANDERSSON_LAST_NAME;
-import static se.inera.intyg.certificateservice.domain.testdata.TestDataPatientConstants.ATHENA_REACT_ANDERSSON_STREET;
-import static se.inera.intyg.certificateservice.domain.testdata.TestDataPatientConstants.ATHENA_REACT_ANDERSSON_ZIP_CODE;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataStaff.AJLA_DOKTOR;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataSubUnit.ALFA_ALLERGIMOTTAGNINGEN;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataSubUnitConstants.ALFA_ALLERGIMOTTAGNINGEN_ID;
@@ -42,8 +38,6 @@ import static se.inera.intyg.certificateservice.domain.testdata.TestDataSubUnitC
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataUserConstants.AJLA_DOCTOR_FULLNAME;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataUserConstants.AJLA_DOCTOR_HEALTH_CARE_PROFESSIONAL_LICENCES;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataUserConstants.AJLA_DOCTOR_HSA_ID;
-import static se.inera.intyg.certificateservice.domain.testdata.TestDataUserConstants.AJLA_DOCTOR_LAST_NAME;
-import static se.inera.intyg.certificateservice.domain.testdata.TestDataUserConstants.AJLA_DOCTOR_MIDDLE_NAME;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataUserConstants.AJLA_DOCTOR_SPECIALITIES;
 
 import java.time.LocalDateTime;
@@ -56,7 +50,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import se.inera.intyg.certificateservice.application.certificate.dto.BinaryUnitDTO;
+import se.inera.intyg.certificateservice.application.certificate.dto.BinaryCertificateUnitDTO;
 import se.inera.intyg.certificateservice.domain.certificate.model.CertificateId;
 import se.inera.intyg.certificateservice.domain.certificate.model.CertificateMetaData;
 import se.inera.intyg.certificateservice.domain.certificate.model.MedicalCertificate;
@@ -87,7 +81,7 @@ class BinaryCertificateMetadataConverterTest {
             .build();
 
     doReturn(
-            BinaryUnitDTO.builder()
+            BinaryCertificateUnitDTO.builder()
                 .unitId(ALFA_ALLERGIMOTTAGNINGEN_ID)
                 .workplaceCode(ALFA_ALLERGIMOTTAGNINGEN_WORKPLACE_CODE)
                 .build())
@@ -211,29 +205,13 @@ class BinaryCertificateMetadataConverterTest {
   @Test
   void shallIncludePatientPersonId() {
     final var result = binaryCertificateMetadataConverter.convert(certificate);
-    assertEquals(ATHENA_REACT_ANDERSSON_ID, result.getPatient().getPersonId().getId());
+    assertEquals(ATHENA_REACT_ANDERSSON_ID, result.getPatient().getPatientId());
   }
 
   @Test
-  void shallIncludePatientName() {
+  void shallIncludePatientIdType() {
     final var result = binaryCertificateMetadataConverter.convert(certificate);
-    assertEquals(ATHENA_REACT_ANDERSSON_FIRST_NAME, result.getPatient().getFirstName());
-    assertEquals(ATHENA_REACT_ANDERSSON_LAST_NAME, result.getPatient().getLastName());
-  }
-
-  @Test
-  void shallIncludePatientAddress() {
-    final var result = binaryCertificateMetadataConverter.convert(certificate);
-    assertEquals(ATHENA_REACT_ANDERSSON_STREET, result.getPatient().getStreet());
-    assertEquals(ATHENA_REACT_ANDERSSON_CITY, result.getPatient().getCity());
-    assertEquals(ATHENA_REACT_ANDERSSON_ZIP_CODE, result.getPatient().getZipCode());
-  }
-
-  @Test
-  void shallIncludeIssuedByMiddleAndLastName() {
-    final var result = binaryCertificateMetadataConverter.convert(certificate);
-    assertEquals(AJLA_DOCTOR_MIDDLE_NAME, result.getIssuedBy().getMiddleName());
-    assertEquals(AJLA_DOCTOR_LAST_NAME, result.getIssuedBy().getLastName());
+    assertEquals(PERSONAL_IDENTITY_NUMBER, result.getPatient().getType());
   }
 
   @Test
