@@ -31,7 +31,7 @@
       <ns4:cv>
         <ns4:code>ANHORIG</ns4:code>
         <ns4:codeSystem>KV_FKMU_0001</ns4:codeSystem>
-        <ns4:displayName>anhörig eller annans beskrivning av patienten</ns4:displayName>
+        <ns4:displayName>anhörigs eller annans beskrivning av patienten</ns4:displayName>
       </ns4:cv>
     </ns2:delsvar>
     <ns2:delsvar id="1.2">2025-06-27</ns2:delsvar>

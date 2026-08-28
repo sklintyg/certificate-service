@@ -57,12 +57,11 @@ public class QuestionVardenhetOchTidplan {
             List.of(
                 CertificateElementRuleFactory.mandatory(
                     QUESTION_VARDENHET_OCH_TIDPLAN_ID, QUESTION_VARDENHET_OCH_TIDPLAN_FIELD_ID),
-                CertificateElementRuleFactory.limit(
-                    QUESTION_VARDENHET_OCH_TIDPLAN_ID, (short) 4000),
+                CertificateElementRuleFactory.limit(QUESTION_VARDENHET_OCH_TIDPLAN_ID, (short) 50),
                 CertificateElementRuleFactory.show(
                     QUESTION_PAGAENDE_ELLER_PLANERAD_BEHANDLING_ID,
                     QUESTION_PAGAENDE_ELLER_PLANERAD_BEHANDLING_FIELD_ID)))
-        .validations(List.of(ElementValidationText.builder().mandatory(true).limit(4000).build()))
+        .validations(List.of(ElementValidationText.builder().mandatory(true).limit(50).build()))
         .pdfConfiguration(
             PdfConfigurationText.builder()
                 .pdfFieldId(PDF_FIELD_ID)

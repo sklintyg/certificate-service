@@ -57,14 +57,14 @@ public class QuestionRelationTillPatienten {
                 CertificateElementRuleFactory.mandatory(
                     QUESTION_RELATION_TILL_PATIENTEN_ID, QUESTION_RELATION_TILL_PATIENTEN_FIELD_ID),
                 CertificateElementRuleFactory.limit(
-                    QUESTION_RELATION_TILL_PATIENTEN_ID, (short) 4000),
+                    QUESTION_RELATION_TILL_PATIENTEN_ID, (short) 50),
                 CertificateElementRuleFactory.show(
                     QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID,
                     UTLATANDE_BASERAT_PA_ANHORIG_FIELD_ID)))
-        .validations(List.of(ElementValidationText.builder().mandatory(true).limit(4000).build()))
+        .validations(List.of(ElementValidationText.builder().mandatory(true).limit(50).build()))
         .mapping(
             new ElementMapping(
-                QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID, CodeSystemKvFkmu0001.ANHORIG_V1))
+                QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID, CodeSystemKvFkmu0001.ANHORIG))
         .shouldValidate(
             elementData ->
                 elementData.stream()

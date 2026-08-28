@@ -60,11 +60,11 @@ public class QuestionAnnanGrundForMedicinsktUnderlag {
                     QUESTION_ANNAN_GRUND_FOR_MEDICINSKT_UNDERLAG_ID,
                     QUESTION_ANNAN_GRUND_FOR_MEDICINSKT_UNDERLAG_FIELD_ID),
                 CertificateElementRuleFactory.limit(
-                    QUESTION_ANNAN_GRUND_FOR_MEDICINSKT_UNDERLAG_ID, (short) 4000),
+                    QUESTION_ANNAN_GRUND_FOR_MEDICINSKT_UNDERLAG_ID, (short) 50),
                 CertificateElementRuleFactory.show(
                     QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID,
                     UTLATANDE_BASERAT_PA_ANNAT_FIELD_ID)))
-        .validations(List.of(ElementValidationText.builder().mandatory(true).limit(4000).build()))
+        .validations(List.of(ElementValidationText.builder().mandatory(true).limit(50).build()))
         .mapping(
             new ElementMapping(
                 QUESTION_GRUND_FOR_MEDICINSKT_UNDERLAG_ID, CodeSystemKvFkmu0001.ANNAT))
