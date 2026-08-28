@@ -18,6 +18,7 @@
  */
 package se.inera.intyg.certificateservice.infrastructure.certificatemodel.spec;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URISyntaxException;
@@ -76,6 +77,33 @@ public class SpecManifestLoader {
     } catch (IOException e) {
       throw new UncheckedIOException("Failed to list spec manifests below " + root, e);
     }
+  }
+
+  /**
+   * The path a developer should edit, given a manifest loaded from the test classpath.
+   *
+   * <p>Manifests are read from the build output copy under {@code build/resources/test}. Naming
+   * that in a failure message sends the reader to a generated file that the next build overwrites,
+   * so every message reports the source path instead, relative to the working directory when it
+   * sits below it.
+   */
+  public static String sourcePath(Path manifestPath) {
+    final var normalized = manifestPath.toString().replace(File.separatorChar, '/');
+    final var buildSegment = "/build/resources/test/";
+    final var index = normalized.indexOf(buildSegment);
+
+    final var source =
+        index < 0
+            ? normalized
+            : normalized.substring(0, index)
+                + "/src/test/resources/"
+                + normalized.substring(index + buildSegment.length());
+
+    final var workingDirectory =
+        Paths.get("").toAbsolutePath().toString().replace(File.separatorChar, '/') + "/";
+    return source.startsWith(workingDirectory)
+        ? source.substring(workingDirectory.length())
+        : source;
   }
 
   private static String versionDir(String version) {

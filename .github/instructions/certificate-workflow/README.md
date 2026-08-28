@@ -27,9 +27,12 @@ flips those elements to `implemented`, which is what brings them under the
 conformance test. So the manifest is both the specification and the progress ledger:
 
 ```bash
-grep -c 'status: "pending"'     app/src/test/resources/certificate-specs/<type>/v<M>_<N>/spec.yaml
-grep -c 'status: "implemented"' app/src/test/resources/certificate-specs/<type>/v<M>_<N>/spec.yaml
+grep -c 'status:.*pending'     app/src/test/resources/certificate-specs/<type>/v<M>_<N>/spec.yaml
+grep -c 'status:.*implemented' app/src/test/resources/certificate-specs/<type>/v<M>_<N>/spec.yaml
 ```
+
+Matched loosely on purpose: a generated manifest quotes the value and a hand-written one
+need not, and a grep for `status: "pending"` silently reports zero against the second.
 
 ## The increments
 
@@ -80,6 +83,7 @@ limits, codes and rules you just typed match the reviewed specification.
 | File | Step |
 |---|---|
 | `spec-extract.md` | PDF → manifest |
+| `open-questions-template.md` | the shape of the questions a manifest cannot answer |
 | `scaffold.md` | the model skeleton |
 | `category.md` | one category |
 | `schematron.md` | XML validation |

@@ -62,6 +62,13 @@ The main table's columns map straight onto element fields:
    element flips it.
 6. **Every element gets a row, including ones you are unsure about.** Unknowns go in
    `open-questions.md`, not into a guess and not into omission.
+
+   One exception, forced by the schema: `component` is required, so a specification row
+   with an empty Inputkomponent cell cannot be represented at all. Those rows are
+   structural sub-ids of a combined component — the code and date halves of a
+   `KKSF-006a`, or the code and description halves of a `KKSF-001` — and belong to the
+   parent element, whose `fieldId` names one of them. Leave them out of `categories:`
+   and record what you left out, and why, in `open-questions.md`.
 7. **Do not write the "Vårdenhetens adress" row.** It is `issuingUnitContactInfo()`,
    shared by every model, and is not part of the manifest.
 
@@ -72,6 +79,11 @@ ambiguous, and what the implementation would need. Typical contents: the **Funkt
 table (whether *ärendekommunikation*, *kompletteringsbegäran*, *förnya* are available),
 the 1177 summary format, codes the document references but does not enumerate, and any
 `KKSF-*` rule whose meaning is not obvious from an existing implementation.
+
+Follow `open-questions-template.md` for the shape. Write each item so a requirement
+owner can answer it without reading any Java — this file is what goes to the person
+who can settle the question, and it is the reason the manifest can be honest about
+what the document does not say.
 
 ## Finish
 

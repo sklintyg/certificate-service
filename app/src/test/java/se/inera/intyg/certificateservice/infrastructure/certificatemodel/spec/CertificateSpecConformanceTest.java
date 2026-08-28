@@ -96,7 +96,7 @@ class CertificateSpecConformanceTest {
           """
           %s marks elements as implemented but no model is registered for it.
           Add an entry to CertificateSpecConformanceTest.MODELS keyed on '%s'."""
-              .formatted(manifestPath, key));
+              .formatted(SpecManifestLoader.sourcePath(manifestPath), key));
     }
 
     final var problems = ModelSpecComparator.compare(model(key), manifest);
@@ -114,7 +114,10 @@ class CertificateSpecConformanceTest {
 
             The manifest is the contract. Fix the model, not the manifest — changing the manifest
             requires re-reading the specification document."""
-                .formatted(manifestPath, problems.size(), String.join("\n\n", problems)));
+                .formatted(
+                    SpecManifestLoader.sourcePath(manifestPath),
+                    problems.size(),
+                    String.join("\n\n", problems)));
   }
 
   @ParameterizedTest(name = "{0} is a well-formed manifest")
