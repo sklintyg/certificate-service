@@ -1,0 +1,111 @@
+# certificate-service — agent instructions
+
+Spring Boot / Gradle multi-module service that manages medical certificates
+(*intyg*) issued by health professionals. Domain-Driven Design: `domain/` holds the
+model and business rules, `app/` holds the concrete certificate implementations and
+all adapters.
+
+## Modules
+
+| Module | Contains |
+|---|---|
+| `domain` | Certificate domain model, `ElementSpecification`, validation, actions |
+| `app` | Spring app, REST API, persistence, **all concrete certificate models**, testability |
+| `clinicalprocess-certificate-v4` | XML generation, prefill, schema/schematron validation |
+| `pdfbox-generator` | Form-fill PDF generation (AcroForm templates) |
+| `integration-certificate-print-service` | Generated-layout PDF via the print service |
+| `integration-test` | Spring Boot + Testcontainers integration tests (`integrationTest` task) |
+
+## Commands
+
+```bash
+./gradlew build spotlessCheck        # unit tests + formatting (what CI runs first)
+./gradlew :app:test --tests '*Foo*'  # a single unit test
+./gradlew integrationtest            # the integration-test module (Testcontainers)
+./gradlew spotlessApply              # fix formatting
+```
+
+Formatting is enforced: google-java-format, licence header from
+`spotless.license.txt`, no wildcard imports. Always run `spotlessApply` before
+finishing.
+
+## Coding conventions
+
+@.github/copilot-instructions.local.md
+
+These are this repository's own conventions. The `.ai-resources` submodule holds a shared set
+(commit message format, formatting, available team skills) in
+`.ai-resources/tools-config/copilot/copilot-instructions.md`, and its sync hook concatenates the two
+into `.github/copilot-instructions.md`, which is generated and gitignored. Edit the `.local.md`
+source, never the generated file.
+
+## Working on certificate models
+
+**Read this before touching anything under `certificatemodel/`.** Implementing a
+certificate model is a long, detail-dense transcription job, and it is done as a
+sequence of small merged increments — never in one shot.
+
+@.github/instructions/certificate-workflow/README.md
+
+Each step has an agent. In Copilot CLI pick one with `/agent`; in Claude Code they are
+skills of the same name. All of them are thin wrappers over the shared playbooks, so the
+playbook is the single source of truth per step.
+
+| Agent | Step |
+|---|---|
+| `cert-spec-extract` | specification PDF → reviewed `spec.yaml` manifest |
+| `cert-scaffold` | the model skeleton, no categories yet |
+| `cert-category` | one category, one pull request |
+| `cert-schematron` | XML validation and the prefill fixture |
+| `cert-pdf` | PDF specification and per-question configuration |
+| `cert-verify` | audit the code against the manifest |
+| `cert-version-diff` | a new version of an existing certificate |
+
+Reference material, loaded automatically by path:
+
+- `.github/instructions/certificate-model.instructions.md` — model & element anatomy
+- `.github/instructions/certificate-elements.instructions.md` — spec code → Java type tables
+- `.github/instructions/certificate-tests.instructions.md` — test patterns at every layer
+- `.github/instructions/certificate-pdf.instructions.md` — the three PDF strategies
+
+## Hard rules
+
+1. **Never invent a code, id, or text.** If the specification does not give you a
+   value, emit a constant with a `TODO:` comment and record it in the spec
+   manifest's `open-questions.md`. Do not guess.
+2. **Texts are copied word for word** from the specification — including
+   punctuation, casing and line breaks. These strings are shown to doctors and are
+   legally significant.
+3. **Every increment must leave `main` green.** If you cannot finish a category,
+   leave it out of the model rather than committing a half-wired one.
+
+## Where the AI tooling lives
+
+Two layers, combined rather than merged by hand.
+
+**Team**, from the `.ai-resources` submodule — shared instructions, commit and pre-commit
+hooks, and the skills and agents every repository gets. Its sync hook writes
+`.github/copilot-instructions.md`, `.github/skills/` and `.github/agents/`, and adds each
+file it writes to `.gitignore`. Run it once after cloning:
+
+```bash
+git submodule update --init --recursive
+.ai-resources/hooks/setup.sh
+```
+
+**Local**, this repository's own — the certificate workflow, because this is where
+certificate types are implemented.
+
+| Layer | Authored in | Generated to |
+|---|---|---|
+| Team instructions | `.ai-resources/tools-config/copilot/` | `.github/copilot-instructions.md` |
+| This repo's instructions | `.github/copilot-instructions.local.md` | (same generated file) |
+| Team skills and agents | `.ai-resources/knowledge/` | `.github/skills/`, `.github/agents/` |
+| This repo's skills | `.agents/skills/<name>/SKILL.md` | `.claude/skills/`, `.github/agents/` |
+| Playbooks | `.github/instructions/certificate-workflow/` | — |
+
+Everything in the *generated* column is gitignored. Edit the source, never the copy.
+
+Local skills are generated by `.github/scripts/sync-local-skills.sh`, and `check` fails if
+a copy is stale — the hook cannot be relied on for this, because it does nothing at all
+when the submodule is uninitialised.

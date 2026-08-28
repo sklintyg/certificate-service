@@ -36,6 +36,10 @@ out/
 
 ### VS Code ###
 .vscode/
+# Generated from .agents/skills by .github/scripts/sync-local-skills.sh
+/.claude/skills/
+/.github/agents/cert-*.agent.md
+
 # BEGIN ai-resources synced (auto-generated, do not edit) ###
 /.github/copilot-instructions.md
 /.github/skills/caveman/
