@@ -91,9 +91,6 @@ public class BinaryCertificateMetadataConverter {
     final var staff = certificate.certificateMetaData().issuer();
     return BinaryStaffDTO.builder()
         .personId(staff.hsaId().id())
-        .firstName(staff.name().firstName())
-        .middleName(staff.name().middleName())
-        .lastName(staff.name().lastName())
         .fullName(staff.name().fullName())
         .titles(toTitles(staff))
         .specialities(toSpecialities(staff))
