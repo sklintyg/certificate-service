@@ -21,6 +21,7 @@ package se.inera.intyg.certificateservice.application.certificate.service.conver
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.doReturn;
+import static se.inera.intyg.certificateservice.application.common.dto.PersonIdTypeDTO.PERSONAL_IDENTITY_NUMBER;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataCareProvider.ALFA_REGIONEN;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataCareProviderConstants.ALFA_REGIONEN_ID;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataCareProviderConstants.ALFA_REGIONEN_NAME;
@@ -204,7 +205,13 @@ class BinaryCertificateMetadataConverterTest {
   @Test
   void shallIncludePatientPersonId() {
     final var result = binaryCertificateMetadataConverter.convert(certificate);
-    assertEquals(ATHENA_REACT_ANDERSSON_ID, result.getPatient().getPersonId());
+    assertEquals(ATHENA_REACT_ANDERSSON_ID, result.getPatient().getPatientId());
+  }
+
+  @Test
+  void shallIncludePatientIdType() {
+    final var result = binaryCertificateMetadataConverter.convert(certificate);
+    assertEquals(PERSONAL_IDENTITY_NUMBER, result.getPatient().getType());
   }
 
   @Test

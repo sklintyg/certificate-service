@@ -21,6 +21,7 @@ package se.inera.intyg.certificateservice.application.certificate.dto;
 import lombok.Builder;
 import lombok.Value;
 import se.inera.intyg.certificateservice.application.certificate.dto.BinaryCertificatePatientDTO.BinaryCertificatePatientDTOBuilder;
+import se.inera.intyg.certificateservice.application.common.dto.PersonIdTypeDTO;
 import tools.jackson.databind.annotation.JsonDeserialize;
 import tools.jackson.databind.annotation.JsonPOJOBuilder;
 
@@ -29,7 +30,8 @@ import tools.jackson.databind.annotation.JsonPOJOBuilder;
 @JsonDeserialize(builder = BinaryCertificatePatientDTOBuilder.class)
 public class BinaryCertificatePatientDTO {
 
-  PersonIdDTO personId;
+  String patientId;
+  PersonIdTypeDTO type;
 
   @JsonPOJOBuilder(withPrefix = "")
   public static class BinaryCertificatePatientDTOBuilder {}
