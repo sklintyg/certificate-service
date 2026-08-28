@@ -42,8 +42,6 @@ import static se.inera.intyg.certificateservice.domain.testdata.TestDataSubUnitC
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataUserConstants.AJLA_DOCTOR_FULLNAME;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataUserConstants.AJLA_DOCTOR_HEALTH_CARE_PROFESSIONAL_LICENCES;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataUserConstants.AJLA_DOCTOR_HSA_ID;
-import static se.inera.intyg.certificateservice.domain.testdata.TestDataUserConstants.AJLA_DOCTOR_LAST_NAME;
-import static se.inera.intyg.certificateservice.domain.testdata.TestDataUserConstants.AJLA_DOCTOR_MIDDLE_NAME;
 import static se.inera.intyg.certificateservice.domain.testdata.TestDataUserConstants.AJLA_DOCTOR_SPECIALITIES;
 
 import java.time.LocalDateTime;
@@ -56,7 +54,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import se.inera.intyg.certificateservice.application.certificate.dto.BinaryUnitDTO;
+import se.inera.intyg.certificateservice.application.certificate.dto.BinaryCertificateUnitDTO;
 import se.inera.intyg.certificateservice.domain.certificate.model.CertificateId;
 import se.inera.intyg.certificateservice.domain.certificate.model.CertificateMetaData;
 import se.inera.intyg.certificateservice.domain.certificate.model.MedicalCertificate;
@@ -87,7 +85,7 @@ class BinaryCertificateMetadataConverterTest {
             .build();
 
     doReturn(
-            BinaryUnitDTO.builder()
+            BinaryCertificateUnitDTO.builder()
                 .unitId(ALFA_ALLERGIMOTTAGNINGEN_ID)
                 .workplaceCode(ALFA_ALLERGIMOTTAGNINGEN_WORKPLACE_CODE)
                 .build())
@@ -227,13 +225,6 @@ class BinaryCertificateMetadataConverterTest {
     assertEquals(ATHENA_REACT_ANDERSSON_STREET, result.getPatient().getStreet());
     assertEquals(ATHENA_REACT_ANDERSSON_CITY, result.getPatient().getCity());
     assertEquals(ATHENA_REACT_ANDERSSON_ZIP_CODE, result.getPatient().getZipCode());
-  }
-
-  @Test
-  void shallIncludeIssuedByMiddleAndLastName() {
-    final var result = binaryCertificateMetadataConverter.convert(certificate);
-    assertEquals(AJLA_DOCTOR_MIDDLE_NAME, result.getIssuedBy().getMiddleName());
-    assertEquals(AJLA_DOCTOR_LAST_NAME, result.getIssuedBy().getLastName());
   }
 
   @Test

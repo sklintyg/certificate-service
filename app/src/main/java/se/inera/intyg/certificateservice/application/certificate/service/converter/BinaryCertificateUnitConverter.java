@@ -20,19 +20,20 @@ package se.inera.intyg.certificateservice.application.certificate.service.conver
 
 import java.util.Optional;
 import org.springframework.stereotype.Component;
-import se.inera.intyg.certificateservice.application.certificate.dto.BinaryUnitDTO;
+import se.inera.intyg.certificateservice.application.certificate.dto.BinaryCertificateUnitDTO;
 import se.inera.intyg.certificateservice.domain.certificate.model.ElementData;
 import se.inera.intyg.certificateservice.domain.certificate.model.ElementValueUnitContactInformation;
 import se.inera.intyg.certificateservice.domain.unit.model.IssuingUnit;
 
 @Component
 public class BinaryCertificateUnitConverter {
-  public BinaryUnitDTO convert(IssuingUnit issuingUnit, Optional<ElementData> elementData) {
+  public BinaryCertificateUnitDTO convert(
+      IssuingUnit issuingUnit, Optional<ElementData> elementData) {
     return elementData
         .map(
             data -> {
               final var elementValue = (ElementValueUnitContactInformation) data.value();
-              return BinaryUnitDTO.builder()
+              return BinaryCertificateUnitDTO.builder()
                   .unitId(issuingUnit.hsaId().id())
                   .unitName(issuingUnit.name().name())
                   .address(elementValue.address())
@@ -45,7 +46,7 @@ public class BinaryCertificateUnitConverter {
                   .build();
             })
         .orElse(
-            BinaryUnitDTO.builder()
+            BinaryCertificateUnitDTO.builder()
                 .unitId(issuingUnit.hsaId().id())
                 .unitName(issuingUnit.name().name())
                 .address(issuingUnit.address() == null ? null : issuingUnit.address().address())

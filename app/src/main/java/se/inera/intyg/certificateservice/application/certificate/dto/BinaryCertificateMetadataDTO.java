@@ -31,13 +31,13 @@ import tools.jackson.databind.annotation.JsonPOJOBuilder;
 public class BinaryCertificateMetadataDTO {
 
   String certificateId;
-  BinaryCertificateTypeDTO type;
+  BinaryCertificateCodeDTO type;
   String version;
   LocalDateTime signedAt;
   LocalDateTime revokedAt;
   LocalDateTime sentAt;
   PatientDTO patient;
-  BinaryStaffDTO issuedBy;
+  BinaryCertificateStaffDTO issuedBy;
   CertificateRelationsDTO relations;
 
   @JsonPOJOBuilder(withPrefix = "")
