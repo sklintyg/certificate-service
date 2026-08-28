@@ -31,7 +31,13 @@ finishing.
 
 ## Coding conventions
 
-@.github/copilot-instructions.md
+@.github/copilot-instructions.local.md
+
+These are this repository's own conventions. The `.ai-resources` submodule holds a shared set
+(commit message format, formatting, available team skills) in
+`.ai-resources/tools-config/copilot/copilot-instructions.md`, and its sync hook concatenates the two
+into `.github/copilot-instructions.md`, which is generated and gitignored. Edit the `.local.md`
+source, never the generated file.
 
 ## Working on certificate models
 
