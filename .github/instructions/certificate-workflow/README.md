@@ -41,7 +41,7 @@ Each row is one pull request that leaves `main` green.
 | 1 | `cert-scaffold` | Factory with no categories, action/message specs, `active.from` in three places, `CodeSystemKvIntygstyp` entry, empty fill service, factory test, `TestSetup` + Active/Citizen/Inactive ITs, prefill XML |
 | 2…N | `cert-category` | One category: its `Category*` and `Question*` classes, one mirror unit test each, factory wiring, fill-service ids, status flips |
 | N+1 | `cert-schematron` | `.sch` resource, `SchematronPath`, `SchematronValidation<TYPE>Test` |
-| N+2 | `cert-pdf` | `PdfSpecification`, `TemplatePathProvider`, templates, per-question `pdfConfiguration` |
+| N+2 | `cert-pdf` | `PdfSpecification`, `TemplatePathProvider`, templates, per-question `pdfConfiguration`, the `InactiveTypeIT` mount |
 | N+3 | — | Remaining `@Nested` IT scenario mounts and role matrices |
 
 Category increments do not depend on each other, so several people can take one each.

@@ -33,7 +33,9 @@ Elsewhere:
 - `app/src/test/.../certificatemodel/<type>/CertificateModelFactory<TYPE>Test.java`.
 - `integration-test/.../integrationtest/<type>/` — `<TYPE>TestSetup`, `<TYPE>ActiveIT`,
   `<TYPE>CitizenIT`, `<TYPE>InactiveIT`.
-- `integration-test/src/test/resources/prefill/<TYPE>_V<major>.xml`.
+- `integration-test/src/test/resources/prefill/<TYPE>.xml` for a v1 certificate,
+  `<TYPE>_V<major>.xml` from v2 on. `CreateCertificateIT` derives the name and drops the
+  suffix for major version 1 — a mismatch fails with `Resource not found`.
 - Register the model in `CertificateSpecConformanceTest.MODELS`.
 
 ## The three property locations
@@ -49,10 +51,28 @@ Miss one and the Spring context will not start:
 ## Integration tests
 
 Start with the scenarios that do not need a single question answered:
-`CreateCertificateIT`, `DeleteCertificateIT`, `GetCertificateIT`, `InactiveTypeIT`,
-and the citizen list scenarios. Everything that writes an answer waits until a
-category exists — `<TYPE>TestSetup.valueForTest` needs a real element, so add the
-remaining `@Nested` mounts in the increment that gives it one.
+`CreateCertificateIT`, `DeleteCertificateIT`, `GetCertificateIT`,
+`GetCertificateTypeInfoIT`, `ExistsCertificateTypeInfoIT`, and the citizen list
+scenarios. Everything that writes an answer waits until a category exists —
+`<TYPE>TestSetup.valueForTest` needs a real element and `BaseIntegrationIT.element()`,
+`value()` and `questionId()` all dereference it, so add the remaining `@Nested` mounts
+in the increment that gives it one.
+
+Two things bite here and neither is visible until a test fails:
+
+- **A mounted scenario may need a role matrix.** `CreateCertificateIT` and
+  `GetCertificateIT` carry `@MethodSource("rolesAccessToProtectedPerson")` and
+  `("rolesNoAccessToProtectedPerson")`, which the **mounting** class supplies as
+  `protected static Stream<Arguments>` methods on the `@Nested` class. They must agree
+  with the action specification's `allowedRolesForProtectedPersons`. Omit one and JUnit
+  reports `initializationError`, not a readable failure. Copy them from the certificate
+  whose roles you copied.
+- **`InactiveTypeIT` does not belong in this increment.** Its
+  `shallBeAbleToPrintInactiveCertificate` renders the certificate, and no print strategy
+  exists until `cert-pdf` — the request answers 500. Mount it there. Keep an
+  `<TYPE>InactiveIT` with a trivial test so the `InActiveCertificatesIT` property
+  registration is still exercised; that is one of the three locations this increment
+  exists to get right.
 
 ## Finish
 
@@ -61,4 +81,8 @@ remaining `@Nested` mounts in the increment that gives it one.
 ./gradlew integrationtest --tests '*<TYPE>*'
 ```
 
-The conformance test will still skip: nothing is `implemented` yet. That is correct.
+`CertificateSpecConformanceTest` now **runs** for this manifest and passes without
+comparing anything: registering the model in `MODELS` satisfies the
+`assumeTrue(implemented || MODELS.containsKey(key))` guard, and with every element still
+`pending` the comparator has nothing to check. It stops being vacuous with the first
+category increment.

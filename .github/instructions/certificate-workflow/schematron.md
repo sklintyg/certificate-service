@@ -16,7 +16,8 @@ converter to write.
   — wires a real `XmlGeneratorCertificateV4`, generates XML from `TestDataCertificate`
   plus `ElementData`, and asserts the schematron accepts a complete certificate and
   rejects an incomplete one.
-- `integration-test/src/test/resources/prefill/<TYPE>_V<major>.xml` — fill it in
+- `integration-test/src/test/resources/prefill/<TYPE>.xml` (v1) or `<TYPE>_V<major>.xml`
+  (v2 on) — fill it in
   properly now; `CreateCertificateIT.shallReturnCertificateWithPrefilledAnswers`
   asserts a prefilled draft validates with zero errors, which is a strong end-to-end
   check of the mappings.
