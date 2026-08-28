@@ -34,6 +34,7 @@ import se.inera.intyg.certificateservice.application.certificate.dto.Certificate
 import se.inera.intyg.certificateservice.application.certificate.dto.CertificateRelationTypeDTO;
 import se.inera.intyg.certificateservice.application.certificate.dto.CertificateRelationsDTO;
 import se.inera.intyg.certificateservice.application.certificate.dto.CertificateStatusTypeDTO;
+import se.inera.intyg.certificateservice.application.certificate.dto.PersonIdDTO;
 import se.inera.intyg.certificateservice.domain.certificate.model.Certificate;
 import se.inera.intyg.certificateservice.domain.certificate.model.Relation;
 import se.inera.intyg.certificateservice.domain.common.model.HealthCareProfessionalLicence;
@@ -73,7 +74,11 @@ public class BinaryCertificateMetadataConverter {
 
   private BinaryCertificatePatientDTO toPatientDTO(Certificate certificate) {
     return BinaryCertificatePatientDTO.builder()
-        .personId(certificate.certificateMetaData().patient().id().id())
+        .personId(
+            PersonIdDTO.builder()
+                .id(certificate.certificateMetaData().patient().id().id())
+                .type(certificate.certificateMetaData().patient().id().type().name())
+                .build())
         .build();
   }
 

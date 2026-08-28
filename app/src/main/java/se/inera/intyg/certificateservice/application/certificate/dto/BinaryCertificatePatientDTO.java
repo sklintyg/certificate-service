@@ -29,7 +29,7 @@ import tools.jackson.databind.annotation.JsonPOJOBuilder;
 @JsonDeserialize(builder = BinaryCertificatePatientDTOBuilder.class)
 public class BinaryCertificatePatientDTO {
 
-  String personId;
+  PersonIdDTO personId;
 
   @JsonPOJOBuilder(withPrefix = "")
   public static class BinaryCertificatePatientDTOBuilder {}
