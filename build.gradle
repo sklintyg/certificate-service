@@ -128,3 +128,20 @@ sonar {
         property "sonar.exclusions", "**/testability/**,**/integrationtest/**"
     }
 }
+// This repository's own agent skills are authored once under .agents/skills/ and copied
+// to the locations each tool reads. The copies are generated and gitignored, matching how
+// .ai-resources syncs team resources. checkLocalSkills runs in `check`, so a stale copy
+// fails the build rather than depending on every developer having run the script.
+tasks.register('syncLocalSkills', Exec) {
+    group = 'ai tooling'
+    description = 'Generates .claude/skills and .github/agents from .agents/skills.'
+    commandLine './.github/scripts/sync-local-skills.sh'
+}
+
+tasks.register('checkLocalSkills', Exec) {
+    group = 'ai tooling'
+    description = 'Fails if a generated skill copy is missing or out of date.'
+    commandLine './.github/scripts/sync-local-skills.sh', '--check'
+}
+
+tasks.named('check') { dependsOn 'checkLocalSkills' }
